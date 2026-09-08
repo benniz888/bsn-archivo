@@ -1,0 +1,34 @@
+franchise_id,canonical_name,city,founded,status,source
+atleticos_san_german,Atleticos de San German,San German,1930,active,derived:champion/scoring rows
+cangrejeros_santurce,Cangrejeros de Santurce,Santurce,1918,active,derived:champion/scoring rows
+capitanes_arecibo,Capitanes de Arecibo,Arecibo,1946,active,derived:champion/scoring rows
+criollos_caguas,Criollos de Caguas,Caguas,1976,active,derived:champion/scoring rows
+santeros_aguada,Santeros de Aguada,Aguada,1992,active,derived:champion/scoring rows
+gigantes_carolina,Gigantes de Carolina,Carolina,1971,active,derived:champion/scoring rows
+indios_mayaguez,Indios de Mayaguez,Mayaguez,1956,active,derived:champion/scoring rows
+leones_ponce,Leones de Ponce,Ponce,1946,active,derived:champion/scoring rows
+mets_guaynabo,Mets de Guaynabo,Guaynabo,1935,active,derived:champion/scoring rows
+osos_manati,Osos de Manati,Manati,2014,active,derived:champion/scoring rows
+piratas_quebradillas,Piratas de Quebradillas,Quebradillas,1926,active,derived:champion/scoring rows
+vaqueros_bayamon,Vaqueros de Bayamon,Bayamon,1930,active,derived:champion/scoring rows
+atenienses_manati,Atenienses de Manati,Manati,2014,defunct 2017,derived:champion/scoring rows
+avancinos_villalba,Avancinos de Villalba,Villalba,1996,defunct 1998,derived:champion/scoring rows
+cardenales_rio_piedras,Cardenales de Rio Piedras,Rio Piedras,1940,defunct 1985,derived:champion/scoring rows
+cariduros_fajardo,Cariduros de Fajardo,Fajardo,1973,defunct 2023,derived:champion/scoring rows
+conquistadores_aguada,Conquistadores de Aguada,Aguada,1994,defunct 1998,derived:champion/scoring rows
+gallitos_isabela,Gallitos de Isabela,Isabela,1969,defunct 2005,derived:champion/scoring rows
+grises_humacao,Grises de Humacao,Humacao,2005,defunct 2023,derived:champion/scoring rows
+indios_canovanas,Indios de Canovanas,Canovanas,1980,defunct 1996,derived:champion/scoring rows
+maratonistas_coamo,Maratonistas de Coamo,Coamo,1985,defunct 2015,derived:champion/scoring rows
+polluelos_aibonito,Polluelos de Aibonito,Aibonito,1977,defunct 2001,derived:champion/scoring rows
+tainos_cabo_rojo,Tainos de Cabo Rojo,Cabo Rojo,1989,defunct 1993,derived:champion/scoring rows
+tiburones_aguadilla,Tiburones de Aguadilla,Aguadilla,1990,defunct 1998,derived:champion/scoring rows
+titanes_morovis,Titanes de Morovis,Morovis,1977,defunct 2006,derived:champion/scoring rows
+toritos_cayey,Toritos de Cayey,Cayey,2002,defunct 2004,derived:champion/scoring rows
+capitalinos_san_juan,Capitalinos de San Juan,San Juan,1930,defunct 1998,derived:champion/scoring rows
+brujos_guayama,Brujos de Guayama,Guayama,1971,relocated 2022,derived:champion/scoring rows
+santos_san_juan,Santos de San Juan,San Juan,1971,defunct ~1980,derived:champion/scoring rows
+club_nautico_san_juan,Club Nautico de San Juan,San Juan,1930,defunct ~1940,derived:champion/scoring rows
+cocoteros_tortuguero,Cocoteros de Tortuguero,Tortuguero,1943,defunct ~1944,derived:champion/scoring rows
+gallitos_upr,Gallitos de la UPR,Rio Piedras,1930,defunct ~1955,derived:champion/scoring rows
+vega_baja,Vega Baja,Vega Baja,1934,defunct ~1940,derived:champion/scoring rows

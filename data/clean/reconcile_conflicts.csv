@@ -1,0 +1,6 @@
+topic,season,source_a,value_a,source_b,value_b,agree_on,note
+champion,1936,en.wikipedia.org/wiki/Baloncesto_Superior_Nacional,Club Nautico de San Juan,wayback:bsnpr.com/estadisticas/campeonatos.asp,SAN JUAN (city),,"seed uses franchise name, bsnpr uses city — mapped values differ"
+champion,1945,en.wikipedia,Capitalinos de San Juan,es.wikipedia,Santos de San Juan,runner-up: Gallitos de la UPR,"D5 unresolved. bsnpr adds coach Adolfo Porrata, city 'SAN JUAN' — does not disambiguate."
+runner_up,1968,en.wikipedia.org/wiki/Baloncesto_Superior_Nacional,Cardenales de Rio Piedras,wayback:bsnpr.com/estadisticas/campeonatos.asp,PONCE (city),,mapped values differ
+scoring_champion,1971,historic,FRANK CORTES,seed,Teofilo Cruz,,ppg era. bsnpr's 'campeón anotador' may use total points where the seed uses ppg.
+scoring_champion,1974,historic,RAYMOND DALMAU,seed,Hector Blondet,,ppg era. bsnpr's 'campeón anotador' may use total points where the seed uses ppg.

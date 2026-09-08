@@ -33,7 +33,10 @@ fetch-players:
 parse-players:
 	.venv/bin/python -m src.parse_players
 
+reconcile:
+	.venv/bin/python -m src.reconcile
+
 test:
 	.venv/bin/pytest -q
 
-.PHONY: setup enumerate samples fetch parse verify enumerate-root fetch-pre2007 parse-pre2007 fetch-players parse-players test
+.PHONY: setup enumerate samples fetch parse verify enumerate-root fetch-pre2007 parse-pre2007 fetch-players parse-players reconcile test

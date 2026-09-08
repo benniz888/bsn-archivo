@@ -259,6 +259,53 @@ def _read_interim(name: str) -> list[dict]:
         return list(csv.DictReader(fh))
 
 
+def verify_reconcile(c: Checker) -> None:
+    """PHASE_4. Skipped cleanly if not built."""
+    if not (CLEAN_DIR / "reconcile_conflicts.csv").exists():
+        return
+
+    fr = _read("franchises.csv")
+    fids = {r["franchise_id"] for r in fr}
+    c.check(len(fids) == len(fr), "franchises: franchise_id unique")
+
+    conflicts = _read("reconcile_conflicts.csv")
+    for r in conflicts:
+        tag = f"{r['topic']}/{r['season']}"
+        # a conflict names two sides, each with a source and a value, no winner
+        c.check(r["source_a"] and r["value_a"] and r["source_b"] and r["value_b"],
+                f"conflicts: {tag} has both sides populated")
+        c.check(r["source_a"] != r["source_b"], f"conflicts: {tag} two distinct sources")
+    ckeys = {(r["topic"], r["season"]) for r in conflicts}
+    for expect in (("champion", "1936"), ("champion", "1945"), ("runner_up", "1968"),
+                   ("scoring_champion", "1971"), ("scoring_champion", "1974")):
+        c.check(expect in ckeys, f"conflicts: {expect[0]} {expect[1]} is flagged")
+
+    ch = _read("champions_reconciled.csv")
+    STATUSES = {"agree", "conflict", "seed_only", "bsnpr_only", "no_champion"}
+    for r in ch:
+        tag = f"champions {r['season']}"
+        c.check(r["agreement"] in STATUSES, f"{tag}: agreement status valid", r["agreement"])
+        for col in ("champion_franchise_id", "runner_up_franchise_id"):
+            c.check(not r[col] or r[col] in fids, f"{tag}: {col} is a real franchise", r[col])
+        if r["agreement"] == "agree":
+            c.check(r["confidence"] == "verified", f"{tag}: two-source agreement -> verified")
+        if r["agreement"] == "conflict":
+            c.check(r["confidence"] == "disputed", f"{tag}: conflict -> disputed")
+            c.check(bool(r["note"]), f"{tag}: conflict row explains the disagreement")
+    by_season = {r["season"]: r for r in ch}
+    c.check(by_season.get("1953", {}).get("agreement") == "no_champion",
+            "champions: 1953 reconciled as no_champion (D6)")
+    c.check("1942-1943" in by_season and by_season["1942-1943"]["agreement"] == "bsnpr_only",
+            "champions: 1942-1943 kept as a distinct bsnpr_only row (D3)")
+
+    sc = _read("scoring_champions_reconciled.csv")
+    SC_ST = {"agree", "conflict", "seed_only", "historic_only", "leaders_only", "none"}
+    for r in sc:
+        c.check(r["agreement"] in SC_ST, f"scoring {r['season']}: agreement status valid", r["agreement"])
+        want = "total_points" if int(r["season"]) <= 1970 else "ppg"
+        c.check(r["metric_era"] == want, f"scoring {r['season']}: metric_era == {want} (D4)")
+
+
 def main() -> int:
     c = Checker()
     verify_champions(c)
@@ -267,6 +314,7 @@ def main() -> int:
     verify_coverage_gaps(c)
     verify_pre2007(c)
     verify_players(c)
+    verify_reconcile(c)
     rc = c.report()
     print("verify:", "PASS" if rc == 0 else "FAIL")
     return rc

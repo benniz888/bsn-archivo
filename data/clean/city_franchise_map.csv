@@ -1,0 +1,26 @@
+normalized_city,franchise_id,season_flags
+AGUADA,santeros_aguada,
+AIBONITO,polluelos_aibonito,
+ARECIBO,capitanes_arecibo,
+BAYAMON,vaqueros_bayamon,
+CAGUAS,criollos_caguas,
+CANOVANAS,indios_canovanas,
+CAROLINA,gigantes_carolina,
+COAMO,maratonistas_coamo,
+FAJARDO,cariduros_fajardo,
+GUAYAMA,brujos_guayama,
+GUAYNABO,mets_guaynabo,
+HUMACAO,grises_humacao,*: Humacao also had Caciques (~2012) — verify per season
+ISABELA,gallitos_isabela,
+MANATI,osos_manati,*: Manati: Atenienses 2014-17 then Osos 2022+ — verify per season
+MAYAGUEZ,indios_mayaguez,
+MOROVIS,titanes_morovis,
+PONCE,leones_ponce,
+QUEBRADILLAS,piratas_quebradillas,
+RIO PIEDRAS,cardenales_rio_piedras,
+SAN GERMAN,atleticos_san_german,
+SAN JUAN,capitalinos_san_juan,"1936: seed says Club Nautico de San Juan, not Capitalinos — conflict | 1945: D5: EN-wiki=Capitalinos, ES-wiki=Santos de San Juan; bsnpr city only"
+SANTURCE,cangrejeros_santurce,
+TORTUGUERO,cocoteros_tortuguero,
+UPR,gallitos_upr,
+VEGA BAJA,vega_baja,
