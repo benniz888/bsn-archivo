@@ -4,7 +4,29 @@ historic_scoring_champions.csv,CHRISTIAN DALMAU,SAN GERMAN,2004,382,"Dalmau Sant
 historic_scoring_champions.csv,EDDIE CASIANO,SAN GERMAN,1996,498,"Casiano Ojeda, Eddie",name+season_in_career,single-source
 historic_scoring_champions.csv,EDDIE CASIANO,SAN GERMAN,1997,498,"Casiano Ojeda, Eddie",name+season_in_career,single-source
 historic_scoring_champions.csv,ELIAS AYUSO,SAN GERMAN,2002,574,"Ayuso Carrillo, Elias",name+season_in_career,single-source
+historic_scoring_champions.csv,NEFTALI RIVERA,QUEBRADILLAS,1969,1698,"Rivera Olivera, Neftali",name+season_in_career,single-source
+historic_scoring_champions.csv,NEFTALI RIVERA,QUEBRADILLAS,1973,1698,"Rivera Olivera, Neftali",name+season_in_career,single-source
+historic_scoring_champions.csv,ORLANDO VEGA,QUEBRADILLAS,1994,1759,"Vega Smith, Orlando",name+season_in_career,single-source
+historic_scoring_champions.csv,ORLANDO VEGA,QUEBRADILLAS,1998,1759,"Vega Smith, Orlando",name+season_in_career,single-source
+historic_scoring_champions.csv,RAYMOND DALMAU,QUEBRADILLAS,1968,1962,"Dalmau Perez, Raymond",name+season_in_career,single-source
+historic_scoring_champions.csv,RAYMOND DALMAU,QUEBRADILLAS,1970,1962,"Dalmau Perez, Raymond",name+season_in_career,single-source
+historic_scoring_champions.csv,RAYMOND DALMAU,QUEBRADILLAS,1974,1962,"Dalmau Perez, Raymond",name+season_in_career,single-source
+historic_scoring_champions.csv,RICHIE PIETRI,SAN GERMAN,1965,2024,"Pietri Villanueva, Richard",name+season_in_career,single-source
+historic_scoring_champions.csv,SAMMY BETANCOURT,SAN JUAN,1972,2147,"Betancourt Fernandez, Samuel",name+season_in_career,single-source
+historic_scoring_champions.csv,SAMMY BETANCOURT,SAN JUAN,1975,2147,"Betancourt Fernandez, Samuel",name+season_in_career,single-source
+historic_scoring_champions.csv,SAMMY BETANCOURT,SAN JUAN,1976,2147,"Betancourt Fernandez, Samuel",name+season_in_career,single-source
+historic_scoring_champions.csv,WESLEY CORREA,MOROVIS,1989,2278,"Correa Crump, Wesley",name+season_in_career,single-source
+historic_scoring_champions.csv,WESLEY CORREA,MOROVIS,1992,2278,"Correa Crump, Wesley",name+season_in_career,single-source
+player_season_leaders.csv,"Agbai, Uka","Cariduros, Fajardo",2007,2394,"Agbai, Estadísticas Jugador",name+season_in_career,single-source
+player_season_leaders.csv,"Agbai, Uka",Cariduros,2008,2394,"Agbai, Estadísticas Jugador",name+season_in_career,single-source
+player_season_leaders.csv,"Akindele, Jeleel",,2018,13035,"Akindele, Jeleel",name+season_in_career,single-source
+player_season_leaders.csv,"Alamo, Angel",Criollos,2008,2476,"Alamo Lopez, Angel",name+season_in_career,single-source
+player_season_leaders.csv,"Allred, Lance",,2007,2427,"Allred, Estadísticas Jugador",name+season_in_career,single-source
+player_season_leaders.csv,"Alvarado, Omar J.",,2007,1739,"Alvarado Sierra, Omar J.",name+season_in_career,single-source
+player_season_leaders.csv,"Alvarado, Omar J.",Atleticos,2008,1739,"Alvarado Sierra, Omar J.",name+season_in_career,single-source
+player_season_leaders.csv,"Apodaca, Rick",Indios,2014,2028,"Apodaca Perez, Rick",name+season_in_career,single-source
 player_season_leaders.csv,"Arroyo, Carlos A.",,2018,273,"Arroyo Bermúdez, Carlos A.",name+season_in_career,single-source
+player_season_leaders.csv,"Ashby, Julius",,2008,2478,"Ashby, Estadísticas Jugador",name+season_in_career,single-source
 player_season_leaders.csv,"Aubry, Jeffrion","Leones, Ponce",2007,1025,"Aubry Flores, Jeffrion",name+season_in_career,single-source
 player_season_leaders.csv,"Aubry, Jeffrion",Leones,2008,1025,"Aubry Flores, Jeffrion",name+season_in_career,single-source
 player_season_leaders.csv,"Aubry, Jeffrion",Capitanes,2009,1025,"Aubry Flores, Jeffrion",name+season_in_career,single-source
@@ -16,9 +38,17 @@ player_season_leaders.csv,"Ayuso, Larry","Cangrejeros, Santurce",2007,574,"Ayuso
 player_season_leaders.csv,"Ayuso, Larry",Cangrejeros,2008,574,"Ayuso Carrillo, Elias",name+season_in_career,single-source
 player_season_leaders.csv,"Ayuso, Larry",Cangrejeros,2009,574,"Ayuso Carrillo, Elias",name+season_in_career,single-source
 player_season_leaders.csv,"Ayuso, Larry",Capitanes,2010,574,"Ayuso Carrillo, Elias",name+season_in_career,single-source
+player_season_leaders.csv,"Balkman, Renaldo",Capitanes,2014,2849,"Balkman, Renaldo",name+season_in_career,single-source
+player_season_leaders.csv,"Beard, Tanoka",Cariduros,2008,2490,"Beard, Tanoka",name+season_in_career,single-source
 player_season_leaders.csv,"Benson, Lee",Vaqueros,2008,1429,"Benson, Estadísticas Jugador",name+season_in_career,single-source
 player_season_leaders.csv,"Benson, Lee",Gigantes,2009,1429,"Benson, Estadísticas Jugador",name+season_in_career,single-source
+player_season_leaders.csv,"Berdiel, Miguel Ali",Caciques,2010,1666,"Berdiel Aponte, Miguel Ali",name+season_in_career,single-source
 player_season_leaders.csv,"Brannen, Robert","Criollos, Caguas",2007,251,"Brannen, Estadísticas Jugador",name+season_in_career,single-source
+player_season_leaders.csv,"Brignoni, Luis",Criollos,1986,1465,"Brignoni Alvarez, Luis",name+season_in_career,single-source
+player_season_leaders.csv,"Brown, Gilbert",Caciques,2012,2760,"Brown, Gilbert",name+season_in_career,single-source
+player_season_leaders.csv,"Brown, Gilbert",Caciques,2013,2760,"Brown, Gilbert",name+season_in_career,single-source
+player_season_leaders.csv,"Bryant, Marlyn",Criollos,2008,2479,"Bryant, Estadísticas Jugador",name+season_in_career,single-source
+player_season_leaders.csv,"Buckner, Reggie",Cariduros,2018,12941,"Buckner, Reggie",name+season_in_career,single-source
 player_season_leaders.csv,"Carmona, Alejandro",,2007,37,"Carmona Sanchez, Alejandro",name+season_in_career,single-source
 player_season_leaders.csv,"Carmona, Alejandro",Gigantes,2008,37,"Carmona Sanchez, Alejandro",name+season_in_career,single-source
 player_season_leaders.csv,"Carmona, Alejandro",Gigantes,2009,37,"Carmona Sanchez, Alejandro",name+season_in_career,single-source
@@ -27,39 +57,88 @@ player_season_leaders.csv,"Caro, Ismael",,2007,932,"Caro Beltran, Ismael",name+s
 player_season_leaders.csv,"Caro, Ismael",Atleticos,2008,932,"Caro Beltran, Ismael",name+season_in_career,single-source
 player_season_leaders.csv,"Carrion, Jeffrey",Gallitos,1986,1023,"Carrion, Jeffrey",name+season_in_career,single-source
 player_season_leaders.csv,"Casiano, Eddie","Indios, Mayaguez",2007,498,"Casiano Ojeda, Eddie",name+season_in_career,single-source
+player_season_leaders.csv,"Cintron, Raymond",Maratonistas,2014,2826,"Cintron Cortes, Raymond",name+season_in_career,single-source
+player_season_leaders.csv,"Cintron, Raymond",Capitanes,2018,2826,"Cintron Cortes, Raymond",name+season_in_career,single-source
+player_season_leaders.csv,"Clavell, Gilberto",,2018,2701,"Clavell, Gilberto",name+season_in_career,single-source
+player_season_leaders.csv,"Clemente, Denis",Caciques,2013,2702,"Clemente, Denis",name+season_in_career,single-source
+player_season_leaders.csv,"Colon, Benjamin",Vaqueros,2018,2336,"Colon Mojica, Benjamin",name+season_in_career,single-source
 player_season_leaders.csv,"Colon, Gabriel",Leones,2008,773,"Colon Gracia, Gabriel",name+season_in_career,single-source
 player_season_leaders.csv,"Colon, Gabriel",Leones,2009,773,"Colon Gracia, Gabriel",name+season_in_career,single-source
 player_season_leaders.csv,"Colon, Gabriel",Leones,2010,773,"Colon Gracia, Gabriel",name+season_in_career,single-source
+player_season_leaders.csv,"Copeland, Donald",Atleticos,2010,2371,"Copeland Serra, Donald",name+season_in_career,single-source
+player_season_leaders.csv,"Coronado, Juan",Brujos,2013,2793,"Coronado, Juan",name+season_in_career,single-source
 player_season_leaders.csv,"Cortes, David",Capitanes,2008,448,"Cortes Ruiz, David",name+season_in_career,single-source
 player_season_leaders.csv,"Cortes, David",Capitanes,2010,448,"Cortes Ruiz, David",name+season_in_career,single-source
 player_season_leaders.csv,"Cortes, David",Capitanes,2012,448,"Cortes Ruiz, David",name+season_in_career,single-source
 player_season_leaders.csv,"Cortes, David",Capitanes,2014,448,"Cortes Ruiz, David",name+season_in_career,single-source
+player_season_leaders.csv,"Cotto, Rubén",Indios,2012,2675,"Cotto, Rubén",name+season_in_career,single-source
+player_season_leaders.csv,"Cotto, Rubén",Indios,2014,2675,"Cotto, Rubén",name+season_in_career,single-source
 player_season_leaders.csv,"Cruz, Alvin",Gigantes,2009,74,"Cruz Torres, Alvin",name+season_in_career,single-source
 player_season_leaders.csv,"Cruz, Alvin",Leones,2010,74,"Cruz Torres, Alvin",name+season_in_career,single-source
 player_season_leaders.csv,"Cruz, Alvin",Piratas,2012,74,"Cruz Torres, Alvin",name+season_in_career,single-source
 player_season_leaders.csv,"Cruz, Alvin",Mets,2013,74,"Cruz Torres, Alvin",name+season_in_career,single-source
 player_season_leaders.csv,"Cruz, Alvin",Capitanes,2014,74,"Cruz Torres, Alvin",name+season_in_career,single-source
+player_season_leaders.csv,"Cruz, Rafael","Capitanes, Arecibo",2007,1895,"Cruz Lopez, Rafael",name+season_in_career,single-source
+player_season_leaders.csv,"Cruz, Rafael",Capitanes,2008,1895,"Cruz Lopez, Rafael",name+season_in_career,single-source
+player_season_leaders.csv,"Cruz, Rafael",Capitanes,2010,1895,"Cruz Lopez, Rafael",name+season_in_career,single-source
 player_season_leaders.csv,"Dalmau, Christian",Vaqueros,2009,382,"Dalmau Santana, Christian",name+season_in_career,single-source
 player_season_leaders.csv,"Dalmau, Christian",Vaqueros,2010,382,"Dalmau Santana, Christian",name+season_in_career,single-source
 player_season_leaders.csv,"Dalmau, Christian",Vaqueros,2012,382,"Dalmau Santana, Christian",name+season_in_career,single-source
 player_season_leaders.csv,"Dalmau, Christian",Mets,2013,382,"Dalmau Santana, Christian",name+season_in_career,single-source
 player_season_leaders.csv,"Dalmau, Christian",Cangrejeros,2014,382,"Dalmau Santana, Christian",name+season_in_career,single-source
+player_season_leaders.csv,"Dalmau, Ricardo",Cangrejeros,2009,1992,"Dalmau Santana, Ricardo",name+season_in_career,single-source
+player_season_leaders.csv,"Davis, Josh",,2009,2592,"Davis, Estadísticas Jugador",name+season_in_career,single-source
+player_season_leaders.csv,"Dawson, Eric",Vaqueros,2018,13033,"Dawson, Eric",name+season_in_career,single-source
+player_season_leaders.csv,"De Jesus, Jezreel",Maratonistas,2014,2823,"De Jesús, Jezreel",name+season_in_career,single-source
+player_season_leaders.csv,"Diaz, Guillermo",Capitanes,2014,2666,"Diaz, Guillermo",name+season_in_career,single-source
+player_season_leaders.csv,"Diaz, Guillermo",Capitanes,2018,2666,"Diaz, Guillermo",name+season_in_career,single-source
+player_season_leaders.csv,"Duran, Cliff",Indios,2013,2367,"Duran Colon, Cliff",name+season_in_career,single-source
+player_season_leaders.csv,"Duran, Cliff",Indios,2014,2367,"Duran Colon, Cliff",name+season_in_career,single-source
+player_season_leaders.csv,"Dyer, Alphonse","Atleticos, San German",2007,2360,"Dyer, Alphonse",name+season_in_career,single-source
+player_season_leaders.csv,"Dyer, Alphonse",Atleticos,2008,2360,"Dyer, Alphonse",name+season_in_career,single-source
+player_season_leaders.csv,"Dyer, Alphonse",Atleticos,2009,2360,"Dyer, Alphonse",name+season_in_career,single-source
+player_season_leaders.csv,"Dyer, Alphonse",Atleticos,2010,2360,"Dyer, Alphonse",name+season_in_career,single-source
+player_season_leaders.csv,"Efejuku-Rose, Weyinmi",Indios,2013,2752,"Efejuku-Rose, Weyinmi",name+season_in_career,single-source
+player_season_leaders.csv,"Emory, Carlos",Santeros,2019,2838,"Emory, Carlos",name+season_in_career,single-source
+player_season_leaders.csv,"Erazo, Armando",Indios,2008,2380,"Erazo Cruz, Armando",name+season_in_career,single-source
 player_season_leaders.csv,"Escalera, Carlos",Conquistadores,2008,284,"Escalera Gonzalez, Carlos",name+season_in_career,single-source
 player_season_leaders.csv,"Escalera, Carlos",Conquistadores,2009,284,"Escalera Gonzalez, Carlos",name+season_in_career,single-source
 player_season_leaders.csv,"Escalera, Carlos",Mets,2010,284,"Escalera Gonzalez, Carlos",name+season_in_career,single-source
 player_season_leaders.csv,"Falcon, Alexander","Cangrejeros, Santurce",2007,50,"Falcon Melendez, Alexander",name+season_in_career,single-source
+player_season_leaders.csv,"Gainous, Marquis",,2013,2638,"Gainous, Marquis",name+season_in_career,single-source
 player_season_leaders.csv,"Galindo, Alex",Brujos,2012,42,"Galindo Rodríguez, Alex",name+season_in_career,single-source
 player_season_leaders.csv,"Galindo, Alex",Cangrejeros,2013,42,"Galindo Rodríguez, Alex",name+season_in_career,single-source
 player_season_leaders.csv,"Galindo, Alex",Vaqueros,2018,42,"Galindo Rodríguez, Alex",name+season_in_career,single-source
+player_season_leaders.csv,"Garces, Ruben",,2012,2737,"Garces Riquelme, Ruben",name+season_in_career,single-source
 player_season_leaders.csv,"Garcia, Jonathan","Criollos, Caguas",2007,1094,"Garcia Bermudez, Jonathan",name+season_in_career,single-source
 player_season_leaders.csv,"Garcia, Jonathan",Caciques,2012,1094,"Garcia Bermudez, Jonathan",name+season_in_career,single-source
 player_season_leaders.csv,"Garcia, Jonathan",Piratas,2013,1094,"Garcia Bermudez, Jonathan",name+season_in_career,single-source
+player_season_leaders.csv,"Gaston, Chris",,2018,2821,"Gaston, Chris",name+season_in_career,single-source
+player_season_leaders.csv,"González, Javier",Cangrejeros,2013,2513,"González López, Javier",name+season_in_career,single-source
+player_season_leaders.csv,"González, Javier",,2018,2513,"González López, Javier",name+season_in_career,single-source
+player_season_leaders.csv,"Graham, Joseph",Mets,2013,2769,"Graham, Joseph",name+season_in_career,single-source
+player_season_leaders.csv,"Gransberry, Kentrell",Indios,2013,2774,"Gransberry, Kentrell",name+season_in_career,single-source
+player_season_leaders.csv,"Graterol, Windy",Capitanes,2013,2827,"Graterol, Windy",name+season_in_career,single-source
+player_season_leaders.csv,"Guevara, Diego",Vaqueros,2008,2443,"Guevara, Estadísticas Jugador",name+season_in_career,single-source
+player_season_leaders.csv,"Guitian, Jose",Atleticos,2013,2565,"Guitian Alicea, Jose",name+season_in_career,single-source
 player_season_leaders.csv,"Guzman, Ansel M",Conquistadores,2009,158,"Guzman Hernaiz, Ansel M",name+season_in_career,single-source
 player_season_leaders.csv,"Guzman, Ansel M",Mets,2010,158,"Guzman Hernaiz, Ansel M",name+season_in_career,single-source
 player_season_leaders.csv,"Guzman, Ansel M",Mets,2012,158,"Guzman Hernaiz, Ansel M",name+season_in_career,single-source
 player_season_leaders.csv,"Guzman, Ansel M",Caciques,2014,158,"Guzman Hernaiz, Ansel M",name+season_in_career,single-source
 player_season_leaders.csv,"Guzman, Ansel M.","Grises, Humacao",2007,158,"Guzman Hernaiz, Ansel M",name+season_in_career,single-source
 player_season_leaders.csv,"Guzman, Ansel M.",Grises,2008,158,"Guzman Hernaiz, Ansel M",name+season_in_career,single-source
+player_season_leaders.csv,"Hamilton, Kevin","Cariduros, Fajardo",2007,2356,"Hamilton Rivera, Kevin",name+season_in_career,single-source
+player_season_leaders.csv,"Hamilton, Kevin",Indios,2009,2356,"Hamilton Rivera, Kevin",name+season_in_career,single-source
+player_season_leaders.csv,"Hamilton, Kevin",Indios,2014,2356,"Hamilton Rivera, Kevin",name+season_in_career,single-source
+player_season_leaders.csv,"Harrellson, Josh",,2013,2794,"Harrellson, Josh",name+season_in_career,single-source
+player_season_leaders.csv,"Harris, Mike",Atleticos,2012,2697,"Harris, Mike",name+season_in_career,single-source
+player_season_leaders.csv,"Harris, Mike",Leones,2013,2697,"Harris, Mike",name+season_in_career,single-source
+player_season_leaders.csv,"Harris, Mike",Leones,2014,2697,"Harris, Mike",name+season_in_career,single-source
+player_season_leaders.csv,"Hernandez, Luis",Piratas,2018,2637,"Hernandez Matias, Luis",name+season_in_career,single-source
+player_season_leaders.csv,"Hickerson, LeRoy",,2013,2642,"Hickerson, LeRoy",name+season_in_career,single-source
+player_season_leaders.csv,"Hinson, Darnell",Gallitos,2010,2465,"Hinson Gaines, Darnell",name+season_in_career,single-source
+player_season_leaders.csv,"Hodge Jr., Walter",Capitanes,2014,2514,"Hodge Jr., Walter",name+season_in_career,single-source
+player_season_leaders.csv,"Hodge Jr., Walter",Capitanes,2018,2514,"Hodge Jr., Walter",name+season_in_career,single-source
 player_season_leaders.csv,"Huertas, David",Piratas,2012,451,"Huertas, David",name+season_in_career,single-source
 player_season_leaders.csv,"Huertas, David",Piratas,2013,451,"Huertas, David",name+season_in_career,single-source
 player_season_leaders.csv,"Huertas, David",Piratas,2014,451,"Huertas, David",name+season_in_career,single-source
@@ -67,20 +146,84 @@ player_season_leaders.csv,"Huertas, David",,2018,451,"Huertas, David",name+seaso
 player_season_leaders.csv,"Jimenez, Giovanni",Indios,2008,812,"Jimenez Brain, Giovanni",name+season_in_career,single-source
 player_season_leaders.csv,"Jimenez, Giovanni",Indios,2009,812,"Jimenez Brain, Giovanni",name+season_in_career,single-source
 player_season_leaders.csv,"Jimenez, Giovanni",Indios,2010,812,"Jimenez Brain, Giovanni",name+season_in_career,single-source
+player_season_leaders.csv,"Johnson, DerMarr",Leones,2010,2600,"Johnson, Estadísticas Jugador",name+season_in_career,single-source
 player_season_leaders.csv,"Jones, Joel","Leones, Ponce",2007,1064,"Jones Camacho, Joel",name+season_in_career,single-source
 player_season_leaders.csv,"Jones, Joel",Piratas,2009,1064,"Jones Camacho, Joel",name+season_in_career,single-source
 player_season_leaders.csv,"Jones, Joel",Piratas,2012,1064,"Jones Camacho, Joel",name+season_in_career,single-source
 player_season_leaders.csv,"Jones, Joel",Brujos,2013,1064,"Jones Camacho, Joel",name+season_in_career,single-source
 player_season_leaders.csv,"Jones, Joel",Atleticos,2014,1064,"Jones Camacho, Joel",name+season_in_career,single-source
+player_season_leaders.csv,"Keenan, Justin",Maratonistas,2014,2824,"Keenan, Justin",name+season_in_career,single-source
+player_season_leaders.csv,"Keenan, Justin",Santeros,2018,2824,"Keenan, Justin",name+season_in_career,single-source
+player_season_leaders.csv,"Konecny, Mark",Criollos,2008,2361,"Konecny, Estadísticas Jugador",name+season_in_career,single-source
+player_season_leaders.csv,"Langhi, Dan",,2008,2469,"Langhi, Estadísticas Jugador",name+season_in_career,single-source
+player_season_leaders.csv,"Langhi, Dan",Indios,2009,2469,"Langhi, Estadísticas Jugador",name+season_in_career,single-source
 player_season_leaders.csv,"Latimer, Antonio",,2007,193,"Latimer Rivera, Antonio",name+season_in_career,single-source
 player_season_leaders.csv,"Latimer, Antonio",Brujos,2014,193,"Latimer Rivera, Antonio",name+season_in_career,single-source
+player_season_leaders.csv,"Lazor, Robert",,2007,2037,"Lazor, Robert",name+season_in_career,single-source
+player_season_leaders.csv,"Lazor, Robert",,2008,2037,"Lazor, Robert",name+season_in_career,single-source
+player_season_leaders.csv,"Life, James",Grises,2009,2466,"Life Flores, James",name+season_in_career,single-source
+player_season_leaders.csv,"Liz, Victor",Atleticos,2013,2778,"Liz, Victor",name+season_in_career,single-source
+player_season_leaders.csv,"Lloreda, José Jaime",Mets,2013,2690,"Lloreda Ferrón, José Jaime",name+season_in_career,single-source
+player_season_leaders.csv,"Looby, Kurt",Grises,2009,2576,"Looby, Estadísticas Jugador",name+season_in_career,single-source
+player_season_leaders.csv,"Lugo, Richard",Atleticos,2008,2016,"Lugo, Richard",name+season_in_career,single-source
+player_season_leaders.csv,"Mata, Lorenzo",Piratas,2013,2817,"Mata, Lorenzo",name+season_in_career,single-source
+player_season_leaders.csv,"Maye, James",Indios,2009,2563,"Maye, James",name+season_in_career,single-source
+player_season_leaders.csv,"Maye, James",Mets,2012,2563,"Maye, James",name+season_in_career,single-source
+player_season_leaders.csv,"Maye, James",Caciques,2014,2563,"Maye, James",name+season_in_career,single-source
+player_season_leaders.csv,"Melendez, Ricardo",Criollos,2008,1995,"Melendez Huertas, Ricardo",name+season_in_career,single-source
+player_season_leaders.csv,"Melendez, Ricardo",Leones,2009,1995,"Melendez Huertas, Ricardo",name+season_in_career,single-source
+player_season_leaders.csv,"Melendez, Ricardo",Leones,2010,1995,"Melendez Huertas, Ricardo",name+season_in_career,single-source
+player_season_leaders.csv,"Melendez, Ricardo",Capitanes,2012,1995,"Melendez Huertas, Ricardo",name+season_in_career,single-source
+player_season_leaders.csv,"Melendez, Ricardo",Piratas,2013,1995,"Melendez Huertas, Ricardo",name+season_in_career,single-source
+player_season_leaders.csv,"Melendez, Ricardo",Piratas,2014,1995,"Melendez Huertas, Ricardo",name+season_in_career,single-source
+player_season_leaders.csv,"Melendez, Ricardo",Piratas,2018,1995,"Melendez Huertas, Ricardo",name+season_in_career,single-source
+player_season_leaders.csv,"Melendez, Wilfredo",,1986,2287,"Melendez Velez, Wilfredo",name+season_in_career,single-source
+player_season_leaders.csv,"Mojica, Javier",Cariduros,2008,2355,"Mojica Izquierdo, Javier",name+season_in_career,single-source
+player_season_leaders.csv,"Mojica, Javier",Vaqueros,2009,2355,"Mojica Izquierdo, Javier",name+season_in_career,single-source
+player_season_leaders.csv,"Mojica, Javier",Vaqueros,2010,2355,"Mojica Izquierdo, Javier",name+season_in_career,single-source
+player_season_leaders.csv,"Mojica, Javier",Vaqueros,2012,2355,"Mojica Izquierdo, Javier",name+season_in_career,single-source
+player_season_leaders.csv,"Mojica, Javier",Vaqueros,2013,2355,"Mojica Izquierdo, Javier",name+season_in_career,single-source
+player_season_leaders.csv,"Mojica, Javier",Cangrejeros,2014,2355,"Mojica Izquierdo, Javier",name+season_in_career,single-source
+player_season_leaders.csv,"Mojica, Javier",,2018,2355,"Mojica Izquierdo, Javier",name+season_in_career,single-source
+player_season_leaders.csv,"Muoneke, Gabriel",,2009,1722,"Muoneke, Estadísticas Jugador",name+season_in_career,single-source
+player_season_leaders.csv,"Nailon, Lee",Leones,2009,2580,"Nailon, Lee",name+season_in_career,single-source
+player_season_leaders.csv,"Nailon, Lee",Piratas,2010,2580,"Nailon, Lee",name+season_in_career,single-source
+player_season_leaders.csv,"Nieves, Roberto","Grises, Humacao",2007,2067,"Nieves Perez, Roberto",name+season_in_career,single-source
+player_season_leaders.csv,"O'Bryant, Patrick",Indios,2012,2742,"O'Bryant, Patrick",name+season_in_career,single-source
 player_season_leaders.csv,"Ocasio, Gerald",Indios,1986,792,"Ocasio Serrano, Gerald",name+season_in_career,single-source
+player_season_leaders.csv,"Orta, Raul",Leones,2009,1946,"Orta, Raul",name+season_in_career,single-source
 player_season_leaders.csv,"Ortiz, Andres",Mets,2010,86,"Ortiz Colon, Andres",name+season_in_career,single-source
 player_season_leaders.csv,"Ortiz, Andres",Indios,2012,86,"Ortiz Colon, Andres",name+season_in_career,single-source
 player_season_leaders.csv,"Ortiz, Andres",Indios,2013,86,"Ortiz Colon, Andres",name+season_in_career,single-source
+player_season_leaders.csv,"Ortiz, Chris",,2018,13057,"Ortiz, Chris",name+season_in_career,single-source
+player_season_leaders.csv,"Osimani, Martin",,2009,2557,"Osimani, Estadísticas Jugador",name+season_in_career,single-source
+player_season_leaders.csv,"Pagan, Wilfredo",,2007,2290,"Pagan Roque, Wilfredo",name+season_in_career,single-source
+player_season_leaders.csv,"Pagan, Wilfredo",Leones,2008,2290,"Pagan Roque, Wilfredo",name+season_in_career,single-source
+player_season_leaders.csv,"Pagan, Wilfredo",Capitanes,2009,2290,"Pagan Roque, Wilfredo",name+season_in_career,single-source
+player_season_leaders.csv,"Pagan, Wilfredo",Brujos,2012,2290,"Pagan Roque, Wilfredo",name+season_in_career,single-source
+player_season_leaders.csv,"Pagan, Wilfredo",Cangrejeros,2013,2290,"Pagan Roque, Wilfredo",name+season_in_career,single-source
+player_season_leaders.csv,"Pellot, Jesse",Atleticos,2009,2354,"Pellot Rosa, Jesse",name+season_in_career,single-source
+player_season_leaders.csv,"Penn, Kleon",Caciques,2012,2615,"Penn, Kleon",name+season_in_career,single-source
+player_season_leaders.csv,"Penn, Kleon",Caciques,2013,2615,"Penn, Kleon",name+season_in_career,single-source
+player_season_leaders.csv,"Penn, Kleon",Vaqueros,2014,2615,"Penn, Kleon",name+season_in_career,single-source
+player_season_leaders.csv,"Penn, Kleon",Caciques,2018,2615,"Penn, Kleon",name+season_in_career,single-source
+player_season_leaders.csv,"Phillip, Darren",Atleticos,2013,2832,"Phillip, Darren",name+season_in_career,single-source
+player_season_leaders.csv,"Pinnock, Danilo",Capitanes,2012,2599,"Pinnock, Danilo",name+season_in_career,single-source
+player_season_leaders.csv,"Pinnock, Danilo",Indios,2013,2599,"Pinnock, Danilo",name+season_in_career,single-source
+player_season_leaders.csv,"Pittsnogle, Kevin",,2007,2372,"Pittsnogle, Estadísticas Jugador",name+season_in_career,single-source
+player_season_leaders.csv,"Ramos, Peter John","Criollos, Caguas",2007,1836,"Ramos Fuentes, Peter John",name+season_in_career,single-source
+player_season_leaders.csv,"Ramos, Peter John",Criollos,2008,1836,"Ramos Fuentes, Peter John",name+season_in_career,single-source
+player_season_leaders.csv,"Ramos, Peter John",Piratas,2009,1836,"Ramos Fuentes, Peter John",name+season_in_career,single-source
+player_season_leaders.csv,"Ramos, Peter John",Piratas,2012,1836,"Ramos Fuentes, Peter John",name+season_in_career,single-source
+player_season_leaders.csv,"Ramos, Peter John",Capitanes,2013,1836,"Ramos Fuentes, Peter John",name+season_in_career,single-source
+player_season_leaders.csv,"Ramos, Peter John",Brujos,2014,1836,"Ramos Fuentes, Peter John",name+season_in_career,single-source
+player_season_leaders.csv,"Ramos, Peter John",,2018,1836,"Ramos Fuentes, Peter John",name+season_in_career,single-source
+player_season_leaders.csv,"Randolph, Shavlik",Piratas,2012,2692,"Randolph, Shavlik",name+season_in_career,single-source
+player_season_leaders.csv,"Redhage, Shawn",Piratas,2009,2494,"Redhage, Shawn",name+season_in_career,single-source
 player_season_leaders.csv,"Reyes, Angelo","Gigantes, Carolina",2007,151,"Reyes Canales, Angelo",name+season_in_career,single-source
 player_season_leaders.csv,"Reyes, Angelo",Gigantes,2008,151,"Reyes Canales, Angelo",name+season_in_career,single-source
 player_season_leaders.csv,"Reyes, Angelo",Capitanes,2010,151,"Reyes Canales, Angelo",name+season_in_career,single-source
+player_season_leaders.csv,"Rice, Darius",,2008,2458,"Rice, Estadísticas Jugador",name+season_in_career,single-source
 player_season_leaders.csv,"Rivera, Carlos Ruben",,2007,338,"Rivera Ruiz, Carlos Ruben",name+season_in_career,single-source
 player_season_leaders.csv,"Rivera, Filiberto",Gigantes,2008,704,"Rivera Isaac, Filiberto",name+season_in_career,single-source
 player_season_leaders.csv,"Rivera, Filiberto",Gallitos,2010,704,"Rivera Isaac, Filiberto",name+season_in_career,single-source
@@ -91,12 +234,58 @@ player_season_leaders.csv,"Rodriguez, Andres",Capitanes,2010,87,"Rodriguez Ferna
 player_season_leaders.csv,"Rodriguez, Erick","Brujos, Guayama",2007,624,"Rodriguez Mandes, Erick",name+season_in_career,single-source
 player_season_leaders.csv,"Rodriguez, Erick",Brujos,2012,624,"Rodriguez Mandes, Erick",name+season_in_career,single-source
 player_season_leaders.csv,"Rodriguez, Erick",Brujos,2013,624,"Rodriguez Mandes, Erick",name+season_in_career,single-source
+player_season_leaders.csv,"Rodriguez, Joey",Atleticos,2012,2698,"Rodriguez, Joey",name+season_in_career,single-source
+player_season_leaders.csv,"Rodriguez, Jonathan",,2018,2516,"Rodriguez, Jonathan",name+season_in_career,single-source
+player_season_leaders.csv,"Rodriguez, Ruben",Vaqueros,1986,2113,"Rodriguez Leon, Ruben",name+season_in_career,single-source
+player_season_leaders.csv,"Romero, Ismael",,2018,13064,"Romero Fernandez, Ismael",name+season_in_career,single-source
+player_season_leaders.csv,"Rosario, Michael",Piratas,2018,2859,"Rosario, Michael",name+season_in_career,single-source
+player_season_leaders.csv,"Sanchez, Ricky",Grises,2008,2033,"Sanchez Rosa, Ricky",name+season_in_career,single-source
+player_season_leaders.csv,"Sanchez, Ricky",Cangrejeros,2009,2033,"Sanchez Rosa, Ricky",name+season_in_career,single-source
+player_season_leaders.csv,"Sanchez, Ricky",Cangrejeros,2013,2033,"Sanchez Rosa, Ricky",name+season_in_career,single-source
+player_season_leaders.csv,"Sanchez, Ricky",,2018,2033,"Sanchez Rosa, Ricky",name+season_in_career,single-source
+player_season_leaders.csv,"Santiago, Benito",Maratonistas,2014,2836,"Santiago, Benito",name+season_in_career,single-source
+player_season_leaders.csv,"Santiago, Benito",Vaqueros,2019,2836,"Santiago, Benito",name+season_in_career,single-source
 player_season_leaders.csv,"Santiago, Eddin","Cangrejeros, Santurce",2007,502,"Santiago Cordero, Eddin",name+season_in_career,single-source
 player_season_leaders.csv,"Santiago, Eddin",Cangrejeros,2008,502,"Santiago Cordero, Eddin",name+season_in_career,single-source
 player_season_leaders.csv,"Santiago, Eddin",Leones,2013,502,"Santiago Cordero, Eddin",name+season_in_career,single-source
 player_season_leaders.csv,"Santiago, Eddin",Leones,2014,502,"Santiago Cordero, Eddin",name+season_in_career,single-source
+player_season_leaders.csv,"Scott, Seth",Caciques,2013,2835,"Scott, Seth",name+season_in_career,single-source
+player_season_leaders.csv,"Sensley, Julian",Caciques,2012,2753,"Sensley, Julian",name+season_in_career,single-source
+player_season_leaders.csv,"Shannon, Terrence","Conquistadores, Guaynabo",2007,2391,"Shannon Dogan, Terrence",name+season_in_career,single-source
+player_season_leaders.csv,"Shannon, Terrence",,2012,2391,"Shannon Dogan, Terrence",name+season_in_career,single-source
+player_season_leaders.csv,"Shannon, Terrence",Vaqueros,2013,2391,"Shannon Dogan, Terrence",name+season_in_career,single-source
+player_season_leaders.csv,"Shannon, Terrence",,2014,2391,"Shannon Dogan, Terrence",name+season_in_career,single-source
+player_season_leaders.csv,"Siler, Garret",,2013,2822,"Siler, Garret",name+season_in_career,single-source
+player_season_leaders.csv,"Siler, Garret",Capitanes,2014,2822,"Siler, Garret",name+season_in_career,single-source
+player_season_leaders.csv,"Simon, Melvin",,2007,1613,"Simon, Estadísticas Jugador",name+season_in_career,single-source
+player_season_leaders.csv,"Simon, Melvin",Conquistadores,2008,1613,"Simon, Estadísticas Jugador",name+season_in_career,single-source
+player_season_leaders.csv,"Slay, Ronald",Grises,2008,2509,"Slay, Estadísticas Jugador",name+season_in_career,single-source
+player_season_leaders.csv,"Smith, Donta",Indios,2012,2569,"Smith, Donta",name+season_in_career,single-source
+player_season_leaders.csv,"Smith, Jabari",Conquistadores,2009,2339,"Smith, Estadísticas Jugador",name+season_in_career,single-source
+player_season_leaders.csv,"Soto, Joseph R.",Vaqueros,2018,13011,"Soto Rivera, Joseph R.",name+season_in_career,single-source
+player_season_leaders.csv,"Strong, Carlos",Atleticos,2012,2647,"Strong, Carlos",name+season_in_career,single-source
+player_season_leaders.csv,"Strong, Carlos",Atleticos,2013,2647,"Strong, Carlos",name+season_in_career,single-source
+player_season_leaders.csv,"Strong, Carlos",Atleticos,2014,2647,"Strong, Carlos",name+season_in_career,single-source
+player_season_leaders.csv,"Thornton, Al",Brujos,2012,2740,"Thornton, Al",name+season_in_career,single-source
+player_season_leaders.csv,"Thornton, Al",Brujos,2014,2740,"Thornton, Al",name+season_in_career,single-source
 player_season_leaders.csv,"Torruellas, Frank",Gallitos,1986,751,"Torruellas Kortright, Frank",name+season_in_career,single-source
+player_season_leaders.csv,"Traylor, Robert",,2007,2424,"Traylor, Estadísticas Jugador",name+season_in_career,single-source
+player_season_leaders.csv,"Traylor, Robert",Cangrejeros,2008,2424,"Traylor, Estadísticas Jugador",name+season_in_career,single-source
 player_season_leaders.csv,"Trinidad, Juan",Mets,1986,1324,"Trinidad Martinez, Juan",name+season_in_career,single-source
+player_season_leaders.csv,"Vassallo, Angel D.",,2018,2517,"Vassallo Colon, Angel D.",name+season_in_career,single-source
+player_season_leaders.csv,"Villafane, Luis",,2007,1502,"Villafane Silva, Luis",name+season_in_career,single-source
+player_season_leaders.csv,"Villegas, Johwen",Atleticos,2010,2386,"Villegas Mercado, Johwen",name+season_in_career,single-source
+player_season_leaders.csv,"Villegas, Johwen",Mets,2013,2386,"Villegas Mercado, Johwen",name+season_in_career,single-source
+player_season_leaders.csv,"Villegas, Johwen",Capitanes,2018,2386,"Villegas Mercado, Johwen",name+season_in_career,single-source
+player_season_leaders.csv,"Villegas, Samuel",,2007,2145,"Villegas Aviles, Samuel",name+season_in_career,single-source
+player_season_leaders.csv,"Viñales, Kyle",,2018,12950,"Viñales, Kyle",name+season_in_career,single-source
+player_season_leaders.csv,"Walker, Blake",Atleticos,2010,2633,"Walker, Estadísticas Jugador",name+season_in_career,single-source
+player_season_leaders.csv,"White, Rodney",,2008,2456,"White, Estadísticas Jugador",name+season_in_career,single-source
+player_season_leaders.csv,"Wilkerson, Tyler",,2014,2881,"Wilkerson, Tyler",name+season_in_career,single-source
+player_season_leaders.csv,"Williams, Marcus",Piratas,2009,2586,"Williams, Marcus",name+season_in_career,single-source
+player_season_leaders.csv,"Wingate, Jason",Gigantes,2009,2387,"Wingate, Estadísticas Jugador",name+season_in_career,single-source
+player_season_leaders.csv,"Wolkowisky, Ruben",Atleticos,2009,2558,"Wolkowisky, Estadísticas Jugador",name+season_in_career,single-source
+player_season_leaders.csv,"Young, Sam",Vaqueros,2014,2880,"Young, Sam",name+season_in_career,single-source
 player_season_leaders.csv,"Zayas, Hector",Indios,2008,870,"Zayas Irizarry, Hector",name+season_in_career,single-source
 player_season_leaders_2000_2002.csv,"Arroyo, Carlos",SANTU,2001,273,"Arroyo Bermúdez, Carlos A.",name+season_in_career,single-source
 player_season_leaders_2000_2002.csv,"Arroyo, Carlos",SANTU,2002,273,"Arroyo Bermúdez, Carlos A.",name+season_in_career,single-source
@@ -106,29 +295,41 @@ player_season_leaders_2000_2002.csv,"Casiano, Eddie",PONCE,2001,498,"Casiano Oje
 player_season_leaders_2000_2002.csv,"Casiano, Eddie",PONCE,2002,498,"Casiano Ojeda, Eddie",name+season_in_career,single-source
 player_season_leaders_2000_2002.csv,"Colon, Javier",PONCE,2001,1011,"Colon Rodriguez, Javier Antonio",name+season_in_career,single-source
 player_season_leaders_2000_2002.csv,"Colon, Javier",PONCE,2002,1011,"Colon Rodriguez, Javier Antonio",name+season_in_career,single-source
+player_season_leaders_2000_2002.csv,"Cruz, Rafael",ARECI,2002,1895,"Cruz Lopez, Rafael",name+season_in_career,single-source
 player_season_leaders_2000_2002.csv,"Dalmau, Christian",SAN G,2001,382,"Dalmau Santana, Christian",name+season_in_career,single-source
 player_season_leaders_2000_2002.csv,"Dalmau, Christian",SAN G,2002,382,"Dalmau Santana, Christian",name+season_in_career,single-source
+player_season_leaders_2000_2002.csv,"Dalmau, Ricardo",QUEBR,2002,1992,"Dalmau Santana, Ricardo",name+season_in_career,single-source
 player_season_leaders_2000_2002.csv,"Elisma, Eddie",PONCE,2001,499,"Elisma, Estadísticas Jugador",name+season_in_career,single-source
+player_season_leaders_2000_2002.csv,"Hourruitiner, Rolando",SANTU,2001,2090,"Hourruitiner Ortiz, Rolando",name+season_in_career,single-source
 player_season_leaders_2000_2002.csv,"Jackson, Leroy",SAN G,2001,1442,"Jackson, Estadísticas Jugador",name+season_in_career,single-source
 player_season_leaders_2000_2002.csv,"Jones, Joel",BAYAM,2002,1064,"Jones Camacho, Joel",name+season_in_career,single-source
+player_season_leaders_2000_2002.csv,"Lazor, Robert",SAN G,2001,2037,"Lazor, Robert",name+season_in_career,single-source
+player_season_leaders_2000_2002.csv,"Lazor, Robert",MAYAG,2002,2037,"Lazor, Robert",name+season_in_career,single-source
 player_season_leaders_2000_2002.csv,"Lockhart, Ian",PONCE,2001,914,"Lockhart Collie, Ian",name+season_in_career,single-source
 player_season_leaders_2000_2002.csv,"Lockhart, Ian",QUEBR,2002,914,"Lockhart Collie, Ian",name+season_in_career,single-source
 player_season_leaders_2000_2002.csv,"Lopez, Michael",AIBON,2001,143,"Lopez Ortiz, Estadísticas Jugador",name+season_in_career,single-source
 player_season_leaders_2000_2002.csv,"Mincy, Jerome",BAYAM,2001,1032,"Mincy Clark, Jerome Alfred",name+season_in_career,single-source
 player_season_leaders_2000_2002.csv,"Murray, Joe",AIBON,2001,1286,"Murray Quiñones, Estadísticas Jugador",name+season_in_career,single-source
 player_season_leaders_2000_2002.csv,"Nieves, Ivan",CAROL,2001,954,"Nieves, Estadísticas Jugador",name+season_in_career,single-source
+player_season_leaders_2000_2002.csv,"Pagan, Wilfredo",MOROV,2001,2290,"Pagan Roque, Wilfredo",name+season_in_career,single-source
+player_season_leaders_2000_2002.csv,"Pagan, Wilfredo",MOROV,2002,2290,"Pagan Roque, Wilfredo",name+season_in_career,single-source
 player_season_leaders_2000_2002.csv,"Rivera, Filiberto",COAMO,2002,704,"Rivera Isaac, Filiberto",name+season_in_career,single-source
 player_season_leaders_2000_2002.csv,"Rivera, Jorge",BAYAM,2002,1127,"Rivera Motta, Jorge Luis",name+season_in_career,single-source
 player_season_leaders_2000_2002.csv,"Santiago, Daniel",BAYAM,2001,427,"Santiago Lynn, Daniel",name+season_in_career,single-source
 player_season_leaders_2000_2002.csv,"Santiago, Daniel",BAYAM,2002,427,"Santiago Lynn, Daniel",name+season_in_career,single-source
 player_season_leaders_2000_2002.csv,"Santiago, Eddin",BAYAM,2001,502,"Santiago Cordero, Eddin",name+season_in_career,single-source
 player_season_leaders_2000_2002.csv,"Santiago, Eddin",BAYAM,2002,502,"Santiago Cordero, Eddin",name+season_in_career,single-source
-player_season_stats_2001_2004.csv,"Aponte, E.",Vaqueros de Bayamon,2001,594,"Aponte, Estadísticas Jugador",name+season_in_career,single-source
+player_season_leaders_2000_2002.csv,"Vega, Orlando",MAYAG,2001,1759,"Vega Smith, Orlando",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Alvarado, O.",Toritos de Cayey,2002,1739,"Alvarado Sierra, Omar J.",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Apodaca, R.",Vaqueros de Bayamon,2001,2028,"Apodaca Perez, Rick",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Apodaca, R.",Capitanes de Arecibo,2002,2028,"Apodaca Perez, Rick",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Arroyo, C.",Cangrejeros de Santurce,2001,273,"Arroyo Bermúdez, Carlos A.",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Arroyo, C.",Cangrejeros de Santurce,2003,273,"Arroyo Bermúdez, Carlos A.",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Aubry, J.",Cangrejeros de Santurce,2001,1025,"Aubry Flores, Jeffrion",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Aubry, J.",Cangrejeros de Santurce,2003,1025,"Aubry Flores, Jeffrion",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Barea, J.",Indios de Mayaguez,2001,1234,"Barea Mora, José Juan",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Berdiel, M.",Maratonistas de Coamo,2001,1666,"Berdiel Aponte, Miguel Ali",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Berdiel, M.",Maratonistas de Coamo,2002,1666,"Berdiel Aponte, Miguel Ali",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Carmona, A.",Indios de Mayaguez,2001,37,"Carmona Sanchez, Alejandro",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Carmona, A.",Indios de Mayaguez,2002,37,"Carmona Sanchez, Alejandro",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Carmona, A.",Maratonistas de Coamo,2002,37,"Carmona Sanchez, Alejandro",name+season_in_career,single-source
@@ -149,11 +350,15 @@ player_season_stats_2001_2004.csv,"Colon, J.",Leones de Ponce,2003,1011,"Colon R
 player_season_stats_2001_2004.csv,"Cortes, D.",Capitanes de Arecibo,2001,448,"Cortes Ruiz, David",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Cortes, D.",Capitanes de Arecibo,2002,448,"Cortes Ruiz, David",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Cruz, A.",Vaqueros de Bayamon,2001,74,"Cruz Torres, Alvin",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Cruz, R.",Capitanes de Arecibo,2001,1895,"Cruz Lopez, Rafael",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Cruz, R.",Capitanes de Arecibo,2002,1895,"Cruz Lopez, Rafael",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Dalmau, R.",Piratas de Quebradillas,2001,1992,"Dalmau Santana, Ricardo",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Escalera, C.",Maratonistas de Coamo,2001,284,"Escalera Gonzalez, Carlos",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Escalera, C.",Maratonistas de Coamo,2002,284,"Escalera Gonzalez, Carlos",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Escalera, C.",Maratonistas de Coamo,2003,284,"Escalera Gonzalez, Carlos",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Falcon, A.",Cangrejeros de Santurce,2001,50,"Falcon Melendez, Alexander",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Falcon, A.",Cangrejeros de Santurce,2003,50,"Falcon Melendez, Alexander",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Fernandez, E.",Gallitos de Isabela,2001,2034,"Fernandez, Estadísticas Jugador",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Figueroa, A.",Capitanes de Arecibo,2001,135,"Figueroa Sepulveda, Angel",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Figueroa, A.",Gallitos de Isabela,2001,135,"Figueroa Sepulveda, Angel",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Figueroa, A.",Gigantes de Carolina,2002,135,"Figueroa Sepulveda, Angel",name+season_in_career,single-source
@@ -166,13 +371,28 @@ player_season_stats_2001_2004.csv,"Jimenez, G.",Capitanes de Arecibo,2002,812,"J
 player_season_stats_2001_2004.csv,"Latimer, A.",Vaqueros de Bayamon,2001,193,"Latimer Rivera, Antonio",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Latimer, A.",Maratonistas de Coamo,2001,193,"Latimer Rivera, Antonio",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Latimer, A.",Maratonistas de Coamo,2002,193,"Latimer Rivera, Antonio",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Lazor, R.",Indios de Mayaguez,2002,2037,"Lazor, Robert",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Lazor, R.",Leones de Ponce,2003,2037,"Lazor, Robert",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Leon, E.",Vaqueros de Bayamon,2001,508,"Leon Cruz, Estadísticas Jugador",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Lockhart, I.",Leones de Ponce,2001,914,"Lockhart Collie, Ian",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Lopez, R.",Criollos de Caguas,2001,1847,"Lopez, Estadísticas Jugador",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Malpica, K.",Brujos de Guayama,2001,1385,"Malpica Torres, Karim",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Melendez, R.",Criollos de Caguas,2002,1995,"Melendez Huertas, Ricardo",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Mincy, J.",Vaqueros de Bayamon,2001,1032,"Mincy Clark, Jerome Alfred",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Morales, E.",Piratas de Quebradillas,2001,580,"Morales Hoyos, Estadísticas Jugador",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Morales, E.",Titanes de Morovis,2003,580,"Morales Hoyos, Estadísticas Jugador",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Narvaez, M.",Titanes de Morovis,2003,1562,"Narvaez Rivera, Manuel Antonio",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Nieves, R.",Titanes de Morovis,2001,2067,"Nieves Perez, Roberto",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Nieves, R.",Titanes de Morovis,2002,2067,"Nieves Perez, Roberto",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Nieves, R.",Titanes de Morovis,2003,2067,"Nieves Perez, Roberto",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Orta, R.",Leones de Ponce,2001,1946,"Orta, Raul",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Orta, R.",Leones de Ponce,2002,1946,"Orta, Raul",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Padilla, E.",Cangrejeros de Santurce,2003,509,"Padilla Rivera, Estadísticas Jugador",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Pagan, W.",Titanes de Morovis,2001,2290,"Pagan Roque, Wilfredo",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Pagan, W.",Titanes de Morovis,2002,2290,"Pagan Roque, Wilfredo",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Pagan, W.",Titanes de Morovis,2003,2290,"Pagan Roque, Wilfredo",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Ramos, P.",Criollos de Caguas,2001,1836,"Ramos Fuentes, Peter John",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Ramos, P.",Criollos de Caguas,2002,1836,"Ramos Fuentes, Peter John",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Reyes, A.",Titanes de Morovis,2002,151,"Reyes Canales, Angelo",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Rivera, C.",Brujos de Guayama,2001,338,"Rivera Ruiz, Carlos Ruben",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Rivera, C.",Titanes de Morovis,2002,338,"Rivera Ruiz, Carlos Ruben",name+season_in_career,single-source
@@ -189,14 +409,16 @@ player_season_stats_2001_2004.csv,"Rodriguez, A.",Gigantes de Carolina,2001,87,"
 player_season_stats_2001_2004.csv,"Rodriguez, A.",Gigantes de Carolina,2002,87,"Rodriguez Fernandez, Andres",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Rodriguez, A.",Criollos de Caguas,2002,87,"Rodriguez Fernandez, Andres",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Rosa, A.",Leones de Ponce,2002,148,"Rosa Clemente, Angel R.",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Rosas, S.",Maratonistas de Coamo,2003,2146,"Rosas Lebron, Samuel",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Sanchez, R.",Criollos de Caguas,2001,2033,"Sanchez Rosa, Ricky",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Sanchez, R.",Criollos de Caguas,2002,2033,"Sanchez Rosa, Ricky",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Santiago, D.",Vaqueros de Bayamon,2001,427,"Santiago Lynn, Daniel",name+season_in_career,single-source
-player_season_stats_2001_2004.csv,"Soto, E.",Indios de Mayaguez,2001,651,"Soto Diaz, Eugenio Felipe",name+season_in_career,single-source
-player_season_stats_2001_2004.csv,"Soto, E.",Leones de Ponce,2001,651,"Soto Diaz, Eugenio Felipe",name+season_in_career,single-source
-player_season_stats_2001_2004.csv,"Soto, E.",Titanes de Morovis,2001,651,"Soto Diaz, Eugenio Felipe",name+season_in_career,single-source
-player_season_stats_2001_2004.csv,"Soto, E.",Titanes de Morovis,2002,651,"Soto Diaz, Eugenio Felipe",name+season_in_career,single-source
-player_season_stats_2001_2004.csv,"Soto, E.",Leones de Ponce,2002,651,"Soto Diaz, Eugenio Felipe",name+season_in_career,single-source
-player_season_stats_2001_2004.csv,"Soto, E.",Leones de Ponce,2003,651,"Soto Diaz, Eugenio Felipe",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Valenzuela, H.",Gigantes de Carolina,2001,869,"Valenzuela Hernandez, Hector",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Vega, C.",Titanes de Morovis,2003,392,"Vega Johnson, Christopher",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Vega, O.",Indios de Mayaguez,2001,1759,"Vega Smith, Orlando",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Vega, O.",Leones de Ponce,2002,1759,"Vega Smith, Orlando",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Vega, O.",Leones de Ponce,2003,1759,"Vega Smith, Orlando",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Verdejo, J.",Indios de Mayaguez,2001,1041,"Verdejo, Jesus",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Villafane, L.",Cangrejeros de Santurce,2001,1502,"Villafane Silva, Luis",name+season_in_career,single-source
+player_season_stats_2001_2004.csv,"Villegas, S.",Cangrejeros de Santurce,2001,2145,"Villegas Aviles, Samuel",name+season_in_career,single-source
 player_season_stats_2001_2004.csv,"Zayas, H.",Indios de Mayaguez,2001,870,"Zayas Irizarry, Hector",name+season_in_career,single-source

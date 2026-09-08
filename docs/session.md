@@ -17,11 +17,10 @@ Session 002:
   ingested the ≤500 pre-2007 tranches. 1948–2004 scoring champions + awards,
   2000–2003 player season stats/leaders now in `data/clean/`. Box-score / PBP
   scripts found + gated.
-- PHASE_3D_IDENTITY_SPINE (committed 0d0d12d, partial) — built the D1 canonical
-  player table (**3,303 players**, league ids, accent-stripped names, ~24k
-  aliases). Observation→id matching with a season-corroboration bar;
-  uncorroborated → review queue, never the id map. `jugador.asp` profile
-  enrichment (~1,079 pages) still fetching in the background — re-parse pending.
+- PHASE_3D_IDENTITY_SPINE (committed 0d0d12d + refresh) — D1 canonical player
+  table: **3,303 players** (1,076 with a full profile), league ids,
+  accent-stripped names, ~25k aliases, **423 season-corroborated id-map links**,
+  828-row review queue. Tranche B fetch (1,078 profiles) finished.
 - PHASE_4_RECONCILE (uncommitted) — reconciled champions + scoring champions
   against the Wikipedia seed. **87/98 champion seasons independently agree**
   (seed↔bsnpr) → `verified`. Franchise master + D2 lineage events + city/club
@@ -253,36 +252,32 @@ Fetchable without a new gate (≤500, not done this turn): `playbyplay.asp` 460,
 
 **Phase exit:** status delivered, paused (P6). Nothing committed (P4).
 
-### PHASE_3D_IDENTITY_SPINE — CORE COMPLETE; tranche B enrichment continues (2026-09-08)
+### PHASE_3D_IDENTITY_SPINE — COMPLETE (2026-09-08; tranche B finished)
 
 Implements D1. Full detail: `docs/specs/identity_spine_spec.md`.
 
 - T3D.1 — DONE. `src/fetch_players.py` (`make fetch-players`). Tranche A =
-  `enciclopedia.asp` (77/78 captures). Tranche B = `/jugadores/jugador.asp?id=N`,
-  one latest capture per id (**1,079 distinct ids**) — running in background,
-  Wayback-throttled (~2 h); idempotent, resumable, `parse_players` runs on
-  whatever subset is present.
-- T3D.2 — DONE. `src/parse_players.py` (`make parse-players`). Outputs:
-  - `players_canonical.csv` — **3,303 players**, keyed by the league's own
-    `bsnpr_id`; `canonical_name`, accent-stripped `normalized_name`,
-    `birth_date` (`1/1/1900` sentinel → null), `birth_year` (1,987 have one),
-    + position/nationality/career-span for the tranche-B subset.
-  - `player_aliases.csv` — ~24k rows, 9 alias types (canonical, normalized,
-    paternal_surname, given_first_only, initial "Apellido, N.", nickname, …).
+  `enciclopedia.asp` (77/78). Tranche B = `/jugadores/jugador.asp?id=N`, one
+  latest capture per id — **1,078/1,079 fetched** (1 transient fail), ~3 h under
+  Wayback throttle.
+- T3D.2 — DONE. `src/parse_players.py` (`make parse-players`). Outputs
+  (final, post-tranche-B):
+  - `players_canonical.csv` — **3,303 players**, league `bsnpr_id`;
+    `canonical_name`, accent-stripped `normalized_name`, `birth_date`
+    (`1/1/1900` → null), `birth_year` (1,988), + position / nationality /
+    career-span for **1,076** with a profile.
+  - `player_aliases.csv` — ~25k rows, 9 alias types.
   - `player_career_seasons.csv` — from `jugador.asp` season tables.
-  - `player_id_map.csv` — observation `player_raw` → `bsnpr_id`, **only
-    season-corroborated links** (`match_method=name+season_in_career`).
-  - `data/interim/player_review_queue.csv` — everything uncorroborated /
-    ambiguous / unmatched, with candidate ids + reason. **No fuzzy match ever
-    enters the id map (D1).**
-- T3D.3 — DONE. `verify_players()` (accent-free normalized forms, unique
-  integer ids, every id-map match names its corroboration, no obs both mapped
-  and queued); 12 new unit tests. `make verify` green.
-- T3D.4 — partial. id_map / review-queue counts improve on each `parse_players`
-  re-run as tranche B lands career spans. **Re-run `make parse-players` +
-  `make verify` when the tranche-B fetch completes.**
+  - `player_id_map.csv` — **423** observation→`bsnpr_id` links, all
+    season-corroborated (`match_method=name+season_in_career`).
+  - `data/interim/player_review_queue.csv` — **828** rows: 346 no canonical
+    name match (pre-2007 players absent from the encyclopedia), 361 season
+    outside the profile's career span, 106 multi-candidate uncorroborated, 15
+    genuine same-name ambiguity. **No fuzzy match ever enters the id map (D1).**
+- T3D.3 — DONE. `verify_players()`; 12 new unit tests. `make verify` green.
+- T3D.4 — DONE. Re-parsed + re-verified after tranche B completed.
 
-**Phase exit:** core spine delivered; enrichment fetch backgrounded. Paused (P6).
+**Phase exit:** identity spine complete. Paused (P6).
 
 ### PHASE_4_RECONCILE — IN PROGRESS (2026-09-08, owner-requested)
 
