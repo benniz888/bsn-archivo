@@ -1,0 +1,1316 @@
+capture_timestamp,capture_date,season,serie_context,is_regular,career_view,grupo,category,category_known,n_rows
+20070427015101,2007-04-27,2007,Serie Regular,True,False,BS26,anotaciones,True,10
+20070427015101,2007-04-27,2007,Serie Regular,True,False,BS26,rebotes,True,10
+20070427015101,2007-04-27,2007,Serie Regular,True,False,BS26,tiros_libres_anotados,True,10
+20070427015101,2007-04-27,2007,Serie Regular,True,False,BS26,tiros_libres_pct,True,10
+20070427015101,2007-04-27,2007,Serie Regular,True,False,BS26,canastos_3,True,1
+20070427015101,2007-04-27,2007,Serie Regular,True,False,BS26,canastos_3_pct,True,10
+20070427015101,2007-04-27,2007,Serie Regular,True,False,BS26,bloqueos,True,10
+20070427015101,2007-04-27,2007,Serie Regular,True,False,BS26,cortes_balon,True,10
+20070427015101,2007-04-27,2007,Serie Regular,True,False,BS26,turnovers,True,10
+20070427015101,2007-04-27,2007,Serie Regular,True,False,BS26,rebotes_ofensivos,True,10
+20070427015101,2007-04-27,2007,Serie Regular,True,False,BS26,asistencias,True,10
+20070513101259,2007-05-13,2007,Serie Regular,True,False,BS26,anotaciones,True,10
+20070513101259,2007-05-13,2007,Serie Regular,True,False,BS26,rebotes,True,10
+20070513101259,2007-05-13,2007,Serie Regular,True,False,BS26,tiros_libres_anotados,True,10
+20070513101259,2007-05-13,2007,Serie Regular,True,False,BS26,tiros_libres_pct,True,10
+20070513101259,2007-05-13,2007,Serie Regular,True,False,BS26,canastos_3,True,10
+20070513101259,2007-05-13,2007,Serie Regular,True,False,BS26,canastos_3_pct,True,10
+20070513101259,2007-05-13,2007,Serie Regular,True,False,BS26,bloqueos,True,10
+20070513101259,2007-05-13,2007,Serie Regular,True,False,BS26,cortes_balon,True,10
+20070513101259,2007-05-13,2007,Serie Regular,True,False,BS26,turnovers,True,10
+20070513101259,2007-05-13,2007,Serie Regular,True,False,BS26,rebotes_ofensivos,True,10
+20070513101259,2007-05-13,2007,Serie Regular,True,False,BS26,asistencias,True,10
+20070529091448,2007-05-29,2007,Serie Regular,True,False,,anotaciones,True,10
+20070529091448,2007-05-29,2007,Serie Regular,True,False,,rebotes,True,10
+20070529091448,2007-05-29,2007,Serie Regular,True,False,,tiros_libres_anotados,True,10
+20070529091448,2007-05-29,2007,Serie Regular,True,False,,tiros_libres_pct,True,10
+20070529091448,2007-05-29,2007,Serie Regular,True,False,,canastos_3,True,10
+20070529091448,2007-05-29,2007,Serie Regular,True,False,,canastos_3_pct,True,10
+20070529091448,2007-05-29,2007,Serie Regular,True,False,,bloqueos,True,10
+20070529091448,2007-05-29,2007,Serie Regular,True,False,,cortes_balon,True,10
+20070529091448,2007-05-29,2007,Serie Regular,True,False,,turnovers,True,10
+20070529091448,2007-05-29,2007,Serie Regular,True,False,,rebotes_ofensivos,True,10
+20070529091448,2007-05-29,2007,Serie Regular,True,False,,asistencias,True,10
+20070606124711,2007-06-06,2007,Serie Regular,True,False,BS26,anotaciones,True,10
+20070606124711,2007-06-06,2007,Serie Regular,True,False,BS26,rebotes,True,10
+20070606124711,2007-06-06,2007,Serie Regular,True,False,BS26,tiros_libres_anotados,True,10
+20070606124711,2007-06-06,2007,Serie Regular,True,False,BS26,tiros_libres_pct,True,10
+20070606124711,2007-06-06,2007,Serie Regular,True,False,BS26,canastos_3,True,10
+20070606124711,2007-06-06,2007,Serie Regular,True,False,BS26,canastos_3_pct,True,10
+20070606124711,2007-06-06,2007,Serie Regular,True,False,BS26,bloqueos,True,10
+20070606124711,2007-06-06,2007,Serie Regular,True,False,BS26,cortes_balon,True,10
+20070606124711,2007-06-06,2007,Serie Regular,True,False,BS26,turnovers,True,10
+20070606124711,2007-06-06,2007,Serie Regular,True,False,BS26,rebotes_ofensivos,True,10
+20070606124711,2007-06-06,2007,Serie Regular,True,False,BS26,asistencias,True,10
+20070629231459,2007-06-29,2007,Round Robin,False,False,,anotaciones,True,10
+20070629231459,2007-06-29,2007,Round Robin,False,False,,rebotes,True,10
+20070629231459,2007-06-29,2007,Round Robin,False,False,,tiros_libres_anotados,True,10
+20070629231459,2007-06-29,2007,Round Robin,False,False,,tiros_libres_pct,True,10
+20070629231459,2007-06-29,2007,Round Robin,False,False,,canastos_3,True,7
+20070629231459,2007-06-29,2007,Round Robin,False,False,,canastos_3_pct,True,10
+20070629231459,2007-06-29,2007,Round Robin,False,False,,bloqueos,True,10
+20070629231459,2007-06-29,2007,Round Robin,False,False,,cortes_balon,True,10
+20070629231459,2007-06-29,2007,Round Robin,False,False,,turnovers,True,10
+20070629231459,2007-06-29,2007,Round Robin,False,False,,rebotes_ofensivos,True,10
+20070629231459,2007-06-29,2007,Round Robin,False,False,,asistencias,True,10
+20070702163136,2007-07-02,2007,Round Robin,False,False,,anotaciones,True,10
+20070702163136,2007-07-02,2007,Round Robin,False,False,,rebotes,True,10
+20070702163136,2007-07-02,2007,Round Robin,False,False,,tiros_libres_anotados,True,10
+20070702163136,2007-07-02,2007,Round Robin,False,False,,tiros_libres_pct,True,10
+20070702163136,2007-07-02,2007,Round Robin,False,False,,canastos_3,True,9
+20070702163136,2007-07-02,2007,Round Robin,False,False,,canastos_3_pct,True,10
+20070702163136,2007-07-02,2007,Round Robin,False,False,,bloqueos,True,10
+20070702163136,2007-07-02,2007,Round Robin,False,False,,cortes_balon,True,10
+20070702163136,2007-07-02,2007,Round Robin,False,False,,turnovers,True,10
+20070702163136,2007-07-02,2007,Round Robin,False,False,,rebotes_ofensivos,True,10
+20070702163136,2007-07-02,2007,Round Robin,False,False,,asistencias,True,10
+20070825050406,2007-08-25,2007,Serie Final,False,False,,anotaciones,True,10
+20070825050406,2007-08-25,2007,Serie Final,False,False,,rebotes,True,10
+20070825050406,2007-08-25,2007,Serie Final,False,False,,tiros_libres_anotados,True,10
+20070825050406,2007-08-25,2007,Serie Final,False,False,,tiros_libres_pct,True,10
+20070825050406,2007-08-25,2007,Serie Final,False,False,,canastos_3,True,10
+20070825050406,2007-08-25,2007,Serie Final,False,False,,canastos_3_pct,True,10
+20070825050406,2007-08-25,2007,Serie Final,False,False,,bloqueos,True,10
+20070825050406,2007-08-25,2007,Serie Final,False,False,,cortes_balon,True,10
+20070825050406,2007-08-25,2007,Serie Final,False,False,,turnovers,True,10
+20070825050406,2007-08-25,2007,Serie Final,False,False,,rebotes_ofensivos,True,10
+20070825050406,2007-08-25,2007,Serie Final,False,False,,asistencias,True,10
+20070827204717,2007-08-27,2007,Serie Regular,True,False,BS26,anotaciones,True,10
+20070827204717,2007-08-27,2007,Serie Regular,True,False,BS26,rebotes,True,10
+20070827204717,2007-08-27,2007,Serie Regular,True,False,BS26,tiros_libres_anotados,True,10
+20070827204717,2007-08-27,2007,Serie Regular,True,False,BS26,tiros_libres_pct,True,10
+20070827204717,2007-08-27,2007,Serie Regular,True,False,BS26,canastos_3,True,10
+20070827204717,2007-08-27,2007,Serie Regular,True,False,BS26,canastos_3_pct,True,10
+20070827204717,2007-08-27,2007,Serie Regular,True,False,BS26,bloqueos,True,10
+20070827204717,2007-08-27,2007,Serie Regular,True,False,BS26,cortes_balon,True,10
+20070827204717,2007-08-27,2007,Serie Regular,True,False,BS26,turnovers,True,10
+20070827204717,2007-08-27,2007,Serie Regular,True,False,BS26,rebotes_ofensivos,True,10
+20070827204717,2007-08-27,2007,Serie Regular,True,False,BS26,asistencias,True,10
+20070828223421,2007-08-28,2007,Serie Final,False,False,,anotaciones,True,10
+20070828223421,2007-08-28,2007,Serie Final,False,False,,rebotes,True,10
+20070828223421,2007-08-28,2007,Serie Final,False,False,,tiros_libres_anotados,True,10
+20070828223421,2007-08-28,2007,Serie Final,False,False,,tiros_libres_pct,True,10
+20070828223421,2007-08-28,2007,Serie Final,False,False,,canastos_3,True,10
+20070828223421,2007-08-28,2007,Serie Final,False,False,,canastos_3_pct,True,10
+20070828223421,2007-08-28,2007,Serie Final,False,False,,bloqueos,True,10
+20070828223421,2007-08-28,2007,Serie Final,False,False,,cortes_balon,True,10
+20070828223421,2007-08-28,2007,Serie Final,False,False,,turnovers,True,10
+20070828223421,2007-08-28,2007,Serie Final,False,False,,rebotes_ofensivos,True,10
+20070828223421,2007-08-28,2007,Serie Final,False,False,,asistencias,True,10
+20070830034638,2007-08-30,2007,Serie Final,False,False,,anotaciones,True,10
+20070830034638,2007-08-30,2007,Serie Final,False,False,,rebotes,True,10
+20070830034638,2007-08-30,2007,Serie Final,False,False,,tiros_libres_anotados,True,10
+20070830034638,2007-08-30,2007,Serie Final,False,False,,tiros_libres_pct,True,10
+20070830034638,2007-08-30,2007,Serie Final,False,False,,canastos_3,True,10
+20070830034638,2007-08-30,2007,Serie Final,False,False,,canastos_3_pct,True,10
+20070830034638,2007-08-30,2007,Serie Final,False,False,,bloqueos,True,10
+20070830034638,2007-08-30,2007,Serie Final,False,False,,cortes_balon,True,10
+20070830034638,2007-08-30,2007,Serie Final,False,False,,turnovers,True,10
+20070830034638,2007-08-30,2007,Serie Final,False,False,,rebotes_ofensivos,True,10
+20070830034638,2007-08-30,2007,Serie Final,False,False,,asistencias,True,10
+20070923093248,2007-09-23,2007,Serie Regular,True,False,BS26,anotaciones,True,10
+20070923093248,2007-09-23,2007,Serie Regular,True,False,BS26,rebotes,True,10
+20070923093248,2007-09-23,2007,Serie Regular,True,False,BS26,tiros_libres_anotados,True,10
+20070923093248,2007-09-23,2007,Serie Regular,True,False,BS26,tiros_libres_pct,True,10
+20070923093248,2007-09-23,2007,Serie Regular,True,False,BS26,canastos_3,True,10
+20070923093248,2007-09-23,2007,Serie Regular,True,False,BS26,canastos_3_pct,True,10
+20070923093248,2007-09-23,2007,Serie Regular,True,False,BS26,bloqueos,True,10
+20070923093248,2007-09-23,2007,Serie Regular,True,False,BS26,cortes_balon,True,10
+20070923093248,2007-09-23,2007,Serie Regular,True,False,BS26,turnovers,True,10
+20070923093248,2007-09-23,2007,Serie Regular,True,False,BS26,rebotes_ofensivos,True,10
+20070923093248,2007-09-23,2007,Serie Regular,True,False,BS26,asistencias,True,10
+20070930015324,2007-09-30,2007,Serie Final,False,False,,anotaciones,True,10
+20070930015324,2007-09-30,2007,Serie Final,False,False,,rebotes,True,10
+20070930015324,2007-09-30,2007,Serie Final,False,False,,tiros_libres_anotados,True,10
+20070930015324,2007-09-30,2007,Serie Final,False,False,,tiros_libres_pct,True,10
+20070930015324,2007-09-30,2007,Serie Final,False,False,,canastos_3,True,10
+20070930015324,2007-09-30,2007,Serie Final,False,False,,canastos_3_pct,True,10
+20070930015324,2007-09-30,2007,Serie Final,False,False,,bloqueos,True,10
+20070930015324,2007-09-30,2007,Serie Final,False,False,,cortes_balon,True,10
+20070930015324,2007-09-30,2007,Serie Final,False,False,,turnovers,True,10
+20070930015324,2007-09-30,2007,Serie Final,False,False,,rebotes_ofensivos,True,10
+20070930015324,2007-09-30,2007,Serie Final,False,False,,asistencias,True,10
+20070930015643,2007-09-30,2007,Serie Regular,True,False,BS26,anotaciones,True,10
+20070930015643,2007-09-30,2007,Serie Regular,True,False,BS26,rebotes,True,10
+20070930015643,2007-09-30,2007,Serie Regular,True,False,BS26,tiros_libres_anotados,True,10
+20070930015643,2007-09-30,2007,Serie Regular,True,False,BS26,tiros_libres_pct,True,10
+20070930015643,2007-09-30,2007,Serie Regular,True,False,BS26,canastos_3,True,10
+20070930015643,2007-09-30,2007,Serie Regular,True,False,BS26,canastos_3_pct,True,10
+20070930015643,2007-09-30,2007,Serie Regular,True,False,BS26,bloqueos,True,10
+20070930015643,2007-09-30,2007,Serie Regular,True,False,BS26,cortes_balon,True,10
+20070930015643,2007-09-30,2007,Serie Regular,True,False,BS26,turnovers,True,10
+20070930015643,2007-09-30,2007,Serie Regular,True,False,BS26,rebotes_ofensivos,True,10
+20070930015643,2007-09-30,2007,Serie Regular,True,False,BS26,asistencias,True,10
+20071001122908,2007-10-01,2007,Serie Regular,True,False,BS26,anotaciones,True,10
+20071001122908,2007-10-01,2007,Serie Regular,True,False,BS26,rebotes,True,10
+20071001122908,2007-10-01,2007,Serie Regular,True,False,BS26,tiros_libres_anotados,True,10
+20071001122908,2007-10-01,2007,Serie Regular,True,False,BS26,tiros_libres_pct,True,10
+20071001122908,2007-10-01,2007,Serie Regular,True,False,BS26,canastos_3,True,10
+20071001122908,2007-10-01,2007,Serie Regular,True,False,BS26,canastos_3_pct,True,10
+20071001122908,2007-10-01,2007,Serie Regular,True,False,BS26,bloqueos,True,10
+20071001122908,2007-10-01,2007,Serie Regular,True,False,BS26,cortes_balon,True,10
+20071001122908,2007-10-01,2007,Serie Regular,True,False,BS26,turnovers,True,10
+20071001122908,2007-10-01,2007,Serie Regular,True,False,BS26,rebotes_ofensivos,True,10
+20071001122908,2007-10-01,2007,Serie Regular,True,False,BS26,asistencias,True,10
+20071011012332,2007-10-11,2007,Serie Final,False,False,,anotaciones,True,10
+20071011012332,2007-10-11,2007,Serie Final,False,False,,rebotes,True,10
+20071011012332,2007-10-11,2007,Serie Final,False,False,,tiros_libres_anotados,True,10
+20071011012332,2007-10-11,2007,Serie Final,False,False,,tiros_libres_pct,True,10
+20071011012332,2007-10-11,2007,Serie Final,False,False,,canastos_3,True,10
+20071011012332,2007-10-11,2007,Serie Final,False,False,,canastos_3_pct,True,10
+20071011012332,2007-10-11,2007,Serie Final,False,False,,bloqueos,True,10
+20071011012332,2007-10-11,2007,Serie Final,False,False,,cortes_balon,True,10
+20071011012332,2007-10-11,2007,Serie Final,False,False,,turnovers,True,10
+20071011012332,2007-10-11,2007,Serie Final,False,False,,rebotes_ofensivos,True,10
+20071011012332,2007-10-11,2007,Serie Final,False,False,,asistencias,True,10
+20071028060630,2007-10-28,2007,Serie Regular,True,False,BS26,anotaciones,True,10
+20071028060630,2007-10-28,2007,Serie Regular,True,False,BS26,rebotes,True,10
+20071028060630,2007-10-28,2007,Serie Regular,True,False,BS26,tiros_libres_anotados,True,10
+20071028060630,2007-10-28,2007,Serie Regular,True,False,BS26,tiros_libres_pct,True,10
+20071028060630,2007-10-28,2007,Serie Regular,True,False,BS26,canastos_3,True,10
+20071028060630,2007-10-28,2007,Serie Regular,True,False,BS26,canastos_3_pct,True,10
+20071028060630,2007-10-28,2007,Serie Regular,True,False,BS26,bloqueos,True,10
+20071028060630,2007-10-28,2007,Serie Regular,True,False,BS26,cortes_balon,True,10
+20071028060630,2007-10-28,2007,Serie Regular,True,False,BS26,turnovers,True,10
+20071028060630,2007-10-28,2007,Serie Regular,True,False,BS26,rebotes_ofensivos,True,10
+20071028060630,2007-10-28,2007,Serie Regular,True,False,BS26,asistencias,True,10
+20071028103217,2007-10-28,2007,Serie Final,False,False,,anotaciones,True,10
+20071028103217,2007-10-28,2007,Serie Final,False,False,,rebotes,True,10
+20071028103217,2007-10-28,2007,Serie Final,False,False,,tiros_libres_anotados,True,10
+20071028103217,2007-10-28,2007,Serie Final,False,False,,tiros_libres_pct,True,10
+20071028103217,2007-10-28,2007,Serie Final,False,False,,canastos_3,True,10
+20071028103217,2007-10-28,2007,Serie Final,False,False,,canastos_3_pct,True,10
+20071028103217,2007-10-28,2007,Serie Final,False,False,,bloqueos,True,10
+20071028103217,2007-10-28,2007,Serie Final,False,False,,cortes_balon,True,10
+20071028103217,2007-10-28,2007,Serie Final,False,False,,turnovers,True,10
+20071028103217,2007-10-28,2007,Serie Final,False,False,,rebotes_ofensivos,True,10
+20071028103217,2007-10-28,2007,Serie Final,False,False,,asistencias,True,10
+20071106095529,2007-11-06,2007,Serie Final,False,False,,anotaciones,True,10
+20071106095529,2007-11-06,2007,Serie Final,False,False,,rebotes,True,10
+20071106095529,2007-11-06,2007,Serie Final,False,False,,tiros_libres_anotados,True,10
+20071106095529,2007-11-06,2007,Serie Final,False,False,,tiros_libres_pct,True,10
+20071106095529,2007-11-06,2007,Serie Final,False,False,,canastos_3,True,10
+20071106095529,2007-11-06,2007,Serie Final,False,False,,canastos_3_pct,True,10
+20071106095529,2007-11-06,2007,Serie Final,False,False,,bloqueos,True,10
+20071106095529,2007-11-06,2007,Serie Final,False,False,,cortes_balon,True,10
+20071106095529,2007-11-06,2007,Serie Final,False,False,,turnovers,True,10
+20071106095529,2007-11-06,2007,Serie Final,False,False,,rebotes_ofensivos,True,10
+20071106095529,2007-11-06,2007,Serie Final,False,False,,asistencias,True,10
+20071128042211,2007-11-28,2007,Semi Final,False,False,,anotaciones,True,10
+20071128042211,2007-11-28,2007,Semi Final,False,False,,rebotes,True,10
+20071128042211,2007-11-28,2007,Semi Final,False,False,,tiros_libres_anotados,True,10
+20071128042211,2007-11-28,2007,Semi Final,False,False,,tiros_libres_pct,True,10
+20071128042211,2007-11-28,2007,Semi Final,False,False,,canastos_3,True,7
+20071128042211,2007-11-28,2007,Semi Final,False,False,,canastos_3_pct,True,10
+20071128042211,2007-11-28,2007,Semi Final,False,False,,bloqueos,True,10
+20071128042211,2007-11-28,2007,Semi Final,False,False,,cortes_balon,True,10
+20071128042211,2007-11-28,2007,Semi Final,False,False,,turnovers,True,10
+20071128042211,2007-11-28,2007,Semi Final,False,False,,rebotes_ofensivos,True,10
+20071128042211,2007-11-28,2007,Semi Final,False,False,,asistencias,True,10
+20071128042217,2007-11-28,2007,Serie Regular,True,False,BS26,anotaciones,True,10
+20071128042217,2007-11-28,2007,Serie Regular,True,False,BS26,rebotes,True,10
+20071128042217,2007-11-28,2007,Serie Regular,True,False,BS26,tiros_libres_anotados,True,10
+20071128042217,2007-11-28,2007,Serie Regular,True,False,BS26,tiros_libres_pct,True,10
+20071128042217,2007-11-28,2007,Serie Regular,True,False,BS26,canastos_3,True,10
+20071128042217,2007-11-28,2007,Serie Regular,True,False,BS26,canastos_3_pct,True,10
+20071128042217,2007-11-28,2007,Serie Regular,True,False,BS26,bloqueos,True,10
+20071128042217,2007-11-28,2007,Serie Regular,True,False,BS26,cortes_balon,True,10
+20071128042217,2007-11-28,2007,Serie Regular,True,False,BS26,turnovers,True,10
+20071128042217,2007-11-28,2007,Serie Regular,True,False,BS26,rebotes_ofensivos,True,10
+20071128042217,2007-11-28,2007,Serie Regular,True,False,BS26,asistencias,True,10
+20071207111238,2007-12-07,2007,Semi Final,False,False,,anotaciones,True,10
+20071207111238,2007-12-07,2007,Semi Final,False,False,,rebotes,True,10
+20071207111238,2007-12-07,2007,Semi Final,False,False,,tiros_libres_anotados,True,10
+20071207111238,2007-12-07,2007,Semi Final,False,False,,tiros_libres_pct,True,10
+20071207111238,2007-12-07,2007,Semi Final,False,False,,canastos_3,True,7
+20071207111238,2007-12-07,2007,Semi Final,False,False,,canastos_3_pct,True,10
+20071207111238,2007-12-07,2007,Semi Final,False,False,,bloqueos,True,10
+20071207111238,2007-12-07,2007,Semi Final,False,False,,cortes_balon,True,10
+20071207111238,2007-12-07,2007,Semi Final,False,False,,turnovers,True,10
+20071207111238,2007-12-07,2007,Semi Final,False,False,,rebotes_ofensivos,True,10
+20071207111238,2007-12-07,2007,Semi Final,False,False,,asistencias,True,10
+20071228205614,2007-12-28,2007,Serie Regular,True,False,BS26,anotaciones,True,10
+20071228205614,2007-12-28,2007,Serie Regular,True,False,BS26,rebotes,True,10
+20071228205614,2007-12-28,2007,Serie Regular,True,False,BS26,tiros_libres_anotados,True,10
+20071228205614,2007-12-28,2007,Serie Regular,True,False,BS26,tiros_libres_pct,True,10
+20071228205614,2007-12-28,2007,Serie Regular,True,False,BS26,canastos_3,True,10
+20071228205614,2007-12-28,2007,Serie Regular,True,False,BS26,canastos_3_pct,True,10
+20071228205614,2007-12-28,2007,Serie Regular,True,False,BS26,bloqueos,True,10
+20071228205614,2007-12-28,2007,Serie Regular,True,False,BS26,cortes_balon,True,10
+20071228205614,2007-12-28,2007,Serie Regular,True,False,BS26,turnovers,True,10
+20071228205614,2007-12-28,2007,Serie Regular,True,False,BS26,rebotes_ofensivos,True,10
+20071228205614,2007-12-28,2007,Serie Regular,True,False,BS26,asistencias,True,10
+20071228222442,2007-12-28,2007,Semi Final,False,False,,anotaciones,True,10
+20071228222442,2007-12-28,2007,Semi Final,False,False,,rebotes,True,10
+20071228222442,2007-12-28,2007,Semi Final,False,False,,tiros_libres_anotados,True,10
+20071228222442,2007-12-28,2007,Semi Final,False,False,,tiros_libres_pct,True,10
+20071228222442,2007-12-28,2007,Semi Final,False,False,,canastos_3,True,7
+20071228222442,2007-12-28,2007,Semi Final,False,False,,canastos_3_pct,True,10
+20071228222442,2007-12-28,2007,Semi Final,False,False,,bloqueos,True,10
+20071228222442,2007-12-28,2007,Semi Final,False,False,,cortes_balon,True,10
+20071228222442,2007-12-28,2007,Semi Final,False,False,,turnovers,True,10
+20071228222442,2007-12-28,2007,Semi Final,False,False,,rebotes_ofensivos,True,10
+20071228222442,2007-12-28,2007,Semi Final,False,False,,asistencias,True,10
+20080107042319,2008-01-07,2008,Semi Final,False,False,,anotaciones,True,0
+20080107042319,2008-01-07,2008,Semi Final,False,False,,rebotes,True,0
+20080107042319,2008-01-07,2008,Semi Final,False,False,,tiros_libres_anotados,True,0
+20080107042319,2008-01-07,2008,Semi Final,False,False,,tiros_libres_pct,True,0
+20080107042319,2008-01-07,2008,Semi Final,False,False,,canastos_3,True,0
+20080107042319,2008-01-07,2008,Semi Final,False,False,,canastos_3_pct,True,0
+20080107042319,2008-01-07,2008,Semi Final,False,False,,bloqueos,True,0
+20080107042319,2008-01-07,2008,Semi Final,False,False,,cortes_balon,True,0
+20080107042319,2008-01-07,2008,Semi Final,False,False,,turnovers,True,0
+20080107042319,2008-01-07,2008,Semi Final,False,False,,rebotes_ofensivos,True,0
+20080107042319,2008-01-07,2008,Semi Final,False,False,,asistencias,True,0
+20080204101431,2008-02-04,2007,Serie Regular,True,False,BS26,anotaciones,True,10
+20080204101431,2008-02-04,2007,Serie Regular,True,False,BS26,rebotes,True,10
+20080204101431,2008-02-04,2007,Serie Regular,True,False,BS26,tiros_libres_anotados,True,10
+20080204101431,2008-02-04,2007,Serie Regular,True,False,BS26,tiros_libres_pct,True,10
+20080204101431,2008-02-04,2007,Serie Regular,True,False,BS26,canastos_3,True,10
+20080204101431,2008-02-04,2007,Serie Regular,True,False,BS26,canastos_3_pct,True,10
+20080204101431,2008-02-04,2007,Serie Regular,True,False,BS26,bloqueos,True,10
+20080204101431,2008-02-04,2007,Serie Regular,True,False,BS26,cortes_balon,True,10
+20080204101431,2008-02-04,2007,Serie Regular,True,False,BS26,turnovers,True,10
+20080204101431,2008-02-04,2007,Serie Regular,True,False,BS26,rebotes_ofensivos,True,10
+20080204101431,2008-02-04,2007,Serie Regular,True,False,BS26,asistencias,True,10
+20080204112305,2008-02-04,2008,Semi Final,False,False,,anotaciones,True,0
+20080204112305,2008-02-04,2008,Semi Final,False,False,,rebotes,True,0
+20080204112305,2008-02-04,2008,Semi Final,False,False,,tiros_libres_anotados,True,0
+20080204112305,2008-02-04,2008,Semi Final,False,False,,tiros_libres_pct,True,0
+20080204112305,2008-02-04,2008,Semi Final,False,False,,canastos_3,True,0
+20080204112305,2008-02-04,2008,Semi Final,False,False,,canastos_3_pct,True,0
+20080204112305,2008-02-04,2008,Semi Final,False,False,,bloqueos,True,0
+20080204112305,2008-02-04,2008,Semi Final,False,False,,cortes_balon,True,0
+20080204112305,2008-02-04,2008,Semi Final,False,False,,turnovers,True,0
+20080204112305,2008-02-04,2008,Semi Final,False,False,,rebotes_ofensivos,True,0
+20080204112305,2008-02-04,2008,Semi Final,False,False,,asistencias,True,0
+20080207015224,2008-02-07,2008,Semi Final,False,False,,anotaciones,True,0
+20080207015224,2008-02-07,2008,Semi Final,False,False,,rebotes,True,0
+20080207015224,2008-02-07,2008,Semi Final,False,False,,tiros_libres_anotados,True,0
+20080207015224,2008-02-07,2008,Semi Final,False,False,,tiros_libres_pct,True,0
+20080207015224,2008-02-07,2008,Semi Final,False,False,,canastos_3,True,0
+20080207015224,2008-02-07,2008,Semi Final,False,False,,canastos_3_pct,True,0
+20080207015224,2008-02-07,2008,Semi Final,False,False,,bloqueos,True,0
+20080207015224,2008-02-07,2008,Semi Final,False,False,,cortes_balon,True,0
+20080207015224,2008-02-07,2008,Semi Final,False,False,,turnovers,True,0
+20080207015224,2008-02-07,2008,Semi Final,False,False,,rebotes_ofensivos,True,0
+20080207015224,2008-02-07,2008,Semi Final,False,False,,asistencias,True,0
+20080309140604,2008-03-09,2008,Serie Regular,True,False,,anotaciones,True,10
+20080309140604,2008-03-09,2008,Serie Regular,True,False,,rebotes,True,10
+20080309140604,2008-03-09,2008,Serie Regular,True,False,,tiros_libres_anotados,True,10
+20080309140604,2008-03-09,2008,Serie Regular,True,False,,tiros_libres_pct,True,10
+20080309140604,2008-03-09,2008,Serie Regular,True,False,,canastos_3,True,7
+20080309140604,2008-03-09,2008,Serie Regular,True,False,,canastos_3_pct,True,10
+20080309140604,2008-03-09,2008,Serie Regular,True,False,,bloqueos,True,10
+20080309140604,2008-03-09,2008,Serie Regular,True,False,,cortes_balon,True,10
+20080309140604,2008-03-09,2008,Serie Regular,True,False,,turnovers,True,10
+20080309140604,2008-03-09,2008,Serie Regular,True,False,,rebotes_ofensivos,True,10
+20080309140604,2008-03-09,2008,Serie Regular,True,False,,asistencias,True,10
+20080327020806,2008-03-27,2008,Serie Regular,True,False,,anotaciones,True,10
+20080327020806,2008-03-27,2008,Serie Regular,True,False,,rebotes,True,10
+20080327020806,2008-03-27,2008,Serie Regular,True,False,,tiros_libres_anotados,True,10
+20080327020806,2008-03-27,2008,Serie Regular,True,False,,tiros_libres_pct,True,10
+20080327020806,2008-03-27,2008,Serie Regular,True,False,,canastos_3,True,10
+20080327020806,2008-03-27,2008,Serie Regular,True,False,,canastos_3_pct,True,10
+20080327020806,2008-03-27,2008,Serie Regular,True,False,,bloqueos,True,10
+20080327020806,2008-03-27,2008,Serie Regular,True,False,,cortes_balon,True,10
+20080327020806,2008-03-27,2008,Serie Regular,True,False,,turnovers,True,10
+20080327020806,2008-03-27,2008,Serie Regular,True,False,,rebotes_ofensivos,True,10
+20080327020806,2008-03-27,2008,Serie Regular,True,False,,asistencias,True,10
+20080513111436,2008-05-13,2008,Serie Regular,True,False,BS26,anotaciones,True,10
+20080513111436,2008-05-13,2008,Serie Regular,True,False,BS26,rebotes,True,10
+20080513111436,2008-05-13,2008,Serie Regular,True,False,BS26,tiros_libres_anotados,True,10
+20080513111436,2008-05-13,2008,Serie Regular,True,False,BS26,tiros_libres_pct,True,10
+20080513111436,2008-05-13,2008,Serie Regular,True,False,BS26,canastos_3,True,10
+20080513111436,2008-05-13,2008,Serie Regular,True,False,BS26,canastos_3_pct,True,10
+20080513111436,2008-05-13,2008,Serie Regular,True,False,BS26,bloqueos,True,10
+20080513111436,2008-05-13,2008,Serie Regular,True,False,BS26,cortes_balon,True,10
+20080513111436,2008-05-13,2008,Serie Regular,True,False,BS26,turnovers,True,10
+20080513111436,2008-05-13,2008,Serie Regular,True,False,BS26,rebotes_ofensivos,True,10
+20080513111436,2008-05-13,2008,Serie Regular,True,False,BS26,asistencias,True,10
+20090314181751,2009-03-14,2009,Serie Regular,True,False,,anotaciones,True,0
+20090314181751,2009-03-14,2009,Serie Regular,True,False,,rebotes,True,0
+20090314181751,2009-03-14,2009,Serie Regular,True,False,,tiros_libres_anotados,True,0
+20090314181751,2009-03-14,2009,Serie Regular,True,False,,tiros_libres_pct,True,0
+20090314181751,2009-03-14,2009,Serie Regular,True,False,,canastos_3,True,0
+20090314181751,2009-03-14,2009,Serie Regular,True,False,,canastos_3_pct,True,0
+20090314181751,2009-03-14,2009,Serie Regular,True,False,,bloqueos,True,0
+20090314181751,2009-03-14,2009,Serie Regular,True,False,,cortes_balon,True,0
+20090314181751,2009-03-14,2009,Serie Regular,True,False,,turnovers,True,0
+20090314181751,2009-03-14,2009,Serie Regular,True,False,,rebotes_ofensivos,True,0
+20090314181751,2009-03-14,2009,Serie Regular,True,False,,asistencias,True,0
+20090512020833,2009-05-12,2009,Serie Regular,True,False,,anotaciones,True,10
+20090512020833,2009-05-12,2009,Serie Regular,True,False,,rebotes,True,10
+20090512020833,2009-05-12,2009,Serie Regular,True,False,,tiros_libres_anotados,True,10
+20090512020833,2009-05-12,2009,Serie Regular,True,False,,tiros_libres_pct,True,8
+20090512020833,2009-05-12,2009,Serie Regular,True,False,,canastos_3,True,10
+20090512020833,2009-05-12,2009,Serie Regular,True,False,,canastos_3_pct,True,10
+20090512020833,2009-05-12,2009,Serie Regular,True,False,,bloqueos,True,10
+20090512020833,2009-05-12,2009,Serie Regular,True,False,,cortes_balon,True,10
+20090512020833,2009-05-12,2009,Serie Regular,True,False,,turnovers,True,10
+20090512020833,2009-05-12,2009,Serie Regular,True,False,,rebotes_ofensivos,True,10
+20090512020833,2009-05-12,2009,Serie Regular,True,False,,asistencias,True,10
+20090531031217,2009-05-31,2009,Serie Regular,True,False,,anotaciones,True,10
+20090531031217,2009-05-31,2009,Serie Regular,True,False,,rebotes,True,10
+20090531031217,2009-05-31,2009,Serie Regular,True,False,,tiros_libres_anotados,True,10
+20090531031217,2009-05-31,2009,Serie Regular,True,False,,tiros_libres_pct,True,10
+20090531031217,2009-05-31,2009,Serie Regular,True,False,,canastos_3,True,10
+20090531031217,2009-05-31,2009,Serie Regular,True,False,,canastos_3_pct,True,10
+20090531031217,2009-05-31,2009,Serie Regular,True,False,,bloqueos,True,10
+20090531031217,2009-05-31,2009,Serie Regular,True,False,,cortes_balon,True,10
+20090531031217,2009-05-31,2009,Serie Regular,True,False,,turnovers,True,10
+20090531031217,2009-05-31,2009,Serie Regular,True,False,,rebotes_ofensivos,True,10
+20090531031217,2009-05-31,2009,Serie Regular,True,False,,asistencias,True,10
+20090616224137,2009-06-16,2009,Serie Regular,True,False,,anotaciones,True,10
+20090616224137,2009-06-16,2009,Serie Regular,True,False,,rebotes,True,10
+20090616224137,2009-06-16,2009,Serie Regular,True,False,,tiros_libres_anotados,True,10
+20090616224137,2009-06-16,2009,Serie Regular,True,False,,tiros_libres_pct,True,10
+20090616224137,2009-06-16,2009,Serie Regular,True,False,,canastos_3,True,10
+20090616224137,2009-06-16,2009,Serie Regular,True,False,,canastos_3_pct,True,10
+20090616224137,2009-06-16,2009,Serie Regular,True,False,,bloqueos,True,10
+20090616224137,2009-06-16,2009,Serie Regular,True,False,,cortes_balon,True,10
+20090616224137,2009-06-16,2009,Serie Regular,True,False,,turnovers,True,10
+20090616224137,2009-06-16,2009,Serie Regular,True,False,,rebotes_ofensivos,True,10
+20090616224137,2009-06-16,2009,Serie Regular,True,False,,asistencias,True,10
+20090703131301,2009-07-03,2009,Cuartos de Final,False,False,,anotaciones,True,10
+20090703131301,2009-07-03,2009,Cuartos de Final,False,False,,rebotes,True,10
+20090703131301,2009-07-03,2009,Cuartos de Final,False,False,,tiros_libres_anotados,True,10
+20090703131301,2009-07-03,2009,Cuartos de Final,False,False,,tiros_libres_pct,True,10
+20090703131301,2009-07-03,2009,Cuartos de Final,False,False,,canastos_3,True,10
+20090703131301,2009-07-03,2009,Cuartos de Final,False,False,,canastos_3_pct,True,10
+20090703131301,2009-07-03,2009,Cuartos de Final,False,False,,bloqueos,True,10
+20090703131301,2009-07-03,2009,Cuartos de Final,False,False,,cortes_balon,True,10
+20090703131301,2009-07-03,2009,Cuartos de Final,False,False,,turnovers,True,10
+20090703131301,2009-07-03,2009,Cuartos de Final,False,False,,rebotes_ofensivos,True,10
+20090703131301,2009-07-03,2009,Cuartos de Final,False,False,,asistencias,True,10
+20090717081958,2009-07-17,2009,Semi Final,False,False,,anotaciones,True,10
+20090717081958,2009-07-17,2009,Semi Final,False,False,,rebotes,True,10
+20090717081958,2009-07-17,2009,Semi Final,False,False,,tiros_libres_anotados,True,10
+20090717081958,2009-07-17,2009,Semi Final,False,False,,tiros_libres_pct,True,5
+20090717081958,2009-07-17,2009,Semi Final,False,False,,canastos_3,True,9
+20090717081958,2009-07-17,2009,Semi Final,False,False,,canastos_3_pct,True,9
+20090717081958,2009-07-17,2009,Semi Final,False,False,,bloqueos,True,10
+20090717081958,2009-07-17,2009,Semi Final,False,False,,cortes_balon,True,10
+20090717081958,2009-07-17,2009,Semi Final,False,False,,turnovers,True,10
+20090717081958,2009-07-17,2009,Semi Final,False,False,,rebotes_ofensivos,True,10
+20090717081958,2009-07-17,2009,Semi Final,False,False,,asistencias,True,10
+20090802205628,2009-08-02,2009,Serie Final,False,False,,anotaciones,True,10
+20090802205628,2009-08-02,2009,Serie Final,False,False,,rebotes,True,10
+20090802205628,2009-08-02,2009,Serie Final,False,False,,tiros_libres_anotados,True,10
+20090802205628,2009-08-02,2009,Serie Final,False,False,,tiros_libres_pct,True,3
+20090802205628,2009-08-02,2009,Serie Final,False,False,,canastos_3,True,10
+20090802205628,2009-08-02,2009,Serie Final,False,False,,canastos_3_pct,True,10
+20090802205628,2009-08-02,2009,Serie Final,False,False,,bloqueos,True,10
+20090802205628,2009-08-02,2009,Serie Final,False,False,,cortes_balon,True,10
+20090802205628,2009-08-02,2009,Serie Final,False,False,,turnovers,True,10
+20090802205628,2009-08-02,2009,Serie Final,False,False,,rebotes_ofensivos,True,10
+20090802205628,2009-08-02,2009,Serie Final,False,False,,asistencias,True,10
+20090903152537,2009-09-03,2009,Serie Final,False,False,,anotaciones,True,10
+20090903152537,2009-09-03,2009,Serie Final,False,False,,rebotes,True,10
+20090903152537,2009-09-03,2009,Serie Final,False,False,,tiros_libres_anotados,True,10
+20090903152537,2009-09-03,2009,Serie Final,False,False,,tiros_libres_pct,True,8
+20090903152537,2009-09-03,2009,Serie Final,False,False,,canastos_3,True,10
+20090903152537,2009-09-03,2009,Serie Final,False,False,,canastos_3_pct,True,10
+20090903152537,2009-09-03,2009,Serie Final,False,False,,bloqueos,True,10
+20090903152537,2009-09-03,2009,Serie Final,False,False,,cortes_balon,True,10
+20090903152537,2009-09-03,2009,Serie Final,False,False,,turnovers,True,10
+20090903152537,2009-09-03,2009,Serie Final,False,False,,rebotes_ofensivos,True,10
+20090903152537,2009-09-03,2009,Serie Final,False,False,,asistencias,True,10
+20090918235752,2009-09-18,2009,Serie Final,False,False,,anotaciones,True,10
+20090918235752,2009-09-18,2009,Serie Final,False,False,,rebotes,True,10
+20090918235752,2009-09-18,2009,Serie Final,False,False,,tiros_libres_anotados,True,10
+20090918235752,2009-09-18,2009,Serie Final,False,False,,tiros_libres_pct,True,8
+20090918235752,2009-09-18,2009,Serie Final,False,False,,canastos_3,True,10
+20090918235752,2009-09-18,2009,Serie Final,False,False,,canastos_3_pct,True,10
+20090918235752,2009-09-18,2009,Serie Final,False,False,,bloqueos,True,10
+20090918235752,2009-09-18,2009,Serie Final,False,False,,cortes_balon,True,10
+20090918235752,2009-09-18,2009,Serie Final,False,False,,turnovers,True,10
+20090918235752,2009-09-18,2009,Serie Final,False,False,,rebotes_ofensivos,True,10
+20090918235752,2009-09-18,2009,Serie Final,False,False,,asistencias,True,10
+20091005154443,2009-10-05,2009,Serie Final,False,False,,anotaciones,True,10
+20091005154443,2009-10-05,2009,Serie Final,False,False,,rebotes,True,10
+20091005154443,2009-10-05,2009,Serie Final,False,False,,tiros_libres_anotados,True,10
+20091005154443,2009-10-05,2009,Serie Final,False,False,,tiros_libres_pct,True,8
+20091005154443,2009-10-05,2009,Serie Final,False,False,,canastos_3,True,10
+20091005154443,2009-10-05,2009,Serie Final,False,False,,canastos_3_pct,True,10
+20091005154443,2009-10-05,2009,Serie Final,False,False,,bloqueos,True,10
+20091005154443,2009-10-05,2009,Serie Final,False,False,,cortes_balon,True,10
+20091005154443,2009-10-05,2009,Serie Final,False,False,,turnovers,True,10
+20091005154443,2009-10-05,2009,Serie Final,False,False,,rebotes_ofensivos,True,10
+20091005154443,2009-10-05,2009,Serie Final,False,False,,asistencias,True,10
+20091130153104,2009-11-30,2009,Serie Final,False,False,,anotaciones,True,10
+20091130153104,2009-11-30,2009,Serie Final,False,False,,rebotes,True,10
+20091130153104,2009-11-30,2009,Serie Final,False,False,,tiros_libres_anotados,True,10
+20091130153104,2009-11-30,2009,Serie Final,False,False,,tiros_libres_pct,True,8
+20091130153104,2009-11-30,2009,Serie Final,False,False,,canastos_3,True,10
+20091130153104,2009-11-30,2009,Serie Final,False,False,,canastos_3_pct,True,10
+20091130153104,2009-11-30,2009,Serie Final,False,False,,bloqueos,True,10
+20091130153104,2009-11-30,2009,Serie Final,False,False,,cortes_balon,True,10
+20091130153104,2009-11-30,2009,Serie Final,False,False,,turnovers,True,10
+20091130153104,2009-11-30,2009,Serie Final,False,False,,rebotes_ofensivos,True,10
+20091130153104,2009-11-30,2009,Serie Final,False,False,,asistencias,True,10
+20091201203444,2009-12-01,2009,Serie Final,False,False,,anotaciones,True,10
+20091201203444,2009-12-01,2009,Serie Final,False,False,,rebotes,True,10
+20091201203444,2009-12-01,2009,Serie Final,False,False,,tiros_libres_anotados,True,10
+20091201203444,2009-12-01,2009,Serie Final,False,False,,tiros_libres_pct,True,8
+20091201203444,2009-12-01,2009,Serie Final,False,False,,canastos_3,True,10
+20091201203444,2009-12-01,2009,Serie Final,False,False,,canastos_3_pct,True,10
+20091201203444,2009-12-01,2009,Serie Final,False,False,,bloqueos,True,10
+20091201203444,2009-12-01,2009,Serie Final,False,False,,cortes_balon,True,10
+20091201203444,2009-12-01,2009,Serie Final,False,False,,turnovers,True,10
+20091201203444,2009-12-01,2009,Serie Final,False,False,,rebotes_ofensivos,True,10
+20091201203444,2009-12-01,2009,Serie Final,False,False,,asistencias,True,10
+20100102022506,2010-01-02,2010,Serie Final,False,False,,anotaciones,True,0
+20100102022506,2010-01-02,2010,Serie Final,False,False,,rebotes,True,0
+20100102022506,2010-01-02,2010,Serie Final,False,False,,tiros_libres_anotados,True,0
+20100102022506,2010-01-02,2010,Serie Final,False,False,,tiros_libres_pct,True,0
+20100102022506,2010-01-02,2010,Serie Final,False,False,,canastos_3,True,0
+20100102022506,2010-01-02,2010,Serie Final,False,False,,canastos_3_pct,True,0
+20100102022506,2010-01-02,2010,Serie Final,False,False,,bloqueos,True,0
+20100102022506,2010-01-02,2010,Serie Final,False,False,,cortes_balon,True,0
+20100102022506,2010-01-02,2010,Serie Final,False,False,,turnovers,True,0
+20100102022506,2010-01-02,2010,Serie Final,False,False,,rebotes_ofensivos,True,0
+20100102022506,2010-01-02,2010,Serie Final,False,False,,asistencias,True,0
+20100203142957,2010-02-03,2010,Serie Final,False,False,,anotaciones,True,0
+20100203142957,2010-02-03,2010,Serie Final,False,False,,rebotes,True,0
+20100203142957,2010-02-03,2010,Serie Final,False,False,,tiros_libres_anotados,True,0
+20100203142957,2010-02-03,2010,Serie Final,False,False,,tiros_libres_pct,True,0
+20100203142957,2010-02-03,2010,Serie Final,False,False,,canastos_3,True,0
+20100203142957,2010-02-03,2010,Serie Final,False,False,,canastos_3_pct,True,0
+20100203142957,2010-02-03,2010,Serie Final,False,False,,bloqueos,True,0
+20100203142957,2010-02-03,2010,Serie Final,False,False,,cortes_balon,True,0
+20100203142957,2010-02-03,2010,Serie Final,False,False,,turnovers,True,0
+20100203142957,2010-02-03,2010,Serie Final,False,False,,rebotes_ofensivos,True,0
+20100203142957,2010-02-03,2010,Serie Final,False,False,,asistencias,True,0
+20100205011955,2010-02-05,2010,Serie Final,False,False,,anotaciones,True,0
+20100205011955,2010-02-05,2010,Serie Final,False,False,,rebotes,True,0
+20100205011955,2010-02-05,2010,Serie Final,False,False,,tiros_libres_anotados,True,0
+20100205011955,2010-02-05,2010,Serie Final,False,False,,tiros_libres_pct,True,0
+20100205011955,2010-02-05,2010,Serie Final,False,False,,canastos_3,True,0
+20100205011955,2010-02-05,2010,Serie Final,False,False,,canastos_3_pct,True,0
+20100205011955,2010-02-05,2010,Serie Final,False,False,,bloqueos,True,0
+20100205011955,2010-02-05,2010,Serie Final,False,False,,cortes_balon,True,0
+20100205011955,2010-02-05,2010,Serie Final,False,False,,turnovers,True,0
+20100205011955,2010-02-05,2010,Serie Final,False,False,,rebotes_ofensivos,True,0
+20100205011955,2010-02-05,2010,Serie Final,False,False,,asistencias,True,0
+20100309073911,2010-03-09,2010,Serie Regular,True,False,,anotaciones,True,10
+20100309073911,2010-03-09,2010,Serie Regular,True,False,,rebotes,True,10
+20100309073911,2010-03-09,2010,Serie Regular,True,False,,tiros_libres_anotados,True,10
+20100309073911,2010-03-09,2010,Serie Regular,True,False,,tiros_libres_pct,True,0
+20100309073911,2010-03-09,2010,Serie Regular,True,False,,canastos_3,True,0
+20100309073911,2010-03-09,2010,Serie Regular,True,False,,canastos_3_pct,True,0
+20100309073911,2010-03-09,2010,Serie Regular,True,False,,bloqueos,True,10
+20100309073911,2010-03-09,2010,Serie Regular,True,False,,cortes_balon,True,10
+20100309073911,2010-03-09,2010,Serie Regular,True,False,,turnovers,True,10
+20100309073911,2010-03-09,2010,Serie Regular,True,False,,rebotes_ofensivos,True,10
+20100309073911,2010-03-09,2010,Serie Regular,True,False,,asistencias,True,10
+20110903022923,2011-09-03,2011,Serie Final,False,False,,anotaciones,True,10
+20110903022923,2011-09-03,2011,Serie Final,False,False,,rebotes,True,10
+20110903022923,2011-09-03,2011,Serie Final,False,False,,tiros_libres_anotados,True,10
+20110903022923,2011-09-03,2011,Serie Final,False,False,,tiros_libres_pct,True,6
+20110903022923,2011-09-03,2011,Serie Final,False,False,,canastos_3,True,9
+20110903022923,2011-09-03,2011,Serie Final,False,False,,canastos_3_pct,True,9
+20110903022923,2011-09-03,2011,Serie Final,False,False,,bloqueos,True,8
+20110903022923,2011-09-03,2011,Serie Final,False,False,,cortes_balon,True,10
+20110903022923,2011-09-03,2011,Serie Final,False,False,,turnovers,True,10
+20110903022923,2011-09-03,2011,Serie Final,False,False,,rebotes_ofensivos,True,10
+20110903022923,2011-09-03,2011,Serie Final,False,False,,asistencias,True,10
+20111103145026,2011-11-03,2011,Serie Final,False,False,,anotaciones,True,10
+20111103145026,2011-11-03,2011,Serie Final,False,False,,rebotes,True,10
+20111103145026,2011-11-03,2011,Serie Final,False,False,,tiros_libres_anotados,True,10
+20111103145026,2011-11-03,2011,Serie Final,False,False,,tiros_libres_pct,True,6
+20111103145026,2011-11-03,2011,Serie Final,False,False,,canastos_3,True,9
+20111103145026,2011-11-03,2011,Serie Final,False,False,,canastos_3_pct,True,9
+20111103145026,2011-11-03,2011,Serie Final,False,False,,bloqueos,True,8
+20111103145026,2011-11-03,2011,Serie Final,False,False,,cortes_balon,True,10
+20111103145026,2011-11-03,2011,Serie Final,False,False,,turnovers,True,10
+20111103145026,2011-11-03,2011,Serie Final,False,False,,rebotes_ofensivos,True,10
+20111103145026,2011-11-03,2011,Serie Final,False,False,,asistencias,True,10
+20120103070144,2012-01-03,2012,Serie Final,False,False,,anotaciones,True,0
+20120103070144,2012-01-03,2012,Serie Final,False,False,,rebotes,True,0
+20120103070144,2012-01-03,2012,Serie Final,False,False,,tiros_libres_anotados,True,0
+20120103070144,2012-01-03,2012,Serie Final,False,False,,tiros_libres_pct,True,0
+20120103070144,2012-01-03,2012,Serie Final,False,False,,canastos_3,True,0
+20120103070144,2012-01-03,2012,Serie Final,False,False,,canastos_3_pct,True,0
+20120103070144,2012-01-03,2012,Serie Final,False,False,,bloqueos,True,0
+20120103070144,2012-01-03,2012,Serie Final,False,False,,cortes_balon,True,0
+20120103070144,2012-01-03,2012,Serie Final,False,False,,turnovers,True,0
+20120103070144,2012-01-03,2012,Serie Final,False,False,,rebotes_ofensivos,True,0
+20120103070144,2012-01-03,2012,Serie Final,False,False,,asistencias,True,0
+20120308082426,2012-03-08,2012,Serie Regular,True,False,,anotaciones,True,10
+20120308082426,2012-03-08,2012,Serie Regular,True,False,,rebotes,True,10
+20120308082426,2012-03-08,2012,Serie Regular,True,False,,tiros_libres_anotados,True,10
+20120308082426,2012-03-08,2012,Serie Regular,True,False,,tiros_libres_pct,True,1
+20120308082426,2012-03-08,2012,Serie Regular,True,False,,canastos_3,True,0
+20120308082426,2012-03-08,2012,Serie Regular,True,False,,canastos_3_pct,True,0
+20120308082426,2012-03-08,2012,Serie Regular,True,False,,bloqueos,True,10
+20120308082426,2012-03-08,2012,Serie Regular,True,False,,cortes_balon,True,10
+20120308082426,2012-03-08,2012,Serie Regular,True,False,,turnovers,True,10
+20120308082426,2012-03-08,2012,Serie Regular,True,False,,rebotes_ofensivos,True,10
+20120308082426,2012-03-08,2012,Serie Regular,True,False,,asistencias,True,10
+20120430040958,2012-04-30,2012,Serie Regular,True,False,,anotaciones,True,10
+20120430040958,2012-04-30,2012,Serie Regular,True,False,,rebotes,True,10
+20120430040958,2012-04-30,2012,Serie Regular,True,False,,tiros_libres_anotados,True,10
+20120430040958,2012-04-30,2012,Serie Regular,True,False,,tiros_libres_pct,True,10
+20120430040958,2012-04-30,2012,Serie Regular,True,False,,canastos_3,True,10
+20120430040958,2012-04-30,2012,Serie Regular,True,False,,canastos_3_pct,True,10
+20120430040958,2012-04-30,2012,Serie Regular,True,False,,bloqueos,True,10
+20120430040958,2012-04-30,2012,Serie Regular,True,False,,cortes_balon,True,10
+20120430040958,2012-04-30,2012,Serie Regular,True,False,,turnovers,True,10
+20120430040958,2012-04-30,2012,Serie Regular,True,False,,rebotes_ofensivos,True,10
+20120430040958,2012-04-30,2012,Serie Regular,True,False,,asistencias,True,10
+20120531004509,2012-05-31,2012,Semi Final,False,False,,anotaciones,True,10
+20120531004509,2012-05-31,2012,Semi Final,False,False,,rebotes,True,10
+20120531004509,2012-05-31,2012,Semi Final,False,False,,tiros_libres_anotados,True,10
+20120531004509,2012-05-31,2012,Semi Final,False,False,,tiros_libres_pct,True,7
+20120531004509,2012-05-31,2012,Semi Final,False,False,,canastos_3,True,10
+20120531004509,2012-05-31,2012,Semi Final,False,False,,canastos_3_pct,True,10
+20120531004509,2012-05-31,2012,Semi Final,False,False,,bloqueos,True,10
+20120531004509,2012-05-31,2012,Semi Final,False,False,,cortes_balon,True,10
+20120531004509,2012-05-31,2012,Semi Final,False,False,,turnovers,True,10
+20120531004509,2012-05-31,2012,Semi Final,False,False,,rebotes_ofensivos,True,10
+20120531004509,2012-05-31,2012,Semi Final,False,False,,asistencias,True,10
+20120701041317,2012-07-01,2012,Serie Final,False,False,,anotaciones,True,10
+20120701041317,2012-07-01,2012,Serie Final,False,False,,rebotes,True,10
+20120701041317,2012-07-01,2012,Serie Final,False,False,,tiros_libres_anotados,True,10
+20120701041317,2012-07-01,2012,Serie Final,False,False,,tiros_libres_pct,True,6
+20120701041317,2012-07-01,2012,Serie Final,False,False,,canastos_3,True,10
+20120701041317,2012-07-01,2012,Serie Final,False,False,,canastos_3_pct,True,10
+20120701041317,2012-07-01,2012,Serie Final,False,False,,bloqueos,True,10
+20120701041317,2012-07-01,2012,Serie Final,False,False,,cortes_balon,True,10
+20120701041317,2012-07-01,2012,Serie Final,False,False,,turnovers,True,10
+20120701041317,2012-07-01,2012,Serie Final,False,False,,rebotes_ofensivos,True,10
+20120701041317,2012-07-01,2012,Serie Final,False,False,,asistencias,True,10
+20130318172626,2013-03-18,2013,Pre-Temporada,False,False,,anotaciones,True,0
+20130318172626,2013-03-18,2013,Pre-Temporada,False,False,,rebotes,True,0
+20130318172626,2013-03-18,2013,Pre-Temporada,False,False,,tiros_libres_anotados,True,0
+20130318172626,2013-03-18,2013,Pre-Temporada,False,False,,tiros_libres_pct,True,0
+20130318172626,2013-03-18,2013,Pre-Temporada,False,False,,canastos_3,True,0
+20130318172626,2013-03-18,2013,Pre-Temporada,False,False,,canastos_3_pct,True,0
+20130318172626,2013-03-18,2013,Pre-Temporada,False,False,,bloqueos,True,0
+20130318172626,2013-03-18,2013,Pre-Temporada,False,False,,cortes_balon,True,0
+20130318172626,2013-03-18,2013,Pre-Temporada,False,False,,turnovers,True,0
+20130318172626,2013-03-18,2013,Pre-Temporada,False,False,,rebotes_ofensivos,True,0
+20130318172626,2013-03-18,2013,Pre-Temporada,False,False,,asistencias,True,0
+20130318172626,2013-03-18,2013,Pre-Temporada,False,False,,cat_fbp,False,0
+20130318172626,2013-03-18,2013,Pre-Temporada,False,False,,cat_pft,False,0
+20130318172626,2013-03-18,2013,Pre-Temporada,False,False,,cat_pip,False,0
+20130318172626,2013-03-18,2013,Pre-Temporada,False,False,,cat_scp,False,0
+20130322023259,2013-03-22,2013,Pre-Temporada,False,False,,anotaciones,True,10
+20130322023259,2013-03-22,2013,Pre-Temporada,False,False,,rebotes,True,10
+20130322023259,2013-03-22,2013,Pre-Temporada,False,False,,tiros_libres_anotados,True,10
+20130322023259,2013-03-22,2013,Pre-Temporada,False,False,,tiros_libres_pct,True,10
+20130322023259,2013-03-22,2013,Pre-Temporada,False,False,,canastos_3,True,10
+20130322023259,2013-03-22,2013,Pre-Temporada,False,False,,canastos_3_pct,True,10
+20130322023259,2013-03-22,2013,Pre-Temporada,False,False,,bloqueos,True,6
+20130322023259,2013-03-22,2013,Pre-Temporada,False,False,,cortes_balon,True,10
+20130322023259,2013-03-22,2013,Pre-Temporada,False,False,,turnovers,True,10
+20130322023259,2013-03-22,2013,Pre-Temporada,False,False,,rebotes_ofensivos,True,10
+20130322023259,2013-03-22,2013,Pre-Temporada,False,False,,asistencias,True,10
+20130322023259,2013-03-22,2013,Pre-Temporada,False,False,,cat_fbp,False,0
+20130322023259,2013-03-22,2013,Pre-Temporada,False,False,,cat_pft,False,0
+20130322023259,2013-03-22,2013,Pre-Temporada,False,False,,cat_pip,False,0
+20130322023259,2013-03-22,2013,Pre-Temporada,False,False,,cat_scp,False,10
+20130419111514,2013-04-19,2013,Serie Regular,True,False,,anotaciones,True,10
+20130419111514,2013-04-19,2013,Serie Regular,True,False,,rebotes,True,10
+20130419111514,2013-04-19,2013,Serie Regular,True,False,,tiros_libres_anotados,True,10
+20130419111514,2013-04-19,2013,Serie Regular,True,False,,tiros_libres_pct,True,10
+20130419111514,2013-04-19,2013,Serie Regular,True,False,,canastos_3,True,8
+20130419111514,2013-04-19,2013,Serie Regular,True,False,,canastos_3_pct,True,8
+20130419111514,2013-04-19,2013,Serie Regular,True,False,,bloqueos,True,10
+20130419111514,2013-04-19,2013,Serie Regular,True,False,,cortes_balon,True,10
+20130419111514,2013-04-19,2013,Serie Regular,True,False,,turnovers,True,10
+20130419111514,2013-04-19,2013,Serie Regular,True,False,,rebotes_ofensivos,True,10
+20130419111514,2013-04-19,2013,Serie Regular,True,False,,asistencias,True,10
+20130419111514,2013-04-19,2013,Serie Regular,True,False,,cat_fbp,False,0
+20130419111514,2013-04-19,2013,Serie Regular,True,False,,cat_pft,False,0
+20130419111514,2013-04-19,2013,Serie Regular,True,False,,cat_pip,False,0
+20130419111514,2013-04-19,2013,Serie Regular,True,False,,cat_scp,False,10
+20130424073059,2013-04-24,2013,Serie Regular,True,False,,anotaciones,True,10
+20130424073059,2013-04-24,2013,Serie Regular,True,False,,rebotes,True,10
+20130424073059,2013-04-24,2013,Serie Regular,True,False,,tiros_libres_anotados,True,10
+20130424073059,2013-04-24,2013,Serie Regular,True,False,,tiros_libres_pct,True,10
+20130424073059,2013-04-24,2013,Serie Regular,True,False,,canastos_3,True,10
+20130424073059,2013-04-24,2013,Serie Regular,True,False,,canastos_3_pct,True,10
+20130424073059,2013-04-24,2013,Serie Regular,True,False,,bloqueos,True,10
+20130424073059,2013-04-24,2013,Serie Regular,True,False,,cortes_balon,True,10
+20130424073059,2013-04-24,2013,Serie Regular,True,False,,turnovers,True,10
+20130424073059,2013-04-24,2013,Serie Regular,True,False,,rebotes_ofensivos,True,10
+20130424073059,2013-04-24,2013,Serie Regular,True,False,,asistencias,True,10
+20130424073059,2013-04-24,2013,Serie Regular,True,False,,cat_fbp,False,0
+20130424073059,2013-04-24,2013,Serie Regular,True,False,,cat_pft,False,0
+20130424073059,2013-04-24,2013,Serie Regular,True,False,,cat_pip,False,0
+20130424073059,2013-04-24,2013,Serie Regular,True,False,,cat_scp,False,10
+20130520110808,2013-05-20,2013,Serie Regular,True,False,,anotaciones,True,10
+20130520110808,2013-05-20,2013,Serie Regular,True,False,,rebotes,True,10
+20130520110808,2013-05-20,2013,Serie Regular,True,False,,tiros_libres_anotados,True,10
+20130520110808,2013-05-20,2013,Serie Regular,True,False,,tiros_libres_pct,True,10
+20130520110808,2013-05-20,2013,Serie Regular,True,False,,canastos_3,True,10
+20130520110808,2013-05-20,2013,Serie Regular,True,False,,canastos_3_pct,True,10
+20130520110808,2013-05-20,2013,Serie Regular,True,False,,bloqueos,True,10
+20130520110808,2013-05-20,2013,Serie Regular,True,False,,cortes_balon,True,10
+20130520110808,2013-05-20,2013,Serie Regular,True,False,,turnovers,True,10
+20130520110808,2013-05-20,2013,Serie Regular,True,False,,rebotes_ofensivos,True,10
+20130520110808,2013-05-20,2013,Serie Regular,True,False,,asistencias,True,10
+20130520110808,2013-05-20,2013,Serie Regular,True,False,,cat_fbp,False,0
+20130520110808,2013-05-20,2013,Serie Regular,True,False,,cat_pft,False,0
+20130520110808,2013-05-20,2013,Serie Regular,True,False,,cat_pip,False,0
+20130520110808,2013-05-20,2013,Serie Regular,True,False,,cat_scp,False,10
+20130526035153,2013-05-26,2013,Serie Regular,True,False,,anotaciones,True,10
+20130526035153,2013-05-26,2013,Serie Regular,True,False,,rebotes,True,10
+20130526035153,2013-05-26,2013,Serie Regular,True,False,,tiros_libres_anotados,True,10
+20130526035153,2013-05-26,2013,Serie Regular,True,False,,tiros_libres_pct,True,10
+20130526035153,2013-05-26,2013,Serie Regular,True,False,,canastos_3,True,10
+20130526035153,2013-05-26,2013,Serie Regular,True,False,,canastos_3_pct,True,10
+20130526035153,2013-05-26,2013,Serie Regular,True,False,,bloqueos,True,10
+20130526035153,2013-05-26,2013,Serie Regular,True,False,,cortes_balon,True,10
+20130526035153,2013-05-26,2013,Serie Regular,True,False,,turnovers,True,10
+20130526035153,2013-05-26,2013,Serie Regular,True,False,,rebotes_ofensivos,True,10
+20130526035153,2013-05-26,2013,Serie Regular,True,False,,asistencias,True,10
+20130526035153,2013-05-26,2013,Serie Regular,True,False,,cat_fbp,False,0
+20130526035153,2013-05-26,2013,Serie Regular,True,False,,cat_pft,False,0
+20130526035153,2013-05-26,2013,Serie Regular,True,False,,cat_pip,False,0
+20130526035153,2013-05-26,2013,Serie Regular,True,False,,cat_scp,False,10
+20130628205440,2013-06-28,2013,Cuartos de Final,False,False,,anotaciones,True,10
+20130628205440,2013-06-28,2013,Cuartos de Final,False,False,,rebotes,True,10
+20130628205440,2013-06-28,2013,Cuartos de Final,False,False,,tiros_libres_anotados,True,10
+20130628205440,2013-06-28,2013,Cuartos de Final,False,False,,tiros_libres_pct,True,0
+20130628205440,2013-06-28,2013,Cuartos de Final,False,False,,canastos_3,True,3
+20130628205440,2013-06-28,2013,Cuartos de Final,False,False,,canastos_3_pct,True,3
+20130628205440,2013-06-28,2013,Cuartos de Final,False,False,,bloqueos,True,10
+20130628205440,2013-06-28,2013,Cuartos de Final,False,False,,cortes_balon,True,10
+20130628205440,2013-06-28,2013,Cuartos de Final,False,False,,turnovers,True,10
+20130628205440,2013-06-28,2013,Cuartos de Final,False,False,,rebotes_ofensivos,True,10
+20130628205440,2013-06-28,2013,Cuartos de Final,False,False,,asistencias,True,10
+20130628205440,2013-06-28,2013,Cuartos de Final,False,False,,cat_fbp,False,0
+20130628205440,2013-06-28,2013,Cuartos de Final,False,False,,cat_pft,False,0
+20130628205440,2013-06-28,2013,Cuartos de Final,False,False,,cat_pip,False,0
+20130628205440,2013-06-28,2013,Cuartos de Final,False,False,,cat_scp,False,10
+20130630032742,2013-06-30,2013,Cuartos de Final,False,False,,anotaciones,True,10
+20130630032742,2013-06-30,2013,Cuartos de Final,False,False,,rebotes,True,10
+20130630032742,2013-06-30,2013,Cuartos de Final,False,False,,tiros_libres_anotados,True,10
+20130630032742,2013-06-30,2013,Cuartos de Final,False,False,,tiros_libres_pct,True,5
+20130630032742,2013-06-30,2013,Cuartos de Final,False,False,,canastos_3,True,10
+20130630032742,2013-06-30,2013,Cuartos de Final,False,False,,canastos_3_pct,True,10
+20130630032742,2013-06-30,2013,Cuartos de Final,False,False,,bloqueos,True,10
+20130630032742,2013-06-30,2013,Cuartos de Final,False,False,,cortes_balon,True,10
+20130630032742,2013-06-30,2013,Cuartos de Final,False,False,,turnovers,True,10
+20130630032742,2013-06-30,2013,Cuartos de Final,False,False,,rebotes_ofensivos,True,10
+20130630032742,2013-06-30,2013,Cuartos de Final,False,False,,asistencias,True,10
+20130630032742,2013-06-30,2013,Cuartos de Final,False,False,,cat_fbp,False,0
+20130630032742,2013-06-30,2013,Cuartos de Final,False,False,,cat_pft,False,0
+20130630032742,2013-06-30,2013,Cuartos de Final,False,False,,cat_pip,False,0
+20130630032742,2013-06-30,2013,Cuartos de Final,False,False,,cat_scp,False,10
+20130801005351,2013-08-01,2013,Serie Final,False,False,,anotaciones,True,10
+20130801005351,2013-08-01,2013,Serie Final,False,False,,rebotes,True,10
+20130801005351,2013-08-01,2013,Serie Final,False,False,,tiros_libres_anotados,True,10
+20130801005351,2013-08-01,2013,Serie Final,False,False,,tiros_libres_pct,True,8
+20130801005351,2013-08-01,2013,Serie Final,False,False,,canastos_3,True,10
+20130801005351,2013-08-01,2013,Serie Final,False,False,,canastos_3_pct,True,10
+20130801005351,2013-08-01,2013,Serie Final,False,False,,bloqueos,True,9
+20130801005351,2013-08-01,2013,Serie Final,False,False,,cortes_balon,True,10
+20130801005351,2013-08-01,2013,Serie Final,False,False,,turnovers,True,10
+20130801005351,2013-08-01,2013,Serie Final,False,False,,rebotes_ofensivos,True,10
+20130801005351,2013-08-01,2013,Serie Final,False,False,,asistencias,True,10
+20130801005351,2013-08-01,2013,Serie Final,False,False,,cat_fbp,False,0
+20130801005351,2013-08-01,2013,Serie Final,False,False,,cat_pft,False,0
+20130801005351,2013-08-01,2013,Serie Final,False,False,,cat_pip,False,0
+20130801005351,2013-08-01,2013,Serie Final,False,False,,cat_scp,False,10
+20130801151940,2013-08-01,2013,Serie Final,False,False,,anotaciones,True,10
+20130801151940,2013-08-01,2013,Serie Final,False,False,,rebotes,True,10
+20130801151940,2013-08-01,2013,Serie Final,False,False,,tiros_libres_anotados,True,10
+20130801151940,2013-08-01,2013,Serie Final,False,False,,tiros_libres_pct,True,8
+20130801151940,2013-08-01,2013,Serie Final,False,False,,canastos_3,True,10
+20130801151940,2013-08-01,2013,Serie Final,False,False,,canastos_3_pct,True,10
+20130801151940,2013-08-01,2013,Serie Final,False,False,,bloqueos,True,9
+20130801151940,2013-08-01,2013,Serie Final,False,False,,cortes_balon,True,10
+20130801151940,2013-08-01,2013,Serie Final,False,False,,turnovers,True,10
+20130801151940,2013-08-01,2013,Serie Final,False,False,,rebotes_ofensivos,True,10
+20130801151940,2013-08-01,2013,Serie Final,False,False,,asistencias,True,10
+20130801151940,2013-08-01,2013,Serie Final,False,False,,cat_fbp,False,0
+20130801151940,2013-08-01,2013,Serie Final,False,False,,cat_pft,False,0
+20130801151940,2013-08-01,2013,Serie Final,False,False,,cat_pip,False,0
+20130801151940,2013-08-01,2013,Serie Final,False,False,,cat_scp,False,10
+20130901091158,2013-09-01,2013,Serie Final,False,False,,anotaciones,True,10
+20130901091158,2013-09-01,2013,Serie Final,False,False,,rebotes,True,10
+20130901091158,2013-09-01,2013,Serie Final,False,False,,tiros_libres_anotados,True,10
+20130901091158,2013-09-01,2013,Serie Final,False,False,,tiros_libres_pct,True,8
+20130901091158,2013-09-01,2013,Serie Final,False,False,,canastos_3,True,10
+20130901091158,2013-09-01,2013,Serie Final,False,False,,canastos_3_pct,True,10
+20130901091158,2013-09-01,2013,Serie Final,False,False,,bloqueos,True,9
+20130901091158,2013-09-01,2013,Serie Final,False,False,,cortes_balon,True,10
+20130901091158,2013-09-01,2013,Serie Final,False,False,,turnovers,True,10
+20130901091158,2013-09-01,2013,Serie Final,False,False,,rebotes_ofensivos,True,10
+20130901091158,2013-09-01,2013,Serie Final,False,False,,asistencias,True,10
+20130901091158,2013-09-01,2013,Serie Final,False,False,,cat_fbp,False,0
+20130901091158,2013-09-01,2013,Serie Final,False,False,,cat_pft,False,0
+20130901091158,2013-09-01,2013,Serie Final,False,False,,cat_pip,False,0
+20130901091158,2013-09-01,2013,Serie Final,False,False,,cat_scp,False,10
+20130902043457,2013-09-02,2013,Serie Final,False,False,,anotaciones,True,10
+20130902043457,2013-09-02,2013,Serie Final,False,False,,rebotes,True,10
+20130902043457,2013-09-02,2013,Serie Final,False,False,,tiros_libres_anotados,True,10
+20130902043457,2013-09-02,2013,Serie Final,False,False,,tiros_libres_pct,True,8
+20130902043457,2013-09-02,2013,Serie Final,False,False,,canastos_3,True,10
+20130902043457,2013-09-02,2013,Serie Final,False,False,,canastos_3_pct,True,10
+20130902043457,2013-09-02,2013,Serie Final,False,False,,bloqueos,True,9
+20130902043457,2013-09-02,2013,Serie Final,False,False,,cortes_balon,True,10
+20130902043457,2013-09-02,2013,Serie Final,False,False,,turnovers,True,10
+20130902043457,2013-09-02,2013,Serie Final,False,False,,rebotes_ofensivos,True,10
+20130902043457,2013-09-02,2013,Serie Final,False,False,,asistencias,True,10
+20130902043457,2013-09-02,2013,Serie Final,False,False,,cat_fbp,False,0
+20130902043457,2013-09-02,2013,Serie Final,False,False,,cat_pft,False,0
+20130902043457,2013-09-02,2013,Serie Final,False,False,,cat_pip,False,0
+20130902043457,2013-09-02,2013,Serie Final,False,False,,cat_scp,False,10
+20131003014707,2013-10-03,2013,Serie Final,False,False,,anotaciones,True,10
+20131003014707,2013-10-03,2013,Serie Final,False,False,,rebotes,True,10
+20131003014707,2013-10-03,2013,Serie Final,False,False,,tiros_libres_anotados,True,10
+20131003014707,2013-10-03,2013,Serie Final,False,False,,tiros_libres_pct,True,8
+20131003014707,2013-10-03,2013,Serie Final,False,False,,canastos_3,True,10
+20131003014707,2013-10-03,2013,Serie Final,False,False,,canastos_3_pct,True,10
+20131003014707,2013-10-03,2013,Serie Final,False,False,,bloqueos,True,9
+20131003014707,2013-10-03,2013,Serie Final,False,False,,cortes_balon,True,10
+20131003014707,2013-10-03,2013,Serie Final,False,False,,turnovers,True,10
+20131003014707,2013-10-03,2013,Serie Final,False,False,,rebotes_ofensivos,True,10
+20131003014707,2013-10-03,2013,Serie Final,False,False,,asistencias,True,10
+20131003014707,2013-10-03,2013,Serie Final,False,False,,cat_fbp,False,0
+20131003014707,2013-10-03,2013,Serie Final,False,False,,cat_pft,False,0
+20131003014707,2013-10-03,2013,Serie Final,False,False,,cat_pip,False,0
+20131003014707,2013-10-03,2013,Serie Final,False,False,,cat_scp,False,10
+20131003174854,2013-10-03,2013,Serie Final,False,False,,anotaciones,True,10
+20131003174854,2013-10-03,2013,Serie Final,False,False,,rebotes,True,10
+20131003174854,2013-10-03,2013,Serie Final,False,False,,tiros_libres_anotados,True,10
+20131003174854,2013-10-03,2013,Serie Final,False,False,,tiros_libres_pct,True,8
+20131003174854,2013-10-03,2013,Serie Final,False,False,,canastos_3,True,10
+20131003174854,2013-10-03,2013,Serie Final,False,False,,canastos_3_pct,True,10
+20131003174854,2013-10-03,2013,Serie Final,False,False,,bloqueos,True,9
+20131003174854,2013-10-03,2013,Serie Final,False,False,,cortes_balon,True,10
+20131003174854,2013-10-03,2013,Serie Final,False,False,,turnovers,True,10
+20131003174854,2013-10-03,2013,Serie Final,False,False,,rebotes_ofensivos,True,10
+20131003174854,2013-10-03,2013,Serie Final,False,False,,asistencias,True,10
+20131003174854,2013-10-03,2013,Serie Final,False,False,,cat_fbp,False,0
+20131003174854,2013-10-03,2013,Serie Final,False,False,,cat_pft,False,0
+20131003174854,2013-10-03,2013,Serie Final,False,False,,cat_pip,False,0
+20131003174854,2013-10-03,2013,Serie Final,False,False,,cat_scp,False,10
+20131103085426,2013-11-03,2013,Serie Final,False,False,,anotaciones,True,10
+20131103085426,2013-11-03,2013,Serie Final,False,False,,rebotes,True,10
+20131103085426,2013-11-03,2013,Serie Final,False,False,,tiros_libres_anotados,True,10
+20131103085426,2013-11-03,2013,Serie Final,False,False,,tiros_libres_pct,True,8
+20131103085426,2013-11-03,2013,Serie Final,False,False,,canastos_3,True,10
+20131103085426,2013-11-03,2013,Serie Final,False,False,,canastos_3_pct,True,10
+20131103085426,2013-11-03,2013,Serie Final,False,False,,bloqueos,True,9
+20131103085426,2013-11-03,2013,Serie Final,False,False,,cortes_balon,True,10
+20131103085426,2013-11-03,2013,Serie Final,False,False,,turnovers,True,10
+20131103085426,2013-11-03,2013,Serie Final,False,False,,rebotes_ofensivos,True,10
+20131103085426,2013-11-03,2013,Serie Final,False,False,,asistencias,True,10
+20131103085426,2013-11-03,2013,Serie Final,False,False,,cat_fbp,False,0
+20131103085426,2013-11-03,2013,Serie Final,False,False,,cat_pft,False,0
+20131103085426,2013-11-03,2013,Serie Final,False,False,,cat_pip,False,0
+20131103085426,2013-11-03,2013,Serie Final,False,False,,cat_scp,False,10
+20140328123713,2014-03-28,2014,Serie Regular,True,False,,anotaciones,True,10
+20140328123713,2014-03-28,2014,Serie Regular,True,False,,rebotes,True,10
+20140328123713,2014-03-28,2014,Serie Regular,True,False,,tiros_libres_anotados,True,10
+20140328123713,2014-03-28,2014,Serie Regular,True,False,,tiros_libres_pct,True,0
+20140328123713,2014-03-28,2014,Serie Regular,True,False,,canastos_3,True,1
+20140328123713,2014-03-28,2014,Serie Regular,True,False,,canastos_3_pct,True,1
+20140328123713,2014-03-28,2014,Serie Regular,True,False,,bloqueos,True,10
+20140328123713,2014-03-28,2014,Serie Regular,True,False,,cortes_balon,True,10
+20140328123713,2014-03-28,2014,Serie Regular,True,False,,turnovers,True,10
+20140328123713,2014-03-28,2014,Serie Regular,True,False,,rebotes_ofensivos,True,10
+20140328123713,2014-03-28,2014,Serie Regular,True,False,,asistencias,True,10
+20140328123713,2014-03-28,2014,Serie Regular,True,False,,cat_scp,False,10
+20140409082625,2014-04-09,2014,Serie Regular,True,False,BS19,anotaciones,True,10
+20140409082625,2014-04-09,2014,Serie Regular,True,False,BS19,rebotes,True,10
+20140409082625,2014-04-09,2014,Serie Regular,True,False,BS19,tiros_libres_anotados,True,10
+20140409082625,2014-04-09,2014,Serie Regular,True,False,BS19,tiros_libres_pct,True,10
+20140409082625,2014-04-09,2014,Serie Regular,True,False,BS19,canastos_3,True,10
+20140409082625,2014-04-09,2014,Serie Regular,True,False,BS19,canastos_3_pct,True,10
+20140409082625,2014-04-09,2014,Serie Regular,True,False,BS19,bloqueos,True,10
+20140409082625,2014-04-09,2014,Serie Regular,True,False,BS19,cortes_balon,True,10
+20140409082625,2014-04-09,2014,Serie Regular,True,False,BS19,turnovers,True,10
+20140409082625,2014-04-09,2014,Serie Regular,True,False,BS19,rebotes_ofensivos,True,10
+20140409082625,2014-04-09,2014,Serie Regular,True,False,BS19,asistencias,True,10
+20140410100425,2014-04-10,2014,Serie Regular,True,False,BS19,anotaciones,True,10
+20140410100425,2014-04-10,2014,Serie Regular,True,False,BS19,rebotes,True,10
+20140410100425,2014-04-10,2014,Serie Regular,True,False,BS19,tiros_libres_anotados,True,10
+20140410100425,2014-04-10,2014,Serie Regular,True,False,BS19,tiros_libres_pct,True,10
+20140410100425,2014-04-10,2014,Serie Regular,True,False,BS19,canastos_3,True,10
+20140410100425,2014-04-10,2014,Serie Regular,True,False,BS19,canastos_3_pct,True,10
+20140410100425,2014-04-10,2014,Serie Regular,True,False,BS19,bloqueos,True,10
+20140410100425,2014-04-10,2014,Serie Regular,True,False,BS19,cortes_balon,True,10
+20140410100425,2014-04-10,2014,Serie Regular,True,False,BS19,turnovers,True,10
+20140410100425,2014-04-10,2014,Serie Regular,True,False,BS19,rebotes_ofensivos,True,10
+20140410100425,2014-04-10,2014,Serie Regular,True,False,BS19,asistencias,True,10
+20140428232052,2014-04-28,2014,Serie Regular,True,False,,anotaciones,True,10
+20140428232052,2014-04-28,2014,Serie Regular,True,False,,rebotes,True,10
+20140428232052,2014-04-28,2014,Serie Regular,True,False,,tiros_libres_anotados,True,10
+20140428232052,2014-04-28,2014,Serie Regular,True,False,,tiros_libres_pct,True,10
+20140428232052,2014-04-28,2014,Serie Regular,True,False,,canastos_3,True,10
+20140428232052,2014-04-28,2014,Serie Regular,True,False,,canastos_3_pct,True,10
+20140428232052,2014-04-28,2014,Serie Regular,True,False,,bloqueos,True,10
+20140428232052,2014-04-28,2014,Serie Regular,True,False,,cortes_balon,True,10
+20140428232052,2014-04-28,2014,Serie Regular,True,False,,turnovers,True,10
+20140428232052,2014-04-28,2014,Serie Regular,True,False,,rebotes_ofensivos,True,10
+20140428232052,2014-04-28,2014,Serie Regular,True,False,,asistencias,True,10
+20140529195004,2014-05-29,2014,Serie Regular,True,False,,anotaciones,True,10
+20140529195004,2014-05-29,2014,Serie Regular,True,False,,rebotes,True,10
+20140529195004,2014-05-29,2014,Serie Regular,True,False,,tiros_libres_anotados,True,10
+20140529195004,2014-05-29,2014,Serie Regular,True,False,,tiros_libres_pct,True,10
+20140529195004,2014-05-29,2014,Serie Regular,True,False,,canastos_3,True,10
+20140529195004,2014-05-29,2014,Serie Regular,True,False,,canastos_3_pct,True,10
+20140529195004,2014-05-29,2014,Serie Regular,True,False,,bloqueos,True,10
+20140529195004,2014-05-29,2014,Serie Regular,True,False,,cortes_balon,True,10
+20140529195004,2014-05-29,2014,Serie Regular,True,False,,turnovers,True,10
+20140529195004,2014-05-29,2014,Serie Regular,True,False,,rebotes_ofensivos,True,10
+20140529195004,2014-05-29,2014,Serie Regular,True,False,,asistencias,True,10
+20140701205928,2014-07-01,2014,Cuartos de Final,False,False,,anotaciones,True,10
+20140701205928,2014-07-01,2014,Cuartos de Final,False,False,,rebotes,True,10
+20140701205928,2014-07-01,2014,Cuartos de Final,False,False,,tiros_libres_anotados,True,10
+20140701205928,2014-07-01,2014,Cuartos de Final,False,False,,tiros_libres_pct,True,6
+20140701205928,2014-07-01,2014,Cuartos de Final,False,False,,canastos_3,True,10
+20140701205928,2014-07-01,2014,Cuartos de Final,False,False,,canastos_3_pct,True,10
+20140701205928,2014-07-01,2014,Cuartos de Final,False,False,,bloqueos,True,10
+20140701205928,2014-07-01,2014,Cuartos de Final,False,False,,cortes_balon,True,10
+20140701205928,2014-07-01,2014,Cuartos de Final,False,False,,turnovers,True,10
+20140701205928,2014-07-01,2014,Cuartos de Final,False,False,,rebotes_ofensivos,True,10
+20140701205928,2014-07-01,2014,Cuartos de Final,False,False,,asistencias,True,10
+20140803035416,2014-08-03,2014,Serie Final,False,False,,anotaciones,True,10
+20140803035416,2014-08-03,2014,Serie Final,False,False,,rebotes,True,10
+20140803035416,2014-08-03,2014,Serie Final,False,False,,tiros_libres_anotados,True,10
+20140803035416,2014-08-03,2014,Serie Final,False,False,,tiros_libres_pct,True,10
+20140803035416,2014-08-03,2014,Serie Final,False,False,,canastos_3,True,10
+20140803035416,2014-08-03,2014,Serie Final,False,False,,canastos_3_pct,True,10
+20140803035416,2014-08-03,2014,Serie Final,False,False,,bloqueos,True,10
+20140803035416,2014-08-03,2014,Serie Final,False,False,,cortes_balon,True,10
+20140803035416,2014-08-03,2014,Serie Final,False,False,,turnovers,True,10
+20140803035416,2014-08-03,2014,Serie Final,False,False,,rebotes_ofensivos,True,10
+20140803035416,2014-08-03,2014,Serie Final,False,False,,asistencias,True,10
+20140803040122,2014-08-03,2014,Serie Final,False,False,,anotaciones,True,10
+20140803040122,2014-08-03,2014,Serie Final,False,False,,rebotes,True,10
+20140803040122,2014-08-03,2014,Serie Final,False,False,,tiros_libres_anotados,True,10
+20140803040122,2014-08-03,2014,Serie Final,False,False,,tiros_libres_pct,True,10
+20140803040122,2014-08-03,2014,Serie Final,False,False,,canastos_3,True,10
+20140803040122,2014-08-03,2014,Serie Final,False,False,,canastos_3_pct,True,10
+20140803040122,2014-08-03,2014,Serie Final,False,False,,bloqueos,True,10
+20140803040122,2014-08-03,2014,Serie Final,False,False,,cortes_balon,True,10
+20140803040122,2014-08-03,2014,Serie Final,False,False,,turnovers,True,10
+20140803040122,2014-08-03,2014,Serie Final,False,False,,rebotes_ofensivos,True,10
+20140803040122,2014-08-03,2014,Serie Final,False,False,,asistencias,True,10
+20140906070149,2014-09-06,2014,Serie Final,False,False,,anotaciones,True,10
+20140906070149,2014-09-06,2014,Serie Final,False,False,,rebotes,True,10
+20140906070149,2014-09-06,2014,Serie Final,False,False,,tiros_libres_anotados,True,10
+20140906070149,2014-09-06,2014,Serie Final,False,False,,tiros_libres_pct,True,10
+20140906070149,2014-09-06,2014,Serie Final,False,False,,canastos_3,True,10
+20140906070149,2014-09-06,2014,Serie Final,False,False,,canastos_3_pct,True,10
+20140906070149,2014-09-06,2014,Serie Final,False,False,,bloqueos,True,10
+20140906070149,2014-09-06,2014,Serie Final,False,False,,cortes_balon,True,10
+20140906070149,2014-09-06,2014,Serie Final,False,False,,turnovers,True,10
+20140906070149,2014-09-06,2014,Serie Final,False,False,,rebotes_ofensivos,True,10
+20140906070149,2014-09-06,2014,Serie Final,False,False,,asistencias,True,10
+20141021102818,2014-10-21,2014,Serie Final,False,False,,anotaciones,True,10
+20141021102818,2014-10-21,2014,Serie Final,False,False,,rebotes,True,10
+20141021102818,2014-10-21,2014,Serie Final,False,False,,tiros_libres_anotados,True,10
+20141021102818,2014-10-21,2014,Serie Final,False,False,,tiros_libres_pct,True,10
+20141021102818,2014-10-21,2014,Serie Final,False,False,,canastos_3,True,10
+20141021102818,2014-10-21,2014,Serie Final,False,False,,canastos_3_pct,True,10
+20141021102818,2014-10-21,2014,Serie Final,False,False,,bloqueos,True,10
+20141021102818,2014-10-21,2014,Serie Final,False,False,,cortes_balon,True,10
+20141021102818,2014-10-21,2014,Serie Final,False,False,,turnovers,True,10
+20141021102818,2014-10-21,2014,Serie Final,False,False,,rebotes_ofensivos,True,10
+20141021102818,2014-10-21,2014,Serie Final,False,False,,asistencias,True,10
+20141022125110,2014-10-22,2014,Serie Final,False,False,,anotaciones,True,10
+20141022125110,2014-10-22,2014,Serie Final,False,False,,rebotes,True,10
+20141022125110,2014-10-22,2014,Serie Final,False,False,,tiros_libres_anotados,True,10
+20141022125110,2014-10-22,2014,Serie Final,False,False,,tiros_libres_pct,True,10
+20141022125110,2014-10-22,2014,Serie Final,False,False,,canastos_3,True,10
+20141022125110,2014-10-22,2014,Serie Final,False,False,,canastos_3_pct,True,10
+20141022125110,2014-10-22,2014,Serie Final,False,False,,bloqueos,True,10
+20141022125110,2014-10-22,2014,Serie Final,False,False,,cortes_balon,True,10
+20141022125110,2014-10-22,2014,Serie Final,False,False,,turnovers,True,10
+20141022125110,2014-10-22,2014,Serie Final,False,False,,rebotes_ofensivos,True,10
+20141022125110,2014-10-22,2014,Serie Final,False,False,,asistencias,True,10
+20141221103415,2014-12-21,2014,Serie Final,False,False,,anotaciones,True,10
+20141221103415,2014-12-21,2014,Serie Final,False,False,,rebotes,True,10
+20141221103415,2014-12-21,2014,Serie Final,False,False,,tiros_libres_anotados,True,10
+20141221103415,2014-12-21,2014,Serie Final,False,False,,tiros_libres_pct,True,10
+20141221103415,2014-12-21,2014,Serie Final,False,False,,canastos_3,True,10
+20141221103415,2014-12-21,2014,Serie Final,False,False,,canastos_3_pct,True,10
+20141221103415,2014-12-21,2014,Serie Final,False,False,,bloqueos,True,10
+20141221103415,2014-12-21,2014,Serie Final,False,False,,cortes_balon,True,10
+20141221103415,2014-12-21,2014,Serie Final,False,False,,turnovers,True,10
+20141221103415,2014-12-21,2014,Serie Final,False,False,,rebotes_ofensivos,True,10
+20141221103415,2014-12-21,2014,Serie Final,False,False,,asistencias,True,10
+20160411021109,2016-04-11,2010,Serie Regular,True,True,BS26,anotaciones,True,10
+20160411021109,2016-04-11,2010,Serie Regular,True,True,BS26,rebotes,True,10
+20160411021109,2016-04-11,2010,Serie Regular,True,True,BS26,tiros_libres_anotados,True,10
+20160411021109,2016-04-11,2010,Serie Regular,True,True,BS26,tiros_libres_pct,True,10
+20160411021109,2016-04-11,2010,Serie Regular,True,True,BS26,canastos_3,True,10
+20160411021109,2016-04-11,2010,Serie Regular,True,True,BS26,canastos_3_pct,True,10
+20160411021109,2016-04-11,2010,Serie Regular,True,True,BS26,bloqueos,True,10
+20160411021109,2016-04-11,2010,Serie Regular,True,True,BS26,cortes_balon,True,10
+20160411021109,2016-04-11,2010,Serie Regular,True,True,BS26,turnovers,True,10
+20160411021109,2016-04-11,2010,Serie Regular,True,True,BS26,rebotes_ofensivos,True,10
+20160411021109,2016-04-11,2010,Serie Regular,True,True,BS26,asistencias,True,10
+20170704005512,2017-07-04,2017,Cuartos de Final,False,False,,anotaciones,True,10
+20170704005512,2017-07-04,2017,Cuartos de Final,False,False,,rebotes,True,10
+20170704005512,2017-07-04,2017,Cuartos de Final,False,False,,tiros_libres_anotados,True,10
+20170704005512,2017-07-04,2017,Cuartos de Final,False,False,,tiros_libres_pct,True,0
+20170704005512,2017-07-04,2017,Cuartos de Final,False,False,,canastos_3,True,0
+20170704005512,2017-07-04,2017,Cuartos de Final,False,False,,canastos_3_pct,True,0
+20170704005512,2017-07-04,2017,Cuartos de Final,False,False,,bloqueos,True,10
+20170704005512,2017-07-04,2017,Cuartos de Final,False,False,,cortes_balon,True,10
+20170704005512,2017-07-04,2017,Cuartos de Final,False,False,,turnovers,True,10
+20170704005512,2017-07-04,2017,Cuartos de Final,False,False,,rebotes_ofensivos,True,10
+20170704005512,2017-07-04,2017,Cuartos de Final,False,False,,asistencias,True,10
+20170705230853,2017-07-05,2017,Cuartos de Final,False,False,,anotaciones,True,10
+20170705230853,2017-07-05,2017,Cuartos de Final,False,False,,rebotes,True,10
+20170705230853,2017-07-05,2017,Cuartos de Final,False,False,,tiros_libres_anotados,True,10
+20170705230853,2017-07-05,2017,Cuartos de Final,False,False,,tiros_libres_pct,True,0
+20170705230853,2017-07-05,2017,Cuartos de Final,False,False,,canastos_3,True,4
+20170705230853,2017-07-05,2017,Cuartos de Final,False,False,,canastos_3_pct,True,4
+20170705230853,2017-07-05,2017,Cuartos de Final,False,False,,bloqueos,True,10
+20170705230853,2017-07-05,2017,Cuartos de Final,False,False,,cortes_balon,True,10
+20170705230853,2017-07-05,2017,Cuartos de Final,False,False,,turnovers,True,10
+20170705230853,2017-07-05,2017,Cuartos de Final,False,False,,rebotes_ofensivos,True,10
+20170705230853,2017-07-05,2017,Cuartos de Final,False,False,,asistencias,True,10
+20170804023218,2017-08-04,2017,Serie Final,False,False,,anotaciones,True,10
+20170804023218,2017-08-04,2017,Serie Final,False,False,,rebotes,True,10
+20170804023218,2017-08-04,2017,Serie Final,False,False,,tiros_libres_anotados,True,10
+20170804023218,2017-08-04,2017,Serie Final,False,False,,tiros_libres_pct,True,3
+20170804023218,2017-08-04,2017,Serie Final,False,False,,canastos_3,True,8
+20170804023218,2017-08-04,2017,Serie Final,False,False,,canastos_3_pct,True,8
+20170804023218,2017-08-04,2017,Serie Final,False,False,,bloqueos,True,9
+20170804023218,2017-08-04,2017,Serie Final,False,False,,cortes_balon,True,10
+20170804023218,2017-08-04,2017,Serie Final,False,False,,turnovers,True,10
+20170804023218,2017-08-04,2017,Serie Final,False,False,,rebotes_ofensivos,True,10
+20170804023218,2017-08-04,2017,Serie Final,False,False,,asistencias,True,10
+20170804230003,2017-08-04,1986,Serie Regular,True,False,BS26,anotaciones,True,10
+20170804230003,2017-08-04,1986,Serie Regular,True,False,BS26,rebotes,True,10
+20170804230003,2017-08-04,1986,Serie Regular,True,False,BS26,tiros_libres_anotados,True,10
+20170804230003,2017-08-04,1986,Serie Regular,True,False,BS26,tiros_libres_pct,True,10
+20170804230003,2017-08-04,1986,Serie Regular,True,False,BS26,canastos_3,True,10
+20170804230003,2017-08-04,1986,Serie Regular,True,False,BS26,canastos_3_pct,True,10
+20170804230003,2017-08-04,1986,Serie Regular,True,False,BS26,bloqueos,True,0
+20170804230003,2017-08-04,1986,Serie Regular,True,False,BS26,cortes_balon,True,0
+20170804230003,2017-08-04,1986,Serie Regular,True,False,BS26,turnovers,True,0
+20170804230003,2017-08-04,1986,Serie Regular,True,False,BS26,rebotes_ofensivos,True,0
+20170804230003,2017-08-04,1986,Serie Regular,True,False,BS26,asistencias,True,10
+20170806055704,2017-08-06,2017,Serie Final,False,False,,anotaciones,True,10
+20170806055704,2017-08-06,2017,Serie Final,False,False,,rebotes,True,10
+20170806055704,2017-08-06,2017,Serie Final,False,False,,tiros_libres_anotados,True,10
+20170806055704,2017-08-06,2017,Serie Final,False,False,,tiros_libres_pct,True,6
+20170806055704,2017-08-06,2017,Serie Final,False,False,,canastos_3,True,10
+20170806055704,2017-08-06,2017,Serie Final,False,False,,canastos_3_pct,True,10
+20170806055704,2017-08-06,2017,Serie Final,False,False,,bloqueos,True,10
+20170806055704,2017-08-06,2017,Serie Final,False,False,,cortes_balon,True,10
+20170806055704,2017-08-06,2017,Serie Final,False,False,,turnovers,True,10
+20170806055704,2017-08-06,2017,Serie Final,False,False,,rebotes_ofensivos,True,10
+20170806055704,2017-08-06,2017,Serie Final,False,False,,asistencias,True,10
+20170827011830,2017-08-27,2017,Serie Final,False,False,,anotaciones,True,10
+20170827011830,2017-08-27,2017,Serie Final,False,False,,rebotes,True,10
+20170827011830,2017-08-27,2017,Serie Final,False,False,,tiros_libres_anotados,True,10
+20170827011830,2017-08-27,2017,Serie Final,False,False,,tiros_libres_pct,True,10
+20170827011830,2017-08-27,2017,Serie Final,False,False,,canastos_3,True,10
+20170827011830,2017-08-27,2017,Serie Final,False,False,,canastos_3_pct,True,10
+20170827011830,2017-08-27,2017,Serie Final,False,False,,bloqueos,True,10
+20170827011830,2017-08-27,2017,Serie Final,False,False,,cortes_balon,True,10
+20170827011830,2017-08-27,2017,Serie Final,False,False,,turnovers,True,10
+20170827011830,2017-08-27,2017,Serie Final,False,False,,rebotes_ofensivos,True,10
+20170827011830,2017-08-27,2017,Serie Final,False,False,,asistencias,True,10
+20170906102844,2017-09-06,2017,Serie Final,False,False,,anotaciones,True,10
+20170906102844,2017-09-06,2017,Serie Final,False,False,,rebotes,True,10
+20170906102844,2017-09-06,2017,Serie Final,False,False,,tiros_libres_anotados,True,10
+20170906102844,2017-09-06,2017,Serie Final,False,False,,tiros_libres_pct,True,10
+20170906102844,2017-09-06,2017,Serie Final,False,False,,canastos_3,True,10
+20170906102844,2017-09-06,2017,Serie Final,False,False,,canastos_3_pct,True,10
+20170906102844,2017-09-06,2017,Serie Final,False,False,,bloqueos,True,10
+20170906102844,2017-09-06,2017,Serie Final,False,False,,cortes_balon,True,10
+20170906102844,2017-09-06,2017,Serie Final,False,False,,turnovers,True,10
+20170906102844,2017-09-06,2017,Serie Final,False,False,,rebotes_ofensivos,True,10
+20170906102844,2017-09-06,2017,Serie Final,False,False,,asistencias,True,10
+20170927051731,2017-09-27,2017,Serie Final,False,False,,anotaciones,True,10
+20170927051731,2017-09-27,2017,Serie Final,False,False,,rebotes,True,10
+20170927051731,2017-09-27,2017,Serie Final,False,False,,tiros_libres_anotados,True,10
+20170927051731,2017-09-27,2017,Serie Final,False,False,,tiros_libres_pct,True,10
+20170927051731,2017-09-27,2017,Serie Final,False,False,,canastos_3,True,10
+20170927051731,2017-09-27,2017,Serie Final,False,False,,canastos_3_pct,True,10
+20170927051731,2017-09-27,2017,Serie Final,False,False,,bloqueos,True,10
+20170927051731,2017-09-27,2017,Serie Final,False,False,,cortes_balon,True,10
+20170927051731,2017-09-27,2017,Serie Final,False,False,,turnovers,True,10
+20170927051731,2017-09-27,2017,Serie Final,False,False,,rebotes_ofensivos,True,10
+20170927051731,2017-09-27,2017,Serie Final,False,False,,asistencias,True,10
+20171007083624,2017-10-07,2017,Serie Final,False,False,,anotaciones,True,10
+20171007083624,2017-10-07,2017,Serie Final,False,False,,rebotes,True,10
+20171007083624,2017-10-07,2017,Serie Final,False,False,,tiros_libres_anotados,True,10
+20171007083624,2017-10-07,2017,Serie Final,False,False,,tiros_libres_pct,True,10
+20171007083624,2017-10-07,2017,Serie Final,False,False,,canastos_3,True,10
+20171007083624,2017-10-07,2017,Serie Final,False,False,,canastos_3_pct,True,10
+20171007083624,2017-10-07,2017,Serie Final,False,False,,bloqueos,True,10
+20171007083624,2017-10-07,2017,Serie Final,False,False,,cortes_balon,True,10
+20171007083624,2017-10-07,2017,Serie Final,False,False,,turnovers,True,10
+20171007083624,2017-10-07,2017,Serie Final,False,False,,rebotes_ofensivos,True,10
+20171007083624,2017-10-07,2017,Serie Final,False,False,,asistencias,True,10
+20171028115711,2017-10-28,2017,Serie Final,False,False,,anotaciones,True,10
+20171028115711,2017-10-28,2017,Serie Final,False,False,,rebotes,True,10
+20171028115711,2017-10-28,2017,Serie Final,False,False,,tiros_libres_anotados,True,10
+20171028115711,2017-10-28,2017,Serie Final,False,False,,tiros_libres_pct,True,10
+20171028115711,2017-10-28,2017,Serie Final,False,False,,canastos_3,True,10
+20171028115711,2017-10-28,2017,Serie Final,False,False,,canastos_3_pct,True,10
+20171028115711,2017-10-28,2017,Serie Final,False,False,,bloqueos,True,10
+20171028115711,2017-10-28,2017,Serie Final,False,False,,cortes_balon,True,10
+20171028115711,2017-10-28,2017,Serie Final,False,False,,turnovers,True,10
+20171028115711,2017-10-28,2017,Serie Final,False,False,,rebotes_ofensivos,True,10
+20171028115711,2017-10-28,2017,Serie Final,False,False,,asistencias,True,10
+20171107113526,2017-11-07,2017,Serie Final,False,False,,anotaciones,True,10
+20171107113526,2017-11-07,2017,Serie Final,False,False,,rebotes,True,10
+20171107113526,2017-11-07,2017,Serie Final,False,False,,tiros_libres_anotados,True,10
+20171107113526,2017-11-07,2017,Serie Final,False,False,,tiros_libres_pct,True,10
+20171107113526,2017-11-07,2017,Serie Final,False,False,,canastos_3,True,10
+20171107113526,2017-11-07,2017,Serie Final,False,False,,canastos_3_pct,True,10
+20171107113526,2017-11-07,2017,Serie Final,False,False,,bloqueos,True,10
+20171107113526,2017-11-07,2017,Serie Final,False,False,,cortes_balon,True,10
+20171107113526,2017-11-07,2017,Serie Final,False,False,,turnovers,True,10
+20171107113526,2017-11-07,2017,Serie Final,False,False,,rebotes_ofensivos,True,10
+20171107113526,2017-11-07,2017,Serie Final,False,False,,asistencias,True,10
+20171128072214,2017-11-28,2017,Serie Final,False,False,,anotaciones,True,10
+20171128072214,2017-11-28,2017,Serie Final,False,False,,rebotes,True,10
+20171128072214,2017-11-28,2017,Serie Final,False,False,,tiros_libres_anotados,True,10
+20171128072214,2017-11-28,2017,Serie Final,False,False,,tiros_libres_pct,True,10
+20171128072214,2017-11-28,2017,Serie Final,False,False,,canastos_3,True,10
+20171128072214,2017-11-28,2017,Serie Final,False,False,,canastos_3_pct,True,10
+20171128072214,2017-11-28,2017,Serie Final,False,False,,bloqueos,True,10
+20171128072214,2017-11-28,2017,Serie Final,False,False,,cortes_balon,True,10
+20171128072214,2017-11-28,2017,Serie Final,False,False,,turnovers,True,10
+20171128072214,2017-11-28,2017,Serie Final,False,False,,rebotes_ofensivos,True,10
+20171128072214,2017-11-28,2017,Serie Final,False,False,,asistencias,True,10
+20171208150943,2017-12-08,2017,Serie Final,False,False,,anotaciones,True,10
+20171208150943,2017-12-08,2017,Serie Final,False,False,,rebotes,True,10
+20171208150943,2017-12-08,2017,Serie Final,False,False,,tiros_libres_anotados,True,10
+20171208150943,2017-12-08,2017,Serie Final,False,False,,tiros_libres_pct,True,10
+20171208150943,2017-12-08,2017,Serie Final,False,False,,canastos_3,True,10
+20171208150943,2017-12-08,2017,Serie Final,False,False,,canastos_3_pct,True,10
+20171208150943,2017-12-08,2017,Serie Final,False,False,,bloqueos,True,10
+20171208150943,2017-12-08,2017,Serie Final,False,False,,cortes_balon,True,10
+20171208150943,2017-12-08,2017,Serie Final,False,False,,turnovers,True,10
+20171208150943,2017-12-08,2017,Serie Final,False,False,,rebotes_ofensivos,True,10
+20171208150943,2017-12-08,2017,Serie Final,False,False,,asistencias,True,10
+20171229080115,2017-12-29,2017,Serie Final,False,False,,anotaciones,True,10
+20171229080115,2017-12-29,2017,Serie Final,False,False,,rebotes,True,10
+20171229080115,2017-12-29,2017,Serie Final,False,False,,tiros_libres_anotados,True,10
+20171229080115,2017-12-29,2017,Serie Final,False,False,,tiros_libres_pct,True,10
+20171229080115,2017-12-29,2017,Serie Final,False,False,,canastos_3,True,10
+20171229080115,2017-12-29,2017,Serie Final,False,False,,canastos_3_pct,True,10
+20171229080115,2017-12-29,2017,Serie Final,False,False,,bloqueos,True,10
+20171229080115,2017-12-29,2017,Serie Final,False,False,,cortes_balon,True,10
+20171229080115,2017-12-29,2017,Serie Final,False,False,,turnovers,True,10
+20171229080115,2017-12-29,2017,Serie Final,False,False,,rebotes_ofensivos,True,10
+20171229080115,2017-12-29,2017,Serie Final,False,False,,asistencias,True,10
+20180108143537,2018-01-08,2018,,False,False,,anotaciones,True,0
+20180108143537,2018-01-08,2018,,False,False,,rebotes,True,0
+20180108143537,2018-01-08,2018,,False,False,,tiros_libres_anotados,True,0
+20180108143537,2018-01-08,2018,,False,False,,tiros_libres_pct,True,0
+20180108143537,2018-01-08,2018,,False,False,,canastos_3,True,0
+20180108143537,2018-01-08,2018,,False,False,,canastos_3_pct,True,0
+20180108143537,2018-01-08,2018,,False,False,,bloqueos,True,0
+20180108143537,2018-01-08,2018,,False,False,,cortes_balon,True,0
+20180108143537,2018-01-08,2018,,False,False,,turnovers,True,0
+20180108143537,2018-01-08,2018,,False,False,,rebotes_ofensivos,True,0
+20180108143537,2018-01-08,2018,,False,False,,asistencias,True,0
+20180129140256,2018-01-29,2018,,False,False,,anotaciones,True,0
+20180129140256,2018-01-29,2018,,False,False,,rebotes,True,0
+20180129140256,2018-01-29,2018,,False,False,,tiros_libres_anotados,True,0
+20180129140256,2018-01-29,2018,,False,False,,tiros_libres_pct,True,0
+20180129140256,2018-01-29,2018,,False,False,,canastos_3,True,0
+20180129140256,2018-01-29,2018,,False,False,,canastos_3_pct,True,0
+20180129140256,2018-01-29,2018,,False,False,,bloqueos,True,0
+20180129140256,2018-01-29,2018,,False,False,,cortes_balon,True,0
+20180129140256,2018-01-29,2018,,False,False,,turnovers,True,0
+20180129140256,2018-01-29,2018,,False,False,,rebotes_ofensivos,True,0
+20180129140256,2018-01-29,2018,,False,False,,asistencias,True,0
+20180208215735,2018-02-08,2018,,False,False,,anotaciones,True,0
+20180208215735,2018-02-08,2018,,False,False,,rebotes,True,0
+20180208215735,2018-02-08,2018,,False,False,,tiros_libres_anotados,True,0
+20180208215735,2018-02-08,2018,,False,False,,tiros_libres_pct,True,0
+20180208215735,2018-02-08,2018,,False,False,,canastos_3,True,0
+20180208215735,2018-02-08,2018,,False,False,,canastos_3_pct,True,0
+20180208215735,2018-02-08,2018,,False,False,,bloqueos,True,0
+20180208215735,2018-02-08,2018,,False,False,,cortes_balon,True,0
+20180208215735,2018-02-08,2018,,False,False,,turnovers,True,0
+20180208215735,2018-02-08,2018,,False,False,,rebotes_ofensivos,True,0
+20180208215735,2018-02-08,2018,,False,False,,asistencias,True,0
+20180301162510,2018-03-01,2018,,False,False,,anotaciones,True,0
+20180301162510,2018-03-01,2018,,False,False,,rebotes,True,0
+20180301162510,2018-03-01,2018,,False,False,,tiros_libres_anotados,True,0
+20180301162510,2018-03-01,2018,,False,False,,tiros_libres_pct,True,0
+20180301162510,2018-03-01,2018,,False,False,,canastos_3,True,0
+20180301162510,2018-03-01,2018,,False,False,,canastos_3_pct,True,0
+20180301162510,2018-03-01,2018,,False,False,,bloqueos,True,0
+20180301162510,2018-03-01,2018,,False,False,,cortes_balon,True,0
+20180301162510,2018-03-01,2018,,False,False,,turnovers,True,0
+20180301162510,2018-03-01,2018,,False,False,,rebotes_ofensivos,True,0
+20180301162510,2018-03-01,2018,,False,False,,asistencias,True,0
+20180312231852,2018-03-12,2018,,False,False,,anotaciones,True,0
+20180312231852,2018-03-12,2018,,False,False,,rebotes,True,0
+20180312231852,2018-03-12,2018,,False,False,,tiros_libres_anotados,True,0
+20180312231852,2018-03-12,2018,,False,False,,tiros_libres_pct,True,0
+20180312231852,2018-03-12,2018,,False,False,,canastos_3,True,0
+20180312231852,2018-03-12,2018,,False,False,,canastos_3_pct,True,0
+20180312231852,2018-03-12,2018,,False,False,,bloqueos,True,0
+20180312231852,2018-03-12,2018,,False,False,,cortes_balon,True,0
+20180312231852,2018-03-12,2018,,False,False,,turnovers,True,0
+20180312231852,2018-03-12,2018,,False,False,,rebotes_ofensivos,True,0
+20180312231852,2018-03-12,2018,,False,False,,asistencias,True,0
+20180404123254,2018-04-04,2018,,False,False,,anotaciones,True,0
+20180404123254,2018-04-04,2018,,False,False,,rebotes,True,0
+20180404123254,2018-04-04,2018,,False,False,,tiros_libres_anotados,True,0
+20180404123254,2018-04-04,2018,,False,False,,tiros_libres_pct,True,0
+20180404123254,2018-04-04,2018,,False,False,,canastos_3,True,0
+20180404123254,2018-04-04,2018,,False,False,,canastos_3_pct,True,0
+20180404123254,2018-04-04,2018,,False,False,,bloqueos,True,0
+20180404123254,2018-04-04,2018,,False,False,,cortes_balon,True,0
+20180404123254,2018-04-04,2018,,False,False,,turnovers,True,0
+20180404123254,2018-04-04,2018,,False,False,,rebotes_ofensivos,True,0
+20180404123254,2018-04-04,2018,,False,False,,asistencias,True,0
+20180413000308,2018-04-13,2018,,False,False,,anotaciones,True,0
+20180413000308,2018-04-13,2018,,False,False,,rebotes,True,0
+20180413000308,2018-04-13,2018,,False,False,,tiros_libres_anotados,True,0
+20180413000308,2018-04-13,2018,,False,False,,tiros_libres_pct,True,0
+20180413000308,2018-04-13,2018,,False,False,,canastos_3,True,0
+20180413000308,2018-04-13,2018,,False,False,,canastos_3_pct,True,0
+20180413000308,2018-04-13,2018,,False,False,,bloqueos,True,0
+20180413000308,2018-04-13,2018,,False,False,,cortes_balon,True,0
+20180413000308,2018-04-13,2018,,False,False,,turnovers,True,0
+20180413000308,2018-04-13,2018,,False,False,,rebotes_ofensivos,True,0
+20180413000308,2018-04-13,2018,,False,False,,asistencias,True,0
+20180505131719,2018-05-05,2018,Serie Regular,True,False,,anotaciones,True,0
+20180505131719,2018-05-05,2018,Serie Regular,True,False,,rebotes,True,0
+20180505131719,2018-05-05,2018,Serie Regular,True,False,,tiros_libres_anotados,True,0
+20180505131719,2018-05-05,2018,Serie Regular,True,False,,tiros_libres_pct,True,0
+20180505131719,2018-05-05,2018,Serie Regular,True,False,,canastos_3,True,0
+20180505131719,2018-05-05,2018,Serie Regular,True,False,,canastos_3_pct,True,0
+20180505131719,2018-05-05,2018,Serie Regular,True,False,,bloqueos,True,0
+20180505131719,2018-05-05,2018,Serie Regular,True,False,,cortes_balon,True,0
+20180505131719,2018-05-05,2018,Serie Regular,True,False,,turnovers,True,0
+20180505131719,2018-05-05,2018,Serie Regular,True,False,,rebotes_ofensivos,True,0
+20180505131719,2018-05-05,2018,Serie Regular,True,False,,asistencias,True,0
+20180513223739,2018-05-13,2018,Serie Regular,True,False,,anotaciones,True,10
+20180513223739,2018-05-13,2018,Serie Regular,True,False,,rebotes,True,10
+20180513223739,2018-05-13,2018,Serie Regular,True,False,,tiros_libres_anotados,True,10
+20180513223739,2018-05-13,2018,Serie Regular,True,False,,tiros_libres_pct,True,10
+20180513223739,2018-05-13,2018,Serie Regular,True,False,,canastos_3,True,10
+20180513223739,2018-05-13,2018,Serie Regular,True,False,,canastos_3_pct,True,10
+20180513223739,2018-05-13,2018,Serie Regular,True,False,,bloqueos,True,10
+20180513223739,2018-05-13,2018,Serie Regular,True,False,,cortes_balon,True,10
+20180513223739,2018-05-13,2018,Serie Regular,True,False,,turnovers,True,10
+20180513223739,2018-05-13,2018,Serie Regular,True,False,,rebotes_ofensivos,True,10
+20180513223739,2018-05-13,2018,Serie Regular,True,False,,asistencias,True,10
+20180710102122,2018-07-10,2018,Serie Regular,True,False,,anotaciones,True,10
+20180710102122,2018-07-10,2018,Serie Regular,True,False,,rebotes,True,10
+20180710102122,2018-07-10,2018,Serie Regular,True,False,,tiros_libres_anotados,True,10
+20180710102122,2018-07-10,2018,Serie Regular,True,False,,tiros_libres_pct,True,10
+20180710102122,2018-07-10,2018,Serie Regular,True,False,,canastos_3,True,10
+20180710102122,2018-07-10,2018,Serie Regular,True,False,,canastos_3_pct,True,10
+20180710102122,2018-07-10,2018,Serie Regular,True,False,,bloqueos,True,10
+20180710102122,2018-07-10,2018,Serie Regular,True,False,,cortes_balon,True,10
+20180710102122,2018-07-10,2018,Serie Regular,True,False,,turnovers,True,10
+20180710102122,2018-07-10,2018,Serie Regular,True,False,,rebotes_ofensivos,True,10
+20180710102122,2018-07-10,2018,Serie Regular,True,False,,asistencias,True,10
+20181105215221,2018-11-05,2018,Serie Final,False,False,,anotaciones,True,10
+20181105215221,2018-11-05,2018,Serie Final,False,False,,rebotes,True,10
+20181105215221,2018-11-05,2018,Serie Final,False,False,,tiros_libres_anotados,True,10
+20181105215221,2018-11-05,2018,Serie Final,False,False,,tiros_libres_pct,True,9
+20181105215221,2018-11-05,2018,Serie Final,False,False,,canastos_3,True,10
+20181105215221,2018-11-05,2018,Serie Final,False,False,,canastos_3_pct,True,10
+20181105215221,2018-11-05,2018,Serie Final,False,False,,bloqueos,True,10
+20181105215221,2018-11-05,2018,Serie Final,False,False,,cortes_balon,True,10
+20181105215221,2018-11-05,2018,Serie Final,False,False,,turnovers,True,10
+20181105215221,2018-11-05,2018,Serie Final,False,False,,rebotes_ofensivos,True,10
+20181105215221,2018-11-05,2018,Serie Final,False,False,,asistencias,True,10
+20190104223944,2019-01-04,2019,,False,False,,anotaciones,True,0
+20190104223944,2019-01-04,2019,,False,False,,rebotes,True,0
+20190104223944,2019-01-04,2019,,False,False,,tiros_libres_anotados,True,0
+20190104223944,2019-01-04,2019,,False,False,,tiros_libres_pct,True,0
+20190104223944,2019-01-04,2019,,False,False,,canastos_3,True,0
+20190104223944,2019-01-04,2019,,False,False,,canastos_3_pct,True,0
+20190104223944,2019-01-04,2019,,False,False,,bloqueos,True,0
+20190104223944,2019-01-04,2019,,False,False,,cortes_balon,True,0
+20190104223944,2019-01-04,2019,,False,False,,turnovers,True,0
+20190104223944,2019-01-04,2019,,False,False,,rebotes_ofensivos,True,0
+20190104223944,2019-01-04,2019,,False,False,,asistencias,True,0
+20190212013539,2019-02-12,2013,Serie Regular,True,True,BS26,anotaciones,True,10
+20190212013539,2019-02-12,2013,Serie Regular,True,True,BS26,rebotes,True,10
+20190212013539,2019-02-12,2013,Serie Regular,True,True,BS26,tiros_libres_anotados,True,10
+20190212013539,2019-02-12,2013,Serie Regular,True,True,BS26,tiros_libres_pct,True,10
+20190212013539,2019-02-12,2013,Serie Regular,True,True,BS26,canastos_3,True,10
+20190212013539,2019-02-12,2013,Serie Regular,True,True,BS26,canastos_3_pct,True,10
+20190212013539,2019-02-12,2013,Serie Regular,True,True,BS26,bloqueos,True,10
+20190212013539,2019-02-12,2013,Serie Regular,True,True,BS26,cortes_balon,True,10
+20190212013539,2019-02-12,2013,Serie Regular,True,True,BS26,turnovers,True,10
+20190212013539,2019-02-12,2013,Serie Regular,True,True,BS26,rebotes_ofensivos,True,10
+20190212013539,2019-02-12,2013,Serie Regular,True,True,BS26,asistencias,True,10
+20190330155344,2019-03-30,2019,Serie Regular,True,False,,anotaciones,True,10
+20190330155344,2019-03-30,2019,Serie Regular,True,False,,rebotes,True,10
+20190330155344,2019-03-30,2019,Serie Regular,True,False,,tiros_libres_anotados,True,10
+20190330155344,2019-03-30,2019,Serie Regular,True,False,,tiros_libres_pct,True,10
+20190330155344,2019-03-30,2019,Serie Regular,True,False,,canastos_3,True,10
+20190330155344,2019-03-30,2019,Serie Regular,True,False,,canastos_3_pct,True,10
+20190330155344,2019-03-30,2019,Serie Regular,True,False,,bloqueos,True,10
+20190330155344,2019-03-30,2019,Serie Regular,True,False,,cortes_balon,True,10
+20190330155344,2019-03-30,2019,Serie Regular,True,False,,turnovers,True,10
+20190330155344,2019-03-30,2019,Serie Regular,True,False,,rebotes_ofensivos,True,10
+20190330155344,2019-03-30,2019,Serie Regular,True,False,,asistencias,True,10
+20190414080102,2019-04-14,2019,Serie Regular,True,False,,anotaciones,True,10
+20190414080102,2019-04-14,2019,Serie Regular,True,False,,rebotes,True,10
+20190414080102,2019-04-14,2019,Serie Regular,True,False,,tiros_libres_anotados,True,10
+20190414080102,2019-04-14,2019,Serie Regular,True,False,,tiros_libres_pct,True,10
+20190414080102,2019-04-14,2019,Serie Regular,True,False,,canastos_3,True,10
+20190414080102,2019-04-14,2019,Serie Regular,True,False,,canastos_3_pct,True,10
+20190414080102,2019-04-14,2019,Serie Regular,True,False,,bloqueos,True,10
+20190414080102,2019-04-14,2019,Serie Regular,True,False,,cortes_balon,True,10
+20190414080102,2019-04-14,2019,Serie Regular,True,False,,turnovers,True,10
+20190414080102,2019-04-14,2019,Serie Regular,True,False,,rebotes_ofensivos,True,10
+20190414080102,2019-04-14,2019,Serie Regular,True,False,,asistencias,True,10
+20200601011614,2020-06-01,2020,Serie Regular,True,False,,anotaciones,True,10
+20200601011614,2020-06-01,2020,Serie Regular,True,False,,rebotes,True,10
+20200601011614,2020-06-01,2020,Serie Regular,True,False,,asistencias,True,10
+20200601011614,2020-06-01,2020,Serie Regular,True,False,,bloqueos,True,10
+20200601011614,2020-06-01,2020,Serie Regular,True,False,,cortes_balon,True,10
+20200601011614,2020-06-01,2020,Serie Regular,True,False,,rebotes_ofensivos,True,10
+20200601011614,2020-06-01,2020,Serie Regular,True,False,,canastos_3,True,10
+20200601011614,2020-06-01,2020,Serie Regular,True,False,,canastos_3_pct,True,10
+20200601011614,2020-06-01,2020,Serie Regular,True,False,,tiros_libres_anotados,True,10
+20200601011614,2020-06-01,2020,Serie Regular,True,False,,tiros_libres_pct,True,10
+20200601011614,2020-06-01,2020,Serie Regular,True,False,,turnovers,True,10
+20210901033350,2021-09-01,2021,Serie Regular,True,False,,anotaciones,True,10
+20210901033350,2021-09-01,2021,Serie Regular,True,False,,rebotes,True,10
+20210901033350,2021-09-01,2021,Serie Regular,True,False,,asistencias,True,10
+20210901033350,2021-09-01,2021,Serie Regular,True,False,,bloqueos,True,10
+20210901033350,2021-09-01,2021,Serie Regular,True,False,,cortes_balon,True,10
+20210901033350,2021-09-01,2021,Serie Regular,True,False,,rebotes_ofensivos,True,10
+20210901033350,2021-09-01,2021,Serie Regular,True,False,,canastos_3,True,10
+20210901033350,2021-09-01,2021,Serie Regular,True,False,,canastos_3_pct,True,10
+20210901033350,2021-09-01,2021,Serie Regular,True,False,,tiros_libres_anotados,True,10
+20210901033350,2021-09-01,2021,Serie Regular,True,False,,tiros_libres_pct,True,10
+20210901033350,2021-09-01,2021,Serie Regular,True,False,,turnovers,True,10
+20211026051849,2021-10-26,2021,Serie Regular,True,False,BS26,anotaciones,True,10
+20211026051849,2021-10-26,2021,Serie Regular,True,False,BS26,rebotes,True,10
+20211026051849,2021-10-26,2021,Serie Regular,True,False,BS26,asistencias,True,10
+20211026051849,2021-10-26,2021,Serie Regular,True,False,BS26,bloqueos,True,10
+20211026051849,2021-10-26,2021,Serie Regular,True,False,BS26,cortes_balon,True,10
+20211026051849,2021-10-26,2021,Serie Regular,True,False,BS26,rebotes_ofensivos,True,10
+20211026051849,2021-10-26,2021,Serie Regular,True,False,BS26,canastos_3,True,10
+20211026051849,2021-10-26,2021,Serie Regular,True,False,BS26,canastos_3_pct,True,10
+20211026051849,2021-10-26,2021,Serie Regular,True,False,BS26,tiros_libres_anotados,True,10
+20211026051849,2021-10-26,2021,Serie Regular,True,False,BS26,tiros_libres_pct,True,10
+20211026051849,2021-10-26,2021,Serie Regular,True,False,BS26,turnovers,True,10
+20211026052059,2021-10-26,2021,Semi Final,False,False,,anotaciones,True,10
+20211026052059,2021-10-26,2021,Semi Final,False,False,,rebotes,True,10
+20211026052059,2021-10-26,2021,Semi Final,False,False,,asistencias,True,10
+20211026052059,2021-10-26,2021,Semi Final,False,False,,bloqueos,True,5
+20211026052059,2021-10-26,2021,Semi Final,False,False,,cortes_balon,True,10
+20211026052059,2021-10-26,2021,Semi Final,False,False,,rebotes_ofensivos,True,10
+20211026052059,2021-10-26,2021,Semi Final,False,False,,canastos_3,True,1
+20211026052059,2021-10-26,2021,Semi Final,False,False,,canastos_3_pct,True,1
+20211026052059,2021-10-26,2021,Semi Final,False,False,,tiros_libres_anotados,True,10
+20211026052059,2021-10-26,2021,Semi Final,False,False,,tiros_libres_pct,True,0
+20211026052059,2021-10-26,2021,Semi Final,False,False,,turnovers,True,10

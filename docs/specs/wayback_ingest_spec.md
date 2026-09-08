@@ -145,6 +145,51 @@ is the `.asp` script name or `other`. `parametrized` ∈ {`yes`,`no`}.
   three and not the task queue's 1960s/1980s/2000s split).
 - Outputs: `data/raw/samples/*.html` + `*.meta.json`.
 
+### `src/parse_wayback.py`  (PHASE_3, `make parse`)
+- `main()` — reads every `data/raw/{campeonatos,lideres}/*.html` + its
+  `.meta.json`, writes interim + clean. No network. Idempotent (pure function of
+  the raw files).
+- Pure helpers unit-tested in `tests/test_parse_wayback.py`: `decode_html`,
+  `to_int`/`to_float` (PC2 — blank → None, never 0), `parse_season_cell`
+  (keeps the `YYYY-YYYY` split key, D3), `clean_equipo` (`*` → no-champion),
+  `split_annotation`, `classify_leader_table` (column-signature → category),
+  `split_player_cell`, `_season_complete`.
+- Category is keyed off the aux column headers between `JJ` and `Prom`
+  (`Tot`→anotaciones, `Def Off Tot`→rebotes, `TLI TLA`→tiros_libres_pct, …).
+  Unknown signatures (FBP/PIP/SCP, appeared ~2013) are kept in the interim long
+  file with `category_known=False`, never dropped, never guessed.
+- Dedup: champions → latest capture per season, cross-capture disagreement →
+  `confidence=disputed`. Leaders → **regular-season captures only** (`serie`
+  value `1`); latest such capture per (season, category); a "Serie Final" board
+  shows finals-only totals, verified against 2011/2017 raw, so those seasons are
+  reported as gaps, not folded in.
+- Outputs:
+  - `data/interim/champions_bsnpr_long.csv` — every ledger row of every capture
+  - `data/interim/player_leaders_long.csv` — every leader row of every capture
+    (+ `is_regular`, `career_view`, `grupo`, `category_known`, `stat_columns`)
+  - `data/interim/leader_capture_index.csv` — (capture, category) → row count
+  - `data/clean/champions_from_bsnpr.csv` — `season, champion_city, coach,
+    coach_flag, runner_up_city, no_champion, note, parse_flag, confidence,
+    source_id, source_url, retrieved_at, n_captures`. 92 rows, 1930–2020.
+  - `data/clean/player_season_leaders.csv` — `season, category, prom_kind, rank,
+    player_raw, club_raw, games, total, made, attempted, def_reb, off_reb, prom,
+    season_complete, serie_context, capture_date, note, confidence, source_id,
+    source_url, retrieved_at`. 1250 rows across 12 seasons (1986 + 2007–2021
+    minus 2011/2017/2015/2016).
+  - `data/clean/seasons_stats_tracked.csv` — season × 11 categories, `1`/`0`/``
+    (PC2 era signal; `0` = table present but empty in every capture).
+  - `data/clean/leader_coverage_gaps.csv` — every archived season →
+    `regular_season` | `playoff_only` | `not_archived` (PC4).
+
+### `src/verify_clean.py`  (`make verify`)
+- Read-only integrity gate over `data/clean/`. 6375 assertions: one row per
+  season, valid `confidence`, provenance on every row, contiguous ranks per
+  (season, category), pct rows carry made/attempted not `total`, 1986 era
+  signal (`bloqueos`/`cortes_balon`/`turnovers`/`rebotes_ofensivos` = 0), D3
+  (`1942` and `1942-1943` both present), D5 (1945 disputed), D6 (1953
+  no-champion), gaps file covers every archived season. Exits non-zero on any
+  failure.
+
 ### Observed source shapes (measured from the probes)
 
 **`campeonatos.asp`** — 1 content table:
@@ -201,15 +246,39 @@ category table is `# | Jugador | JJ | <stat cols> | Prom`:
    the `campeonatos.asp` one-liner? Series scores, MVPs?
 4. **`mvp.asp`** (6 distinct, 2007–2017) — award history. RealGM's award floor
    is 2014-15; this may go deeper.
-5. **The 1953 asterisk** — the 2007 `campeonatos.asp` capture has no footnote
-   text. Do any of the other 79 captures? (grep the tranche-A raw once fetched.)
-6. **`lideres.asp` capture dates vs. season boundaries** — need per-capture
-   classification: is snapshot X a completed season or mid-season? Compare
-   capture date to known BSN season calendars (Mar–Jun regular season roughly).
-7. **De-duplication across the ~96 tranche-B captures** — many will be the same
-   season at different mid-points. Keep the latest capture per season, or keep
-   all and let confidence/notes carry the as-of date? Leaning: keep the latest
-   200 whose capture date is after the season's known end; fall back to latest
-   available with a mid-season `notes` flag.
-8. **Character encoding** — pages are latin-1 / windows-1252 (Spanish accents).
-   Confirm and normalise to UTF-8 at the raw→interim boundary, not before.
+5. **The 1953 asterisk** — RESOLVED (PHASE_3). Later `campeonatos.asp` captures
+   spell it out: `1953  *  NO SE TERMINÓ (PONCE VS SAN GERMAN)` — the finals
+   series was never completed. Carried as `no_champion=True`, note = that text,
+   `confidence=single-source`. Answers D6's "no season / incomplete source"
+   fork: the season was held but not finished.
+6. **`lideres.asp` capture dates vs. season boundaries** — HANDLED (PHASE_3) with
+   a heuristic, not a full calendar: `season_complete = capture ≥ 1 Oct of the
+   season year`. Only 1986/2007/2021 clear it; the other 9 clean seasons carry
+   `season_complete=False` + a "season in progress — provisional" note. A real
+   BSN season calendar would tighten this; deferred to PHASE_4 reconcile.
+7. **De-duplication across the tranche-B captures** — RESOLVED (PHASE_3). Clean
+   file keeps **only regular-season captures** (`serie` value `1`), latest per
+   (season, category). "Serie Final" boards show finals-only totals (5–7 games,
+   verified against 2011/2017 raw) — not season leaders — so 2011 and 2017 have
+   no clean rows and appear in `leader_coverage_gaps.csv` as `playoff_only`.
+   2015–2016 were never archived. Net: 12 usable seasons.
+8. **Character encoding** — RESOLVED (PHASE_3). `decode_html`: strict utf-8 →
+   (if the page declares utf-8) lossy utf-8, which rescues the ~9 2011–2013
+   captures that are utf-8 with one stray invalid byte → cp1252 → latin-1.
+   Normalised to UTF-8 at the raw→interim boundary, never on the raw bytes.
+
+### New open questions from PHASE_3
+
+9. **`vida=2` captures** (2 files: anio=2010, anio=2013) — parsed into the
+   interim long file with `career_view=True`, excluded from the clean season
+   file. Their semantics are unresolved: the row counts (Ayuso 715 pts / 36 JJ
+   for "2013") look like regular+playoff aggregates, not lifetime totals. Do not
+   feed these anywhere until a second source clarifies what "Vida" = 2 means.
+10. **`grupo=BS19`** (2 files, 2014) — a different competition/division, kept in
+    interim with the `grupo` value, excluded from clean. Identify what BS19 is.
+11. **`parse_flag=review` champions** — 1934/1937 VEGA BAJA, 1943 TORTUGUERO:
+    real early-league cities not in `bsn_franchises.csv`. Not errors — they need
+    the franchise vocabulary extended (PHASE_4).
+12. **city → franchise** — deliberately NOT done in PHASE_3. `champions_from_
+    bsnpr.csv` stays city-based; D2 (franchise-as-events) and D5 (San Juan
+    ambiguity) make the mapping PHASE_4 reconcile work, not a parse step.

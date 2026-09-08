@@ -1,0 +1,93 @@
+season,champion_city,coach,coach_flag,runner_up_city,no_champion,note,parse_flag,confidence,source_id,source_url,retrieved_at,n_captures
+1930,SAN JUAN,MANUEL IGLESIA,,BAYAMON,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1931,SAN JUAN,MANUEL IGLESIA,,SAN GERMAN,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1932,SAN GERMAN,UBLADINO RAMIREZ,,ARECIBO,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1933,BAYAMON,ONOFRE CARBALLEIRA,,SAN GERMAN,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1934,VEGA BAJA,RODRIGO OTERO,,BAYAMON,False,,review,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1935,BAYAMON,ONOFRE CARBALLEIRA,,VEGA BAJA,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1936,SAN JUAN,RODRIGO OTERO,,FCLA. MARTIN,False,CLUB NAUTICO; captures disagree: SAN JUAN/FCLA. MARTIN | VEGA BAJA/FCLA. MARTIN,ok,disputed,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1937,VEGA BAJA,RODRIGO OTERO,,QUEBRADILLAS,False,,review,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1938,SAN GERMAN,UBALDINO RAMIREZ,,FCLA.MARTIN,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1939,SAN GERMAN,FELICIO TORREGROSA,,VEGA BAJA,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1940,SAN JUAN,ADOLFO PORRATA,,SAN GERMAN,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1941,SAN GERMAN,RAUL GONZALEZ,,RIO PIEDRAS,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1942,SAN GERMAN,ARMANDO TORRES,,SANTURCE,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1942-1943,SAN GERMAN,ARMANDO TORRES,,SANTURCE,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,42
+1943,TORTUGUERO,ARQUELIO TORRES,,SAN JUAN,False,,review,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1944,UPR,FELICIO TORREGROSA,,SAN JUAN,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1945,SAN JUAN,ADOLFO PORRATA,,UPR,False,D5: ledger city 'SAN JUAN' does not disambiguate Capitalinos de San Juan vs Santos de San Juan,ok,disputed,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1946,RIO PIEDRAS,RAMON CESTERO,,ARECIBO,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1947,SAN GERMAN,ARMANDO TORRES,,RIO PIEDRAS,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1948,SAN GERMAN,VICTOR MURATI,,ARECIBO,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1949,SAN GERMAN,RAUL GONZALEZ,,PONCE,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1950,SAN GERMAN,LUIS F. SAMBOLIN,,SAN JUAN,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1951,UPR,VICTOR M. PEREZ,,SANTURCE,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1952,PONCE,TEX WINTERS,,SANTURCE,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1953,,,,,True,NO SE TERMINÓ (PONCE VS SAN GERMAN),ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1954,PONCE,TEX WINTERS,,SAN GERMAN,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1955,RIO PIEDRAS,VICTOR M. PEREZ,,SAN GERMAN,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1956,RIO PIEDRAS,VICTOR M. PEREZ,,SAN GERMAN,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1957,RIO PIEDRAS,VICTOR M.PEREZ,,SAN GERMAN,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1958,SAN JUAN,FLOYD BROWN,,PONCE,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1959,ARECIBO,LOU ROSSINI,,RIO PIEDRAS,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1960,PONCE,HOWARD SHAMON,,RIO PIEDRAS,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1961,PONCE,JACK McKENNEY,,ARECIBO,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1962,SANTURCE,FUFI SANTORI,,RIO PIEDRAS,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1963,RIO PIEDRAS,LOU ROSSINI,,PONCE,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1964,PONCE,RED HOLZMAN,,SANTURCE,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1965,PONCE,RED HOLZMAN,,SAN GERMAN,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1966,PONCE,RED HOLZMAN,,ARECIBO,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1967,BAYAMON,ROY RUBBINS FUFI SANTORI,multi?,PONCE,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1968,SANTURCE,LOU ROSSINI,,PONCE,False,captures disagree: SANTURCE/PONCE | SANTURCE/RIO PIEDRAS,ok,disputed,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1969,BAYAMON,ART LOCHE,,RIO PIEDRAS,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1970,QUEBRADILLAS,ERICK GELDART,,BAYAMON,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1971,BAYAMON,ART LOCHE,,RIO PIEDRAS,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1972,BAYAMON,TOM NISSALKE FUFI SANTORI,multi?,QUEBRADILLAS,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1973,BAYAMON,DEL HARRIS,,QUEBRADILLAS,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1974,BAYAMON,DEL HARRIS,,SAN JUAN,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1975,BAYAMON,DEL HARRIS TOM NISSALKE,multi?,QUEBRADILLAS,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1976,RIO PIEDRAS,BERNIE BICKERSTAFF,,QUEBRADILLAS,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1977,QUEBRADILLAS,RAY AMALBERT,,RIO PIEDRAS,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1978,QUEBRADILLAS,RAY AMALBERT,,GUAYNABO,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1979,QUEBRADILLAS,RAY AMALBERT,,CAROLINA,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1980,GUAYNABO,JULIO TORO,,QUEBRADILLAS,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1981,BAYAMON,GENE BARTOW ROBERT CORN,multi?,GUAYNABO,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1982,GUAYNABO,JULIO TORO,,QUEBRADILLAS,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1983,CANOVANAS,HERB BROWN,,GUAYNABO,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1984,CANOVANAS,JULIO TORO,,ISABELA,False,COPA OLIMPICA,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1985,SAN GERMAN,FLOR MELENDEZ,,GUAYNABO,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1986,AIBONITO,CHARLIE BERMUDEZ,,SAN GERMAN,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1987,MOROVIS,MIGUEL MERCADO,,AIBONITO,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1988,BAYAMON,ROBERT CORN,,CANOVANAS,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1989,GUAYNABO,JULIO TORO,,PONCE,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1990,PONCE,MIGUEL MERCADO,,GUAYNABO,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1991,SAN GERMAN,CARLOS MORALES,,GUAYAMA,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1992,PONCE,JULIO TORO,,ARECIBO,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1993,PONCE,JULIO TORO,,GUAYNABO,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1994,SAN GERMAN,CARLOS MORALES,,GUAYAMA,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1995,BAYAMON,FLOR MELENDEZ,,PONCE,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1996,BAYAMON,FLOR MELENDEZ,,PONCE,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1997,SAN GERMAN,MIGUEL MERCADO,,CAROLINA,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1998,SANTURCE,JULIO TORO,,PONCE,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+1999,SANTURCE,JULIO TORO,,QUEBRADILLAS,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+2000,SANTURCE,JULIO TORO,,QUEBRADILLAS,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+2001,SANTURCE,JULIO TORO,,BAYAMON,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+2002,PONCE,CARLOS MARIO RIVERA,,BAYAMON,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+2003,SANTURCE,JULIO TORO,,PONCE,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+2004,PONCE,MANOLO CINTRON,,COAMO,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+2005,ARECIBO,CARLOS MARIO RIVERA,,BAYAMON,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,79
+2006,CAGUAS,LEONEL ARILL,,SANTURCE,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,55
+2007,SANTURCE,TONY RUIZ,,ARECIBO,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,55
+2008,ARECIBO,DAVID ROSARIO,,CAROLINA,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,55
+2009,BAYAMON,JULIO TORO,,QUEBRADILLAS,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,45
+2010,ARECIBO,DAVID ROSARIO,,BAYAMON,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,45
+2011,ARECIBO,DAVID ROSARIO,,QUEBRADILLAS,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,42
+2012,MAYAGUEZ,EDDIE CASIANO,,ARECIBO,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,37
+2013,QUEBRADILLAS,CARLOS CALCAÑO,,PONCE,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,31
+2014,PONCE,NELSON COLÓN,,ARECIBO,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,21
+2015,PONCE,NELSON COLÓN,,ARECIBO,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,18
+2016,ARECIBO,"RAFAEL ""PACHY"" CRUZ",,BAYAMÓN,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,18
+2017,QUEBRADILLAS,CARLOS GONZÁLEZ,,ARECIBO,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,8
+2018,ARECIBO,"RAFAEL ""PACHY"" CRUZ",,BAYAMÓN,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,6
+2019,AGUADA,CARLOS GONZALEZ,,PONCE,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,3
+2020,BAYAMÓN,NELSON COLÓN,,QUEBRADILLAS,False,,ok,single-source,wayback_bsnpr,https://web.archive.org/web/20210901033356id_/https://www.bsnpr.com/estadisticas/campeonatos.asp,2026-09-08T03:50:09Z,1

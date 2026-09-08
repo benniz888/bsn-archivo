@@ -12,7 +12,13 @@ samples:
 fetch:
 	.venv/bin/python -m src.fetch_wayback
 
+parse:
+	.venv/bin/python -m src.parse_wayback
+
+verify:
+	.venv/bin/python -m src.verify_clean
+
 test:
 	.venv/bin/pytest -q
 
-.PHONY: setup enumerate samples fetch test
+.PHONY: setup enumerate samples fetch parse verify test

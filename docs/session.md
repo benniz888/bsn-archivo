@@ -1,39 +1,51 @@
 # SESSION STATE — TIER 3
 <!-- Authoritative for current state and task priority. Update at every phase exit. -->
 
-**SESSION:** 001 — repo bootstrap + Wayback enumeration
-**DATE:** 2026-09-07
+**SESSION:** 002 — PHASE_3_PARSE (continues 001)
+**DATE:** 2026-09-08
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
+
+Session 001 (2026-09-07): PHASE_1_ENUMERATE + PHASE_2_FETCH. Env bootstrapped,
+Wayback CDX enumerated (central finding negative — see below), 193 snapshots
+fetched to `data/raw/`.
 
 ---
 
 [SESSION_STATE]
 
-PHASE_1_ENUMERATE complete. Environment bootstrapped (`.venv`, 19 passing tests),
-Wayback CDX enumerated, coverage matrix produced, 3-snapshot probe run, ingest
-spec written.
+PHASE_3_PARSE complete. The 193 fetched snapshots are parsed to
+provenance-complete `data/clean/` CSVs; `make verify` is green (6375 assertions);
+61 pytest pass.
 
-**The central finding is negative and it matters (PC4, resolves B2):** the
-1957–2004 per-season `lideres.asp?anio=YYYY` pages that Wikipedia cites and that
-this whole repo was built to recover **were never archived with content**. They
-were crawled once (2021-07-09, IABot) *after* bsnpr.com became a JS app — all
-302→404. Only `anio=1986` survived, by luck, from a 2017 crawl.
+**Clean outputs (all PC3-complete, `confidence` ∈ {verified, single-source,
+disputed}):**
+- `champions_from_bsnpr.csv` — 92 rows, 1930–2020. City-based champion + coach +
+  runner-up ledger. 1953 = `no_champion` ("NO SE TERMINÓ (PONCE VS SAN GERMAN)",
+  resolves D6). 1942 **and** 1942-1943 both present as keys (D3). 1945 / 1936 /
+  1968 = `disputed`. 3 rows `parse_flag=review` (early-league cities).
+- `player_season_leaders.csv` — 1250 rows, 12 seasons (1986 + 2007–2021 minus
+  2011, 2015, 2016, 2017), 11 stat categories, ranks 1–10. `player_raw`/
+  `club_raw` verbatim (D1 resolution deferred). 9 of 12 seasons flagged
+  `season_complete=False` (last regular-season capture predates season end).
+- `seasons_stats_tracked.csv` — the PC2 era signal. 1986 shows 0 for
+  blocks/steals/turnovers/off-reb (not tracked that era); 2010 shows 0 for a few
+  (early capture) — recomputed across all series views to reduce that noise.
+- `leader_coverage_gaps.csv` — every archived season → regular_season /
+  playoff_only / not_archived (PC4).
 
-**What is recoverable from Wayback instead** (all small, all Phase 2):
-- `campeonatos.asp` — 79 distinct HTML captures. A full champion/coach/runner-up
-  ledger **1930→2005+**, by city. Directly informs D3/D5/D6.
-- `lideres.asp` (no params) — ~96 distinct captures 2007–2021, 11 stat-category
-  leader tables each, showing whatever season was current at capture time.
-  Reaches ~4 years below RealGM's 2011-12 floor.
-- ~10 parametrized `lideres.asp?anio=` 200s (1986, 2007–2014, 2021).
-- ~18 other `/estadisticas/*.asp` scripts archived (`enciclopedia`, `mvp`,
-  `finales`, `posiciones`, per-category leaders) — unprobed, Phase 3+ candidates.
+**Cross-validation datapoint:** parsed 1986 scoring leader = "Torres, George"
+(Cariduros) 29.8 ppg — exact match to seed `bsn_scoring_champions.csv` 1986
+(Georgie Torres, Cariduros de Fajardo, 29.8). Independent confirmation the parse
+is faithful.
 
-Everything pre-2007 now goes to the roadmap Phase 4 newspaper track.
+**Session 001 central finding (unchanged, PC4, resolves B2):** the 1957–2004
+per-season `lideres.asp?anio=YYYY` pages Wikipedia cites **were never archived
+with content** (302→404, IABot 2021-07-09 crawl post-JS-rewrite). Only
+`anio=1986` survived. What Wayback *did* yield is what PHASE_2/3 processed:
+`campeonatos.asp` ledger (1930→2020) + 2007–2021 `lideres.asp` leader boards.
+Everything pre-2007 season-leader data → roadmap Phase 4 newspaper track.
 
-Prior context: repo scaffolded from a chat session (`docs/research/summary.md`).
-The Wayback query is what this repo existed to run; it is now run. Full detail in
-`docs/coverage_wayback.md` and `docs/specs/wayback_ingest_spec.md`.
+Full detail: `docs/coverage_wayback.md`, `docs/specs/wayback_ingest_spec.md`.
 
 ---
 
@@ -96,19 +108,41 @@ category tables matching the `# | Jugador | JJ` signature.
 **Deferred** (owner said A-C only): probing the other ~18 archived scripts
 (`lideres_e.asp`, `enciclopedia.asp`, `finales.asp`, `mvp.asp` — spec open Qs 1–4).
 
-### PHASE_3_PARSE — queued, do not start
-Parse `data/raw/{campeonatos,lideres}/` → `data/interim/` → validated
-`data/clean/` with full provenance (PC3). Two output streams:
-- `champions_from_bsnpr.csv` from tranche A (AÑO/EQUIPO/DIRIGENTE/SUB.CAMPEON,
-  city→franchise, handle the 1953 `*`, annotation bleed, multi-coach cells).
-- `player_season_leaders.csv` from tranches B/C (11 stat categories, parse
-  `Jugador` = "Apellido, Nombre (Club)" into raw fields — resolve identity
-  later per D1, never at ingest; dedup captures per season keeping latest
-  post-season-end; `stats_tracked` from which category tables have rows).
-See `docs/specs/wayback_ingest_spec.md` [INTERFACES] + [OPEN_QUESTIONS].
+### PHASE_3_PARSE — COMPLETE (2026-09-08)
+
+- T3.1 — DONE. `src/parse_wayback.py` (`make parse`). Pure, no network,
+  idempotent. Column-signature category detection (spec pt 3), not table index.
+- T3.2 — DONE. Tranche A → `champions_bsnpr_long.csv` (6486 rows, every capture)
+  → `champions_from_bsnpr.csv` (92 seasons). 1953 `*` → `no_champion` + note
+  (resolves spec Q5 / D6). 1984 "COPA OLIMPICA - CANOVANAS" annotation split
+  off. Multi-coach cells: read_html collapsed the separating spaces, so the
+  split point is lost — kept verbatim, `coach_flag=multi?` on the 4 affected
+  rows (1967/1972/1975/1981). Cross-capture disagreement → `disputed` (1936,
+  1968; plus 1945 per D5).
+- T3.3 — DONE. Tranches B/C → `player_leaders_long.csv` (10345 rows) +
+  `leader_capture_index.csv` → `player_season_leaders.csv` (1250 rows).
+  `Jugador` parsed to `player_raw`/`club_raw` verbatim (D1 later). Dedup:
+  regular-season captures only (`serie` value 1), latest per (season, category)
+  — resolves spec Q7. `season_complete` heuristic (spec Q6). Encoding via
+  `decode_html` (spec Q8).
+- T3.4 — DONE. `seasons_stats_tracked.csv` (PC2) + `leader_coverage_gaps.csv`
+  (PC4). 2011/2017 = playoff_only, 2015/2016 = not_archived.
+- T3.5 — DONE. `src/verify_clean.py` (`make verify`), 6375 assertions, green.
+  `tests/test_parse_wayback.py` — 38 new unit tests (61 total pass).
+- T3.6 — DONE (this edit). Spec [INTERFACES]/[OPEN_QUESTIONS] updated.
+
+**Phase exit:** status delivered, paused (P6). Nothing committed (P4).
+
+**Deliberately deferred out of PHASE_3** (belongs in PHASE_4, logged as spec
+Q9–Q12): city→franchise mapping (D2/D5); the 2 `vida=2` career-view captures;
+the 2 `grupo=BS19` captures; extending the franchise-city vocabulary for the 3
+`review`-flagged champion rows.
 
 ### PHASE_4_RECONCILE — queued, do not start
-Cross-check parsed leaders against the existing seed CSVs. Resolve D5 (1945), D6 (1953, 2024). Rebuild the game pool.
+Cross-check parsed leaders/champions against the existing seed CSVs. Resolve
+D5 (1945), D6 (1953 now has a source — 2024 runner-up still open; Wayback
+`campeonatos.asp` stops at 2020). Map champion cities → franchises as events
+(D2). Rebuild the game pool. Fold in spec Q9–Q12.
 
 ### PHASE_5_APP_SYNC — queued, do not start
 Generate the app's hardcoded JS data blocks in `app/bsn_archivo.html` from
@@ -173,6 +207,29 @@ Decisions made this session:
   `data/raw/` is gitignored (10 MB of HTML); the manifests must survive a
   cold-start resume (H5), so they go to tracked `data/interim/`.
 
+Decisions made session 002 (PHASE_3):
+- **D-007 — category by column signature, unknowns kept not dropped.** The aux
+  headers between `JJ` and `Prom` map to the 11 known categories; the ~3
+  advanced tables that appeared in 2013 (FBP/PIP/SCP) have no confident meaning,
+  so they land in the interim long file with `category_known=False` and are
+  excluded from the clean file. Nothing invented (PC1), nothing lost (PC5).
+- **D-008 — clean leader file is regular-season only.** A "Serie Final" leaders
+  board shows finals-only totals (5–7 games — checked against 2011 & 2017 raw),
+  not season leaders. Keying on the `serie` <select> *value* == "1" (the option
+  *text* is corrupted by unclosed tags). Seasons with no regular-season capture
+  (2011, 2017) → `leader_coverage_gaps.csv`, not folded in with a caveat (PC4).
+- **D-009 — `season_complete` is a heuristic, flagged not filtered.** capture ≥
+  1 Oct of season year ⇒ settled; else `season_complete=False` + provisional
+  note. 9 of 12 clean seasons are provisional (the archive's last regular-season
+  capture usually predates the actual season end). Downstream reconcile (P4)
+  tightens this against a real BSN calendar.
+- **D-010 — city→franchise NOT done at parse.** D2 (franchise-as-events) + D5
+  (San Juan ambiguity) make it reconcile work. `champions_from_bsnpr.csv` stays
+  city-based; 3 unusual early cities carry `parse_flag=review`.
+- **D-011 — `retrieved_at` = the `.meta.json` mtime** (the PHASE_2 fetch time,
+  2026-09-07), since the fetch step recorded no explicit retrieval timestamp.
+  The Wayback capture date lives separately in `capture_date` / `source_url`.
+
 ---
 
 [VERIFICATION_LOG]
@@ -181,6 +238,7 @@ Decisions made this session:
 |---|---|---|---|---|---|---|
 | PHASE_1 | PASS | PASS | PASS | PASS | PASS | V1: T1.1–T1.7 all delivered (T1.5 deviation documented, D-003). V2: PC5 raw immutable + cached; PC6 sequential/≥1.5s/backoff; PC1 no fabrication — negative finding reported straight. V3: no secrets; `.env` gitignored; UA carries no PII. V4: `make enumerate` + `make samples` run clean; 19 pytest pass; `read_html` verified on all 3 probes. V5: snake_case modules, English code/comments. |
 | PHASE_2 | PASS | PASS | PASS | PASS | PASS | V1: T2.1–T2.5 done; 193/193 digests fetched, 0 failed; manifests written. V2: PC5 raw bytes unmodified + never re-fetched (idempotent re-run confirmed); PC6 one request per digest, ≥1.5s spacing, backoff; PC3 provenance captured per file in `.meta.json`. V3: no secrets; raw HTML gitignored. V4: 23 pytest pass; sampled files parse with `read_html`. V5: snake_case, English. |
+| PHASE_3 | PASS | PASS | PASS | PASS | PASS | V1: T3.1–T3.6 done — both clean streams + stats_tracked + gaps file produced. V2: PC1 (1953/disputes surfaced, no guesses); PC2 (`to_int`/`to_float` → None on blank, verify asserts pct rows carry no `total`); PC3 (`make verify` enforces provenance on every row); PC4 (`leader_coverage_gaps.csv`, `season_complete`, `parse_flag`); PC5 (parse only reads `data/raw/`, idempotent); D3/D5/D6 asserted in verify. V3: no secrets; parse/verify read-only on raw. V4: `make parse` + `make verify` green (6375 checks); 61 pytest pass; 1986 parse cross-validates against seed scoring CSV (29.8 ppg exact). V5: snake_case, English comments, "why" only. |
 
 ---
 
@@ -206,19 +264,32 @@ Decisions made this session:
 | `data/raw/samples/*.html` + `*.meta.json` | **new, S001** | 3 probe snapshots + fetch metadata. gitignored. |
 | `data/interim/cdx_inventory.csv` | **new, S001** | 1562 Wayback captures, one per row. Regenerable from raw. |
 | `docs/coverage_wayback.md` | **new, S001** | Coverage matrix. Read this first for Phase 2 planning. |
-| `docs/specs/wayback_ingest_spec.md` | **new, S001** | Ingest strategy, observed source shapes, 8 open questions. |
+| `docs/specs/wayback_ingest_spec.md` | new S001, updated S002 | Ingest strategy, source shapes, PHASE_3 interfaces + outputs, open questions Q1–Q12 (Q5–Q8 resolved). |
 | `.venv/` | **new, S001** | Python 3.14, deps from requirements.txt. gitignored. |
 | `src/fetch_wayback.py` | **new, S001** | PHASE_2 tranche A–C bulk fetcher. `make fetch`. Idempotent. |
 | `data/raw/campeonatos/*.html` (+meta) | **new, S001** | 79 champion-ledger snapshots, 2007–2021. gitignored. |
 | `data/raw/lideres/*.html` (+meta) | **new, S001** | 114 season-leader snapshots, 2007–2021. gitignored. |
 | `data/interim/fetch_manifest_{campeonatos,lideres}.csv` | **new, S001** | Every capture → its local raw file. Tracked. Phase 3 input. |
+| `src/parse_wayback.py` | **new, S002** | PHASE_3 parser. `make parse`. Pure, idempotent, no network. |
+| `src/verify_clean.py` | **new, S002** | PHASE_3 integrity gate. `make verify`. 6375 assertions. |
+| `tests/test_parse_wayback.py` | **new, S002** | 38 unit tests over the parse helpers. |
+| `data/interim/champions_bsnpr_long.csv` | **new, S002** | 6486 rows — every ledger row of every capture. Regenerable. |
+| `data/interim/player_leaders_long.csv` | **new, S002** | 10345 rows — every leader row of every capture. Regenerable. |
+| `data/interim/leader_capture_index.csv` | **new, S002** | 1315 rows — (capture, category) → row count. Dedup ledger. |
+| `data/clean/champions_from_bsnpr.csv` | **new, S002** | 92 rows, 1930–2020. City-based champion/coach/runner-up + provenance. |
+| `data/clean/player_season_leaders.csv` | **new, S002** | 1250 rows, 12 seasons × 11 categories. `player_raw`/`club_raw` unresolved (D1). |
+| `data/clean/seasons_stats_tracked.csv` | **new, S002** | Season × 11 categories, 1/0/blank. PC2 era signal. |
+| `data/clean/leader_coverage_gaps.csv` | **new, S002** | Every archived season → regular_season/playoff_only/not_archived. PC4. |
 
 ---
 
 [NEXT_ACTIONS]
 
-1. **PHASE_3_PARSE** — parse the 193 fetched snapshots to provenance-complete
-   `data/clean/` CSVs. Scope written in TASK_QUEUE. Needs a go-ahead (P6).
+1. **PHASE_4_RECONCILE** — needs a go-ahead (P6). Cross-check
+   `champions_from_bsnpr.csv` / `player_season_leaders.csv` against the seed
+   CSVs. Map champion cities → franchises as events (D2). Resolve D5 (1945),
+   confirm D6's 2024 runner-up (NOT in Wayback — `campeonatos.asp` stops at
+   2020). Fold in spec Q9–Q12. Rebuild the game pool.
 2. Roadmap Phase 4 newspaper track — still the only path to pre-2007 season
    stats. Federación / BSN league office email (roadmap Phase 6). Human-side.
 3. Human-side: B1 DevTools recon (unchanged).
