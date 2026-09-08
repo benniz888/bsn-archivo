@@ -31,6 +31,11 @@ Session 002:
   fetcher (hard 500/tranche); box-score + play-by-play parsers. Fetch is a slow
   throttled multi-day job, run one tranche at a time (PC6), tracked in
   PHASE_3E_FETCH_REMAINING below.
+- PHASE_3G_HISTORIC_FOLLOWUP (QUEUED, not started) — 3 root-level pre-2007
+  targets from an owner /btw: `lidereshistoricos.asp?t=*`, `lideres2002.asp`,
+  root `mvp.asp`. Enumerate `t` values, probe one per value, confirm the
+  category from the page itself, then fetch + parse. **Gated behind the
+  `a2gamestatpbp` chain finishing — one archive stream at a time.**
 
 ---
 
@@ -420,6 +425,57 @@ season** games (Jan-2010 crawls captured late-2009 games).
 `boxscore.asp` 2007 (814); `gameinfo.asp` 2007 (944) + 2008 (509);
 `pogamestat.asp` 2007 (1329) + 2008 (774) + 2009 (935);
 `a2gamestatpbp.asp` 2003 (1555) — 2002 already approved + fetching.
+
+### PHASE_3G_HISTORIC_FOLLOWUP — QUEUED, DO NOT START YET (owner /btw, 2026-09-08)
+
+**HARD GATE: do not fetch or enumerate against Wayback until the
+`a2gamestatpbp` chain (`PHASE_3E_FETCH_REMAINING`, task `bzjo92jo3`) has fully
+completed. One archive stream at a time — PC6.**
+
+Three root-level pre-2007 targets the earlier probes noted but never ingested,
+in this order:
+
+1. **`lidereshistoricos.asp?t=*`** — the year-by-year single-season-leaders
+   record. `?t=3` is probed (archive_probe_spec): scoring `AÑO|JUGADOR|EQUIPO|
+   JJ|P/A|PPJ` 1948→2001 carrying BOTH total P/A and PPJ (straddles the D4
+   boundary), plus 3 more `AÑO|JUGADOR|EQUIPO` tables (rebounds 1958→2001,
+   assists 1964→2001, one more) player+team, no numbers. **Other `t` values
+   are NOT yet known** — root CDX so far only shows `?t=3` + one bare hit.
+2. **`lideres2002.asp`** — the 2002-season sibling of `lideres2001.asp`
+   (already ingested: phase-split player leader tables `Anotaciones/Rebotes/
+   Asistencias/Tiros Libres`, `Jugador JJ TP Prom`). Root CDX: 9 captures,
+   4 distinct digests, param hit `?grupo=BS22&serie=1`. 2002-05→2003-10.
+3. **`mvp.asp` at root** (`bsnpr.com/mvp.asp`, NOT `/estadisticas/mvp.asp`
+   which is the 2007+ one already in `coverage_wayback.md`). Root CDX: ~10
+   captures, params unknown. Unprobed — could be award history predating the
+   2007+ `historic_awards.csv` range, could be a redirect stub.
+
+**APPROACH (owner /btw — follow exactly):**
+- **Enumerate `t` (and other param) values FIRST.** Fresh CDX query per target
+  (`bsnpr.com/lidereshistoricos.asp*`, `.../lideres2002.asp*`, `.../mvp.asp*`),
+  collect every distinct query string + capture count, write to
+  `data/interim/cdx_historic_followup.csv`.
+- **Probe ONE capture per distinct param value.** Fetch with `id_` raw suffix
+  via `polite_get`. **Read the page header / `<title>` / first table caption to
+  confirm what that value actually is. DO NOT assume what any `t` value means**
+  (t=3 being "históricos" does not tell us t=1, t=2, … — Spanish category
+  labels only, confirmed from the page itself).
+- **Then fetch the rest** of each confirmed-useful param value (all targets are
+  well under the 500 gate — no owner approval needed for the bulk fetch, but
+  report counts before fetching per PC4).
+- **Parse into `data/clean/` with full provenance** (PC3). Likely outputs:
+  extend `historic_scoring_champions.csv` / a new `historic_season_leaders.csv`
+  (rebounds/assists all-time-by-year), `player_season_leaders_2002.csv`
+  (mirror the 2000_2002 schema), `historic_awards.csv` rows if `mvp.asp` has
+  pre-2007 content. `player_raw` stays verbatim — D1 resolution is a later join.
+- Keep raw in `data/raw/pre2007/{lidereshistoricos,lideres2002,mvp}/` (PC5).
+
+**REPORT at phase exit: what each `t` value turned out to be** (the confirmed
+category per param value), coverage counts, and what landed in `data/clean/`.
+
+Cross-refs: `docs/specs/archive_probe_spec.md` (t=3 probe),
+`docs/specs/pre2007_ingest_spec.md` (lideres200x schema, D4 metric boundary),
+`data/clean/historic_scoring_champions.csv` (1948–2004, the overlap to dedup).
 
 ### PHASE_4_RECONCILE — COMPLETE (2026-09-08, owner-requested)
 
