@@ -49,16 +49,19 @@ hiatus as a dated row with its own `confidence`. The genuinely murky ones are
 **4. The conflicts file is the deliverable, not a scratch pad.**
 `reconcile_conflicts.csv`: `topic, season, source_a, value_a, source_b,
 value_b, agree_on, note`. Every row names two distinct sources with two values
-and picks neither. `verify` asserts both sides are populated. Current contents
-(5):
+and picks neither. `verify` asserts both sides are populated.
 
-| topic | season | source A | source B |
-|---|---|---|---|
-| champion | 1936 | en.wiki: Club Nautico de San Juan | bsnpr: SAN JUAN (city) |
-| champion | 1945 | en.wiki: Capitalinos de San Juan | es.wiki: Santos de San Juan (D5) |
-| runner_up | 1968 | en.wiki: Cardenales de Rio Piedras | bsnpr: PONCE (city) |
-| scoring_champion | 1971 | seed: Teofilo Cruz (22.4 ppg) | bsnpr historic: Frank Cortés (566 pts) |
-| scoring_champion | 1974 | seed: Hector Blondet (25.1 ppg) | bsnpr historic: Raymond Dalmau (799 pts) |
+The reconcile *found* 5 disagreements; the owner resolved 4 of them on
+2026-09-08 (see [OWNER_RESOLUTIONS]). **`reconcile_conflicts.csv` now holds 1
+row — 1945, genuinely unresolved.**
+
+| topic | season | source A | source B | status |
+|---|---|---|---|---|
+| champion | 1936 | en.wiki: Club Nautico de San Juan | bsnpr: SAN JUAN (city) | resolved — city-vs-club naming |
+| champion | **1945** | en.wiki: Capitalinos de San Juan | es.wiki: Santos de San Juan (D5) | **flagged — no source resolves it** |
+| runner_up | 1968 | en.wiki: Cardenales de Rio Piedras | bsnpr: PONCE (city) | resolved — bsnpr internal noise |
+| scoring_champion | 1971 | seed: Teofilo Cruz (22.4 ppg) | bsnpr historic: Frank Cortés (566 pts) | resolved — D4 dual metric |
+| scoring_champion | 1974 | seed: Hector Blondet (25.1 ppg) | bsnpr historic: Raymond Dalmau (799 pts) | resolved — D4 dual metric |
 
 **5. A conflict on one slot does not taint the other.** 1968's *champion*
 (Cangrejeros / Santurce) is agreed by both sources → `champion_franchise_id`
@@ -74,6 +77,34 @@ runner-up (Gallitos de la UPR) is agreed.
 - **D6** — `1953` → `agreement=no_champion`, note "NO SE TERMINÓ (PONCE VS SAN
   GERMAN)"; seed and bsnpr concur there was no champion. 2024 runner-up
   (Osos de Manatí) is `seed_only`, noted "bsnpr campeonatos.asp ends at 2020".
+
+---
+
+## [OWNER_RESOLUTIONS]
+
+Recorded in `src/reconcile.py` `OWNER_RESOLUTIONS` (dated, auditable). The seed
+CSVs and `champions_from_bsnpr.csv` are untouched — only the reconciled join
+reflects these.
+
+- **Scoring 1971 & 1974 — not conflicts, the D4 metric boundary.**
+  `scoring_champions_reconciled.csv` gives these `agreement=dual_metric_d4`,
+  `confidence=verified`, and records **both** winners with the metric labelled:
+  `ppg_champion` (the seed) and `total_points_champion` (the bsnpr historic
+  ledger). Neither is "the" champion. 1971: Teófilo Cruz (22.4 ppg) / Frank
+  Cortés (566 pts). 1974: Héctor Blondet (25.1 ppg) / Raymond Dalmau (799 pts).
+- **Champion 1936 & runner-up 1968 — city-vs-club naming, not disagreement.**
+  `agreement=agree`, both forms in the row (`seed_champion` / `bsnpr_*_city`),
+  the franchise resolved to the seed's specific club.
+  - 1936 → `club_nautico_san_juan`. Note also records that bsnpr's own
+    `campeonatos.asp` captures varied (SAN JUAN / VEGA BAJA).
+  - 1968 runner-up → `cardenales_rio_piedras`. Note records that bsnpr captures
+    disagreed internally over time (RIO PIEDRAS in some, PONCE in others); the
+    RIO PIEDRAS captures concur with the seed.
+  Both carry `confidence=single-source` (bsnpr's own record is internally
+  inconsistent for these two).
+- **Champion 1945 — genuine conflict, left `disputed`.** No current source
+  resolves EN-wiki (Capitalinos de San Juan) vs ES-wiki (Santos de San Juan).
+  Stays the sole row in `reconcile_conflicts.csv`.
 
 ---
 

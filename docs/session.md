@@ -21,11 +21,13 @@ Session 002:
   table: **3,303 players** (1,076 with a full profile), league ids,
   accent-stripped names, ~25k aliases, **423 season-corroborated id-map links**,
   828-row review queue. Tranche B fetch (1,078 profiles) finished.
-- PHASE_4_RECONCILE (uncommitted) — reconciled champions + scoring champions
-  against the Wikipedia seed. **87/98 champion seasons independently agree**
-  (seed↔bsnpr) → `verified`. Franchise master + D2 lineage events + city/club
-  maps. **5 conflicts flagged with both sources, NO winner picked** — owner
-  decision needed (`reconcile_conflicts.csv`).
+- PHASE_4_RECONCILE (committed ac4a23e + owner-resolution follow-up) —
+  reconciled champions + scoring champions against the Wikipedia seed. 89/98
+  champion seasons `agree` (87 seed↔bsnpr `verified` + 1936/1968 owner-resolved).
+  Franchise master + D2 lineage events + city/club maps. Of the 5 disagreements
+  the reconcile found, the owner resolved 4 on 2026-09-08; **1945 (D5) is the
+  sole remaining `reconcile_conflicts.csv` row.** 3 disputed franchise-lineage
+  events awaiting an owner decision.
 
 ---
 
@@ -285,9 +287,9 @@ Owner instruction: reconcile the parsed data against the seed CSVs. **For every
 disputed row, present the conflict with both sources and leave it flagged — do
 NOT pick a winner without asking.** Spec: `docs/specs/reconcile_spec.md`.
 
-**Status: T4.1–T4.5 DONE (champions + scoring). Game-pool + player-id-join
-deferred.** 87/98 champion seasons agree seed↔bsnpr → confidence `verified`;
-**5 conflicts flagged, no winner picked** (see `reconcile_conflicts.csv`).
+**Status: T4.1–T4.5 DONE. Owner resolved 4 of the 5 conflicts 2026-09-08.**
+89/98 champion seasons `agree`; **`reconcile_conflicts.csv` now = 1 row (1945,
+D5 — genuinely unresolved).** Game-pool + player-id-join deferred.
 
 - T4.1 — DONE. `src/reconcile.py` franchise layer. `data/clean/`:
   - `franchises.csv` — franchise master (seed + the names that only appear in
@@ -309,16 +311,23 @@ deferred.** 87/98 champion seasons agree seed↔bsnpr → confidence `verified`;
 - T4.3 — DONE. `scoring_champions_reconciled.csv`, 68 seasons: 24 agree, 2
   conflict (1971, 1974), 31 historic_only (1948–65, 92–04), 11 leaders_only
   (2007+). `metric_era` per D4.
-- T4.4 — DONE. **`reconcile_conflicts.csv`** — 5 rows, both sources + both
-  values on every one, **no winner picked**: champion 1936 (Club Nautico vs
-  bsnpr SAN JUAN), champion 1945 (D5: EN Capitalinos vs ES Santos), runner_up
-  1968 (Cardenales vs bsnpr PONCE), scoring 1971 (Cruz 22.4 ppg vs Cortés 566
-  pts), scoring 1974 (Blondet 25.1 ppg vs Dalmau 799 pts).
-- T4.5 — DONE. `verify_reconcile()` (39,514 checks green); 14 new unit tests
-  (105 total pass); `docs/specs/reconcile_spec.md`.
+- T4.4 — DONE. `reconcile_conflicts.csv`. The reconcile found 5 disagreements;
+  **owner resolved 4 on 2026-09-08** (`src/reconcile.py` `OWNER_RESOLUTIONS`,
+  dated + auditable; seed CSVs untouched):
+  - scoring 1971 & 1974 → `dual_metric_d4`, both winners recorded with metric
+    labelled (ppg vs total points), confidence `verified` — the D4 boundary,
+    not a conflict.
+  - champion 1936 → `agree`, `club_nautico_san_juan` (city-vs-club naming; note
+    also records bsnpr's own SAN JUAN/VEGA BAJA capture variance).
+  - runner-up 1968 → `agree`, `cardenales_rio_piedras` (note: bsnpr captures
+    disagreed internally over time, RIO PIEDRAS / PONCE).
+  - **1945 → left `disputed`.** The only row left in `reconcile_conflicts.csv`.
+- T4.5 — DONE. `verify_reconcile()` (40,114 checks green); 17 unit tests
+  (108 total pass); `docs/specs/reconcile_spec.md` [OWNER_RESOLUTIONS].
 
-**Phase exit:** champions + scoring reconciled; conflicts flagged for owner.
-Paused (P6). Nothing committed (P4).
+**Phase exit:** champions + scoring reconciled; 4 conflicts owner-resolved, 1945
+left flagged. 3 disputed franchise-lineage events presented to owner for a
+decision. Paused (P6).
 
 NOT this phase (reconcile_spec Q4/Q6/Q7): game-pool rebuild; applying
 `player_id_map` to the observation tables (waits on tranche B); career-leader /
@@ -484,11 +493,13 @@ Decisions made session 002 (PHASE_3D):
   usable now and sharpens as profiles land.
 
 Decisions made session 002 (PHASE_4):
-- **D-027 — no conflict is auto-resolved.** Owner instruction + PC1. Every
-  seed↔archive disagreement goes to `reconcile_conflicts.csv` with both values
-  and both sources; `champions_reconciled` / `scoring_champions_reconciled` mark
-  the row `conflict`/`disputed` and leave the contested slot's franchise_id
-  blank. A conflict on the runner-up does NOT blank the (agreed) champion.
+- **D-027 — no conflict is auto-resolved by code.** Owner instruction + PC1.
+  The reconcile flags disagreements; a human clears them. Resolutions live in
+  `src/reconcile.py` `OWNER_RESOLUTIONS`, dated 2026-09-08, and are recorded in
+  the row `note` prefixed `OWNER <date>:`. The seed CSVs and
+  `champions_from_bsnpr.csv` are never edited. 2026-09-08 batch: 1971/1974 →
+  `dual_metric_d4` (both winners, metric-labelled); 1936/1968 → `agree`
+  (city-vs-club naming); 1945 → stays `disputed`.
 - **D-028 — seed + bsnpr concurring → `verified`.** The seed cites en.wiki; the
   bsnpr ledger is the league's own site via Wayback — independent. 87/98
   champion seasons concur and are promoted from `single-source` to `verified`.
@@ -513,7 +524,7 @@ Decisions made session 002 (PHASE_4):
 | PHASE_3B | PASS | PASS | PASS | PASS | PASS | V1: T3B.1–T3B.4 done — 4 targets probed (5/5/4/5 captures) + 3 root-level `lideres*` follow-ups; verdicts + spec delivered; sample-only respected (no bulk fetch, no parser, no clean output). V2: PC5 raw bytes cached unmodified in `data/raw/probe/`; PC6 sequential via `polite_get`, ≥1.5s, backoff recovered from a Wayback 503 burst; PC1 findings reported straight incl. the "B2 partially reopened" reversal. V3: no secrets. V4: 61 pytest still pass (probe adds no code path to the pipeline); every probed capture inspected. V5: snake_case, English. |
 | PHASE_3C | PASS | PASS | PASS | PASS | PASS | V1: T3C.1–T3C.5 done — enumerate + coverage report + fetch (315/315, 0 fail) + 5 clean outputs + verify + tests. Owner's 500-gate honoured: `jugador.asp` (5986) and game scripts reported, not fetched. V2: PC1 (1952 dispute = 2 rows, clipped `<pre>` values flagged not rewritten, root campeonatos not re-parsed to avoid dup rows); PC2 (`fga`/`fgm` split, `to_int`→None on blank); PC3 (`verify_pre2007` asserts provenance on every row); PC4 (2 DB-error captures counted + reported, gated tranches in coverage_root.md); PC5 (parse reads `data/raw/pre2007/` only, idempotent); PC6 (`polite_get`, one GET/digest, rode out a long Wayback 503 throttle); D4 (`metric_era` flip asserted). V3: no secrets; raw CDX + raw HTML gitignored. V4: `make parse-pre2007` + `make verify` green (13,410 checks); 79 pytest pass; `equiposstat` made≤att verified, 1986/1952 cross-checks hold. V5: snake_case, English, "why" comments. |
 | PHASE_3D | PASS | PASS | PASS | PASS | PASS | V1: T3D.1–T3D.3 done — canonical spine (3,303 players) + aliases + career-seasons + id_map + review queue; tranche B enrichment fetch backgrounded (partial), T3D.4 = re-run parse on completion. V2: PC1 (no fuzzy match in id_map — D1; ambiguous → review queue); PC2 (`1/1/1900` → null, blank stats stay blank); PC3 (`verify_players` asserts provenance on every canonical row); PC4 (review queue is a first-class output with candidate ids + reason); PC6 (`polite_get`, one GET per id, background throttle); D1 (accent-stripped `normalized_name`, alias table, match needs season corroboration not name alone — asserted in verify). V3: no secrets. V4: `make parse-players` + `make verify` green (38,706 checks); 91 pytest pass (+12); id_map spot-checks correct (Carmona→37, Arroyo Carlos→273 via season). V5: snake_case, English. |
-| PHASE_4 | PASS | PASS | PASS | PASS | PASS | V1: T4.1–T4.5 done — franchise layer (4 files) + champions_reconciled + scoring_champions_reconciled + reconcile_conflicts + verify + tests. Game-pool / id-join deferred with scope notes. V2: PC1 (D-027: no conflict auto-resolved — both sources recorded, contested slot left blank); D2 (`franchise_events.csv`, murky lineage = disputed); D3 (`1942`+`1942-1943` both kept); D4 (`metric_era` flip asserted); D5 (1945 flagged, not picked); D6 (1953 no_champion). PC3 (provenance / `sources` on every reconciled row). V3: no secrets; pure module, no network. V4: `make reconcile` + `make verify` green (39,514 checks); 105 pytest pass (+14); 87/98 champion seasons independently corroborated (seed↔bsnpr) → `verified`. V5: snake_case, English, D2/D5 citations in comments. |
+| PHASE_4 | PASS | PASS | PASS | PASS | PASS | V1: T4.1–T4.5 done + owner-resolution follow-up. Franchise layer + champions_reconciled + scoring_champions_reconciled + reconcile_conflicts + verify + tests. V2: PC1 (D-027: code flags, human clears; `OWNER_RESOLUTIONS` dated + auditable; seed CSVs untouched; 1945 left `disputed`); D2 (`franchise_events.csv`, murky lineage = disputed); D3 (`1942`+`1942-1943` both kept); D4 (`metric_era` flip + 1971/1974 `dual_metric_d4` recording BOTH winners); D5 (1945 stays flagged); D6 (1953 no_champion). PC3 (provenance / `sources` per row). V3: no secrets; pure module. V4: `make reconcile` + `make verify` green (40,114 checks); 108 pytest pass (+17); 87/98 seed↔bsnpr `verified`. V5: snake_case, English, D2/D5 citations in comments. |
 
 ---
 
@@ -592,7 +603,7 @@ Decisions made session 002 (PHASE_4):
 | `data/clean/club_code_map.csv` | **new, S002 (PHASE_4)** | lideres200x 5-char + equiposstat 2-letter codes → franchise_id. |
 | `data/clean/champions_reconciled.csv` | **new, S002 (PHASE_4)** | 98 seasons, seed↔bsnpr, `agreement` status. Derived join. |
 | `data/clean/scoring_champions_reconciled.csv` | **new, S002 (PHASE_4)** | 68 seasons, seed + historic + 2007+ leaders. |
-| `data/clean/reconcile_conflicts.csv` | **new, S002 (PHASE_4)** | **5 flagged conflicts, both sources, no winner picked.** Owner decision needed. |
+| `data/clean/reconcile_conflicts.csv` | **new, S002 (PHASE_4)** | 1 flagged conflict (1945/D5). 4 others owner-resolved 2026-09-08 (see `OWNER_RESOLUTIONS`). |
 | `docs/specs/reconcile_spec.md` | **new, S002 (PHASE_4)** | Reconcile decisions, the conflicts, franchise/D2 handling, open Qs. |
 
 ---

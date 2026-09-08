@@ -276,9 +276,12 @@ def verify_reconcile(c: Checker) -> None:
                 f"conflicts: {tag} has both sides populated")
         c.check(r["source_a"] != r["source_b"], f"conflicts: {tag} two distinct sources")
     ckeys = {(r["topic"], r["season"]) for r in conflicts}
-    for expect in (("champion", "1936"), ("champion", "1945"), ("runner_up", "1968"),
-                   ("scoring_champion", "1971"), ("scoring_champion", "1974")):
-        c.check(expect in ckeys, f"conflicts: {expect[0]} {expect[1]} is flagged")
+    # after the owner's 2026-09-08 resolutions only 1945 remains a true conflict
+    c.check(("champion", "1945") in ckeys, "conflicts: champion 1945 (D5) still flagged")
+    for resolved in (("champion", "1936"), ("runner_up", "1968"),
+                     ("scoring_champion", "1971"), ("scoring_champion", "1974")):
+        c.check(resolved not in ckeys,
+                f"conflicts: {resolved[0]} {resolved[1]} was resolved by the owner — not a conflict")
 
     ch = _read("champions_reconciled.csv")
     STATUSES = {"agree", "conflict", "seed_only", "bsnpr_only", "no_champion"}
@@ -288,7 +291,11 @@ def verify_reconcile(c: Checker) -> None:
         for col in ("champion_franchise_id", "runner_up_franchise_id"):
             c.check(not r[col] or r[col] in fids, f"{tag}: {col} is a real franchise", r[col])
         if r["agreement"] == "agree":
-            c.check(r["confidence"] == "verified", f"{tag}: two-source agreement -> verified")
+            # verified unless an owner resolution assigned its own confidence
+            c.check(r["confidence"] in ("verified", "single-source"),
+                    f"{tag}: agree row has a valid confidence", r["confidence"])
+            if "OWNER" in r["note"]:
+                c.check("2026-09-08" in r["note"], f"{tag}: owner resolution is dated")
         if r["agreement"] == "conflict":
             c.check(r["confidence"] == "disputed", f"{tag}: conflict -> disputed")
             c.check(bool(r["note"]), f"{tag}: conflict row explains the disagreement")
@@ -299,11 +306,19 @@ def verify_reconcile(c: Checker) -> None:
             "champions: 1942-1943 kept as a distinct bsnpr_only row (D3)")
 
     sc = _read("scoring_champions_reconciled.csv")
-    SC_ST = {"agree", "conflict", "seed_only", "historic_only", "leaders_only", "none"}
+    SC_ST = {"agree", "conflict", "seed_only", "historic_only", "leaders_only",
+             "none", "dual_metric_d4"}
     for r in sc:
         c.check(r["agreement"] in SC_ST, f"scoring {r['season']}: agreement status valid", r["agreement"])
         want = "total_points" if int(r["season"]) <= 1970 else "ppg"
         c.check(r["metric_era"] == want, f"scoring {r['season']}: metric_era == {want} (D4)")
+        if r["agreement"] == "dual_metric_d4":
+            c.check(r["ppg_champion"] and r["total_points_champion"],
+                    f"scoring {r['season']}: dual_metric row records both champions")
+    by_sc = {r["season"]: r for r in sc}
+    for yr in ("1971", "1974"):
+        c.check(by_sc.get(yr, {}).get("agreement") == "dual_metric_d4",
+                f"scoring {yr}: owner-resolved to dual_metric_d4 (D4 boundary)")
 
 
 def main() -> int:

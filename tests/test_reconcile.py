@@ -1,6 +1,19 @@
 """Unit coverage for the pure helpers in src/reconcile.py."""
 
-from src.reconcile import ncity, resolve_city, resolve_seed_name
+from src.reconcile import OWNER_RESOLUTIONS, ncity, resolve_city, resolve_seed_name
+
+
+class TestOwnerResolutions:
+    def test_1936_and_1968_resolved_to_agree(self):
+        assert OWNER_RESOLUTIONS[("champion", "1936")]["kind"] == "agree"
+        assert OWNER_RESOLUTIONS[("runner_up", "1968")]["kind"] == "agree"
+
+    def test_scoring_1971_1974_dual_metric(self):
+        assert OWNER_RESOLUTIONS[("scoring_champion", "1971")]["kind"] == "dual_metric"
+        assert OWNER_RESOLUTIONS[("scoring_champion", "1974")]["kind"] == "dual_metric"
+
+    def test_1945_has_no_resolution(self):
+        assert ("champion", "1945") not in OWNER_RESOLUTIONS
 
 
 class TestNcity:
@@ -22,9 +35,10 @@ class TestResolveCity:
     def test_san_juan_default(self):
         assert resolve_city("SAN JUAN", "1930")[0] == "capitalinos_san_juan"
 
-    def test_san_juan_1936_flagged_as_dispute(self):
+    def test_san_juan_1936_no_longer_a_city_dispute(self):
+        # 1936 is handled by OWNER_RESOLUTIONS now, not a CITY_MAP dispute
         fid, disp, unmapped = resolve_city("SAN JUAN", "1936")
-        assert fid == "capitalinos_san_juan" and "Club Nautico" in disp
+        assert fid == "capitalinos_san_juan" and not disp
 
     def test_san_juan_1945_d5_dispute(self):
         _, disp, _ = resolve_city("SAN JUAN", "1945")

@@ -1,69 +1,69 @@
-season,metric_era,agreement,seed_player,seed_value,historic_player,historic_total,historic_ppg,leaders_player,leaders_ppg,note,confidence,sources
-1948,total_points,historic_only,,,RAUL FELICIANO,497,24.8,,,,single-source,historic
-1949,total_points,historic_only,,,RAUL FELICIANO,477,26.5,,,,single-source,historic
-1950,total_points,historic_only,,,RAUL FELICIANO,428,23.8,,,,single-source,historic
-1951,total_points,historic_only,,,RAUL FELICIANO,537,29.8,,,,single-source,historic
-1952,total_points,historic_only,,,FUFI SANTORI,453,28.3,,,,single-source,historic
-1953,total_points,historic_only,,,RAUL FELICIANO,443,21.1,,,,single-source,historic
-1954,total_points,historic_only,,,DOMINGO GONZALEZ,506,24.1,,,,single-source,historic
-1955,total_points,historic_only,,,RAUL FELICIANO,591,28.1,,,,single-source,historic
-1956,total_points,historic_only,,,RAFAEL VALLE,693,28.5,,,,single-source,historic
-1957,total_points,historic_only,,,JOHNNY BAEZ,394,24.6,,,,single-source,historic
-1958,total_points,historic_only,,,PACHIN VICENS,337,18.7,,,,single-source,historic
-1959,total_points,historic_only,,,EVELIO DROZ,407,19.4,,,,single-source,historic
-1960,total_points,historic_only,,,TEO CRUZ,464,22.3,,,,single-source,historic
-1961,total_points,historic_only,,,JOHNNY BAEZ,492,23.4,,,,single-source,historic
-1962,total_points,historic_only,,,TEO CRUZ,312,22.3,,,,single-source,historic
-1963,total_points,historic_only,,,MARTIN ANZA,405,19.3,,,,single-source,historic
-1964,total_points,historic_only,,,JOHNNY BAEZ,523,24.9,,,,single-source,historic
-1965,total_points,historic_only,,,RICHIE PIETRI,419,19.0,,,,single-source,historic
-1966,total_points,agree,Jaime Frontera,400,JAIME FRONTERA,400,19.0,,,,verified,historic; seed
-1967,total_points,agree,Adolfo Porrata,516,ADOLFO PORRATA,516,19.1,,,,verified,historic; seed
-1968,total_points,agree,Raymond Dalmau,499,RAYMOND DALMAU,499,23.2,,,,verified,historic; seed
-1969,total_points,agree,Neftali Rivera,602,NEFTALI RIVERA,602,22.3,,,,verified,historic; seed
-1970,total_points,agree,Raymond Dalmau,546,RAYMOND DALMAU,546,22.8,,,,verified,historic; seed
-1971,ppg,conflict,Teofilo Cruz,22.4,FRANK CORTES,566,21.0,,,seed=Teofilo Cruz; historic=FRANK CORTES,disputed,historic; seed
-1972,ppg,agree,Samuel Betancourt,26.9,SAMMY BETANCOURT,726,26.9,,,,verified,historic; seed
-1973,ppg,agree,Neftali Rivera,25.2,NEFTALI RIVERA,806,25.9,,,,verified,historic; seed
-1974,ppg,conflict,Hector Blondet,25.1,RAYMOND DALMAU,799,25.0,,,seed=Hector Blondet; historic=RAYMOND DALMAU,disputed,historic; seed
-1975,ppg,agree,Samuel Betancourt,22.9,SAMMY BETANCOURT,734,22.9,,,,verified,historic; seed
-1976,ppg,agree,Samuel Betancourt,21.9,SAMMY BETANCOURT,702,21.9,,,,verified,historic; seed
-1977,ppg,agree,Georgie Torres,30.1,GEORGIE TORRES,963,30.1,,,,verified,historic; seed
-1978,ppg,agree,Georgie Torres,29.1,GEORGIE TORRES,787,29.1,,,,verified,historic; seed
-1979,ppg,agree,Georgie Torres,32.9,GEORGIE TORRES,987,32.9,,,,verified,historic; seed
-1980,ppg,agree,Mario Morales,32.9,MARIO MORALES,988,32.9,,,,verified,historic; seed
-1981,ppg,agree,Rolando Frazer,33.4,ROLANDO FRAZER,1035,33.4,,,,verified,historic; seed
-1982,ppg,agree,Rolando Frazer,34.2,ROLANDO FRAZER,1127,34.2,,,,verified,historic; seed
-1983,ppg,agree,Jim Maldonado,30.6,JIM MALDONADO,1010,30.6,,,,verified,historic; seed
-1984,ppg,agree,Georgie Torres,28.8,GEORGIE TORRES,835,28.8,,,,verified,historic; seed
-1985,ppg,agree,Georgie Torres,33.5,GEORGIE TORRES,1007,33.5,,,,verified,historic; seed
-1986,ppg,agree,Georgie Torres,29.8,GEORGIE TORRES,983,29.7,"Torres, George",29.8,,verified,historic; leaders; seed
-1987,ppg,agree,Georgie Torres,35.5,GEORGIE TORRES,1065,35.5,,,,verified,historic; seed
-1988,ppg,agree,Edgar de Leon,29.5,EDGAR LEON,916,30.5,,,,verified,historic; seed
-1989,ppg,agree,Wesley Correa,30.9,WESLEY CORREA,926,30.9,,,,verified,historic; seed
-1990,ppg,agree,Edgar de Leon,31.8,EDGAR LEON,954,31.8,,,,verified,historic; seed
-1991,ppg,agree,Edwin Pellot,31.5,EDWIN PELLOT,944,31.5,,,,verified,historic; seed
-1992,ppg,historic_only,,,WESLEY CORREA,865,26.2,,,,single-source,historic
-1993,ppg,historic_only,,,MARIO MORALES,850,25.0,,,,single-source,historic
-1994,ppg,historic_only,,,ORLANDO VEGA,733,25.3,,,,single-source,historic
-1995,ppg,historic_only,,,JOEL CURBELO,790,25.5,,,,single-source,historic
-1996,ppg,historic_only,,,EDDIE CASIANO,849,25.7,,,,single-source,historic
-1997,ppg,historic_only,,,EDDIE CASIANO,799,26.6,,,,single-source,historic
-1998,ppg,historic_only,,,ORLANDO VEGA,724,25.0,,,,single-source,historic
-1999,ppg,historic_only,,,ANTHONY FARMER,680,23.4,,,,single-source,historic
-2000,ppg,historic_only,,,WILLIE SIMMS,633,22.6,,,,single-source,historic
-2001,ppg,historic_only,,,CARL SIMPSON,605,23.3,,,,single-source,historic
-2002,ppg,historic_only,,,ELIAS AYUSO,703,24.2,,,,single-source,historic
-2003,ppg,historic_only,,,CARLOS ESCALERA,719,24.8,,,,single-source,historic
-2004,ppg,historic_only,,,CHRISTIAN DALMAU,697,24.0,,,,single-source,historic
-2007,ppg,leaders_only,,,,,,"Figueroa, Angel Luis",24.7,,single-source,leaders
-2008,ppg,leaders_only,,,,,,"Melendez, Ricardo",22.2,,single-source,leaders
-2009,ppg,leaders_only,,,,,,"Pellot, Jesse",23.7,,single-source,leaders
-2010,ppg,leaders_only,,,,,,"Perez, Rafael Alb",22.5,,single-source,leaders
-2012,ppg,leaders_only,,,,,,"Thornton, Al",25.3,,single-source,leaders
-2013,ppg,leaders_only,,,,,,"Shannon, Terrence",18.2,,single-source,leaders
-2014,ppg,leaders_only,,,,,,"Harris, Mike",20.1,,single-source,leaders
-2018,ppg,leaders_only,,,,,,"Terry, Reyshawn",23.1,,single-source,leaders
-2019,ppg,leaders_only,,,,,,"Suero, Gerardo",19.6,,single-source,leaders
-2020,ppg,leaders_only,,,,,,"Rodriguez, Jose G.",17.7,,single-source,leaders
-2021,ppg,leaders_only,,,,,,"Bass, Paris",22.7,,single-source,leaders
+season,metric_era,agreement,seed_player,seed_value,historic_player,historic_total,historic_ppg,leaders_player,leaders_ppg,ppg_champion,ppg_value,total_points_champion,total_points_value,note,confidence,sources
+1948,total_points,historic_only,,,RAUL FELICIANO,497,24.8,,,,,,,,single-source,historic
+1949,total_points,historic_only,,,RAUL FELICIANO,477,26.5,,,,,,,,single-source,historic
+1950,total_points,historic_only,,,RAUL FELICIANO,428,23.8,,,,,,,,single-source,historic
+1951,total_points,historic_only,,,RAUL FELICIANO,537,29.8,,,,,,,,single-source,historic
+1952,total_points,historic_only,,,FUFI SANTORI,453,28.3,,,,,,,,single-source,historic
+1953,total_points,historic_only,,,RAUL FELICIANO,443,21.1,,,,,,,,single-source,historic
+1954,total_points,historic_only,,,DOMINGO GONZALEZ,506,24.1,,,,,,,,single-source,historic
+1955,total_points,historic_only,,,RAUL FELICIANO,591,28.1,,,,,,,,single-source,historic
+1956,total_points,historic_only,,,RAFAEL VALLE,693,28.5,,,,,,,,single-source,historic
+1957,total_points,historic_only,,,JOHNNY BAEZ,394,24.6,,,,,,,,single-source,historic
+1958,total_points,historic_only,,,PACHIN VICENS,337,18.7,,,,,,,,single-source,historic
+1959,total_points,historic_only,,,EVELIO DROZ,407,19.4,,,,,,,,single-source,historic
+1960,total_points,historic_only,,,TEO CRUZ,464,22.3,,,,,,,,single-source,historic
+1961,total_points,historic_only,,,JOHNNY BAEZ,492,23.4,,,,,,,,single-source,historic
+1962,total_points,historic_only,,,TEO CRUZ,312,22.3,,,,,,,,single-source,historic
+1963,total_points,historic_only,,,MARTIN ANZA,405,19.3,,,,,,,,single-source,historic
+1964,total_points,historic_only,,,JOHNNY BAEZ,523,24.9,,,,,,,,single-source,historic
+1965,total_points,historic_only,,,RICHIE PIETRI,419,19.0,,,,,,,,single-source,historic
+1966,total_points,agree,Jaime Frontera,400,JAIME FRONTERA,400,19.0,,,,,,,,verified,historic; seed
+1967,total_points,agree,Adolfo Porrata,516,ADOLFO PORRATA,516,19.1,,,,,,,,verified,historic; seed
+1968,total_points,agree,Raymond Dalmau,499,RAYMOND DALMAU,499,23.2,,,,,,,,verified,historic; seed
+1969,total_points,agree,Neftali Rivera,602,NEFTALI RIVERA,602,22.3,,,,,,,,verified,historic; seed
+1970,total_points,agree,Raymond Dalmau,546,RAYMOND DALMAU,546,22.8,,,,,,,,verified,historic; seed
+1971,ppg,dual_metric_d4,Teofilo Cruz,22.4,FRANK CORTES,566,21.0,,,Teofilo Cruz,22.4,FRANK CORTES,566,"OWNER 2026-09-08: D4 metric boundary — the seed's Teofilo Cruz led points-per-game, the bsnpr historic ledger's FRANK CORTES led total points. Both are recorded; neither is 'the' champion.",verified,historic; seed
+1972,ppg,agree,Samuel Betancourt,26.9,SAMMY BETANCOURT,726,26.9,,,,,,,,verified,historic; seed
+1973,ppg,agree,Neftali Rivera,25.2,NEFTALI RIVERA,806,25.9,,,,,,,,verified,historic; seed
+1974,ppg,dual_metric_d4,Hector Blondet,25.1,RAYMOND DALMAU,799,25.0,,,Hector Blondet,25.1,RAYMOND DALMAU,799,"OWNER 2026-09-08: D4 metric boundary — the seed's Hector Blondet led points-per-game, the bsnpr historic ledger's RAYMOND DALMAU led total points. Both are recorded; neither is 'the' champion.",verified,historic; seed
+1975,ppg,agree,Samuel Betancourt,22.9,SAMMY BETANCOURT,734,22.9,,,,,,,,verified,historic; seed
+1976,ppg,agree,Samuel Betancourt,21.9,SAMMY BETANCOURT,702,21.9,,,,,,,,verified,historic; seed
+1977,ppg,agree,Georgie Torres,30.1,GEORGIE TORRES,963,30.1,,,,,,,,verified,historic; seed
+1978,ppg,agree,Georgie Torres,29.1,GEORGIE TORRES,787,29.1,,,,,,,,verified,historic; seed
+1979,ppg,agree,Georgie Torres,32.9,GEORGIE TORRES,987,32.9,,,,,,,,verified,historic; seed
+1980,ppg,agree,Mario Morales,32.9,MARIO MORALES,988,32.9,,,,,,,,verified,historic; seed
+1981,ppg,agree,Rolando Frazer,33.4,ROLANDO FRAZER,1035,33.4,,,,,,,,verified,historic; seed
+1982,ppg,agree,Rolando Frazer,34.2,ROLANDO FRAZER,1127,34.2,,,,,,,,verified,historic; seed
+1983,ppg,agree,Jim Maldonado,30.6,JIM MALDONADO,1010,30.6,,,,,,,,verified,historic; seed
+1984,ppg,agree,Georgie Torres,28.8,GEORGIE TORRES,835,28.8,,,,,,,,verified,historic; seed
+1985,ppg,agree,Georgie Torres,33.5,GEORGIE TORRES,1007,33.5,,,,,,,,verified,historic; seed
+1986,ppg,agree,Georgie Torres,29.8,GEORGIE TORRES,983,29.7,"Torres, George",29.8,,,,,,verified,historic; leaders; seed
+1987,ppg,agree,Georgie Torres,35.5,GEORGIE TORRES,1065,35.5,,,,,,,,verified,historic; seed
+1988,ppg,agree,Edgar de Leon,29.5,EDGAR LEON,916,30.5,,,,,,,,verified,historic; seed
+1989,ppg,agree,Wesley Correa,30.9,WESLEY CORREA,926,30.9,,,,,,,,verified,historic; seed
+1990,ppg,agree,Edgar de Leon,31.8,EDGAR LEON,954,31.8,,,,,,,,verified,historic; seed
+1991,ppg,agree,Edwin Pellot,31.5,EDWIN PELLOT,944,31.5,,,,,,,,verified,historic; seed
+1992,ppg,historic_only,,,WESLEY CORREA,865,26.2,,,,,,,,single-source,historic
+1993,ppg,historic_only,,,MARIO MORALES,850,25.0,,,,,,,,single-source,historic
+1994,ppg,historic_only,,,ORLANDO VEGA,733,25.3,,,,,,,,single-source,historic
+1995,ppg,historic_only,,,JOEL CURBELO,790,25.5,,,,,,,,single-source,historic
+1996,ppg,historic_only,,,EDDIE CASIANO,849,25.7,,,,,,,,single-source,historic
+1997,ppg,historic_only,,,EDDIE CASIANO,799,26.6,,,,,,,,single-source,historic
+1998,ppg,historic_only,,,ORLANDO VEGA,724,25.0,,,,,,,,single-source,historic
+1999,ppg,historic_only,,,ANTHONY FARMER,680,23.4,,,,,,,,single-source,historic
+2000,ppg,historic_only,,,WILLIE SIMMS,633,22.6,,,,,,,,single-source,historic
+2001,ppg,historic_only,,,CARL SIMPSON,605,23.3,,,,,,,,single-source,historic
+2002,ppg,historic_only,,,ELIAS AYUSO,703,24.2,,,,,,,,single-source,historic
+2003,ppg,historic_only,,,CARLOS ESCALERA,719,24.8,,,,,,,,single-source,historic
+2004,ppg,historic_only,,,CHRISTIAN DALMAU,697,24.0,,,,,,,,single-source,historic
+2007,ppg,leaders_only,,,,,,"Figueroa, Angel Luis",24.7,,,,,,single-source,leaders
+2008,ppg,leaders_only,,,,,,"Melendez, Ricardo",22.2,,,,,,single-source,leaders
+2009,ppg,leaders_only,,,,,,"Pellot, Jesse",23.7,,,,,,single-source,leaders
+2010,ppg,leaders_only,,,,,,"Perez, Rafael Alb",22.5,,,,,,single-source,leaders
+2012,ppg,leaders_only,,,,,,"Thornton, Al",25.3,,,,,,single-source,leaders
+2013,ppg,leaders_only,,,,,,"Shannon, Terrence",18.2,,,,,,single-source,leaders
+2014,ppg,leaders_only,,,,,,"Harris, Mike",20.1,,,,,,single-source,leaders
+2018,ppg,leaders_only,,,,,,"Terry, Reyshawn",23.1,,,,,,single-source,leaders
+2019,ppg,leaders_only,,,,,,"Suero, Gerardo",19.6,,,,,,single-source,leaders
+2020,ppg,leaders_only,,,,,,"Rodriguez, Jose G.",17.7,,,,,,single-source,leaders
+2021,ppg,leaders_only,,,,,,"Bass, Paris",22.7,,,,,,single-source,leaders

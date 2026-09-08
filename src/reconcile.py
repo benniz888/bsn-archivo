@@ -140,7 +140,7 @@ CITY_MAP: dict[str, tuple[str, dict[str, str]]] = {
     "VEGA BAJA": ("vega_baja", {}),
     "TORTUGUERO": ("cocoteros_tortuguero", {}),
     "SAN JUAN": ("capitalinos_san_juan", {
-        "1936": "seed says Club Nautico de San Juan, not Capitalinos — conflict",
+        # 1936 handled by OWNER_RESOLUTIONS (Club Nautico de San Juan).
         "1945": "D5: EN-wiki=Capitalinos, ES-wiki=Santos de San Juan; bsnpr city only",
     }),
     "HUMACAO": ("grises_humacao", {"*": "Humacao also had Caciques (~2012) — verify per season"}),
@@ -164,6 +164,33 @@ CLUB_CODES: dict[str, str] = {
     "CY": "toritos_cayey",
 }
 _CLUB_CODE_AMBIGUOUS = {"CA", "CO"}  # CA = Caguas or Carolina?; CO = Coamo — see note
+
+# --------------------------------------------------------------------------- #
+# owner resolutions — 2026-09-08. Recorded here so they are auditable.         #
+# --------------------------------------------------------------------------- #
+# (topic, season) -> resolution. "agree" resolutions carry a franchise_id and a
+# note; "dual_metric" resolutions record BOTH scoring champions (D4 boundary).
+OWNER_RESOLUTIONS: dict[tuple[str, str], dict] = {
+    ("champion", "1936"): {
+        "kind": "agree", "franchise_id": "club_nautico_san_juan",
+        "confidence": "single-source",
+        "note": "OWNER 2026-09-08: city-vs-club naming, not a disagreement — "
+                "seed 'Club Nautico de San Juan' == bsnpr city 'SAN JUAN'. "
+                "bsnpr campeonatos.asp captures themselves varied over time "
+                "(SAN JUAN / VEGA BAJA); the seed's specific club is used."},
+    ("runner_up", "1968"): {
+        "kind": "agree", "franchise_id": "cardenales_rio_piedras",
+        "confidence": "single-source",
+        "note": "OWNER 2026-09-08: not a genuine disagreement — resolved to the "
+                "seed's Cardenales de Rio Piedras. bsnpr campeonatos.asp captures "
+                "disagreed internally over time (RIO PIEDRAS in some, PONCE in "
+                "others); the RIO PIEDRAS captures concur with the seed."},
+    # 1971 / 1974: the two sources name different scoring champions because they
+    # rank by different metrics across the D4 boundary. Record BOTH, labelled.
+    ("scoring_champion", "1971"): {"kind": "dual_metric"},
+    ("scoring_champion", "1974"): {"kind": "dual_metric"},
+    # 1945: genuine, unresolved. No OWNER_RESOLUTIONS action — stays a conflict.
+}
 
 NAME_TO_ID = {v[0]: k for k, v in FRANCHISES.items()}
 NAME_TO_ID_NORM = {ncity(v[0]): k for k, v in FRANCHISES.items()}
@@ -278,9 +305,19 @@ def reconcile_champions(conflicts: list[dict]) -> None:
             f"champion city {champ_unmapped}" if champ_unmapped else "",
             f"runner-up city {ru_unmapped}" if ru_unmapped else "") if x)
 
+        # owner resolutions (2026-09-08) — supersede the auto-detected conflict
+        champ_res = OWNER_RESOLUTIONS.get(("champion", s))
+        ru_res = OWNER_RESOLUTIONS.get(("runner_up", s))
+
         if sd and bp:
-            champ_conflict = (seed_champ_id and bp_champ_id and seed_champ_id != bp_champ_id)
-            ru_conflict = (seed_ru_id and bp_ru_id and seed_ru_id != bp_ru_id)
+            champ_conflict = (seed_champ_id and bp_champ_id and seed_champ_id != bp_champ_id
+                              and not champ_res)
+            ru_conflict = (seed_ru_id and bp_ru_id and seed_ru_id != bp_ru_id
+                           and not ru_res)
+            champ_disp = "" if champ_res else champ_disp
+            ru_disp = "" if ru_res else ru_disp
+            res_notes = [r["note"] for r in (champ_res, ru_res) if r and r.get("note")]
+
             if champ_conflict or ru_conflict or champ_disp or ru_disp:
                 row["agreement"] = "conflict"
                 row["confidence"] = "disputed"
@@ -318,11 +355,15 @@ def reconcile_champions(conflicts: list[dict]) -> None:
                 row["note"] = "; ".join(n for n in notes if n)
             else:
                 row["agreement"] = "agree"
-                row["champion_franchise_id"] = seed_champ_id or bp_champ_id
-                row["runner_up_franchise_id"] = seed_ru_id or bp_ru_id
-                row["confidence"] = "verified"  # two independent sources concur
-                if unmapped:
-                    row["note"] = unmapped
+                row["champion_franchise_id"] = (
+                    champ_res["franchise_id"] if champ_res else seed_champ_id or bp_champ_id)
+                row["runner_up_franchise_id"] = (
+                    ru_res["franchise_id"] if ru_res else seed_ru_id or bp_ru_id)
+                # verified only when two independent sources genuinely concur;
+                # an owner resolution carries its own confidence
+                confs = [r["confidence"] for r in (champ_res, ru_res) if r]
+                row["confidence"] = min(confs, key=lambda c: ["single-source", "verified"].index(c)) if confs else "verified"
+                row["note"] = "; ".join(n for n in ([unmapped] + res_notes) if n)
         elif sd:
             row["agreement"] = "seed_only"
             row["champion_franchise_id"] = seed_champ_id
@@ -385,7 +426,21 @@ def reconcile_scoring(conflicts: list[dict]) -> None:
         lastnames = {lastname(v) for v in present.values()}
         row["sources"] = "; ".join(sorted(present))
 
-        if len(present) < 2:
+        res = OWNER_RESOLUTIONS.get(("scoring_champion", s))
+        if res and res["kind"] == "dual_metric":
+            # OWNER 2026-09-08: not a conflict — the two sources rank by different
+            # metrics across the D4 boundary. Record both, each labelled.
+            row["agreement"] = "dual_metric_d4"
+            row["confidence"] = "verified"
+            row["ppg_champion"] = sd["player"] if sd else ""
+            row["ppg_value"] = sd["value"] if sd else ""
+            row["total_points_champion"] = h["player_raw"] if h else ""
+            row["total_points_value"] = h["total_points"] if h else ""
+            row["note"] = ("OWNER 2026-09-08: D4 metric boundary — the seed's "
+                           f"{row['ppg_champion']} led points-per-game, the bsnpr "
+                           f"historic ledger's {row['total_points_champion']} led "
+                           "total points. Both are recorded; neither is 'the' champion.")
+        elif len(present) < 2:
             row["agreement"] = f"{next(iter(present))}_only" if present else "none"
             row["confidence"] = "single-source"
         elif len(lastnames) == 1:
@@ -408,7 +463,8 @@ def reconcile_scoring(conflicts: list[dict]) -> None:
     _write_csv(CLEAN / "scoring_champions_reconciled.csv", out, [
         "season", "metric_era", "agreement", "seed_player", "seed_value",
         "historic_player", "historic_total", "historic_ppg", "leaders_player",
-        "leaders_ppg", "note", "confidence", "sources"])
+        "leaders_ppg", "ppg_champion", "ppg_value", "total_points_champion",
+        "total_points_value", "note", "confidence", "sources"])
     agg = {}
     for r in out:
         agg[r["agreement"]] = agg.get(r["agreement"], 0) + 1
