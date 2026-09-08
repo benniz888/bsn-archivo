@@ -236,16 +236,23 @@ category table is `# | Jugador | JJ | <stat cols> | Prom`:
 
 ## [OPEN_QUESTIONS]
 
-1. **`lideres_e.asp`** (88 captures, 27 parametrized 200s, runs to 2021-09) —
-   not probed. `_e` likely = "equipo" (team leaders) or an alternate leader
-   view. Probe in early Phase 2 before committing the tranche-C list.
-2. **`enciclopedia.asp`** (79 distinct 200s, 2007–2021, zero parametrized) —
-   an "encyclopedia" page. Could be player career records / bios — potentially
-   high value for D1 and career-leader work. Unprobed.
+1. **`lideres_e.asp`** — RESOLVED (PHASE_3B). Team-level leader boards ("Líderes
+   por Equipo"), not refuerzos, not player-level. Redundant with `lideres.asp`.
+   Low priority. See `archive_probe_spec.md`.
+2. **`enciclopedia.asp`** — RESOLVED (PHASE_3B). All-time player directory
+   (2368→3284 rows: surname(s), first name, jersey, birth date) with a stable
+   `/jugadores/jugador.asp?id=N` link per player. **The D1 identity backbone.**
+   Full ingest = PHASE_3C. See `archive_probe_spec.md`.
 3. **`finales.asp`** (18 distinct, 2008–2010) — playoff finals detail beyond
-   the `campeonatos.asp` one-liner? Series scores, MVPs?
+   the `campeonatos.asp` one-liner? Series scores, MVPs? Still unprobed.
 4. **`mvp.asp`** (6 distinct, 2007–2017) — award history. RealGM's award floor
-   is 2014-15; this may go deeper.
+   is 2014-15; this may go deeper. Still unprobed.
+
+**PHASE_3B also found** a whole pre-2007 root-level URL scheme
+(`lideres2001.asp`, `lidereshistoricos.asp` = scoring leaders 1948→2001,
+`equiposstat.asp` 307×200 2001–2007, `bsnpr.com/jugadores/*` 1680×200) that the
+PHASE_1 CDX pattern missed. Ingest = PHASE_3C. Full detail:
+[`archive_probe_spec.md`](archive_probe_spec.md).
 5. **The 1953 asterisk** — RESOLVED (PHASE_3). Later `campeonatos.asp` captures
    spell it out: `1953  *  NO SE TERMINÓ (PONCE VS SAN GERMAN)` — the finals
    series was never completed. Carried as `no_champion=True`, note = that text,

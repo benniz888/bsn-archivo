@@ -1,13 +1,18 @@
 # SESSION STATE — TIER 3
 <!-- Authoritative for current state and task priority. Update at every phase exit. -->
 
-**SESSION:** 002 — PHASE_3_PARSE (continues 001)
+**SESSION:** 002 — PHASE_3_PARSE + PHASE_3B_PROBE_ARCHIVE (continues 001)
 **DATE:** 2026-09-08
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
 Session 001 (2026-09-07): PHASE_1_ENUMERATE + PHASE_2_FETCH. Env bootstrapped,
 Wayback CDX enumerated (central finding negative — see below), 193 snapshots
 fetched to `data/raw/`.
+
+Session 002 so far: PHASE_3_PARSE (committed 4ca04f2) — 193 snapshots →
+provenance-complete `data/clean/`. Then PHASE_3B_PROBE_ARCHIVE (owner-requested,
+uncommitted) — probed 4 more archived scripts; **found a pre-2007 root-level URL
+scheme the PHASE_1 enumeration missed** (see B2, `archive_probe_spec.md`).
 
 ---
 
@@ -138,6 +143,79 @@ Q9–Q12): city→franchise mapping (D2/D5); the 2 `vida=2` career-view captures
 the 2 `grupo=BS19` captures; extending the franchise-city vocabulary for the 3
 `review`-flagged champion rows.
 
+### PHASE_3B_PROBE_ARCHIVE — COMPLETE (2026-09-08, owner-requested)
+
+Findings in full: `docs/specs/archive_probe_spec.md`. Headline:
+
+| Script | Verdict |
+|---|---|
+| `enciclopedia.asp` | **Full ingest** — all-time player directory, 2368→3284 players, name + birth date + `/jugadores/jugador.asp?id=N` link. D1 backbone. |
+| `estadisticas.asp` 2001–02 cluster | **Full ingest** — standings + a **root-level pre-2007 URL scheme** (`lideres2001.asp`, `lideres2000.asp`, `lidereshistoricos.asp`, `equiposstat.asp`) that WAS archived with content. `lidereshistoricos.asp` = season scoring leaders **1948→2001** (JJ/P-A/PPJ). |
+| `lideres_e.asp` | Low value — team-level ("Líderes por Equipo"), not refuerzos; redundant with `lideres.asp` at coarser grain. |
+| `livestats.asp` | **Dead** — 850-byte widget stubs / 404; third-party live content never archived. Does not help B1. |
+
+**This partially reverses session-001's headline.** "Pre-2007 leader pages never
+archived" is true *for `/estadisticas/lideres.asp?anio=`*. The 2000–2002 site
+served the same data from **root-level URLs** (`bsnpr.com/lideres2001.asp` …)
+never seen by the PHASE_1 CDX query (pattern was `bsnpr.com/estadisticas*`).
+CDX confirms: `lideres2001.asp` 11×200, `lideres2000.asp` 7×200,
+`lidereshistoricos.asp` 6×200, `equiposstat.asp` 307×200 (2001–2007),
+`bsnpr.com/jugadores/*` 1680×200 (2004–2026).
+
+- T3B.1–T3B.3 — DONE. `src/probe_archive.py`; 22 sample captures in
+  `data/raw/probe/`; spec written.
+- T3B.4 — DONE (this edit).
+
+**Phase exit:** status delivered, paused (P6). Nothing committed (P4).
+
+<details><summary>original scope</summary>
+
+Scope: sample-probe the archived `/estadisticas/` scripts left unexamined after
+PHASE_2 (spec open Qs 1–4 + NEXT_ACTIONS #4). **Sample only — no bulk fetch, no
+parser, no clean output.** Determine what each script's pages contain and
+whether they hold player-level or pre-2007 data, to decide if any deserves a
+full ingest phase later.
+
+- T3B.1 — Fetch 3–5 distinct-digest captures each, spread across the archived
+  date range, via `polite_get` + `id_` suffix, into `data/raw/probe/`
+  (gitignored). Targets:
+  - `enciclopedia.asp` — 5: 20070417, 20090131, 20120621, 20140221, 20210901
+    (all param-less; 79 distinct 200s, 2007–2021).
+  - `lideres_e.asp` — 5: 20070509 (bare), 20070505 (`grupo=BS26&serie=1`),
+    20120507 (`grupo=BS19&serie=1&anio=2012`), 20140325 (`anio=2014`),
+    20200601 (`anio=2019`). `_e` hypothesis: refuerzos/import-player leaders.
+  - `livestats.asp` — 4: 20130428 (bare), 20130831 (`?live=1&onlylive=1`),
+    20140420 (bare, later digest), 20170708 (latest). Hypothesis: Genius
+    Sports / FIBA LiveStats embed — may expose a box-score endpoint (feeds B1).
+  - `estadisticas.asp` 2001–2002 cluster — 5: 20010803075616 (`?t=3`, oldest
+    snapshot in the whole inventory), 20011124 (bare), 20020616014253 (bare),
+    20020616014713 (`estadisticas2001.asp`), 20021005 (`estadisticas.asp`).
+    Only possible pre-2007 primary source in the archive — verify or write off.
+- T3B.2 — Inspect each: table shapes, whether rows are player-level, the season
+  each page represents, encoding, any box-score / match-id / endpoint hints.
+- T3B.3 — Findings to `docs/specs/archive_probe_spec.md` (H2 structure). One
+  verdict per script: {full ingest phase warranted | low value | dead}.
+- T3B.4 — Update spec Q1–Q4, session.md, NEXT_ACTIONS.
+
+Not in scope: parsing any of these into `data/interim/` or `data/clean/`;
+`finales.asp` / `mvp.asp` / `posiciones.asp` (still deferred — the four above
+are the owner's list).
+</details>
+
+### PHASE_3C_INGEST_PRE2007 — queued, do not start (proposed by PHASE_3B)
+Full ingest of the two "full ingest" verdicts. Two streams:
+- **Player identity spine** — widen the CDX enumeration to `bsnpr.com/*` (or an
+  explicit list), fetch `enciclopedia.asp` (79 captures) + `jugadores/
+  jugador.asp?id=N` (~1680), parse to a canonical player table with birth year +
+  id + alias rows. This is the D1 backbone PHASE_4 identity work needs.
+- **Pre-2007 leaders** — fetch + parse `lidereshistoricos.asp` (season scoring
+  leaders 1948→2001), `lideres2001.asp` / `lideres2000.asp` (2000–01 player
+  season leaders), `posiciones2000/2001.asp` (standings), `equiposstat.asp`
+  (307 caps, per-team stats 2001–2007). BeautifulSoup, not `read_html` (nested
+  layout tables). See `archive_probe_spec.md` [OPEN_QUESTIONS].
+Sequencing: PHASE_3C can run before or interleaved with PHASE_4 — the identity
+spine makes PHASE_4 reconcile easier, so lean toward 3C first.
+
 ### PHASE_4_RECONCILE — queued, do not start
 Cross-check parsed leaders/champions against the existing seed CSVs. Resolve
 D5 (1945), D6 (1953 now has a source — 2024 runner-up still open; Wayback
@@ -163,10 +241,17 @@ owner's. Do not touch `app/bsn_archivo.html` until that spec is approved.
 [BLOCKERS]
 
 - B1 — **Manual, user-only.** The bsnpr.com DevTools recon (roadmap Phase 0, steps 1–7) requires a human in Chrome. One hour of work, unblocks four features. Not scriptable — do not attempt to automate it. Ask for the cURL output when ready.
-- B2 — **RESOLVED by Phase 1.** Wayback coverage of the 1957–2004 per-season
-  target is effectively zero (see coverage doc). Outcome is the "patchy" branch:
-  pre-2007 season leaders need the roadmap Phase 4 newspaper track. Wayback
-  still yields the `campeonatos.asp` ledger and 2007–2021 leader boards.
+- B2 — **PARTIALLY REOPENED by PHASE_3B (2026-09-08).** The Phase-1 verdict —
+  zero coverage of `/estadisticas/lideres.asp?anio=YYYY` for 1957–2004 — still
+  stands. BUT the 2000–2002 site served leader data from **root-level URLs**
+  (`bsnpr.com/lideres2001.asp`, `/lideres2000.asp`, `/lidereshistoricos.asp`,
+  `/equiposstat.asp`) that the Phase-1 CDX pattern (`bsnpr.com/estadisticas*`)
+  never enumerated — and those WERE archived with content (CDX-confirmed 200s,
+  2001–2007). `lidereshistoricos.asp` carries season scoring leaders **1948→
+  2001**. So: 2000–2001 player season leaders + a 1948–2001 historical-leaders
+  compilation ARE recoverable from Wayback. 2002–2006 season-leader gap partly
+  addressable via `equiposstat.asp` (307 caps). Box scores still need the
+  newspaper track. See `docs/specs/archive_probe_spec.md`. Ingest = PHASE_3C.
 - B3 — **RESOLVED.** Owner approved the revised Phase 2 ("run tranches A-C");
   executed and complete 2026-09-07. The newspaper/Federación track remains a
   parallel human-side effort, not a blocker.
@@ -230,6 +315,23 @@ Decisions made session 002 (PHASE_3):
   2026-09-07), since the fetch step recorded no explicit retrieval timestamp.
   The Wayback capture date lives separately in `capture_date` / `source_url`.
 
+Decisions made session 002 (PHASE_3B):
+- **D-012 — the PHASE_1 CDX enumeration was too narrow.** Pattern
+  `bsnpr.com/estadisticas*` missed the root-level pre-2007 scripts
+  (`lideres2001.asp`, `lidereshistoricos.asp`, `equiposstat.asp`) and all of
+  `bsnpr.com/jugadores/*`. PHASE_3C must re-enumerate with `bsnpr.com/*` (or an
+  explicit script list) and persist it properly via `src/wayback_cdx.py`.
+- **D-013 — `enciclopedia.asp` + `jugadores/jugador.asp?id=` are the D1 spine.**
+  The encyclopedia gives canonical name + birth date + a stable integer player
+  id for ~3300 players. This is fetched/parsed in PHASE_3C and becomes the
+  identity anchor PHASE_4 resolves `player_raw` against — not a from-scratch
+  fuzzy-match exercise.
+- **D-014 — `livestats.asp` written off.** Widget shell only; no archived
+  content, no endpoint/match-id scheme. Removed from the B1 hope list.
+- **D-015 — probe stays out of the pipeline.** `src/probe_archive.py` +
+  `data/raw/probe/` are throwaway investigation artifacts, not an ingest stage.
+  No `make` target, no interim/clean output. PHASE_3C writes fresh fetchers.
+
 ---
 
 [VERIFICATION_LOG]
@@ -239,6 +341,7 @@ Decisions made session 002 (PHASE_3):
 | PHASE_1 | PASS | PASS | PASS | PASS | PASS | V1: T1.1–T1.7 all delivered (T1.5 deviation documented, D-003). V2: PC5 raw immutable + cached; PC6 sequential/≥1.5s/backoff; PC1 no fabrication — negative finding reported straight. V3: no secrets; `.env` gitignored; UA carries no PII. V4: `make enumerate` + `make samples` run clean; 19 pytest pass; `read_html` verified on all 3 probes. V5: snake_case modules, English code/comments. |
 | PHASE_2 | PASS | PASS | PASS | PASS | PASS | V1: T2.1–T2.5 done; 193/193 digests fetched, 0 failed; manifests written. V2: PC5 raw bytes unmodified + never re-fetched (idempotent re-run confirmed); PC6 one request per digest, ≥1.5s spacing, backoff; PC3 provenance captured per file in `.meta.json`. V3: no secrets; raw HTML gitignored. V4: 23 pytest pass; sampled files parse with `read_html`. V5: snake_case, English. |
 | PHASE_3 | PASS | PASS | PASS | PASS | PASS | V1: T3.1–T3.6 done — both clean streams + stats_tracked + gaps file produced. V2: PC1 (1953/disputes surfaced, no guesses); PC2 (`to_int`/`to_float` → None on blank, verify asserts pct rows carry no `total`); PC3 (`make verify` enforces provenance on every row); PC4 (`leader_coverage_gaps.csv`, `season_complete`, `parse_flag`); PC5 (parse only reads `data/raw/`, idempotent); D3/D5/D6 asserted in verify. V3: no secrets; parse/verify read-only on raw. V4: `make parse` + `make verify` green (6375 checks); 61 pytest pass; 1986 parse cross-validates against seed scoring CSV (29.8 ppg exact). V5: snake_case, English comments, "why" only. |
+| PHASE_3B | PASS | PASS | PASS | PASS | PASS | V1: T3B.1–T3B.4 done — 4 targets probed (5/5/4/5 captures) + 3 root-level `lideres*` follow-ups; verdicts + spec delivered; sample-only respected (no bulk fetch, no parser, no clean output). V2: PC5 raw bytes cached unmodified in `data/raw/probe/`; PC6 sequential via `polite_get`, ≥1.5s, backoff recovered from a Wayback 503 burst; PC1 findings reported straight incl. the "B2 partially reopened" reversal. V3: no secrets. V4: 61 pytest still pass (probe adds no code path to the pipeline); every probed capture inspected. V5: snake_case, English. |
 
 ---
 
@@ -280,37 +383,34 @@ Decisions made session 002 (PHASE_3):
 | `data/clean/player_season_leaders.csv` | **new, S002** | 1250 rows, 12 seasons × 11 categories. `player_raw`/`club_raw` unresolved (D1). |
 | `data/clean/seasons_stats_tracked.csv` | **new, S002** | Season × 11 categories, 1/0/blank. PC2 era signal. |
 | `data/clean/leader_coverage_gaps.csv` | **new, S002** | Every archived season → regular_season/playoff_only/not_archived. PC4. |
+| `src/probe_archive.py` | **new, S002 (PHASE_3B)** | Throwaway probe fetcher/inspector. No `make` target, not in the pipeline. |
+| `data/raw/probe/*.html` (+meta) | **new, S002 (PHASE_3B)** | 22 sample captures (enciclopedia/lideres_e/livestats/estadisticas2001/lideres2001/lidereshistoricos). gitignored. |
+| `docs/specs/archive_probe_spec.md` | **new, S002 (PHASE_3B)** | Per-script verdicts; the root-level pre-2007 URL scheme discovery. Read before PHASE_3C. |
 
 ---
 
 [NEXT_ACTIONS]
 
-1. **PHASE_4_RECONCILE** — needs a go-ahead (P6). Cross-check
-   `champions_from_bsnpr.csv` / `player_season_leaders.csv` against the seed
-   CSVs. Map champion cities → franchises as events (D2). Resolve D5 (1945),
-   confirm D6's 2024 runner-up (NOT in Wayback — `campeonatos.asp` stops at
-   2020). Fold in spec Q9–Q12. Rebuild the game pool.
-2. Roadmap Phase 4 newspaper track — still the only path to pre-2007 season
-   stats. Federación / BSN league office email (roadmap Phase 6). Human-side.
-3. Human-side: B1 DevTools recon (unchanged).
-4. Later phase: probe the other archived `/estadisticas/*.asp` scripts from the
-   coverage report's other-scripts table (spec open Qs 1–4) — deferred this
-   session per owner's "A-C only". Priority order:
-   - **`enciclopedia.asp`** (~79 distinct captures, 2007–2021, zero
-     parametrized) — an "encyclopedia" page; likely player career records /
-     bios. High potential value for D1 identity work and career leaders.
-   - **`lideres_e.asp`** (~53 distinct captures, runs to 2021-09) — `_e` most
-     likely "extranjeros" → **refuerzos** (import players) leader tables. Would
-     feed the app's Refuerzos tab directly.
-   - **`livestats.asp`** (13 captures, 6 distinct, 2013–2017) — may expose the
-     Genius Sports / FIBA LiveStats endpoint or `matchId` scheme, which is
-     exactly what B1's DevTools recon is trying to find for box scores.
-   - **Identify the 2001-08-03 capture** (`20010803075616` =
-     `http://bsnpr.com/estadisticas.asp?t=3`, HTTP 200) — the oldest snapshot in
-     the inventory, ~6 years before anything else. It heads a small **2001–2002
-     cluster** on an older URL scheme (`estadisticas.asp`, `estadisticas2001.asp`,
-     `?t=3`) predating the `/estadisticas/lideres.asp` engine. If those pages
-     carry 2000–2001 season data in any usable form they would be the only
-     pre-2007 primary source in the whole archive — check before writing off.
-5. `git add` new source + docs + `data/interim/` (NOT `data/raw/`, NOT `.venv/`)
-   and commit — awaiting P4 approval; nothing committed in session 001.
+1. **PHASE_3C_INGEST_PRE2007** — needs a go-ahead (P6). PHASE_3B found real
+   recoverable pre-2007 data. Re-enumerate CDX at `bsnpr.com/*`, then ingest
+   (a) the player identity spine — `enciclopedia.asp` + `jugadores/jugador.asp?
+   id=N` → canonical player table with birth year + id; (b) pre-2007 leaders —
+   `lidereshistoricos.asp` (scoring leaders 1948→2001), `lideres2000/2001.asp`,
+   `equiposstat.asp` (307 caps 2001–2007), `posiciones*.asp`. Full detail:
+   `docs/specs/archive_probe_spec.md` [DECISION] + [OPEN_QUESTIONS].
+2. **PHASE_4_RECONCILE** — cross-check `champions_from_bsnpr.csv` /
+   `player_season_leaders.csv` against the seed CSVs; champion cities →
+   franchises as events (D2); D5 (1945); D6's 2024 runner-up (NOT in Wayback —
+   `campeonatos.asp` stops at 2020); spec Q9–Q12; rebuild the game pool.
+   Easier after 3C (identity spine); can interleave.
+3. Roadmap Phase 4 newspaper track — still the only path to pre-2007 **box
+   scores** (leaders are now partly covered by 3C). Federación / BSN league
+   office email (roadmap Phase 6). Human-side.
+4. Human-side: B1 DevTools recon (unchanged). `livestats.asp` dropped from the
+   B1 hope list — PHASE_3B confirmed it's a dead widget shell (D-014).
+5. Still-deferred archived scripts (NOT in PHASE_3B's four): `finales.asp`,
+   `mvp.asp`, `posiciones.asp`, `print_*` — spec Q3–Q4, low priority.
+6. `git add` new source + docs + `data/interim/` + `data/clean/` (NOT
+   `data/raw/`, NOT `.venv/`) — PHASE_3 committed as 4ca04f2; PHASE_3B
+   (`src/probe_archive.py`, `docs/specs/archive_probe_spec.md`, session/spec
+   edits) pending owner P4 approval.
