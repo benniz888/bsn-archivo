@@ -34,9 +34,12 @@
 [VERIFIED_FACTS — DO NOT RE-INVESTIGATE]
 
 - F1: RealGM's BSN season dropdown has a hard floor at **2011-12**; awards at **2014-15**. Verified directly. Proballers is similar. This is the ceiling for any scraper-based approach.
-- F2: The old bsnpr.com stats engine published season leaders at
-  `https://www.bsnpr.com/estadisticas/lideres.asp?anio=YYYY&liga=1&serie=1&grupo=BS26&B1=Ver`
-  with Wikipedia citations running **anio=1957 → anio=2004**, retrieved July 2021. There was also `estadisticas/campeonatos.asp`. These URLs now return **404** — the site was rebuilt as a JS app. They should still be in the Wayback Machine. **This is the whole ballgame.**
+- F2: **The 1957–2004 `lideres.asp?anio=YYYY` season pages are NOT in the Wayback Machine. Verified in session 001 — do not re-investigate.** The old engine did publish them (`https://www.bsnpr.com/estadisticas/lideres.asp?anio=YYYY&liga=1&serie=1&grupo=BS26&B1=Ver`, Wikipedia citations `anio=1957 → anio=2004` retrieved July 2021; also `estadisticas/campeonatos.asp`). But the CDX record shows every parametrized in-window URL was crawled exactly once, on **2021-07-09** by an IABot reference-rescue run, *after* bsnpr.com had already become a JS app — all **302 → 404**. A retry batch 2025-12-19 was all 404. Only `anio=1986` survived, by chance, from a 2017-08-04 crawl. **The historic per-season content was never archived.** Full evidence: `docs/coverage_wayback.md`, `data/interim/cdx_inventory.csv`.
+  - What *is* recoverable from Wayback, and was fetched in session 001 (`data/raw/`):
+    - **`campeonatos.asp`** — 79 distinct parameter-less captures, 2007–2021. One HTML table per capture, `AÑO | EQUIPO | DIRIGENTE | SUB. CAMPEON`, running **1930 → year of capture** (76 rows in the 2007 capture, 92 by 2021), champion + runner-up **by city**, plus head coach. 1953 champion is a literal `*`. Speaks to D3 (folds 1942–43), D5 (1945 = "SAN JUAN"/Porrata/UPR), D6 (1953, 2024).
+    - **`lideres.asp` (no params)** — ~96 distinct captures, 2007–2021. 11 stat-category leader tables each (`# | Jugador | JJ | … | Prom`), showing whichever season was current at capture time. Reaches ~4 years below RealGM's 2011-12 floor. Blocks/steals/turnovers/off-rebounds are empty pre-modern — that absence is the `stats_tracked` signal.
+    - ~18 parametrized `lideres.asp?anio=` 200s (1986, 2007–2014, 2021; some `vida=2` career views).
+  - Everything pre-2007 now routes to the newspaper / Federación track (roadmap Phase 4 / Phase 6). The archive is not the whole ballgame; it was a lead that mostly did not pan out.
 - F3: `es.wikipedia.org` was unfetchable from the prior sandbox; English Wikipedia fetched fine. Retest from this environment before assuming.
 - F4: Wayback CDX + `lideres.asp` pages are server-rendered HTML tables — `pandas.read_html` handles them. Fetch with the `id_` suffix (`https://web.archive.org/web/{timestamp}id_/{url}`) to get raw HTML without archive chrome.
 

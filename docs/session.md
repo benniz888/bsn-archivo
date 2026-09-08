@@ -110,6 +110,20 @@ See `docs/specs/wayback_ingest_spec.md` [INTERFACES] + [OPEN_QUESTIONS].
 ### PHASE_4_RECONCILE — queued, do not start
 Cross-check parsed leaders against the existing seed CSVs. Resolve D5 (1945), D6 (1953, 2024). Rebuild the game pool.
 
+### PHASE_5_APP_SYNC — queued, do not start
+Generate the app's hardcoded JS data blocks in `app/bsn_archivo.html` from
+`data/clean/*.csv` instead of hand-maintaining them. Today the CSVs and the app
+are two independent copies of the same data that drift apart on every edit
+(see B4).
+
+Blocked on a P2 decision that needs its own spec file
+(`docs/specs/app_data_sync_spec.md`) before any work starts: **build-time
+codegen** (a script rewrites the `<script>` data blocks in place; app stays
+single-file, no runtime deps — PC7) **vs. runtime loading** (app `fetch()`s the
+CSVs; simpler pipeline but adds a load step and a local-file-origin problem for
+a `file://` open). Codegen is the presumed answer under PC7 but the call is the
+owner's. Do not touch `app/bsn_archivo.html` until that spec is approved.
+
 ---
 
 [BLOCKERS]
@@ -119,10 +133,16 @@ Cross-check parsed leaders against the existing seed CSVs. Resolve D5 (1945), D6
   target is effectively zero (see coverage doc). Outcome is the "patchy" branch:
   pre-2007 season leaders need the roadmap Phase 4 newspaper track. Wayback
   still yields the `campeonatos.asp` ledger and 2007–2021 leader boards.
-- B3 — **Decision needed from owner before PHASE_2:** given the negative
-  finding, is the revised Phase 2 (campeonatos ledger + 2007–21 leaders) worth
-  running now, or does the newspaper/Federación track (roadmap Phase 4 / Phase 6
-  email) take priority? Phase 2 is ~1 evening and low-risk; recommend running it.
+- B3 — **RESOLVED.** Owner approved the revised Phase 2 ("run tranches A-C");
+  executed and complete 2026-09-07. The newspaper/Federación track remains a
+  parallel human-side effort, not a blocker.
+- B4 — **`data/clean/` and `app/bsn_archivo.html` are two unsynchronized copies
+  of the same data.** The app carries its dataset as hand-written JS literals;
+  the CSVs are edited independently. Every data change has to be made twice and
+  they already disagree in places. PHASE_5_APP_SYNC fixes this, but the
+  codegen-vs-runtime-loading choice is a **P2 architectural decision requiring a
+  spec file** (`docs/specs/app_data_sync_spec.md`) before any change to the app.
+  Until then, treat the CSVs as the source of truth and the app as stale.
 
 ---
 
@@ -202,7 +222,24 @@ Decisions made this session:
 2. Roadmap Phase 4 newspaper track — still the only path to pre-2007 season
    stats. Federación / BSN league office email (roadmap Phase 6). Human-side.
 3. Human-side: B1 DevTools recon (unchanged).
-4. Later phase: probe the other ~18 archived `/estadisticas/*.asp` scripts
-   (spec open Qs 1–4) — deferred this session per owner's "A-C only".
+4. Later phase: probe the other archived `/estadisticas/*.asp` scripts from the
+   coverage report's other-scripts table (spec open Qs 1–4) — deferred this
+   session per owner's "A-C only". Priority order:
+   - **`enciclopedia.asp`** (~79 distinct captures, 2007–2021, zero
+     parametrized) — an "encyclopedia" page; likely player career records /
+     bios. High potential value for D1 identity work and career leaders.
+   - **`lideres_e.asp`** (~53 distinct captures, runs to 2021-09) — `_e` most
+     likely "extranjeros" → **refuerzos** (import players) leader tables. Would
+     feed the app's Refuerzos tab directly.
+   - **`livestats.asp`** (13 captures, 6 distinct, 2013–2017) — may expose the
+     Genius Sports / FIBA LiveStats endpoint or `matchId` scheme, which is
+     exactly what B1's DevTools recon is trying to find for box scores.
+   - **Identify the 2001-08-03 capture** (`20010803075616` =
+     `http://bsnpr.com/estadisticas.asp?t=3`, HTTP 200) — the oldest snapshot in
+     the inventory, ~6 years before anything else. It heads a small **2001–2002
+     cluster** on an older URL scheme (`estadisticas.asp`, `estadisticas2001.asp`,
+     `?t=3`) predating the `/estadisticas/lideres.asp` engine. If those pages
+     carry 2000–2001 season data in any usable form they would be the only
+     pre-2007 primary source in the whole archive — check before writing off.
 5. `git add` new source + docs + `data/interim/` (NOT `data/raw/`, NOT `.venv/`)
    and commit — awaiting P4 approval; nothing committed in session 001.
