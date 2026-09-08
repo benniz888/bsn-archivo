@@ -1,0 +1,2214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BSN Archivo — Baloncesto Superior Nacional, 1930–2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* Palette is hardwood-in-shadow rather than the usual sports near-black: the 28 franchise
+   colors carry all the chroma, so the chrome stays warm, dark and quiet underneath them. */
+:root{
+  --ink:#17110D;
+  --surface:#211913;
+  --surface-2:#2C221A;
+  --line:#3D3025;
+  --line-soft:#2E241B;
+  --bone:#F2E9DD;
+  --muted:#A6907C;
+  --muted-2:#7C6A5A;
+  --brass:#E0A03C;
+  --brass-dim:#8A6526;
+  --flag:#D8382C;
+  --radius:3px;
+  --maxw:1080px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--ink);color:var(--bone);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:15px;line-height:1.55;
+  font-variant-numeric:tabular-nums;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{font-family:"Archivo Black","IBM Plex Sans",sans-serif;font-weight:400;letter-spacing:-.02em;line-height:1.02;margin:0}
+a{color:var(--brass)}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 18px}
+
+/* ---------- masthead ---------- */
+.mast{border-bottom:1px solid var(--line);background:linear-gradient(180deg,#1E1610,#17110D)}
+.mast .wrap{padding-top:26px;padding-bottom:22px}
+.mast-row{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap}
+.mark{width:44px;height:44px;flex:none}
+.mast h1{font-size:clamp(30px,7.5vw,52px)}
+.mast .sub{color:var(--muted);font-size:13.5px;margin-top:8px;max-width:60ch}
+.duro{display:inline-block;margin-top:12px;color:var(--brass);border:1px solid var(--brass-dim);
+  padding:3px 9px;border-radius:99px;font-size:11.5px;letter-spacing:.06em;font-weight:600}
+
+/* ---------- nav ---------- */
+nav{position:sticky;top:0;z-index:40;background:rgba(23,17,13,.94);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line)}
+.navscroll{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;max-width:var(--maxw);margin:0 auto;padding:0 12px}
+.navscroll::-webkit-scrollbar{display:none}
+nav button{
+  background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);
+  font:inherit;font-size:13.5px;font-weight:600;padding:13px 11px;white-space:nowrap;cursor:pointer;
+}
+nav button:hover{color:var(--bone)}
+nav button[aria-selected="true"]{color:var(--brass);border-bottom-color:var(--brass)}
+nav button:focus-visible{outline:2px solid var(--brass);outline-offset:-4px}
+
+section[hidden]{display:none}
+.panel{padding:34px 0 60px}
+.lede{color:var(--muted);max-width:66ch;font-size:14.5px;margin:10px 0 0}
+h2.big{font-size:clamp(22px,4.6vw,32px)}
+h3.sec{font-size:15px;letter-spacing:.01em;margin:34px 0 12px;color:var(--bone)}
+h3.sec:first-of-type{margin-top:0}
+.note{color:var(--muted-2);font-size:12.5px;line-height:1.5;margin-top:10px}
+
+/* ---------- championship ribbon (the hero) ---------- */
+.ribbon{margin-top:26px}
+.decade{display:grid;grid-template-columns:52px 1fr;gap:10px;align-items:start;margin-bottom:7px}
+.decade-label{color:var(--muted-2);font-size:12px;font-weight:600;padding-top:9px;letter-spacing:.02em}
+.cells{display:grid;grid-template-columns:repeat(10,1fr);gap:3px}
+.cell{
+  aspect-ratio:1/1.5;border:0;border-radius:2px;cursor:pointer;position:relative;
+  padding:0;min-height:26px;transition:transform .12s ease;
+}
+.cell:hover,.cell:focus-visible{transform:translateY(-3px);outline:none;box-shadow:0 0 0 2px var(--bone)}
+.cell.empty{background:repeating-linear-gradient(45deg,#241C15,#241C15 3px,#1B1510 3px,#1B1510 6px);cursor:default}
+.cell.empty:hover{transform:none;box-shadow:none}
+.cell.sel{box-shadow:0 0 0 2px var(--brass)}
+
+/* season detail readout */
+.readout{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);
+  margin-top:16px;padding:16px;min-height:104px;display:flex;gap:14px;align-items:center}
+.readout .yr{font-family:"Archivo Black",sans-serif;font-size:34px;line-height:1;color:var(--brass);flex:none}
+.readout .body{min-width:0}
+.readout .win{font-weight:700;font-size:17px}
+.readout .lose{color:var(--muted);font-size:13.5px;margin-top:3px}
+.readout .meta{color:var(--muted-2);font-size:12px;margin-top:7px}
+.readout.idle{color:var(--muted-2);font-size:13.5px;align-items:center}
+
+/* ---------- stat strip ---------- */
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:1px;
+  background:var(--line-soft);border:1px solid var(--line-soft);margin-top:26px;border-radius:var(--radius);overflow:hidden}
+.strip div{background:var(--ink);padding:14px 13px}
+.strip .n{font-family:"Archivo Black",sans-serif;font-size:26px;line-height:1;color:var(--bone)}
+.strip .l{color:var(--muted);font-size:11.5px;margin-top:6px;line-height:1.35}
+
+/* ---------- tables ---------- */
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);margin-top:14px}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:440px}
+th{background:var(--surface);color:var(--muted);font-weight:600;font-size:11.5px;
+  text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);position:sticky;top:0;white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid var(--line-soft);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:var(--surface)}
+td.num,th.num{text-align:right}
+td.name{white-space:normal;min-width:150px;font-weight:600}
+.dim{color:var(--muted)}
+
+/* filter bar */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+input[type=search],select{
+  background:var(--surface);border:1px solid var(--line);color:var(--bone);
+  font:inherit;font-size:13.5px;padding:8px 11px;border-radius:var(--radius);
+}
+input[type=search]{flex:1;min-width:150px}
+input:focus,select:focus{outline:2px solid var(--brass);outline-offset:-1px;border-color:var(--brass)}
+
+/* ---------- franchise cards ---------- */
+.crests{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:10px;margin-top:16px}
+.crest-card{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 13px;text-align:left;cursor:pointer;color:inherit;font:inherit;
+  display:flex;flex-direction:column;gap:9px;position:relative;overflow:hidden;
+}
+.crest-card:hover{border-color:var(--muted-2)}
+.crest-card:focus-visible{outline:2px solid var(--brass);outline-offset:1px}
+.crest-card .swash{position:absolute;inset:0 0 auto 0;height:3px}
+.crest-card svg{width:40px;height:48px;flex:none}
+.crest-card .nm{font-weight:700;font-size:13.5px;line-height:1.25}
+.crest-card .cy{color:var(--muted);font-size:11.5px;margin-top:-5px}
+.crest-card .ti{font-family:"Archivo Black",sans-serif;font-size:20px;line-height:1}
+.crest-card .ti span{font-family:"IBM Plex Sans";font-size:11px;font-weight:600;color:var(--muted);margin-left:5px}
+.crest-card.gone{opacity:.62}
+
+/* franchise detail */
+.fdetail{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);
+  padding:18px;margin-top:14px}
+.fdetail h3{font-size:19px}
+.yearchips{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+.chip{border:1px solid var(--line);border-radius:2px;padding:3px 7px;font-size:12px;font-weight:600}
+.chip.won{background:var(--brass);color:#231a0c;border-color:var(--brass)}
+.chip.ru{color:var(--muted)}
+
+/* ---------- bar rows ---------- */
+.bars{margin-top:14px;display:flex;flex-direction:column;gap:2px}
+.bar-row{display:grid;grid-template-columns:22px 1fr auto;gap:11px;align-items:center;
+  padding:9px 11px;border:1px solid var(--line-soft);border-radius:var(--radius);background:var(--surface)}
+.bar-row .rk{color:var(--muted-2);font-size:12px;font-weight:700;text-align:right}
+.bar-row .who{min-width:0}
+.bar-row .pn{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-row .yr{color:var(--muted-2);font-size:11.5px}
+.track{height:5px;background:var(--line-soft);border-radius:99px;margin-top:6px;overflow:hidden}
+.fill{height:100%;background:var(--brass);border-radius:99px}
+.bar-row .v{font-family:"Archivo Black",sans-serif;font-size:16px;text-align:right;line-height:1.1}
+.bar-row .v small{display:block;font-family:"IBM Plex Sans";font-size:11px;font-weight:500;color:var(--muted)}
+
+/* ---------- records ---------- */
+.recs{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-top:16px}
+.rec{border:1px solid var(--line);border-left:3px solid var(--brass);border-radius:var(--radius);
+  background:var(--surface);padding:14px}
+.rec .rl{color:var(--muted);font-size:12px}
+.rec .rv{font-family:"Archivo Black",sans-serif;font-size:30px;line-height:1.05;margin:5px 0 3px}
+.rec .rh{font-weight:600;font-size:14px}
+.rec .rn{color:var(--muted-2);font-size:12px;margin-top:7px;line-height:1.45;white-space:normal}
+
+/* ---------- season cards (recent) ---------- */
+.scard{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);
+  padding:18px;margin-top:14px}
+.scard-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.scard-head .y{font-family:"Archivo Black",sans-serif;font-size:32px;line-height:1}
+.scard-head .t{color:var(--muted);font-size:12.5px}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:12px;margin-top:15px}
+.kv div .k{color:var(--muted);font-size:11.5px}
+.kv div .v{font-weight:600;font-size:14px;margin-top:2px}
+.kv div .v small{display:block;font-weight:400;color:var(--muted-2);font-size:11.5px;margin-top:1px}
+
+.warn{border:1px solid var(--brass-dim);background:rgba(224,160,60,.07);border-radius:var(--radius);
+  padding:13px 15px;margin-top:16px;font-size:13px;color:#E8D3B0;line-height:1.55}
+.warn b{color:var(--brass)}
+
+/* ---------- images (drop-in layer, see IMG config in script) ---------- */
+.imgslot{position:relative;display:inline-block;line-height:0}
+.imgslot img{display:block;object-fit:cover;background:var(--surface-2)}
+.imgslot img.crestimg{object-fit:contain;background:transparent}
+
+/* ---------- hall of fame ---------- */
+.hof{display:grid;grid-template-columns:repeat(auto-fill,minmax(228px,1fr));gap:11px;margin-top:16px}
+.hof-card{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);
+  padding:0;overflow:hidden;display:flex;flex-direction:column}
+.hof-top{display:flex;gap:12px;padding:14px 14px 12px}
+.portrait{width:60px;height:74px;flex:none;border-radius:2px;overflow:hidden;position:relative}
+.portrait img{width:100%;height:100%}
+.hof-nm{font-family:"Archivo Black",sans-serif;font-size:15px;line-height:1.15}
+.hof-role{color:var(--muted);font-size:11.5px;margin-top:4px;line-height:1.4}
+.hof-yrs{color:var(--muted-2);font-size:11.5px;margin-top:5px}
+.hof-body{padding:0 14px 14px}
+.hon{display:flex;flex-wrap:wrap;gap:4px;margin-top:2px}
+.hon span{border:1px solid var(--line);border-radius:2px;padding:2px 6px;font-size:11px;color:var(--muted)}
+.hon span.gold{border-color:var(--brass-dim);color:var(--brass)}
+.hof-line{border-top:1px solid var(--line-soft);margin-top:11px;padding-top:9px;
+  display:flex;gap:14px;font-size:12px}
+.hof-line b{font-family:"Archivo Black",sans-serif;font-size:14px;display:block;color:var(--bone)}
+.hof-line span{color:var(--muted-2);font-size:11px}
+
+/* stone: honoured in arena names */
+.stone{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-top:14px}
+.stone div{border:1px solid var(--line);border-left:3px solid var(--bone);border-radius:var(--radius);
+  background:var(--surface);padding:13px}
+.stone .p{font-weight:700;font-size:14px}
+.stone .a{color:var(--muted);font-size:12px;margin-top:4px;line-height:1.45}
+
+/* ---------- refuerzos ---------- */
+.split{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:11px;margin-top:16px}
+.rule{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);padding:15px}
+.rule .art{color:var(--brass);font-size:11.5px;font-weight:700}
+.rule .rt{font-weight:700;font-size:14px;margin-top:5px}
+.rule .rd{color:var(--muted);font-size:12.5px;margin-top:6px;line-height:1.55}
+.timeline{border-left:2px solid var(--line);margin:16px 0 0 6px;padding-left:18px}
+.tl{position:relative;padding-bottom:19px}
+.tl:last-child{padding-bottom:0}
+.tl::before{content:"";position:absolute;left:-25px;top:5px;width:9px;height:9px;
+  background:var(--brass);border-radius:50%;border:2px solid var(--ink)}
+.tl .d{color:var(--brass);font-size:11.5px;font-weight:700}
+.tl .h{font-weight:600;font-size:14px;margin-top:2px}
+.tl .b{color:var(--muted);font-size:12.5px;margin-top:4px;line-height:1.55}
+.mix{display:flex;height:30px;border-radius:2px;overflow:hidden;margin-top:9px;border:1px solid var(--line)}
+.mix i{display:flex;align-items:center;justify-content:center;font-style:normal;
+  font-size:11.5px;font-weight:700}
+.mix .imp{background:var(--brass);color:#241a09}
+.mix .nat{background:var(--surface-2);color:var(--muted)}
+
+/* ---------- finals matrix ---------- */
+.matrix{overflow-x:auto;margin-top:14px;border:1px solid var(--line);border-radius:var(--radius)}
+.matrix table{min-width:600px;font-size:12px}
+.matrix td.cellv{text-align:center;padding:6px 4px;font-weight:700}
+.matrix td.zero{color:var(--line)}
+.matrix th.rot{font-size:10.5px;padding:8px 4px;text-align:center;vertical-align:bottom}
+.matrix th.rowhead{text-align:left;font-size:11.5px;font-weight:600;color:var(--bone);
+  background:var(--surface);position:sticky;left:0;white-space:nowrap}
+
+/* ---------- games arcade ---------- */
+.gtabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:16px}
+.gtab{background:var(--surface);border:1px solid var(--line);color:var(--muted);
+  font:inherit;font-size:13px;font-weight:600;padding:8px 13px;border-radius:var(--radius);cursor:pointer}
+.gtab[aria-pressed="true"]{background:var(--brass);color:#241a09;border-color:var(--brass)}
+.gtab:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+.garea{margin-top:18px}
+
+/* grid */
+.gridwrap{overflow-x:auto;margin-top:14px}
+.igrid{display:grid;grid-template-columns:96px repeat(3,minmax(88px,1fr));gap:4px;min-width:400px}
+.ghead{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:8px 6px;font-size:11px;font-weight:600;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;gap:5px;min-height:62px;line-height:1.25}
+.ghead.row{align-items:flex-start;text-align:left;padding:8px 9px}
+.gcell{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius);
+  min-height:74px;cursor:pointer;color:inherit;font:inherit;padding:7px;
+  display:flex;align-items:center;justify-content:center;text-align:center;font-size:12px;line-height:1.3}
+.gcell:hover:not(:disabled){border-color:var(--brass)}
+.gcell:focus-visible{outline:2px solid var(--brass);outline-offset:1px}
+.gcell.ok{background:rgba(224,160,60,.14);border-color:var(--brass);font-weight:600;cursor:default}
+.gcell.bad{background:rgba(216,56,44,.13);border-color:var(--flag);color:var(--muted);cursor:default}
+.gcell .rar{display:block;color:var(--muted-2);font-size:10.5px;font-weight:400;margin-top:3px}
+.guess{display:flex;gap:7px;margin-top:14px;flex-wrap:wrap}
+.guess input{flex:1;min-width:170px}
+.btn{background:var(--brass);color:#241a09;border:0;font:inherit;font-weight:700;font-size:13px;
+  padding:9px 16px;border-radius:var(--radius);cursor:pointer}
+.btn:hover{filter:brightness(1.08)}
+.btn:focus-visible{outline:2px solid var(--bone);outline-offset:2px}
+.btn.ghost{background:none;color:var(--brass);border:1px solid var(--brass-dim)}
+.msg{margin-top:11px;font-size:13px;min-height:20px}
+.msg.good{color:var(--brass)}
+.msg.bad{color:#E8907F}
+
+/* draft */
+.slot{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);
+  padding:18px;text-align:center;margin-top:14px}
+.slot .spin{font-family:"Archivo Black",sans-serif;font-size:clamp(26px,7vw,42px);line-height:1.05;
+  color:var(--brass);min-height:46px}
+.slot .spinsub{color:var(--muted);font-size:12.5px;margin-top:6px}
+.picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:7px;margin-top:14px}
+.pickslot{border:1px dashed var(--line);border-radius:var(--radius);padding:10px 8px;min-height:66px;
+  display:flex;flex-direction:column;justify-content:center;text-align:center}
+.pickslot.filled{border-style:solid;border-color:var(--brass-dim);background:var(--surface)}
+.pickslot .pnm{font-weight:700;font-size:12.5px;line-height:1.25}
+.pickslot .pst{color:var(--muted-2);font-size:11px;margin-top:3px}
+.pickslot .pempty{color:var(--muted-2);font-size:11.5px}
+.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:14px}
+.choice{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:12px;text-align:left;cursor:pointer;color:inherit;font:inherit}
+.choice:hover{border-color:var(--brass)}
+.choice:focus-visible{outline:2px solid var(--brass);outline-offset:1px}
+.choice .cn{font-weight:700;font-size:13.5px}
+.choice .cm{color:var(--muted);font-size:11.5px;margin-top:3px}
+.choice .cs{display:flex;gap:9px;margin-top:7px;font-size:11.5px}
+.choice .cs b{font-family:"Archivo Black",sans-serif;font-size:13px;display:block}
+.choice .cs span{color:var(--muted-2);font-size:10px}
+.result{border:1px solid var(--brass-dim);border-radius:var(--radius);background:rgba(224,160,60,.06);
+  padding:20px;margin-top:16px;text-align:center}
+.result .rec{font-family:"Archivo Black",sans-serif;font-size:clamp(38px,12vw,62px);line-height:1;color:var(--brass)}
+.result .grade{font-size:14px;font-weight:600;margin-top:7px}
+.result .expl{color:var(--muted);font-size:12.5px;margin-top:11px;line-height:1.6;max-width:52ch;
+  margin-left:auto;margin-right:auto}
+
+/* quiz */
+.clues{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);padding:16px;margin-top:14px}
+.clue{border-bottom:1px solid var(--line-soft);padding:9px 0;font-size:13.5px;display:flex;gap:11px}
+.clue:last-child{border-bottom:0}
+.clue b{color:var(--muted);font-weight:600;min-width:88px;font-size:12px}
+
+/* ---------- global search ---------- */
+.searchbox{position:relative;margin-top:14px;max-width:420px}
+.searchbox input{width:100%}
+.results{position:absolute;top:calc(100% + 5px);left:0;right:0;z-index:60;
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  max-height:320px;overflow-y:auto;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.results:empty{display:none}
+.res{display:flex;gap:10px;align-items:center;padding:9px 12px;cursor:pointer;
+  border-bottom:1px solid var(--line-soft);background:none;border-left:0;border-right:0;border-top:0;
+  width:100%;text-align:left;font:inherit;color:inherit}
+.res:last-child{border-bottom:0}
+.res:hover,.res:focus-visible{background:var(--surface-2);outline:none}
+.res .rk{color:var(--muted-2);font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;
+  min-width:56px;flex:none}
+.res .rt{font-weight:600;font-size:13.5px}
+.res .rs{color:var(--muted);font-size:11.5px}
+
+/* ---------- club picker ---------- */
+.clubbar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:14px;
+  border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);padding:12px 14px}
+.clubbar select{flex:1;min-width:170px}
+.myclub{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);
+  padding:16px;margin-top:12px;position:relative;overflow:hidden}
+.myclub .band{position:absolute;inset:0 0 auto 0;height:4px}
+.myclub-head{display:flex;gap:13px;align-items:flex-start}
+.myclub-nm{font-family:"Archivo Black",sans-serif;font-size:19px;line-height:1.1}
+.myclub-sub{color:var(--muted);font-size:12.5px;margin-top:4px}
+
+/* ---------- streak / share ---------- */
+.streaks{display:grid;grid-template-columns:repeat(auto-fit,minmax(84px,1fr));gap:1px;
+  background:var(--line-soft);border:1px solid var(--line-soft);border-radius:var(--radius);
+  overflow:hidden;margin-top:12px}
+.streaks div{background:var(--ink);padding:11px 10px;text-align:center}
+.streaks .n{font-family:"Archivo Black",sans-serif;font-size:21px;line-height:1;color:var(--brass)}
+.streaks .l{color:var(--muted);font-size:10.5px;margin-top:5px}
+.sharebox{border:1px solid var(--brass-dim);background:rgba(224,160,60,.06);
+  border-radius:var(--radius);padding:15px;margin-top:14px}
+.sharebox pre{font-family:"IBM Plex Sans",sans-serif;font-size:14px;line-height:1.5;
+  margin:0 0 11px;white-space:pre-wrap;letter-spacing:.06em}
+.modepill{display:inline-flex;gap:0;border:1px solid var(--line);border-radius:99px;overflow:hidden;margin-top:2px}
+.modepill button{background:none;border:0;color:var(--muted);font:inherit;font-size:12px;
+  font-weight:600;padding:6px 14px;cursor:pointer}
+.modepill button[aria-pressed="true"]{background:var(--brass);color:#241a09}
+
+footer{border-top:1px solid var(--line);padding:26px 0 44px;color:var(--muted-2);font-size:12.5px}
+
+@media (max-width:560px){
+  .decade{grid-template-columns:40px 1fr;gap:7px}
+  .cells{grid-template-columns:repeat(5,1fr)}
+  .readout .yr{font-size:27px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <div class="mast-row">
+      <svg class="mark" viewBox="0 0 44 44" aria-hidden="true">
+        <circle cx="22" cy="22" r="20" fill="none" stroke="#E0A03C" stroke-width="2.5"/>
+        <path d="M22 2v40M2 22h40" stroke="#E0A03C" stroke-width="1.6"/>
+        <path d="M8.5 7.5C15 14 15 30 8.5 36.5M35.5 7.5C29 14 29 30 35.5 36.5" fill="none" stroke="#E0A03C" stroke-width="1.6"/>
+      </svg>
+      <div style="flex:1;min-width:240px">
+        <h1>BSN Archivo</h1>
+        <p class="sub">Ninety-six seasons of the Baloncesto Superior Nacional, from the 1930 Sport Shop de San Juan to the present. Champions, career leaders, scoring titles and league records — assembled from public sources and marked with its own gaps.</p>
+        <span class="duro">#LaMásDura</span>
+        <div class="searchbox">
+          <input type="search" id="gs" placeholder="Search players, clubs, seasons…" aria-label="Search the archive" autocomplete="off">
+          <div class="results" id="gsRes" role="listbox"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="navscroll" role="tablist" aria-label="Sections">
+    <button role="tab" data-tab="today" aria-selected="true">Today</button>
+    <button role="tab" data-tab="titles" aria-selected="false">Championships</button>
+    <button role="tab" data-tab="games" aria-selected="false">Games</button>
+    <button role="tab" data-tab="juega" aria-selected="false">Juega</button>
+    <button role="tab" data-tab="seasons" aria-selected="false">Every season</button>
+    <button role="tab" data-tab="teams" aria-selected="false">Franchises</button>
+    <button role="tab" data-tab="hof" aria-selected="false">Hall of Fame</button>
+    <button role="tab" data-tab="refuerzos" aria-selected="false">Refuerzos</button>
+    <button role="tab" data-tab="leaders" aria-selected="false">Career leaders</button>
+    <button role="tab" data-tab="scoring" aria-selected="false">Scoring titles</button>
+    <button role="tab" data-tab="records" aria-selected="false">Records</button>
+    <button role="tab" data-tab="recent" aria-selected="false">Recent seasons</button>
+    <button role="tab" data-tab="sources" aria-selected="false">Sources &amp; gaps</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- ============ TODAY ============ -->
+<section id="today" class="panel">
+  <h2 class="big" id="todayDate"></h2>
+  <p class="lede" id="todayState"></p>
+
+  <div class="clubbar">
+    <span style="font-size:12.5px;color:var(--muted);font-weight:600">Mi equipo</span>
+    <select id="myClub" aria-label="Choose your club"><option value="">Pick a club…</option></select>
+  </div>
+  <div id="myClubBox"></div>
+
+  <h3 class="sec">On this day</h3>
+  <div id="otd"></div>
+
+  <h3 class="sec">When the season runs</h3>
+  <div class="split" id="calGrid"></div>
+  <div class="warn" id="nextSeason"></div>
+
+  <h3 class="sec">Watch and follow</h3>
+  <p class="lede">This archive holds no video or news of its own. These are the league's own channels, which is where highlights, full games and announcements actually live.</p>
+  <div class="tblwrap"><table>
+    <thead><tr><th>Channel</th><th>Handle</th><th>What's there</th></tr></thead>
+    <tbody id="channelBody"></tbody>
+  </table></div>
+</section>
+
+<!-- ============ GAMES ============ -->
+<section id="games" class="panel" hidden>
+  <h2 class="big">Games</h2>
+  <p class="lede">Game-level results are the thinnest part of this archive. Two finals series and one full set of standings survive in public sources; everything else needs the league's own data.</p>
+
+  <h3 class="sec" id="finalsTitle"></h3>
+  <div id="finalsBox"></div>
+
+  <h3 class="sec">Clinching moments</h3>
+  <div class="tblwrap"><table>
+    <thead><tr><th class="num">Season</th><th>Champion</th><th>How it ended</th><th>Note</th></tr></thead>
+    <tbody id="clinchBody"></tbody>
+  </table></div>
+
+  <h3 class="sec">Standings</h3>
+  <div class="filters">
+    <select id="standYear" aria-label="Season"></select>
+  </div>
+  <div id="standBox"></div>
+  <p class="note">Only 2009 survives as a complete table in the sources consulted. The league's own site carries standings for recent seasons; wiring them in is the first job once you have the API.</p>
+
+  <h3 class="sec">Getting live scores in here</h3>
+  <p class="lede">Standings, box scores and news all come from one place: the JSON feed behind bsnpr.com. Open the site in Chrome, press F12, take the Network tab, filter to Fetch/XHR and reload. The request that populates the standings table is the one you want. Copy it as cURL, confirm it works outside the browser, then drop the response into the <code>STANDINGS</code> object in this file, keyed by year. The rendering already exists — it only needs data.</p>
+  <p class="note">The mobile app's package name is <code>io.genius.bsnpr</code>, which means game data flows through Genius Sports in FIBA LiveStats format. If you find that endpoint you get per-game box scores, not just season totals.</p>
+</section>
+
+<!-- ============ JUEGA ============ -->
+<section id="juega" class="panel" hidden>
+  <h2 class="big">Juega</h2>
+  <p class="lede">Three games built on the archive's verified player pool. Every answer is a player this file can actually account for, which means the pool is small — around fifty names. It grows the moment the season-leader data comes out of the Wayback Machine.</p>
+  <div class="gtabs">
+    <button class="gtab" data-g="grid" aria-pressed="true">La Cuadrícula</button>
+    <button class="gtab" data-g="draft" aria-pressed="false">34-0</button>
+    <button class="gtab" data-g="quiz" aria-pressed="false">¿Quién soy?</button>
+  </div>
+
+  <div class="garea" id="gGrid">
+    <h3 class="sec">La Cuadrícula</h3>
+    <p class="lede">Nine cells. Name a player who satisfies both the club on the left and the condition on top. One guess per cell, no repeats across the board.</p>
+    <div class="modepill" role="group" aria-label="Mode">
+      <button id="mDaily" aria-pressed="true">Daily</button>
+      <button id="mFree" aria-pressed="false">Practice</button>
+    </div>
+    <div class="streaks" id="gStreak"></div>
+    <div class="gridwrap"><div class="igrid" id="igrid"></div></div>
+    <div class="guess">
+      <input type="search" id="gInput" placeholder="Select a cell, then type a name…" aria-label="Player name" disabled>
+      <button class="btn" id="gSubmit" disabled>Guess</button>
+      <button class="btn ghost" id="gNew">New board</button>
+    </div>
+    <div class="msg" id="gMsg"></div>
+    <div id="gShare"></div>
+    <p class="note">The daily board is generated from today's date, so every person opening this file anywhere gets the same nine cells. Practice mode shuffles freely and does not count toward the streak. Boards are only issued when all nine cells have a verified answer in the pool, so every grid is solvable.</p>
+  </div>
+
+  <div class="garea" id="gDraft" hidden>
+    <h3 class="sec">34-0</h3>
+    <p class="lede">The BSN plays 34 regular-season games, so a perfect year is 34-0. Spin for a decade, draft one legend from it, repeat five times, then the projection runs. You get one skip.</p>
+    <div class="slot">
+      <div class="spin" id="dSpin">Ready</div>
+      <div class="spinsub" id="dSub">Five picks, one per decade drawn.</div>
+      <div style="margin-top:15px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+        <button class="btn" id="dGo">Spin</button>
+        <button class="btn ghost" id="dSkip">Skip decade (1 left)</button>
+        <button class="btn ghost" id="dReset">Start over</button>
+      </div>
+    </div>
+    <div class="picks" id="dPicks"></div>
+    <div class="choices" id="dChoices"></div>
+    <div id="dResult"></div>
+    <p class="note">The projection weights points, rebounds and assists, then runs the total through a curve where each extra win costs more than the last. Where a category was never recorded for a player it shows as a dash and counts as nothing — which is the archive's data gap showing through the game rather than being hidden by it.</p>
+  </div>
+
+  <div class="garea" id="gQuiz" hidden>
+    <h3 class="sec">¿Quién soy?</h3>
+    <p class="lede">Clues reveal one at a time. Guess early for more credit.</p>
+    <div class="clues" id="qClues"></div>
+    <div class="guess">
+      <input type="search" id="qInput" placeholder="Name the player…" aria-label="Player name">
+      <button class="btn" id="qSubmit">Guess</button>
+      <button class="btn ghost" id="qClue">Next clue</button>
+      <button class="btn ghost" id="qNew">New player</button>
+    </div>
+    <div class="msg" id="qMsg"></div>
+  </div>
+</section>
+
+<!-- ============ CHAMPIONSHIPS ============ -->
+<section id="titles" class="panel" hidden>
+  <h2 class="big">Every title, 1930–2026</h2>
+  <p class="lede">One block per season, coloured by the winning franchise. Dynasties read as solid runs — Bayamón's five straight from 1971 to 1975, San Germán's four in a row in the late forties. Tap any block for the final.</p>
+  <div class="ribbon" id="ribbon"></div>
+  <div class="readout idle" id="readout">Select a season above.</div>
+  <div class="strip" id="titleStrip"></div>
+  <h3 class="sec">Titles by franchise</h3>
+  <div class="bars" id="titleBars"></div>
+  <h3 class="sec">Finals head-to-head</h3>
+  <p class="lede">Rows won the final, columns lost it. Bayamón over Quebradillas is the deepest rivalry in the league — and it ran again in the 2020 bubble.</p>
+  <div class="matrix" id="matrix"></div>
+</section>
+
+<!-- ============ HALL OF FAME ============ -->
+<section id="hof" class="panel" hidden>
+  <h2 class="big">Hall of Fame</h2>
+  <p class="lede">The players the league built itself around. Selection here is not an official honour — it is drawn from what the record actually shows: career leaders, repeat MVPs, record holders, and the men whose names ended up on the buildings.</p>
+  <div class="filters">
+    <select id="hofSort" aria-label="Sort">
+      <option value="era">By era</option>
+      <option value="points">By career points</option>
+      <option value="mvp">By MVP awards</option>
+    </select>
+  </div>
+  <div class="hof" id="hofGrid"></div>
+
+  <h3 class="sec">Honoured in stone</h3>
+  <p class="lede">Four BSN arenas carry a player's name. It is the league's most durable form of recognition.</p>
+  <div class="stone" id="stoneGrid"></div>
+
+  <h3 class="sec">Retired numbers</h3>
+  <div class="tblwrap"><table>
+    <thead><tr><th>Club</th><th class="num">Count</th><th>Numbers</th></tr></thead>
+    <tbody id="retiredBody"></tbody>
+  </table></div>
+  <p class="note">Wikipedia publishes the retired numbers for these two clubs but not the names attached to them, so this archive lists the digits alone rather than guess at the men. Bayamón's list contains 17 twice — the source shows it that way, which usually means two different players wore it. Attaching names is a good first ask when you contact the clubs.</p>
+</section>
+
+<!-- ============ REFUERZOS ============ -->
+<section id="refuerzos" class="panel" hidden>
+  <h2 class="big">Refuerzos</h2>
+  <p class="lede">Every BSN roster is split between <em>nativos</em> and <em>refuerzos</em> — imported players signed from leagues abroad. How many imports a team may carry is the most politically charged rule in Puerto Rican basketball, and it changed in 2024.</p>
+
+  <div class="strip" id="refStrip"></div>
+
+  <h3 class="sec">The current rules</h3>
+  <div class="split" id="refRules"></div>
+
+  <h3 class="sec">How the third import happened</h3>
+  <div class="timeline" id="refTimeline"></div>
+
+  <h3 class="sec">What it did to the 2025 leaderboard</h3>
+  <p class="lede">The clearest measure of the rule's effect. Every one of the top four scorers in 2025 was an import; the highest-placed local was fifth, and he plays as a <em>nativizado</em>.</p>
+  <div class="tblwrap"><table>
+    <thead><tr><th class="num">Rank</th><th>Player</th><th>Club</th><th>Status</th><th class="num">Points</th><th class="num">Per game</th></tr></thead>
+    <tbody id="refScorers"></tbody>
+  </table></div>
+  <p class="note">Where locals held ground: Iván Gandía of Aguada led the league in three-pointers with 91 in 27 games at 44 per cent, and Alexander Kappos of Caguas was second with 78.</p>
+
+  <h3 class="sec">Where the 2025 imports came from</h3>
+  <p class="lede">Eleven of the league's imports arrived from Australia's NBL, whose calendar frees up players in BSN season. Mayagüez filled all three of its slots from that one league.</p>
+
+  <h3 class="sec">A longer history than the rule suggests</h3>
+  <p class="lede">Importing is not new. Raymond Dalmau first came to Puerto Rico in 1966, recruited to reinforce the Piratas de Quebradillas — at that time players of Puerto Rican descent born off the island counted as imports. He stayed twenty years, retired as the league's all-time leader in points, rebounds and assists, and now has a coliseum named after him. The category a player is filed under has never mapped neatly onto who the league belongs to.</p>
+</section>
+
+<!-- ============ SEASONS ============ -->
+<section id="seasons" class="panel" hidden>
+  <h2 class="big">Every season</h2>
+  <p class="lede">Champion and runner-up for all 97 seasons. Two rows carry known problems, both flagged in the notes column and explained under Sources.</p>
+  <div class="filters">
+    <input type="search" id="seasonQ" placeholder="Search year or franchise…" aria-label="Search seasons">
+    <select id="seasonDec" aria-label="Filter by decade"><option value="">All decades</option></select>
+  </div>
+  <div class="tblwrap"><table>
+    <thead><tr><th class="num">Season</th><th>Champion</th><th>Runner-up</th><th>Note</th></tr></thead>
+    <tbody id="seasonBody"></tbody>
+  </table></div>
+  <p class="note" id="seasonCount"></p>
+</section>
+
+<!-- ============ TEAMS ============ -->
+<section id="teams" class="panel" hidden>
+  <h2 class="big">Franchises</h2>
+  <p class="lede">Twelve active clubs and sixteen that folded, moved or merged. Tap a crest for its full title history.</p>
+  <h3 class="sec">Active</h3>
+  <div class="crests" id="crestsActive"></div>
+  <h3 class="sec">Defunct, relocated or merged</h3>
+  <div class="crests" id="crestsGone"></div>
+  <div id="fdetail"></div>
+  <h3 class="sec">Arenas</h3>
+  <div class="tblwrap"><table>
+    <thead><tr><th>Club</th><th>City</th><th>Arena</th><th class="num">Capacity</th></tr></thead>
+    <tbody id="arenaBody"></tbody>
+  </table></div>
+  <p class="note">Guaynabo play the 2026 season in Gurabo while their arena is renovated.</p>
+</section>
+
+<!-- ============ LEADERS ============ -->
+<section id="leaders" class="panel" hidden>
+  <h2 class="big">Career leaders</h2>
+  <p class="lede">All-time top ten in points, rebounds and assists. Careers here begin as early as 1957, which makes this the deepest per-player data available without archival work.</p>
+  <div class="warn"><b>Stale.</b> Wikipedia flags these tables as roughly five years out of date. Christian Dalmau and Wilfredo Pagán both played past the apparent cutoff, so treat every figure as a floor rather than a settled standing.</div>
+  <div class="filters">
+    <select id="leadCat" aria-label="Statistic">
+      <option value="points">Points</option>
+      <option value="rebounds">Rebounds</option>
+      <option value="assists">Assists</option>
+    </select>
+    <select id="leadMode" aria-label="Measure">
+      <option value="total">Career total</option>
+      <option value="per_game">Per game</option>
+    </select>
+  </div>
+  <div class="bars" id="leadBars"></div>
+  <h3 class="sec">Full table</h3>
+  <div class="tblwrap"><table>
+    <thead><tr><th>Player</th><th>Pos</th><th>Years</th><th class="num">Total</th><th class="num">GP</th><th class="num">Per game</th></tr></thead>
+    <tbody id="leadBody"></tbody>
+  </table></div>
+  <h3 class="sec">Most valuable player, repeat winners</h3>
+  <div class="tblwrap"><table>
+    <thead><tr><th>Player</th><th class="num">Awards</th></tr></thead>
+    <tbody id="mvpBody"></tbody>
+  </table></div>
+  <p class="note">Individual MVP years are not published in a machine-readable table on Wikipedia — the article renders them in a sortable widget that does not survive extraction. Only the repeat-winner counts came through.</p>
+</section>
+
+<!-- ============ SCORING ============ -->
+<section id="scoring" class="panel" hidden>
+  <h2 class="big">Scoring titles</h2>
+  <p class="lede">The award changed shape in 1970–71. Before that it went to the player with the most total points; after, to the highest per-game average. Comparing the two directly is meaningless, so they are charted separately.</p>
+  <h3 class="sec">Points-per-game leaders, 1971–1991</h3>
+  <div id="ppgChart"></div>
+  <h3 class="sec">All captured seasons</h3>
+  <div class="tblwrap"><table>
+    <thead><tr><th class="num">Season</th><th>Player</th><th>Club</th><th>Measure</th><th class="num">Value</th></tr></thead>
+    <tbody id="scoreBody"></tbody>
+  </table></div>
+  <p class="note">Partial: the source table runs from 1956–57 to the present, and this capture covers 1966 to 1991. Georgie Torres won seven of these, peaking at 35.5 per game in 1987.</p>
+</section>
+
+<!-- ============ RECORDS ============ -->
+<section id="records" class="panel" hidden>
+  <h2 class="big">League records</h2>
+  <p class="lede">Eleven marks with holder, value and context.</p>
+  <div class="recs" id="recBody"></div>
+  <h3 class="sec">Coaches who passed through</h3>
+  <p class="lede">The BSN has an unusual history of hiring coaches who became famous elsewhere.</p>
+  <div class="tblwrap"><table>
+    <thead><tr><th>Coach</th><th>BSN club</th><th>Note</th></tr></thead>
+    <tbody id="coachBody"></tbody>
+  </table></div>
+  <h3 class="sec">BSN to the NBA</h3>
+  <div class="tblwrap"><table>
+    <thead><tr><th>Player</th><th>Note</th></tr></thead>
+    <tbody id="nbaBody"></tbody>
+  </table></div>
+</section>
+
+<!-- ============ RECENT ============ -->
+<section id="recent" class="panel" hidden>
+  <h2 class="big">Recent seasons</h2>
+  <p class="lede">Four seasons captured in detail. Everything else in this archive is champion-level only.</p>
+  <div id="recentBody"></div>
+</section>
+
+<!-- ============ SOURCES ============ -->
+<section id="sources" class="panel" hidden>
+  <h2 class="big">Sources and gaps</h2>
+  <p class="lede">A stats archive that hides its holes is worse than one that shows them. Everything here is single-source unless noted.</p>
+
+  <div class="warn"><b>The unresolved conflict.</b> For 1945, the English Wikipedia franchise table credits <b>Capitalinos de San Juan</b>; the Spanish Wikipedia champions list credits <b>Santos de San Juan</b>. Both agree Gallitos de la UPR finished second. These may be the same club under two names, or one source may simply be wrong. This archive carries the English version. It has not been verified.</div>
+
+  <h3 class="sec">Known gaps</h3>
+  <div class="tblwrap"><table>
+    <thead><tr><th>Issue</th><th>Detail</th></tr></thead>
+    <tbody>
+      <tr><td class="name">1953 missing</td><td>No champion listed in any source consulted. Either no season was held, or the franchise table is incomplete.</td></tr>
+      <tr><td class="name">1942–43 folded in</td><td>Spanish Wikipedia lists 1942 and 1942–43 as separate seasons, both won by San Germán. This archive folds them into 1942, so San Germán shows <b>13</b> titles here where most sources say 14, and the season count runs one short.</td></tr>
+      <tr><td class="name">Season MVPs</td><td>Only repeat-winner counts extracted. Year-by-year MVPs live in a sortable widget that does not survive text extraction.</td></tr>
+      <tr><td class="name">Scoring titles</td><td>1956–1965 and 1992–present not captured. Same article, same table, just not fetched.</td></tr>
+      <tr><td class="name">Player season stats</td><td>Nothing before 2011 exists in any fetchable public source. This is the real wall.</td></tr>
+      <tr><td class="name">Team colours</td><td>Six verified from Wikipedia, the rest approximated for visual distinction. Marked per club below.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 class="sec">Coverage by source</h3>
+  <div class="tblwrap"><table>
+    <thead><tr><th>Data</th><th class="num">From</th><th class="num">To</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr><td class="name">Champion / runner-up</td><td class="num">1930</td><td class="num">2026</td><td class="dim">Wikipedia, RealGM</td></tr>
+      <tr><td class="name">Career leaders</td><td class="num">1957</td><td class="num">~2018</td><td class="dim">Wikipedia</td></tr>
+      <tr><td class="name">Scoring titles</td><td class="num">1966</td><td class="num">1991</td><td class="dim">Wikipedia</td></tr>
+      <tr><td class="name">League records</td><td class="num">1969</td><td class="num">2012</td><td class="dim">Wikipedia</td></tr>
+      <tr><td class="name">Season awards</td><td class="num">2017</td><td class="num">2026</td><td class="dim">RealGM, El Nuevo Día</td></tr>
+      <tr><td class="name">Player season stats</td><td class="num">2011</td><td class="num">present</td><td class="dim">RealGM — not yet ingested</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 class="sec">Adding real logos and photos</h3>
+  <p class="lede">Every crest and portrait in this archive is drawn in code, so nothing is ever broken or missing. Each one also sits under an image slot: put a file at the right path and it takes over automatically, with no code change. Make a folder called <code>img</code> next to this file, with <code>crest</code> and <code>player</code> inside it.</p>
+  <div class="tblwrap"><table>
+    <thead><tr><th>What</th><th>Where it goes</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td class="name">Club logo</td><td class="dim"><code>img/crest/&lt;key&gt;.png</code></td><td class="dim"><code>img/crest/bay.png</code></td></tr>
+      <tr><td class="name">Player photo</td><td class="dim"><code>img/player/&lt;slug&gt;.jpg</code></td><td class="dim"><code>img/player/raymond-dalmau.jpg</code></td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">Franchise keys are the three-letter codes shown in the head-to-head matrix, lowercased — <code>bay</code>, <code>sge</code>, <code>pon</code>, <code>que</code> and so on. Player slugs are the name lowercased with accents and punctuation stripped and spaces turned into hyphens. Open the browser console and run <code>slug("Mario «Quijote» Morales")</code> if you are unsure of one. PNG, SVG, JPG and WebP all work for crests; JPG, PNG and WebP for portraits. Square-ish logos and roughly 3:4 portraits look best. Set <code>USE_IMAGES</code> to <code>false</code> near the top of the script to switch everything back to the drawn marks.</p>
+
+  <h3 class="sec">The lead worth chasing</h3>
+  <p class="lede">Wikipedia's scoring-champion article cites its numbers to the retired bsnpr.com stats engine at <code>estadisticas/lideres.asp?anio=YYYY</code>, with citations running from <b>anio=1957 to anio=2004</b>, all retrieved in July 2021. The league published a season-leaders database going back to 1957 — fifty-four years deeper than RealGM. Those URLs now return 404; the site was rebuilt as a JavaScript app and the ASP pages left the live web. They should still be in the Wayback Machine. Enumerate them through the CDX API, fetch each snapshot with the <code>id_</code> suffix for raw HTML, and parse the tables.</p>
+</section>
+
+</main>
+
+<footer class="wrap">
+  <p>Personal reference build. Figures compiled from English and Spanish Wikipedia (CC BY-SA), RealGM and El Nuevo Día. Crests are original marks drawn from published club colours, not official club logos.</p>
+</footer>
+
+<script>
+/* ============================================================
+   DATA — only figures verified during research. Nothing inferred.
+   `colorSrc:'wiki'` means the colours were published; 'approx'
+   means they were chosen for visual distinction and are not a
+   claim about the club's real palette.
+   ============================================================ */
+
+const F = {
+  bay:{name:"Vaqueros de Bayamón",abbr:"BAY",city:"Bayamón",founded:1930,active:1,c1:"#1B4F9C",c2:"#E8B23A",colorSrc:"wiki",
+       coach:"Christian Dalmau",
+       won:[1933,1935,1967,1969,1971,1972,1973,1974,1975,1981,1988,1995,1996,2009,2020,2022,2025,2026],
+       ru:[1930,1934,1970,2001,2002,2005,2010,2016,2018,2023]},
+  sge:{name:"Atléticos de San Germán",abbr:"SG",city:"San Germán",founded:1930,active:1,c1:"#F26A21",c2:"#141414",colorSrc:"wiki",
+       coach:"Eddie Casiano",
+       won:[1932,1938,1939,1941,1942,1947,1948,1949,1950,1985,1991,1994,1997],
+       ru:[1931,1933,1936,1940,1954,1955,1956,1957,1965,1986,2022]},
+  pon:{name:"Leones de Ponce",abbr:"PON",city:"Ponce",founded:1946,active:1,c1:"#C8102E",c2:"#F0C24B",colorSrc:"approx",
+       won:[1952,1954,1960,1961,1964,1965,1966,1990,1992,1993,2002,2004,2014,2015],
+       ru:[1949,1958,1963,1967,1989,1995,1996,1998,2003,2013,2019,2025]},
+  san:{name:"Cangrejeros de Santurce",abbr:"SAN",city:"Santurce",founded:1918,active:1,c1:"#E85D1F",c2:"#191919",colorSrc:"approx",
+       won:[1962,1968,1998,1999,2000,2001,2003,2007],ru:[1942,1951,1952,1964,2006]},
+  are:{name:"Capitanes de Arecibo",abbr:"ARE",city:"Arecibo",founded:1946,active:1,c1:"#0E7C7B",c2:"#F2F2F2",colorSrc:"approx",
+       won:[1959,2005,2008,2010,2011,2016,2018,2021],
+       ru:[1932,1946,1948,1961,1966,1992,2007,2012,2014,2015,2017]},
+  que:{name:"Piratas de Quebradillas",abbr:"QUE",city:"Quebradillas",founded:1926,active:1,c1:"#B3141F",c2:"#1A1A1A",colorSrc:"wiki",
+       coach:"Ángel Daniel Vassallo",
+       won:[1970,1977,1978,1979,2013,2017],
+       ru:[1937,1972,1973,1975,1976,1980,1982,1999,2000,2009,2011,2020]},
+  gua:{name:"Mets de Guaynabo",abbr:"GBO",city:"Guaynabo",founded:1935,active:1,c1:"#122E5C",c2:"#25C4E0",colorSrc:"wiki",
+       coach:"Jorge Rincón",
+       won:[1980,1982,1989],ru:[1978,1981,1983,1985,1990,1993,2021]},
+  cag:{name:"Criollos de Caguas",abbr:"CAG",city:"Caguas",founded:1976,active:1,c1:"#6B2C8F",c2:"#EFD25C",colorSrc:"approx",
+       won:[2006,2024],ru:[]},
+  car:{name:"Gigantes de Carolina",abbr:"CAR",city:"Carolina",founded:1971,active:1,c1:"#1E9B54",c2:"#F5F5F5",colorSrc:"approx",
+       won:[2023],ru:[1979,1997,2008]},
+  may:{name:"Indios de Mayagüez",abbr:"MAY",city:"Mayagüez",founded:1956,active:1,c1:"#1F5B3A",c2:"#D9342B",colorSrc:"wiki",
+       coach:"Iván Vélez",
+       won:[2012],ru:[]},
+  agu:{name:"Santeros de Aguada",abbr:"AGU",city:"Aguada",founded:1992,active:1,c1:"#0C4DA2",c2:"#F0A81E",colorSrc:"approx",
+       won:[2019],ru:[]},
+  man:{name:"Osos de Manatí",abbr:"MAN",city:"Manatí",founded:2014,active:1,c1:"#7A4A22",c2:"#E4C07A",colorSrc:"approx",
+       won:[],ru:[2024]},
+
+  cap:{name:"Capitalinos de San Juan",abbr:"SJ",city:"San Juan",founded:1930,active:0,end:1998,c1:"#8E1B3C",c2:"#E2C9A0",colorSrc:"approx",
+       won:[1930,1931,1940,1945,1958],ru:[1943,1944,1950,1974]},
+  rio:{name:"Cardenales de Río Piedras",abbr:"RP",city:"Río Piedras",founded:1940,active:0,end:1985,c1:"#A81F2E",c2:"#2B2B2B",colorSrc:"approx",
+       won:[1946,1955,1956,1957,1963,1976],ru:[1941,1947,1959,1960,1962,1968,1969,1971,1977]},
+  veg:{name:"Vega Baja",abbr:"VB",city:"Vega Baja",founded:1934,active:0,end:1939,c1:"#2F6E8F",c2:"#EDE3D0",colorSrc:"approx",
+       won:[1934,1937],ru:[1935,1939]},
+  upr:{name:"Gallitos de la UPR",abbr:"UPR",city:"Río Piedras",founded:1944,active:0,end:1951,c1:"#4B7A2B",c2:"#F1E7B8",colorSrc:"approx",
+       won:[1944,1951],ru:[1945]},
+  cno:{name:"Indios de Canóvanas",abbr:"CAN",city:"Canóvanas",founded:1980,active:0,end:1996,c1:"#B65418",c2:"#2A2A2A",colorSrc:"approx",
+       won:[1983,1984],ru:[1988]},
+  nau:{name:"Club Náutico de San Juan",abbr:"CN",city:"San Juan",founded:1936,active:0,end:1936,c1:"#1D6C8C",c2:"#F2F2F2",colorSrc:"approx",
+       won:[1936],ru:[]},
+  aib:{name:"Polluelos de Aibonito",abbr:"AIB",city:"Aibonito",founded:1977,active:0,end:2001,c1:"#2F8A3E",c2:"#F2D840",colorSrc:"wiki",
+       won:[1986],ru:[1987]},
+  mor:{name:"Titanes de Morovis",abbr:"MOR",city:"Morovis",founded:1977,active:0,end:2006,c1:"#4A3F8C",c2:"#D8D2E8",colorSrc:"approx",
+       won:[1987],ru:[]},
+  toi:{name:"Cocoteros de Tortuguero",abbr:"TOR",city:"Tortuguero",founded:1943,active:0,end:1943,c1:"#5E7A2E",c2:"#EBE0BC",colorSrc:"approx",
+       won:[1943],ru:[]},
+  guy:{name:"Brujos de Guayama",abbr:"GUY",city:"Guayama",founded:1971,active:0,end:2022,c1:"#1A1A1A",c2:"#D4A63C",colorSrc:"wiki",
+       won:[],ru:[1991,1994],note:"Bought in 2022 and relocated as the Osos de Manatí."},
+  isa:{name:"Gallitos de Isabela",abbr:"ISA",city:"Isabela",founded:1969,active:0,end:2005,c1:"#9C1F5B",c2:"#F0E0C8",colorSrc:"approx",
+       won:[],ru:[1984]},
+  coa:{name:"Maratonistas de Coamo",abbr:"COA",city:"Coamo",founded:1985,active:0,end:2015,c1:"#2A6F97",c2:"#F2C14E",colorSrc:"approx",
+       won:[],ru:[2004]},
+  faj:{name:"Cariduros de Fajardo",abbr:"FAJ",city:"Fajardo",founded:1973,active:0,end:2023,c1:"#7A1F3D",c2:"#E8D6A8",colorSrc:"approx",won:[],ru:[]},
+  hum:{name:"Grises de Humacao",abbr:"HUM",city:"Humacao",founded:2005,active:0,end:2023,c1:"#5C6670",c2:"#D6DCE2",colorSrc:"approx",won:[],ru:[],
+       note:"Sold in 2023 and rebranded as the Criollos de Caguas."},
+  ate:{name:"Atenienses de Manatí",abbr:"ATE",city:"Manatí",founded:2014,active:0,end:2017,c1:"#3B5E3C",c2:"#E4D9B8",colorSrc:"approx",won:[],ru:[]},
+  vil:{name:"Avancinos de Villalba",abbr:"VIL",city:"Villalba",founded:1996,active:0,end:1998,c1:"#6B4E9E",c2:"#EDE4F5",colorSrc:"approx",won:[],ru:[]},
+  cab:{name:"Taínos de Cabo Rojo",abbr:"CR",city:"Cabo Rojo",founded:1989,active:0,end:1993,c1:"#B5651D",c2:"#F2E2C4",colorSrc:"approx",won:[],ru:[],
+       note:"The Indios de Mayagüez under a different name and city."},
+  agd:{name:"Tiburones de Aguadilla",abbr:"AGD",city:"Aguadilla",founded:1990,active:0,end:1998,c1:"#1C6E8C",c2:"#DCE9EF",colorSrc:"approx",won:[],ru:[],
+       note:"Merged with the Capitalinos in 1998 to revive the Cangrejeros."},
+  con:{name:"Conquistadores de Aguada",abbr:"CON",city:"Aguada",founded:1994,active:0,end:1998,c1:"#8C6A1F",c2:"#F0E6C8",colorSrc:"approx",won:[],ru:[]},
+  cay:{name:"Toritos de Cayey",abbr:"CAY",city:"Cayey",founded:2002,active:0,end:2004,c1:"#8C2F2F",c2:"#E8D2C0",colorSrc:"approx",won:[],ru:[]}
+};
+
+const ARENAS=[
+  ["Atléticos de San Germán","San Germán","Arquelio Torres Ramírez Coliseum",5000],
+  ["Cangrejeros de Santurce","Santurce","Roberto Clemente Coliseum",9000],
+  ["Capitanes de Arecibo","Arecibo","Manuel Iguina Coliseum",12000],
+  ["Criollos de Caguas","Caguas","Coliseo Roger Mendoza",3000],
+  ["Santeros de Aguada","Aguada","Ismael Delgado Coliseum",6000],
+  ["Gigantes de Carolina","Canóvanas","Carlos Miguel Mangual Coliseum",5000],
+  ["Indios de Mayagüez","Mayagüez","Palacio de Recreación y Deportes",5500],
+  ["Leones de Ponce","Ponce","Juan Pachín Vicéns Auditorium",11000],
+  ["Mets de Guaynabo","Gurabo","Fernando Hernández Coliseum",3500],
+  ["Osos de Manatí","Manatí","Juan Cruz Abreu Coliseum",8000],
+  ["Piratas de Quebradillas","Quebradillas","Raymond Dalmau Coliseum",5500],
+  ["Vaqueros de Bayamón","Bayamón","Rubén Rodríguez Coliseum",12000]
+];
+
+const LEADERS={
+ points:[
+  [1,"Georgie Torres","SG","1975–2001",15863,679,23.4],
+  [2,"Mario Morales","SF","1975–1998",15293,675,22.7],
+  [3,"Mario Butler","C","1980–2008",12252,779,15.7],
+  [4,"Rolando Frazer","C","1980–2001",12096,603,20.1],
+  [5,"Raymond Dalmau","PG","1966–1985",11592,537,21.6],
+  [6,"Rubén Rodríguez","PF","1969–1991",11549,631,18.3],
+  [7,"Roberto Ríos","PG","1978–2000",11312,681,16.6],
+  [8,"Ángel Santiago","SF","1973–1996",11287,617,18.3],
+  [9,"José Quiñones","PF","1976–1995",11012,579,19.0],
+  [10,"Christian Dalmau","PG","1992–2003, 2009–2017",10570,639,16.5]],
+ rebounds:[
+  [1,"Mario Butler","C","1980–2008",8236,779,10.6],
+  [2,"Rubén Rodríguez","F/C","1969–1991",6178,631,9.8],
+  [3,"Rolando Frazer","C","1980–2001",6153,603,10.2],
+  [4,"Raymond Dalmau","F/C","1966–1985",5673,537,10.6],
+  [5,"Mario Morales","G/F","1975–1998",5665,675,8.4],
+  [6,"José Ortiz","C","1980–2006",5314,505,10.5],
+  [7,"Carlos Bermúdez","F","1970–1984",4884,422,11.6],
+  [8,"Edgar de León","F/C","1981–2001",4837,493,9.8],
+  [9,"Teófilo Cruz","C","1957–1982",4672,584,8.0],
+  [10,"Ángel Santiago","F","1973–1996",4447,617,7.2]],
+ assists:[
+  [1,"James Carter","PG","1987–2006",3025,543,5.6],
+  [2,"Christian Dalmau","PG/SG","1992–2003, 2009–2017",2931,639,4.6],
+  [3,"Pablo Alicea","PG","1987–2006",2762,503,5.5],
+  [4,"Javier Antonio Colón","PG","1987–2008",2748,555,5.0],
+  [5,"Federico López","PG","1981–1997",2440,446,5.5],
+  [6,"Wilfredo Pagán","PG","1992–2018",2367,652,3.6],
+  [7,"Roberto Ríos","G/F","1978–2000",2315,681,3.4],
+  [8,"Raymond Dalmau","F/C","1966–1985",2302,537,5.1],
+  [9,"Bobby Joe Hatton","PG","1994–2012",2235,489,4.6],
+  [10,"Georgie Torres","G/F","1975–2001",2203,679,3.2]]
+};
+
+const MVP_REPEAT=[["Juan «Pachín» Vicéns",4],["Teófilo Cruz",4],["Mario «Quijote» Morales",4],
+  ["Juan Báez",3],["Raymond Dalmau",3],["Georgie Torres",3],["Christian Dalmau",3]];
+
+const SCORING=[
+  [1966,"Jaime Frontera","Capitanes de Arecibo","total",400],
+  [1967,"Adolfo Porrata","Capitalinos de San Juan","total",516],
+  [1968,"Raymond Dalmau","Piratas de Quebradillas","total",499],
+  [1969,"Neftalí Rivera","Piratas de Quebradillas","total",602],
+  [1970,"Raymond Dalmau","Piratas de Quebradillas","total",546],
+  [1971,"Teófilo Cruz","Cangrejeros de Santurce","ppg",22.4],
+  [1972,"Samuel Betancourt","Santos de San Juan","ppg",26.9],
+  [1973,"Neftalí Rivera","Piratas de Quebradillas","ppg",25.2],
+  [1974,"Héctor Blondet","Capitanes de Arecibo","ppg",25.1],
+  [1975,"Samuel Betancourt","Santos de San Juan","ppg",22.9],
+  [1976,"Samuel Betancourt","Santos de San Juan","ppg",21.9],
+  [1977,"Georgie Torres","Cariduros de Fajardo","ppg",30.1],
+  [1978,"Georgie Torres","Cariduros de Fajardo","ppg",29.1],
+  [1979,"Georgie Torres","Cariduros de Fajardo","ppg",32.9],
+  [1980,"Mario Morales","Cangrejeros de Santurce","ppg",32.9],
+  [1981,"Rolando Frazer","Polluelos de Aibonito","ppg",33.4],
+  [1982,"Rolando Frazer","Polluelos de Aibonito","ppg",34.2],
+  [1983,"Jim Maldonado","Capitanes de Arecibo","ppg",30.6],
+  [1984,"Georgie Torres","Cariduros de Fajardo","ppg",28.8],
+  [1985,"Georgie Torres","Cariduros de Fajardo","ppg",33.5],
+  [1986,"Georgie Torres","Cariduros de Fajardo","ppg",29.8],
+  [1987,"Georgie Torres","Cariduros de Fajardo","ppg",35.5],
+  [1988,"Edgar de León","Cariduros de Fajardo","ppg",29.5],
+  [1989,"Wesley Correa","Titanes de Morovis","ppg",30.9],
+  [1990,"Edgar de León","Cariduros de Fajardo","ppg",31.8],
+  [1991,"Edwin Pellot","Gallitos de Isabela","ppg",31.5]
+];
+
+const RECORDS=[
+  ["Points, single game","79","Neftalí Rivera",1974,"22 May 1974. Thirty-four field goals, every one a two-pointer — the three-point line had not been adopted."],
+  ["Assists, single game","33","Jonathan García",2012,"1 May 2012, Caciques de Humacao against Brujos de Guayama. Broke Pablo Alicea's 25 from 1989 and stands as an unofficial world record."],
+  ["Points, career","15,863","Georgie Torres",2001,"679 games. His first seven seasons were played before the three-point line existed."],
+  ["Rebounds, career","6,178","Rubén Rodríguez",1991,"631 games."],
+  ["Points, single season","810","Rubén Rodríguez",1978,""],
+  ["Rebounds, single season","380","Rubén Rodríguez",1978,"Stood thirty years until Lee Benson broke it in 2008."],
+  ["Team points, single game","130","Caciques de Humacao",2012,"Same game as García's assist record."],
+  ["Team points, one quarter","46","Caciques de Humacao",2012,"Ten-minute quarter."],
+  ["Attendance","17,621","Vaqueros de Bayamón",1969,"8 September 1969 against Río Piedras. Beat the previous high of 16,564 for a Ponce–Santurce game."],
+  ["Wins, single season","29","Vaqueros de Bayamón",1993,""],
+  ["Consecutive titles","5","Vaqueros de Bayamón",1975,"1971 through 1975."]
+];
+
+const COACHES=[
+  ["Red Holzman","Leones de Ponce","Naismith Hall of Fame. Coached in Ponce during the 1950s and 60s."],
+  ["Jack Ramsay","Leones de Ponce","Naismith Hall of Fame."],
+  ["Tex Winter","Leones de Ponce","Naismith Hall of Fame. Architect of the triangle offence."],
+  ["Phil Jackson","Piratas de Quebradillas, Gallitos de Isabela","Coached in the BSN in the late 1980s, before Chicago."],
+  ["Gene Bartow","—",""],["Lou Rossini","—",""],["Del Harris","—",""],
+  ["P. J. Carlesimo","—",""],["Bernie Bickerstaff","—",""],["Herb Brown","—",""],
+  ["Sergio Hernández","—",""]
+];
+
+const NBA_PLAYERS=[
+  ["Butch Lee","First BSN player to win an NBA title."],
+  ["Georgie Torres","First Puerto Rican to sign an NBA contract."],
+  ["José «Piculín» Ortiz","Went on to the NBA after starting in the BSN."],
+  ["Ramón Rivas","Started in the BSN."],
+  ["Daniel Santiago","Started in the BSN."],
+  ["Carlos Arroyo","Started in the BSN."],
+  ["J. J. Barea","Started in the BSN."]
+];
+
+const RECENT=[
+ {year:"2026",label:"97th season · 21 March – 28 June · two conferences",champ:"Vaqueros de Bayamón",ru:null,
+  rows:[["Most valuable player","Travis Trice","Criollos de Caguas"],
+        ["Finals MVP","Renaldo Balkman","Vaqueros de Bayamón"],
+        ["Defender of the year","Moses Brown","Criollos de Caguas"],
+        ["Most improved","Andre Curbelo","Atléticos de San Germán"],
+        ["Rookie of the year","Daniel Rivera","Gigantes de Carolina"],
+        ["Sixth man","Christian López","Criollos de Caguas"]],
+  allstar:[["Moses Brown","C","Criollos de Caguas","7-2, 258 lb, 26"],
+           ["Andre Curbelo","PG","Atléticos de San Germán","6-0, 167 lb, 24"],
+           ["Montrezl Harrell","F","Atléticos de San Germán","6-7, 240 lb, 32"],
+           ["Jaylen Nowell","SG","Gigantes de Carolina","6-4, 201 lb, 26"],
+           ["Travis Trice","PG","Criollos de Caguas","6-2, 175 lb, 33"]],
+  warn:"Awards come from RealGM, which labels this season 2025–26. Wikipedia's franchise table has not been updated past 2025, so Bayamón's eighteenth title is recorded here as provisional. The opener was Ponce at Mayagüez; Bayamón's imports were Jae Crowder, Jaylin Galloway and Xavier Cooks."},
+ {year:"2025",label:"96th season · 22 March – 11 August · 34 games · 12 teams",champ:"Vaqueros de Bayamón",ru:"Leones de Ponce",
+  rows:[["Most valuable player","Emmanuel Mudiay","Piratas de Quebradillas"],
+        ["Finals MVP","Danilo Gallinari","Vaqueros de Bayamón"],
+        ["Points leader","Emmanuel Mudiay","779 in 33 games — 23.6 per game"],
+        ["Rebounds leader","Akil Mitchell","—"],
+        ["Assists leader","Ángel Rodríguez","—"]],
+  extra:[["Franchise title","17th","Regular season ended 30 June"],
+         ["Points, 2nd","Kobi Simmons (Gigantes)","647 — 20.2"],
+         ["Points, 3rd","Cheick Diallo (Manatí)","636 — 19.3"],
+         ["Blocks leader","JaVale McGee (Bayamón)","40 in 25 games — 1.6"],
+         ["Three-point leader","Iván Gandía (Aguada)","91 in 27 games at 44%"]]},
+ {year:"2024",label:"95th season · 3 April – 30 August · 34 games · 12 teams",champ:"Criollos de Caguas",ru:"Osos de Manatí",
+  rows:[["Most valuable player","Travis Trice","Criollos de Caguas"],
+        ["Finals MVP","Travis Trice","20.9 points, 6.1 assists"],
+        ["Most improved","Alfonso Plummer","Capitanes — 18.9 pts, 3.8 ast, 3.1 reb"],
+        ["Coach of the year","Juan Cardona","Capitanes de Arecibo"],
+        ["General manager of the year","José Manuel Baeza","Capitanes de Arecibo"]],
+  extra:[["Regular season","3 April – 1 July","Play-in 10–12 July, playoffs from 13 July"],
+         ["Format","Best-of-seven","Every round"],
+         ["Caguas title","2nd","First since 2006"]]},
+ {year:"2020",label:"Played in a hotel bubble, no crowds",champ:"Vaqueros de Bayamón",ru:"Piratas de Quebradillas",
+  rows:[["Clinching game","84–75","Game 3 of the final"],
+        ["Franchise title","15th","First since 2009"],
+        ["Owner","Yadier Molina","Took over the club that October"]]},
+ {year:"2017",label:"88th season · 10 teams",champ:"Piratas de Quebradillas",ru:"Capitanes de Arecibo",
+  rows:[["Most valuable player","Gary Browne","—"],
+        ["Finals MVP","Tu Holloway","Piratas de Quebradillas"],
+        ["Points leader","Víctor Liz","—"],
+        ["Rebounds leader","Eric Dawson","—"],
+        ["Assists leader","Gary Browne","—"]],
+  extra:[["Final","Game 7, 98–90 over Arecibo","Clinched 9 August"]]},
+ {year:"2009",label:"89th season · 11 teams · 30 games each",champ:"Vaqueros de Bayamón",ru:"Piratas de Quebradillas",
+  rows:[["Most valuable player","Jesse Pellot","Atléticos de San Germán"],
+        ["Top scorer","Jesse Pellot","Atléticos de San Germán"],
+        ["Finals MVP","Christian Dalmau","Vaqueros de Bayamón"],
+        ["Top draft pick","Darnell Hinson","Caciques de Humacao"]],
+  standings:[["Capitanes de Arecibo",23,7],["Piratas de Quebradillas",22,8],
+    ["Cangrejeros de Santurce",21,9],["Vaqueros de Bayamón",20,10],
+    ["Gigantes de Carolina",17,13],["Atléticos de San Germán",16,14],
+    ["Indios de Mayagüez",14,16],["Leones de Ponce",13,17],
+    ["Criollos de Caguas",8,22],["Mets de Guaynabo",7,23],["Caciques de Humacao",4,26]],
+  extra:[["Note","Bayamón finished 4th and won","The only full set of standings in this archive"]]}
+];
+
+/* ============================================================
+   IMAGES — drop-in layer.
+   Everything renders correctly with zero image files: each slot
+   falls back to a drawn SVG. Add a file at the path below and it
+   takes over automatically. No code change needed.
+
+     img/crest/<key>.png      e.g. img/crest/bay.png
+     img/player/<slug>.jpg    e.g. img/player/georgie-torres.jpg
+
+   Set USE_IMAGES to false to force the drawn marks everywhere.
+   ============================================================ */
+const USE_IMAGES = true;
+const CREST_DIR = "img/crest/";
+const PLAYER_DIR = "img/player/";
+const CREST_EXT = ["png","svg","jpg","webp"];
+const PLAYER_EXT = ["jpg","png","webp"];
+
+const slug=s=>s.toLowerCase()
+  .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+  .replace(/[«»"'.]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+
+/* Tries each extension in turn, then gives up and shows the fallback beneath. */
+function imgTry(base,exts,cls,alt){
+  const chain=exts.map(e=>base+"."+e);
+  const onerr=`var n=this.dataset.i|0;var c=${JSON.stringify(chain)};` +
+    `n++;if(n<c.length){this.dataset.i=n;this.src=c[n];}else{this.style.display='none';}`;
+  return `<img class="${cls}" data-i="0" src="${chain[0]}" alt="${esc(alt)}" loading="lazy" onerror="${onerr}">`;
+}
+
+const HOF=[
+ {n:"Georgie Torres",yrs:"1975–2001",pos:"SG",era:1975,pts:15863,gp:679,ppg:23.4,mvp:3,
+  role:"The league's all-time leading scorer and the first Puerto Rican to sign an NBA contract.",
+  hon:["All-time scoring leader","3× MVP","7× scoring champion"],
+  note:"Played his first seven seasons before the three-point line existed."},
+ {n:"Mario «Quijote» Morales",yrs:"1975–1998",pos:"SF",era:1975,pts:15293,gp:675,ppg:22.7,mvp:4,
+  role:"Second all-time in points and joint-record holder for MVP awards.",
+  hon:["4× MVP","Scoring champion 1980","Arena named for him"],
+  note:"The Mets play at the Mario Morales Coliseum in Guaynabo."},
+ {n:"Raymond Dalmau",yrs:"1966–1985",pos:"PG",era:1966,pts:11592,gp:537,ppg:21.6,mvp:3,
+  role:"Retired in 1985 as the league leader in points, rebounds and assists simultaneously.",
+  hon:["4× champion","3× MVP","Rookie of the year 1966","Arena named for him"],
+  note:"Arrived from Harlem in 1966 as an import and stayed twenty years, all with Quebradillas. Later coached Puerto Rico."},
+ {n:"Teófilo Cruz",yrs:"1957–1982",pos:"C",era:1957,pts:null,gp:584,ppg:null,mvp:4,
+  role:"Twenty-five seasons at centre and a member of the FIBA Hall of Fame.",
+  hon:["FIBA Hall of Fame","4× MVP","Scoring champion 1971"],
+  note:"Started for Puerto Rico when the national team was among the strongest in the Americas."},
+ {n:"Juan «Pachín» Vicéns",yrs:"1950s–60s",pos:"G",era:1950,pts:null,gp:null,ppg:null,mvp:4,
+  role:"Named to the All-Tournament Team at the 1959 FIBA World Championship in Santiago.",
+  hon:["4× MVP","1959 World Championship All-Tournament","Arena named for him"],
+  note:"Ponce play at the Juan Pachín Vicéns Auditorium."},
+ {n:"Rubén Rodríguez",yrs:"1969–1991",pos:"PF",era:1969,pts:11549,gp:631,ppg:18.3,mvp:0,
+  role:"Set the league's early benchmarks in both scoring and rebounding.",
+  hon:["Career rebounds record","810 points in 1978","Arena named for him"],
+  note:"His 380 rebounds in 1978 stood for thirty years. Bayamón play in the coliseum bearing his name."},
+ {n:"Neftalí Rivera",yrs:"1969–1980s",pos:"G",era:1969,pts:null,gp:null,ppg:null,mvp:0,
+  role:"Holds the single-game scoring record that has stood since 1974.",
+  hon:["79 points, 22 May 1974","Rookie of the year 1969","2× scoring champion"],
+  note:"Thirty-four field goals in that game, every one a two-pointer. With Dalmau he formed Quebradillas' «Dynamic Duo»."},
+ {n:"Mario Butler",yrs:"1980–2008",pos:"C",era:1980,pts:12252,gp:779,ppg:15.7,mvp:0,
+  role:"Panamanian centre, the league's all-time leading rebounder and its most-capped player.",
+  hon:["All-time rebounds leader","779 games, a record","3rd all-time in points"],
+  note:"Twenty-eight seasons — the longest career in the archive."},
+ {n:"Rolando Frazer",yrs:"1980–2001",pos:"C",era:1980,pts:12096,gp:603,ppg:20.1,mvp:0,
+  role:"Panamanian centre who won back-to-back scoring titles for Aibonito.",
+  hon:["2× scoring champion","4th all-time in points"],
+  note:"Averaged 34.2 in 1982, the highest mark captured in this archive apart from Torres."},
+ {n:"Christian Dalmau",yrs:"1992–2017",pos:"SG",era:1992,pts:10570,gp:639,ppg:16.5,mvp:3,
+  role:"Raymond's son. Twenty-five seasons, ten in Europe, and now head coach at Bayamón.",
+  hon:["3× MVP","Finals MVP 2009","2nd all-time in assists"],
+  note:"Born in Arecibo, 1975. Wore 9 and 11. Played for eight different BSN clubs."},
+ {n:"Pablo Alicea",yrs:"1987–2006",pos:"PG",era:1987,pts:null,gp:503,ppg:null,mvp:0,
+  role:"Held the single-game assist record for twenty-three years.",
+  hon:["25 assists in 1989","3rd all-time in assists"],
+  note:"His mark fell to Jonathan García's 33 in 2012."},
+ {n:"James Carter",yrs:"1987–2006",pos:"PG",era:1987,pts:null,gp:543,ppg:null,mvp:0,
+  role:"The league's all-time assists leader.",hon:["All-time assists leader"],note:"3,025 across 543 games."},
+ {n:"Sammy Betancourt",yrs:"1966–1985",pos:"G",era:1966,pts:null,gp:null,ppg:null,mvp:0,
+  role:"«The Sharpshooter». Three scoring titles and a ninety per cent free-throw stroke.",
+  hon:["Puerto Rico Sports Hall of Fame","3× scoring champion"],
+  note:"Inducted 7 October 2012. Seventeen seasons with the Santos de San Juan; two Pan American Games."},
+ {n:"Butch Lee",yrs:"1970s–80s",pos:"G",era:1976,pts:null,gp:null,ppg:null,mvp:0,
+  role:"The first Puerto Rican and first BSN player to reach the NBA, and the first to win a title there.",
+  hon:["First BSN player to win an NBA title"],note:""},
+ {n:"José «Piculín» Ortiz",yrs:"1980–2006",pos:"C",era:1980,pts:null,gp:505,ppg:null,mvp:0,
+  role:"Reached the NBA after starting in the BSN and returned to finish his career at home.",
+  hon:["6th all-time in rebounds","NBA"],note:"5,314 rebounds across 505 games."},
+ {n:"Ángel Santiago",yrs:"1973–1996",pos:"SF",era:1973,pts:11287,gp:617,ppg:18.3,mvp:0,
+  role:"Twenty-three seasons and a title with the 1986 Polluelos de Aibonito.",
+  hon:["8th all-time in points","Champion 1986"],note:""},
+ {n:"Edgar de León",yrs:"1981–2001",pos:"F/C",era:1981,pts:null,gp:493,ppg:null,mvp:0,
+  role:"Two scoring titles for Fajardo either side of the turn of the nineties.",
+  hon:["2× scoring champion","8th all-time in rebounds"],note:""},
+ {n:"Federico «Fico» López",yrs:"1981–1997",pos:"PG",era:1981,pts:null,gp:446,ppg:null,mvp:0,
+  role:"One of the league's defining point guards through the eighties.",
+  hon:["5th all-time in assists"],note:""}
+];
+
+const STONE=[
+ ["Raymond Dalmau","Raymond Dalmau Coliseum · Quebradillas","Home of the Piratas, the only club he played for."],
+ ["Rubén Rodríguez","Rubén Rodríguez Coliseum · Bayamón","The league's largest arena at 12,000."],
+ ["Juan «Pachín» Vicéns","Juan Pachín Vicéns Auditorium · Ponce","Capacity 11,000."],
+ ["Mario Morales","Mario Morales Coliseum · Guaynabo","Home of the Mets."]
+];
+
+const RETIRED=[
+ ["Vaqueros de Bayamón",8,"4 · 5 · 9 · 15 · 16 · 17 · 17 · 54"],
+ ["Mets de Guaynabo",3,"5 · 9 · 15"]
+];
+
+const REF_RULES=[
+ ["Article 22.1","Three imports per club","Every one of the twelve franchises may carry three refuerzos. There is no nationality restriction on who those three may be."],
+ ["Article 22.1","Six changes, then two more","A club may replace an import six times before the trade deadline and twice more during the postseason. Injuries count against the total."],
+ ["Article 23.1","Imports trade only for imports","A refuerzo may be swapped only for another refuerzo. Trading an import for a local player is not permitted."],
+ ["Article 13.1","Two routes to native status","A player born off the island who is eligible through a parent or grandparent and has five or more BSN seasons counts as a native. So does the child of an owner with three seasons in the league, regardless of citizenship."]
+];
+
+const REF_TIMELINE=[
+ ["2024","Caguas win with three","The Criollos took the title carrying three imports — a right no other club held. Their owner, John Herrero, pushed to extend it league-wide."],
+ ["17 Oct 2024","The board votes it through","The BSN board of directors approved three imports per club for 2025 with no nationality restriction, on an 11–2 vote. The Gigantes de Carolina voted against."],
+ ["Oct–Nov 2024","The players push back","The players' association rejected the amendment. Gary Browne, Walter Hodge, Chris Ortiz and Ángel Rodríguez recorded a video opposing it. The measure opened eleven new import slots and cut native roster spots from thirteen to twelve."],
+ ["2025","Thirty-six imports","The season ran with three per club. Eleven arrived from Australia's NBL; Mayagüez filled all three of its slots from that league. Caguas and Bayamón kept the same trio all year, while Ponce signed ten."],
+ ["Oct 2025","Kept for 2026","The board reaffirmed the three-import format for 2026 and added the change limits. Bayamón opened the season with Jae Crowder, Jaylin Galloway and Xavier Cooks."]
+];
+
+const REF_SCORERS=[
+ [1,"Emmanuel Mudiay","Piratas de Quebradillas","import",779,23.6],
+ [2,"Kobi Simmons","Gigantes de Carolina","import",647,20.2],
+ [3,"Cheick Diallo","Osos de Manatí","import",636,19.3],
+ [4,"Sam Waardenburg","Indios de Mayagüez","import",585,17.2],
+ [5,"Ysmael Romero","Mets de Guaynabo","nativizado",578,18.6]
+];
+
+/* ---------- season calendar ---------- */
+const CALENDAR=[
+ {y:2026,n:"97th",start:"21 March",regEnd:"28 June",po:"9 July",games:34,teams:12,
+  fmt:"Two conferences. A conference champion is crowned first, then the final.",
+  opener:"Leones de Ponce at Indios de Mayagüez, 8:00 pm, Palacio de Recreación y Deportes",
+  note:"Playoffs were pushed to July so players could be released for FIBA's third qualifying window for the 2027 World Cup, 29 June to 7 July. Puerto Rico played Canada on 3 July and the Bahamas on 6 July."},
+ {y:2025,n:"96th",start:"22 March",regEnd:"30 June",po:"—",games:34,teams:12,
+  fmt:"Season ran to 11 August with the final.",opener:"—",
+  note:"First season with three imports per club."},
+ {y:2024,n:"95th",start:"3 April",regEnd:"1 July",po:"13 July",games:34,teams:12,
+  fmt:"Tie-breaker and play-in 10–12 July, then all rounds best-of-seven.",opener:"—",
+  note:"Season closed 30 August."}
+];
+const NEXT_SEASON={
+  headline:"The 2027 dates have not been announced yet.",
+  body:"The last three seasons opened on 3 April, 22 March and 21 March, so late March is the pattern to expect. The board normally settles dates in the off-season, and the third-import format has been reviewed each November. The women's league, the BSNF, opens its 2026–27 season on 12 September 2026."
+};
+
+/* ---------- on this day ---------- */
+const ON_THIS_DAY=[
+ [5,22,1974,"Neftalí Rivera scores 79","Still the BSN single-game record. Thirty-four field goals, every one a two-pointer, plus eleven free throws."],
+ [5,1,2012,"Jonathan García hands out 33 assists","Caciques de Humacao against Brujos de Guayama. Broke Pablo Alicea's 25 from 1989 and stands as an unofficial world record. Humacao also set the team scoring record with 130 that night, and 46 in a single quarter."],
+ [9,8,1969,"17,621 fans in Bayamón","The largest crowd in league history, against Río Piedras. Beat a Ponce–Santurce game that had drawn 16,564."],
+ [8,9,2017,"Quebradillas take Game 7","98–90 over Arecibo for the Piratas' sixth title and their first since 2013."],
+ [7,27,2023,"Carolina win their first","The Gigantes beat Bayamón 80–60 in Game 5 to take the franchise's first championship."],
+ [7,19,2023,"LeBron James turns up in the finals","He watched Game 1 as Carolina beat Bayamón 89–85 in overtime."],
+ [12,18,2020,"Bayamón win in the bubble","84–75 over Quebradillas in Game 3, played without fans in a hotel bubble. Yadier Molina's first title as owner and the club's fifteenth."],
+ [8,11,2025,"Bayamón close out Ponce","82–68 in Game 5 for a seventeenth title. Danilo Gallinari took Finals MVP."],
+ [10,7,2012,"Sammy Betancourt enters the Hall","The three-time scoring champion inducted into the Puerto Rico Sports Hall of Fame."],
+ [10,17,2024,"The third import is approved","The board voted 11–2 to let every club carry three refuerzos with no nationality restriction, cutting native roster spots from thirteen to twelve."],
+ [10,16,2020,"Yadier Molina buys the Vaqueros","The nine-time Gold Glove catcher took over his hometown club."],
+ [4,6,2021,"The Cangrejeros come back","Approved to return under Noah Assad and Jonathan Miranda. Bad Bunny joined the ownership group later that month."],
+ [9,19,2019,"Ricardo Dalmau elected president","Succeeded Fernando Quiñones Bodea."],
+ [8,17,2023,"Humacao becomes Caguas","The board approved the transfer of the Grises, reviving a name that had been out of the league since 2009."],
+ [8,30,2024,"Caguas finish the job","The Criollos closed out their second championship, and their first since 2006."]
+];
+
+/* ---------- 2025 finals, game by game ---------- */
+const FINALS_2025={
+ title:"2025 Final — La Final Brava",sub:"Vaqueros de Bayamón beat Leones de Ponce 4–1",
+ mvp:"Danilo Gallinari",
+ games:[
+  ["Game 1","3 Aug","Leones de Ponce",76,"Vaqueros de Bayamón",92,"0–1","19–25, 18–12, 14–31, 25–24"],
+  ["Game 2","5 Aug","Vaqueros de Bayamón",76,"Leones de Ponce",90,"1–1",""],
+  ["Game 3","7 Aug","Leones de Ponce",79,"Vaqueros de Bayamón",100,"1–2",""],
+  ["Game 4","9 Aug","Vaqueros de Bayamón",88,"Leones de Ponce",79,"3–1",""],
+  ["Game 5","11 Aug","Leones de Ponce",68,"Vaqueros de Bayamón",82,"1–4",""]
+ ]};
+
+/* ---------- standings (only seasons captured in full) ---------- */
+const STANDINGS={
+ 2009:{teams:11,games:30,rows:[["Capitanes de Arecibo",23,7],["Piratas de Quebradillas",22,8],
+   ["Cangrejeros de Santurce",21,9],["Vaqueros de Bayamón",20,10],["Gigantes de Carolina",17,13],
+   ["Atléticos de San Germán",16,14],["Indios de Mayagüez",14,16],["Leones de Ponce",13,17],
+   ["Criollos de Caguas",8,22],["Mets de Guaynabo",7,23],["Caciques de Humacao",4,26]],
+   note:"Bayamón finished fourth and won the title."}
+};
+
+const CLINCHERS=[
+ [2026,"Vaqueros de Bayamón","Back-to-back","Renaldo Balkman took Finals MVP at 41 years old."],
+ [2025,"Vaqueros de Bayamón","82–68, Game 5","Seventeenth title. Danilo Gallinari Finals MVP."],
+ [2024,"Criollos de Caguas","Series over Manatí","Travis Trice Finals MVP at 20.9 points and 6.1 assists."],
+ [2023,"Gigantes de Carolina","80–60, Game 5","First championship in franchise history."],
+ [2020,"Vaqueros de Bayamón","84–75, Game 3","Won in a hotel bubble with no fans."],
+ [2017,"Piratas de Quebradillas","98–90, Game 7","Over Arecibo, on 9 August."],
+ [2012,"Indios de Mayagüez","22–8 record","The only title in the franchise's history."],
+ [2009,"Vaqueros de Bayamón","Over Quebradillas","Christian Dalmau Finals MVP. Bayamón had finished fourth."]
+];
+
+const CHANNELS=[
+ ["Official site","bsnpr.com","https://www.bsnpr.com/","Scores, calendar, standings and player pages."],
+ ["YouTube","Baloncesto Superior Nacional PR","https://www.youtube.com/@BaloncestoSuperiorNacionalPR","Highlights and full-game uploads."],
+ ["Instagram","@bsnpr","https://www.instagram.com/bsnpr/","Clips and daily posts."],
+ ["TikTok","@bsnpr","https://www.tiktok.com/@bsnpr","Short-form highlights."],
+ ["X","@bsnpr","https://x.com/bsnpr","Live updates."],
+ ["Facebook","BSN PR","https://www.facebook.com/bsnpr/","Broadcasts and announcements."],
+ ["Mobile app","iOS","https://apps.apple.com/us/app/baloncesto-superior-nacional/id6479825880","The league's own app."],
+ ["Mobile app","Android","https://play.google.com/store/apps/details?id=io.genius.bsnpr","Built on Genius Sports."]
+];
+
+/* ============================================================
+   PLAYER POOL — the games run on this and nothing else.
+   Every entry's club and decades were verified during research.
+   ppg/rpg/apg are null where the category was never recorded;
+   the games show a dash rather than inventing a number.
+   t = tags. d = decades. c = franchise keys.
+   ============================================================ */
+const POOL=[
+ {n:"Raymond Dalmau",d:[1960,1970,1980],c:["que"],ppg:21.6,rpg:10.6,apg:5.1,pos:"PG",
+  t:["mvp","champion","scoring","native","legend"],b:"Retired in 1985 leading the league in points, rebounds and assists at once."},
+ {n:"Neftalí Rivera",d:[1960,1970],c:["que"],ppg:25.2,rpg:null,apg:null,pos:"G",
+  t:["scoring","champion","native","legend"],b:"Scored 79 in a single game in 1974, still the record."},
+ {n:"Georgie Torres",d:[1970,1980,1990],c:["faj"],ppg:23.4,rpg:null,apg:3.2,pos:"SG",
+  t:["mvp","scoring","native","legend","10k"],b:"All-time leading scorer with 15,863 points."},
+ {n:"Mario Morales",d:[1970,1980,1990],c:["san"],ppg:22.7,rpg:8.4,apg:null,pos:"SF",
+  t:["mvp","scoring","native","legend","10k"],b:"Second all-time in points and a four-time MVP."},
+ {n:"Rolando Frazer",d:[1980,1990,2000],c:["aib"],ppg:20.1,rpg:10.2,apg:null,pos:"C",
+  t:["scoring","import","10k"],b:"Panamanian centre, back-to-back scoring titles for Aibonito."},
+ {n:"Ángel Santiago",d:[1970,1980,1990],c:["aib"],ppg:18.3,rpg:7.2,apg:null,pos:"SF",
+  t:["champion","native","10k"],b:"Won the 1986 title with the Polluelos."},
+ {n:"Christian Dalmau",d:[1990,2000,2010],c:["que","san","sge","bay","gua","car","coa","vil"],
+  ppg:16.5,rpg:null,apg:4.6,pos:"SG",t:["mvp","champion","native","10k"],
+  b:"Twenty-five seasons across eight BSN clubs. Finals MVP in 2009."},
+ {n:"Teófilo Cruz",d:[1950,1960,1970,1980],c:["san"],ppg:null,rpg:8.0,apg:null,pos:"C",
+  t:["mvp","scoring","native","legend"],b:"Four MVPs and a place in the FIBA Hall of Fame."},
+ {n:"José Ortiz",d:[1980,1990,2000],c:["san"],ppg:null,rpg:10.5,apg:null,pos:"C",
+  t:["nba","native","legend"],b:"«Piculín». Reached the NBA and came home to finish."},
+ {n:"Edgar de León",d:[1980,1990,2000],c:["faj"],ppg:null,rpg:9.8,apg:null,pos:"F/C",
+  t:["scoring","native"],b:"Two scoring titles for Fajardo."},
+ {n:"Pablo Alicea",d:[1980,1990,2000],c:["car"],ppg:null,rpg:null,apg:5.5,pos:"PG",
+  t:["native","legend"],b:"Held the single-game assist record for twenty-three years."},
+ {n:"Sammy Betancourt",d:[1960,1970,1980],c:["gua","cag"],ppg:null,rpg:null,apg:null,pos:"G",
+  t:["scoring","native","legend"],b:"«The Sharpshooter». Three scoring titles and a Hall of Fame place."},
+ {n:"Juan «Pachín» Vicéns",d:[1950,1960],c:["pon"],ppg:null,rpg:null,apg:null,pos:"G",
+  t:["mvp","native","legend"],b:"All-Tournament Team at the 1959 World Championship."},
+ {n:"Jaime Frontera",d:[1960],c:["are"],ppg:null,rpg:null,apg:null,pos:"G",
+  t:["scoring","native"],b:"Led the league with 400 points in 1966."},
+ {n:"Adolfo Porrata",d:[1960],c:["cap"],ppg:null,rpg:null,apg:null,pos:"G",
+  t:["scoring","native"],b:"516 points to lead the league in 1967."},
+ {n:"Héctor Blondet",d:[1970],c:["are"],ppg:25.1,rpg:null,apg:null,pos:"G",
+  t:["scoring","native"],b:"Scoring champion in 1974."},
+ {n:"Jim Maldonado",d:[1980],c:["are"],ppg:30.6,rpg:null,apg:null,pos:"F",
+  t:["scoring"],b:"Averaged 30.6 to win the 1983 title."},
+ {n:"Wesley Correa",d:[1980],c:["mor"],ppg:30.9,rpg:null,apg:null,pos:"F",
+  t:["scoring"],b:"Scoring champion for Morovis in 1989."},
+ {n:"Edwin Pellot",d:[1990],c:["isa"],ppg:31.5,rpg:null,apg:null,pos:"F",
+  t:["scoring"],b:"31.5 a game for Isabela in 1991."},
+ {n:"Jesse Pellot",d:[2000],c:["sge"],ppg:null,rpg:null,apg:null,pos:"F",
+  t:["mvp","scoring"],b:"MVP and scoring leader in 2009."},
+ {n:"Gary Browne",d:[2010],c:[],ppg:null,rpg:null,apg:null,pos:"PG",
+  t:["mvp","native"],b:"MVP and assists leader in 2017."},
+ {n:"Tu Holloway",d:[2010],c:["que"],ppg:null,rpg:null,apg:null,pos:"PG",
+  t:["champion","import"],b:"Finals MVP of the 2017 title run."},
+ {n:"Víctor Liz",d:[2010],c:[],ppg:null,rpg:null,apg:null,pos:"G",
+  t:["scoring","import"],b:"Led the league in scoring in 2017."},
+ {n:"Jonathan García",d:[2010],c:[],ppg:null,rpg:null,apg:null,pos:"PG",
+  t:["native","legend"],b:"33 assists in one game in 2012, an unofficial world record."},
+ {n:"Emmanuel Mudiay",d:[2020],c:["que"],ppg:23.6,rpg:null,apg:null,pos:"PG",
+  t:["mvp","scoring","import","nba"],b:"779 points in 33 games to win the 2025 MVP."},
+ {n:"Kobi Simmons",d:[2020],c:["car"],ppg:20.2,rpg:null,apg:null,pos:"G",
+  t:["import"],b:"Second in scoring in 2025."},
+ {n:"Cheick Diallo",d:[2020],c:["man"],ppg:19.3,rpg:null,apg:null,pos:"C",
+  t:["import","nba"],b:"Third in scoring and joint second in blocks in 2025."},
+ {n:"Sam Waardenburg",d:[2020],c:["may"],ppg:17.2,rpg:null,apg:null,pos:"F",
+  t:["import"],b:"Fourth in scoring for Mayagüez in 2025."},
+ {n:"Ysmael Romero",d:[2020],c:["gua"],ppg:18.6,rpg:null,apg:null,pos:"F",
+  t:["native"],b:"The top-placed local scorer in 2025, playing as a nativizado."},
+ {n:"JaVale McGee",d:[2020],c:["bay"],ppg:null,rpg:null,apg:null,pos:"C",
+  t:["import","nba","champion"],b:"Led the league in blocks in 2025 with 40 in 25 games."},
+ {n:"Iván Gandía",d:[2020],c:["agu"],ppg:null,rpg:null,apg:null,pos:"PG",
+  t:["native"],b:"91 three-pointers at 44 per cent to lead the league in 2025."},
+ {n:"Alexander Kappos",d:[2020],c:["cag"],ppg:null,rpg:null,apg:null,pos:"G",
+  t:["native"],b:"Second in three-pointers in 2025 with 78."},
+ {n:"Travis Trice",d:[2020],c:["cag"],ppg:20.9,rpg:null,apg:6.1,pos:"PG",
+  t:["mvp","champion","import"],b:"MVP in 2024 and 2026, and Finals MVP of the 2024 title."},
+ {n:"Renaldo Balkman",d:[2010,2020],c:["bay"],ppg:null,rpg:null,apg:null,pos:"F",
+  t:["champion","import","nba"],b:"Finals MVP in 2026 at forty-one years old."},
+ {n:"Moses Brown",d:[2020],c:["cag"],ppg:null,rpg:null,apg:null,pos:"C",
+  t:["import","nba"],b:"Defender of the year in 2026."},
+ {n:"Andre Curbelo",d:[2020],c:["sge"],ppg:null,rpg:null,apg:null,pos:"PG",
+  t:["native"],b:"Most improved player in 2026."},
+ {n:"Montrezl Harrell",d:[2020],c:["sge"],ppg:null,rpg:null,apg:null,pos:"F",
+  t:["import","nba"],b:"All-Star five in 2026."},
+ {n:"Jaylen Nowell",d:[2020],c:["car"],ppg:null,rpg:null,apg:null,pos:"SG",
+  t:["import","nba"],b:"All-Star five in 2026."},
+ {n:"Daniel Rivera",d:[2020],c:["car"],ppg:null,rpg:null,apg:null,pos:"F",
+  t:["native"],b:"Rookie of the year in 2026, born in San Juan."},
+ {n:"Christian López",d:[2020],c:["cag"],ppg:null,rpg:null,apg:null,pos:"G",
+  t:["native"],b:"Sixth man of the year in 2026."},
+ {n:"Danilo Gallinari",d:[2020],c:["bay"],ppg:null,rpg:null,apg:null,pos:"F",
+  t:["champion","import","nba"],b:"Finals MVP of Bayamón's 2025 title."},
+ {n:"Jae Crowder",d:[2020],c:["bay"],ppg:null,rpg:null,apg:null,pos:"F",
+  t:["import","nba"],b:"Signed by Bayamón for the 2026 season."},
+ {n:"Alfonso Plummer",d:[2020],c:["are"],ppg:18.9,rpg:3.1,apg:3.8,pos:"G",
+  t:["native"],b:"Most improved player in 2024 for Arecibo."},
+ {n:"Emmanuel Maldonado",d:[2020],c:["san"],ppg:8.0,rpg:2.1,apg:null,pos:"G",
+  t:["native"],b:"Award winner for Santurce in 2024."},
+ {n:"Jordan Murphy",d:[2020],c:["pon"],ppg:null,rpg:null,apg:null,pos:"F",
+  t:["import"],b:"Joint second in blocks in 2025 with 30."}
+];
+
+const TAGS={
+ mvp:["Won an MVP",p=>p.t.includes("mvp")],
+ scoring:["Led the league in scoring",p=>p.t.includes("scoring")],
+ champion:["Won a title",p=>p.t.includes("champion")],
+ import:["Played as a refuerzo",p=>p.t.includes("import")],
+ native:["Puerto Rican / nativo",p=>p.t.includes("native")],
+ nba:["Also played in the NBA",p=>p.t.includes("nba")],
+ "10k":["10,000+ career points",p=>p.t.includes("10k")],
+ d1960:["Played in the 1960s",p=>p.d.includes(1960)],
+ d1970:["Played in the 1970s",p=>p.d.includes(1970)],
+ d1980:["Played in the 1980s",p=>p.d.includes(1980)],
+ d1990:["Played in the 1990s",p=>p.d.includes(1990)],
+ d2020:["Played in the 2020s",p=>p.d.includes(2020)]
+};
+
+/* ============================================================
+   DERIVED
+   ============================================================ */
+const champOf={}, ruOf={};
+for(const k in F){
+  F[k].won.forEach(y=>champOf[y]=k);
+  F[k].ru.forEach(y=>ruOf[y]=k);
+}
+const YEARS=[];for(let y=1930;y<=2026;y++)YEARS.push(y);
+const LAST=2026, NSEASONS=YEARS.length;
+const NOTES={1953:"No champion recorded in any source consulted.",
+             2024:"Runner-up confirmed from the 2024 season page, not the franchise table.",
+             1945:"Sources disagree on the champion's name. See Sources.",
+             1942:"Spanish Wikipedia splits 1942 and 1942–43; both won by San Germán.",
+             2026:"From RealGM, which labels this season 2025–26. Wikipedia has not updated. Treat as provisional."};
+
+const $=s=>document.querySelector(s), el=(t,c)=>{const n=document.createElement(t);if(c)n.className=c;return n};
+const esc=s=>String(s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+
+function crestSVG(k,w,h){
+  const f=F[k];
+  return `<svg viewBox="0 0 40 48" width="${w}" height="${h}" role="img" aria-label="${esc(f.name)}">
+    <path d="M2 2h36v28c0 9-8 14-18 16C10 44 2 39 2 30V2z" fill="${f.c1}" stroke="${f.c2}" stroke-width="2"/>
+    <path d="M2 20h36" stroke="${f.c2}" stroke-width="2.5" opacity=".85"/>
+    <text x="20" y="16" text-anchor="middle" fill="${f.c2}"
+      font-family="Archivo Black, sans-serif" font-size="11">${esc(f.abbr)}</text>
+    <text x="20" y="35" text-anchor="middle" fill="${f.c2}"
+      font-family="Archivo Black, sans-serif" font-size="13">${f.won.length||"–"}</text>
+  </svg>`;
+}
+/* Drawn crest sits underneath; a real logo file, if present, covers it. */
+function crest(k,w=40,h=48){
+  const f=F[k], sv=crestSVG(k,w,h);
+  if(!USE_IMAGES) return sv;
+  return `<span class="imgslot" style="width:${w}px;height:${h}px">
+    <span style="position:absolute;inset:0">${sv}</span>
+    ${imgTry(CREST_DIR+k,CREST_EXT,"crestimg",f.name+" logo")
+      .replace('<img ','<img style="position:absolute;inset:0;width:100%;height:100%" ')}
+  </span>`;
+}
+/* Player portrait: initials block underneath, photo on top when the file exists. */
+function portrait(name,c1,c2,w=60,h=74){
+  const init=name.replace(/[«»]/g,"").split(/\s+/).filter(x=>x.length>2).slice(0,2)
+    .map(x=>x[0]).join("").toUpperCase();
+  const sv=`<svg viewBox="0 0 60 74" width="${w}" height="${h}" role="img" aria-label="${esc(name)}">
+    <rect width="60" height="74" fill="${c1}"/>
+    <circle cx="30" cy="27" r="13" fill="${c2}" opacity=".28"/>
+    <path d="M6 74c0-14 11-22 24-22s24 8 24 22z" fill="${c2}" opacity=".28"/>
+    <text x="30" y="46" text-anchor="middle" fill="${c2}"
+      font-family="Archivo Black, sans-serif" font-size="19">${esc(init)}</text></svg>`;
+  if(!USE_IMAGES) return sv;
+  return `<span class="imgslot" style="width:${w}px;height:${h}px">
+    <span style="position:absolute;inset:0">${sv}</span>
+    ${imgTry(PLAYER_DIR+slug(name),PLAYER_EXT,"","Portrait of "+name)
+      .replace('<img ','<img style="position:absolute;inset:0;width:100%;height:100%" ')}
+  </span>`;
+}
+
+/* ---------- ribbon ---------- */
+function buildRibbon(){
+  const box=$("#ribbon");
+  for(let d=1930;d<=2020;d+=10){
+    const row=el("div","decade");
+    const lab=el("div","decade-label");lab.textContent=d+"s";row.appendChild(lab);
+    const cells=el("div","cells");
+    for(let y=d;y<d+10 && y<=LAST;y++){
+      const k=champOf[y], b=el("button","cell"+(k?"":" empty"));
+      b.type="button";
+      if(k){
+        b.style.background=F[k].c1;
+        b.style.borderBottom="3px solid "+F[k].c2;
+        b.setAttribute("aria-label",y+", "+F[k].name);
+        b.dataset.y=y;
+        b.addEventListener("click",()=>showSeason(y,b));
+      }else{
+        b.disabled=true;b.setAttribute("aria-label",y+", no champion recorded");
+      }
+      cells.appendChild(b);
+    }
+    row.appendChild(cells);box.appendChild(row);
+  }
+}
+function showSeason(y,btn){
+  document.querySelectorAll(".cell.sel").forEach(c=>c.classList.remove("sel"));
+  if(btn)btn.classList.add("sel");
+  const c=F[champOf[y]], r=ruOf[y]?F[ruOf[y]]:null, o=$("#readout");
+  o.classList.remove("idle");
+  o.innerHTML=`<div class="yr">${y}</div><div class="body">
+    <div class="win">${esc(c.name)}</div>
+    <div class="lose">${r?"beat "+esc(r.name):"Runner-up not recorded"}</div>
+    <div class="meta">${c.won.length} ${c.won.length===1?"title":"titles"} total · title number ${c.won.indexOf(y)+1} for the franchise${NOTES[y]?" · "+esc(NOTES[y]):""}</div>
+  </div>`;
+}
+
+/* ---------- title stats + bars ---------- */
+function buildTitleStats(){
+  const withChamp=YEARS.filter(y=>champOf[y]).length;
+  const clubs=Object.keys(F).filter(k=>F[k].won.length).length;
+  $("#titleStrip").innerHTML=[
+    [NSEASONS,"seasons covered, 1930–2026"],
+    [withChamp,"with a champion recorded"],
+    [clubs,"franchises that have won one"],
+    [F.bay.won.length,"titles for Bayamón, the record"],
+    [5,"straight for Bayamón, 1971–75"],
+    [Object.keys(F).length,"franchises in the archive"]
+  ].map(([n,l])=>`<div><div class="n">${n}</div><div class="l">${esc(l)}</div></div>`).join("");
+
+  const rank=Object.keys(F).filter(k=>F[k].won.length).sort((a,b)=>F[b].won.length-F[a].won.length);
+  const max=F[rank[0]].won.length;
+  $("#titleBars").innerHTML=rank.map((k,i)=>{
+    const f=F[k];
+    return `<div class="bar-row">
+      <div class="rk">${i+1}</div>
+      <div class="who"><div class="pn">${esc(f.name)}${f.active?"":' <span class="dim" style="font-weight:400">· defunct</span>'}</div>
+      <div class="track"><div class="fill" style="width:${f.won.length/max*100}%;background:${f.c1};box-shadow:inset 0 -2px 0 ${f.c2}"></div></div></div>
+      <div class="v">${f.won.length}<small>${f.ru.length} lost</small></div></div>`;
+  }).join("");
+}
+
+/* ---------- finals head-to-head ---------- */
+function buildMatrix(){
+  const keys=Object.keys(F).filter(k=>F[k].won.length||F[k].ru.length)
+    .sort((a,b)=>F[b].won.length-F[a].won.length);
+  const m={};keys.forEach(w=>{m[w]={};keys.forEach(l=>m[w][l]=0)});
+  for(let y=1930;y<=LAST;y++){
+    const w=champOf[y], l=ruOf[y];
+    if(w&&l&&m[w]&&m[w][l]!==undefined)m[w][l]++;
+  }
+  let h='<table><thead><tr><th class="rowhead">Won ↓ / Lost →</th>'+
+    keys.map(k=>`<th class="rot" title="${esc(F[k].name)}">${esc(F[k].abbr)}</th>`).join("")+
+    '<th class="num">Won</th></tr></thead><tbody>';
+  keys.forEach(w=>{
+    h+=`<tr><th class="rowhead"><span style="display:inline-block;width:7px;height:7px;background:${F[w].c1};margin-right:6px;border-radius:1px"></span>${esc(F[w].abbr)}</th>`;
+    keys.forEach(l=>{
+      const v=m[w][l];
+      h+=`<td class="cellv${v?"":" zero"}" ${v?`style="background:${F[w].c1}${v>2?"":"55"};color:#fff" title="${esc(F[w].name)} beat ${esc(F[l].name)} ${v}×"`:""}>${v||"·"}</td>`;
+    });
+    h+=`<td class="num"><b>${F[w].won.length}</b></td></tr>`;
+  });
+  $("#matrix").innerHTML=h+"</tbody></table>";
+}
+
+/* ---------- hall of fame ---------- */
+function buildHOF(){
+  const teamTint=i=>[["#1B4F9C","#E8B23A"],["#F26A21","#141414"],["#B3141F","#1A1A1A"],
+    ["#0E7C7B","#F2F2F2"],["#6B2C8F","#EFD25C"],["#1F5B3A","#D9342B"]][i%6];
+  const render=()=>{
+    const s=$("#hofSort").value;
+    const rows=HOF.slice().sort((a,b)=>
+      s==="points"?(b.pts||0)-(a.pts||0): s==="mvp"?(b.mvp-a.mvp)||((b.pts||0)-(a.pts||0)) : a.era-b.era);
+    $("#hofGrid").innerHTML=rows.map((p,i)=>{
+      const [c1,c2]=teamTint(HOF.indexOf(p));
+      return `<div class="hof-card">
+        <div class="hof-top">
+          <div class="portrait">${portrait(p.n,c1,c2)}</div>
+          <div style="min-width:0">
+            <div class="hof-nm">${esc(p.n)}</div>
+            <div class="hof-yrs">${esc(p.yrs)} · ${esc(p.pos)}</div>
+            <div class="hof-role">${esc(p.role)}</div>
+          </div>
+        </div>
+        <div class="hof-body">
+          <div class="hon">${p.hon.map((x,j)=>`<span class="${j===0?"gold":""}">${esc(x)}</span>`).join("")}</div>
+          ${(p.pts||p.gp||p.mvp)?`<div class="hof-line">
+            ${p.pts?`<div><b>${p.pts.toLocaleString()}</b><span>points</span></div>`:""}
+            ${p.gp?`<div><b>${p.gp}</b><span>games</span></div>`:""}
+            ${p.ppg?`<div><b>${p.ppg.toFixed(1)}</b><span>per game</span></div>`:""}
+            ${p.mvp?`<div><b>${p.mvp}</b><span>MVP</span></div>`:""}
+          </div>`:""}
+          ${p.note?`<div class="note">${esc(p.note)}</div>`:""}
+        </div></div>`;
+    }).join("");
+  };
+  $("#hofSort").addEventListener("change",render);render();
+  $("#stoneGrid").innerHTML=STONE.map(([p,a,n])=>
+    `<div><div class="p">${esc(p)}</div><div class="a">${esc(a)}</div><div class="a">${esc(n)}</div></div>`).join("");
+  $("#retiredBody").innerHTML=RETIRED.map(([t,c,n])=>
+    `<tr><td class="name">${esc(t)}</td><td class="num">${c}</td><td class="dim">${esc(n)}</td></tr>`).join("");
+}
+
+/* ---------- refuerzos ---------- */
+function buildRefuerzos(){
+  $("#refStrip").innerHTML=[
+    [3,"imports allowed per club since 2025"],
+    [36,"imports across the league in 2025"],
+    [12,"native roster spots, down from 13"],
+    ["11–2","board vote that approved the change"],
+    [11,"of the 2025 imports came from Australia's NBL"],
+    [8,"import changes allowed per club, six plus two"]
+  ].map(([n,l])=>`<div><div class="n">${n}</div><div class="l">${esc(l)}</div></div>`).join("");
+
+  $("#refRules").innerHTML=REF_RULES.map(([a,t,d])=>
+    `<div class="rule"><div class="art">${esc(a)}</div><div class="rt">${esc(t)}</div><div class="rd">${esc(d)}</div></div>`).join("")
+    + `<div class="rule"><div class="art">Roster shape</div><div class="rt">Three of fifteen</div>
+       <div class="mix"><i class="imp" style="flex:3">3 refuerzos</i><i class="nat" style="flex:12">12 nativos</i></div>
+       <div class="rd">Before 2025 the split was two and thirteen. The extra slot came directly out of the local allocation, which is why the players' association fought it.</div></div>`;
+
+  $("#refTimeline").innerHTML=REF_TIMELINE.map(([d,h,b])=>
+    `<div class="tl"><div class="d">${esc(d)}</div><div class="h">${esc(h)}</div><div class="b">${esc(b)}</div></div>`).join("");
+
+  $("#refScorers").innerHTML=REF_SCORERS.map(([r,p,c,st,pt,pg])=>
+    `<tr><td class="num">${r}</td><td class="name">${esc(p)}</td><td class="dim">${esc(c)}</td>
+     <td><span class="chip ${st==="import"?"won":"ru"}" style="font-size:11px">${esc(st)}</span></td>
+     <td class="num">${pt}</td><td class="num">${pg.toFixed(1)}</td></tr>`).join("");
+}
+
+/* ============================================================
+   PERSISTENCE — localStorage when the file is opened normally,
+   memory when it is sandboxed. Never throws either way.
+   ============================================================ */
+const MEM={};
+const ST={
+  get(k){try{const v=localStorage.getItem("bsn:"+k);return v===null?(MEM[k]??null):v}catch(e){return MEM[k]??null}},
+  set(k,v){MEM[k]=String(v);try{localStorage.setItem("bsn:"+k,v)}catch(e){}},
+  json(k,d){try{const v=this.get(k);return v?JSON.parse(v):d}catch(e){return d}}
+};
+
+/* Deterministic PRNG so one date produces one board worldwide. */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;
+  let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;
+  return((t^t>>>14)>>>0)/4294967296}}
+const EPOCH=Date.UTC(2026,0,1);
+function todayStamp(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function puzzleNo(){const d=new Date();
+  return Math.floor((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-EPOCH)/86400000)+1}
+function seededShuffle(arr,rnd){const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+/* ============================================================
+   GAMES
+   ============================================================ */
+const norm=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+  .replace(/[«»"'.]/g,"").replace(/\s+/g," ").trim();
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const fits=(p,teamKey,tagKey)=>p.c.includes(teamKey)&&TAGS[tagKey][1](p);
+
+/* ---- La Cuadrícula ---- */
+let GB=null, GMODE="daily";
+function newBoard(seed){
+  const rnd=seed!==undefined?mulberry32(seed):Math.random;
+  const teamKeys=[...new Set(POOL.flatMap(p=>p.c))];
+  const tagKeys=Object.keys(TAGS);
+  for(let attempt=0;attempt<600;attempt++){
+    const tk=seededShuffle(teamKeys,rnd), gk=seededShuffle(tagKeys,rnd);
+    const rows=tk.slice(0,3), cols=gk.slice(0,3);
+    const sol=rows.map(r=>cols.map(c=>POOL.filter(p=>fits(p,r,c))));
+    if(sol.every(row=>row.every(cell=>cell.length>0))){
+      GB={rows,cols,sol,ans:[[null,null,null],[null,null,null],[null,null,null]],
+          used:new Set(),sel:null,left:9,daily:seed!==undefined,done:false};
+      return true;
+    }
+  }
+  return false;
+}
+function loadOrStartDaily(){
+  const saved=ST.json("grid:"+todayStamp(),null);
+  /* 600 seeded attempts occasionally exhaust; nudge the seed so a day is never boardless. */
+  let n=0;while(!newBoard(puzzleNo()*7919+n)&&n<40)n++;
+  if(saved&&GB){
+    saved.ans.forEach((row,i)=>row.forEach((a,j)=>{
+      if(a){GB.ans[i][j]=a;GB.used.add(a.name);GB.left--}
+    }));
+    GB.done=GB.left===0;
+  }
+}
+function saveDaily(){
+  if(!GB||!GB.daily)return;
+  ST.set("grid:"+todayStamp(),JSON.stringify({ans:GB.ans}));
+  if(GB.left===0){
+    const score=GB.ans.flat().filter(a=>a&&a.ok).length;
+    const st=ST.json("streak",{cur:0,best:0,played:0,last:null,totalScore:0});
+    if(st.last!==todayStamp()){
+      const y=new Date(Date.now()-86400000);
+      const yStamp=y.getFullYear()+"-"+String(y.getMonth()+1).padStart(2,"0")+"-"+String(y.getDate()).padStart(2,"0");
+      st.cur=(st.last===yStamp)?st.cur+1:1;
+      st.best=Math.max(st.best,st.cur);
+      st.played++;st.totalScore+=score;st.last=todayStamp();
+      ST.set("streak",JSON.stringify(st));
+    }
+    drawStreak();
+  }
+}
+function drawStreak(){
+  const st=ST.json("streak",{cur:0,best:0,played:0,totalScore:0});
+  const avg=st.played?(st.totalScore/st.played).toFixed(1):"—";
+  $("#gStreak").innerHTML=[
+    [st.cur,"current streak"],[st.best,"best streak"],
+    [st.played,"boards played"],[avg,"average score"],["#"+puzzleNo(),"today's puzzle"]
+  ].map(([n,l])=>`<div><div class="n">${n}</div><div class="l">${esc(l)}</div></div>`).join("");
+}
+function drawShare(){
+  const box=$("#gShare");
+  if(!GB||GB.left!==0){box.innerHTML="";return}
+  const score=GB.ans.flat().filter(a=>a&&a.ok).length;
+  const art=GB.ans.map(r=>r.map(a=>a&&a.ok?"\u{1F7E8}":"\u2B1C").join("")).join("\n");
+  const txt=`BSN Cuadr\u00EDcula #${puzzleNo()} \u2014 ${score}/9\n${art}\n#LaM\u00E1sDura`;
+  box.innerHTML=`<div class="sharebox"><pre id="shareArt">${esc(txt)}</pre>
+    <button class="btn" id="shareCopy">Copy result</button>
+    <span class="dim" style="font-size:12px;margin-left:9px">Paste it anywhere.</span></div>`;
+  $("#shareCopy").addEventListener("click",()=>{
+    const t=txt;
+    const done=()=>{$("#shareCopy").textContent="Copied"};
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(t).then(done).catch(()=>{})
+    }else{
+      const ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);
+      ta.select();try{document.execCommand("copy");done()}catch(e){}document.body.removeChild(ta);
+    }
+  });
+}
+function drawBoard(){
+  if(!GB){$("#igrid").innerHTML='<p class="note">Could not build a solvable board from the pool.</p>';return}
+  let h=`<div class="ghead" style="background:none;border:0"></div>`;
+  GB.cols.forEach(c=>h+=`<div class="ghead">${esc(TAGS[c][0])}</div>`);
+  GB.rows.forEach((r,i)=>{
+    h+=`<div class="ghead row">${crest(r,26,32)}<span>${esc(F[r].name)}</span></div>`;
+    GB.cols.forEach((c,j)=>{
+      const a=GB.ans[i][j];
+      if(a===null){
+        const on=GB.sel&&GB.sel[0]===i&&GB.sel[1]===j;
+        h+=`<button class="gcell" data-i="${i}" data-j="${j}"${on?' style="border-color:var(--brass);background:var(--surface)"':''}>${on?"typing…":"?"}</button>`;
+      }else if(a.ok){
+        const rar=Math.round(GB.sol[i][j].length/POOL.length*100);
+        h+=`<button class="gcell ok" disabled>${esc(a.name)}<span class="rar">${rar}% rarity</span></button>`;
+      }else{
+        h+=`<button class="gcell bad" disabled>${esc(a.name)}<span class="rar">no match</span></button>`;
+      }
+    });
+  });
+  $("#igrid").innerHTML=h;
+  document.querySelectorAll("#igrid .gcell:not(:disabled)").forEach(b=>
+    b.addEventListener("click",()=>{
+      GB.sel=[+b.dataset.i,+b.dataset.j];drawBoard();
+      const inp=$("#gInput");inp.disabled=false;$("#gSubmit").disabled=false;inp.value="";inp.focus();
+      $("#gMsg").textContent=`${F[GB.rows[GB.sel[0]]].name} · ${TAGS[GB.cols[GB.sel[1]]][0]}`;
+      $("#gMsg").className="msg";
+    }));
+  drawShare();
+}
+function submitGuess(){
+  if(!GB||!GB.sel)return;
+  const [i,j]=GB.sel, raw=$("#gInput").value.trim();
+  if(!raw)return;
+  const g=norm(raw);
+  const hit=POOL.find(p=>norm(p.n)===g||norm(p.n).includes(g)&&g.length>4);
+  const m=$("#gMsg");
+  if(!hit){m.textContent=`"${raw}" is not in the archive's pool. Only about fifty players are covered.`;m.className="msg bad";return}
+  if(GB.used.has(hit.n)){m.textContent=`${hit.n} is already on the board. No repeats.`;m.className="msg bad";return}
+  const ok=fits(hit,GB.rows[i],GB.cols[j]);
+  GB.ans[i][j]={name:hit.n,ok};GB.used.add(hit.n);GB.left--;GB.sel=null;
+  $("#gInput").value="";$("#gInput").disabled=true;$("#gSubmit").disabled=true;
+  if(ok){m.textContent=`${hit.n} — correct. ${hit.b}`;m.className="msg good"}
+  else{
+    const alt=GB.sol[i][j].filter(p=>!GB.used.has(p.n)).map(p=>p.n);
+    m.textContent=`${hit.n} does not fit. ${alt.length?"Valid answers included "+alt.slice(0,3).join(", ")+".":""}`;
+    m.className="msg bad";
+  }
+  drawBoard();saveDaily();
+  if(GB.left===0){
+    const score=GB.ans.flat().filter(a=>a&&a.ok).length;
+    m.textContent=`Board complete — ${score} of 9. `+m.textContent;
+  }
+}
+
+/* ---- 34-0 ---- */
+const DEC=[1950,1960,1970,1980,1990,2000,2010,2020];
+let DR=null;
+function resetDraft(){
+  DR={picks:[],cur:null,skips:1,used:new Set(),done:false};
+  $("#dSpin").textContent="Ready";
+  $("#dSub").textContent="Five picks, one per decade drawn.";
+  $("#dChoices").innerHTML="";$("#dResult").innerHTML="";
+  $("#dSkip").textContent="Skip decade (1 left)";
+  $("#dGo").disabled=false;$("#dGo").textContent="Spin";
+  drawPicks();
+}
+function drawPicks(){
+  let h="";
+  for(let i=0;i<5;i++){
+    const p=DR.picks[i];
+    h+=p?`<div class="pickslot filled"><div class="pnm">${esc(p.n)}</div>
+      <div class="pst">${p.dec}s · ${esc(p.pos)}</div></div>`
+     :`<div class="pickslot"><div class="pempty">Pick ${i+1}</div></div>`;
+  }
+  $("#dPicks").innerHTML=h;
+}
+function availFor(dec){return POOL.filter(p=>p.d.includes(dec)&&!DR.used.has(p.n))}
+function spin(){
+  if(DR.picks.length>=5)return;
+  const opts=DEC.filter(d=>availFor(d).length>0);
+  if(!opts.length){finishDraft();return}
+  const d=pick(opts);DR.cur=d;
+  $("#dSpin").textContent=d+"s";
+  const pool=availFor(d);
+  $("#dSub").textContent=`${pool.length} available · pick ${DR.picks.length+1} of 5`;
+  const four=pool.slice().sort(()=>Math.random()-.5).slice(0,4);
+  $("#dChoices").innerHTML=four.map(p=>{
+    const st=[["ppg","pts"],["rpg","reb"],["apg","ast"]].map(([k,l])=>
+      `<div><b>${p[k]!==null?p[k].toFixed(1):"—"}</b><span>${l}</span></div>`).join("");
+    const team=p.c.length?F[p.c[0]].name:"club not recorded";
+    return `<button class="choice" data-n="${esc(p.n)}"><div class="cn">${esc(p.n)}</div>
+      <div class="cm">${esc(p.pos)} · ${esc(team)}</div><div class="cs">${st}</div></button>`;
+  }).join("");
+  document.querySelectorAll("#dChoices .choice").forEach(b=>
+    b.addEventListener("click",()=>choose(b.dataset.n)));
+  $("#dGo").disabled=true;
+}
+function choose(name){
+  const p=POOL.find(x=>x.n===name);if(!p)return;
+  DR.picks.push({...p,dec:DR.cur});DR.used.add(p.n);
+  $("#dChoices").innerHTML="";drawPicks();
+  if(DR.picks.length>=5){finishDraft();return}
+  $("#dGo").disabled=false;$("#dSpin").textContent="Spin again";
+  $("#dSub").textContent=`Pick ${DR.picks.length+1} of 5.`;
+}
+/* Many players have categories that were never recorded, so a raw stat sum
+   would score them at zero. Honours carry real signal and fill that hole. */
+const TAGV={mvp:9,scoring:7,"10k":5,legend:5,nba:3,champion:2,native:0,import:0};
+function rate(p){
+  let r=(p.ppg||0)+(p.rpg||0)*1.2+(p.apg||0)*1.5;
+  p.t.forEach(t=>r+=TAGV[t]||0);
+  return r;
+}
+function finishDraft(){
+  DR.done=true;$("#dGo").disabled=true;$("#dSpin").textContent="Season projected";
+  $("#dSub").textContent="";
+  let R=0,missing=0;
+  DR.picks.forEach(p=>{
+    R+=rate(p);
+    missing+=[p.ppg,p.rpg,p.apg].filter(v=>v===null).length;
+  });
+  const bigMan=DR.picks.some(p=>(p.rpg||0)>=9), dime=DR.picks.some(p=>(p.apg||0)>=4.5);
+  const bonuses=[];
+  if(bigMan){R*=1.06;bonuses.push("a genuine rebounder, +6%")}
+  if(dime){R*=1.07;bonuses.push("a real distributor, +7%")}
+  const p=1/(1+Math.exp(-(R-125)/28));
+  const w=Math.max(0,Math.min(34,Math.round(34*p))), l=34-w;
+  const grade=w>=34?"Perfecto":w>=30?"A":w>=26?"B":w>=20?"C":w>=14?"D":"F";
+  const best=DR.picks.slice().sort((a,b)=>rate(b)-rate(a))[0];
+  $("#dResult").innerHTML=`<div class="result">
+    <div class="rec">${w}-${l}</div>
+    <div class="grade">Grade ${grade}${w===34?" — la temporada perfecta" : ""}</div>
+    <div class="expl">Roster rating ${R.toFixed(0)}.
+      ${bonuses.length?"Lineup bonuses: "+bonuses.join(" and ")+". ":"No lineup bonuses — you need both a rebounder and a distributor. "}
+      Best pick was ${esc(best.n)} at ${rate(best).toFixed(0)}.
+      ${missing?` ${missing} of 15 stat categories across your five picks were never recorded. Honours stand in for them, but that is the archive's gap showing through.`:""}
+    </div>
+    <div class="sharebox" style="margin-top:16px;text-align:left">
+      <pre>${esc(`BSN 34-0 \u2014 ${w}-${l} (${grade})\n${DR.picks.map(x=>x.dec+"s \u00B7 "+x.n).join("\n")}\n#LaM\u00E1sDura`)}</pre>
+      <button class="btn" id="dCopy">Copy result</button>
+    </div></div>`;
+  const t=`BSN 34-0 \u2014 ${w}-${l} (${grade})\n${DR.picks.map(x=>x.dec+"s \u00B7 "+x.n).join("\n")}\n#LaM\u00E1sDura`;
+  const cb=$("#dCopy");
+  if(cb)cb.addEventListener("click",()=>{
+    const done=()=>{cb.textContent="Copied"};
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(done).catch(()=>{});
+    else{const ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();
+      try{document.execCommand("copy");done()}catch(e){}document.body.removeChild(ta)}
+  });
+}
+
+/* ---- ¿Quién soy? ---- */
+let QZ=null;
+function newQuiz(){
+  const cand=POOL.filter(p=>p.b&&p.d.length);
+  const p=pick(cand);
+  const clues=[];
+  clues.push(["Era",p.d.map(d=>d+"s").join(", ")]);
+  clues.push(["Position",p.pos]);
+  if(p.c.length)clues.push(["Club",p.c.length>2?F[p.c[0]].name+" and "+(p.c.length-1)+" others":p.c.map(k=>F[k].name).join(", ")]);
+  const st=[p.ppg!==null?p.ppg.toFixed(1)+" pts":null,p.rpg!==null?p.rpg.toFixed(1)+" reb":null,
+            p.apg!==null?p.apg.toFixed(1)+" ast":null].filter(Boolean);
+  if(st.length)clues.push(["Per game",st.join(" · ")]);
+  clues.push(["Honours",p.t.map(t=>TAGS[t]?TAGS[t][0]:t).join(" · ")]);
+  clues.push(["Note",p.b]);
+  QZ={p,clues,shown:1};
+  drawQuiz();$("#qMsg").textContent="";$("#qInput").value="";
+}
+function drawQuiz(){
+  $("#qClues").innerHTML=QZ.clues.slice(0,QZ.shown).map(([k,v])=>
+    `<div class="clue"><b>${esc(k)}</b><span>${esc(v)}</span></div>`).join("")+
+    (QZ.shown<QZ.clues.length?`<div class="clue"><b>&nbsp;</b><span class="dim">${QZ.clues.length-QZ.shown} clue${QZ.clues.length-QZ.shown===1?"":"s"} left</span></div>`:"");
+}
+function guessQuiz(){
+  const g=norm($("#qInput").value), m=$("#qMsg");
+  if(!g)return;
+  if(norm(QZ.p.n)===g||norm(QZ.p.n).includes(g)&&g.length>4){
+    m.textContent=`Correct — ${QZ.p.n}, on ${QZ.shown} clue${QZ.shown===1?"":"s"}. ${QZ.p.b}`;
+    m.className="msg good";QZ.shown=QZ.clues.length;drawQuiz();
+  }else{
+    m.textContent="Not that one. Take another clue.";m.className="msg bad";
+    if(QZ.shown<QZ.clues.length){QZ.shown++;drawQuiz()}
+  }
+}
+
+function buildJuega(){
+  loadOrStartDaily();drawBoard();drawStreak();
+  const setMode=m=>{
+    GMODE=m;
+    $("#mDaily").setAttribute("aria-pressed",m==="daily");
+    $("#mFree").setAttribute("aria-pressed",m==="free");
+    if(m==="daily")loadOrStartDaily();else newBoard();
+    drawBoard();$("#gMsg").textContent="";
+    $("#gInput").disabled=true;$("#gSubmit").disabled=true;
+    $("#gNew").hidden=(m==="daily");
+  };
+  $("#mDaily").addEventListener("click",()=>setMode("daily"));
+  $("#mFree").addEventListener("click",()=>setMode("free"));
+  $("#gNew").hidden=true;
+  $("#gSubmit").addEventListener("click",submitGuess);
+  $("#gInput").addEventListener("keydown",e=>{if(e.key==="Enter")submitGuess()});
+  $("#gNew").addEventListener("click",()=>{newBoard();drawBoard();
+    $("#gMsg").textContent="";$("#gInput").disabled=true;$("#gSubmit").disabled=true});
+  resetDraft();
+  $("#dGo").addEventListener("click",spin);
+  $("#dReset").addEventListener("click",resetDraft);
+  $("#dSkip").addEventListener("click",()=>{
+    if(DR.skips<1||!DR.cur||DR.done)return;
+    DR.skips--;$("#dSkip").textContent="Skip used";$("#dGo").disabled=false;spin();
+  });
+  newQuiz();
+  $("#qSubmit").addEventListener("click",guessQuiz);
+  $("#qInput").addEventListener("keydown",e=>{if(e.key==="Enter")guessQuiz()});
+  $("#qClue").addEventListener("click",()=>{if(QZ.shown<QZ.clues.length){QZ.shown++;drawQuiz()}});
+  $("#qNew").addEventListener("click",newQuiz);
+  document.querySelectorAll(".gtab").forEach(b=>b.addEventListener("click",()=>{
+    document.querySelectorAll(".gtab").forEach(x=>x.setAttribute("aria-pressed","false"));
+    b.setAttribute("aria-pressed","true");
+    ["grid","draft","quiz"].forEach(g=>{
+      document.getElementById("g"+g[0].toUpperCase()+g.slice(1)).hidden=(g!==b.dataset.g);
+    });
+  }));
+}
+
+/* ---------- my club ---------- */
+function buildMyClub(){
+  const sel=$("#myClub");
+  Object.keys(F).filter(k=>F[k].active).sort((a,b)=>F[a].name.localeCompare(F[b].name))
+    .forEach(k=>sel.insertAdjacentHTML("beforeend",`<option value="${k}">${esc(F[k].name)}</option>`));
+  const draw=()=>{
+    const k=sel.value, box=$("#myClubBox");
+    if(!k){box.innerHTML="";return}
+    const f=F[k], last=f.won.length?Math.max(...f.won):null;
+    const drought=last?LAST-last:null;
+    const finals=f.won.length+f.ru.length;
+    const mine=ON_THIS_DAY.filter(e=>e[4].includes(f.name)||e[3].includes(f.city));
+    const rival=(()=>{
+      const c={};
+      f.ru.forEach(y=>{if(champOf[y])c[champOf[y]]=(c[champOf[y]]||0)+1});
+      f.won.forEach(y=>{if(ruOf[y])c[ruOf[y]]=(c[ruOf[y]]||0)+1});
+      const top=Object.entries(c).sort((a,b)=>b[1]-a[1])[0];
+      return top?`${F[top[0]].name}, met ${top[1]} times in a final`:"No repeat finals opponent";
+    })();
+    const pool=POOL.filter(p=>p.c.includes(k));
+    box.innerHTML=`<div class="myclub">
+      <span class="band" style="background:linear-gradient(90deg,${f.c1},${f.c2})"></span>
+      <div class="myclub-head">${crest(k,46,56)}
+        <div style="flex:1;min-width:0">
+          <div class="myclub-nm">${esc(f.name)}</div>
+          <div class="myclub-sub">${esc(f.city)} · founded ${f.founded}${f.coach?" · coach "+esc(f.coach):""}</div>
+        </div></div>
+      <div class="kv" style="margin-top:15px">
+        <div><div class="k">Championships</div><div class="v">${f.won.length}</div></div>
+        <div><div class="k">Last title</div><div class="v">${last||"—"}<small>${drought===null?"none recorded":drought===0?"reigning champions":drought+" seasons ago"}</small></div></div>
+        <div><div class="k">Finals record</div><div class="v">${f.won.length}–${f.ru.length}<small>${finals} finals</small></div></div>
+        <div><div class="k">Biggest rival</div><div class="v" style="font-size:12.5px">${esc(rival)}</div></div>
+      </div>
+      ${f.won.length?`<div style="margin-top:13px"><div class="k dim" style="font-size:11.5px">Title years</div>
+        <div class="yearchips">${f.won.map(y=>`<span class="chip won">${y}</span>`).join("")}</div></div>`:""}
+      ${pool.length?`<div class="note" style="margin-top:12px">In the game pool: ${pool.map(p=>esc(p.n)).join(", ")}.</div>`:""}
+      ${mine.length?`<div class="note" style="margin-top:8px">${mine.length} dated moment${mine.length===1?"":"s"} in the archive involve this club.</div>`:""}
+    </div>`;
+  };
+  const saved=ST.get("club");
+  if(saved&&F[saved])sel.value=saved;
+  sel.addEventListener("change",()=>{ST.set("club",sel.value);draw()});
+  draw();
+}
+
+/* ---------- global search ---------- */
+function buildSearch(){
+  const idx=[];
+  POOL.forEach(p=>idx.push({k:"Player",t:p.n,
+    s:[p.pos,p.d.map(d=>d+"s").join("/"),p.c.length?F[p.c[0]].name:""].filter(Boolean).join(" · "),
+    go:()=>{showTab("juega");$("#gMsg").innerHTML="";$("#qInput").value=p.n}}));
+  Object.keys(F).forEach(k=>idx.push({k:"Club",t:F[k].name,
+    s:`${F[k].city} · ${F[k].won.length} titles · founded ${F[k].founded}`,
+    go:()=>{showTab("teams");showTeam(k)}}));
+  YEARS.forEach(y=>{if(champOf[y])idx.push({k:"Season",t:String(y),
+    s:`${F[champOf[y]].name}${ruOf[y]?" beat "+F[ruOf[y]].name:""}`,
+    go:()=>{showTab("titles");showSeason(y,document.querySelector('.cell[data-y="'+y+'"]'))}})});
+  HOF.forEach(p=>{if(!idx.some(x=>x.t===p.n))idx.push({k:"Legend",t:p.n,s:p.role,
+    go:()=>showTab("hof")})});
+  RECORDS.forEach(r=>idx.push({k:"Record",t:r[0],s:`${r[1]} — ${r[2]}`,go:()=>showTab("records")}));
+
+  const inp=$("#gs"), box=$("#gsRes");
+  const run=()=>{
+    const q=norm(inp.value);
+    if(q.length<2){box.innerHTML="";return}
+    const hits=idx.filter(x=>norm(x.t).includes(q)||norm(x.s).includes(q)).slice(0,8);
+    box.innerHTML=hits.length?hits.map((h,i)=>
+      `<button class="res" data-i="${i}"><span class="rk">${esc(h.k)}</span>
+       <span><span class="rt">${esc(h.t)}</span><br><span class="rs">${esc(h.s)}</span></span></button>`).join("")
+      :`<div class="res"><span class="rs" style="padding:4px">Nothing in the archive matches that.</span></div>`;
+    document.querySelectorAll("#gsRes .res[data-i]").forEach(b=>
+      b.addEventListener("click",()=>{hits[+b.dataset.i].go();box.innerHTML="";inp.value=""}));
+  };
+  inp.addEventListener("input",run);
+  inp.addEventListener("keydown",e=>{if(e.key==="Escape"){box.innerHTML="";inp.blur()}});
+  document.addEventListener("click",e=>{
+    if(!box.contains(e.target)&&e.target!==inp)box.innerHTML="";
+  });
+}
+
+/* ---------- today ---------- */
+const MONTHS=["January","February","March","April","May","June","July",
+  "August","September","October","November","December"];
+function buildToday(){
+  const now=new Date(), mo=now.getMonth()+1, dy=now.getDate();
+  $("#todayDate").innerHTML=`${dy} ${MONTHS[mo-1]} ${now.getFullYear()}`;
+
+  /* Season runs roughly late March to mid August. */
+  let state;
+  if(mo>=3&&mo<=8) state=`The season normally runs now — late March into August. ${F.bay.name} are the reigning champions.`;
+  else state=`The league is in its off-season. ${F.bay.name} are the reigning champions with ${F.bay.won.length} titles, the most in BSN history.`;
+  $("#todayState").textContent=state;
+
+  const hits=ON_THIS_DAY.filter(e=>e[0]===mo&&e[1]===dy);
+  const near=ON_THIS_DAY.filter(e=>e[0]===mo&&e[1]!==dy).sort((a,b)=>a[1]-b[1]);
+  let h="";
+  if(hits.length){
+    h=hits.map(([m,d,y,t,b])=>`<div class="rec"><div class="rl">${d} ${MONTHS[m-1]} ${y}</div>
+      <div class="rh" style="font-size:16px;margin-top:5px">${esc(t)}</div>
+      <div class="rn">${esc(b)}</div></div>`).join("");
+    h=`<div class="recs">${h}</div>`;
+  }else{
+    h=`<p class="note">Nothing in the archive happened on this exact date. Fifteen dated events are recorded in total — here is the rest of ${MONTHS[mo-1]}.</p>`;
+  }
+  if(near.length){
+    h+=`<div class="timeline" style="margin-top:14px">`+near.map(([m,d,y,t,b])=>
+      `<div class="tl"><div class="d">${d} ${MONTHS[m-1]} ${y}</div><div class="h">${esc(t)}</div>
+       <div class="b">${esc(b)}</div></div>`).join("")+`</div>`;
+  }else if(hits.length===0){
+    h+=`<div class="timeline" style="margin-top:14px">`+ON_THIS_DAY.slice()
+      .sort((a,b)=>a[0]-b[0]||a[1]-b[1]).slice(0,5).map(([m,d,y,t,b])=>
+      `<div class="tl"><div class="d">${d} ${MONTHS[m-1]} ${y}</div><div class="h">${esc(t)}</div>
+       <div class="b">${esc(b)}</div></div>`).join("")+`</div>`;
+  }
+  $("#otd").innerHTML=h;
+
+  $("#calGrid").innerHTML=CALENDAR.map(c=>
+    `<div class="rule"><div class="art">${c.y} · ${esc(c.n)} season</div>
+      <div class="rt">${esc(c.start)} to ${esc(c.regEnd)}</div>
+      <div class="rd">${c.games} games, ${c.teams} teams. ${esc(c.fmt)}
+      ${c.po!=="—"?`<br>Playoffs from ${esc(c.po)}.`:""}
+      ${c.opener!=="—"?`<br><br>Opener: ${esc(c.opener)}.`:""}
+      ${c.note?`<br><br>${esc(c.note)}`:""}</div></div>`).join("");
+
+  $("#nextSeason").innerHTML=`<b>${esc(NEXT_SEASON.headline)}</b><br>${esc(NEXT_SEASON.body)}`;
+
+  $("#channelBody").innerHTML=CHANNELS.map(([c,hd,u,w])=>
+    `<tr><td class="name">${esc(c)}</td><td><a href="${u}" target="_blank" rel="noopener">${esc(hd)}</a></td>
+     <td class="dim" style="white-space:normal">${esc(w)}</td></tr>`).join("");
+}
+
+/* ---------- games ---------- */
+function buildGames(){
+  const f=FINALS_2025;
+  $("#finalsTitle").textContent=f.title;
+  $("#finalsBox").innerHTML=`<p class="lede">${esc(f.sub)}. Finals MVP ${esc(f.mvp)}.</p>
+    <div class="tblwrap"><table>
+    <thead><tr><th>Game</th><th>Date</th><th>Road</th><th class="num"></th><th>Home</th><th class="num"></th><th>Series</th></tr></thead>
+    <tbody>${f.games.map(([g,d,r,rs,ho,hs,se,q])=>{
+      const rw=rs>hs;
+      return `<tr><td class="name">${esc(g)}</td><td class="dim">${esc(d)}</td>
+        <td${rw?' style="font-weight:700"':' class="dim"'}>${esc(r)}</td><td class="num"${rw?' style="font-weight:700"':''}>${rs}</td>
+        <td${!rw?' style="font-weight:700"':' class="dim"'}>${esc(ho)}</td><td class="num"${!rw?' style="font-weight:700"':''}>${hs}</td>
+        <td class="dim">${esc(se)}</td></tr>`+
+        (q?`<tr><td></td><td colspan="6" class="dim" style="font-size:11.5px;white-space:normal">By quarter: ${esc(q)}</td></tr>`:"");
+    }).join("")}</tbody></table></div>`;
+
+  $("#clinchBody").innerHTML=CLINCHERS.map(([y,c,h,n])=>{
+    const k=Object.keys(F).find(x=>F[x].name===c);
+    return `<tr><td class="num"><b>${y}</b></td>
+      <td class="name">${k?`<span style="display:inline-block;width:8px;height:8px;background:${F[k].c1};border-radius:1px;margin-right:7px"></span>`:""}${esc(c)}</td>
+      <td>${esc(h)}</td><td class="dim" style="white-space:normal">${esc(n)}</td></tr>`;
+  }).join("");
+
+  const sel=$("#standYear");
+  Object.keys(STANDINGS).sort((a,b)=>b-a).forEach(y=>
+    sel.insertAdjacentHTML("beforeend",`<option value="${y}">${y}</option>`));
+  const drawStand=()=>{
+    const y=sel.value||Object.keys(STANDINGS)[0], s=STANDINGS[y];
+    if(!s){$("#standBox").innerHTML='<p class="note">No standings captured for that season.</p>';return;}
+    $("#standBox").innerHTML=`<div class="tblwrap"><table>
+      <thead><tr><th class="num">#</th><th>Team</th><th class="num">W</th><th class="num">L</th>
+      <th class="num">PCT</th><th class="num">GB</th></tr></thead><tbody>
+      ${s.rows.map(([t,w,l],i)=>{
+        const gb=((s.rows[0][1]-w)+(l-s.rows[0][2]))/2;
+        const k=Object.keys(F).find(x=>F[x].name===t);
+        return `<tr><td class="num dim">${i+1}</td>
+          <td class="name">${k?`<span style="display:inline-block;width:8px;height:8px;background:${F[k].c1};border-radius:1px;margin-right:7px"></span>`:""}${esc(t)}</td>
+          <td class="num">${w}</td><td class="num">${l}</td>
+          <td class="num dim">${(w/(w+l)).toFixed(3).slice(1)}</td>
+          <td class="num dim">${gb===0?"—":gb.toFixed(1)}</td></tr>`;
+      }).join("")}</tbody></table></div>
+      <p class="note">${s.teams} teams, ${s.games} games each. ${esc(s.note||"")}</p>`;
+  };
+  sel.addEventListener("change",drawStand);drawStand();
+}
+
+/* ---------- season table ---------- */
+function buildSeasons(){
+  const dec=$("#seasonDec");
+  for(let d=1930;d<=2020;d+=10)dec.insertAdjacentHTML("beforeend",`<option value="${d}">${d}s</option>`);
+  const render=()=>{
+    const q=$("#seasonQ").value.toLowerCase().trim(), d=dec.value;
+    const rows=YEARS.filter(y=>{
+      if(d && (y<+d||y>+d+9))return false;
+      if(!q)return true;
+      const c=champOf[y]?F[champOf[y]].name.toLowerCase():"";
+      const r=ruOf[y]?F[ruOf[y]].name.toLowerCase():"";
+      return String(y).includes(q)||c.includes(q)||r.includes(q);
+    });
+    $("#seasonBody").innerHTML=rows.map(y=>{
+      const c=champOf[y]?F[champOf[y]]:null, r=ruOf[y]?F[ruOf[y]]:null;
+      return `<tr><td class="num"><b>${y}</b></td>
+        <td class="name">${c?`<span style="display:inline-block;width:8px;height:8px;background:${c.c1};border-radius:1px;margin-right:7px"></span>${esc(c.name)}`:'<span class="dim">not recorded</span>'}</td>
+        <td class="dim">${r?esc(r.name):"—"}</td>
+        <td class="dim" style="white-space:normal;font-size:12px">${NOTES[y]?esc(NOTES[y]):""}</td></tr>`;
+    }).join("");
+    $("#seasonCount").textContent=rows.length+" of "+NSEASONS+" seasons shown.";
+  };
+  $("#seasonQ").addEventListener("input",render);dec.addEventListener("change",render);render();
+}
+
+/* ---------- franchises ---------- */
+function buildTeams(){
+  const keys=Object.keys(F);
+  const card=k=>{const f=F[k];
+    return `<button class="crest-card${f.active?"":" gone"}" data-k="${k}">
+      <span class="swash" style="background:linear-gradient(90deg,${f.c1},${f.c2})"></span>
+      ${crest(k)}
+      <div><div class="nm">${esc(f.name)}</div><div class="cy">${esc(f.city)} · ${f.founded}${f.active?"":"–"+f.end}</div></div>
+      <div class="ti">${f.won.length}<span>${f.won.length===1?"title":"titles"}</span></div>
+    </button>`;};
+  $("#crestsActive").innerHTML=keys.filter(k=>F[k].active)
+    .sort((a,b)=>F[b].won.length-F[a].won.length).map(card).join("");
+  $("#crestsGone").innerHTML=keys.filter(k=>!F[k].active)
+    .sort((a,b)=>F[b].won.length-F[a].won.length).map(card).join("");
+  document.querySelectorAll(".crest-card").forEach(b=>b.addEventListener("click",()=>showTeam(b.dataset.k)));
+  $("#arenaBody").innerHTML=ARENAS.map(([t,c,a,cap])=>
+    `<tr><td class="name">${esc(t)}</td><td class="dim">${esc(c)}</td><td class="dim">${esc(a)}</td><td class="num">${cap.toLocaleString()}</td></tr>`).join("");
+}
+function showTeam(k){
+  const f=F[k], box=$("#fdetail");
+  box.innerHTML=`<div class="fdetail">
+    <div style="display:flex;gap:14px;align-items:flex-start">
+      ${crest(k,52,62)}
+      <div style="flex:1;min-width:0">
+        <h3>${esc(f.name)}</h3>
+        <div class="dim" style="font-size:13px;margin-top:3px">${esc(f.city)} · founded ${f.founded}${f.active?" · active":" · last season "+f.end}${f.coach?" · coach "+esc(f.coach):""}</div>
+        ${(()=>{const a=ARENAS.find(x=>x[0]===f.name);return a?`<div class="dim" style="font-size:12.5px;margin-top:4px">${esc(a[2])}, ${esc(a[1])} · ${a[3].toLocaleString()} seats</div>`:""})()}
+        ${f.won.length||f.ru.length?`<div class="dim" style="font-size:12.5px;margin-top:4px">${f.won.length+f.ru.length} finals · ${f.won.length}–${f.ru.length} record</div>`:""}
+        ${f.note?`<div class="note" style="margin-top:8px">${esc(f.note)}</div>`:""}
+        <div class="note" style="margin-top:8px">Colours ${f.colorSrc==="wiki"?"as published by the club.":"approximated for this archive — not a claim about the real palette."}</div>
+      </div>
+    </div>
+    ${f.won.length?`<div style="margin-top:15px"><div class="dim" style="font-size:12px">Championships (${f.won.length})</div>
+      <div class="yearchips">${f.won.map(y=>`<span class="chip won">${y}</span>`).join("")}</div></div>`:
+      `<div class="note" style="margin-top:15px">No championships recorded.</div>`}
+    ${f.ru.length?`<div style="margin-top:14px"><div class="dim" style="font-size:12px">Finals lost (${f.ru.length})</div>
+      <div class="yearchips">${f.ru.map(y=>`<span class="chip ru">${y}</span>`).join("")}</div></div>`:""}
+  </div>`;
+  box.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth",block:"nearest"});
+}
+
+/* ---------- leaders ---------- */
+function buildLeaders(){
+  const render=()=>{
+    const cat=$("#leadCat").value, mode=$("#leadMode").value;
+    const rows=LEADERS[cat].slice().sort((a,b)=> mode==="total"?b[4]-a[4]:b[6]-a[6]);
+    const max=Math.max(...rows.map(r=>mode==="total"?r[4]:r[6]));
+    $("#leadBars").innerHTML=rows.map((r,i)=>{
+      const v=mode==="total"?r[4]:r[6];
+      return `<div class="bar-row"><div class="rk">${i+1}</div>
+        <div class="who"><div class="pn">${esc(r[1])}</div><div class="yr">${esc(r[3])} · ${esc(r[2])}</div>
+        <div class="track"><div class="fill" style="width:${v/max*100}%"></div></div></div>
+        <div class="v">${mode==="total"?v.toLocaleString():v.toFixed(1)}<small>${mode==="total"?"career":"per game"}</small></div></div>`;
+    }).join("");
+    $("#leadBody").innerHTML=LEADERS[cat].map(r=>
+      `<tr><td class="name">${esc(r[1])}</td><td class="dim">${esc(r[2])}</td><td class="dim">${esc(r[3])}</td>
+       <td class="num">${r[4].toLocaleString()}</td><td class="num">${r[5]}</td><td class="num">${r[6].toFixed(1)}</td></tr>`).join("");
+  };
+  $("#leadCat").addEventListener("change",render);$("#leadMode").addEventListener("change",render);render();
+  $("#mvpBody").innerHTML=MVP_REPEAT.map(([n,c])=>
+    `<tr><td class="name">${esc(n)}</td><td class="num">${c}</td></tr>`).join("");
+}
+
+/* ---------- scoring ---------- */
+function buildScoring(){
+  const ppg=SCORING.filter(s=>s[3]==="ppg");
+  const W=760,H=250,PL=34,PR=10,PT=16,PB=30;
+  const xs=(i)=>PL+i*(W-PL-PR)/(ppg.length-1);
+  const lo=20,hi=36, ys=v=>PT+(hi-v)/(hi-lo)*(H-PT-PB);
+  const pts=ppg.map((s,i)=>[xs(i),ys(s[4])]);
+  const line=pts.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ");
+  let g="";for(let v=20;v<=35;v+=5){g+=`<line x1="${PL}" y1="${ys(v)}" x2="${W-PR}" y2="${ys(v)}" stroke="#3D3025" stroke-width="1"/>
+    <text x="${PL-6}" y="${ys(v)+4}" text-anchor="end" fill="#7C6A5A" font-size="10">${v}</text>`;}
+  const dots=pts.map((p,i)=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.5" fill="#E0A03C"><title>${ppg[i][0]} — ${ppg[i][1]}, ${ppg[i][4]} per game</title></circle>`).join("");
+  let lbl="";[0,5,10,15,20].forEach(i=>{if(ppg[i])lbl+=`<text x="${xs(i)}" y="${H-9}" text-anchor="middle" fill="#7C6A5A" font-size="10">${ppg[i][0]}</text>`;});
+  $("#ppgChart").innerHTML=`<div style="overflow-x:auto;border:1px solid var(--line);border-radius:3px;background:var(--surface);padding:12px">
+    <svg viewBox="0 0 ${W} ${H}" style="width:100%;min-width:520px;height:auto" role="img"
+      aria-label="Scoring-title averages from 1971 to 1991, ranging from 21.9 to 35.5 points per game">
+      ${g}<path d="${line}" fill="none" stroke="#E0A03C" stroke-width="2"/>${dots}${lbl}
+    </svg></div>
+    <p class="note">Averages climbed steadily through the seventies and peaked at Georgie Torres's 35.5 in 1987.</p>`;
+
+  $("#scoreBody").innerHTML=SCORING.map(([y,p,c,m,v])=>
+    `<tr><td class="num"><b>${y}</b></td><td class="name">${esc(p)}</td><td class="dim">${esc(c)}</td>
+     <td class="dim">${m==="total"?"total points":"per game"}</td>
+     <td class="num">${m==="total"?v:v.toFixed(1)}</td></tr>`).join("");
+}
+
+/* ---------- records ---------- */
+function buildRecords(){
+  $("#recBody").innerHTML=RECORDS.map(([l,v,h,y,n])=>
+    `<div class="rec"><div class="rl">${esc(l)}</div><div class="rv">${esc(v)}</div>
+     <div class="rh">${esc(h)}${y?` <span class="dim" style="font-weight:400">· ${y}</span>`:""}</div>
+     ${n?`<div class="rn">${esc(n)}</div>`:""}</div>`).join("");
+  $("#coachBody").innerHTML=COACHES.map(([c,t,n])=>
+    `<tr><td class="name">${esc(c)}</td><td class="dim">${esc(t)}</td><td class="dim" style="white-space:normal">${esc(n)}</td></tr>`).join("");
+  $("#nbaBody").innerHTML=NBA_PLAYERS.map(([p,n])=>
+    `<tr><td class="name">${esc(p)}</td><td class="dim" style="white-space:normal">${esc(n)}</td></tr>`).join("");
+}
+
+/* ---------- recent ---------- */
+function buildRecent(){
+  $("#recentBody").innerHTML=RECENT.map(s=>`
+    <div class="scard">
+      <div class="scard-head"><div><span class="y">${esc(s.year)}</span></div>
+        <div class="t">${esc(s.label)}</div></div>
+      <div class="kv" style="margin-top:12px">
+        <div><div class="k">Champion</div><div class="v">${esc(s.champ)}</div></div>
+        ${s.ru?`<div><div class="k">Runner-up</div><div class="v">${esc(s.ru)}</div></div>`:""}
+      </div>
+      <div class="kv">${s.rows.map(([k,a,b])=>
+        `<div><div class="k">${esc(k)}</div><div class="v">${esc(a)}${b&&b!=="—"?`<small>${esc(b)}</small>`:""}</div></div>`).join("")}</div>
+      ${s.extra?`<div class="kv">${s.extra.map(([k,a,b])=>
+        `<div><div class="k">${esc(k)}</div><div class="v">${esc(a)}${b?`<small>${esc(b)}</small>`:""}</div></div>`).join("")}</div>`:""}
+      ${s.standings?`<div style="margin-top:16px"><div class="k dim" style="font-size:11.5px">Final standings</div>
+        <div class="tblwrap" style="margin-top:7px"><table>
+        <thead><tr><th class="num">#</th><th>Team</th><th class="num">W</th><th class="num">L</th><th class="num">PCT</th></tr></thead><tbody>
+        ${s.standings.map(([t,w,l],i)=>`<tr><td class="num dim">${i+1}</td><td class="name">${esc(t)}</td>
+          <td class="num">${w}</td><td class="num">${l}</td><td class="num dim">${(w/(w+l)).toFixed(3).slice(1)}</td></tr>`).join("")}
+        </tbody></table></div></div>`:""}
+      ${s.allstar?`<div style="margin-top:16px"><div class="k dim" style="font-size:11.5px">All-Star five</div>
+        <div class="tblwrap" style="margin-top:7px"><table>
+        <thead><tr><th>Player</th><th>Pos</th><th>Club</th><th>Measurables</th></tr></thead><tbody>
+        ${s.allstar.map(([n,p,t,m])=>`<tr><td class="name">${esc(n)}</td><td class="dim">${esc(p)}</td><td class="dim">${esc(t)}</td><td class="dim">${esc(m)}</td></tr>`).join("")}
+        </tbody></table></div></div>`:""}
+      ${s.warn?`<div class="warn">${esc(s.warn)}</div>`:""}
+    </div>`).join("");
+}
+
+/* ---------- tabs ---------- */
+function showTab(name){
+  document.querySelectorAll("nav button").forEach(x=>
+    x.setAttribute("aria-selected",String(x.dataset.tab===name)));
+  document.querySelectorAll("main section").forEach(s=>s.hidden=(s.id!==name));
+  window.scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"});
+}
+document.querySelectorAll("nav button").forEach(b=>
+  b.addEventListener("click",()=>showTab(b.dataset.tab)));
+
+buildToday();buildMyClub();buildSearch();buildGames();buildJuega();buildRibbon();
+buildTitleStats();buildMatrix();buildSeasons();buildTeams();
+buildHOF();buildRefuerzos();buildLeaders();buildScoring();buildRecords();buildRecent();
+showSeason(1975,document.querySelector('.cell[data-y="1975"]'));
+</script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+season,player,club,metric,value
+1966,Jaime Frontera,Capitanes de Arecibo,total_points,400
+1967,Adolfo Porrata,Capitalinos de San Juan,total_points,516
+1968,Raymond Dalmau,Piratas de Quebradillas,total_points,499
+1969,Neftali Rivera,Piratas de Quebradillas,total_points,602
+1970,Raymond Dalmau,Piratas de Quebradillas,total_points,546
+1971,Teofilo Cruz,Cangrejeros de Santurce,points_per_game,22.4
+1972,Samuel Betancourt,Santos de San Juan,points_per_game,26.9
+1973,Neftali Rivera,Piratas de Quebradillas,points_per_game,25.2
+1974,Hector Blondet,Capitanes de Arecibo,points_per_game,25.1
+1975,Samuel Betancourt,Santos de San Juan,points_per_game,22.9
+1976,Samuel Betancourt,Santos de San Juan,points_per_game,21.9
+1977,Georgie Torres,Cariduros de Fajardo,points_per_game,30.1
+1978,Georgie Torres,Cariduros de Fajardo,points_per_game,29.1
+1979,Georgie Torres,Cariduros de Fajardo,points_per_game,32.9
+1980,Mario Morales,Cangrejeros de Santurce,points_per_game,32.9
+1981,Rolando Frazer,Polluelos de Aibonito,points_per_game,33.4
+1982,Rolando Frazer,Polluelos de Aibonito,points_per_game,34.2
+1983,Jim Maldonado,Capitanes de Arecibo,points_per_game,30.6
+1984,Georgie Torres,Cariduros de Fajardo,points_per_game,28.8
+1985,Georgie Torres,Cariduros de Fajardo,points_per_game,33.5
+1986,Georgie Torres,Cariduros de Fajardo,points_per_game,29.8
+1987,Georgie Torres,Cariduros de Fajardo,points_per_game,35.5
+1988,Edgar de Leon,Cariduros de Fajardo,points_per_game,29.5
+1989,Wesley Correa,Titanes de Morovis,points_per_game,30.9
+1990,Edgar de Leon,Cariduros de Fajardo,points_per_game,31.8
+1991,Edwin Pellot,Gallitos de Isabela,points_per_game,31.5
