@@ -284,7 +284,7 @@ Implements D1. Full detail: `docs/specs/identity_spine_spec.md`.
 
 **Phase exit:** identity spine complete. Paused (P6).
 
-### PHASE_3E_GAME_DATA — IN PROGRESS (2026-09-08, owner-requested)
+### PHASE_3E_GAME_DATA — CORE DONE; fetch continuation queued below (2026-09-08)
 
 Owner instruction: enumerate the 5 game scripts, report distinct counts by
 script/year, fetch in tranches with a **hard 500 gate per tranche**, parse to
@@ -319,21 +319,44 @@ coverage before any tranche over 500. Spec: `docs/specs/game_data_spec.md`,
   → `game_results`. `box_check` column flags source pts-mismatch rows
   (~0.02%, PC4 — flagged not hidden).
 
-**FETCH STATUS (multiple session interruptions — resumed each time; PC6
-sequential; `scratchpad/fetch_chain2.sh`):**
-- `gamestatwide.asp` 864/864 ✅ → 775 games parsed (89 revisit/partial captures
-  don't yield 2 box tables).
-- `pogamestat.asp` 2010–2021 (ungated): ~744/1021, still fetching. NOTE the
-  2010-capture-year tranche is mostly *2009-season* games (captured Jan 2010);
-  2013 captures carry 4 extra advanced-stat columns (FBP/PFT/PIP/SCP) — parser
-  maps box columns by label, not position.
-- `boxscore.asp` 2008–09, `a2gamestatpbp.asp` (owner-approved 2002+2003, plus
-  2001/2004): queued after pogamestat, not yet started.
-- Gated 2007–09 `pogamestat`/`boxscore` + all `gameinfo` correctly auto-skipped
-  / held per owner.
-- Parser: `_season_from_rid` handles both id schemes (`BS<NN>` pre-2007,
-  `BS<YYYY>` 2007+); `_tables` uses lxml for the modern boxes (3× faster),
-  bs4 for gamestatwide (unclosed `<b>`).
+### PHASE_3E_FETCH_REMAINING — QUEUED (owner: "add to task queue", 2026-09-08)
+
+The parser + verify are done and green; what's left is a slow, throttled,
+sequential fetch (Wayback ~1 capture/30–60 s) that keeps getting killed by
+session limits. **This entry is the resume contract — any session can pick it
+up from disk.**
+
+**Owner approvals on record:** `a2gamestatpbp.asp` **2002 + 2003** (PBP, no
+substitute). **HELD by owner, do NOT fetch:** `pogamestat.asp` 2007/2008/2009,
+`boxscore.asp` 2007, all of `gameinfo.asp` — until the owner sees the 2002–03
+PBP contents.
+
+**RESUME PROCEDURE** (run one tranche at a time, PC6 — never two fetchers at
+once; the fetcher is idempotent, re-running skips what's on disk):
+1. `.venv/bin/python -m src.fetch_games --script pogamestat.asp`   (ungated
+   2010–21; auto-skips gated 2007–09)
+2. `.venv/bin/python -m src.fetch_games --script boxscore.asp`     (ungated
+   2008–09; auto-skips gated 2007)
+3. `.venv/bin/python -m src.fetch_games --script a2gamestatpbp.asp --year 2001`
+4. `.venv/bin/python -m src.fetch_games --script a2gamestatpbp.asp --year 2004`
+5. `.venv/bin/python -m src.fetch_games --script a2gamestatpbp.asp --year 2002 --force-year`
+6. `.venv/bin/python -m src.fetch_games --script a2gamestatpbp.asp --year 2003 --force-year`
+7. After each: `make parse-games && make verify`, commit, **report to owner**.
+`scratchpad/fetch_chain2.sh` chains 1–6; it dies with the session, restart it.
+
+**DISK STATE at this edit:**
+- `gamestatwide.asp` 864/864 ✅ (775 games parsed; 89 revisit/partial captures
+  yield no box tables).
+- `pogamestat.asp` 2010–21 ~944/1021 — nearly done, resume with step 1.
+- `boxscore.asp` 0, `a2gamestatpbp.asp` 0 — steps 2–6 not started.
+- `game_box_player.csv` ≈ 29.7k rows, 48% resolved to `bsnpr_id`;
+  `game_results.csv` ≈ 1.1k; `game_plays.csv` not created yet (needs step 5/6).
+
+Parser notes for the resumer: `_season_from_rid` handles both id schemes
+(`BS<NN>` pre-2007, `BS<YYYY>` 2007+); modern box columns mapped by LABEL (2013
+captures add FBP/PFT/PIP/SCP); `box_check` column flags the ~0.01% source
+pts-mismatch rows (PC4); `_tables` uses lxml for modern boxes, bs4 for
+gamestatwide.
 
 **GATED (>500, need owner approval before fetch):**
 boxscore.asp 2007 (814); gameinfo.asp 2007 (944) + 2008 (509);
