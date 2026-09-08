@@ -26,47 +26,91 @@ Session 002:
   4 of 5 conflicts; es.wikipedia retested and **fetchable** (F3 resolved) — used
   to verify Brujos→Osos and disprove wiki support for Grises→Criollos.
   `reconcile_conflicts.csv` = 2 rows (1945/D5; Criollos founding year).
-- PHASE_3E_GAME_DATA (uncommitted) — enumerated the 5 archived game scripts
-  (10,548 distinct captures); `make fetch-games` with a hard 500-per-tranche
-  gate; `gamestatwide.asp` (pre-2007 box scores, 2001–04) fetching + parsing to
-  `game_results.csv` / `game_box_player.csv` with the identity-spine join.
-  Box-score arithmetic verifies exactly. Gated tranches reported for approval.
+- PHASE_3E_GAME_DATA (d421922 · e94fec9 · 640964e · a041a60 · 891fc12 · 2d1928c)
+  — enumerated the 5 archived game scripts (10,548 distinct captures); gated
+  fetcher (hard 500/tranche); box-score + play-by-play parsers. Fetch is a slow
+  throttled multi-day job, run one tranche at a time (PC6), tracked in
+  PHASE_3E_FETCH_REMAINING below.
 
 ---
 
 [SESSION_STATE]
 
-PHASE_3_PARSE complete. The 193 fetched snapshots are parsed to
-provenance-complete `data/clean/` CSVs; `make verify` is green (6375 assertions);
-61 pytest pass.
+**Pipeline: 12 `make` targets** (`Makefile`), each idempotent:
+`enumerate` → `fetch` → `parse` → `verify`  (PHASE_1–3, `/estadisticas/` engine)
+`enumerate-root` → `fetch-pre2007` → `parse-pre2007`  (PHASE_3C, root scheme)
+`fetch-players` → `parse-players`  (PHASE_3D identity spine)
+`reconcile`  (PHASE_4)
+`enumerate-games` → `fetch-games` → `parse-games`  (PHASE_3E game data)
+`make verify` runs `src/verify_clean.py` — one gate over all of `data/clean/`.
+`make test` — 125 pytest (all pure helpers). Last full run: **verify green
+(326,175 checks); 125 tests pass.**
 
-**Clean outputs (all PC3-complete, `confidence` ∈ {verified, single-source,
-disputed}):**
-- `champions_from_bsnpr.csv` — 92 rows, 1930–2020. City-based champion + coach +
-  runner-up ledger. 1953 = `no_champion` ("NO SE TERMINÓ (PONCE VS SAN GERMAN)",
-  resolves D6). 1942 **and** 1942-1943 both present as keys (D3). 1945 / 1936 /
-  1968 = `disputed`. 3 rows `parse_flag=review` (early-league cities).
-- `player_season_leaders.csv` — 1250 rows, 12 seasons (1986 + 2007–2021 minus
-  2011, 2015, 2016, 2017), 11 stat categories, ranks 1–10. `player_raw`/
-  `club_raw` verbatim (D1 resolution deferred). 9 of 12 seasons flagged
-  `season_complete=False` (last regular-season capture predates season end).
-- `seasons_stats_tracked.csv` — the PC2 era signal. 1986 shows 0 for
-  blocks/steals/turnovers/off-reb (not tracked that era); 2010 shows 0 for a few
-  (early capture) — recomputed across all series views to reduce that noise.
-- `leader_coverage_gaps.csv` — every archived season → regular_season /
-  playoff_only / not_archived (PC4).
+**`data/clean/` — the deliverable, 25 CSVs, all PC3-complete
+(`confidence` ∈ {verified, single-source, disputed}). Provenance columns on
+every row: `source_id`, `source_url`, `retrieved_at`, `confidence`.**
 
-**Cross-validation datapoint:** parsed 1986 scoring leader = "Torres, George"
-(Cariduros) 29.8 ppg — exact match to seed `bsn_scoring_champions.csv` 1986
-(Georgie Torres, Cariduros de Fajardo, 29.8). Independent confirmation the parse
-is faithful.
+Championships / franchises:
+- `champions_from_bsnpr.csv` 92 rows 1930–2020 (bsnpr ledger, city-based, coach).
+- `champions_reconciled.csv` 98 seasons — seed↔bsnpr join; 89 `agree` (87 →
+  `verified`, i.e. two independent sources concur), 3 conflict, 1 no_champion
+  (1953/D6), 1 bsnpr_only (1942-1943/D3), 6 seed_only (2021–26).
+- `scoring_champions_reconciled.csv` 68 seasons 1948–2021; `metric_era` per D4;
+  1971 & 1974 = `dual_metric_d4` (both winners recorded, owner-resolved).
+- `reconcile_conflicts.csv` **2 rows** — 1945 champion (D5, es.wiki
+  self-contradicts) + Criollos founding year (1969 en.wiki vs 1976 seed).
+- `franchises.csv` (33), `franchise_events.csv` (8 D2 events), `city_franchise_map.csv`,
+  `club_code_map.csv` (5-char + 2-letter codes → franchise_id).
+- `historic_scoring_champions.csv` 58 rows **1948–2004** (games/total/ppg),
+  `historic_awards.csv` 135 rows MVP/Rookie/DPOY **1958–2004**.
 
-**Session 001 central finding (unchanged, PC4, resolves B2):** the 1957–2004
-per-season `lideres.asp?anio=YYYY` pages Wikipedia cites **were never archived
-with content** (302→404, IABot 2021-07-09 crawl post-JS-rewrite). Only
-`anio=1986` survived. What Wayback *did* yield is what PHASE_2/3 processed:
-`campeonatos.asp` ledger (1930→2020) + 2007–2021 `lideres.asp` leader boards.
-Everything pre-2007 season-leader data → roadmap Phase 4 newspaper track.
+Player season stats / leaders:
+- `player_season_leaders.csv` 1250 rows, 12 seasons (1986 + 2007–21 minus
+  2011/15/16/17), 11 categories, ranks 1–10. `player_raw`/`club_raw` verbatim.
+- `player_season_leaders_2000_2002.csv` 403 rows, 9 categories, serie-split.
+- `player_season_stats_2001_2004.csv` 503 player-seasons (equiposstat, 2001–03,
+  14 teams — only pre-2007 player-level source) + `team_season_totals_2001_2004.csv`.
+- `seasons_stats_tracked.csv` (PC2 era signal), `leader_coverage_gaps.csv` (PC4).
+
+Identity spine (D1):
+- `players_canonical.csv` **3,303 players** keyed by the league's own
+  `bsnpr_id`, 1,076 with a full profile, 1,988 with a birth year; accent-stripped
+  `normalized_name`.
+- `player_aliases.csv` ~25k (id, alias, 9 alias types incl. `initial`,
+  `given_first_only`, `nickname`).
+- `player_career_seasons.csv` (from jugador.asp), `player_id_map.csv` 423
+  season-corroborated obs→id links, `data/interim/player_review_queue.csv` 828
+  rows (346 no name match, 361 season outside career span, 106 multi-candidate,
+  15 same-name ambiguity — **no fuzzy match ever enters the id map**).
+
+Game data (PHASE_3E, fetch ongoing — numbers grow as tranches land):
+- `game_results.csv` ~1,287 games; `game_box_player.csv` ~39,669 player-game
+  rows; `game_plays.csv` ~11,106 plays.
+- **Box-score `bsnpr_id` resolution by era: pre-2007 4,152/15,941 = 26%; 2007+
+  17,599/23,728 = 74%.** The gap is the identity spine's pre-2007 hole
+  (`identity_spine_spec` Q3), NOT the matcher — every match is season-corroborated.
+- Box seasons: **2001–2003 + 2008–2013**. `box_check` column flags source
+  pts-mismatch rows (4/39,669 = 0.01%, PC4 — flagged not hidden).
+- **PBP event_type counts** (11,106 plays, 2001 + partial 2003): unclassified
+  2,483 · rebound 2,065 · made_2 1,606 · miss_2 1,198 · assist 1,025 · miss_3
+  790 · turnover 630 · made_3 433 · steal 398 · team_rebound 201 · jump_ball
+  140 · timeout 137. ~78% classified; `jugada_raw` verbatim; `actor_raw` is a
+  bare surname (PBP's own format).
+
+**Central negative finding (S001, PC4, B2 — partly reopened, see below):** the
+1957–2004 per-season `/estadisticas/lideres.asp?anio=YYYY` pages Wikipedia
+cites were never archived with content. BUT PHASE_3B/3C found a **root-level**
+pre-2007 URL scheme (`lideres2001.asp`, `lidereshistoricos.asp`,
+`equiposstat.asp`, `gamestatwide.asp`, `a2gamestatpbp.asp`, …) that WAS
+archived — hence the 1948–2004 scoring champs, 2000–2003 player stats, and the
+2001–2003 box scores + PBP now in `data/clean/`.
+
+**Cross-validations that held:** 1986 scoring leader parsed = "Torres, George"
+29.8 ppg = seed exactly. 1986 `campeonatos.asp` scoring champ = seed
+`bsn_scoring_champions.csv` 1986. 87/98 champion seasons independently
+corroborate seed↔bsnpr. Box-score invariant `2·FG2 + 3·FG3 + FT == PTS` holds
+on 39,663/39,669 rows; the 4 `pts_mismatch` are source data-entry errors (2 rows
+have a missing cell), flagged in `box_check`, never rewritten.
 
 Full detail: `docs/coverage_wayback.md`, `docs/specs/wayback_ingest_spec.md`.
 
@@ -342,28 +386,40 @@ once; the fetcher is idempotent, re-running skips what's on disk):
 5. `.venv/bin/python -m src.fetch_games --script a2gamestatpbp.asp --year 2002 --force-year`
 6. `.venv/bin/python -m src.fetch_games --script a2gamestatpbp.asp --year 2003 --force-year`
 7. After each: `make parse-games && make verify`, commit, **report to owner**.
-`scratchpad/fetch_chain2.sh` chains 1–6; it dies with the session, restart it.
+`scratchpad/fetch_chain3.sh` chains steps 5–6 (2002 resume + 2003); it dies with
+the session, restart it. **PC6 breach caught 2026-09-08:** a resumed session
+left `fetch_chain2.sh` running while another started, so TWO fetchers were
+hitting Wayback on the 2002 tranche at once. Both killed; `fetch_chain3.sh` is
+the single replacement. Before restarting any chain: `ps aux | grep [f]etch_games`
+and kill strays first.
 
-**DISK STATE at this edit:**
-- `gamestatwide.asp` 864/864 ✅ (775 games parsed; 89 revisit/partial captures
-  yield no box tables).
-- `pogamestat.asp` 2010–21 ~944/1021 — nearly done, resume with step 1.
-- `boxscore.asp` 0, `a2gamestatpbp.asp` 0 — steps 2–6 not started.
-- `game_box_player.csv` ≈ 29.7k rows, 48% resolved to `bsnpr_id`;
-  `game_results.csv` ≈ 1.1k; `game_plays.csv` not created yet (needs step 5/6).
+**DISK STATE (updated 2026-09-08, single-stream fetch resumed):**
+- `gamestatwide.asp` 864 ✅ · `pogamestat.asp` 1021 ✅ · `boxscore.asp` 261 ✅ ·
+  `a2gamestatpbp.asp` 2001 (78 ✅) + 2004 (74 ✅) done;
+  **2002 (~343/1462) RESUMING** (single chain `scratchpad/fetch_chain3.sh`,
+  task `bzjo92jo3`); 2003 (~4/1555) queued after it.
+- `data/clean/game_results.csv` 1,287 · `game_box_player.csv` 39,669 (26%
+  resolved pre-2007, 74% 2007+, 55% overall) · `game_plays.csv` 11,106 plays
+  (2001 = 8,771; 2003 = 2,335). These are committed at 2d1928c; the 2002/2003
+  fetch will grow `game_plays` on the next parse.
+- After 2002/2003 land: `make parse-games && make verify`, commit, report.
+- STILL HELD by owner (do NOT fetch): `pogamestat` 2007/08/09, `boxscore` 2007,
+  all of `gameinfo` (metadata only) — until owner reviews the PBP contents.
 
 Parser notes for the resumer: `_season_from_rid` handles both id schemes
-(`BS<NN>` pre-2007, `BS<YYYY>` 2007+); modern box columns mapped by LABEL (2013
-captures add FBP/PFT/PIP/SCP); `box_check` column flags the ~0.01% source
-pts-mismatch rows (PC4); `_tables` uses lxml for modern boxes, bs4 for
-gamestatwide.
+(`BS<NN>` pre-2007 = 1980+NN, `BS<YYYY>` 2007+); modern box columns mapped by
+LABEL not position (2013 captures add FBP/PFT/PIP/SCP before PTS); pre-2007
+`gamestatwide` shot cells are `att-made`, modern `boxscore`/`pogamestat` are
+`made-att`, stored as `fg2m/fg2a` + `fg3m/fg3a` (2P and 3P kept separate);
+`box_check` column flags the ~0.01% source pts-mismatch rows (PC4); `_tables`
+uses lxml for modern boxes (3× faster), bs4 for gamestatwide (unclosed `<b>`).
+The `2010-2021` capture-year `pogamestat` tranche actually holds **2009–2013
+season** games (Jan-2010 crawls captured late-2009 games).
 
-**GATED (>500, need owner approval before fetch):**
-boxscore.asp 2007 (814); gameinfo.asp 2007 (944) + 2008 (509);
-pogamestat.asp 2007 (1329) + 2008 (774) + 2009 (935);
-a2gamestatpbp.asp 2002 (1462) + 2003 (1555).
-Ungated <=500, queued: pogamestat 2010-2021 (1021), boxscore 2008-09 (261),
-a2gamestatpbp 2001+2004 (76), gameinfo 2009 (4).
+**GATED (>500 distinct, need explicit owner approval + `--force-year`):**
+`boxscore.asp` 2007 (814); `gameinfo.asp` 2007 (944) + 2008 (509);
+`pogamestat.asp` 2007 (1329) + 2008 (774) + 2009 (935);
+`a2gamestatpbp.asp` 2003 (1555) — 2002 already approved + fetching.
 
 ### PHASE_4_RECONCILE — COMPLETE (2026-09-08, owner-requested)
 
@@ -634,7 +690,7 @@ Decisions made session 002 (PHASE_4):
 | PHASE_3B | PASS | PASS | PASS | PASS | PASS | V1: T3B.1–T3B.4 done — 4 targets probed (5/5/4/5 captures) + 3 root-level `lideres*` follow-ups; verdicts + spec delivered; sample-only respected (no bulk fetch, no parser, no clean output). V2: PC5 raw bytes cached unmodified in `data/raw/probe/`; PC6 sequential via `polite_get`, ≥1.5s, backoff recovered from a Wayback 503 burst; PC1 findings reported straight incl. the "B2 partially reopened" reversal. V3: no secrets. V4: 61 pytest still pass (probe adds no code path to the pipeline); every probed capture inspected. V5: snake_case, English. |
 | PHASE_3C | PASS | PASS | PASS | PASS | PASS | V1: T3C.1–T3C.5 done — enumerate + coverage report + fetch (315/315, 0 fail) + 5 clean outputs + verify + tests. Owner's 500-gate honoured: `jugador.asp` (5986) and game scripts reported, not fetched. V2: PC1 (1952 dispute = 2 rows, clipped `<pre>` values flagged not rewritten, root campeonatos not re-parsed to avoid dup rows); PC2 (`fga`/`fgm` split, `to_int`→None on blank); PC3 (`verify_pre2007` asserts provenance on every row); PC4 (2 DB-error captures counted + reported, gated tranches in coverage_root.md); PC5 (parse reads `data/raw/pre2007/` only, idempotent); PC6 (`polite_get`, one GET/digest, rode out a long Wayback 503 throttle); D4 (`metric_era` flip asserted). V3: no secrets; raw CDX + raw HTML gitignored. V4: `make parse-pre2007` + `make verify` green (13,410 checks); 79 pytest pass; `equiposstat` made≤att verified, 1986/1952 cross-checks hold. V5: snake_case, English, "why" comments. |
 | PHASE_3D | PASS | PASS | PASS | PASS | PASS | V1: T3D.1–T3D.3 done — canonical spine (3,303 players) + aliases + career-seasons + id_map + review queue; tranche B enrichment fetch backgrounded (partial), T3D.4 = re-run parse on completion. V2: PC1 (no fuzzy match in id_map — D1; ambiguous → review queue); PC2 (`1/1/1900` → null, blank stats stay blank); PC3 (`verify_players` asserts provenance on every canonical row); PC4 (review queue is a first-class output with candidate ids + reason); PC6 (`polite_get`, one GET per id, background throttle); D1 (accent-stripped `normalized_name`, alias table, match needs season corroboration not name alone — asserted in verify). V3: no secrets. V4: `make parse-players` + `make verify` green (38,706 checks); 91 pytest pass (+12); id_map spot-checks correct (Carmona→37, Arroyo Carlos→273 via season). V5: snake_case, English. |
-| PHASE_3E | PASS | PASS | PASS | PASS | PASS | V1: T3E.1–T3E.5 done — enumerate (10,548 captures) + coverage report + gated fetcher + parser + verify + tests. `gamestatwide.asp` fetch backgrounded; parser is idempotent. Gated tranches reported, not fetched. V2: PC1 (`bsnpr_id` blank unless a unique season-in-career match — D1; no guesses); PC3 (`verify_games` asserts provenance per row); PC4 (crammed captures counted; gated tranches in `coverage_games.md`); PC5 (parse reads `data/raw/games/` only, idempotent); PC6 (`polite_get`, one GET/digest, `MAX_TRANCHE=500` hard gate honoured). V3: no secrets. V4: `make parse-games` + `make verify` green (51,366 checks); 120 pytest pass (+12); **`2·FG2 + 3·FG3 + FT == PTS` on all 1,666 parsed player-game rows, 0 made>att**. V5: snake_case, English, "why" comments. |
+| PHASE_3E | PASS | PASS | PASS | PASS | PASS | V1: T3E.1–T3E.6 done — enumerate (10,548 captures) + `coverage_games.md` + gated fetcher (`MAX_TRANCHE=500`, `--force-year` after approval) + box-score parser + PBP parser + verify + tests. Fetch is a multi-day throttled job, one tranche at a time (PC6); done so far: `gamestatwide` 864, `pogamestat` 1021, `boxscore` 261, `a2gamestatpbp` 2001+2004; 2002 fetching, 2003 queued; owner HOLD on `pogamestat`/`boxscore` 2007–09 + all `gameinfo`. V2: PC1 (`bsnpr_id` blank unless a unique season-in-career match — D1, no guesses; `jugada_raw` kept verbatim; `box_check` flags source pts-mismatch, doesn't rewrite); PC3 (`verify_games` provenance per row); PC4 (crammed/stub captures counted + dropped from results, gated tranches in `coverage_games.md`, `box_check`); PC5 (parse reads `data/raw/games/` only, idempotent); PC6 (`polite_get`, one GET/digest, 500-gate honoured, sequential chain). V3: no secrets; raw gitignored. V4: `make parse-games` + `make verify` green (326,175 checks); 125 pytest pass (+17); **`2·FG2 + 3·FG3 + FT == PTS` on every parsed box row (4/39,669 source-error `pts_mismatch`, flagged); made ≤ att always**. V5: snake_case, English, "why" comments. |
 | PHASE_4 | PASS | PASS | PASS | PASS | PASS | V1: T4.1–T4.5 done + owner-resolution follow-up. Franchise layer + champions_reconciled + scoring_champions_reconciled + reconcile_conflicts + verify + tests. V2: PC1 (D-027: code flags, human clears; `OWNER_RESOLUTIONS` dated + auditable; seed CSVs untouched; 1945 left `disputed`); D2 (`franchise_events.csv`, murky lineage = disputed); D3 (`1942`+`1942-1943` both kept); D4 (`metric_era` flip + 1971/1974 `dual_metric_d4` recording BOTH winners); D5 (1945 stays flagged); D6 (1953 no_champion). PC3 (provenance / `sources` per row). V3: no secrets; pure module. V4: `make reconcile` + `make verify` green (40,114 checks); 108 pytest pass (+17); 87/98 seed↔bsnpr `verified`. V5: snake_case, English, D2/D5 citations in comments. |
 
 ---
@@ -716,55 +772,70 @@ Decisions made session 002 (PHASE_4):
 | `data/clean/scoring_champions_reconciled.csv` | **new, S002 (PHASE_4)** | 68 seasons, seed + historic + 2007+ leaders. |
 | `data/clean/reconcile_conflicts.csv` | **new, S002 (PHASE_4)** | 1 flagged conflict (1945/D5). 4 others owner-resolved 2026-09-08 (see `OWNER_RESOLUTIONS`). |
 | `docs/specs/reconcile_spec.md` | **new, S002 (PHASE_4)** | Reconcile decisions, the conflicts, franchise/D2 handling, [OWNER_RESOLUTIONS], open Qs. |
-| `src/{enumerate_games,fetch_games,parse_games}.py` | **new, S002 (PHASE_3E)** | Game-script enumerate / gated fetch / box-score parse. `make enumerate-games` etc. |
-| `tests/test_parse_games.py` | **new, S002 (PHASE_3E)** | 12 unit tests over the box-score helpers. |
+| `src/{enumerate_games,fetch_games,parse_games}.py` | **new, S002 (PHASE_3E)** | Game-script enumerate / gated fetch / box-score + PBP parse. `make {enumerate,fetch,parse}-games`. `fetch_games` has `--script/--year/--force-year`, `MAX_TRANCHE=500`. `parse_games` reads two id schemes (pre-2007 `BS<NN>`, 2007+ `BS<YYYY>`), maps modern box columns by LABEL not position (2013 = 25 cols), `gamestatwide` needs `flavor="bs4"`. |
+| `tests/test_parse_games.py` | **new, S002 (PHASE_3E)** | 17 unit tests over the box-score + PBP helpers (`_season_from_rid`, `_num_pair`, `_box_check`, `_pbp_fields`, column-by-label). Part of the 125-test suite. |
 | `data/interim/cdx_games_inventory.csv` | **new, S002 (PHASE_3E)** | 10,548 distinct game-script captures. Tracked. |
-| `data/interim/fetch_manifest_games.csv` | **new, S002 (PHASE_3E)** | Fetched game captures → local file, `gated` column. Tracked. |
-| `data/raw/games/**` | **new, S002 (PHASE_3E)** | Fetched game-script captures. gitignored. |
-| `data/clean/game_results.csv` | **new, S002 (PHASE_3E)** | One row per game — teams + quarter/final scores. |
-| `data/clean/game_box_player.csv` | **new, S002 (PHASE_3E)** | One row per player per game; `bsnpr_id` joined where D1-resolvable. |
+| `data/interim/fetch_manifest_games.csv` | **new, S002 (PHASE_3E)** | Fetched game captures → local file, `gated` column. Tracked. Merged across runs. |
+| `data/raw/games/**` | **new, S002 (PHASE_3E)** | Fetched game-script captures: `gamestatwide` 864, `pogamestat` 1021, `boxscore` 261, `a2gamestatpbp` 2001 (78) + 2004 (74) + **2002 (mid-fetch, resume) + 2003 (queued)**. gitignored. |
+| `data/clean/game_results.csv` | **new, S002 (PHASE_3E)** | 1,287 rows — one per game, teams + quarter/final scores. Seasons 2001–03, 2008–13. Stub captures (blank score + no box) dropped; team-Totals-row score fallback. |
+| `data/clean/game_box_player.csv` | **new, S002 (PHASE_3E)** | 39,669 player-game rows. `bsnpr_id` joined where D1-resolvable: **pre-2007 4,152/15,941 = 26%; 2007+ 17,599/23,728 = 74%; total 21,751/39,669 = 55%**. `fg2m/fg2a` and `fg3m/fg3a` kept separate. `box_check`: 39,663 `ok` / 4 `pts_mismatch` (source data-entry errors, flagged not rewritten). |
+| `data/clean/game_plays.csv` | **new, S002 (PHASE_3E)** | 11,106 play-by-play events, seasons 2001 (8,771) + 2003 (2,335) — from `a2gamestatpbp`. `jugada_raw` verbatim + parsed `event_type`/`actor_raw`/`team_raw`. Classified: rebound 2,065 · made_2 1,606 · miss_2 1,198 · assist 1,025 · miss_3 790 · turnover 630 · made_3 433 · steal 398 · team_rebound 201 · jump_ball 140 · timeout 137; ~2,483 unclassified. Grows when 2002/2003 fetch completes. |
 | `docs/coverage_games.md` | **new, S002 (PHASE_3E)** | Per-script per-capture-year table; the >500 gated tranches. |
-| `docs/specs/game_data_spec.md` | **new, S002 (PHASE_3E)** | Game-engine shapes, tranche gate, id scheme, open Qs. |
+| `docs/specs/game_data_spec.md` | **new, S002 (PHASE_3E)** | Game-engine shapes, tranche gate, two id schemes, shot-cell conventions, open Qs. |
 
 ---
 
 [NEXT_ACTIONS]
 
-1. **PHASE_3D wrap-up** — when the tranche-B `jugador.asp` background fetch
-   finishes (pid was 61863; check `data/raw/players/jugador/` count vs 1079,
-   `data/interim/fetch_manifest_players.csv`), re-run `make parse-players` +
-   `make verify` and re-commit the refreshed `players_canonical` / `id_map` /
-   review queue. Then the ~219 "no canonical name match" pre-2007 players
-   (identity_spine_spec Q3) and the club-code map (Q2) are PHASE_4 work.
-2. **PHASE_3E continuation** — `gamestatwide.asp` fetch finishing in background
-   (re-run `make parse-games` + `make verify` when done). Then:
-   - ungated (≤500, just time): `pogamestat.asp` 2010–2021 (1021 across 6 yrs),
-     `boxscore.asp` 2008–09 (261), `a2gamestatpbp.asp` 2001+2004 (76).
-   - **GATED — owner OK needed** (coverage in `coverage_games.md`):
-     `boxscore.asp` 2007 (814); `gameinfo.asp` 2007 (944)+2008 (509);
-     `pogamestat.asp` 2007 (1329)+2008 (774)+2009 (935);
-     `a2gamestatpbp.asp` 2002 (1462)+2003 (1555).
-   - PBP (`a2gamestatpbp`) + `gameinfo` metadata = separate parse targets
-     (`game_data_spec` Q5/Q6). game↔franchise join (Q4). Box vs
-     `player_season_stats_2001_2004` cross-check (Q7).
-3. **PHASE_4 follow-ups** (reconcile_spec Q1–Q7): the 5 flagged conflicts +
+1. **PHASE_3E fetch resume** (contract: `PHASE_3E_FETCH_REMAINING` in [TASK_QUEUE]) —
+   a single-stream chain is running `a2gamestatpbp` 2002 (resume from ~343/1462)
+   then 2003 (1555), both owner-approved, `--force-year`. NOTE: a prior run had
+   **two** concurrent fetchers on the 2002 tranche (PC6 breach); both were killed
+   2026-09-08 and replaced with one chain (`scratchpad/fetch_chain3.sh`,
+   task `bzjo92jo3`). When it completes: `make parse-games && make verify`,
+   commit, report. Owner HOLD still stands on `pogamestat`/`boxscore` 2007–09 and
+   all of `gameinfo` — do NOT fetch until owner reviews PBP contents.
+2. **RANKED IDENTITY-LIFT PLAN** — box-score `bsnpr_id` resolution is 26% pre-2007
+   vs 74% modern; review queue = 828 rows (361 season-not-in-known-span · 346
+   no-name-match · 106 multi-candidate-no-season · 15 multi-match). Lift it in
+   this order:
+   a. **Club-code map as a 2nd corroboration signal** (identity_spine_spec Q2;
+      cheapest, no fetch). `data/clean/club_code_map.csv` already exists from
+      PHASE_4. Join observed `club_raw` → `franchise_id` and require club match
+      *in addition to* season for the ambiguous buckets — directly clears the
+      15 "multiple players match name + season" rows and tightens the 106
+      "multiple candidates" rows. Wire into `parse_players.build_id_map()`.
+   b. **Fetch `jug05.asp` / `jugador05.asp`** (identity_spine_spec Q3; ~600
+      captures each, 2005–2007-era player pages — **GATED >500, needs owner OK**).
+      Extends `players_canonical` + `player_career_seasons` into the 2004–2007
+      gap the enciclopedia misses, which is where most of the 361
+      "season-not-in-known-span" rows fall.
+   c. **Manual historic seed** (identity_spine_spec Q3; last, hand work). A
+      hand-built list for the ~50 historic scoring champions 1948–1970 and the
+      `lideres2000` surname-only leaders absent from the encyclopedia — the bulk
+      of the 346 "no canonical name match" rows. Seed file only; never edited
+      into `players_canonical` by code (D1).
+3. **PHASE_3E parse follow-ups** — PBP + (if ever un-held) `gameinfo` metadata are
+   separate parse targets (`game_data_spec` Q5/Q6). game↔franchise join (Q4).
+   Box vs `player_season_stats_2001_2004` cross-check (Q7).
+4. **PHASE_4 follow-ups** (reconcile_spec Q1–Q7): the 5 flagged conflicts +
    3 disputed franchise_events need an owner decision or a third source
    (es.wikipedia, Federación). Then: apply `player_id_map` → `bsnpr_id` columns
    on `player_season_*` / `player_season_stats_*` (after tranche B); reconcile
    `historic_scoring_champions` 1948–65 / 92–04 against es.wiki; career-leaders /
    records reconcile (D7 — floors only). wayback_ingest_spec Q9–Q12 still open.
-4. **PHASE_4B_GAME_POOL** — rebuild the app's game pool from
-   `champions_reconciled` + the identity spine + `player_season_stats_2001_2004`.
-   Own scope; needs the identity spine's tranche B done.
-5. Small ungated follow-ups: `playbyplay.asp` (460), `equipo.asp` (489),
+5. **PHASE_4B_GAME_POOL** — rebuild the app's game pool from
+   `champions_reconciled` + the identity spine + `player_season_stats_2001_2004`
+   + `game_results` / `game_box_player`. Own scope.
+6. Small ungated follow-ups: `playbyplay.asp` (460), `equipo.asp` (489),
    `informe.asp` (175, game reports 2004–06), `posiciones2000.asp` +
    `estadisticas.asp` cluster → `standings_pre2007.csv` (pre2007 spec Q4).
-6. Roadmap newspaper track — now only needed for pre-2001 box scores and
+7. Roadmap newspaper track — now only needed for pre-2001 box scores and
    anything the archive genuinely lacks. Much narrower than before.
-7. Human-side: B1 DevTools recon — value reduced (see B1); still useful for the
+8. Human-side: B1 DevTools recon — value reduced (see B1); still useful for the
    current/post-2021 API.
-8. `git`: PHASE_3 = 4ca04f2, 3B = 21f1a5f, 3C = a3b792a, 3D = 0d0d12d + 0640a1d,
-   PHASE_4 = ac4a23e + d7c3024 + cd8ef54. PHASE_3E (uncommitted):
-   `src/{enumerate,fetch,parse}_games.py`, `tests/test_parse_games.py`,
-   `docs/{coverage_games.md,specs/game_data_spec.md}`, 2 `data/clean/*.csv`,
-   2 `data/interim/*.csv`, `src/verify_clean.py`, Makefile, session — pending P4.
+9. `git`: PHASE_3 = 4ca04f2, 3B = 21f1a5f, 3C = a3b792a, 3D = 0d0d12d + 0640a1d,
+   PHASE_4 = ac4a23e + d7c3024 + cd8ef54.
+   PHASE_3E = d421922, e94fec9, 640964e, a041a60, 891fc12, 2d1928c (committed);
+   this `docs/session.md` H4 update pending P4. `a2gamestatpbp` 2002/2003 parse +
+   commit still to come when the fetch chain finishes.
