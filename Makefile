@@ -36,7 +36,16 @@ parse-players:
 reconcile:
 	.venv/bin/python -m src.reconcile
 
+enumerate-games:
+	.venv/bin/python -m src.enumerate_games
+
+fetch-games:
+	.venv/bin/python -m src.fetch_games
+
+parse-games:
+	.venv/bin/python -m src.parse_games
+
 test:
 	.venv/bin/pytest -q
 
-.PHONY: setup enumerate samples fetch parse verify enumerate-root fetch-pre2007 parse-pre2007 fetch-players parse-players reconcile test
+.PHONY: setup enumerate samples fetch parse verify enumerate-root fetch-pre2007 parse-pre2007 fetch-players parse-players reconcile enumerate-games fetch-games parse-games test
