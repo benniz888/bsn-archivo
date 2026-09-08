@@ -298,6 +298,18 @@ def verify_games(c: Checker) -> None:
     c.check(box_games <= res_games or not res,
             "game_box: every game with player rows has a results row")
 
+    if (CLEAN_DIR / "game_plays.csv").exists():
+        plays = _read("game_plays.csv")
+        c.check(bool(plays), "game_plays: non-empty")
+        for r in plays[:5000]:
+            c.check(bool(r["jugada_raw"]), f"game_plays: {r['game_id']} seq {r['seq']} keeps jugada_raw")
+            for col in ("confidence", "source_id", "source_url", "retrieved_at"):
+                c.check(bool(r[col]), f"game_plays: {r['game_id']} seq {r['seq']} has {col}")
+        classified = sum(1 for r in plays if r["event_type"])
+        c.check(classified >= 0.5 * len(plays),
+                "game_plays: >=50% of plays classified to an event_type",
+                f"{classified}/{len(plays)}")
+
 
 def verify_reconcile(c: Checker) -> None:
     """PHASE_4. Skipped cleanly if not built."""

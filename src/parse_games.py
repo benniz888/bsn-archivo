@@ -232,6 +232,82 @@ def parse_modern_box(resolver, results: list[dict], box: list[dict]) -> tuple[in
     return parsed, skipped
 
 
+# --------------------------------------------------------------------------- #
+# a2gamestatpbp.asp — play-by-play (2001-2004)                                  #
+# --------------------------------------------------------------------------- #
+_PBP_EVENT = [
+    (r"3-pt .* hecho por", "made_3"),
+    (r"3-pt .* fallado por", "miss_3"),
+    (r"Tiro .* hecho por", "made_2"),
+    (r"Tiro .* intentado por|Tiro .* fallado por", "miss_2"),
+    (r"Tiro Libre .* hecho", "made_ft"),
+    (r"Tiro Libre .* fallado", "miss_ft"),
+    (r"Asistencia por", "assist"),
+    (r"Rebote de Equipo", "team_rebound"),
+    (r"Rebote por", "rebound"),
+    (r"Corte por|Corte de", "steal"),
+    (r"Tapon por|Bloqueo por", "block"),
+    (r"Error \[", "turnover"),
+    (r"Falta .* por|Falta por", "foul"),
+    (r"Salto Inicial", "jump_ball"),
+    (r"Tiempo|Time Out", "timeout"),
+    (r"Sale .* Entra|Cambio", "substitution"),
+]
+_PBP_ACTOR = re.compile(
+    r"por ([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑ.\- ]+?)(?:\s*[\(<]\d+[\)>])?\s+de\s+([A-ZÁÉÍÓÚÑ ]+)\s*$")
+
+
+def _pbp_fields(jugada: str) -> tuple[str, str, str]:
+    """(event_type, actor_raw, team_raw) — best effort; jugada_raw is kept verbatim."""
+    s = squish(jugada)
+    etype = next((t for pat, t in _PBP_EVENT if re.search(pat, s, re.I)), "")
+    m = _PBP_ACTOR.search(s)
+    actor = squish(m.group(1)) if m else ""
+    team = squish(m.group(2)) if m else ""
+    return etype, actor, team
+
+
+def parse_pbp(plays: list[dict]) -> int:
+    n = 0
+    for p, meta, retrieved_at in _iter("a2gamestatpbp"):
+        rid = squish(meta.get("r", ""))
+        season = _season_from_rid(rid)
+        cuarto = squish(meta.get("cuarto", ""))
+        src = meta.get("raw_wayback_url", "")
+        html = p.read_bytes().decode("cp1252", "replace")
+        tabs = _tables(html)
+        tbl = next((t for t in tabs if len(t) > 5 and str(t.iloc[0, 0]) == "Cuarto"), None)
+        if tbl is None:
+            continue
+        n += 1
+        hdr = [str(x) for x in tbl.iloc[0]]
+        local_team = squish(hdr[3].replace("Local", "")) if len(hdr) > 3 else ""
+        visit_team = squish(hdr[4].replace("Vistante", "").replace("Visitante", "")) if len(hdr) > 4 else ""
+        for seq, (_, r) in enumerate(tbl.iloc[1:].iterrows(), 1):
+            v = [squish(str(x)) for x in r]
+            jug = v[2] if len(v) > 2 else ""
+            if not jug or jug.lower().startswith("primer |"):
+                continue
+            etype, actor, team = _pbp_fields(jug)
+            plays.append({
+                "game_id": rid, "season": season or "",
+                "quarter": v[0] or cuarto, "clock": v[1] if len(v) > 1 else "",
+                "seq": seq, "jugada_raw": jug,
+                "event_type": etype, "actor_raw": actor, "team_raw": team,
+                "local_team": local_team, "visit_team": visit_team,
+                "local_score": to_int(v[3]) if len(v) > 3 else None,
+                "visit_score": to_int(v[4]) if len(v) > 4 else None,
+                "confidence": "single-source", "source_id": SOURCE_ID,
+                "source_url": src, "retrieved_at": retrieved_at,
+            })
+    return n
+
+
+PBP_COLS = ["game_id", "season", "quarter", "clock", "seq", "jugada_raw",
+            "event_type", "actor_raw", "team_raw", "local_team", "visit_team",
+            "local_score", "visit_score", "confidence", "source_id",
+            "source_url", "retrieved_at"]
+
 BOX_COLS = ["game_id", "season", "date", "team_raw", "jersey", "player_raw", "bsnpr_id",
             "minutes", "fg2m", "fg2a", "fg3m", "fg3a", "ftm", "fta", "oreb", "dreb", "reb",
             "ast", "stl", "blk", "pf", "tov", "pts",
@@ -251,17 +327,28 @@ def main() -> int:
 
     n_gsw = parse_gamestatwide(resolver, results, box)
     n_mod, skipped = parse_modern_box(resolver, results, box)
+    plays: list[dict] = []
+    n_pbp = parse_pbp(plays)
 
     _write_csv(CLEAN / "game_results.csv",
                sorted(results, key=lambda r: (str(r["season"]), r["game_id"])), RESULT_COLS)
     _write_csv(CLEAN / "game_box_player.csv",
                sorted(box, key=lambda r: (str(r["season"]), r["game_id"], r["team_raw"], r["jersey"])),
                BOX_COLS)
+    if plays:
+        _write_csv(CLEAN / "game_plays.csv",
+                   sorted(plays, key=lambda r: (r["game_id"], str(r["quarter"]), r["seq"])),
+                   PBP_COLS)
 
     resolved = sum(1 for r in box if r["bsnpr_id"])
     print(f"[games] gamestatwide {n_gsw} games; modern box {n_mod} games ({skipped} crammed/skipped); "
           f"{len(box)} player-game rows, {resolved} resolved to bsnpr_id "
           f"({100 * resolved // max(len(box), 1)}%)")
+    if n_pbp:
+        etypes = {}
+        for pl in plays:
+            etypes[pl["event_type"] or "(unclassified)"] = etypes.get(pl["event_type"] or "(unclassified)", 0) + 1
+        print(f"[pbp] {n_pbp} quarter-captures, {len(plays)} plays; event types: {etypes}")
     return 0
 
 

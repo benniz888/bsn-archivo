@@ -1,6 +1,26 @@
 """Unit coverage for the pure helpers in src/parse_games.py."""
 
-from src.parse_games import _num_pair, _reb_pair, _season_from_rid, _split_jugador
+from src.parse_games import _num_pair, _pbp_fields, _reb_pair, _season_from_rid, _split_jugador
+
+
+class TestPbpFields:
+    def test_made_3(self):
+        et, actor, team = _pbp_fields("3-pt CC hecho por GARCIA (10) de MAYAGUEZ")
+        assert et == "made_3" and actor == "GARCIA" and team == "MAYAGUEZ"
+
+    def test_assist(self):
+        et, actor, team = _pbp_fields("Asistencia por DAVILA de MAYAGUEZ")
+        assert et == "assist" and actor == "DAVILA"
+
+    def test_rebound_bracket_jersey(self):
+        et, actor, team = _pbp_fields("Rebote por HIRALDO <7> de CAYEY")
+        assert et == "rebound" and actor == "HIRALDO" and team == "CAYEY"
+
+    def test_turnover(self):
+        assert _pbp_fields("Error [Pase malo] por MORALES de CAYEY")[0] == "turnover"
+
+    def test_unclassified_keeps_blank_type(self):
+        assert _pbp_fields("Algo raro sin verbo")[0] == ""
 
 
 class TestSeasonFromRid:
