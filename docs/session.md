@@ -312,8 +312,28 @@ coverage before any tranche over 500. Spec: `docs/specs/game_data_spec.md`,
   on every parsed row** (0 mismatches). `player_raw` → `bsnpr_id` via the
   identity spine (season-in-career, D1) — ~22%, capped by the pre-2007 spine
   gap not the matcher.
-- T3E.5 — DONE. `verify_games()` (51,366 checks green); 12 new unit tests
-  (120 total pass); `docs/specs/game_data_spec.md`.
+- T3E.5 — DONE. `verify_games()` + `verify` for `game_plays`; 17 new unit tests
+  (125 total pass); `docs/specs/game_data_spec.md`.
+- T3E.6 — PBP parser (`parse_pbp` → `game_plays.csv`, committed e94fec9). Modern
+  box parser fixed for the MultiIndex `boxscore`/`pogamestat` layout + line-score
+  → `game_results`. `box_check` column flags source pts-mismatch rows
+  (~0.02%, PC4 — flagged not hidden).
+
+**FETCH STATUS (multiple session interruptions — resumed each time; PC6
+sequential; `scratchpad/fetch_chain2.sh`):**
+- `gamestatwide.asp` 864/864 ✅ → 775 games parsed (89 revisit/partial captures
+  don't yield 2 box tables).
+- `pogamestat.asp` 2010–2021 (ungated): ~744/1021, still fetching. NOTE the
+  2010-capture-year tranche is mostly *2009-season* games (captured Jan 2010);
+  2013 captures carry 4 extra advanced-stat columns (FBP/PFT/PIP/SCP) — parser
+  maps box columns by label, not position.
+- `boxscore.asp` 2008–09, `a2gamestatpbp.asp` (owner-approved 2002+2003, plus
+  2001/2004): queued after pogamestat, not yet started.
+- Gated 2007–09 `pogamestat`/`boxscore` + all `gameinfo` correctly auto-skipped
+  / held per owner.
+- Parser: `_season_from_rid` handles both id schemes (`BS<NN>` pre-2007,
+  `BS<YYYY>` 2007+); `_tables` uses lxml for the modern boxes (3× faster),
+  bs4 for gamestatwide (unclosed `<b>`).
 
 **GATED (>500, need owner approval before fetch):**
 boxscore.asp 2007 (814); gameinfo.asp 2007 (944) + 2008 (509);
