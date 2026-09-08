@@ -18,7 +18,16 @@ parse:
 verify:
 	.venv/bin/python -m src.verify_clean
 
+enumerate-root:
+	.venv/bin/python -m src.enumerate_root
+
+fetch-pre2007:
+	.venv/bin/python -m src.fetch_pre2007
+
+parse-pre2007:
+	.venv/bin/python -m src.parse_pre2007
+
 test:
 	.venv/bin/pytest -q
 
-.PHONY: setup enumerate samples fetch parse verify test
+.PHONY: setup enumerate samples fetch parse verify enumerate-root fetch-pre2007 parse-pre2007 test

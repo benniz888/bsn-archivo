@@ -6,3 +6,7 @@ __pycache__/
 .pytest_cache/
 .DS_Store
 data/raw/
+
+# regenerable from a single CDX query (`make enumerate-root`); 5.9 MB, mostly
+# next-phase fetch targets. The human summary is docs/coverage_root.md (tracked).
+data/interim/cdx_root_inventory.csv

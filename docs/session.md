@@ -1,7 +1,7 @@
 # SESSION STATE — TIER 3
 <!-- Authoritative for current state and task priority. Update at every phase exit. -->
 
-**SESSION:** 002 — PHASE_3_PARSE + PHASE_3B_PROBE_ARCHIVE (continues 001)
+**SESSION:** 002 — PHASE_3_PARSE + 3B_PROBE + 3C_INGEST_PRE2007 (continues 001)
 **DATE:** 2026-09-08
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
@@ -9,10 +9,15 @@ Session 001 (2026-09-07): PHASE_1_ENUMERATE + PHASE_2_FETCH. Env bootstrapped,
 Wayback CDX enumerated (central finding negative — see below), 193 snapshots
 fetched to `data/raw/`.
 
-Session 002 so far: PHASE_3_PARSE (committed 4ca04f2) — 193 snapshots →
-provenance-complete `data/clean/`. Then PHASE_3B_PROBE_ARCHIVE (owner-requested,
-uncommitted) — probed 4 more archived scripts; **found a pre-2007 root-level URL
-scheme the PHASE_1 enumeration missed** (see B2, `archive_probe_spec.md`).
+Session 002:
+- PHASE_3_PARSE (committed 4ca04f2) — 193 snapshots → provenance-complete `data/clean/`.
+- PHASE_3B_PROBE_ARCHIVE (committed 21f1a5f) — probed 4 more scripts; found a
+  pre-2007 root-level URL scheme the PHASE_1 enumeration missed.
+- PHASE_3C_INGEST_PRE2007 (uncommitted) — enumerated `bsnpr.com/*`, ingested the
+  ≤500 pre-2007 tranches. **1948–2004 scoring champions + awards, 2000–2003
+  player season stats/leaders now in `data/clean/`.** Box-score / play-by-play /
+  per-player-page scripts found and reported, gated for owner approval
+  (`docs/specs/pre2007_ingest_spec.md`).
 
 ---
 
@@ -202,19 +207,42 @@ Not in scope: parsing any of these into `data/interim/` or `data/clean/`;
 are the owner's list).
 </details>
 
-### PHASE_3C_INGEST_PRE2007 — queued, do not start (proposed by PHASE_3B)
-Full ingest of the two "full ingest" verdicts. Two streams:
-- **Player identity spine** — widen the CDX enumeration to `bsnpr.com/*` (or an
-  explicit list), fetch `enciclopedia.asp` (79 captures) + `jugadores/
-  jugador.asp?id=N` (~1680), parse to a canonical player table with birth year +
-  id + alias rows. This is the D1 backbone PHASE_4 identity work needs.
-- **Pre-2007 leaders** — fetch + parse `lidereshistoricos.asp` (season scoring
-  leaders 1948→2001), `lideres2001.asp` / `lideres2000.asp` (2000–01 player
-  season leaders), `posiciones2000/2001.asp` (standings), `equiposstat.asp`
-  (307 caps, per-team stats 2001–2007). BeautifulSoup, not `read_html` (nested
-  layout tables). See `archive_probe_spec.md` [OPEN_QUESTIONS].
-Sequencing: PHASE_3C can run before or interleaved with PHASE_4 — the identity
-spine makes PHASE_4 reconcile easier, so lean toward 3C first.
+### PHASE_3C_INGEST_PRE2007 — COMPLETE for the ≤500 tranches (2026-09-08)
+
+Full detail: `docs/specs/pre2007_ingest_spec.md` + `docs/coverage_root.md`.
+
+- T3C.1 — DONE. `src/enumerate_root.py` (`make enumerate-root`). CDX
+  `bsnpr.com/*`: 135,005 captures, 133,454 outside `/estadisticas/`. Persisted
+  inventory = the ~34k stats/game/player-script subset (rest is news/forum/image
+  noise). Raw CDX JSON cached (46 MB, gitignored).
+- T3C.2 — DONE. Coverage delivered (`coverage_root.md`) before any >500 fetch.
+- T3C.3 — DONE. `src/fetch_pre2007.py` (`make fetch-pre2007`), `MAX_TRANCHE=500`
+  hard gate. Fetched 315 distinct captures across 8 scripts, 0 failed (2
+  `equiposstat` DB-error pages). `data/raw/pre2007/`, manifest tracked.
+- T3C.4 — DONE. `src/parse_pre2007.py` (`make parse-pre2007`). 5 clean outputs:
+  - `historic_scoring_champions.csv` (58 rows, **1948→2004**, games+total+ppg;
+    `metric_era` flips 1970/71 per D4; 1952 Feliciano/Santori = 2 `disputed`
+    rows) + `historic_awards.csv` (135 rows — MVP/ROY/DPOY, **1958→2004**).
+  - `player_season_leaders_2000_2002.csv` (403 rows, 9 categories, serie-split;
+    `lideres2000` is surname-only — D1 note).
+  - `player_season_stats_2001_2004.csv` (503 player-seasons, 2001–2003, 14
+    teams — the only pre-2007 **player-level** stat source) +
+    `team_season_totals_2001_2004.csv` (38 rows).
+  - root `campeonatos.asp` / `lideres.asp` NOT re-parsed (duplicate the
+    `/estadisticas/` engine PHASE_3 already did).
+- T3C.5 — DONE. `verify_pre2007()` added (13,410 assertions, green); 8 new unit
+  tests (79 total pass); spec + session.md updated.
+
+**GATED — reported, NOT fetched (owner approval, each >500 distinct):**
+`jugador.asp` **5986** (per-player pages — D1 spine w/ `enciclopedia.asp`);
+`pogamestat.asp` 4059, `a2gamestatpbp.asp` 3093, `gameinfo.asp` 1457,
+`boxscore.asp` 1075, `gamestatwide.asp` 864, `pogamestatwide2.asp` 512 (**box
+scores + play-by-play, 2001–2021 — a roadmap-scale finding, partial answer to
+B1**); `jug05.asp`/`jugador05.asp` 600 each.
+Fetchable without a new gate (≤500, not done this turn): `playbyplay.asp` 460,
+`equipo.asp` 489, `informe.asp` 175, `print_jugador.asp` 203.
+
+**Phase exit:** status delivered, paused (P6). Nothing committed (P4).
 
 ### PHASE_4_RECONCILE — queued, do not start
 Cross-check parsed leaders/champions against the existing seed CSVs. Resolve
@@ -240,7 +268,13 @@ owner's. Do not touch `app/bsn_archivo.html` until that spec is approved.
 
 [BLOCKERS]
 
-- B1 — **Manual, user-only.** The bsnpr.com DevTools recon (roadmap Phase 0, steps 1–7) requires a human in Chrome. One hour of work, unblocks four features. Not scriptable — do not attempt to automate it. Ask for the cURL output when ready.
+- B1 — **Manual, user-only — but partly answered by PHASE_3C.** The bsnpr.com
+  DevTools recon (roadmap Phase 0) was to find the box-score endpoint. PHASE_3C's
+  `bsnpr.com/*` enumeration found `boxscore.asp` (1075 distinct, 2007–2009),
+  `pogamestat.asp` (4059, 2007–2021), `a2gamestatpbp.asp` (3093, 2001–2004 PBP),
+  `gameinfo.asp` (1457) **archived in Wayback**. A box-score/PBP ingest phase is
+  now viable from the archive alone. The live DevTools recon still adds value
+  for post-2021 and the current API, but is no longer the only path.
 - B2 — **PARTIALLY REOPENED by PHASE_3B (2026-09-08).** The Phase-1 verdict —
   zero coverage of `/estadisticas/lideres.asp?anio=YYYY` for 1957–2004 — still
   stands. BUT the 2000–2002 site served leader data from **root-level URLs**
@@ -332,6 +366,29 @@ Decisions made session 002 (PHASE_3B):
   `data/raw/probe/` are throwaway investigation artifacts, not an ingest stage.
   No `make` target, no interim/clean output. PHASE_3C writes fresh fetchers.
 
+Decisions made session 002 (PHASE_3C):
+- **D-016 — root inventory persisted as a filtered subset.** The full
+  `bsnpr.com/*` CDX is 133k rows / 25 MB, mostly news/forum/image noise.
+  `cdx_root_inventory.csv` keeps only the ~34k stats/game/player-script rows
+  (tracked). The raw CDX JSON (46 MB) is gitignored; regenerate with
+  `make enumerate-root`.
+- **D-017 — the 500-capture gate is on distinct digests (= actual fetches),
+  not raw captures.** `equiposstat.asp` has 525 raw captures but 254 unique
+  content digests → fetched. `fetch_pre2007.py` `MAX_TRANCHE=500` refuses any
+  script above that; `jugador.asp` (5986) and the game scripts wait for owner OK.
+- **D-018 — root `campeonatos.asp` / `lideres.asp` not re-parsed.** Same engine
+  and content as the `/estadisticas/` versions PHASE_3 already parsed. Raw files
+  kept in `data/raw/pre2007/` as a second provenance source if PHASE_4 needs one
+  for a disputed row.
+- **D-019 — `equiposstat` `CC/3P/TL` cells are `attempted-made`, not
+  made-attempted.** Verified against the PROMEDIO table's percentages
+  (`"151-90"` → 90/151 = 0.596 = CC%). Stored as separate nullable `fga`/`fgm`
+  etc. (PC2).
+- **D-020 — B2 further reopened.** PHASE_3B found the pre-2007 leader scheme;
+  PHASE_3C found box-score/PBP scripts (`boxscore.asp`, `pogamestat.asp`,
+  `a2gamestatpbp.asp`) archived 2001–2021. Pre-2007 game data is now
+  archive-recoverable, not newspaper-only. Own phase, gated.
+
 ---
 
 [VERIFICATION_LOG]
@@ -342,6 +399,7 @@ Decisions made session 002 (PHASE_3B):
 | PHASE_2 | PASS | PASS | PASS | PASS | PASS | V1: T2.1–T2.5 done; 193/193 digests fetched, 0 failed; manifests written. V2: PC5 raw bytes unmodified + never re-fetched (idempotent re-run confirmed); PC6 one request per digest, ≥1.5s spacing, backoff; PC3 provenance captured per file in `.meta.json`. V3: no secrets; raw HTML gitignored. V4: 23 pytest pass; sampled files parse with `read_html`. V5: snake_case, English. |
 | PHASE_3 | PASS | PASS | PASS | PASS | PASS | V1: T3.1–T3.6 done — both clean streams + stats_tracked + gaps file produced. V2: PC1 (1953/disputes surfaced, no guesses); PC2 (`to_int`/`to_float` → None on blank, verify asserts pct rows carry no `total`); PC3 (`make verify` enforces provenance on every row); PC4 (`leader_coverage_gaps.csv`, `season_complete`, `parse_flag`); PC5 (parse only reads `data/raw/`, idempotent); D3/D5/D6 asserted in verify. V3: no secrets; parse/verify read-only on raw. V4: `make parse` + `make verify` green (6375 checks); 61 pytest pass; 1986 parse cross-validates against seed scoring CSV (29.8 ppg exact). V5: snake_case, English comments, "why" only. |
 | PHASE_3B | PASS | PASS | PASS | PASS | PASS | V1: T3B.1–T3B.4 done — 4 targets probed (5/5/4/5 captures) + 3 root-level `lideres*` follow-ups; verdicts + spec delivered; sample-only respected (no bulk fetch, no parser, no clean output). V2: PC5 raw bytes cached unmodified in `data/raw/probe/`; PC6 sequential via `polite_get`, ≥1.5s, backoff recovered from a Wayback 503 burst; PC1 findings reported straight incl. the "B2 partially reopened" reversal. V3: no secrets. V4: 61 pytest still pass (probe adds no code path to the pipeline); every probed capture inspected. V5: snake_case, English. |
+| PHASE_3C | PASS | PASS | PASS | PASS | PASS | V1: T3C.1–T3C.5 done — enumerate + coverage report + fetch (315/315, 0 fail) + 5 clean outputs + verify + tests. Owner's 500-gate honoured: `jugador.asp` (5986) and game scripts reported, not fetched. V2: PC1 (1952 dispute = 2 rows, clipped `<pre>` values flagged not rewritten, root campeonatos not re-parsed to avoid dup rows); PC2 (`fga`/`fgm` split, `to_int`→None on blank); PC3 (`verify_pre2007` asserts provenance on every row); PC4 (2 DB-error captures counted + reported, gated tranches in coverage_root.md); PC5 (parse reads `data/raw/pre2007/` only, idempotent); PC6 (`polite_get`, one GET/digest, rode out a long Wayback 503 throttle); D4 (`metric_era` flip asserted). V3: no secrets; raw CDX + raw HTML gitignored. V4: `make parse-pre2007` + `make verify` green (13,410 checks); 79 pytest pass; `equiposstat` made≤att verified, 1986/1952 cross-checks hold. V5: snake_case, English, "why" comments. |
 
 ---
 
@@ -386,31 +444,52 @@ Decisions made session 002 (PHASE_3B):
 | `src/probe_archive.py` | **new, S002 (PHASE_3B)** | Throwaway probe fetcher/inspector. No `make` target, not in the pipeline. |
 | `data/raw/probe/*.html` (+meta) | **new, S002 (PHASE_3B)** | 22 sample captures (enciclopedia/lideres_e/livestats/estadisticas2001/lideres2001/lidereshistoricos). gitignored. |
 | `docs/specs/archive_probe_spec.md` | **new, S002 (PHASE_3B)** | Per-script verdicts; the root-level pre-2007 URL scheme discovery. Read before PHASE_3C. |
+| `src/enumerate_root.py` | **new, S002 (PHASE_3C)** | `bsnpr.com/*` CDX enumeration. `make enumerate-root`. |
+| `src/fetch_pre2007.py` | **new, S002 (PHASE_3C)** | Pre-2007 tranche fetcher, `MAX_TRANCHE=500` gate. `make fetch-pre2007`. |
+| `src/parse_pre2007.py` | **new, S002 (PHASE_3C)** | Parser for lidereshistoricos / lideres200x / equiposstat. `make parse-pre2007`. |
+| `tests/test_parse_pre2007.py` | **new, S002 (PHASE_3C)** | 18 unit tests over the pre-2007 parse helpers. |
+| `data/raw/cdx/cdx_root_{all,bydigest}.json` | **new, S002 (PHASE_3C)** | Raw `bsnpr.com/*` CDX (46 MB). gitignored, regenerable. |
+| `data/raw/pre2007/**` | **new, S002 (PHASE_3C)** | 315 pre-2007 captures across 8 scripts. gitignored. |
+| `data/interim/cdx_root_inventory.csv` | **new, S002 (PHASE_3C)** | ~34k stats-relevant root captures (filtered subset). Tracked. |
+| `data/interim/fetch_manifest_pre2007.csv` | **new, S002 (PHASE_3C)** | Every fetched pre-2007 capture → local file. Tracked. |
+| `docs/coverage_root.md` | **new, S002 (PHASE_3C)** | Root-scheme per-script coverage; the gated (>500) tranches. |
+| `docs/specs/pre2007_ingest_spec.md` | **new, S002 (PHASE_3C)** | Ingest decisions, source shapes, the box-score/PBP finding, open Qs. |
+| `data/clean/historic_scoring_champions.csv` | **new, S002 (PHASE_3C)** | 58 rows, scoring champions 1948–2004 (games/total/ppg). |
+| `data/clean/historic_awards.csv` | **new, S002 (PHASE_3C)** | 135 rows — MVP/Rookie/Defensive-Player, 1958–2004. |
+| `data/clean/player_season_leaders_2000_2002.csv` | **new, S002 (PHASE_3C)** | 403 rows, 9 categories, serie-split. `lideres2000` surname-only. |
+| `data/clean/player_season_stats_2001_2004.csv` | **new, S002 (PHASE_3C)** | 503 player-seasons, 2001–2003, 14 teams (only pre-2007 player-level source). |
+| `data/clean/team_season_totals_2001_2004.csv` | **new, S002 (PHASE_3C)** | 38 team-season totals. |
 
 ---
 
 [NEXT_ACTIONS]
 
-1. **PHASE_3C_INGEST_PRE2007** — needs a go-ahead (P6). PHASE_3B found real
-   recoverable pre-2007 data. Re-enumerate CDX at `bsnpr.com/*`, then ingest
-   (a) the player identity spine — `enciclopedia.asp` + `jugadores/jugador.asp?
-   id=N` → canonical player table with birth year + id; (b) pre-2007 leaders —
-   `lidereshistoricos.asp` (scoring leaders 1948→2001), `lideres2000/2001.asp`,
-   `equiposstat.asp` (307 caps 2001–2007), `posiciones*.asp`. Full detail:
-   `docs/specs/archive_probe_spec.md` [DECISION] + [OPEN_QUESTIONS].
-2. **PHASE_4_RECONCILE** — cross-check `champions_from_bsnpr.csv` /
-   `player_season_leaders.csv` against the seed CSVs; champion cities →
-   franchises as events (D2); D5 (1945); D6's 2024 runner-up (NOT in Wayback —
-   `campeonatos.asp` stops at 2020); spec Q9–Q12; rebuild the game pool.
-   Easier after 3C (identity spine); can interleave.
-3. Roadmap Phase 4 newspaper track — still the only path to pre-2007 **box
-   scores** (leaders are now partly covered by 3C). Federación / BSN league
-   office email (roadmap Phase 6). Human-side.
-4. Human-side: B1 DevTools recon (unchanged). `livestats.asp` dropped from the
-   B1 hope list — PHASE_3B confirmed it's a dead widget shell (D-014).
-5. Still-deferred archived scripts (NOT in PHASE_3B's four): `finales.asp`,
-   `mvp.asp`, `posiciones.asp`, `print_*` — spec Q3–Q4, low priority.
-6. `git add` new source + docs + `data/interim/` + `data/clean/` (NOT
-   `data/raw/`, NOT `.venv/`) — PHASE_3 committed as 4ca04f2; PHASE_3B
-   (`src/probe_archive.py`, `docs/specs/archive_probe_spec.md`, session/spec
-   edits) pending owner P4 approval.
+1. **PHASE_3D_IDENTITY_SPINE** (gated, needs owner OK — `jugador.asp` = 5986
+   > 500). Fetch `enciclopedia.asp` (79, PHASE_3B target, under `/estadisticas/`)
+   + `jugador.asp?id=N` (~5986) → canonical player table: id + canonical_name +
+   split surnames + birth year + career-by-season. The D1 backbone PHASE_4 needs.
+   Also small & ungated: `jug05.asp`/`jugador05.asp` need approval (600 each);
+   `print_jugador.asp` (203) does not.
+2. **PHASE_3E_GAME_DATA** (gated). Box scores + play-by-play, archive-recoverable
+   (D-020): `pogamestat.asp` 4059, `boxscore.asp` 1075, `a2gamestatpbp.asp` 3093
+   (2001–04 PBP), `gameinfo.asp` 1457. Probe structure first, then per-script
+   gated tranches. Directly serves B1 / the box-score roadmap item.
+3. **PHASE_4_RECONCILE** — now has much more to reconcile against: the seed CSVs,
+   `champions_from_bsnpr.csv`, `player_season_leaders*.csv`,
+   `historic_scoring_champions.csv` (1948–2004 — vs seed's 1966–1991),
+   `historic_awards.csv`, `player_season_stats_2001_2004.csv`. Champion cities →
+   franchises as events (D2); D5 (1945); D6 (1953 sourced, 2024 open); club-code
+   → franchise map (pre2007 spec Q5); wayback_ingest_spec Q9–Q12. Rebuild game
+   pool. Best after the identity spine (3D).
+4. Small ungated follow-ups: `playbyplay.asp` (460), `equipo.asp` (489),
+   `informe.asp` (175, game reports 2004–06), `posiciones2000.asp` +
+   `estadisticas.asp` cluster → `standings_pre2007.csv` (pre2007 spec Q4).
+5. Roadmap newspaper track — now only needed for pre-2001 box scores and
+   anything the archive genuinely lacks. Much narrower than before.
+6. Human-side: B1 DevTools recon — value reduced (see B1); still useful for the
+   current/post-2021 API.
+7. `git`: PHASE_3 = 4ca04f2, PHASE_3B = 21f1a5f. PHASE_3C (uncommitted):
+   `src/{enumerate_root,fetch_pre2007,parse_pre2007}.py`,
+   `tests/test_parse_pre2007.py`, `docs/{coverage_root.md,specs/pre2007_ingest_spec.md}`,
+   6 new `data/clean/*.csv`, 2 new `data/interim/*.csv`, Makefile, session/spec
+   edits — pending owner P4.

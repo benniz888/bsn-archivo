@@ -134,14 +134,80 @@ def verify_coverage_gaps(c: Checker) -> None:
             c.check(r["season"] not in leader_seasons, f"gaps: {r['season']} {r['status']} has no leader rows")
 
 
+def verify_pre2007(c: Checker) -> None:
+    """PHASE_3C outputs. Skipped cleanly if the parse has not been run."""
+    if not (CLEAN_DIR / "historic_scoring_champions.csv").exists():
+        return
+
+    scoring = _read("historic_scoring_champions.csv")
+    c.check(bool(scoring), "historic_scoring: non-empty")
+    seasons = [int(r["season"]) for r in scoring]
+    c.check(min(seasons) <= 1950 and max(seasons) >= 2003,
+            "historic_scoring: spans ~1948-2004", f"{min(seasons)}-{max(seasons)}")
+    for r in scoring:
+        tag = f"scoring {r['season']}"
+        for col in PROVENANCE_COLS:
+            c.check(bool(r[col]), f"historic_scoring: {tag} has {col}")
+        c.check(r["confidence"] in CONFIDENCE_OK, f"historic_scoring: {tag} confidence valid")
+        c.check(bool(r["player_raw"]), f"historic_scoring: {tag} has player_raw")
+        # D4: metric_era must flip at the 1970/71 boundary
+        want = "total_points" if int(r["season"]) <= 1970 else "ppg"
+        c.check(r["metric_era"] == want, f"historic_scoring: {tag} metric_era == {want} (D4)")
+    dyears = [r["season"] for r in scoring if r["confidence"] == "disputed"]
+    c.check("1952" in dyears, "historic_scoring: 1952 Feliciano/Santori carried disputed")
+    c.check(sum(1 for r in scoring if r["season"] == "1952") == 2,
+            "historic_scoring: 1952 has both claimants as rows (PC1)")
+
+    awards = _read("historic_awards.csv")
+    c.check({r["award"] for r in awards} <= {"mvp", "rookie", "defensive_player"},
+            "historic_awards: known award types only")
+    for r in awards:
+        for col in PROVENANCE_COLS:
+            c.check(bool(r[col]), f"historic_awards: {r['award']} {r['season']} has {col}")
+
+    players = _read("player_season_stats_2001_2004.csv")
+    c.check(bool(players), "player_stats_2001_2004: non-empty")
+    for r in players:
+        tag = f"{r['team_raw']} {r['season']} {r['player_raw']}"
+        for col in PROVENANCE_COLS:
+            c.check(bool(r[col]), f"player_stats: {tag} has {col}")
+        c.check(bool(r["player_raw"]) and r["player_raw"].lower() != "totales",
+                f"player_stats: {tag} is a real player row")
+        # made <= attempted where both present (PC2: blanks stay blank)
+        for made, att, lbl in (("fgm", "fga", "FG"), ("tpm", "tpa", "3P"), ("ftm", "fta", "FT")):
+            if r[made] and r[att]:
+                c.check(int(r[made]) <= int(r[att]), f"player_stats: {tag} {lbl} made<=att",
+                        f"{r[made]}/{r[att]}")
+    c.check({r["season"] for r in players} <= {"2000", "2001", "2002", "2003", "2004"},
+            "player_stats: seasons in 2000-2004")
+
+    if (CLEAN_DIR / "player_season_leaders_2000_2002.csv").exists():
+        lead = _read("player_season_leaders_2000_2002.csv")
+        c.check(bool(lead), "leaders_2000_2002: non-empty")
+        c.check({r["season"] for r in lead} == {"2000", "2001", "2002"},
+                "leaders_2000_2002: exactly seasons 2000-2002")
+        groups: dict[tuple, list[dict]] = {}
+        for r in lead:
+            groups.setdefault((r["season"], r["category"], r["serie"]), []).append(r)
+        for k, grp in groups.items():
+            ranks = sorted(int(r["rank"]) for r in grp if r["rank"])
+            c.check(ranks == list(range(1, len(ranks) + 1)),
+                    f"leaders_2000_2002: {k} ranks contiguous from 1")
+            for r in grp:
+                for col in PROVENANCE_COLS:
+                    c.check(bool(r[col]), f"leaders_2000_2002: {k} r{r['rank']} has {col}")
+                c.check(bool(r["player_raw"]), f"leaders_2000_2002: {k} r{r['rank']} has player_raw")
+
+
 def main() -> int:
     c = Checker()
     verify_champions(c)
     verify_leaders(c)
     verify_stats_tracked(c)
     verify_coverage_gaps(c)
+    verify_pre2007(c)
     rc = c.report()
-    print("PHASE_3 verify:", "PASS" if rc == 0 else "FAIL")
+    print("verify:", "PASS" if rc == 0 else "FAIL")
     return rc
 
 
