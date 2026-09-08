@@ -1,2 +1,3 @@
 topic,season,source_a,value_a,source_b,value_b,agree_on,note
 champion,1945,en.wikipedia,Capitalinos de San Juan,es.wikipedia,Santos de San Juan,runner-up: Gallitos de la UPR,"D5 unresolved. bsnpr adds coach Adolfo Porrata, city 'SAN JUAN' — does not disambiguate."
+franchise_founded,,seed:bsn_franchises.csv,Criollos de Caguas founded 1976,en.wikipedia,Criollos de Caguas founded 1969,,en.wiki 'Criollos de Caguas (basketball)' opens 'began to play during the 1969 season'; the seed says 1976. Not resolved.

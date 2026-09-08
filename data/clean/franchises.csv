@@ -8,7 +8,7 @@ gigantes_carolina,Gigantes de Carolina,Carolina,1971,active,derived:champion/sco
 indios_mayaguez,Indios de Mayaguez,Mayaguez,1956,active,derived:champion/scoring rows
 leones_ponce,Leones de Ponce,Ponce,1946,active,derived:champion/scoring rows
 mets_guaynabo,Mets de Guaynabo,Guaynabo,1935,active,derived:champion/scoring rows
-osos_manati,Osos de Manati,Manati,2014,active,derived:champion/scoring rows
+osos_manati,Osos de Manati,Manati,2023,active,derived:champion/scoring rows
 piratas_quebradillas,Piratas de Quebradillas,Quebradillas,1926,active,derived:champion/scoring rows
 vaqueros_bayamon,Vaqueros de Bayamon,Bayamon,1930,active,derived:champion/scoring rows
 atenienses_manati,Atenienses de Manati,Manati,2014,defunct 2017,derived:champion/scoring rows
@@ -26,7 +26,7 @@ tiburones_aguadilla,Tiburones de Aguadilla,Aguadilla,1990,defunct 1998,derived:c
 titanes_morovis,Titanes de Morovis,Morovis,1977,defunct 2006,derived:champion/scoring rows
 toritos_cayey,Toritos de Cayey,Cayey,2002,defunct 2004,derived:champion/scoring rows
 capitalinos_san_juan,Capitalinos de San Juan,San Juan,1930,defunct 1998,derived:champion/scoring rows
-brujos_guayama,Brujos de Guayama,Guayama,1971,relocated 2022,derived:champion/scoring rows
+brujos_guayama,Brujos de Guayama,Guayama,1971,relocated 2023 -> osos_manati,derived:champion/scoring rows
 santos_san_juan,Santos de San Juan,San Juan,1971,defunct ~1980,derived:champion/scoring rows
 club_nautico_san_juan,Club Nautico de San Juan,San Juan,1930,defunct ~1940,derived:champion/scoring rows
 cocoteros_tortuguero,Cocoteros de Tortuguero,Tortuguero,1943,defunct ~1944,derived:champion/scoring rows

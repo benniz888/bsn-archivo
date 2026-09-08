@@ -102,9 +102,35 @@ reflects these.
     RIO PIEDRAS captures concur with the seed.
   Both carry `confidence=single-source` (bsnpr's own record is internally
   inconsistent for these two).
-- **Champion 1945 — genuine conflict, left `disputed`.** No current source
-  resolves EN-wiki (Capitalinos de San Juan) vs ES-wiki (Santos de San Juan).
-  Stays the sole row in `reconcile_conflicts.csv`.
+- **Champion 1945 — genuine conflict, left `disputed`.** Checked directly
+  2026-09-08: es.wiki's `Anexo:Campeones del BSN` annex says **Santos de San
+  Juan**; es.wiki's main BSN article table says **Capitalinos**; en.wiki says
+  Capitalinos. es.wiki contradicts itself — exactly D5. Stays in
+  `reconcile_conflicts.csv`.
+
+### Franchise-lineage decisions (2026-09-08, after checking es/en.wikipedia)
+
+- **Brujos de Guayama → Osos de Manatí — `verified`.** es.wiki (Brujos article)
+  confirms the franchise was sold + relocated to Manatí (announced 17 Oct 2022,
+  effective the 2023 season). `franchise_events.csv`:
+  `relocated_renamed 2023 brujos_guayama → osos_manati`. `osos_manati` founded
+  year corrected **2014 → 2023** in `franchises.csv`; `brujos_guayama` status →
+  "relocated 2023 -> osos_manati". Atenienses de Manatí (2014–2017) is a
+  **separate, unrelated** defunct franchise — the seed's "Osos founded 2014"
+  was a conflation.
+- **Grises de Humacao → Criollos de Caguas — kept `single-source`, unverified.**
+  D2 asserts it; **neither Wikipedia corroborates it** — en.wiki's Criollos
+  article says only "refounded in 2023". Event row keeps D2's claim with that
+  caveat in the note; owner review still open.
+- **Santos de San Juan — kept a distinct `franchise_id`, `relationship_unclear`.**
+  No es.wiki or en.wiki article or sentence explains its relationship to
+  Capitalinos de San Juan. Not merged.
+- **New conflict logged:** `franchise_founded` — seed says Criollos de Caguas
+  founded **1976**, en.wiki says **1969**. In `reconcile_conflicts.csv`.
+
+### F3 update (2026-09-08)
+`docs/project.md` F3 was "es.wikipedia unfetchable — retest". Retested: **it is
+fetchable** from this environment. Both Wikipedias are now reconcile sources.
 
 ---
 
@@ -182,10 +208,11 @@ D3 (`1942-1943` kept), D4 (`metric_era` flip), D6 (`1953` no_champion).
 
 ## [OPEN_QUESTIONS]
 
-1. **The 5 flagged conflicts** — need the owner (or a third source: ES-wiki
-   directly, the Federación, newspapers). Do not clear them without a decision.
-2. **`franchise_events` `disputed` rows** (Brujos/Osos, Grises/Criollos,
-   Santos/Capitalinos) — same: a lineage decision is the owner's.
+1. **`reconcile_conflicts.csv`** — 2 rows left: champion **1945** (D5, es.wiki
+   self-contradicts) and `franchise_founded` **Criollos 1969 vs 1976**. Both
+   need a third source or an owner call.
+2. **Grises de Humacao → Criollos de Caguas** — D2's claim, not in Wikipedia.
+   Confirm from a PR-basketball news source or the Federación, or downgrade.
 3. **`club_code_map` `CA`/`CO`** — confirm which team each 2-letter code meant
    per season from the `equiposstat` URLs actually fetched.
 4. **Applying `player_id_map` to the observation tables** — not done here. Once

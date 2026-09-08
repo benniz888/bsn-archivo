@@ -40,7 +40,11 @@
     - **`lideres.asp` (no params)** — ~96 distinct captures, 2007–2021. 11 stat-category leader tables each (`# | Jugador | JJ | … | Prom`), showing whichever season was current at capture time. Reaches ~4 years below RealGM's 2011-12 floor. Blocks/steals/turnovers/off-rebounds are empty pre-modern — that absence is the `stats_tracked` signal.
     - ~18 parametrized `lideres.asp?anio=` 200s (1986, 2007–2014, 2021; some `vida=2` career views).
   - Everything pre-2007 now routes to the newspaper / Federación track (roadmap Phase 4 / Phase 6). The archive is not the whole ballgame; it was a lead that mostly did not pan out.
-- F3: `es.wikipedia.org` was unfetchable from the prior sandbox; English Wikipedia fetched fine. Retest from this environment before assuming.
+- F3: **RESOLVED (PHASE_4, 2026-09-08).** `es.wikipedia.org` IS fetchable from
+  this environment (was unfetchable from the prior sandbox). Verified: fetched
+  the BSN main article, the `Anexo:Campeones del Baloncesto Superior Nacional`
+  champions annex, and per-franchise articles. en.wikipedia also fetches fine.
+  Both are now usable as reconcile sources (`WebFetch`).
 - F4: Wayback CDX + `lideres.asp` pages are server-rendered HTML tables — `pandas.read_html` handles them. Fetch with the `id_` suffix (`https://web.archive.org/web/{timestamp}id_/{url}`) to get raw HTML without archive chrome.
 
 [LEGAL_CONSTRAINTS]

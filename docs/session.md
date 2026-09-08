@@ -21,13 +21,12 @@ Session 002:
   table: **3,303 players** (1,076 with a full profile), league ids,
   accent-stripped names, ~25k aliases, **423 season-corroborated id-map links**,
   828-row review queue. Tranche B fetch (1,078 profiles) finished.
-- PHASE_4_RECONCILE (committed ac4a23e + owner-resolution follow-up) —
-  reconciled champions + scoring champions against the Wikipedia seed. 89/98
-  champion seasons `agree` (87 seed↔bsnpr `verified` + 1936/1968 owner-resolved).
-  Franchise master + D2 lineage events + city/club maps. Of the 5 disagreements
-  the reconcile found, the owner resolved 4 on 2026-09-08; **1945 (D5) is the
-  sole remaining `reconcile_conflicts.csv` row.** 3 disputed franchise-lineage
-  events awaiting an owner decision.
+- PHASE_4_RECONCILE (ac4a23e + d7c3024 + lineage follow-up) — reconciled
+  champions + scoring vs the Wikipedia seed. 89/98 champion seasons `agree`.
+  Owner resolved 4 of 5 conflicts (2026-09-08); es.wikipedia retested and
+  **fetchable** (F3 resolved) — used to verify Brujos→Osos and disprove Wikipedia
+  support for Grises→Criollos. `reconcile_conflicts.csv` = 2 rows (1945/D5;
+  Criollos founding year).
 
 ---
 
@@ -325,9 +324,12 @@ D5 — genuinely unresolved).** Game-pool + player-id-join deferred.
 - T4.5 — DONE. `verify_reconcile()` (40,114 checks green); 17 unit tests
   (108 total pass); `docs/specs/reconcile_spec.md` [OWNER_RESOLUTIONS].
 
-**Phase exit:** champions + scoring reconciled; 4 conflicts owner-resolved, 1945
-left flagged. 3 disputed franchise-lineage events presented to owner for a
-decision. Paused (P6).
+**Phase exit:** champions + scoring reconciled; 4 conflicts owner-resolved.
+Franchise lineage checked against es/en.wikipedia (F3 resolved — es.wiki IS
+fetchable): Brujos→Osos = `verified`; Grises→Criollos = unverified (no wiki
+support); Santos de San Juan = distinct, unresolved.
+**`reconcile_conflicts.csv` = 2 rows** (1945 champion / D5; Criollos founding
+year 1969 vs 1976). Paused (P6).
 
 NOT this phase (reconcile_spec Q4/Q6/Q7): game-pool rebuild; applying
 `player_id_map` to the observation tables (waits on tranche B); career-leader /
@@ -511,6 +513,17 @@ Decisions made session 002 (PHASE_4):
 - **D-030 — `champions_reconciled` / `scoring_champions_reconciled` are derived
   joins.** The seed CSVs and `champions_from_bsnpr.csv` stay untouched — they
   carry context the join drops. Regenerable via `make reconcile`.
+- **D-031 — es.wikipedia is fetchable from this environment (F3 resolved,
+  2026-09-08).** Retested directly via `WebFetch`: main BSN article, champions
+  annex, per-franchise articles all load. Both Wikipedias are now reconcile
+  sources.
+- **D-032 — franchise-lineage owner decisions (2026-09-08).** Brujos de Guayama
+  → Osos de Manatí = `verified` relocation (es.wiki confirms; `osos_manati`
+  founded corrected 2014→2023; Atenienses de Manatí is separate). Grises de
+  Humacao → Criollos de Caguas = kept as D2's `single-source` claim, unverified
+  (no Wikipedia corroboration). Santos de San Juan = distinct franchise_id,
+  `relationship_unclear`, not merged. New `franchise_founded` conflict logged
+  (Criollos 1969 en.wiki vs 1976 seed).
 
 ---
 

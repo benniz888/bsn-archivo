@@ -61,7 +61,7 @@ FRANCHISES: dict[str, tuple[str, str, str, str]] = {
     "indios_mayaguez": ("Indios de Mayaguez", "Mayaguez", "1956", "active"),
     "leones_ponce": ("Leones de Ponce", "Ponce", "1946", "active"),
     "mets_guaynabo": ("Mets de Guaynabo", "Guaynabo", "1935", "active"),
-    "osos_manati": ("Osos de Manati", "Manati", "2014", "active"),
+    "osos_manati": ("Osos de Manati", "Manati", "2023", "active"),
     "piratas_quebradillas": ("Piratas de Quebradillas", "Quebradillas", "1926", "active"),
     "vaqueros_bayamon": ("Vaqueros de Bayamon", "Bayamon", "1930", "active"),
     "atenienses_manati": ("Atenienses de Manati", "Manati", "2014", "defunct 2017"),
@@ -79,7 +79,7 @@ FRANCHISES: dict[str, tuple[str, str, str, str]] = {
     "titanes_morovis": ("Titanes de Morovis", "Morovis", "1977", "defunct 2006"),
     "toritos_cayey": ("Toritos de Cayey", "Cayey", "2002", "defunct 2004"),
     "capitalinos_san_juan": ("Capitalinos de San Juan", "San Juan", "1930", "defunct 1998"),
-    "brujos_guayama": ("Brujos de Guayama", "Guayama", "1971", "relocated 2022"),
+    "brujos_guayama": ("Brujos de Guayama", "Guayama", "1971", "relocated 2023 -> osos_manati"),
     # --- names that appear only in champion / scoring-champion rows ---
     "santos_san_juan": ("Santos de San Juan", "San Juan", "1971", "defunct ~1980"),
     "club_nautico_san_juan": ("Club Nautico de San Juan", "San Juan", "1930", "defunct ~1940"),
@@ -90,14 +90,18 @@ FRANCHISES: dict[str, tuple[str, str, str, str]] = {
 
 # D2 lineage — (event_type, season, from_id, to_id, confidence, note)
 FRANCHISE_EVENTS: list[tuple] = [
-    ("relocated_renamed", "2022", "brujos_guayama", "osos_manati", "verified",
-     "D2: Brujos de Guayama -> Osos de Manati (2022). Note: an earlier Manati "
-     "franchise 'Atenienses de Manati' (2014-2017) and the seed's 'Osos de "
-     "Manati founded 2014' row make the Osos identity itself ambiguous — flagged."),
-    ("renamed", "2023", "grises_humacao", "criollos_caguas", "disputed",
-     "D2: Grises de Humacao -> Criollos de Caguas (2023). Criollos existed "
-     "1976-2006 too; whether this is a revival of that franchise or a rename "
-     "of Grises is unresolved — flagged."),
+    ("relocated_renamed", "2023", "brujos_guayama", "osos_manati", "verified",
+     "D2 + es.wikipedia (Brujos de Guayama): after a poor 2022 season the "
+     "franchise was sold (compraventa) on 17 Oct 2022 and relocated to Manati, "
+     "playing as Osos de Manati from the 2023 season. One continuous franchise "
+     "(Guayama, 1971 -> Manati, 2023). The seed's 'Osos founded 2014' conflated "
+     "it with the UNRELATED Atenienses de Manati (2014-2017, defunct)."),
+    ("renamed", "2023", "grises_humacao", "criollos_caguas", "single-source",
+     "D2 asserts Grises de Humacao -> Criollos de Caguas (2023). NOT corroborated "
+     "by Wikipedia: en.wiki 'Criollos de Caguas (basketball)' says only 'refounded "
+     "in 2023' with no Grises mention; es.wiki's Grises article is stale (to 2018) "
+     "and describes a different, older franchise chain. Kept as D2's claim, "
+     "unverified — owner review."),
     ("merged", "1998", "capitalinos_san_juan", "cangrejeros_santurce", "single-source",
      "D2: Tiburones de Aguadilla + Capitalinos de San Juan -> Cangrejeros (1998)."),
     ("merged", "1998", "tiburones_aguadilla", "cangrejeros_santurce", "single-source",
@@ -109,9 +113,11 @@ FRANCHISE_EVENTS: list[tuple] = [
     ("hiatus_end", "2009", "piratas_quebradillas", "", "single-source",
      "D2: Piratas de Quebradillas returned 2009."),
     ("relationship_unclear", "", "santos_san_juan", "capitalinos_san_juan", "disputed",
-     "D5-adjacent: 'Santos de San Juan' (scoring champ club 1972/75/76) and "
-     "'Capitalinos de San Juan' may be the same club renamed, or two clubs. "
-     "Also bears on the disputed 1945 champion. Not resolved."),
+     "'Santos de San Juan' appears only in the es.wiki 1945 champions annex and "
+     "the seed's scoring-champion rows (1972/75/76). Neither es.wiki nor en.wiki "
+     "has any article or sentence explaining its relationship to Capitalinos de "
+     "San Juan. Kept a distinct franchise_id, unresolved. Bears on the 1945 "
+     "champion conflict."),
 ]
 
 # normalized city -> (franchise_id, season_exceptions {season: note})
@@ -480,7 +486,14 @@ def main() -> int:
             return 1
 
     write_franchise_layer()
-    conflicts: list[dict] = []
+    conflicts: list[dict] = [
+        # franchise-attribute conflicts surfaced while checking lineage (2026-09-08)
+        {"topic": "franchise_founded", "season": "", "source_a": "seed:bsn_franchises.csv",
+         "value_a": "Criollos de Caguas founded 1976", "source_b": "en.wikipedia",
+         "value_b": "Criollos de Caguas founded 1969", "agree_on": "",
+         "note": "en.wiki 'Criollos de Caguas (basketball)' opens 'began to play "
+                 "during the 1969 season'; the seed says 1976. Not resolved."},
+    ]
     reconcile_champions(conflicts)
     reconcile_scoring(conflicts)
 
