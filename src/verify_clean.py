@@ -199,6 +199,66 @@ def verify_pre2007(c: Checker) -> None:
                 c.check(bool(r["player_raw"]), f"leaders_2000_2002: {k} r{r['rank']} has player_raw")
 
 
+def verify_players(c: Checker) -> None:
+    """PHASE_3D identity spine. Skipped cleanly if not built."""
+    if not (CLEAN_DIR / "players_canonical.csv").exists():
+        return
+    canon = _read("players_canonical.csv")
+    c.check(bool(canon), "players_canonical: non-empty")
+
+    ids = [r["bsnpr_id"] for r in canon]
+    c.check(len(ids) == len(set(ids)), "players_canonical: bsnpr_id unique")
+    c.check(all(i.isdigit() for i in ids), "players_canonical: bsnpr_id all integer")
+    for r in canon:
+        tag = f"id {r['bsnpr_id']}"
+        c.check(bool(r["canonical_name"]), f"players_canonical: {tag} has canonical_name")
+        c.check(r["normalized_name"] == r["normalized_name"].lower(),
+                f"players_canonical: {tag} normalized_name is lowercase")
+        # normalized_name must be accent-free (D1)
+        c.check(not any(ord(ch) > 127 for ch in r["normalized_name"]),
+                f"players_canonical: {tag} normalized_name accent-stripped", r["normalized_name"])
+        for col in ("confidence", "source_id", "source_url", "retrieved_at"):
+            c.check(bool(r[col]), f"players_canonical: {tag} has {col}")
+        if r["birth_year"]:
+            c.check(re.fullmatch(r"\d{4}", r["birth_year"]) and 1920 <= int(r["birth_year"]) <= 2010,
+                    f"players_canonical: {tag} birth_year plausible", r["birth_year"])
+        if r["first_season"] and r["last_season"]:
+            c.check(int(r["first_season"]) <= int(r["last_season"]),
+                    f"players_canonical: {tag} first_season <= last_season")
+
+    aliases = _read("player_aliases.csv")
+    canon_ids = set(ids)
+    c.check(all(a["bsnpr_id"] in canon_ids for a in aliases),
+            "player_aliases: every alias points at a canonical id")
+    c.check(all(a["alias_type"] and a["normalized_alias"] for a in aliases),
+            "player_aliases: every row has alias_type + normalized_alias")
+    c.check(not any(ord(ch) > 127 for a in aliases for ch in a["normalized_alias"]),
+            "player_aliases: normalized_alias accent-stripped (D1)")
+
+    idmap = _read("player_id_map.csv")
+    c.check(all(m["bsnpr_id"] in canon_ids for m in idmap),
+            "player_id_map: every mapping points at a canonical id")
+    # D1: nothing in the id map may be a bare name match — method must name its corroboration
+    c.check(all("season" in m["match_method"] or "birth" in m["match_method"] for m in idmap),
+            "player_id_map: every match is corroborated beyond the name (D1)")
+    c.check(all(m["confidence"] in CONFIDENCE_OK for m in idmap),
+            "player_id_map: confidence values valid")
+
+    review = _read_interim("player_review_queue.csv")
+    c.check(all(r["reason"] for r in review), "review_queue: every row states a reason")
+    # a (source, player_raw, season) is either mapped or in review — never both
+    mapped_keys = {(m["obs_source"], m["player_raw"], m["club_raw"], m["season"]) for m in idmap}
+    review_keys = {(r["obs_source"], r["player_raw"], r["club_raw"], r["season"]) for r in review}
+    c.check(not (mapped_keys & review_keys),
+            "player_id_map / review_queue: no observation is both mapped and queued",
+            f"{len(mapped_keys & review_keys)} overlap")
+
+
+def _read_interim(name: str) -> list[dict]:
+    with (REPO_ROOT / "data" / "interim" / name).open(encoding="utf-8") as fh:
+        return list(csv.DictReader(fh))
+
+
 def main() -> int:
     c = Checker()
     verify_champions(c)
@@ -206,6 +266,7 @@ def main() -> int:
     verify_stats_tracked(c)
     verify_coverage_gaps(c)
     verify_pre2007(c)
+    verify_players(c)
     rc = c.report()
     print("verify:", "PASS" if rc == 0 else "FAIL")
     return rc

@@ -27,7 +27,13 @@ fetch-pre2007:
 parse-pre2007:
 	.venv/bin/python -m src.parse_pre2007
 
+fetch-players:
+	.venv/bin/python -m src.fetch_players
+
+parse-players:
+	.venv/bin/python -m src.parse_players
+
 test:
 	.venv/bin/pytest -q
 
-.PHONY: setup enumerate samples fetch parse verify enumerate-root fetch-pre2007 parse-pre2007 test
+.PHONY: setup enumerate samples fetch parse verify enumerate-root fetch-pre2007 parse-pre2007 fetch-players parse-players test

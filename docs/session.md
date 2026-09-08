@@ -1,7 +1,7 @@
 # SESSION STATE — TIER 3
 <!-- Authoritative for current state and task priority. Update at every phase exit. -->
 
-**SESSION:** 002 — PHASE_3_PARSE + 3B_PROBE + 3C_INGEST_PRE2007 (continues 001)
+**SESSION:** 002 — PHASE_3 / 3B / 3C / 3D (continues 001)
 **DATE:** 2026-09-08
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
@@ -13,11 +13,15 @@ Session 002:
 - PHASE_3_PARSE (committed 4ca04f2) — 193 snapshots → provenance-complete `data/clean/`.
 - PHASE_3B_PROBE_ARCHIVE (committed 21f1a5f) — probed 4 more scripts; found a
   pre-2007 root-level URL scheme the PHASE_1 enumeration missed.
-- PHASE_3C_INGEST_PRE2007 (uncommitted) — enumerated `bsnpr.com/*`, ingested the
-  ≤500 pre-2007 tranches. **1948–2004 scoring champions + awards, 2000–2003
-  player season stats/leaders now in `data/clean/`.** Box-score / play-by-play /
-  per-player-page scripts found and reported, gated for owner approval
-  (`docs/specs/pre2007_ingest_spec.md`).
+- PHASE_3C_INGEST_PRE2007 (committed a3b792a) — enumerated `bsnpr.com/*`,
+  ingested the ≤500 pre-2007 tranches. 1948–2004 scoring champions + awards,
+  2000–2003 player season stats/leaders now in `data/clean/`. Box-score / PBP
+  scripts found + gated.
+- PHASE_3D_IDENTITY_SPINE (uncommitted) — built the D1 canonical player table
+  (**3,303 players**, league ids, accent-stripped names, ~24k aliases) from
+  `enciclopedia.asp`. Observation→id matching with a season-corroboration bar;
+  uncorroborated → review queue, never the id map. `jugador.asp` profile
+  enrichment (~1,079 pages) fetching in the background.
 
 ---
 
@@ -244,6 +248,37 @@ Fetchable without a new gate (≤500, not done this turn): `playbyplay.asp` 460,
 
 **Phase exit:** status delivered, paused (P6). Nothing committed (P4).
 
+### PHASE_3D_IDENTITY_SPINE — CORE COMPLETE; tranche B enrichment continues (2026-09-08)
+
+Implements D1. Full detail: `docs/specs/identity_spine_spec.md`.
+
+- T3D.1 — DONE. `src/fetch_players.py` (`make fetch-players`). Tranche A =
+  `enciclopedia.asp` (77/78 captures). Tranche B = `/jugadores/jugador.asp?id=N`,
+  one latest capture per id (**1,079 distinct ids**) — running in background,
+  Wayback-throttled (~2 h); idempotent, resumable, `parse_players` runs on
+  whatever subset is present.
+- T3D.2 — DONE. `src/parse_players.py` (`make parse-players`). Outputs:
+  - `players_canonical.csv` — **3,303 players**, keyed by the league's own
+    `bsnpr_id`; `canonical_name`, accent-stripped `normalized_name`,
+    `birth_date` (`1/1/1900` sentinel → null), `birth_year` (1,987 have one),
+    + position/nationality/career-span for the tranche-B subset.
+  - `player_aliases.csv` — ~24k rows, 9 alias types (canonical, normalized,
+    paternal_surname, given_first_only, initial "Apellido, N.", nickname, …).
+  - `player_career_seasons.csv` — from `jugador.asp` season tables.
+  - `player_id_map.csv` — observation `player_raw` → `bsnpr_id`, **only
+    season-corroborated links** (`match_method=name+season_in_career`).
+  - `data/interim/player_review_queue.csv` — everything uncorroborated /
+    ambiguous / unmatched, with candidate ids + reason. **No fuzzy match ever
+    enters the id map (D1).**
+- T3D.3 — DONE. `verify_players()` (accent-free normalized forms, unique
+  integer ids, every id-map match names its corroboration, no obs both mapped
+  and queued); 12 new unit tests. `make verify` green.
+- T3D.4 — partial. id_map / review-queue counts improve on each `parse_players`
+  re-run as tranche B lands career spans. **Re-run `make parse-players` +
+  `make verify` when the tranche-B fetch completes.**
+
+**Phase exit:** core spine delivered; enrichment fetch backgrounded. Paused (P6).
+
 ### PHASE_4_RECONCILE — queued, do not start
 Cross-check parsed leaders/champions against the existing seed CSVs. Resolve
 D5 (1945), D6 (1953 now has a source — 2024 runner-up still open; Wayback
@@ -389,6 +424,26 @@ Decisions made session 002 (PHASE_3C):
   `a2gamestatpbp.asp`) archived 2001–2021. Pre-2007 game data is now
   archive-recoverable, not newspaper-only. Own phase, gated.
 
+Decisions made session 002 (PHASE_3D):
+- **D-021 — `bsnpr_id` IS the canonical id.** `enciclopedia.asp` /
+  `jugador.asp?id=N` carry the league's own integer id. No fuzzy dedup *within*
+  the canonical table — D1's dedup risk is about linking observations, not
+  building the player list. Two same-name rows with different ids stay separate.
+- **D-022 — the id map only holds season-corroborated links.** An observation
+  name resolves to an id only if exactly one alias candidate has that season in
+  its career span. Unique-name-but-uncorroborated, multi-candidate, and
+  no-match all go to `player_review_queue.csv` — never the map ("never on name
+  alone", D1). Rows migrate map-ward as tranche B fills career spans.
+- **D-023 — `given_first_only` aliases are intentionally ambiguous.** "Arroyo,
+  Carlos A." also emits alias "Arroyo, Carlos", shared with "Arroyo, Carlos
+  Andrés". The season test disambiguates (id 273 played 2001, id 13124 didn't).
+- **D-024 — `1/1/1900` birth date = null.** Source's unknown-DOB sentinel (PC2).
+- **D-025 — old `/jugador.asp` (2004–06, opaque `r2=` tokens) skipped.** No
+  clean id; the `?id=N` scheme + enciclopedia cover the player set.
+- **D-026 — tranche B fetch is a background, cross-session job.** ~1,079 profiles
+  at throttled Wayback rates ≈ 2 h. Fetch + parse are idempotent; the spine is
+  usable now and sharpens as profiles land.
+
 ---
 
 [VERIFICATION_LOG]
@@ -400,6 +455,7 @@ Decisions made session 002 (PHASE_3C):
 | PHASE_3 | PASS | PASS | PASS | PASS | PASS | V1: T3.1–T3.6 done — both clean streams + stats_tracked + gaps file produced. V2: PC1 (1953/disputes surfaced, no guesses); PC2 (`to_int`/`to_float` → None on blank, verify asserts pct rows carry no `total`); PC3 (`make verify` enforces provenance on every row); PC4 (`leader_coverage_gaps.csv`, `season_complete`, `parse_flag`); PC5 (parse only reads `data/raw/`, idempotent); D3/D5/D6 asserted in verify. V3: no secrets; parse/verify read-only on raw. V4: `make parse` + `make verify` green (6375 checks); 61 pytest pass; 1986 parse cross-validates against seed scoring CSV (29.8 ppg exact). V5: snake_case, English comments, "why" only. |
 | PHASE_3B | PASS | PASS | PASS | PASS | PASS | V1: T3B.1–T3B.4 done — 4 targets probed (5/5/4/5 captures) + 3 root-level `lideres*` follow-ups; verdicts + spec delivered; sample-only respected (no bulk fetch, no parser, no clean output). V2: PC5 raw bytes cached unmodified in `data/raw/probe/`; PC6 sequential via `polite_get`, ≥1.5s, backoff recovered from a Wayback 503 burst; PC1 findings reported straight incl. the "B2 partially reopened" reversal. V3: no secrets. V4: 61 pytest still pass (probe adds no code path to the pipeline); every probed capture inspected. V5: snake_case, English. |
 | PHASE_3C | PASS | PASS | PASS | PASS | PASS | V1: T3C.1–T3C.5 done — enumerate + coverage report + fetch (315/315, 0 fail) + 5 clean outputs + verify + tests. Owner's 500-gate honoured: `jugador.asp` (5986) and game scripts reported, not fetched. V2: PC1 (1952 dispute = 2 rows, clipped `<pre>` values flagged not rewritten, root campeonatos not re-parsed to avoid dup rows); PC2 (`fga`/`fgm` split, `to_int`→None on blank); PC3 (`verify_pre2007` asserts provenance on every row); PC4 (2 DB-error captures counted + reported, gated tranches in coverage_root.md); PC5 (parse reads `data/raw/pre2007/` only, idempotent); PC6 (`polite_get`, one GET/digest, rode out a long Wayback 503 throttle); D4 (`metric_era` flip asserted). V3: no secrets; raw CDX + raw HTML gitignored. V4: `make parse-pre2007` + `make verify` green (13,410 checks); 79 pytest pass; `equiposstat` made≤att verified, 1986/1952 cross-checks hold. V5: snake_case, English, "why" comments. |
+| PHASE_3D | PASS | PASS | PASS | PASS | PASS | V1: T3D.1–T3D.3 done — canonical spine (3,303 players) + aliases + career-seasons + id_map + review queue; tranche B enrichment fetch backgrounded (partial), T3D.4 = re-run parse on completion. V2: PC1 (no fuzzy match in id_map — D1; ambiguous → review queue); PC2 (`1/1/1900` → null, blank stats stay blank); PC3 (`verify_players` asserts provenance on every canonical row); PC4 (review queue is a first-class output with candidate ids + reason); PC6 (`polite_get`, one GET per id, background throttle); D1 (accent-stripped `normalized_name`, alias table, match needs season corroboration not name alone — asserted in verify). V3: no secrets. V4: `make parse-players` + `make verify` green (38,706 checks); 91 pytest pass (+12); id_map spot-checks correct (Carmona→37, Arroyo Carlos→273 via season). V5: snake_case, English. |
 
 ---
 
@@ -459,28 +515,41 @@ Decisions made session 002 (PHASE_3C):
 | `data/clean/player_season_leaders_2000_2002.csv` | **new, S002 (PHASE_3C)** | 403 rows, 9 categories, serie-split. `lideres2000` surname-only. |
 | `data/clean/player_season_stats_2001_2004.csv` | **new, S002 (PHASE_3C)** | 503 player-seasons, 2001–2003, 14 teams (only pre-2007 player-level source). |
 | `data/clean/team_season_totals_2001_2004.csv` | **new, S002 (PHASE_3C)** | 38 team-season totals. |
+| `src/fetch_players.py` | **new, S002 (PHASE_3D)** | enciclopedia + jugador.asp fetcher. `make fetch-players`. |
+| `src/parse_players.py` | **new, S002 (PHASE_3D)** | D1 identity spine builder. `make parse-players`. Re-run as tranche B lands. |
+| `tests/test_parse_players.py` | **new, S002 (PHASE_3D)** | 12 unit tests over the name-normalisation helpers. |
+| `data/raw/players/**` | **new, S002 (PHASE_3D)** | enciclopedia (77) + jugador.asp (~1079, backgrounded) captures. gitignored. |
+| `data/interim/fetch_manifest_players.csv` | **new, S002 (PHASE_3D)** | Every player capture → local file. Tracked. |
+| `data/interim/player_review_queue.csv` | **new, S002 (PHASE_3D)** | Uncorroborated / ambiguous obs names + candidate ids + reason. Tracked. |
+| `data/clean/players_canonical.csv` | **new, S002 (PHASE_3D)** | 3,303 players keyed by bsnpr_id. The D1 spine. |
+| `data/clean/player_aliases.csv` | **new, S002 (PHASE_3D)** | ~24k (id, alias, type). accent-free normalized_alias. |
+| `data/clean/player_career_seasons.csv` | **new, S002 (PHASE_3D)** | (id, season, team_raw) from jugador.asp. |
+| `data/clean/player_id_map.csv` | **new, S002 (PHASE_3D)** | obs player_raw → bsnpr_id, season-corroborated only. |
+| `docs/specs/identity_spine_spec.md` | **new, S002 (PHASE_3D)** | D1 implementation: sources, alias types, the matching rule, open Qs. |
 
 ---
 
 [NEXT_ACTIONS]
 
-1. **PHASE_3D_IDENTITY_SPINE** (gated, needs owner OK — `jugador.asp` = 5986
-   > 500). Fetch `enciclopedia.asp` (79, PHASE_3B target, under `/estadisticas/`)
-   + `jugador.asp?id=N` (~5986) → canonical player table: id + canonical_name +
-   split surnames + birth year + career-by-season. The D1 backbone PHASE_4 needs.
-   Also small & ungated: `jug05.asp`/`jugador05.asp` need approval (600 each);
-   `print_jugador.asp` (203) does not.
+1. **PHASE_3D wrap-up** — when the tranche-B `jugador.asp` background fetch
+   finishes (pid was 61863; check `data/raw/players/jugador/` count vs 1079,
+   `data/interim/fetch_manifest_players.csv`), re-run `make parse-players` +
+   `make verify` and re-commit the refreshed `players_canonical` / `id_map` /
+   review queue. Then the ~219 "no canonical name match" pre-2007 players
+   (identity_spine_spec Q3) and the club-code map (Q2) are PHASE_4 work.
 2. **PHASE_3E_GAME_DATA** (gated). Box scores + play-by-play, archive-recoverable
    (D-020): `pogamestat.asp` 4059, `boxscore.asp` 1075, `a2gamestatpbp.asp` 3093
    (2001–04 PBP), `gameinfo.asp` 1457. Probe structure first, then per-script
    gated tranches. Directly serves B1 / the box-score roadmap item.
 3. **PHASE_4_RECONCILE** — now has much more to reconcile against: the seed CSVs,
    `champions_from_bsnpr.csv`, `player_season_leaders*.csv`,
-   `historic_scoring_champions.csv` (1948–2004 — vs seed's 1966–1991),
-   `historic_awards.csv`, `player_season_stats_2001_2004.csv`. Champion cities →
+   `historic_scoring_champions.csv` (1948–2004 — vs seed's 1966–1991; the 1971 &
+   1974 diffs are D4-boundary years), `historic_awards.csv`,
+   `player_season_stats_2001_2004.csv`, plus the identity spine
+   (`players_canonical` / `player_id_map` / review queue). Champion cities →
    franchises as events (D2); D5 (1945); D6 (1953 sourced, 2024 open); club-code
-   → franchise map (pre2007 spec Q5); wayback_ingest_spec Q9–Q12. Rebuild game
-   pool. Best after the identity spine (3D).
+   → franchise map (identity_spine_spec Q2, pre2007 spec Q5); work the review
+   queue; wayback_ingest_spec Q9–Q12. Rebuild game pool.
 4. Small ungated follow-ups: `playbyplay.asp` (460), `equipo.asp` (489),
    `informe.asp` (175, game reports 2004–06), `posiciones2000.asp` +
    `estadisticas.asp` cluster → `standings_pre2007.csv` (pre2007 spec Q4).
@@ -488,8 +557,8 @@ Decisions made session 002 (PHASE_3C):
    anything the archive genuinely lacks. Much narrower than before.
 6. Human-side: B1 DevTools recon — value reduced (see B1); still useful for the
    current/post-2021 API.
-7. `git`: PHASE_3 = 4ca04f2, PHASE_3B = 21f1a5f. PHASE_3C (uncommitted):
-   `src/{enumerate_root,fetch_pre2007,parse_pre2007}.py`,
-   `tests/test_parse_pre2007.py`, `docs/{coverage_root.md,specs/pre2007_ingest_spec.md}`,
-   6 new `data/clean/*.csv`, 2 new `data/interim/*.csv`, Makefile, session/spec
-   edits — pending owner P4.
+7. `git`: PHASE_3 = 4ca04f2, PHASE_3B = 21f1a5f, PHASE_3C = a3b792a.
+   PHASE_3D (uncommitted): `src/{fetch_players,parse_players}.py`,
+   `tests/test_parse_players.py`, `docs/specs/identity_spine_spec.md`,
+   5 new `data/clean/*.csv`, 2 new `data/interim/*.csv`, `src/verify_clean.py`,
+   Makefile, session edits — pending owner P4. Re-parse after tranche B.
