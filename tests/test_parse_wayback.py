@@ -4,6 +4,8 @@ The end-to-end parse itself is exercised by `make parse` + `make verify` against
 the real raw captures; these tests pin the tricky string/encoding logic.
 """
 
+import csv
+
 import pandas as pd
 import pytest
 
@@ -11,6 +13,7 @@ from src.parse_wayback import (
     classify_leader_table,
     clean_equipo,
     decode_html,
+    open_clean_text,
     parse_season_cell,
     split_annotation,
     split_player_cell,
@@ -18,6 +21,7 @@ from src.parse_wayback import (
     to_int,
     wayback_ts_to_date,
     _season_complete,
+    _write_csv,
 )
 
 KNOWN_CITIES = {"SAN JUAN", "CANOVANAS", "PONCE", "VEGA BAJA"}
@@ -132,6 +136,41 @@ class TestSplitPlayerCell:
 
     def test_no_parens(self):
         assert split_player_cell("Frazer, Rolando") == ("Frazer, Rolando", "")
+
+
+class TestOpenCleanText:
+    """gzip-transparent clean-table IO — docs/specs/clean_data_storage_spec.md."""
+
+    ROWS = [{"a": "1", "b": "x"}, {"a": "2", "b": "ñ"}, {"a": "3", "b": ""}]
+    COLS = ["a", "b"]
+
+    def test_gz_roundtrip(self, tmp_path):
+        p = tmp_path / "t.csv.gz"
+        _write_csv(p, self.ROWS, self.COLS)
+        with open_clean_text(p, "r") as fh:
+            got = list(csv.DictReader(fh))
+        assert got == self.ROWS
+
+    def test_gz_is_actually_compressed(self, tmp_path):
+        p = tmp_path / "t.csv.gz"
+        _write_csv(p, self.ROWS, self.COLS)
+        assert p.read_bytes()[:2] == b"\x1f\x8b"  # gzip magic
+
+    def test_gz_output_is_deterministic(self, tmp_path):
+        # mtime=0 pinned -> rewriting the same path with the same rows yields
+        # byte-identical output, so a no-op reparse produces an empty git diff.
+        p = tmp_path / "t.csv.gz"
+        _write_csv(p, self.ROWS, self.COLS)
+        first = p.read_bytes()
+        _write_csv(p, self.ROWS, self.COLS)
+        assert p.read_bytes() == first
+
+    def test_plain_csv_still_works(self, tmp_path):
+        p = tmp_path / "t.csv"
+        _write_csv(p, self.ROWS, self.COLS)
+        assert p.read_bytes()[:2] != b"\x1f\x8b"
+        with open_clean_text(p, "r") as fh:
+            assert list(csv.DictReader(fh)) == self.ROWS
 
 
 class TestSeasonComplete:

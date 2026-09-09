@@ -12,15 +12,27 @@ import sys
 from pathlib import Path
 
 from src.wayback_cdx import REPO_ROOT
-from src.parse_wayback import CLEAN_CATEGORIES, KNOWN_LEADER_SEASONS
+from src.parse_wayback import CLEAN_CATEGORIES, KNOWN_LEADER_SEASONS, open_clean_text
 
 CLEAN_DIR = REPO_ROOT / "data" / "clean"
 CONFIDENCE_OK = {"verified", "single-source", "disputed"}
 PROVENANCE_COLS = ("confidence", "source_id", "source_url", "retrieved_at")
 
 
+def _clean_path(name: str) -> Path:
+    """Resolve a clean-table name to its file, preferring a gzipped variant
+    (`game_plays.csv` -> `game_plays.csv.gz`). See clean_data_storage_spec.md."""
+    p = CLEAN_DIR / name
+    gz = p.with_suffix(p.suffix + ".gz")
+    return gz if gz.exists() and not p.exists() else p
+
+
+def _exists(name: str) -> bool:
+    return _clean_path(name).exists()
+
+
 def _read(name: str) -> list[dict]:
-    with (CLEAN_DIR / name).open(encoding="utf-8") as fh:
+    with open_clean_text(_clean_path(name), "r") as fh:
         return list(csv.DictReader(fh))
 
 
@@ -307,7 +319,7 @@ def verify_games(c: Checker) -> None:
             "game_box: >=95% of games with player rows have a results row",
             f"{len(missing)} games without a results row")
 
-    if (CLEAN_DIR / "game_plays.csv").exists():
+    if _exists("game_plays.csv"):
         plays = _read("game_plays.csv")
         c.check(bool(plays), "game_plays: non-empty")
         for r in plays[:5000]:

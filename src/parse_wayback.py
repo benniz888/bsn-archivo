@@ -28,6 +28,8 @@ Run: `python -m src.parse_wayback`   (`make parse`)
 from __future__ import annotations
 
 import csv
+import gzip
+import io
 import json
 import re
 import sys
@@ -632,14 +634,38 @@ def _write_stats_tracked(index_rows: list[dict]) -> Path:
 
 
 # --------------------------------------------------------------------------- #
+def open_clean_text(path: Path, mode: str) -> io.TextIOWrapper:
+    """Open a data/clean/ table for reading or writing, transparently gzipping
+    when the path ends in `.gz`. Gzip output pins mtime=0 so byte-identical
+    input yields byte-identical bytes on disk — a rerun of the parser produces
+    a clean (empty) git diff, not a spurious one from the gzip header clock.
+    See docs/specs/clean_data_storage_spec.md.
+    """
+    if path.suffix == ".gz":
+        # GzipFile owns the file handle it opens from `filename`, so closing the
+        # TextIOWrapper closes everything. `mtime=0` keeps the header clock out;
+        # the header still embeds the (constant) basename, which is fine — a
+        # rerun writing the same path produces byte-identical output.
+        raw = gzip.GzipFile(
+            filename=str(path), mode="wb" if "w" in mode else "rb",
+            compresslevel=9, mtime=0,
+        )
+        return io.TextIOWrapper(raw, newline="", encoding="utf-8")
+    return path.open(mode, newline="", encoding="utf-8")
+
+
 def _write_csv(path: Path, rows: list[dict], fieldnames: list[str]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", newline="", encoding="utf-8") as fh:
+    with open_clean_text(path, "w") as fh:
         w = csv.DictWriter(fh, fieldnames=fieldnames, extrasaction="ignore")
         w.writeheader()
         for r in rows:
             w.writerow({k: ("" if r.get(k) is None else r.get(k)) for k in fieldnames})
-    print(f"  -> {path.relative_to(REPO_ROOT)} ({len(rows)} rows)")
+    try:
+        shown = path.relative_to(REPO_ROOT)
+    except ValueError:  # a path outside the repo (e.g. a test tmp dir)
+        shown = path
+    print(f"  -> {shown} ({len(rows)} rows)")
 
 
 def main() -> int:

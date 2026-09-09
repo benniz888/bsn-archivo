@@ -1,9 +1,18 @@
 # SESSION STATE — TIER 3
 <!-- Authoritative for current state and task priority. Update at every phase exit. -->
 
-**SESSION:** 002 — PHASE_3 / 3B / 3C / 3D / 4 / 3E (continues 001)
+**SESSION:** 002 — PHASE_3 / 3B / 3C / 3D / 4 / 3E / 3E-STORAGE (continues 001)
 **DATE:** 2026-09-08
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
+
+Session 002 (cont.) — PHASE_3E_CLEAN_STORAGE (P2 storage-format call):
+`data/clean/game_plays.csv` (65 MB, 233,664 rows, grows every ingest session)
+was tripping GitHub's 50 MB warning and adding a fat blob to history on every
+`make parse-games`. Fixed: it is now committed **gzip-compressed**
+(`game_plays.csv.gz`, 2.7 MB) via a shared gzip-aware `_write_csv` /
+`open_clean_text` helper; content byte-identical (verified against the
+committed `.csv`). Decision + rejected alternatives (Git LFS, split-by-season,
+Parquet): `docs/specs/clean_data_storage_spec.md`.
 
 Session 001 (2026-09-07): PHASE_1_ENUMERATE + PHASE_2_FETCH. Env bootstrapped,
 Wayback CDX enumerated (central finding negative — see below), 193 snapshots
@@ -26,16 +35,18 @@ Session 002:
   4 of 5 conflicts; es.wikipedia retested and **fetchable** (F3 resolved) — used
   to verify Brujos→Osos and disprove wiki support for Grises→Criollos.
   `reconcile_conflicts.csv` = 2 rows (1945/D5; Criollos founding year).
-- PHASE_3E_GAME_DATA (d421922 · e94fec9 · 640964e · a041a60 · 891fc12 · 2d1928c)
-  — enumerated the 5 archived game scripts (10,548 distinct captures); gated
-  fetcher (hard 500/tranche); box-score + play-by-play parsers. Fetch is a slow
-  throttled multi-day job, run one tranche at a time (PC6), tracked in
-  PHASE_3E_FETCH_REMAINING below.
-- PHASE_3G_HISTORIC_FOLLOWUP (QUEUED, not started) — 3 root-level pre-2007
+- PHASE_3E_GAME_DATA (d421922 · e94fec9 · 640964e · a041a60 · 891fc12 · 2d1928c
+  · 7f09013) — enumerated the 5 archived game scripts (10,548 distinct captures);
+  gated fetcher (hard 500/tranche); box-score + play-by-play parsers.
+  **`a2gamestatpbp` 2001–2004 fetch COMPLETE** — `game_plays` = 233,664 plays
+  (2001–2003). `pogamestat`/`boxscore` 2007–09 + `gameinfo` still owner-HELD.
+- PHASE_3E_CLEAN_STORAGE (this session, uncommitted) — P2 call: `game_plays.csv`
+  (65 MB) → committed gzipped `game_plays.csv.gz` (2.7 MB). D-036 /
+  `clean_data_storage_spec.md`.
+- PHASE_3G_HISTORIC_FOLLOWUP (QUEUED, **gate cleared**) — 3 root-level pre-2007
   targets from an owner /btw: `lidereshistoricos.asp?t=*`, `lideres2002.asp`,
   root `mvp.asp`. Enumerate `t` values, probe one per value, confirm the
-  category from the page itself, then fetch + parse. **Gated behind the
-  `a2gamestatpbp` chain finishing — one archive stream at a time.**
+  category from the page itself, then fetch + parse.
 
 ---
 
@@ -88,19 +99,21 @@ Identity spine (D1):
   rows (346 no name match, 361 season outside career span, 106 multi-candidate,
   15 same-name ambiguity — **no fuzzy match ever enters the id map**).
 
-Game data (PHASE_3E, fetch ongoing — numbers grow as tranches land):
-- `game_results.csv` ~1,287 games; `game_box_player.csv` ~39,669 player-game
-  rows; `game_plays.csv` ~11,106 plays.
-- **Box-score `bsnpr_id` resolution by era: pre-2007 4,152/15,941 = 26%; 2007+
-  17,599/23,728 = 74%.** The gap is the identity spine's pre-2007 hole
+Game data (PHASE_3E — `a2gamestatpbp` 2001–2004 fetch complete; box scores
+2001–03 + 2008–13):
+- `game_results.csv` 1,287 games; `game_box_player.csv` 39,669 player-game
+  rows; **`game_plays.csv.gz` 233,664 plays** (gzipped — see PHASE_3E_CLEAN_STORAGE).
+- **Box-score `bsnpr_id` resolution: 21,751/39,669 = 55% overall** (pre-2007
+  26%, 2007+ 74%). The gap is the identity spine's pre-2007 hole
   (`identity_spine_spec` Q3), NOT the matcher — every match is season-corroborated.
 - Box seasons: **2001–2003 + 2008–2013**. `box_check` column flags source
   pts-mismatch rows (4/39,669 = 0.01%, PC4 — flagged not hidden).
-- **PBP event_type counts** (11,106 plays, 2001 + partial 2003): unclassified
-  2,483 · rebound 2,065 · made_2 1,606 · miss_2 1,198 · assist 1,025 · miss_3
-  790 · turnover 630 · made_3 433 · steal 398 · team_rebound 201 · jump_ball
-  140 · timeout 137. ~78% classified; `jugada_raw` verbatim; `actor_raw` is a
-  bare surname (PBP's own format).
+- **PBP event_type counts** (233,664 plays, seasons 2001–2003 from
+  `a2gamestatpbp.asp`): unclassified 70,400 · rebound 42,367 · made_2 23,482 ·
+  assist 19,794 · miss_2 19,132 · miss_3 17,301 · turnover 12,469 · made_3
+  8,925 · steal 8,290 · team_rebound 5,198 · timeout 4,029 · jump_ball 2,277.
+  ~70% classified; `jugada_raw` verbatim; `actor_raw` is a bare surname
+  (PBP's own format).
 
 **Central negative finding (S001, PC4, B2 — partly reopened, see below):** the
 1957–2004 per-season `/estadisticas/lideres.asp?anio=YYYY` pages Wikipedia
@@ -368,7 +381,16 @@ coverage before any tranche over 500. Spec: `docs/specs/game_data_spec.md`,
   → `game_results`. `box_check` column flags source pts-mismatch rows
   (~0.02%, PC4 — flagged not hidden).
 
-### PHASE_3E_FETCH_REMAINING — QUEUED (owner: "add to task queue", 2026-09-08)
+### PHASE_3E_FETCH_REMAINING — a2gamestatpbp CHAIN COMPLETE (2026-09-08, commit 7f09013)
+
+**`a2gamestatpbp.asp` 2001–2004 all fetched + parsed.** `game_plays` = 233,664
+plays, seasons 2001–2003 (2004 captures held no in-window PBP rows). Committed
+7f09013; re-emitted as `game_plays.csv.gz` by PHASE_3E_CLEAN_STORAGE. Still
+HELD by owner (do NOT fetch): `pogamestat` 2007/08/09, `boxscore` 2007, all of
+`gameinfo` — until owner reviews the PBP contents. The rest of this section is
+kept as the historical resume contract.
+
+---
 
 The parser + verify are done and green; what's left is a slow, throttled,
 sequential fetch (Wayback ~1 capture/30–60 s) that keeps getting killed by
@@ -404,10 +426,8 @@ and kill strays first.
   **2002 (~343/1462) RESUMING** (single chain `scratchpad/fetch_chain3.sh`,
   task `bzjo92jo3`); 2003 (~4/1555) queued after it.
 - `data/clean/game_results.csv` 1,287 · `game_box_player.csv` 39,669 (26%
-  resolved pre-2007, 74% 2007+, 55% overall) · `game_plays.csv` 11,106 plays
-  (2001 = 8,771; 2003 = 2,335). These are committed at 2d1928c; the 2002/2003
-  fetch will grow `game_plays` on the next parse.
-- After 2002/2003 land: `make parse-games && make verify`, commit, report.
+  resolved pre-2007, 74% 2007+, 55% overall) · `game_plays.csv.gz` 233,664
+  plays (2001–2003). Committed 7f09013 (data) + PHASE_3E_CLEAN_STORAGE (gzip).
 - STILL HELD by owner (do NOT fetch): `pogamestat` 2007/08/09, `boxscore` 2007,
   all of `gameinfo` (metadata only) — until owner reviews the PBP contents.
 
@@ -426,11 +446,43 @@ season** games (Jan-2010 crawls captured late-2009 games).
 `pogamestat.asp` 2007 (1329) + 2008 (774) + 2009 (935);
 `a2gamestatpbp.asp` 2003 (1555) — 2002 already approved + fetching.
 
-### PHASE_3G_HISTORIC_FOLLOWUP — QUEUED, DO NOT START YET (owner /btw, 2026-09-08)
+### PHASE_3E_CLEAN_STORAGE — COMPLETE (2026-09-08, owner-directed P2 call)
 
-**HARD GATE: do not fetch or enumerate against Wayback until the
-`a2gamestatpbp` chain (`PHASE_3E_FETCH_REMAINING`, task `bzjo92jo3`) has fully
-completed. One archive stream at a time — PC6.**
+Owner instruction: resolve the `game_plays.csv` 62 MB problem before it grows —
+pick Git LFS / split-by-season / compression, log the decision + rationale in a
+spec (H1/H2).
+
+- **DECISION: gzip the file in place.** `data/clean/game_plays.csv` (65 MB,
+  233,664 rows, +2.7 MB every ingest session) → **`game_plays.csv.gz` (2.7 MB,
+  24×)**. Single logical file, no split, no LFS, no new dependency. Full
+  rationale + rejected alternatives (Git LFS / split-by-season / Parquet /
+  defer-to-PHASE_5): `docs/specs/clean_data_storage_spec.md`.
+- `src/parse_wayback.py` — new `open_clean_text(path, mode)`: gzip-transparent
+  on a `.gz` suffix, `mtime=0` for deterministic output (no-op reparse = empty
+  git diff). `_write_csv` routes through it; hardened its log line against
+  out-of-repo paths.
+- `src/parse_games.py` — writes `game_plays.csv.gz`.
+- `src/verify_clean.py` — `_clean_path()` / `_exists()` resolve `<name>` →
+  `<name>.gz`; consumers still ask for `"game_plays.csv"`.
+- `tests/test_parse_wayback.py` — +4 tests (gz round-trip, magic bytes,
+  determinism, plain-CSV path). **129 pytest pass** (was 125).
+- `git rm` the tracked 65 MB `.csv`; `.gz` tracked in its place. Content
+  verified byte-identical to the committed `.csv` (`diff` = 0 lines).
+- **NOT done** (needs owner OK — P1/G4): purging the 65 MB blob already in
+  history (commits 2d1928c, 7f09013). `.git` is 10 MB; a `filter-repo` +
+  force-push isn't worth it yet. Flagged in the spec [OPEN_QUESTIONS].
+- Threshold for future tables: raw CSV > ~20 MB → `.csv.gz`. Next candidate
+  `game_box_player.csv` (10 MB, growing) — one-line change when it crosses.
+
+**Verify:** `make verify` green (326,175 checks); `make test` 129 pass;
+`make parse-games` re-emits `game_plays.csv.gz` deterministically;
+`pandas.read_csv` reads it natively. Paused (P6), nothing committed (P4).
+
+### PHASE_3G_HISTORIC_FOLLOWUP — QUEUED, unblocked (owner /btw, 2026-09-08; gate cleared)
+
+**GATE CLEARED 2026-09-08:** the `a2gamestatpbp` chain is complete (commit
+7f09013) — no other archive stream is running, so this phase is unblocked.
+Still one stream at a time (PC6): `ps aux | grep [f]etch` before any fetch.
 
 Three root-level pre-2007 targets the earlier probes noted but never ingested,
 in this order:
@@ -734,6 +786,21 @@ Decisions made session 002 (PHASE_4):
   `relationship_unclear`, not merged. New `franchise_founded` conflict logged
   (Criollos 1969 en.wiki vs 1976 seed).
 
+Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
+- **D-036 — large clean tables are committed gzipped (`<name>.csv.gz`), not
+  raw, split, or LFS'd.** `data/clean/` is NOT regenerable from a fresh clone
+  (raw gitignored, re-fetch = multi-day PC6 crawl), so every table must live in
+  the repo — but `game_plays` at 65 MB tripped GitHub's 50 MB warning and added
+  a fat blob to history every parse. gzip → 2.7 MB (24×), one file, stdlib-only,
+  `pandas.read_csv` + `csv` read it transparently. `open_clean_text` (in
+  `parse_wayback.py`) is the single choke point; `mtime=0` keeps reruns
+  byte-stable. Git LFS rejected (clone/CI prerequisite, 1 GB/mo bandwidth cap,
+  silent-pointer corruption mode); split-by-season rejected (pushes globbing
+  into every consumer for a problem gzip closes in one helper); Parquet rejected
+  (premature dependency). Threshold: raw CSV > ~20 MB. Full spec:
+  `docs/specs/clean_data_storage_spec.md`. Existing 65 MB history blob NOT
+  purged — needs owner OK (P1/G4), not worth it at `.git` = 10 MB.
+
 ---
 
 [VERIFICATION_LOG]
@@ -748,6 +815,7 @@ Decisions made session 002 (PHASE_4):
 | PHASE_3D | PASS | PASS | PASS | PASS | PASS | V1: T3D.1–T3D.3 done — canonical spine (3,303 players) + aliases + career-seasons + id_map + review queue; tranche B enrichment fetch backgrounded (partial), T3D.4 = re-run parse on completion. V2: PC1 (no fuzzy match in id_map — D1; ambiguous → review queue); PC2 (`1/1/1900` → null, blank stats stay blank); PC3 (`verify_players` asserts provenance on every canonical row); PC4 (review queue is a first-class output with candidate ids + reason); PC6 (`polite_get`, one GET per id, background throttle); D1 (accent-stripped `normalized_name`, alias table, match needs season corroboration not name alone — asserted in verify). V3: no secrets. V4: `make parse-players` + `make verify` green (38,706 checks); 91 pytest pass (+12); id_map spot-checks correct (Carmona→37, Arroyo Carlos→273 via season). V5: snake_case, English. |
 | PHASE_3E | PASS | PASS | PASS | PASS | PASS | V1: T3E.1–T3E.6 done — enumerate (10,548 captures) + `coverage_games.md` + gated fetcher (`MAX_TRANCHE=500`, `--force-year` after approval) + box-score parser + PBP parser + verify + tests. Fetch is a multi-day throttled job, one tranche at a time (PC6); done so far: `gamestatwide` 864, `pogamestat` 1021, `boxscore` 261, `a2gamestatpbp` 2001+2004; 2002 fetching, 2003 queued; owner HOLD on `pogamestat`/`boxscore` 2007–09 + all `gameinfo`. V2: PC1 (`bsnpr_id` blank unless a unique season-in-career match — D1, no guesses; `jugada_raw` kept verbatim; `box_check` flags source pts-mismatch, doesn't rewrite); PC3 (`verify_games` provenance per row); PC4 (crammed/stub captures counted + dropped from results, gated tranches in `coverage_games.md`, `box_check`); PC5 (parse reads `data/raw/games/` only, idempotent); PC6 (`polite_get`, one GET/digest, 500-gate honoured, sequential chain). V3: no secrets; raw gitignored. V4: `make parse-games` + `make verify` green (326,175 checks); 125 pytest pass (+17); **`2·FG2 + 3·FG3 + FT == PTS` on every parsed box row (4/39,669 source-error `pts_mismatch`, flagged); made ≤ att always**. V5: snake_case, English, "why" comments. |
 | PHASE_4 | PASS | PASS | PASS | PASS | PASS | V1: T4.1–T4.5 done + owner-resolution follow-up. Franchise layer + champions_reconciled + scoring_champions_reconciled + reconcile_conflicts + verify + tests. V2: PC1 (D-027: code flags, human clears; `OWNER_RESOLUTIONS` dated + auditable; seed CSVs untouched; 1945 left `disputed`); D2 (`franchise_events.csv`, murky lineage = disputed); D3 (`1942`+`1942-1943` both kept); D4 (`metric_era` flip + 1971/1974 `dual_metric_d4` recording BOTH winners); D5 (1945 stays flagged); D6 (1953 no_champion). PC3 (provenance / `sources` per row). V3: no secrets; pure module. V4: `make reconcile` + `make verify` green (40,114 checks); 108 pytest pass (+17); 87/98 seed↔bsnpr `verified`. V5: snake_case, English, D2/D5 citations in comments. |
+| PHASE_3E_CLEAN_STORAGE | PASS | PASS | PASS | PASS | PASS | V1: P2 storage call made + logged (`clean_data_storage_spec.md`, H2 structure, alternatives rejected); `game_plays.csv` → `.csv.gz` via shared helper; old blob `git rm`'d; `make parse-games` re-emits it. V2: PC1 (content byte-identical to committed `.csv`, `diff` = 0 — no data touched); PC3 (provenance cols intact, `verify` asserts them on the gz-read rows); PC5 (parser still reads `data/raw/` only, idempotent + deterministic via `mtime=0`); PC7 (no new dependency — `gzip`/`csv`/`pandas` are stdlib+existing). V3: no secrets; read-only on raw. V4: `make verify` green (326,175 checks); `make test` 129 pass (+4: gz round-trip / magic / determinism / plain-path); `pandas.read_csv` reads the gz (233,664×17); `_write_csv` log line hardened against out-of-repo paths. V5: snake_case, English, "why" comments; `.csv.gz` double-extension convention documented. |
 
 ---
 
@@ -832,25 +900,27 @@ Decisions made session 002 (PHASE_4):
 | `tests/test_parse_games.py` | **new, S002 (PHASE_3E)** | 17 unit tests over the box-score + PBP helpers (`_season_from_rid`, `_num_pair`, `_box_check`, `_pbp_fields`, column-by-label). Part of the 125-test suite. |
 | `data/interim/cdx_games_inventory.csv` | **new, S002 (PHASE_3E)** | 10,548 distinct game-script captures. Tracked. |
 | `data/interim/fetch_manifest_games.csv` | **new, S002 (PHASE_3E)** | Fetched game captures → local file, `gated` column. Tracked. Merged across runs. |
-| `data/raw/games/**` | **new, S002 (PHASE_3E)** | Fetched game-script captures: `gamestatwide` 864, `pogamestat` 1021, `boxscore` 261, `a2gamestatpbp` 2001 (78) + 2004 (74) + **2002 (mid-fetch, resume) + 2003 (queued)**. gitignored. |
+| `data/raw/games/**` | **new, S002 (PHASE_3E)** | Fetched game-script captures: `gamestatwide` 864, `pogamestat` 1021, `boxscore` 261, `a2gamestatpbp` 2001–2004 complete. gitignored. |
 | `data/clean/game_results.csv` | **new, S002 (PHASE_3E)** | 1,287 rows — one per game, teams + quarter/final scores. Seasons 2001–03, 2008–13. Stub captures (blank score + no box) dropped; team-Totals-row score fallback. |
 | `data/clean/game_box_player.csv` | **new, S002 (PHASE_3E)** | 39,669 player-game rows. `bsnpr_id` joined where D1-resolvable: **pre-2007 4,152/15,941 = 26%; 2007+ 17,599/23,728 = 74%; total 21,751/39,669 = 55%**. `fg2m/fg2a` and `fg3m/fg3a` kept separate. `box_check`: 39,663 `ok` / 4 `pts_mismatch` (source data-entry errors, flagged not rewritten). |
-| `data/clean/game_plays.csv` | **new, S002 (PHASE_3E)** | 11,106 play-by-play events, seasons 2001 (8,771) + 2003 (2,335) — from `a2gamestatpbp`. `jugada_raw` verbatim + parsed `event_type`/`actor_raw`/`team_raw`. Classified: rebound 2,065 · made_2 1,606 · miss_2 1,198 · assist 1,025 · miss_3 790 · turnover 630 · made_3 433 · steal 398 · team_rebound 201 · jump_ball 140 · timeout 137; ~2,483 unclassified. Grows when 2002/2003 fetch completes. |
+| `data/clean/game_plays.csv.gz` | **new, S002 (PHASE_3E; gzipped PHASE_3E_CLEAN_STORAGE)** | 233,664 play-by-play events, seasons 2001–2003 — from `a2gamestatpbp`. **gzip-compressed** (65 MB raw → 2.7 MB; D-036). `jugada_raw` verbatim + parsed `event_type`/`actor_raw`/`team_raw`. Classified ~70%: rebound 42,367 · made_2 23,482 · assist 19,794 · miss_2 19,132 · miss_3 17,301 · turnover 12,469 · made_3 8,925 · steal 8,290 · team_rebound 5,198 · timeout 4,029 · jump_ball 2,277; 70,400 unclassified. Read via `open_clean_text` / `pandas.read_csv`. |
 | `docs/coverage_games.md` | **new, S002 (PHASE_3E)** | Per-script per-capture-year table; the >500 gated tranches. |
 | `docs/specs/game_data_spec.md` | **new, S002 (PHASE_3E)** | Game-engine shapes, tranche gate, two id schemes, shot-cell conventions, open Qs. |
+| `docs/specs/clean_data_storage_spec.md` | **new, S002 (PHASE_3E_CLEAN_STORAGE)** | P2 decision: large `data/clean/` tables committed gzipped (`.csv.gz`); the `open_clean_text` helper; Git LFS / split / Parquet rejected; >20 MB threshold; history-purge deferred. |
+| `docs/specs/app_data_sync_spec.md` | **new, S002 (owner-supplied, committed this session)** | PHASE_5 decision: static JSON generated at build time, fetched at runtime, GitHub Pages. Supersedes PC7. Unblocks PHASE_5_APP_SYNC (still do-not-start). |
+| `src/parse_wayback.py` | updated S002 (PHASE_3E_CLEAN_STORAGE) | +`open_clean_text()` gzip-transparent clean-table IO (`mtime=0`, deterministic); `_write_csv` routes through it + hardened log line. |
 
 ---
 
 [NEXT_ACTIONS]
 
-1. **PHASE_3E fetch resume** (contract: `PHASE_3E_FETCH_REMAINING` in [TASK_QUEUE]) —
-   a single-stream chain is running `a2gamestatpbp` 2002 (resume from ~343/1462)
-   then 2003 (1555), both owner-approved, `--force-year`. NOTE: a prior run had
-   **two** concurrent fetchers on the 2002 tranche (PC6 breach); both were killed
-   2026-09-08 and replaced with one chain (`scratchpad/fetch_chain3.sh`,
-   task `bzjo92jo3`). When it completes: `make parse-games && make verify`,
-   commit, report. Owner HOLD still stands on `pogamestat`/`boxscore` 2007–09 and
-   all of `gameinfo` — do NOT fetch until owner reviews PBP contents.
+1. **Owner-directed queue (2026-09-08 session), in order, pause after each:**
+   (a) PHASE_3E_CLEAN_STORAGE — **DONE this session** (`game_plays.csv.gz`);
+   (b) PHASE_3G_HISTORIC_FOLLOWUP — gate cleared, next up;
+   (c) PHASE_3F_IDENTITY_LIFT = NEXT_ACTIONS item 2a below (club-code
+   corroboration, code-only, no fetch).
+   Owner HOLD still stands on `pogamestat`/`boxscore` 2007–09 and all of
+   `gameinfo` — do NOT fetch until owner reviews the PBP contents.
 2. **RANKED IDENTITY-LIFT PLAN** — box-score `bsnpr_id` resolution is 26% pre-2007
    vs 74% modern; review queue = 828 rows (361 season-not-in-known-span · 346
    no-name-match · 106 multi-candidate-no-season · 15 multi-match). Lift it in
@@ -892,6 +962,6 @@ Decisions made session 002 (PHASE_4):
    current/post-2021 API.
 9. `git`: PHASE_3 = 4ca04f2, 3B = 21f1a5f, 3C = a3b792a, 3D = 0d0d12d + 0640a1d,
    PHASE_4 = ac4a23e + d7c3024 + cd8ef54.
-   PHASE_3E = d421922, e94fec9, 640964e, a041a60, 891fc12, 2d1928c (committed);
-   this `docs/session.md` H4 update pending P4. `a2gamestatpbp` 2002/2003 parse +
-   commit still to come when the fetch chain finishes.
+   PHASE_3E = d421922, e94fec9, 640964e, a041a60, 891fc12, 2d1928c, 7f09013.
+   PHASE_3E_CLEAN_STORAGE + `app_data_sync_spec.md` commit + this
+   `docs/session.md` H4 update = pending P4 (this session).

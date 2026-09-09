@@ -72,8 +72,8 @@ resolution ~22% — limited by the spine's pre-2007 coverage
   to `game_results`, not a box-score source.
 - **Why `a2gamestatpbp.asp` (PBP) is a separate effort.** 3093 quarter-captures
   (≈ 4 per game), a `Cuarto | Reloj | Jugada | Local | Visitante | Diff` play
-  log — a different parse target and a different table (`game_plays`), 2002/2003
-  both gated. Deferred.
+  log — a different parse target and a different table (`game_plays.csv.gz`).
+  2001–2004 now fetched + parsed (233,664 plays, 2001–2003).
 
 ---
 
@@ -133,8 +133,10 @@ with player rows has a `game_results` row.
 4. **`game_results` team ↔ franchise** — `team_a_raw` is a city name; join via
    `city_franchise_map` in a follow-up (needs the season-aware logic from
    `reconcile.py`).
-5. **PBP** (`a2gamestatpbp.asp`) — own parse target (`game_plays.csv`),
-   deferred.
+5. **PBP** (`a2gamestatpbp.asp`) — own parse target
+   (`game_plays.csv.gz` — gzip-compressed, `clean_data_storage_spec.md`).
+   2001–2004 fetched + parsed (233,664 plays, 2001–2003). `actor_raw` →
+   `bsnpr_id` linking still open.
 6. **`gameinfo.asp`** — venue / coaches / officials to enrich `game_results`,
    deferred.
 7. **Dedup vs `player_season_stats_2001_2004`** — the game box scores summed per

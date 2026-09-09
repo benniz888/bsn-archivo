@@ -417,7 +417,12 @@ def main() -> int:
                sorted(box, key=lambda r: (str(r["season"]), r["game_id"], r["team_raw"], r["jersey"])),
                BOX_COLS)
     if plays:
-        _write_csv(CLEAN / "game_plays.csv",
+        # game_plays is written gzip-compressed: 233k+ PBP event rows is 65 MB
+        # raw / ~2.7 MB gzipped, and it grows every ingest session. Committing
+        # the .gz keeps a single fat blob off GitHub's size warning and out of
+        # history on every regen. `_write_csv` gzips on the `.gz` suffix;
+        # readers use `open_clean_text`. See clean_data_storage_spec.md.
+        _write_csv(CLEAN / "game_plays.csv.gz",
                    sorted(plays, key=lambda r: (r["game_id"], str(r["quarter"]), r["seq"])),
                    PBP_COLS)
 
