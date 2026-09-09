@@ -17,8 +17,11 @@ Session 002 (cont.) — all pushed to origin/main:
   rows. `docs/specs/historic_followup_spec.md`.
 - PHASE_3F_IDENTITY_LIFT (b599e27) — club-code corroboration; id_map 423→433,
   review queue 828→818, +`club_check`. `identity_spine_spec.md` Q2 closed.
-- PHASE_5_APP_SYNC — STARTED. Sub-phased 5A–5G in [TASK_QUEUE]; 5A (data map +
-  JSON schema spec) is the current sub-phase.
+- PHASE_5_APP_SYNC — STARTED, sub-phased 5A–5G in [TASK_QUEUE].
+  5A (`app_data_map.md`, committed dc776b3) + 5B (`build_web_data.py` + crosswalk
+  + 6 index JSON, uncommitted) DONE. 5B surfaced a PHASE_3D name bug — 725
+  mangled `players_canonical` names — fixed as its own commit (D-042; id_map
+  433→649, review 828→602). **5C next.**
 
 Session 001 (2026-09-07): PHASE_1_ENUMERATE + PHASE_2_FETCH. Env bootstrapped,
 Wayback CDX enumerated (central finding negative — see below), 193 snapshots
@@ -34,8 +37,9 @@ Session 002:
   scripts found + gated.
 - PHASE_3D_IDENTITY_SPINE (committed 0d0d12d + refresh) — D1 canonical player
   table: **3,303 players** (1,076 with a full profile), league ids,
-  accent-stripped names, ~25k aliases, **433 id-map links** (423 season + 10
-  club-tiebreak, PHASE_3F), 818-row review queue. Tranche B (1,078 profiles) done.
+  accent-stripped names, ~24k aliases, **649 id-map links** (633 season + 16
+  club-tiebreak), 602-row review queue. Tranche B (1,078 profiles) done. 725
+  mangled names fixed 2026-09-08 (D-042 — drove 433→649 / 828→602).
 - PHASE_4_RECONCILE (ac4a23e + d7c3024 + cd8ef54) — reconciled champions +
   scoring vs the Wikipedia seed. 89/98 champion seasons `agree`. Owner resolved
   4 of 5 conflicts; es.wikipedia retested and **fetchable** (F3 resolved) — used
@@ -97,15 +101,16 @@ Player season stats / leaders:
 Identity spine (D1):
 - `players_canonical.csv` **3,303 players** keyed by the league's own
   `bsnpr_id`, 1,076 with a full profile, 1,988 with a birth year; accent-stripped
-  `normalized_name`.
-- `player_aliases.csv` ~25k (id, alias, 9 alias types incl. `initial`,
+  `normalized_name`. **725 mangled names ("…, Estadísticas Jugador") fixed
+  2026-09-08 — D-042.**
+- `player_aliases.csv` ~24k (id, alias, 9 alias types incl. `initial`,
   `given_first_only`, `nickname`).
-- `player_career_seasons.csv` (from jugador.asp), `player_id_map.csv` **433**
-  obs→id links (423 `name+season_in_career` + 10 `name+season+club` — PHASE_3F
+- `player_career_seasons.csv` (from jugador.asp), `player_id_map.csv` **649**
+  obs→id links (633 `name+season_in_career` + 16 `name+season+club` — PHASE_3F
   club tiebreak; `club_check` advisory column), `data/interim/player_review_queue.csv`
-  **818** rows (346 no name match, 361 season outside career span, 106
-  multi-candidate, 5 same-name ambiguity; 42 now carry a `club_match_ids` hint
-  — **no fuzzy match ever enters the id map**).
+  **602** rows (199 no name match, 315 season outside career span, 79
+  multi-candidate, 9 same-name ambiguity; `club_match_ids` hints — **no fuzzy
+  match ever enters the id map**). Jump from 433/828 = D-042 name fix.
 
 Game data (PHASE_3E — `a2gamestatpbp` 2001–2004 fetch complete; box scores
 2001–03 + 2008–13):
@@ -716,19 +721,35 @@ curated-only block marked CSV-derived (PC1); schema covers all 13 tabs' render
 needs (checked against the `build*()` functions); no code touched → `make
 verify`/`make test` unaffected.
 
-#### 5B — `make build-web-data` skeleton + crosswalk + manifest + index files — NEXT
-`app/franchise_key_map.csv` (the 5A crosswalk, curated) + build-time
-completeness assert. `src/build_web_data.py` + Makefile target. Emit
-`web/data/manifest.json` (`source_commit`, per-file counts — no wall-clock) +
-`web/data/index/{franchises,seasons,players,scoring_titles,career_leaders,
-records}.json` per the 5A schema. Deterministic (`json.dumps` `sort_keys` +
-`separators=(",",":")` + `\n`; `open_clean_text` for `.gz`). `web/` tracked, not
-gitignored. Diff report at build time for every season where the app's `won`/`ru`
-disagreed with `champions_reconciled` (5A OQ2). **Verify:** valid JSON; counts
-reconcile vs the CSVs; rerun on same commit = empty git diff; crosswalk covers
-all 32 keys + 33 ids; new unit tests; `make verify`/`make test` green.
+#### 5B — build skeleton + crosswalk + manifest + index files — COMPLETE 2026-09-08
+- `app/franchise_key_map.csv` — 32 app 3-letter keys ↔ 33 `franchise_id`
+  (curated; `santos_san_juan` documented as no-app-key per D5). Build asserts
+  completeness (D-040).
+- `app/franchise_curated.json` — colours / abbr / coach / note / end for the 32
+  keys, mechanically extracted from the app `F` block; the source for those
+  fields from now on.
+- `src/build_web_data.py` (`make build-web-data`). Emits `web/data/manifest.json`
+  (`source_digest` = sha256 of the input files — no wall-clock, no git state,
+  D-041) + `web/data/index/{franchises,seasons,players,scoring_titles,
+  career_leaders,records}.json` per the 5A schema. Deterministic
+  (`json.dumps(sort_keys, separators=(",",":"))` + `\n`; `_int`/`_float` →
+  null-not-zero, PC2). `web/` tracked. **728 KB** total (players.json is the bulk).
+- `verify_web_data()` in `verify_clean.py` — JSON valid, manifest counts match,
+  32 keys, real franchise_ids, seasons == `champions_reconciled`, no `0`-for-year.
+- Build-time diff report: **app vs `champions_reconciled` = 0 disagreements**
+  (the app's championship data is already consistent with the reconciled CSV).
 
-#### 5C — per-entity JSON: players/ + seasons/ + games/ (box scores)
+**5B surfaced a PHASE_3D name bug (fixed here, own commit):** 725/3,303
+`players_canonical` names were `"<Surname>, Estadísticas Jugador"` — the
+`jugador.asp` heading scan had grabbed a section header. `clean_field()` now
+nulls that + `"No se sabe"` (position) + `"nan"` (all fields). Cascade: id_map
+**433 → 649**, review queue **828 → 602** (the "no canonical name match" bucket
+346 → 199 — those observations couldn't match a mangled name). D-042.
+
+**Verify:** `make verify` green (329,499); `make test` 148 pass (+12); build
+deterministic (rerun = byte-identical); crosswalk assert covers all keys/ids.
+
+#### 5C — per-entity JSON: players/ + seasons/ + games/ (box scores) — NEXT
 Extend the build: `web/data/players/<bsnpr_id>.json`, `seasons/<year>.json`,
 `games/<season>/<game_id>.json` (box score). PBP (`_pbp.json`) NOT here — 5F.
 **Verify:** spot-check ≥5 entities of each type against the CSVs; file counts vs
@@ -961,6 +982,13 @@ Decisions made session 002 (PHASE_4):
   (Criollos 1969 en.wiki vs 1976 seed).
 
 Decisions made session 002 (PHASE_5_APP_SYNC):
+- **D-042 — `jugador.asp` placeholder text is nulled at parse (PC1/PC2).**
+  `clean_field()` in `parse_players` maps `"Estadísticas Jugador"` (a section
+  header the heading scan grabbed — 725 profiles), `"No se sabe"` (position),
+  `"nan"` (pandas NaN) → `""`. Surfaced building the web player index (5B). Fixes
+  725 canonical names; cascades to id_map 433→649, review 828→602 (a mangled
+  name matched no observation). `verify_players` now asserts no canonical_name
+  carries placeholder text. Own commit, tagged PHASE_3D/3F.
 - **D-039 — PHASE_5 scope is narrow: sync 4 blocks, expose the rest as new
   JSON.** 5A found the app is ~90% hand-curated editorial with no CSV source
   (`app_data_map.md` classification table). The build script (`make
@@ -975,11 +1003,14 @@ Decisions made session 002 (PHASE_5_APP_SYNC):
   33 `franchise_id`). Not name-similarity-derived (D5's `santos_san_juan` and
   the Manatí Osos/Atenienses era-ambiguity break that). Mirrors D-029 /
   `club_code_map`. A build that finds an unmapped id or key fails.
-- **D-041 — `web/data/` build is deterministic; version = git SHA, not a
-  timestamp.** `json.dumps(sort_keys=True, separators=(",",":"))` + `\n`, fixed
-  float precision, `manifest.json.source_commit = git rev-parse HEAD`. No
-  wall-clock anywhere ⇒ rerun on the same commit = empty git diff (spec
-  [INTERFACES]). `web/` is a tracked deploy artifact, not gitignored.
+- **D-041 — `web/data/` build is deterministic; version = a digest of the
+  inputs, not a timestamp or git SHA.** `json.dumps(sort_keys=True,
+  separators=(",",":"))` + `\n`, fixed float precision. `manifest.json.
+  source_digest` = sha256 over the exact bytes of every input CSV + curated
+  file. No wall-clock, no `git` call (avoids the chicken-and-egg of committing
+  an artifact that records its own commit) ⇒ rerun on unchanged inputs = empty
+  git diff (spec [INTERFACES]). `web/` is a tracked deploy artifact, not
+  gitignored.
 
 Decision made session 002 (PHASE_3F_IDENTITY_LIFT):
 - **D-038 — club-code is a season-test *tiebreaker*, never a substitute or a
@@ -1037,6 +1068,8 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
 | PHASE_3D | PASS | PASS | PASS | PASS | PASS | V1: T3D.1–T3D.3 done — canonical spine (3,303 players) + aliases + career-seasons + id_map + review queue; tranche B enrichment fetch backgrounded (partial), T3D.4 = re-run parse on completion. V2: PC1 (no fuzzy match in id_map — D1; ambiguous → review queue); PC2 (`1/1/1900` → null, blank stats stay blank); PC3 (`verify_players` asserts provenance on every canonical row); PC4 (review queue is a first-class output with candidate ids + reason); PC6 (`polite_get`, one GET per id, background throttle); D1 (accent-stripped `normalized_name`, alias table, match needs season corroboration not name alone — asserted in verify). V3: no secrets. V4: `make parse-players` + `make verify` green (38,706 checks); 91 pytest pass (+12); id_map spot-checks correct (Carmona→37, Arroyo Carlos→273 via season). V5: snake_case, English. |
 | PHASE_3E | PASS | PASS | PASS | PASS | PASS | V1: T3E.1–T3E.6 done — enumerate (10,548 captures) + `coverage_games.md` + gated fetcher (`MAX_TRANCHE=500`, `--force-year` after approval) + box-score parser + PBP parser + verify + tests. Fetch is a multi-day throttled job, one tranche at a time (PC6); done so far: `gamestatwide` 864, `pogamestat` 1021, `boxscore` 261, `a2gamestatpbp` 2001+2004; 2002 fetching, 2003 queued; owner HOLD on `pogamestat`/`boxscore` 2007–09 + all `gameinfo`. V2: PC1 (`bsnpr_id` blank unless a unique season-in-career match — D1, no guesses; `jugada_raw` kept verbatim; `box_check` flags source pts-mismatch, doesn't rewrite); PC3 (`verify_games` provenance per row); PC4 (crammed/stub captures counted + dropped from results, gated tranches in `coverage_games.md`, `box_check`); PC5 (parse reads `data/raw/games/` only, idempotent); PC6 (`polite_get`, one GET/digest, 500-gate honoured, sequential chain). V3: no secrets; raw gitignored. V4: `make parse-games` + `make verify` green (326,175 checks); 125 pytest pass (+17); **`2·FG2 + 3·FG3 + FT == PTS` on every parsed box row (4/39,669 source-error `pts_mismatch`, flagged); made ≤ att always**. V5: snake_case, English, "why" comments. |
 | PHASE_4 | PASS | PASS | PASS | PASS | PASS | V1: T4.1–T4.5 done + owner-resolution follow-up. Franchise layer + champions_reconciled + scoring_champions_reconciled + reconcile_conflicts + verify + tests. V2: PC1 (D-027: code flags, human clears; `OWNER_RESOLUTIONS` dated + auditable; seed CSVs untouched; 1945 left `disputed`); D2 (`franchise_events.csv`, murky lineage = disputed); D3 (`1942`+`1942-1943` both kept); D4 (`metric_era` flip + 1971/1974 `dual_metric_d4` recording BOTH winners); D5 (1945 stays flagged); D6 (1953 no_champion). PC3 (provenance / `sources` per row). V3: no secrets; pure module. V4: `make reconcile` + `make verify` green (40,114 checks); 108 pytest pass (+17); 87/98 seed↔bsnpr `verified`. V5: snake_case, English, D2/D5 citations in comments. |
+| PHASE_5 / 5B | PASS | PASS | PASS | PASS | PASS | V1: `franchise_key_map.csv` (32↔33, asserted complete) + `franchise_curated.json` + `src/build_web_data.py` (`make build-web-data`) → `manifest.json` + 6 `index/*.json` per the 5A schema; `verify_web_data()` in `make verify`; +12 tests. V2: PC1 (only the 4 CSV-sourced blocks emitted; a build-time diff shows app vs `champions_reconciled` = 0 disagreements); PC2 (`_int`/`_float` → null not 0; verify asserts no `0`-for-year); PC4 (`coverage.gaps` reserved in the schema for 5C); D-040/D-041/D-042. V3: no secrets; reads `data/clean/` + `app/` only. V4: `make verify` green (329,499); `make test` 148 pass; **rerun = byte-identical `web/data/` tree** (determinism); crosswalk assert would `sys.exit` on any unmapped id/key. V5: snake_case, English, "why" comments. |
+| PHASE_3D/3F name-fix (with 5B) | PASS | PASS | PASS | PASS | PASS | V1: `clean_field()` nulls `jugador.asp` placeholders; 725 mangled canonical names fixed; `verify_players` regression guard. V2: PC1 (placeholder text was being presented as a player name — removed at source, not band-aided in the projection); PC2 (`No se sabe`/`nan` → null). D1 unaffected — the +216 id_map rows are all `name+season(+club)` corroborated, just now matchable. V4: `make parse-players` + `make verify` green; `make test` 148 pass (+2 `clean_field`); id_map 433→649, review 828→602, deterministic re-parse. V5: snake_case. |
 | PHASE_5 / 5A | PASS | PASS | n/a | n/a | PASS | V1: `docs/specs/app_data_map.md` (H2) — every embedded `const` block classified {regen from CSV · merge · keep curated}, full `web/data/` tree + per-record schema, build contract, 6 open Qs. V2: PC1 (curated editorial — `RECENT`/`HOF`/`CLINCHERS`/`ON_THIS_DAY`/`REF_*`/`POOL` — explicitly "keep inline, do not regenerate"; only 4 blocks have a real CSV source); PC2 (every schema field "null when unrecorded, never 0"); PC4 (`coverage.gaps` per season is a first-class output); PC7 superseded per `app_data_sync_spec.md`. V4/V3: no code, no secrets — `make verify`/`make test` unaffected. V5: `app_data_map.md`, snake_case schema names. Spec-only sub-phase; S3 (secret scan) / V4 (compile) n/a. |
 | PHASE_3F | PASS | PASS | PASS | PASS | PASS | V1: T3F.1–T3F.4 done — `_load_club_resolver` + club tiebreak in `build_id_map` + `club_check` column + review-queue `club_match_ids` enrichment + verify + tests + spec. V2: PC1 (the 106 bucket did not shrink — reported straight, not force-matched); PC3 (id_map + review rows keep full keys; provenance unchanged); PC4 (`club_check=contradicts` surfaced in the column, 36 rows, not hidden and not acted on); D1 (club is corroboration *beyond* the name; only ever a tiebreaker *within* the season test — `name+season+club`; never name-alone); D-022 (season-corroboration still required for the map; club-only stays in review). V3: no secrets; pure module. V4: `make verify` green (326,177, +2 club checks); `make test` 136 pass (+7 club-resolver tests); `players_canonical`/`aliases`/`career_seasons` byte-unchanged; id_map 423→433, review 828→818, name+season bucket 15→5. V5: snake_case, English, "why" comments. |
 | PHASE_3G | PASS | PASS | PASS | PASS | PASS | V1: fresh CDX per target (`cdx_historic_followup.csv`), probed + confirmed every param value from the page, reported what each is (see TASK_QUEUE). V2: PC1 (negative finding reported straight — no thin rows manufactured from a duplicate source; probe-spec's wrong guess corrected from the page's own section headers); PC3 (`mvp.asp` manifest tracked with provenance); PC4 (`t` gap reported as a gap — no other `t` value exists); PC5 (raw cached unmodified, gitignored); PC6 (`polite_get`, one GET/digest, single stream — `pgrep` confirmed no other fetcher); D-018 (duplicate `mvp.asp` source kept raw, not re-parsed). V3: no secrets. V4: `make verify` green (326,175 checks, unchanged — no clean data touched); `make test` 129 pass; `mvp.asp` 2006 capture cross-checked vs clean = 0 diffs / 57 scoring + 135 award rows. V5: snake_case, English, "why" comments. |
@@ -1134,6 +1167,11 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
 | `docs/specs/clean_data_storage_spec.md` | **new, S002 (PHASE_3E_CLEAN_STORAGE)** | P2 decision: large `data/clean/` tables committed gzipped (`.csv.gz`); the `open_clean_text` helper; Git LFS / split / Parquet rejected; >20 MB threshold; history-purge deferred. |
 | `docs/specs/app_data_sync_spec.md` | new S002 (owner-supplied, e5609ee) | PHASE_5 decision: static JSON generated at build time, fetched at runtime, GitHub Pages. Supersedes PC7. |
 | `docs/specs/app_data_map.md` | **new, S002 (PHASE_5 / 5A)** | The 5B–5G build contract: per-block classification (regen/merge/curated), the full `web/data/` JSON tree + record schemas, determinism rules, the franchise-key crosswalk requirement. |
+| `src/build_web_data.py` | **new, S002 (PHASE_5 / 5B)** | `make build-web-data` — `data/clean/` + `app/franchise_*` → deterministic `web/data/` static JSON (manifest + 6 index files). |
+| `app/franchise_key_map.csv` | **new, S002 (PHASE_5 / 5B)** | Curated crosswalk: 32 app 3-letter keys ↔ 33 `franchise_id`. Build asserts completeness. |
+| `app/franchise_curated.json` | **new, S002 (PHASE_5 / 5B)** | Colours / abbr / coach / note / end per app key — extracted from the app `F` block; the source for those fields going forward. |
+| `web/data/**` | **new, S002 (PHASE_5 / 5B)** | Tracked deploy artifact. `manifest.json` + `index/{franchises,seasons,players,scoring_titles,career_leaders,records}.json`. 728 KB. Regenerable via `make build-web-data`; per-entity `players/` `seasons/` `games/` come in 5C. |
+| `tests/test_build_web_data.py` | **new, S002 (PHASE_5 / 5B)** | 12 tests — coercion, deterministic `_jdump`, crosswalk completeness, franchise merge, scoring dual-metric, manifest counts. |
 | `src/parse_wayback.py` | updated S002 (PHASE_3E_CLEAN_STORAGE) | +`open_clean_text()` gzip-transparent clean-table IO (`mtime=0`, deterministic); `_write_csv` routes through it + hardened log line. |
 | `src/enumerate_historic_followup.py` | **new, S002 (PHASE_3G)** | Fresh CDX per target (`lidereshistoricos`/`lideres2002`/`mvp` prefixes). `make enumerate-historic`. |
 | `src/fetch_historic_followup.py` | **new, S002 (PHASE_3G)** | One GET per distinct 200-digest, `MAX_TRANCHE=500`, `--script`. `make fetch-historic`. No parser (negative finding — nothing new to parse). |
@@ -1152,10 +1190,10 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
    (c) PHASE_3F_IDENTITY_LIFT — **DONE** (b599e27).
    All three owner-directed items complete + pushed.
 2. **PHASE_5_APP_SYNC — IN PROGRESS.** Sub-phased 5A–5G in [TASK_QUEUE]. 5A
-   (data map + JSON schema, `app_data_map.md`) DONE. **5B next** (crosswalk +
-   `make build-web-data` skeleton + manifest + index JSON). One sub-phase per
-   turn, pause + approve. Owner HOLD still stands on `pogamestat`/`boxscore`
-   2007–09 and all of `gameinfo` — do NOT fetch until owner reviews PBP contents.
+   (`app_data_map.md`, dc776b3) + 5B (`build_web_data.py` + crosswalk + 6 index
+   JSON; + D-042 name fix) DONE. **5C next** (per-entity `players/` `seasons/`
+   `games/` JSON). One sub-phase per turn, pause + approve. Owner HOLD still
+   stands on `pogamestat`/`boxscore` 2007–09 and all of `gameinfo`.
 3. **RANKED IDENTITY-LIFT PLAN** — box-score `bsnpr_id` resolution 26% pre-2007
    / 74% modern; review queue **818** rows (361 season-not-in-known-span · 346
    no-name-match · 106 multi-candidate-no-season · 5 multi-match).
@@ -1197,5 +1235,6 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
    PHASE_4 = ac4a23e + d7c3024 + cd8ef54.
    PHASE_3E = d421922, e94fec9, 640964e, a041a60, 891fc12, 2d1928c, 7f09013.
    `app_data_sync_spec.md` = e5609ee. PHASE_3E_CLEAN_STORAGE = 72d2b52.
-   PHASE_3G = 100e9c6. PHASE_3F = b599e27 (all pushed).
-   PHASE_5/5A + this `docs/session.md` H4 update = pending P4.
+   PHASE_3G = 100e9c6. PHASE_3F = b599e27. PHASE_5/5A = dc776b3 (all pushed).
+   D-042 name fix + PHASE_5/5B + this `docs/session.md` H4 update = pending P4
+   (2 commits: the parse_players fix, then 5B).

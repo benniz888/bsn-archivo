@@ -51,7 +51,10 @@ enumerate-historic:
 fetch-historic:
 	.venv/bin/python -m src.fetch_historic_followup
 
+build-web-data:
+	.venv/bin/python -m src.build_web_data
+
 test:
 	.venv/bin/pytest -q
 
-.PHONY: setup enumerate samples fetch parse verify enumerate-root fetch-pre2007 parse-pre2007 fetch-players parse-players reconcile enumerate-games fetch-games parse-games enumerate-historic fetch-historic test
+.PHONY: setup enumerate samples fetch parse verify enumerate-root fetch-pre2007 parse-pre2007 fetch-players parse-players reconcile enumerate-games fetch-games parse-games enumerate-historic fetch-historic build-web-data test

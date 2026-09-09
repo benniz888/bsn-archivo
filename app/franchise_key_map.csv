@@ -1,0 +1,33 @@
+app_key,franchise_id,note
+bay,vaqueros_bayamon,
+sge,atleticos_san_german,
+pon,leones_ponce,
+san,cangrejeros_santurce,
+are,capitanes_arecibo,
+que,piratas_quebradillas,
+gua,mets_guaynabo,
+cag,criollos_caguas,
+car,gigantes_carolina,
+may,indios_mayaguez,D2: same franchise as tainos_cabo_rojo (name toggle 1989-1993)
+agu,santeros_aguada,
+man,osos_manati,D2/D-032: continuous franchise from brujos_guayama (relocated+renamed 2023)
+cap,capitalinos_san_juan,"D5: the app folds San Juan 1945 into this key; the pipeline also carries santos_san_juan (unresolved relationship)"
+rio,cardenales_rio_piedras,
+veg,vega_baja,
+upr,gallitos_upr,
+cno,indios_canovanas,
+nau,club_nautico_san_juan,
+aib,polluelos_aibonito,
+mor,titanes_morovis,
+toi,cocoteros_tortuguero,
+guy,brujos_guayama,D2/D-032: became man/osos_manati in 2023 (franchise_events relocated_renamed)
+isa,gallitos_isabela,
+coa,maratonistas_coamo,
+faj,cariduros_fajardo,
+hum,grises_humacao,D2: single-source claim it became cag/criollos_caguas in 2023 (unverified)
+ate,atenienses_manati,"unrelated to man/osos_manati despite the shared city; defunct 2017"
+vil,avancinos_villalba,
+cab,tainos_cabo_rojo,D2: same franchise as may/indios_mayaguez
+agd,tiburones_aguadilla,D2: merged into san/cangrejeros_santurce in 1998
+con,conquistadores_aguada,
+cay,toritos_cayey,

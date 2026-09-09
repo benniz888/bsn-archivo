@@ -1,0 +1,223 @@
+{
+  "agd": {
+    "abbr": "AGD",
+    "c1": "#1C6E8C",
+    "c2": "#DCE9EF",
+    "colorSrc": "approx",
+    "end": 1998,
+    "note": "Merged with the Capitalinos in 1998 to revive the Cangrejeros."
+  },
+  "agu": {
+    "abbr": "AGU",
+    "c1": "#0C4DA2",
+    "c2": "#F0A81E",
+    "colorSrc": "approx"
+  },
+  "aib": {
+    "abbr": "AIB",
+    "c1": "#2F8A3E",
+    "c2": "#F2D840",
+    "colorSrc": "wiki",
+    "end": 2001
+  },
+  "are": {
+    "abbr": "ARE",
+    "c1": "#0E7C7B",
+    "c2": "#F2F2F2",
+    "colorSrc": "approx"
+  },
+  "ate": {
+    "abbr": "ATE",
+    "c1": "#3B5E3C",
+    "c2": "#E4D9B8",
+    "colorSrc": "approx",
+    "end": 2017
+  },
+  "bay": {
+    "abbr": "BAY",
+    "c1": "#1B4F9C",
+    "c2": "#E8B23A",
+    "coach": "Christian Dalmau",
+    "colorSrc": "wiki"
+  },
+  "cab": {
+    "abbr": "CR",
+    "c1": "#B5651D",
+    "c2": "#F2E2C4",
+    "colorSrc": "approx",
+    "end": 1993,
+    "note": "The Indios de Mayagüez under a different name and city."
+  },
+  "cag": {
+    "abbr": "CAG",
+    "c1": "#6B2C8F",
+    "c2": "#EFD25C",
+    "colorSrc": "approx"
+  },
+  "cap": {
+    "abbr": "SJ",
+    "c1": "#8E1B3C",
+    "c2": "#E2C9A0",
+    "colorSrc": "approx",
+    "end": 1998
+  },
+  "car": {
+    "abbr": "CAR",
+    "c1": "#1E9B54",
+    "c2": "#F5F5F5",
+    "colorSrc": "approx"
+  },
+  "cay": {
+    "abbr": "CAY",
+    "c1": "#8C2F2F",
+    "c2": "#E8D2C0",
+    "colorSrc": "approx",
+    "end": 2004
+  },
+  "cno": {
+    "abbr": "CAN",
+    "c1": "#B65418",
+    "c2": "#2A2A2A",
+    "colorSrc": "approx",
+    "end": 1996
+  },
+  "coa": {
+    "abbr": "COA",
+    "c1": "#2A6F97",
+    "c2": "#F2C14E",
+    "colorSrc": "approx",
+    "end": 2015
+  },
+  "con": {
+    "abbr": "CON",
+    "c1": "#8C6A1F",
+    "c2": "#F0E6C8",
+    "colorSrc": "approx",
+    "end": 1998
+  },
+  "faj": {
+    "abbr": "FAJ",
+    "c1": "#7A1F3D",
+    "c2": "#E8D6A8",
+    "colorSrc": "approx",
+    "end": 2023
+  },
+  "gua": {
+    "abbr": "GBO",
+    "c1": "#122E5C",
+    "c2": "#25C4E0",
+    "coach": "Jorge Rincón",
+    "colorSrc": "wiki"
+  },
+  "guy": {
+    "abbr": "GUY",
+    "c1": "#1A1A1A",
+    "c2": "#D4A63C",
+    "colorSrc": "wiki",
+    "end": 2022,
+    "note": "Bought in 2022 and relocated as the Osos de Manatí."
+  },
+  "hum": {
+    "abbr": "HUM",
+    "c1": "#5C6670",
+    "c2": "#D6DCE2",
+    "colorSrc": "approx",
+    "end": 2023,
+    "note": "Sold in 2023 and rebranded as the Criollos de Caguas."
+  },
+  "isa": {
+    "abbr": "ISA",
+    "c1": "#9C1F5B",
+    "c2": "#F0E0C8",
+    "colorSrc": "approx",
+    "end": 2005
+  },
+  "man": {
+    "abbr": "MAN",
+    "c1": "#7A4A22",
+    "c2": "#E4C07A",
+    "colorSrc": "approx"
+  },
+  "may": {
+    "abbr": "MAY",
+    "c1": "#1F5B3A",
+    "c2": "#D9342B",
+    "coach": "Iván Vélez",
+    "colorSrc": "wiki"
+  },
+  "mor": {
+    "abbr": "MOR",
+    "c1": "#4A3F8C",
+    "c2": "#D8D2E8",
+    "colorSrc": "approx",
+    "end": 2006
+  },
+  "nau": {
+    "abbr": "CN",
+    "c1": "#1D6C8C",
+    "c2": "#F2F2F2",
+    "colorSrc": "approx",
+    "end": 1936
+  },
+  "pon": {
+    "abbr": "PON",
+    "c1": "#C8102E",
+    "c2": "#F0C24B",
+    "colorSrc": "approx"
+  },
+  "que": {
+    "abbr": "QUE",
+    "c1": "#B3141F",
+    "c2": "#1A1A1A",
+    "coach": "Ángel Daniel Vassallo",
+    "colorSrc": "wiki"
+  },
+  "rio": {
+    "abbr": "RP",
+    "c1": "#A81F2E",
+    "c2": "#2B2B2B",
+    "colorSrc": "approx",
+    "end": 1985
+  },
+  "san": {
+    "abbr": "SAN",
+    "c1": "#E85D1F",
+    "c2": "#191919",
+    "colorSrc": "approx"
+  },
+  "sge": {
+    "abbr": "SG",
+    "c1": "#F26A21",
+    "c2": "#141414",
+    "coach": "Eddie Casiano",
+    "colorSrc": "wiki"
+  },
+  "toi": {
+    "abbr": "TOR",
+    "c1": "#5E7A2E",
+    "c2": "#EBE0BC",
+    "colorSrc": "approx",
+    "end": 1943
+  },
+  "upr": {
+    "abbr": "UPR",
+    "c1": "#4B7A2B",
+    "c2": "#F1E7B8",
+    "colorSrc": "approx",
+    "end": 1951
+  },
+  "veg": {
+    "abbr": "VB",
+    "c1": "#2F6E8F",
+    "c2": "#EDE3D0",
+    "colorSrc": "approx",
+    "end": 1939
+  },
+  "vil": {
+    "abbr": "VIL",
+    "c1": "#6B4E9E",
+    "c2": "#EDE4F5",
+    "colorSrc": "approx",
+    "end": 1998
+  }
+}
