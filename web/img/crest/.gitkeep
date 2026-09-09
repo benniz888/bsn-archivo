@@ -1,0 +1,2 @@
+# Drop franchise crests here as <app-key>.png (or .svg/.jpg/.webp), e.g. rio.png.
+# Run `make build-web-data` to list them in web/data/manifest.json so the published app loads them.

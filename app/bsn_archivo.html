@@ -2509,33 +2509,24 @@ const pct=v=>v==null?'—':('.'+String(Math.round(v*1000)).padStart(3,'0'));
    ============================================================ */
 const USE_IMAGES=true, CREST_DIR='img/crest/', PLAYER_DIR='img/player/';
 const CREST_EXT=['png','svg','jpg','webp'], PLAYER_EXT=['jpg','png','webp'];
-/* Once a base has exhausted its whole chain, stop emitting the slot
-   at all. Without this, every re-render of a crest re-probes four
-   missing files and the console fills with 404s. */
-const IMG_DEAD=new Set();
+/* 5G-A — ASSETS = manifest.assets ({ "img/crest/rio": "img/crest/rio.png", … }),
+   set by hydrate(). We emit an <img> ONLY for a base that's listed — one
+   request, no extension probing, no 404s. null (file:// or pre-hydrate) or a
+   base that isn't there -> SVG only. exts kept in the signature for callers. */
+let ASSETS=null;
 function imgTry(base,exts,cls,alt){
-  if(IMG_DEAD.has(base)) return '';
-  const chain=exts.map(e=>base+'.'+e);
-  /* Starts hidden and is revealed only on a successful load. The
-     opposite order — visible until it errors — flashes broken alt
-     text on every crest the first time a section is shown, which
-     is exactly what a viewer notices. */
-  /* No loading="lazy": a hidden lazy image is never fetched, so the
-     drop-in would silently never activate. These are small and few. */
-  return `<img class="${cls}" data-i="0" style="display:none" data-base="${esc(base)}" data-chain="${esc(chain.join('|'))}" src="${esc(chain[0])}" alt="${esc(alt)}" decoding="async">`;
+  if(!USE_IMAGES || !ASSETS) return '';
+  const src=ASSETS[base]; if(!src) return '';
+  /* Hidden until it loads: visible-until-error flashes broken alt text. */
+  return `<img class="${cls}" style="display:none" data-base="${esc(base)}" src="${esc(src)}" alt="${esc(alt)}" decoding="async">`;
 }
 document.addEventListener('error',e=>{
   const t=e.target;
-  if(!t || t.tagName!=='IMG' || !t.dataset.chain) return;
-  const chain=t.dataset.chain.split('|');
-  let i=(parseInt(t.dataset.i,10)||0)+1;
-  t.style.display='none';
-  if(i<chain.length){ t.dataset.i=i; t.src=chain[i]; }
-  else { IMG_DEAD.add(t.dataset.base); t.remove(); }
+  if(t && t.tagName==='IMG' && t.dataset.base) t.remove();   /* corrupt/renamed file -> fall back to the SVG behind it */
 },true);
 document.addEventListener('load',e=>{
   const t=e.target;
-  if(t && t.tagName==='IMG' && t.dataset.chain && t.naturalWidth>0) t.style.display='block';
+  if(t && t.tagName==='IMG' && t.dataset.base && t.naturalWidth>0) t.style.display='block';
 },true);
 
 function crestSVG(k,w,h){
@@ -3823,8 +3814,9 @@ function buildSources(){
 
     <h3 class="sec">Escudos y fotos</h3>
     <div class="card"><p style="margin:0">Todos los escudos y retratos están dibujados en SVG. Si pones un archivo en
-      <code>img/crest/&lt;clave&gt;.png</code> o <code>img/player/&lt;nombre-en-slug&gt;.jpg</code>, lo toma automáticamente —
-      sin tocar el código. Con cero imágenes, todo se ve igual de bien.</p>
+      <code>web/img/crest/&lt;clave&gt;.png</code> o <code>web/img/player/&lt;nombre-en-slug&gt;.jpg</code> y corres
+      <code>make build-web-data</code>, la versión publicada lo carga automáticamente — sin tocar el código.
+      Con cero imágenes, todo se ve igual de bien.</p>
       <p class="note" style="margin-top:8px">Para uso personal. Los logos reales y las fotos de jugadores necesitan permiso
       antes de que esto sea público: es la razón principal por la que Apple rechaza apps de este tipo.</p></div>`;
 }
@@ -6625,6 +6617,7 @@ async function hydrate(){
 
   /* 5D.4 — deployed-reality copy for the "lo que falta" / coverage sections. */
   const mf=await DATA.get('manifest.json');
+  if(mf) ASSETS=mf.assets||{};   /* 5G-A — {} = probe nothing (no 404s) */
   if(mf && mf.counts){
     MANIFEST=mf; DATA_TEXT=true;
     const cov=[

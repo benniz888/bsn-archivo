@@ -32,11 +32,11 @@ Session 002 (cont.) — all pushed to origin/main:
   deployed-reality gap/coverage copy) = 08e8cb4 (all pushed). **5E** (`web/sw.js` + registration
   + `syncVersion` purge hook) = b87d8db (pushed). **5E follow-up** (file:// archive
   message + `buildPlayerIndex` enrich-only, PINDEX 385→381) = 43cad16 (pushed).
-  **5G** (`make site`, `web/index.html`+`.nojekyll`, verify+test guards, spec
-  `[DEPLOY]`) = 65bca96. **5G-Actions uncommitted**: `.github/workflows/
-  pages.yml` publishes `web/` (branch-folder picker can't target `/web`).
-  Queue: commit → owner sets Pages source to "GitHub Actions" → live check.
-  PHASE_5 complete after that (5F stays deferred).
+  **5G** (`make site`, workflow `pages.yml`) = 65bca96/62a3874/a721f6e →
+  **LIVE** at benniz888.github.io/bsn-archivo. **5G-A uncommitted**: image
+  asset manifest (`_scan_assets` → `manifest.assets`, `imgTry` probes only
+  listed files) — kills the `img/` 404s. **PHASE_5 complete** after this
+  commits (5F deferred).
   5G (deploy — needs the site-dir layout decision: `bsn_archivo.html` +
   `data/` + `sw.js` colocated for GitHub Pages).
 
@@ -1098,12 +1098,23 @@ rebuild refreshes the cache.
 still-open PBP→identity linking task. Include as queued; execute only once
 linking exists, else ship the PBP tab as "beta, per-game" per spec OQ2 default.
 
-#### 5G — GitHub Pages deploy — CODE DONE; awaits owner Pages toggle
-`web/` is the site root. GitHub's branch-folder picker only offers `/` or
-`/docs` (no `/web`), and `/docs` holds the Tier-1/2/3 files — so `web/` ships
-via **`.github/workflows/pages.yml`** (standard `upload-pages-artifact` +
-`deploy-pages`, `path: web`, triggers on push touching `web/**`). Spec
-`[DEPLOY]` section added. `= 65bca96` + the workflow commit.
+#### 5G — GitHub Pages deploy — LIVE at benniz888.github.io/bsn-archivo
+`web/` is the site root, published by **`.github/workflows/pages.yml`**
+(branch-folder picker can't target `/web`; `/docs` holds the Tier-1/2/3
+files). `= 65bca96` + `62a3874` + owner's `a721f6e` (UI-created workflow,
+merged `6c3610d`; token lacked `workflow` scope). Owner set Pages source =
+"GitHub Actions"; site confirmed live (data + citations load, SW activated).
+`[DEPLOY]` in the spec.
+**5G-A — image asset manifest (owner-flagged: `img/` 404s on the live site).**
+No image ever existed in the repo; the app probed `img/crest/<key>.{png,svg,
+jpg,webp}` per crest → 100+ 404s per load. Now `build_web_data._scan_assets()`
+walks `web/img/{crest,player}/` → `manifest.json.assets` (`{base: real path}`,
+one file per stem by ext priority, sorted, digest-neutral). `hydrate()` sets
+`ASSETS`; `imgTry()` emits an `<img>` only for a listed base — no chain, no
+probe, **0 404s** with an empty `web/img/`. `error` listener simplified (drop
+→ SVG). `IMG_DEAD` / `data-chain` removed. `web/img/{crest,player}/.gitkeep`
+committed with drop-in instructions. `verify_web_data` +1, +2 tests (159).
+Drop a real file + `make build-web-data` + push → it loads, no code change.
 - `Makefile` **`site`** target: `cp app/bsn_archivo.html web/index.html` +
   `touch web/.nojekyll`. `app/bsn_archivo.html` stays source of truth;
   `web/index.html` is a committed artifact.
@@ -1114,11 +1125,8 @@ via **`.github/workflows/pages.yml`** (standard `upload-pages-artifact` +
 - Local serve of `web/` (`python3 -m http.server`): `/`, `/sw.js`,
   `/data/manifest.json`, `/data/players/382.json`, `/data/index/*.json`,
   `/.nojekyll` all 200. `make verify` 329,515 / `make test` 157.
-**Owner action (one-time):** repo Settings → Pages → Source → **GitHub
-Actions**. The next push runs `pages.yml` (Actions tab, ~1 min). Then
-live-check `https://benniz888.github.io/bsn-archivo/`:
-hub renders, a player card fetches its JSON, SW registers (scope `/bsn-archivo/`),
-offline reload works, install prompt shows the BSN icon.
+**Owner browser check (5G-A):** live site Network tab shows **zero `img/…`
+requests**; crests/portraits still render as SVG shields/monograms.
 
 **Sequencing:** 5A → 5B → 5C → 5D → 5E → (5F when linking lands) → 5G. Each is a
 `[PAUSE_CONDITIONS] P6` stop. 5D and 5G also touch outward-facing surfaces

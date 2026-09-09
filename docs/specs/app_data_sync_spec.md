@@ -141,6 +141,13 @@ web/
   location.href)`, `register('sw.js')`, inline data-URI manifest/icons, zero
   absolute `/…` paths), so it runs unchanged under the project-pages prefix
   `/<repo>/`. SW scope becomes `/<repo>/`.
+- **Image assets** (5G-A). Crests and portraits render as SVG; a real file is
+  an optional override. Drop `web/img/crest/<app-key>.png` (or `.svg`/`.jpg`/
+  `.webp`) or `web/img/player/<name-slug>.jpg` and run `make build-web-data` —
+  it scans `web/img/` into `manifest.json`'s `assets` map, and the app emits an
+  `<img>` **only** for a listed base (one request, no extension probing, no
+  404s for the ones you don't have). No `web/img/` files → `assets: {}` → pure
+  SVG.
 
 **One manual action (owner):** repo **Settings → Pages → Build and deployment
 → Source: "GitHub Actions" → Save.** The next push runs the workflow (visible

@@ -1,0 +1,2 @@
+# Drop player portraits here as <name-slug>.jpg (or .png/.webp), e.g. rolando-frazer.jpg.
+# Run `make build-web-data` to publish.

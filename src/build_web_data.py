@@ -30,6 +30,10 @@ from src.parse_wayback import open_clean_text
 CLEAN = REPO_ROOT / "data" / "clean"
 APP = REPO_ROOT / "app"
 WEB = REPO_ROOT / "web" / "data"
+WEB_IMG = REPO_ROOT / "web" / "img"
+
+# extension priority per kind — mirrors the app's old probe chain
+_ASSET_EXT = {"crest": ["png", "svg", "jpg", "webp"], "player": ["jpg", "png", "webp"]}
 
 SCHEMA_VERSION = 1
 _DE_SPLIT = re.compile(r"\s+de\s+|,\s*", re.I)   # "Nick de City" / "Nick, City"
@@ -70,6 +74,25 @@ def _reset_dir(path: Path) -> None:
     if path.exists():
         for p in sorted(path.rglob("*"), reverse=True):
             p.unlink() if p.is_file() else p.rmdir()
+
+
+def _scan_assets() -> dict[str, str]:
+    """web/img/{crest,player}/<name>.<ext> -> { "img/crest/<stem>": "img/crest/<file>" }.
+    The app emits an <img> only for a base listed here (one request, no probing).
+    Empty when web/img is empty. Deterministic: one file per stem, chosen by the
+    per-kind extension priority; keys sorted."""
+    out: dict[str, str] = {}
+    for kind, exts in _ASSET_EXT.items():
+        d = WEB_IMG / kind
+        d.mkdir(parents=True, exist_ok=True)
+        by_stem: dict[str, list[str]] = {}
+        for f in d.iterdir():
+            if f.is_file() and f.suffix.lower().lstrip(".") in exts:
+                by_stem.setdefault(f.stem, []).append(f.name)
+        for stem, names in by_stem.items():
+            names.sort(key=lambda n: exts.index(n.rsplit(".", 1)[1].lower()))
+            out[f"img/{kind}/{stem}"] = f"img/{kind}/{names[0]}"
+    return dict(sorted(out.items()))
 
 
 def _source_digest(inputs: list[str]) -> str:
@@ -798,14 +821,16 @@ def main() -> int:
         "bsn_career_leaders.csv", "bsn_records.csv",
         "franchise_key_map.csv", "franchise_curated.json", "player_crosswalk.csv",
     ]
+    assets = _scan_assets()
     manifest = {
         "schema_version": SCHEMA_VERSION,
         "source_digest": _source_digest(SOURCES),
         "counts": counts,
+        "assets": assets,
     }
     _jdump(manifest, WEB / "manifest.json")
     print(f"  -> {(WEB / 'manifest.json').relative_to(REPO_ROOT)} "
-          f"(digest {manifest['source_digest'][:12]})")
+          f"(digest {manifest['source_digest'][:12]}; {len(assets)} image asset(s))")
 
     diffs = diff_app_champions(app_to_fid)
     if diffs:

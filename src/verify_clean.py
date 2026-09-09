@@ -467,6 +467,15 @@ def verify_web_data(c: Checker) -> None:
             "web/data: every player_xwalk target is a real players_canonical id",
             f"{len(xw)} entries")
 
+    assets = manifest.get("assets")
+    c.check(isinstance(assets, dict), "web/data: manifest carries an `assets` dict")
+    if isinstance(assets, dict):
+        img_root = REPO_ROOT / "web"
+        c.check(all(k.startswith(("img/crest/", "img/player/")) for k in assets)
+                and all((img_root / v).is_file() for v in assets.values()),
+                "web/data: every manifest.assets entry points to a real web/img file",
+                f"{len(assets)} asset(s)")
+
     mvp = json.loads((web / "index" / "mvp.json").read_text(encoding="utf-8"))
     c.check(all(m["bsnpr_id"] is None or m["bsnpr_id"] in pid_set for m in mvp),
             "web/data: every mvp.json bsnpr_id is a real players_canonical id")

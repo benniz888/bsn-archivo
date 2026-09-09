@@ -109,6 +109,27 @@ class TestBuild:
         idx = {x["id"] for x in json.loads((b.WEB / "index" / "players.json").read_text())}
         assert all(int(f.stem) in idx for f in (b.WEB / "players").glob("*.json"))
 
+    def test_assets_empty_by_default(self):
+        man = json.loads((b.WEB / "manifest.json").read_text())
+        assert isinstance(man["assets"], dict)
+        assert all(v.startswith(("img/crest/", "img/player/")) for v in man["assets"].values())
+
+    def test_scan_assets_picks_up_a_file(self, tmp_path, monkeypatch):
+        root = tmp_path / "web" / "img"
+        (root / "crest").mkdir(parents=True)
+        (root / "player").mkdir(parents=True)
+        (root / "crest" / "rio.svg").write_bytes(b"<svg/>")
+        (root / "crest" / "rio.png").write_bytes(b"x")          # priority: png > svg
+        (root / "player" / "georgie-torres.jpg").write_bytes(b"x")
+        (root / "crest" / "notes.txt").write_text("ignored")
+        monkeypatch.setattr(b, "WEB_IMG", root)
+        got = b._scan_assets()
+        assert got == {
+            "img/crest/rio": "img/crest/rio.png",
+            "img/player/georgie-torres": "img/player/georgie-torres.jpg",
+        }
+        assert list(got) == sorted(got)   # deterministic key order
+
     def test_site_index_matches_shell(self):
         idx = b.WEB.parent / "index.html"
         if not idx.exists():
