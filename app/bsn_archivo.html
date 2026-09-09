@@ -3376,7 +3376,9 @@ function refreshPlayerIndexArchive(){
 }
 function renderPlayerIndex(){
   const q=norm($('#pq')?$('#pq').value:''), f=$('#pf')?$('#pf').value:'';
-  const pf=$('#pfField'); if(pf) pf.hidden = (PMODE==='all');
+  /* inline display, not [hidden] — .field{display:flex} in the stylesheet
+     outranks the UA [hidden] rule, so the attribute alone leaves it visible. */
+  const pf=$('#pfField'); if(pf) pf.style.display = (PMODE==='all') ? 'none' : '';
   if(PMODE==='all'){ renderArchiveIndex(q); return; }
   const list=PINDEX.filter(p=>{
     const tags=Array.from(p.tags).join(' ');
