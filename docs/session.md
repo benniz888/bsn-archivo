@@ -934,26 +934,29 @@ harness — 1974 shows scoring champ + awards, 2009 shows standings + leaders,
 boot harness still 0 exceptions / 55 builders; `make verify` (329,510) / `make
 test` (153) unchanged (HTML only). **Owner:** browser render parity.
 
-##### 5D.3b — `showPlayer` career detail — CROSSWALK BUILT, AWAITING OWNER SIGN-OFF
-`app/player_crosswalk.csv` — `curated_name,bsnpr_id,canonical_name,career_span,
-verdict,confidence,flag,evidence`, one row per curated PINDEX name (386).
-Matcher `scratchpad/xwalk_match.py`: curated BIO full-name + birth date + HOF
-span + scoring years + clubs + nicknames, scored (fuzzy Levenshtein ≤2 on
-full-name/alias, birth-year ±0) against `players_canonical` + `player_aliases`
-+ `player_career_seasons` + `player_id_map`. Verdicts: **113 auto** (strong
-name/alias + birth year), **45 review** (surname + swap + decade/club only —
-owner confirms each id), **228 none** (no confident match; 5 explicit
-rejections with note — incl. Arnaldo Toro Jr vs Sr, José Ortiz ambiguity).
-Only ~78/158 matched ids have a built `web/data/players/<id>.json` today (rest
-are career-less canonical rows).
-Georgie Torres fixed: 790 → **788** "Torres Dougherty, George" (fuzzy full-name).
-Rolando Frazer → **2089** now clean after D-046 (was "Frazer Thorne, Error 404").
-**Open Q for owner:** emit a thin `players/<id>.json` for every canonical row
-(no career table) so the 82 career-less matches still get a real card, or fall
-back to curated-only + "sin ficha detallada"?
-Then `showPlayer` looks up an embedded `PLAYER_XWALK` block → fetches
-`players/<id>.json` → career-by-season table + fills null stats, curated
-bio/tags/warning kept on top.
+##### 5D.3b — `showPlayer` career detail — CROSSWALK DONE + THIN JSON DONE; app wiring NEXT
+- **Crosswalk** `app/player_crosswalk.csv` (committed `2670254`, not pushed) —
+  one row per curated PINDEX name (386): `curated_name,bsnpr_id,canonical_name,
+  career_span,verdict,confidence,flag,evidence`. Matcher
+  `scratchpad/xwalk_match.py` (fuzzy Levenshtein ≤2 on full-name/alias, birth
+  year ±0, vs `players_canonical` + `player_aliases` + `player_career_seasons`
+  + `player_id_map`). **113 auto · 45 review (all owner-signed-off) · 228 none**
+  (5 explicit rejections: Enrique Ramos, José Quiñones, Juan Báez, Arnaldo Toro
+  = Jr not Sr/223, José Ortiz = ambiguous ⇒ Piculín). Owner picks: Georgie
+  Torres 790→**788**, Rolando Frazer→**2089** (D-046), Edwin Pellot→**553**
+  (dup of 2388, has DOB), Jonathan García kept on **1094** (record truncated at
+  2017 snapshot; Mayagüez stint is post-capture — PC4 gap, not wrong person).
+- **Thin JSON** (owner said yes, 2026-09-09) — `build_players_detail` now emits
+  `web/data/players/<id>.json` for **every** canonical row (3303, was 1073);
+  2230 are thin (name/birth/position/aliases, `has_profile:false`, empty
+  `career`/`observations`). `verify_web_data` +1 (file count == canonical
+  count). web/data 18→27 MB / 4709 files. So every crosswalk id now has a real
+  fetchable profile.
+- **NEXT (app code):** `showPlayer` looks up an embedded `PLAYER_XWALK` block →
+  `DATA.get('players/'+id+'.json')` → career-by-season table + fill null stat
+  strip when `career` non-empty; when empty, keep the curated card + an honest
+  "sin ficha detallada" note. Curated bio/tags/warning stay on top. Verify in
+  the DOM-stubbed harness; browser render parity = owner.
 
 ##### 5D.3c — "Todo el archivo (3,303)" search mode — QUEUED
 `renderPlayerIndex` mode toggle: "Destacados (385)" (default) / "Todo (3,303)"

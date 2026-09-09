@@ -363,9 +363,11 @@ def _box_num_cols():
 
 
 def build_players_detail() -> tuple[int, int]:
-    """web/data/players/<bsnpr_id>.json for every player with something beyond the
-    search index — a profile, career rows, or an id_map observation. The other
-    ~2,200 are index-only (players.json already carries their light record)."""
+    """web/data/players/<bsnpr_id>.json for every id in players_canonical. Players
+    with a profile / career rows / id_map observation get a full record; the rest
+    get a thin one (name, birth, position, aliases — `has_profile: false`, empty
+    `career`) so the app's profile view always has a real card to render and can
+    show an honest "sin ficha detallada" note instead of a dead end."""
     canon = {r["bsnpr_id"]: r for r in _read("players_canonical.csv")}
     aliases: dict[str, list] = {}
     for a in _read("player_aliases.csv"):
@@ -380,14 +382,12 @@ def build_players_detail() -> tuple[int, int]:
         obs.setdefault(r["bsnpr_id"], []).append(r)
     resolve_team = _team_resolver()
 
-    # restrict to ids the identity spine actually knows — a career/obs row for an
-    # id absent from players_canonical (id 13352: a jugador.asp career with no
-    # enciclopedia entry) would be an unnamed, unsearchable file.
-    have_detail = (set(career) | set(obs)
-                   | {p for p, r in canon.items() if r["has_profile"] == "yes"}) & set(canon)
+    # one file per canonical id. A career/obs row for an id absent from
+    # players_canonical (id 13352: a jugador.asp career with no enciclopedia
+    # entry) is skipped — it would be an unnamed, unsearchable file.
     _reset_dir(WEB / "players")
-    n = 0
-    for pid in sorted(have_detail, key=int):
+    n = n_thin = 0
+    for pid in sorted(canon, key=int):
         c = canon.get(pid, {})
         rec = {
             "id": int(pid),
@@ -413,9 +413,11 @@ def build_players_detail() -> tuple[int, int]:
                 key=lambda x: (x["obs_source"], x["season"] or 0, x["club_raw"])),
             "sources": [c["source_url"]] if c.get("source_url") else [],
         }
+        if not (rec["career"] or rec["observations"] or rec["has_profile"]):
+            n_thin += 1
         _jdump(rec, WEB / "players" / f"{pid}.json")
         n += 1
-    return n, len(canon) - n
+    return n, n_thin
 
 
 _LEADER_CATS_ES = {
@@ -643,13 +645,13 @@ def main() -> int:
         print(f"  -> {path.relative_to(REPO_ROOT)} ({counts[name]})")
 
     # 5C — per-entity files
-    n_pdetail, n_pindex_only = build_players_detail()
+    n_pdetail, n_pthin = build_players_detail()
     n_sdetail = build_seasons_detail()
     n_games, n_gseasons = build_games()
     counts["player_files"] = n_pdetail
     counts["season_files"] = n_sdetail
     counts["game_files"] = n_games
-    print(f"  -> web/data/players/*.json ({n_pdetail}; {n_pindex_only} index-only)")
+    print(f"  -> web/data/players/*.json ({n_pdetail}; {n_pthin} thin / no career table)")
     print(f"  -> web/data/seasons/*.json ({n_sdetail})")
     print(f"  -> web/data/games/<season>/*.json ({n_games} games, {n_gseasons} seasons)")
 

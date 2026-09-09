@@ -469,6 +469,9 @@ def verify_web_data(c: Checker) -> None:
     n_pfiles = len(list(pdir.glob("*.json")))
     c.check(manifest["counts"].get("player_files") == n_pfiles,
             "web/data: manifest player_files matches players/*.json count", str(n_pfiles))
+    c.check(n_pfiles == len(players),
+            "web/data: one players/<id>.json per players_canonical row",
+            f"{n_pfiles} vs {len(players)}")
     n_sfiles = len(list(sdir.glob("*.json")))
     c.check(manifest["counts"].get("season_files") == n_sfiles,
             "web/data: manifest season_files matches seasons/*.json count", str(n_sfiles))
