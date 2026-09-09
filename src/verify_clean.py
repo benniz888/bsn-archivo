@@ -221,9 +221,13 @@ def verify_players(c: Checker) -> None:
     ids = [r["bsnpr_id"] for r in canon]
     c.check(len(ids) == len(set(ids)), "players_canonical: bsnpr_id unique")
     c.check(all(i.isdigit() for i in ids), "players_canonical: bsnpr_id all integer")
+    # jugador.asp placeholder text must never survive into a name (PC1/PC2)
+    _NAME_SENTINEL = re.compile(r"estad[ií]stica|no se sabe|\bnan\b", re.I)
     for r in canon:
         tag = f"id {r['bsnpr_id']}"
         c.check(bool(r["canonical_name"]), f"players_canonical: {tag} has canonical_name")
+        c.check(not _NAME_SENTINEL.search(r["canonical_name"]),
+                f"players_canonical: {tag} canonical_name carries no placeholder text", r["canonical_name"])
         c.check(r["normalized_name"] == r["normalized_name"].lower(),
                 f"players_canonical: {tag} normalized_name is lowercase")
         # normalized_name must be accent-free (D1)
@@ -402,6 +406,53 @@ def verify_reconcile(c: Checker) -> None:
                 f"scoring {yr}: owner-resolved to dual_metric_d4 (D4 boundary)")
 
 
+def verify_web_data(c: Checker) -> None:
+    """PHASE_5 / 5B. Skipped cleanly if `make build-web-data` has not run."""
+    import json
+    web = REPO_ROOT / "web" / "data"
+    manifest_path = web / "manifest.json"
+    if not manifest_path.exists():
+        return
+
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    c.check(isinstance(manifest.get("source_digest"), str) and len(manifest.get("source_digest", "")) == 64,
+            "web/data: manifest carries a source_digest (sha256 of the inputs, not a timestamp)")
+
+    for name in ("franchises", "seasons", "players", "scoring_titles",
+                 "career_leaders", "records"):
+        p = web / "index" / f"{name}.json"
+        c.check(p.exists(), f"web/data: index/{name}.json exists")
+        if not p.exists():
+            continue
+        try:
+            obj = json.loads(p.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            c.check(False, f"web/data: index/{name}.json is valid JSON", str(exc))
+            continue
+        n = len(obj["categories"]) if name == "career_leaders" else len(obj)
+        c.check(manifest["counts"].get(name) == n,
+                f"web/data: manifest count for {name} matches the file", f"{manifest['counts'].get(name)} vs {n}")
+
+    fr = json.loads((web / "index" / "franchises.json").read_text(encoding="utf-8"))
+    c.check(len({f["app_key"] for f in fr}) == 32, "web/data: franchises.json has all 32 app keys")
+    c.check(all(f["name"] and f["franchise_id"] for f in fr),
+            "web/data: every franchise row names a franchise_id + name")
+    canon_fids = {r["franchise_id"] for r in _read("franchises.csv")}
+    c.check(all(f["franchise_id"] in canon_fids for f in fr),
+            "web/data: every franchises.json franchise_id is real")
+
+    seasons = json.loads((web / "index" / "seasons.json").read_text(encoding="utf-8"))
+    seed_seasons = {r["season"] for r in _read("champions_reconciled.csv")}
+    c.check({s["season"] for s in seasons} == seed_seasons,
+            "web/data: seasons.json covers exactly champions_reconciled")
+
+    players = json.loads((web / "index" / "players.json").read_text(encoding="utf-8"))
+    c.check(len(players) == len(_read("players_canonical.csv")),
+            "web/data: players.json row count == players_canonical")
+    c.check(not any(p["birth_year"] == 0 or p["first_season"] == 0 for p in players),
+            "web/data: no 0 where a year is unknown (PC2 — null not zero)")
+
+
 def main() -> int:
     c = Checker()
     verify_champions(c)
@@ -412,6 +463,7 @@ def main() -> int:
     verify_players(c)
     verify_reconcile(c)
     verify_games(c)
+    verify_web_data(c)
     rc = c.report()
     print("verify:", "PASS" if rc == 0 else "FAIL")
     return rc

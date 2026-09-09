@@ -174,6 +174,20 @@ def clean_dob(raw: str) -> str:
     return m.group(1)
 
 
+# jugador.asp fills an unknown field with a placeholder rather than leaving it
+# blank; `read_html` also stringifies an empty cell as "nan". Treat all of these
+# as null (PC2). "Estadísticas Jugador" is a section header the heading scan
+# grabbed when the page had no real <h*> name — 725 profiles were affected and
+# ended up canonically named "<Surname>, Estadísticas Jugador".
+_FIELD_SENTINELS = {"", "nan", "no se sabe", "estadisticas jugador",
+                    "estadistica jugador", "jugador", "jugadores"}
+
+
+def clean_field(raw: str) -> str:
+    s = squish(raw or "")
+    return "" if normalize(s) in _FIELD_SENTINELS else s
+
+
 def parse_jugador() -> tuple[dict[str, dict], list[dict]]:
     """bsnpr_id -> profile enrichment;  + list of career-season rows."""
     profiles: dict[str, dict] = {}
@@ -188,8 +202,8 @@ def parse_jugador() -> tuple[dict[str, dict], list[dict]]:
 
         heading = ""
         for tag in soup.find_all(["h1", "h2", "h3", "h4"]):
-            t = squish(tag.get_text())
-            if t and t.lower() != "jugadores":
+            t = clean_field(tag.get_text())
+            if t:
                 heading = t
                 break
 
@@ -204,8 +218,8 @@ def parse_jugador() -> tuple[dict[str, dict], list[dict]]:
             if "Nacimiento" in cells0 and len(t) > 1:
                 vals = [squish(str(x)) for x in t.iloc[1].tolist()]
                 row = dict(zip(cells0, vals))
-                ciudad = row.get("Ciudad", "")
-                posicion = row.get("Posición", "") or row.get("Posicion", "")
+                ciudad = clean_field(row.get("Ciudad", ""))
+                posicion = clean_field(row.get("Posición", "") or row.get("Posicion", ""))
                 birth = clean_dob(row.get("Nacimiento", ""))
                 break
 
@@ -252,8 +266,8 @@ def build_canonical(enc: dict[str, dict], prof: dict[str, dict]) -> list[dict]:
     rows: list[dict] = []
     for pid, e in sorted(enc.items(), key=lambda kv: int(kv[0])):
         p = prof.get(pid, {})
-        apellidos = e["apellidos"]
-        nombre = p.get("profile_name", "").split(",")[-1].strip() if p.get("profile_name") else e["nombre"]
+        apellidos = clean_field(e["apellidos"])
+        nombre = p.get("profile_name", "").split(",")[-1].strip() if p.get("profile_name") else clean_field(e["nombre"])
         # jugador.asp heading is "Apellidos, Nombre"; prefer its apellidos if present
         if p.get("profile_name") and "," in p["profile_name"]:
             apellidos = p["profile_name"].split(",")[0].strip() or apellidos

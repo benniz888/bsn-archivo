@@ -4,9 +4,20 @@ src/parse_players.py. The end-to-end build is checked by `make parse-players`
 """
 
 from src.parse_players import (
-    extract_nickname, normalize, norm_key, strip_accents, strip_nickname,
-    _load_club_resolver,
+    clean_field, extract_nickname, normalize, norm_key, strip_accents,
+    strip_nickname, _load_club_resolver,
 )
+
+
+class TestCleanField:
+    def test_placeholders_become_empty(self):
+        for junk in ("nan", "No se sabe", "Estadísticas Jugador", "—", "-", ""):
+            assert clean_field(junk) == ""
+
+    def test_real_values_pass_through(self):
+        assert clean_field("  Armador ") == "Armador"
+        assert clean_field("Puerto Rico") == "Puerto Rico"
+        assert clean_field("Buchanan") == "Buchanan"   # contains "nan", not a sentinel
 
 
 class TestStripAccents:

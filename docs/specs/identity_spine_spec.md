@@ -101,9 +101,10 @@ Ambiguous bare nicknames resolve to `""` rather than guess.
   — see point 6 above. It resolved 10 of the 15 "multiple players match name +
   season" rows into `player_id_map.csv` (`name+season+club`), and the other 5
   plus 32 more review rows now carry a `club_match_ids` pointer for the human.
-- **Why `club_check=contradicts` does NOT un-map a row.** 36 of the 433
-  mappings have an observed club that disagrees with the `jugador.asp` career
-  table for an adjacent season. Spot-checking shows this is almost always (a) a
+- **Why `club_check=contradicts` does NOT un-map a row.** ~7% of the mappings
+  (46 of 649 after the D-042 name fix; was 36 of 433) have an observed club that
+  disagrees with the `jugador.asp` career table for an adjacent season.
+  Spot-checking shows this is almost always (a) a
   stale/gappy career table (the modern `player_season_leaders` seasons often
   aren't in the profile's season list at all), (b) a real mid-season / next-year
   team move, or (c) the thin franchise master splitting one club across two keys.
@@ -189,15 +190,14 @@ no observation is both mapped and queued.
    the review queue is larger than it will be. Re-run `parse_players` after the
    fetch completes.
 2. **CLOSED (PHASE_3F, 2026-09-08).** Club-code corroboration is wired into
-   `build_id_map` via `_load_club_resolver()` (point 6 above). Result: id_map
-   423 → 433 (+10 `name+season+club`), review queue 828 → 818, the "multiple
-   players match name + season" bucket 15 → 5, and 42 review rows now carry a
-   `club_match_ids` pointer. The **106 "multiple name candidates, none
-   corroborated by season" bucket did not shrink** — those candidates have no
-   career-season data at/near the observed season, so club has nothing to
-   corroborate *against*. That bucket is blocked on Q3 (missing career spans),
-   not on the club signal.
-3. **Pre-2007 players with no enciclopedia entry** (~346 "no canonical name
+   `build_id_map` via `_load_club_resolver()` (point 6 above). At PHASE_3F: id_map
+   423 → 433, review 828 → 818, the "multiple players match name + season" bucket
+   15 → 5. **After the D-042 name fix (2026-09-08):** id_map 649, review 602,
+   `name+season+club` 16. The 79-row "multiple name candidates, none corroborated
+   by season" bucket still does not move on club alone — those candidates have no
+   career-season data at/near the observed season. Blocked on Q3 (missing career
+   spans), not on the club signal.
+3. **Pre-2007 players with no enciclopedia entry** (~199 "no canonical name
    match", mostly `historic_scoring_champions` 1948–1970 and `lideres2000`
    surname-only) **and modern players whose `jugador.asp` season table is stale**
    (the 361 "season not in known career span" + the 106 bucket). Candidates: the
