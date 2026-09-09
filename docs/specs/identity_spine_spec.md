@@ -61,14 +61,33 @@ distinct `(obs_source, player_raw, club_raw, season)`:
   ±1 year).
 - **exactly one corroborated candidate** → `player_id_map.csv`,
   `match_method = name+season_in_career`.
+- **>1 corroborated, but the observed club (via the club-code map, PHASE_3F)
+  uniquely picks one of them** → `player_id_map.csv`,
+  `match_method = name+season+club`. (Club is only ever a *tiebreaker* here —
+  it never overrides the season test, only narrows within it.)
 - **one name candidate, not corroborated** (no profile yet, or season outside
   span) → `player_review_queue.csv`, reason recorded. *Not* the id map.
-- **>1 corroborated**, or **>1 candidate none corroborated**, or **no name
-  match** → review queue with the candidate ids + reason.
+- **>1 corroborated** (club did not break the tie), or **>1 candidate none
+  corroborated**, or **no name match** → review queue with the candidate ids +
+  reason + `club_franchise_id` / `club_match_ids` (which candidates the club
+  points at — makes the manual resolution point-and-click).
 
-`player_id_map.csv` therefore only ever contains season-corroborated links. As
-tranche B fills in career spans, rows migrate from the review queue to the map
-on the next `parse_players` run.
+`player_id_map.csv` only ever contains season-corroborated links (club is a
+tiebreaker within that, never a substitute). Every mapped row also carries a
+`club_check` ∈ {`confirms`, `contradicts`, `no_obs_club`, `no_career_club`} —
+advisory only (see RATIONALE). As tranche B fills in career spans, rows migrate
+from the review queue to the map on the next `parse_players` run.
+
+**6. Club-code resolver (PHASE_3F).** `_load_club_resolver()` maps any club
+string — 5-char `lideres200x` code (`QUEBR`), 2-letter `equiposstat` code
+(`SA`), `"Nick de City"`, career-table `"Nick, City"`, bare nickname, bare city
+— to one stable franchise key, reading `club_code_map.csv` +
+`city_franchise_map.csv` + `franchises.csv`. The observed club and the
+`jugador.asp` career-table team names both go through it, so a match is
+representation-independent. Where the franchise master is thin (Conquistadores
+de Guaynabo, Caciques de Humacao — D2 lineage the master doesn't yet carry) it
+falls back to a `nick_city` synthetic key, still consistent on both sides.
+Ambiguous bare nicknames resolve to `""` rather than guess.
 
 ---
 
@@ -78,8 +97,18 @@ on the next `parse_players` run.
   on "birth year + first season + primary club". The observation rows carry
   none of birth year — only name, club, season. `jugador.asp` gives the career
   span; the season test is the strongest signal available from the observation
-  side. Club consistency is a planned second signal (needs the club-code map,
-  PHASE_4). Until then a season-in-span match with a unique candidate is the bar.
+  side. **Club consistency was added as the second signal in PHASE_3F** (2026-09-08)
+  — see point 6 above. It resolved 10 of the 15 "multiple players match name +
+  season" rows into `player_id_map.csv` (`name+season+club`), and the other 5
+  plus 32 more review rows now carry a `club_match_ids` pointer for the human.
+- **Why `club_check=contradicts` does NOT un-map a row.** 36 of the 433
+  mappings have an observed club that disagrees with the `jugador.asp` career
+  table for an adjacent season. Spot-checking shows this is almost always (a) a
+  stale/gappy career table (the modern `player_season_leaders` seasons often
+  aren't in the profile's season list at all), (b) a real mid-season / next-year
+  team move, or (c) the thin franchise master splitting one club across two keys.
+  It is a review *hint*, surfaced in the column (PC4), not evidence the name+season
+  match is wrong — so the row stays mapped and flagged, never dropped.
 - **Why `given_first_only` aliases are deliberately ambiguous.** "Arroyo,
   Carlos" genuinely could be Carlos A. Arroyo (id 273) or Carlos Andrés Arroyo
   (id 13124). Emitting the alias for *both* and letting the season test decide
@@ -121,8 +150,9 @@ on the next `parse_players` run.
 
 ### `src/parse_players.py` (`make parse-players`)
 Pure functions unit-tested in `tests/test_parse_players.py`: `strip_accents`,
-`normalize`, `norm_key`, `extract_nickname`, `strip_nickname`, `clean_dob`.
-Runs on whatever raw files are present — re-run as tranche B lands.
+`normalize`, `norm_key`, `extract_nickname`, `strip_nickname`, `clean_dob`,
+`_load_club_resolver` (PHASE_3F). Runs on whatever raw files are present —
+re-run as tranche B lands.
 
 ### `data/clean/` outputs
 | file | grain | notes |
@@ -130,20 +160,24 @@ Runs on whatever raw files are present — re-run as tranche B lands.
 | `players_canonical.csv` | one row per `bsnpr_id` | `has_profile` flags the tranche-B subset |
 | `player_aliases.csv` | (id, alias, type) | `normalized_alias` accent-free |
 | `player_career_seasons.csv` | (id, season, team_raw) | from `jugador.asp`; games + points |
-| `player_id_map.csv` | (obs_source, player_raw, club_raw, season) → id | season-corroborated links only |
+| `player_id_map.csv` | (obs_source, player_raw, club_raw, season) → id | season-corroborated links only; `match_method` ∈ {`name+season_in_career`, `name+season+club`}; `club_check` advisory |
+| `player_career_seasons.csv` | (id, season, team_raw) | also the club-code corroboration source |
 
 ### `data/interim/player_review_queue.csv`
 Everything the id map could not take: `candidate_ids`, `candidate_names`,
-`reason` ∈ {no canonical name match · unique name, season not in career span ·
-multiple players match name + season · multiple name candidates, none
-corroborated}.
+`club_franchise_id` (the observed club, resolved), `club_match_ids` (which
+candidates that franchise points at — PHASE_3F), `reason` ∈ {no canonical name
+match · unique name, season not in career span · multiple players match name +
+season · multiple name candidates, none corroborated}.
 
 ### `src/verify_clean.py` → `verify_players()`
 `bsnpr_id` unique + integer; `canonical_name` present; `normalized_name` /
 `normalized_alias` lowercase + ASCII (D1); provenance on every canonical row;
 birth_year plausible (1920–2010); `first_season ≤ last_season`; every alias +
 every id-map row points at a real id; **every id-map `match_method` names a
-corroboration beyond the name (D1)**; no observation is both mapped and queued.
+corroboration beyond the name — season, birth, and/or club (D1)**;
+`club_check` values valid + every `name+season+club` row is `club_check=confirms`;
+no observation is both mapped and queued.
 
 ---
 
@@ -154,14 +188,22 @@ corroboration beyond the name (D1)**; no observation is both mapped and queued.
    falls back to `first_season..last_season` from whatever profiles exist, and
    the review queue is larger than it will be. Re-run `parse_players` after the
    fetch completes.
-2. **Club-code map (PHASE_4).** `lideres200x` uses 5-char codes (`MOROV`),
-   `equiposstat` full names, `equiposstat` URLs 2-letter (`BA`). A code→franchise
-   map turns club consistency into a second corroboration signal and clears much
-   of the "multiple players match name + season" bucket.
-3. **Pre-2007 players with no enciclopedia entry** (~219 "no canonical name
+2. **CLOSED (PHASE_3F, 2026-09-08).** Club-code corroboration is wired into
+   `build_id_map` via `_load_club_resolver()` (point 6 above). Result: id_map
+   423 → 433 (+10 `name+season+club`), review queue 828 → 818, the "multiple
+   players match name + season" bucket 15 → 5, and 42 review rows now carry a
+   `club_match_ids` pointer. The **106 "multiple name candidates, none
+   corroborated by season" bucket did not shrink** — those candidates have no
+   career-season data at/near the observed season, so club has nothing to
+   corroborate *against*. That bucket is blocked on Q3 (missing career spans),
+   not on the club signal.
+3. **Pre-2007 players with no enciclopedia entry** (~346 "no canonical name
    match", mostly `historic_scoring_champions` 1948–1970 and `lideres2000`
-   surname-only). Candidates: the old `/jugador.asp` scheme, `jug05.asp`, or a
-   manual seed list for the ~50 historic scoring champions.
+   surname-only) **and modern players whose `jugador.asp` season table is stale**
+   (the 361 "season not in known career span" + the 106 bucket). Candidates: the
+   old `/jugador.asp` scheme, `jug05.asp`/`jugador05.asp` (GATED >500), or a
+   manual seed list for the ~50 historic scoring champions. This is the main
+   lever left for the review queue.
 4. **Truncated observation names** (`"Ayuso, Elias 'Lar"`, `"Morales, Mario
    'Qui"`) — the leader-table cell width clips them. A prefix-aware alias match
    (surname exact + given-name prefix) would resolve these safely when the

@@ -1,7 +1,7 @@
 # SESSION STATE — TIER 3
 <!-- Authoritative for current state and task priority. Update at every phase exit. -->
 
-**SESSION:** 002 — PHASE_3 / 3B / 3C / 3D / 4 / 3E / 3E-STORAGE / 3G (continues 001)
+**SESSION:** 002 — PHASE_3 / 3B / 3C / 3D / 4 / 3E / 3E-STORAGE / 3G / 3F (continues 001)
 **DATE:** 2026-09-08
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
@@ -30,8 +30,8 @@ Session 002:
   scripts found + gated.
 - PHASE_3D_IDENTITY_SPINE (committed 0d0d12d + refresh) — D1 canonical player
   table: **3,303 players** (1,076 with a full profile), league ids,
-  accent-stripped names, ~25k aliases, **423 season-corroborated id-map links**,
-  828-row review queue. Tranche B fetch (1,078 profiles) finished.
+  accent-stripped names, ~25k aliases, **433 id-map links** (423 season + 10
+  club-tiebreak, PHASE_3F), 818-row review queue. Tranche B (1,078 profiles) done.
 - PHASE_4_RECONCILE (ac4a23e + d7c3024 + cd8ef54) — reconciled champions +
   scoring vs the Wikipedia seed. 89/98 champion seasons `agree`. Owner resolved
   4 of 5 conflicts; es.wikipedia retested and **fetchable** (F3 resolved) — used
@@ -45,6 +45,11 @@ Session 002:
 - PHASE_3E_CLEAN_STORAGE (this session, uncommitted) — P2 call: `game_plays.csv`
   (65 MB) → committed gzipped `game_plays.csv.gz` (2.7 MB). D-036 /
   `clean_data_storage_spec.md`.
+- PHASE_3F_IDENTITY_LIFT (this session, uncommitted) — club-code corroboration
+  as a 2nd identity signal. id_map 423→433 (+10 `name+season+club` tiebreaks),
+  review queue 828→818, "name+season" ambiguity bucket 15→5, +`club_check`
+  advisory column, +`club_match_ids` review hints. Code-only, no fetch.
+  `identity_spine_spec.md` (Q2 closed).
 - PHASE_3G_HISTORIC_FOLLOWUP (this session, uncommitted) — **NEGATIVE FINDING.**
   Fresh CDX per target: `lidereshistoricos.asp` has only `?t=3` (no other `t`
   values ever archived); `?t=3` = scoring champs 1948–2004 + DPOY/ROY/MVP award
@@ -99,10 +104,12 @@ Identity spine (D1):
   `normalized_name`.
 - `player_aliases.csv` ~25k (id, alias, 9 alias types incl. `initial`,
   `given_first_only`, `nickname`).
-- `player_career_seasons.csv` (from jugador.asp), `player_id_map.csv` 423
-  season-corroborated obs→id links, `data/interim/player_review_queue.csv` 828
-  rows (346 no name match, 361 season outside career span, 106 multi-candidate,
-  15 same-name ambiguity — **no fuzzy match ever enters the id map**).
+- `player_career_seasons.csv` (from jugador.asp), `player_id_map.csv` **433**
+  obs→id links (423 `name+season_in_career` + 10 `name+season+club` — PHASE_3F
+  club tiebreak; `club_check` advisory column), `data/interim/player_review_queue.csv`
+  **818** rows (346 no name match, 361 season outside career span, 106
+  multi-candidate, 5 same-name ambiguity; 42 now carry a `club_match_ids` hint
+  — **no fuzzy match ever enters the id map**).
 
 Game data (PHASE_3E — `a2gamestatpbp` 2001–2004 fetch complete; box scores
 2001–03 + 2008–13):
@@ -574,6 +581,46 @@ Cross-refs: `docs/specs/archive_probe_spec.md` (t=3 probe),
 
 </details>
 
+### PHASE_3F_IDENTITY_LIFT — COMPLETE (2026-09-08, owner-directed). Code-only, no fetch.
+
+Owner instruction: club-code corroboration as a 2nd identity signal
+(NEXT_ACTIONS 2a / identity_spine_spec Q2). Detail: `identity_spine_spec.md`
+(points 5–6, RATIONALE, Q2 closed).
+
+- **`_load_club_resolver()`** in `parse_players.py` — maps any club string
+  (5-char `lideres200x` code, 2-letter `equiposstat` code, `"Nick de City"`,
+  career `"Nick, City"`, bare nick/city) → one stable franchise key, from
+  `club_code_map` + `city_franchise_map` + `franchises`. Observed club and the
+  `jugador.asp` career team names both go through it. Thin-master fallback =
+  `nick_city` synthetic; ambiguous bare nick → `""`.
+- **`build_id_map`** — new branch: `>1 season-corroborated` candidates + the
+  club uniquely picks one → `player_id_map.csv`, `match_method=name+season+club`
+  (club is a **tiebreaker within** the season test, never overrides it).
+- **Results:** id_map **423 → 433** (+10 `name+season+club`); review queue
+  **828 → 818**; "multiple players match name+season" bucket **15 → 5**; 42
+  review rows now carry `club_match_ids` (which candidate the club points at —
+  makes manual resolution point-and-click). New `club_check` column on every
+  id_map row {confirms 311 / no_obs_club 84 / contradicts 36 / no_career_club 2}
+  — **advisory only, PC4**: `contradicts` = the career table shows a different
+  club for an adjacent season (stale/gappy table, mid-season move, or thin
+  master), NOT a wrong match; rows stay mapped + flagged.
+- **The 106 "multiple name candidates, none corroborated by season" bucket did
+  NOT shrink** — those candidates have no career data at/near the observed
+  season, so club has nothing to test against. Blocked on career-span data
+  (identity_spine_spec Q3: `jug05.asp` fetch or a manual historic seed), not on
+  the club signal. Reported straight (PC1) rather than forcing thin matches.
+
+- T3F.1 — DONE. `_load_club_resolver` + 7 unit tests (`test_parse_players.py`).
+- T3F.2 — DONE. `build_id_map` club tiebreak + `club_check` + review enrichment.
+- T3F.3 — DONE. `verify_players`: `club_check` values valid; every
+  `name+season+club` row is `club_check=confirms`; D1 assertion widened to
+  accept "club" as corroboration. `make verify` green (326,177, +2).
+- T3F.4 — DONE. `identity_spine_spec.md` updated (Q2 closed), session.md.
+
+**Verify:** `make verify` green (326,177 checks); `make test` **136 pass** (+7).
+`players_canonical` / `player_aliases` / `player_career_seasons` byte-unchanged
+(deterministic). Paused (P6), nothing committed (P4).
+
 ### PHASE_4_RECONCILE — COMPLETE (2026-09-08, owner-requested)
 
 Owner instruction: reconcile the parsed data against the seed CSVs. **For every
@@ -831,6 +878,20 @@ Decisions made session 002 (PHASE_4):
   `relationship_unclear`, not merged. New `franchise_founded` conflict logged
   (Criollos 1969 en.wiki vs 1976 seed).
 
+Decision made session 002 (PHASE_3F_IDENTITY_LIFT):
+- **D-038 — club-code is a season-test *tiebreaker*, never a substitute or a
+  veto.** Wired into `parse_players.build_id_map` via `_load_club_resolver()`.
+  A link enters `player_id_map` on club grounds only when the season test
+  already corroborates >1 candidate and the club picks exactly one
+  (`match_method=name+season+club`, +10 rows). Club is NOT used to (a) map a
+  row the season test rejects — that stays in review with a `club_match_ids`
+  hint (the 106 bucket is data-limited, not signal-limited: D-022 stands), or
+  (b) un-map a row where the club disagrees — `club_check=contradicts` (36
+  rows) is advisory (PC4), because career-table club data has split seasons,
+  stale modern rows, and D2 franchise-master gaps that make a contradiction
+  unreliable. Resolver returns `""` for ambiguous bare nicknames rather than
+  guess. `identity_spine_spec.md` points 5–6.
+
 Decision made session 002 (PHASE_3G_HISTORIC_FOLLOWUP):
 - **D-037 — PHASE_3G is a negative finding; no clean rows added.** Fresh CDX
   confirmed `lidereshistoricos.asp` has only `?t=3` (award histories, already
@@ -873,6 +934,7 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
 | PHASE_3D | PASS | PASS | PASS | PASS | PASS | V1: T3D.1–T3D.3 done — canonical spine (3,303 players) + aliases + career-seasons + id_map + review queue; tranche B enrichment fetch backgrounded (partial), T3D.4 = re-run parse on completion. V2: PC1 (no fuzzy match in id_map — D1; ambiguous → review queue); PC2 (`1/1/1900` → null, blank stats stay blank); PC3 (`verify_players` asserts provenance on every canonical row); PC4 (review queue is a first-class output with candidate ids + reason); PC6 (`polite_get`, one GET per id, background throttle); D1 (accent-stripped `normalized_name`, alias table, match needs season corroboration not name alone — asserted in verify). V3: no secrets. V4: `make parse-players` + `make verify` green (38,706 checks); 91 pytest pass (+12); id_map spot-checks correct (Carmona→37, Arroyo Carlos→273 via season). V5: snake_case, English. |
 | PHASE_3E | PASS | PASS | PASS | PASS | PASS | V1: T3E.1–T3E.6 done — enumerate (10,548 captures) + `coverage_games.md` + gated fetcher (`MAX_TRANCHE=500`, `--force-year` after approval) + box-score parser + PBP parser + verify + tests. Fetch is a multi-day throttled job, one tranche at a time (PC6); done so far: `gamestatwide` 864, `pogamestat` 1021, `boxscore` 261, `a2gamestatpbp` 2001+2004; 2002 fetching, 2003 queued; owner HOLD on `pogamestat`/`boxscore` 2007–09 + all `gameinfo`. V2: PC1 (`bsnpr_id` blank unless a unique season-in-career match — D1, no guesses; `jugada_raw` kept verbatim; `box_check` flags source pts-mismatch, doesn't rewrite); PC3 (`verify_games` provenance per row); PC4 (crammed/stub captures counted + dropped from results, gated tranches in `coverage_games.md`, `box_check`); PC5 (parse reads `data/raw/games/` only, idempotent); PC6 (`polite_get`, one GET/digest, 500-gate honoured, sequential chain). V3: no secrets; raw gitignored. V4: `make parse-games` + `make verify` green (326,175 checks); 125 pytest pass (+17); **`2·FG2 + 3·FG3 + FT == PTS` on every parsed box row (4/39,669 source-error `pts_mismatch`, flagged); made ≤ att always**. V5: snake_case, English, "why" comments. |
 | PHASE_4 | PASS | PASS | PASS | PASS | PASS | V1: T4.1–T4.5 done + owner-resolution follow-up. Franchise layer + champions_reconciled + scoring_champions_reconciled + reconcile_conflicts + verify + tests. V2: PC1 (D-027: code flags, human clears; `OWNER_RESOLUTIONS` dated + auditable; seed CSVs untouched; 1945 left `disputed`); D2 (`franchise_events.csv`, murky lineage = disputed); D3 (`1942`+`1942-1943` both kept); D4 (`metric_era` flip + 1971/1974 `dual_metric_d4` recording BOTH winners); D5 (1945 stays flagged); D6 (1953 no_champion). PC3 (provenance / `sources` per row). V3: no secrets; pure module. V4: `make reconcile` + `make verify` green (40,114 checks); 108 pytest pass (+17); 87/98 seed↔bsnpr `verified`. V5: snake_case, English, D2/D5 citations in comments. |
+| PHASE_3F | PASS | PASS | PASS | PASS | PASS | V1: T3F.1–T3F.4 done — `_load_club_resolver` + club tiebreak in `build_id_map` + `club_check` column + review-queue `club_match_ids` enrichment + verify + tests + spec. V2: PC1 (the 106 bucket did not shrink — reported straight, not force-matched); PC3 (id_map + review rows keep full keys; provenance unchanged); PC4 (`club_check=contradicts` surfaced in the column, 36 rows, not hidden and not acted on); D1 (club is corroboration *beyond* the name; only ever a tiebreaker *within* the season test — `name+season+club`; never name-alone); D-022 (season-corroboration still required for the map; club-only stays in review). V3: no secrets; pure module. V4: `make verify` green (326,177, +2 club checks); `make test` 136 pass (+7 club-resolver tests); `players_canonical`/`aliases`/`career_seasons` byte-unchanged; id_map 423→433, review 828→818, name+season bucket 15→5. V5: snake_case, English, "why" comments. |
 | PHASE_3G | PASS | PASS | PASS | PASS | PASS | V1: fresh CDX per target (`cdx_historic_followup.csv`), probed + confirmed every param value from the page, reported what each is (see TASK_QUEUE). V2: PC1 (negative finding reported straight — no thin rows manufactured from a duplicate source; probe-spec's wrong guess corrected from the page's own section headers); PC3 (`mvp.asp` manifest tracked with provenance); PC4 (`t` gap reported as a gap — no other `t` value exists); PC5 (raw cached unmodified, gitignored); PC6 (`polite_get`, one GET/digest, single stream — `pgrep` confirmed no other fetcher); D-018 (duplicate `mvp.asp` source kept raw, not re-parsed). V3: no secrets. V4: `make verify` green (326,175 checks, unchanged — no clean data touched); `make test` 129 pass; `mvp.asp` 2006 capture cross-checked vs clean = 0 diffs / 57 scoring + 135 award rows. V5: snake_case, English, "why" comments. |
 | PHASE_3E_CLEAN_STORAGE | PASS | PASS | PASS | PASS | PASS | V1: P2 storage call made + logged (`clean_data_storage_spec.md`, H2 structure, alternatives rejected); `game_plays.csv` → `.csv.gz` via shared helper; old blob `git rm`'d; `make parse-games` re-emits it. V2: PC1 (content byte-identical to committed `.csv`, `diff` = 0 — no data touched); PC3 (provenance cols intact, `verify` asserts them on the gz-read rows); PC5 (parser still reads `data/raw/` only, idempotent + deterministic via `mtime=0`); PC7 (no new dependency — `gzip`/`csv`/`pandas` are stdlib+existing). V3: no secrets; read-only on raw. V4: `make verify` green (326,175 checks); `make test` 129 pass (+4: gz round-trip / magic / determinism / plain-path); `pandas.read_csv` reads the gz (233,664×17); `_write_csv` log line hardened against out-of-repo paths. V5: snake_case, English, "why" comments; `.csv.gz` double-extension convention documented. |
 
@@ -935,8 +997,8 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
 | `data/clean/player_season_stats_2001_2004.csv` | **new, S002 (PHASE_3C)** | 503 player-seasons, 2001–2003, 14 teams (only pre-2007 player-level source). |
 | `data/clean/team_season_totals_2001_2004.csv` | **new, S002 (PHASE_3C)** | 38 team-season totals. |
 | `src/fetch_players.py` | **new, S002 (PHASE_3D)** | enciclopedia + jugador.asp fetcher. `make fetch-players`. |
-| `src/parse_players.py` | **new, S002 (PHASE_3D)** | D1 identity spine builder. `make parse-players`. Re-run as tranche B lands. |
-| `tests/test_parse_players.py` | **new, S002 (PHASE_3D)** | 12 unit tests over the name-normalisation helpers. |
+| `src/parse_players.py` | new S002 (PHASE_3D); updated PHASE_3F | D1 identity spine builder. `make parse-players`. PHASE_3F: `_load_club_resolver()` + club tiebreak / `club_check` / review `club_match_ids` in `build_id_map`. |
+| `tests/test_parse_players.py` | new S002 (PHASE_3D); +7 PHASE_3F | 19 unit tests — name normalisation + `_load_club_resolver` (`TestClubResolver`). |
 | `data/raw/players/**` | **new, S002 (PHASE_3D)** | enciclopedia (77) + jugador.asp (~1079, backgrounded) captures. gitignored. |
 | `data/interim/fetch_manifest_players.csv` | **new, S002 (PHASE_3D)** | Every player capture → local file. Tracked. |
 | `data/interim/player_review_queue.csv` | **new, S002 (PHASE_3D)** | Uncorroborated / ambiguous obs names + candidate ids + reason. Tracked. |
@@ -981,21 +1043,19 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
 
 1. **Owner-directed queue (2026-09-08 session), in order, pause after each:**
    (a) PHASE_3E_CLEAN_STORAGE — **DONE** (`game_plays.csv.gz`, commit 72d2b52);
-   (b) PHASE_3G_HISTORIC_FOLLOWUP — **DONE** (negative finding, uncommitted);
-   (c) PHASE_3F_IDENTITY_LIFT = NEXT_ACTIONS item 2a below (club-code
-   corroboration, code-only, no fetch) — **next up**.
-   Owner HOLD still stands on `pogamestat`/`boxscore` 2007–09 and all of
-   `gameinfo` — do NOT fetch until owner reviews the PBP contents.
-2. **RANKED IDENTITY-LIFT PLAN** — box-score `bsnpr_id` resolution is 26% pre-2007
-   vs 74% modern; review queue = 828 rows (361 season-not-in-known-span · 346
-   no-name-match · 106 multi-candidate-no-season · 15 multi-match). Lift it in
-   this order:
-   a. **Club-code map as a 2nd corroboration signal** (identity_spine_spec Q2;
-      cheapest, no fetch). `data/clean/club_code_map.csv` already exists from
-      PHASE_4. Join observed `club_raw` → `franchise_id` and require club match
-      *in addition to* season for the ambiguous buckets — directly clears the
-      15 "multiple players match name + season" rows and tightens the 106
-      "multiple candidates" rows. Wire into `parse_players.build_id_map()`.
+   (b) PHASE_3G_HISTORIC_FOLLOWUP — **DONE** (negative finding, commit 100e9c6);
+   (c) PHASE_3F_IDENTITY_LIFT — **DONE** (club tiebreak, +10 id_map; uncommitted).
+   All three owner-directed items complete. Owner HOLD still stands on
+   `pogamestat`/`boxscore` 2007–09 and all of `gameinfo` — do NOT fetch until
+   owner reviews the PBP contents.
+2. **RANKED IDENTITY-LIFT PLAN** — box-score `bsnpr_id` resolution 26% pre-2007
+   / 74% modern; review queue **818** rows (361 season-not-in-known-span · 346
+   no-name-match · 106 multi-candidate-no-season · 5 multi-match).
+   a. **DONE (PHASE_3F).** Club-code corroboration wired into
+      `parse_players.build_id_map` — +10 `name+season+club`, name+season
+      ambiguity bucket 15→5, `club_match_ids` hints on 42 review rows.
+      identity_spine_spec Q2 closed. The 106 bucket did NOT move — data-limited
+      (needs 2b/2c), not signal-limited.
    b. **Fetch `jug05.asp` / `jugador05.asp`** (identity_spine_spec Q3; ~600
       captures each, 2005–2007-era player pages — **GATED >500, needs owner OK**).
       Extends `players_canonical` + `player_career_seasons` into the 2004–2007
@@ -1029,4 +1089,4 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
    PHASE_4 = ac4a23e + d7c3024 + cd8ef54.
    PHASE_3E = d421922, e94fec9, 640964e, a041a60, 891fc12, 2d1928c, 7f09013.
    `app_data_sync_spec.md` = e5609ee. PHASE_3E_CLEAN_STORAGE = 72d2b52.
-   PHASE_3G + this `docs/session.md` H4 update = pending P4 (this session).
+   PHASE_3G = 100e9c6. PHASE_3F + this `docs/session.md` H4 update = pending P4.

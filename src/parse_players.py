@@ -332,6 +332,76 @@ def build_aliases(canon: list[dict], enc: dict[str, dict]) -> list[dict]:
 
 
 # --------------------------------------------------------------------------- #
+# club-code corroboration (PHASE_3F, identity_spine_spec Q2)                    #
+# --------------------------------------------------------------------------- #
+# A second signal beyond name+season: does the observed club match a club the
+# candidate is on record as playing for? Used only to *break ties* and to
+# *enrich* the review queue — never to un-map an existing link (club data has
+# split seasons, mid-career gaps in jugador.asp, and D2 name/era ambiguity that
+# make a contradiction unreliable; those are surfaced in `club_check`, not acted
+# on). See docs/specs/identity_spine_spec.md.
+_DE_SPLIT = re.compile(r"\s+de\s+|,\s*", re.I)
+
+
+def _load_club_resolver():
+    """-> resolve_club(raw) mapping any club string (5-char code, 2-letter
+    `equiposstat` code, "Nick de City", "Nick, City", bare nick, bare city) to a
+    stable franchise key. Both the observed club and the career-table team names
+    go through this same function, so consistent inputs give a consistent key
+    even where the franchise master is thin (Conquistadores de Guaynabo,
+    Caciques de Humacao) — a `nick_city` synthetic key is used as the fallback."""
+    def _rows(name):
+        fp = CLEAN_DIR / name
+        return list(csv.DictReader(fp.open(encoding="utf-8"))) if fp.exists() else []
+
+    code_map: dict[str, str] = {}
+    for r in _rows("club_code_map.csv"):
+        code_map[r["code"].upper()] = r["franchise_id"]
+    city_map: dict[str, str] = {}
+    for r in _rows("city_franchise_map.csv"):
+        city_map[normalize(r["normalized_city"])] = r["franchise_id"]
+    nick_map: dict[str, str] = {}
+    nick_ambiguous: set[str] = set()
+
+    def _reg_nick(nick: str, fid: str) -> None:
+        n = normalize(nick)
+        if not n:
+            return
+        if n in nick_map and nick_map[n] != fid:
+            nick_ambiguous.add(n)
+        else:
+            nick_map[n] = fid
+
+    for r in _rows("franchises.csv"):
+        fid = r["franchise_id"]
+        parts = _DE_SPLIT.split(r["canonical_name"], maxsplit=1)
+        if len(parts) == 2:
+            _reg_nick(parts[0], fid)
+
+    def resolve_club(raw: str) -> str:
+        if not raw:
+            return ""
+        s = squish(raw)
+        if s.upper() in code_map:
+            return code_map[s.upper()]
+        parts = _DE_SPLIT.split(s, maxsplit=1)
+        nick = normalize(parts[0]) if parts else ""
+        city = normalize(parts[1]) if len(parts) == 2 else ""
+        city_fid = city_map.get(city)
+        nick_fid = None if nick in nick_ambiguous else nick_map.get(nick)
+        if city_fid and (not nick_fid or nick_fid == city_fid):
+            return city_fid
+        if nick_fid and not city:
+            return nick_fid
+        if nick and city:
+            return f"{nick}_{city}"          # synthetic — consistent both sides
+        # bare single token: could be a city or an (unambiguous) nickname
+        return city_map.get(nick) or ("" if nick in nick_ambiguous else nick_map.get(nick, "")) or ""
+
+    return resolve_club
+
+
+# --------------------------------------------------------------------------- #
 # observation -> id matching (D1)                                              #
 # --------------------------------------------------------------------------- #
 def _load_observations() -> list[dict]:
@@ -373,6 +443,17 @@ def build_id_map(canon: list[dict], aliases: list[dict],
     for r in career:
         career_by_pid.setdefault(r["bsnpr_id"], set()).add(r["season"])
 
+    # club-code corroboration (PHASE_3F): franchise key per (pid, season)
+    resolve_club = _load_club_resolver()
+    club_by_pid_season: dict[str, dict[int, set[str]]] = {}
+    club_by_pid: dict[str, set[str]] = {}
+    for r in career:
+        fid = resolve_club(r["team_raw"])
+        if not fid:
+            continue
+        club_by_pid_season.setdefault(r["bsnpr_id"], {}).setdefault(r["season"], set()).add(fid)
+        club_by_pid.setdefault(r["bsnpr_id"], set()).add(fid)
+
     mapped: list[dict] = []
     review: list[dict] = []
 
@@ -381,6 +462,7 @@ def build_id_map(canon: list[dict], aliases: list[dict],
         cands = alias_idx.get(normalize(pr), set()) or key_idx.get(norm_key(pr), set())
         cands = set(cands)
         sy = int(season) if re.fullmatch(r"\d{4}", season) else None
+        obs_fid = resolve_club(o["club_raw"])
 
         # corroborate with career span / season-in-range
         def in_career(pid: str) -> bool:
@@ -392,30 +474,62 @@ def build_id_map(canon: list[dict], aliases: list[dict],
                 return int(c["first_season"]) - 1 <= sy <= int(c["last_season"]) + 1
             return False
 
+        # did this pid play for obs_fid in a season within ±1 of the observation?
+        def club_in_season(pid: str) -> bool:
+            if not obs_fid or sy is None or pid not in club_by_pid_season:
+                return False
+            return any(abs(s - sy) <= 1 and obs_fid in fids
+                       for s, fids in club_by_pid_season[pid].items())
+
+        def club_check(pid: str) -> str:
+            if not obs_fid:
+                return "no_obs_club"
+            if club_in_season(pid):
+                return "confirms"
+            near = {f for s, fs in club_by_pid_season.get(pid, {}).items()
+                    if sy is not None and abs(s - sy) <= 1 for f in fs}
+            return "contradicts" if near else "no_career_club"
+
+        def club_ids(pool: set[str]) -> list[str]:
+            return sorted(p for p in pool if obs_fid and obs_fid in club_by_pid.get(p, set()))
+
         corroborated = {pid for pid in cands if in_career(pid)}
+        club_hits = {pid for pid in corroborated if club_in_season(pid)}
 
         if len(corroborated) == 1:
             pid = next(iter(corroborated))
             mapped.append({**o, "bsnpr_id": pid,
                            "canonical_name": by_pid[pid]["canonical_name"],
                            "match_method": "name+season_in_career",
+                           "club_check": club_check(pid),
+                           "confidence": "single-source"})
+        elif len(corroborated) > 1 and len(club_hits) == 1:
+            # PHASE_3F: season corroborates several, club uniquely picks one
+            pid = next(iter(club_hits))
+            mapped.append({**o, "bsnpr_id": pid,
+                           "canonical_name": by_pid[pid]["canonical_name"],
+                           "match_method": "name+season+club",
+                           "club_check": "confirms",
                            "confidence": "single-source"})
         elif len(cands) == 1 and not corroborated:
-            # unique name, but nothing corroborates it -> D1 says not good enough
             pid = next(iter(cands))
             review.append({**o, "candidate_ids": pid,
                            "candidate_names": by_pid[pid]["canonical_name"],
+                           "club_franchise_id": obs_fid, "club_match_ids": "|".join(club_ids(cands)),
                            "reason": "unique name match, season not in known career span (or player has no profile yet)"})
         elif len(corroborated) > 1:
             review.append({**o, "candidate_ids": "|".join(sorted(corroborated)),
                            "candidate_names": " | ".join(by_pid[p]["canonical_name"] for p in sorted(corroborated)),
+                           "club_franchise_id": obs_fid, "club_match_ids": "|".join(club_ids(corroborated)),
                            "reason": "multiple players match name + season span"})
         elif cands:
             review.append({**o, "candidate_ids": "|".join(sorted(cands)),
                            "candidate_names": " | ".join(by_pid[p]["canonical_name"] for p in sorted(cands)),
+                           "club_franchise_id": obs_fid, "club_match_ids": "|".join(club_ids(cands)),
                            "reason": "multiple name candidates, none corroborated by season"})
         else:
             review.append({**o, "candidate_ids": "", "candidate_names": "",
+                           "club_franchise_id": obs_fid, "club_match_ids": "",
                            "reason": "no canonical name match"})
 
     return mapped, review
@@ -449,11 +563,12 @@ def main() -> int:
     _write_csv(CLEAN_DIR / "player_id_map.csv",
                sorted(mapped, key=lambda r: (r["obs_source"], r["player_raw"], r["season"])),
                ["obs_source", "player_raw", "club_raw", "season", "bsnpr_id",
-                "canonical_name", "match_method", "confidence"])
+                "canonical_name", "match_method", "club_check", "confidence"])
     _write_csv(INTERIM_DIR / "player_review_queue.csv",
                sorted(review, key=lambda r: (r["reason"], r["player_raw"], r["season"])),
                ["obs_source", "player_raw", "club_raw", "season",
-                "candidate_ids", "candidate_names", "reason"])
+                "candidate_ids", "candidate_names", "club_franchise_id",
+                "club_match_ids", "reason"])
 
     with_profile = sum(1 for c in canon if c["has_profile"] == "yes")
     with_birth = sum(1 for c in canon if c["birth_year"])

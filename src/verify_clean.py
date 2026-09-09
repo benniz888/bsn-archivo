@@ -250,11 +250,19 @@ def verify_players(c: Checker) -> None:
     idmap = _read("player_id_map.csv")
     c.check(all(m["bsnpr_id"] in canon_ids for m in idmap),
             "player_id_map: every mapping points at a canonical id")
-    # D1: nothing in the id map may be a bare name match — method must name its corroboration
-    c.check(all("season" in m["match_method"] or "birth" in m["match_method"] for m in idmap),
+    # D1: nothing in the id map may be a bare name match — method must name its
+    # corroboration (season in career, birth year, and/or club-code consistency).
+    c.check(all(any(k in m["match_method"] for k in ("season", "birth", "club")) for m in idmap),
             "player_id_map: every match is corroborated beyond the name (D1)")
     c.check(all(m["confidence"] in CONFIDENCE_OK for m in idmap),
             "player_id_map: confidence values valid")
+    # PHASE_3F: club-code corroboration signal
+    CLUB_CHECK_OK = {"confirms", "contradicts", "no_obs_club", "no_career_club"}
+    c.check(all(m.get("club_check", "") in CLUB_CHECK_OK for m in idmap),
+            "player_id_map: club_check values valid")
+    c.check(all(m["club_check"] == "confirms"
+                for m in idmap if m["match_method"] == "name+season+club"),
+            "player_id_map: name+season+club matches all carry club_check=confirms")
 
     review = _read_interim("player_review_queue.csv")
     c.check(all(r["reason"] for r in review), "review_queue: every row states a reason")
