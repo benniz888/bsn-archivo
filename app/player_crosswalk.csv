@@ -1,0 +1,387 @@
+curated_name,bsnpr_id,canonical_name,career_span,verdict,confidence,flag,evidence
+A.D. Vassallo,2517,"Vassallo Colon, Angel D.",2009-2017,auto,7,given-name mismatch,"swapped initial == alias | surname+initial (vassallo,a) | decades overlap span 2009-2017 | club overlap"
+Butch Lee,59,"Lee Porter, Alfred",,auto,10,given-name mismatch,birth year 1956 | swapped name == alias | nickname 'butch'
+Larry Ayuso,574,"Ayuso Carrillo, Elias",1996-2017,auto,7,given-name mismatch,swapped name == alias | decades overlap span 1996-2017 | club overlap
+Mike Rosario,2859,"Rosario, Michael",2013-2017,auto,8,given-name mismatch,"swapped name == alias | surname+initial (rosario,m) | decades overlap span 2013-2017 | club overlap"
+Al Thornton,2740,"Thornton, Al",2012-2017,auto,12,,"curated name == alias | swapped name == alias | surname+initial (thornton,a) | decades overlap span 2012-2017 | club overlap"
+Alade Aminu,13308,"Aminu, Alade",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (aminu,a)"
+Aleem Ford,13305,"Ford, Aleem",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (ford,a)"
+Alejandro Carmona Sanchez,37,"Carmona Sanchez, Alejandro",2001-2017,auto,12,,"curated name == alias | swapped name == alias | surname+initial (sanchez,a) | decades overlap span 2001-2017 | club overlap"
+Alex Abreu,12998,"Abreu Vazquez, Alex",2015-2017,auto,6,,"swapped name == alias | surname+initial (abreu,a) | scoring years 2016-2016 in span 2015-2017 | club MISMATCH ['osos_manati'] vs ['maratonistas_coamo', 'santeros_aguada']"
+Alex Galindo,42,"Galindo Rodríguez, Alex",2002-2019,auto,8,,"swapped name == alias | surname+initial (galindo,a) | decades overlap span 2002-2019 | club overlap"
+Angel Matias,105,"Matias, Angel",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (matias,a)"
+Angel Nunez,13285,"Nuñez, Angel",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (nunez,a)"
+Antonio Ralat,13292,"Ralat, Antonio",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (ralat,a)"
+Ben McCauley,13253,"McCauley, Ben",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (mccauley,b)"
+Brandon Boyd,13283,"Boyd, Brandon",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (boyd,b)"
+Brandon Costner,13045,"Costner, Brandon",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (costner,b)"
+Brian Conklin,12989,"Conklin, Brian",2015-2016,auto,12,,"curated name == alias | swapped name == alias | surname+initial (conklin,b) | decades overlap span 2015-2016 | club overlap"
+Cady Lalanne,13106,"Lalanne, Cady",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (lalanne,c)"
+Carlos Arroyo,273,"Arroyo Bermúdez, Carlos A.",1996-2017,auto,9,,"swapped name == alias | surname+initial (arroyo,c) | scoring years 2018-2018 in span 1996-2017 | club overlap"
+Chane Behanan,13089,"Behanan, Chane",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (behanan,c)"
+Chris Brady,13173,"Brady, Chris",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (brady,c)"
+Chris Gaston,2821,"Gaston, Chris",2013-2017,auto,8,,"curated name == alias | swapped name == alias | surname+initial (gaston,c) | decades [2020] DISJOINT from span 2013-2017 | club overlap"
+Chris McCullough,13237,"McCullough, Chris",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (mccullough,c)"
+Christian Dalmau,382,"Dalmau Santana, Christian",1992-2017,auto,10,,"swapped name == alias | in player_id_map | surname+initial (dalmau,c) | decades overlap span 1992-2017 | club overlap"
+Christian Lopez Santiago,13085,"Lopez Santiago, Christian",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (santiago,c)"
+Christopher Ortiz,390,"Ortiz, Christopher",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (ortiz,c)"
+Damien Wilkins,12928,"Wilkins, Damien",2014-2017,auto,12,,"curated name == alias | swapped name == alias | surname+initial (wilkins,d) | decades overlap span 2014-2017 | club overlap"
+Damion James,13046,"James, Damion",2016-2017,auto,13,,"curated name == alias | swapped name == alias | surname+initial (james,d) | scoring years 2016-2016 in span 2016-2017 | club overlap"
+Darnell Hinson,2465,"Hinson Gaines, Darnell",2008-2017,auto,6,,"swapped name == alias | surname+initial (hinson,d) | scoring years 2009-2009 in span 2008-2017 | club MISMATCH ['caciques_humacao', 'grises_humacao'] vs ['brujos_guayama', 'gallitos_isabela', 'vaqueros_bayamon']"
+David Huertas,451,"Huertas, David",2002-2017,auto,12,,"curated name == alias | swapped name == alias | surname+initial (huertas,d) | decades overlap span 2002-2017 | club overlap"
+David Laury,13130,"Laury, David",2017-2017,auto,12,,"curated name == alias | swapped name == alias | surname+initial (laury,d) | decades overlap span 2017-2017 | club overlap"
+David Stockton,13286,"Stockton, David",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (stockton,d)"
+Devin Williams,13161,"Williams, Devin",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (williams,d)"
+E.J. Crawford,13276,"Crawford, E.J.",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (crawford,e)"
+Eric Dawson,13033,"Dawson, Eric",2017-2017,auto,11,,"curated name == alias | swapped name == alias | surname+initial (dawson,e) | scoring years 2017-2017 in span 2017-2017"
+Frank Gaines,13017,"Gaines, Frank",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (gaines,f)"
+Gary Browne,13027,"Browne Ramirez, Gary",2015-2017,auto,6,,"swapped name == alias | surname+initial (browne,g) | scoring years 2017-2017 in span 2015-2017 | club MISMATCH ['piratas_quebradillas', 'vaqueros_bayamon'] vs ['atleticos_san_german', 'maratonistas_coamo']"
+Georgie Torres,788,"Torres Dougherty, George",,auto,10,,"birth year 1957 | bioFull ~ alias (lev 1) | swapped initial == alias | surname+initial (torres,g)"
+Gian Clavell,13117,"Clavell, Gian",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (clavell,g)"
+Gilberto Clavell,2701,"Clavell, Gilberto",2011-2017,auto,8,,"curated name == alias | swapped name == alias | surname+initial (clavell,g) | decades [2020] DISJOINT from span 2011-2017 | club overlap"
+Hiram Huertas,13251,"Huertas, Hiram",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (huertas,h)"
+Héctor Blondet,872,"Blondet Texidor, Hector",1970-1983,auto,9,,"swapped name == alias | surname+initial (blondet,h) | scoring years 1974-1974 in span 1970-1983 | club overlap"
+Ike Diogu,2761,"Diogu, Ike",2012-2012,auto,9,,"curated name == alias | swapped name == alias | surname+initial (diogu,i) | decades overlap span 2012-2012 | club MISMATCH ['leones_ponce'] vs ['capitanes_arecibo']"
+Isaac Sosa,2818,"Sosa Carrion, Isaac",2013-2017,auto,8,,"swapped name == alias | surname+initial (sosa,i) | decades overlap span 2013-2017 | club overlap"
+Isaiah Pineiro,13246,"Pineiro, Isaiah",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (pineiro,i)"
+Iván Gandía,13318,"Gandia, Ivan",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (gandia,i)"
+Jahvari Josiah,13076,"Josiah, Jahvari",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (josiah,j)"
+James Carter,989,"Carter Gaudino, James",1987-2006,auto,9,,"swapped name == alias | surname+initial (carter,j) | scoring years 1991-1994 in span 1987-2006 | club overlap"
+James Ennis,2889,"Ennis, James",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (ennis,j)"
+Jamil Wilson,13100,"Wilson, Jamil",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (wilson,j)"
+Javier Mojica,2355,"Mojica Izquierdo, Javier",2007-2017,auto,8,,"swapped name == alias | surname+initial (mojica,j) | decades overlap span 2007-2017 | club overlap"
+Jaysean Paige,13280,"Paige, Jaysean",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (paige,j)"
+Jeffrion Aubry,1025,"Aubry Flores, Jeffrion",1998-2013,auto,6,,"swapped name == alias | surname+initial (aubry,j) | decades overlap span 1998-2013"
+Jerome Mincy,1032,"Mincy Clark, Jerome Alfred",1982-2003,auto,14,,"birth year 1964 | bioFull == alias | swapped name == alias | surname+initial (mincy,j) | decades overlap span 1982-2003"
+Jesse Pellot,2354,"Pellot Rosa, Jesse",2007-2017,auto,9,,"swapped name == alias | surname+initial (pellot,j) | scoring years 2009-2009 in span 2007-2017 | club overlap"
+Jessie Govan,13311,"Govan, Jessie",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (govan,j)"
+Jezreel De Jesus,2823,"De Jesús, Jezreel",2013-2013,auto,12,,"curated name == alias | swapped name == alias | surname+initial (jesus,j) | decades overlap span 2013-2013 | club overlap"
+John Holland,2898,"Holland, John",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (holland,j)"
+Jordan Howard,13200,"Howard, Jordan",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (howard,j)"
+Jordan Murphy,13307,"Murphy, Jordan",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (murphy,j)"
+Joshua Rivera,1291,"Rivera, Joshua",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (rivera,j)"
+José «Piculín» Ortiz,1271,"Ortiz Rijos, Jose Rafael",,auto,12,,"birth year 1963 | bioFull == alias | nickname 'piculin' | surname+initial (ortiz,j)"
+Juan «Pachín» Vicéns,1327,"Vicens Sastre, Juan",,auto,12,,"birth year 1934 | bioFull == alias | nickname 'pachin' | surname+initial (vicens,j)"
+Julian Torres,13254,"Torres, Julian",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (torres,j)"
+Justin Keenan,2824,"Keenan, Justin",2013-2017,auto,12,,"curated name == alias | swapped name == alias | surname+initial (keenan,j) | decades overlap span 2013-2017 | club overlap"
+Justin Reyes,13229,"Reyes, Justin",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (reyes,j)"
+Kenneth Santos Velez,13320,"Santos Velez, Kenneth",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (velez,k)"
+Kevin Maura Colon,13158,"Maura Colón, Kevin",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (colon,k)"
+Khary Mauras,13329,"Mauras, Khary",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (mauras,k)"
+Kristian Doolittle,13279,"Doolittle, Kristian",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (doolittle,k)"
+Kyle Vinales,12950,"Viñales, Kyle",2015-2017,auto,9,,"curated name == alias | swapped name == alias | surname+initial (vinales,k) | decades overlap span 2015-2017 | club MISMATCH ['caciques_humacao', 'mets_guaynabo'] vs ['brujos_guayama', 'vaqueros_bayamon']"
+Leandro Allende,13290,"Allende, Leandro",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (allende,l)"
+Lee Benson,1429,"Benson, Lee",2004-2009,auto,10,,"curated name == alias | swapped name == alias | surname+initial (benson,l) | decades overlap span 2004-2009"
+Leon Williams,2825,"Williams, Leon V.",2013-2013,auto,8,,"swapped name == alias | surname+initial (williams,l) | decades overlap span 2013-2013 | club overlap"
+Luis Lopez Martinez,13217,"López Martínez, Luis",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (martinez,l)"
+Mario Butler,1575,"Butler Graham, Mario Alberto",1980-2008,auto,14,,"birth year 1957 | bioFull == alias | swapped name == alias | surname+initial (butler,m) | decades overlap span 1980-2008"
+Miguel Martinez,2632,"Martinez, Miguel",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (martinez,m)"
+Mike Harris,2697,"Harris, Mike",2011-2017,auto,12,,"curated name == alias | swapped name == alias | surname+initial (harris,m) | decades overlap span 2011-2017 | club overlap"
+Mike Young,13167,"Young, Mike",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (young,m)"
+Neftalí Rivera,1698,"Rivera Olivera, Neftali",1969-1983,auto,18,,"birth year 1948 | bioFull ~ alias (lev 1) | swapped name == alias | in player_id_map | surname+initial (rivera,n) | scoring years 1969-1973 in span 1969-1983 | club overlap"
+Nick Minnerath,13202,"Minnerath, Nick",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (minnerath,n)"
+Onzie Branch,12969,"Branch, Onzie",2015-2017,auto,8,,"curated name == alias | swapped name == alias | surname+initial (branch,o) | decades [2020] DISJOINT from span 2015-2017 | club overlap"
+Owen Perez,2776,"Perez, Owen",2013-2017,auto,8,,"curated name == alias | swapped name == alias | surname+initial (perez,o) | decades [2020] DISJOINT from span 2013-2017 | club overlap"
+Pablo Alicea,1774,"Alicea Rodriguez, Pablo",,auto,8,,"birth year 1963 | swapped name == alias | surname+initial (alicea,p)"
+Paris Bass,13271,"Bass, Paris",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (bass,p)"
+Phillip Wheeler,13270,"Wheeler, Phillip",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (wheeler,p)"
+Ramón Rivas,1927,"Rivas Contreras, Ramón",1984-1999,auto,6,,"swapped name == alias | surname+initial (rivas,r) | decades overlap span 1984-1999"
+Raymond Dalmau,1962,"Dalmau Perez, Raymond",1966-1985,auto,19,,"birth year 1948 | bioFull == alias | swapped name == alias | in player_id_map | surname+initial (dalmau,r) | scoring years 1968-1972 in span 1966-1985 | club overlap"
+Renaldo Balkman,2849,"Balkman, Renaldo",2013-2016,auto,12,,"curated name == alias | swapped name == alias | surname+initial (balkman,r) | decades overlap span 2013-2016 | club overlap"
+Reyshawn Terry,13000,"Terry, Reyshawn",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (terry,r)"
+Ricky Sanchez,2033,"Sanchez Rosa, Ricky",2001-2017,auto,8,,"swapped name == alias | surname+initial (sanchez,r) | decades overlap span 2001-2017 | club overlap"
+Robert Glenn,13213,"Glenn, Robert",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (glenn,r)"
+Rolando Frazer,2089,"Frazer Thorne, Rolando",,auto,12,,"birth year 1958 | bioFull == alias | swapped name == alias | surname+initial (frazer,r)"
+Ruben Cotto,2675,"Cotto, Rubén",2011-2017,auto,8,,"curated name == alias | swapped name == alias | surname+initial (cotto,r) | decades [2020] DISJOINT from span 2011-2017 | club overlap"
+Rubén Rodríguez,2113,"Rodriguez Leon, Ruben",1969-1991,auto,14,,"birth year 1953 | bioFull == alias | swapped name == alias | surname+initial (rodriguez,r) | decades overlap span 1969-1991"
+Sam Young,2880,"Young, Sam",2014-2014,auto,12,,"curated name == alias | swapped name == alias | surname+initial (young,s) | decades overlap span 2014-2014 | club overlap"
+Sammy Betancourt,2147,"Betancourt Fernandez, Samuel",1962-1982,auto,10,,"swapped name == alias | in player_id_map | surname+initial (betancourt,s) | decades overlap span 1962-1982 | club overlap"
+Samuel Betancourt,2147,"Betancourt Fernandez, Samuel",1962-1982,auto,7,,"swapped name == alias | surname+initial (betancourt,s) | scoring years 1972-1976 in span 1962-1982"
+Tai Wesley,13198,"Wesley, Tai",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (wesley,t)"
+Terrence Jones,13289,"Jones, Terrence",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (jones,t)"
+Terrence Shannon,2391,"Shannon Dogan, Terrence",2007-2013,auto,8,,"swapped name == alias | surname+initial (shannon,t) | decades overlap span 2007-2013 | club overlap"
+Terrico White,13281,"White, Terrico",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (white,t)"
+Tyler Davis,13230,"Davis, Tyler",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (davis,t)"
+Tyler Polo,2813,"Polo, Tyler",2013-2017,auto,8,,"curated name == alias | swapped name == alias | surname+initial (polo,t) | decades [2020] DISJOINT from span 2013-2017 | club overlap"
+Tyquan Rolon,13220,"Rolón, Tyquan",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (rolon,t)"
+Victor Rudd,13210,"Rudd, Victor",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (rudd,v)"
+Víctor Liz,2778,"Liz, Victor",2013-2017,auto,13,,"curated name == alias | swapped name == alias | surname+initial (liz,v) | scoring years 2017-2017 in span 2013-2017 | club overlap"
+Walter Hodge,2514,"Hodge Jr., Walter",2010-2017,auto,8,,"swapped name == alias | surname+initial (hodge,w) | decades overlap span 2010-2017 | club overlap"
+Wesley Correa,2278,"Correa Crump, Wesley",1981-1998,auto,11,,"swapped name == alias | in player_id_map | surname+initial (correa,w) | scoring years 1989-1989 in span 1981-1998 | club overlap"
+Weyinmi Efejuku Rose,2752,"Efejuku-Rose, Weyinmi",2012-2013,auto,11,,curated name == alias | swapped name == alias | decades overlap span 2012-2013 | club overlap
+Wilfredo Pagán,2290,"Pagan Roque, Wilfredo",1992-2017,auto,6,,"swapped name == alias | surname+initial (pagan,w) | decades overlap span 1992-2017"
+Wilfredo Rodriguez Valentin,13170,"Rodriguez Valentin, Wilfredo",,auto,8,,"curated name == alias | swapped name == alias | surname+initial (valentin,w)"
+Will Daniels,12964,"Daniels, Will",2015-2017,auto,12,,"curated name == alias | swapped name == alias | surname+initial (daniels,w) | decades overlap span 2015-2017 | club overlap"
+Federico «Fico» López,660,"Lopez Camacho, Federico",,review,5,birth-year off; owner-approved,"birth year MISMATCH 1962!=1963 | bioFull == alias | nickname 'fico' | surname+initial (lopez,f)"
+Teófilo Cruz,2200,"Cruz Downs, Teofilo",,review,4,birth-year off; owner-approved,"birth year MISMATCH 1942!=1948 | swapped name == alias | nickname 'teo' | surname+initial (cruz,t)"
+Tu Holloway,2905,"Holloway, Terrell",2014-2014,review,5,owner-confirmed (external source),"swapped name == alias | surname+initial (holloway,t) | decades overlap span 2014-2014 | club MISMATCH ['cangrejeros_santurce', 'piratas_quebradillas'] vs ['atleticos_san_german']"
+Von Wafer,12919,"Wafer, Vakeaton",,review,4,owner-confirmed (external source),"swapped name == alias | surname+initial (wafer,v)"
+Ángel Santiago,119,"Santiago Del Valle, Angel",1973-1996,review,12,birth-year off; owner-approved,"birth year MISMATCH 1956!=1957 | bioFull == alias | swapped name == alias | nickname 'cachorro' | surname+initial (santiago,a) | decades overlap span 1973-1996 | club overlap"
+Adolfo Porrata,10,"Porrata Doria, Adolfo",,review,4,owner-approved,"swapped name == alias | surname+initial (porrata,a)"
+Alexander Franklin,2766,"Franklin, Alexander",2012-2017,review,5,owner-approved,"curated name == alias | swapped name == alias | surname+initial (franklin,a) | decades [2020] DISJOINT from span 2012-2017 | club MISMATCH ['gigantes_carolina'] vs ['atleticos_san_german', 'indios_mayaguez', 'vaqueros_bayamon']"
+Carlos Bermúdez,334,"Bermudez Torres, Carlos",1970-1984,review,6,owner-approved,"swapped name == alias | surname+initial (bermudez,c) | decades overlap span 1970-1984"
+Carlos Emory,2838,"Emory, Carlos",2013-2018,review,5,owner-approved,"curated name == alias | swapped name == alias | surname+initial (emory,c) | decades [2020] DISJOINT from span 2013-2018 | club MISMATCH ['piratas_quebradillas'] vs ['leones_ponce', 'santeros_aguada']"
+Chris Ortiz,13057,"Ortiz, Chris",2017-2017,review,9,owner-approved,"curated name == alias | swapped name == alias | surname+initial (ortiz,c) | decades overlap span 2017-2017 | club MISMATCH ['osos_manati'] vs ['cariduros_fajardo']"
+Christian López,13085,"Lopez Santiago, Christian",,review,4,owner-approved,"swapped name == alias | surname+initial (lopez,c)"
+Daniel Rivera,420,"Rivera Cintron, Daniel",,review,4,owner-approved,"swapped name == alias | surname+initial (rivera,d)"
+Daniel Santiago,427,"Santiago Lynn, Daniel",1996-2015,review,6,owner-approved,"swapped name == alias | surname+initial (santiago,d) | decades overlap span 1996-2015"
+Davon Jefferson,13108,"Jefferson, Davon",2017-2017,review,5,owner-approved,"curated name == alias | swapped name == alias | surname+initial (jefferson,d) | decades [2020] DISJOINT from span 2017-2017 | club MISMATCH ['cangrejeros_santurce', 'indios_mayaguez'] vs ['capitanes_arecibo']"
+Denis Clemente,2702,"Clemente, Denis",2011-2017,review,5,owner-approved,"curated name == alias | swapped name == alias | surname+initial (clemente,d) | decades [2020] DISJOINT from span 2011-2017 | club MISMATCH ['mets_guaynabo'] vs ['caciques_humacao', 'capitanes_arecibo']"
+Derek Reese,13113,"Reese, Derek",2017-2017,review,5,owner-approved,"curated name == alias | swapped name == alias | surname+initial (reese,d) | decades [2020] DISJOINT from span 2017-2017 | club MISMATCH ['piratas_quebradillas'] vs ['leones_ponce']"
+Devon Collier,12927,"Collier, Devon",2014-2017,review,5,owner-approved,"curated name == alias | swapped name == alias | surname+initial (collier,d) | decades [2020] DISJOINT from span 2014-2017 | club MISMATCH ['cangrejeros_santurce'] vs ['caciques_humacao', 'indios_mayaguez']"
+Diamond Stone,13315,"Stone, Diamond",,review,8,owner-approved,"curated name == alias | swapped name == alias | surname+initial (stone,d)"
+Edgar de León,508,"Leon Cruz, Edgar",1981-2000,review,6,owner-approved,"surname+initial (leon,e) | scoring years 1988-1990 in span 1981-2000 | club overlap"
+Edwin Pellot,553,"Pellot Rosa, Edwin",,review,4,owner-confirmed,"owner pick: id 553 (b.1963) over dup 2388 (no DOB) - same person, 2 enciclopedia snapshots"
+Evander Ortiz Colon,13221,"Ortiz Colón, Evander J.",,review,4,owner-approved,"swapped name == alias | surname+initial (colon,e)"
+Federico López,660,"Lopez Camacho, Federico",,review,4,owner-approved,"swapped name == alias | surname+initial (lopez,f)"
+Greg Smith,13199,"Smith, Greg",,review,8,owner-approved,"curated name == alias | swapped name == alias | surname+initial (smith,g)"
+Guillermo Diaz,2666,"Diaz, Guillermo",2011-2017,review,5,owner-approved,"curated name == alias | swapped name == alias | surname+initial (diaz,g) | decades [2020] DISJOINT from span 2011-2017 | club MISMATCH ['santeros_aguada'] vs ['capitanes_arecibo']"
+Ismael Cruz,13326,"Cruz Paris, Ismael Yomar",,review,4,owner-approved,"swapped name == alias | surname+initial (cruz,i)"
+J. J. Barea,1234,"Barea Mora, José Juan",2001-2006,review,5,owner-approved,"surname+initial (barea,j) | decades overlap span 2001-2006 | club overlap"
+Jaime Frontera,974,"Frontera Colley, Jaime",,review,4,owner-approved,"swapped name == alias | surname+initial (frontera,j)"
+Jim Maldonado,1046,"Maldonado Chabot, Jim",,review,4,owner-approved,"swapped name == alias | surname+initial (maldonado,j)"
+Jonathan García,1094,"Garcia Bermudez, Jonathan",2006-2017,review,5,"owner-checked: career record truncated at 2017 snapshot; Mayaguez stint is post-2017 (PC4 gap), position PG matches - keep 1094","swapped name == alias | surname+initial (garcia,j) | decades overlap span 2006-2017 | club MISMATCH ['indios_mayaguez'] vs ['caciques_humacao', 'criollos_caguas', 'leones_ponce', 'osos_manati', 'piratas_quebradillas']"
+Jonathan Rodriguez,2516,"Rodriguez, Jonathan",2010-2018,review,5,owner-approved,"curated name == alias | swapped name == alias | surname+initial (rodriguez,j) | decades [2020] DISJOINT from span 2010-2018 | club MISMATCH ['osos_manati'] vs ['cangrejeros_santurce', 'gallitos_isabela', 'leones_ponce', 'santeros_aguada']"
+Jorge Luis Torres,13259,"Torres, Jorge Luis",,review,5,owner-approved,"curated name == alias | surname+initial (torres,j)"
+Josue Erazo,13233,"Erazo Torres, Josue",,review,4,owner-approved,"swapped name == alias | surname+initial (erazo,j)"
+Luis Hernandez,2637,"Hernandez Matias, Luis",2010-2017,review,4,owner-approved,"swapped name == alias | surname+initial (hernandez,l) | decades [2020] DISJOINT from span 2010-2017 | club overlap"
+Luis Rivera Rosario,13334,"Rivera Rosario, Luis A",,review,4,owner-approved,"swapped name == alias | surname+initial (rosario,l)"
+Mario Morales,1584,"Morales Micheo, Mario",,review,4,owner-approved,"swapped name == alias | surname+initial (morales,m)"
+Mario «Quijote» Morales,1584,"Morales Micheo, Mario",,review,4,owner-approved,"nickname 'quijote' | surname+initial (morales,m)"
+Michael J. Bruesewitz,13294,"Bruesewitz, Michael J.",,review,5,owner-approved,"curated name == alias | surname+initial (bruesewitz,m)"
+Peter John Ramos,1836,"Ramos Fuentes, Peter John",2001-2020,review,5,owner-approved,"surname+initial (ramos,p) | decades overlap span 2001-2020 | club overlap"
+Rigoberto Mendoza,13050,"Mendoza De la Rosa, Rigoberto",,review,4,owner-approved,"swapped name == alias | surname+initial (mendoza,r)"
+Robert «Tractor» Traylor,2424,"Traylor, Robert",2007-2008,review,5,owner-approved,"surname+initial (traylor,r) | decades overlap span 2007-2008 | club overlap"
+Roberto Ríos,2076,"Rios Osorio, Roberto",1978-2000,review,6,owner-approved,"swapped name == alias | surname+initial (rios,r) | decades overlap span 1978-2000"
+Thomas Robinson,13297,"Robinson, Thomas",,review,8,owner-approved,"curated name == alias | swapped name == alias | surname+initial (robinson,t)"
+Will Martinez,12981,"Martinez, Wil",2015-2017,review,4,owner-approved,"swapped initial == alias | surname+initial (martinez,w) | decades overlap span 2015-2017 | club MISMATCH ['caciques_humacao', 'gigantes_carolina'] vs ['atleticos_san_german']"
+William Cruz Rodriguez,13115,"Cruz Rodriguez, William",2017-2017,review,5,owner-approved,"curated name == alias | swapped name == alias | surname+initial (rodriguez,w) | decades [2020] DISJOINT from span 2017-2017 | club MISMATCH ['piratas_quebradillas'] vs ['atleticos_san_german']"
+Ángel Rodríguez,13175,"Rodriguez Tricoche, Angel Daniel",,review,4,owner-approved,"swapped name == alias | surname+initial (rodriguez,a)"
+Admiral Schofield,,,,none,,,POOL
+Akil Mitchell,,,,none,,,POOL; SEASON_AWARDS
+Alejandro Ralat,,,,none,,,POOL
+Alejandro Vazquez,,,,none,,,POOL
+Alex Morales,,,,none,,,POOL
+Alexander Kappos,,,,none,,,POOL
+Alfonso Plummer,,,,none,,,POOL; SEASON_AWARDS
+Alize Johnson,,,,none,,,POOL
+Andre Curbelo,,,,none,,,POOL
+André Curbelo,,,,none,,,SEASON_AWARDS
+Angel Suero,,,,none,,,POOL
+Anthony Cowan Jr,,,,none,,,POOL
+Anthony Morales,,,,none,,,POOL
+Antonio Gordon,,,,none,,,POOL
+Archie Goodwin,,,,none,,,POOL
+Arguster Daniels IV,,,,none,,,POOL
+Arnaldo Toro,,,,none,,,"curated = Arnaldo Toro Jr (2020s, Santeros de Aguada, F); pipeline only has Arnaldo Toro Sr (id 223, b.1969). No match."
+Avry Holmes,,,,none,,,POOL
+Ben Moore,,,,none,,,POOL
+Benito Santiago Jr.,,,,none,,,POOL
+Bobby Joe Hatton,,,,none,,,POOL; LEADERS
+Bradley Camacho,,,,none,,,POOL
+Brady Manek,,,,none,,,POOL
+Brandon Goodwin,,,,none,,,POOL
+Brandon Knight,,,,none,,,POOL
+Braxton Key,,,,none,,,POOL
+Bryan Gonzalez Colon,,,,none,,,POOL
+Bryan Powell,,,,none,,,POOL
+Bryce Cotton,,,,none,,,POOL
+Bryn Forbes,,,,none,,,POOL
+Cameron McGriff,,,,none,,,POOL
+Carlos A Colon,,,,none,,,POOL
+Carlos Yao Lopez,,,,none,,,POOL
+Chaundee Brown Jr.,,,,none,,,POOL
+Cheick Diallo,,,,none,,,POOL
+Chinanu Onuaku,,,,none,,,POOL
+Chris Duarte,,,,none,,,POOL
+Christian M. Negron,,,,none,,,POOL
+Christian Pizarro Rios,,,,none,,,POOL
+Corey Jae Crowder,,,,none,,,POOL
+Corey McKeithan,,,,none,,,POOL
+D J Wilson,,,,none,,,POOL
+D.J. Hogg,,,,none,,,POOL
+Damian Jones,,,,none,,,POOL
+Daniel Rosado,,,,none,,,POOL
+Danilo Gallinari,,,,none,,,POOL; SEASON_AWARDS
+Darius Bazley,,,,none,,,POOL
+David Scott James Jr,,,,none,,,POOL
+Deandre Pinckney,,,,none,,,POOL
+DeMarcus Cousins,,,,none,,,POOL
+Deonte Burton,,,,none,,,POOL
+Derrick Walton,,,,none,,,POOL
+Dewan Hernandez,,,,none,,,POOL
+Diego Gonzalez Pellot,,,,none,,,POOL
+Dimencio Vaughn,,,,none,,,POOL
+Dyondre Dominguez,,,,none,,,POOL
+Elijah Hughes,,,,none,,,POOL
+Emmanuel Andujar,,,,none,,,POOL
+Emmanuel Maldonado,,,,none,,,POOL; SEASON_AWARDS
+Emmanuel Mudiay,,,,none,,,POOL; MVP_YEARS; SEASON_AWARDS
+Emmy Andujar,,,,none,,,POOL
+Enrique Ramos,,,,none,,,"rej 1836 (that is Peter John Ramos, matched separately); Enrique Ramos not in pipeline"
+Eric Ayala,,,,none,,,POOL
+Eugene German,,,,none,,,POOL
+Felix A. Rivera Vega,,,,none,,,POOL
+Fernando Caballero Acevedo,,,,none,,,POOL
+Gabe York,,,,none,,,POOL
+Gabriel J. Belardo,,,,none,,,POOL
+Gaby Belardo,,,,none,,,POOL
+Geancarlo Peguero,,,,none,,,POOL
+George Alexander Hamilton,,,,none,,,POOL
+George Conditt IV,,,,none,,,POOL; SEASON_AWARDS
+Georgie Pacheco-Ortiz,,,,none,,,POOL
+Gerardo Texeira,,,,none,,,POOL
+Giancarlo Rosado,,,,none,,,POOL
+Gianfranco Grafals,,,,none,,,POOL
+Giovanni Santiago,,,,none,,,POOL
+Grant Basile,,,,none,,,POOL
+Harold Perez Abreu,,,,none,,,POOL
+Hassan Whiteside,,,,none,,,POOL
+Hunter Tyson,,,,none,,,POOL
+Ian Clark,,,,none,,,POOL
+Ibrahima Sylla,,,,none,,,POOL
+Isaiah Hicks,,,,none,,,POOL
+Isaiah Palermo,,,,none,,,POOL
+Isiah Gaiter,,,,none,,,POOL
+Ismael Romero,,,,none,,,POOL
+Ivan Gandia-Rosa,,,,none,,,POOL
+Ja Kair Sanchez,,,,none,,,POOL
+Jack Edward McVeigh,,,,none,,,POOL
+Jack McVeigh,,,,none,,,POOL
+Jacob Wiley,,,,none,,,POOL
+Jae Crowder,,,,none,,,POOL
+Jahlil Okafor,,,,none,,,POOL
+Jalen Bernard Crutcher,,,,none,,,POOL
+Jalen Crutcher,,,,none,,,POOL
+Jamarion Sharp,,,,none,,,POOL
+Jameer Nelson Jr,,,,none,,,POOL
+Jampier Lezcano,,,,none,,,POOL
+Janiel Jafet Romer,,,,none,,,POOL
+Jared Ruiz,,,,none,,,POOL
+Jared Sullinger,,,,none,,,POOL
+Jase Febres,,,,none,,,POOL
+Jassel Pérez,,,,none,,,POOL
+JaVale McGee,,,,none,,,POOL; SEASON_AWARDS
+Javier Antonio Colón,,,,none,,,POOL; LEADERS
+Javier Ezquerra,,,,none,,,POOL
+Jay Shawn Alvarez,,,,none,,,POOL
+Jayden Martinez,,,,none,,,POOL
+Jaylen Nowell,,,,none,,,POOL
+Jaylin Galloway,,,,none,,,POOL
+Jeff Early Jr.,,,,none,,,POOL
+Jesus A. Cruz Galarza,,,,none,,,POOL
+Jevin Nikolas Muniz,,,,none,,,POOL
+Jhivvan Jackson,,,,none,,,POOL; SEASON_AWARDS
+Joel Soriano,,,,none,,,POOL
+John Brown III,,,,none,,,POOL
+John Jenkins lll,,,,none,,,POOL
+John Meeks,,,,none,,,POOL
+Johned Walker,,,,none,,,POOL
+Jonathan Zhao Olmos,,,,none,,,POOL
+Jordan Daniel Cintron,,,,none,,,POOL
+Jorge Brian Diaz,,,,none,,,POOL
+Jorge L. Matos,,,,none,,,POOL
+Jorge L. Pacheco,,,,none,,,POOL
+Jose Carlos Placer Diaz,,,,none,,,POOL
+Jose Gadiel Rodriguez,,,,none,,,POOL
+Jose Roman Angueira,,,,none,,,POOL
+Joseph Bull,,,,none,,,POOL
+Josh Perkins,,,,none,,,POOL
+Joshua Denton,,,,none,,,POOL
+José Manuel Baeza,,,,none,,,SEASON_AWARDS
+José Ortiz,,,,none,,,"curated pos=C + Cangrejeros + HOF 1980-2006 => Piculin (id 1271, mapped via his own entry); owner also raised a Carolina SG. Left unmatched pending owner. NOT id 2722 (2012-13 Guayama guard)."
+José Quiñones,,,,none,,,"rej 1069 (Joel Quiñones, different given name)"
+Juan Báez,,,,none,,,"rej 782 (""Baez, George"") name-level mismatch - needs owner ID"
+Juan Cardona,,,,none,,,SEASON_AWARDS
+Juan Miguel Suero,,,,none,,,POOL
+Juan Pablo Pineiro,,,,none,,,POOL
+K. Davis,,,,none,,,SEASON_AWARDS
+Kaleb Werson,,,,none,,,POOL
+Kalin Lucas,,,,none,,,POOL
+Kay Felder,,,,none,,,POOL
+Kendall Munson,,,,none,,,POOL
+Kendric Davis,,,,none,,,POOL
+Kenneth Faried,,,,none,,,POOL
+Kevin Allen,,,,none,,,POOL
+Kobi Simmons,,,,none,,,POOL
+Kyle Rose,,,,none,,,POOL
+L.J. Figueroa,,,,none,,,POOL
+Louis King,,,,none,,,POOL
+Luis D. Cuascut,,,,none,,,POOL
+Luis Henriquez,,,,none,,,POOL
+Luis Moya,,,,none,,,POOL
+Malachi Smith,,,,none,,,POOL
+Malik Beasley,,,,none,,,POOL
+Malik Williams,,,,none,,,POOL
+Manny Camper,,,,none,,,POOL
+Manuel Camper,,,,none,,,POOL
+Marlon Hargis,,,,none,,,POOL
+Marvin Eliel Mantilla,,,,none,,,POOL
+Matthew Lee,,,,none,,,POOL
+Max Abmas,,,,none,,,POOL
+Maxwell Abmas,,,,none,,,POOL
+Melo Trimble,,,,none,,,POOL
+Michael O Connell,,,,none,,,POOL
+Mike Scott,,,,none,,,POOL
+Milton Doyle,,,,none,,,POOL
+Mitchell Creek,,,,none,,,POOL
+Montrezl Harrell,,,,none,,,POOL
+Moses Brown,,,,none,,,POOL; SEASON_AWARDS
+Nathan Sobey,,,,none,,,POOL
+Nathaniel Mason,,,,none,,,POOL
+Neftali Acevedo Diaz,,,,none,,,POOL
+Neftali Alvarez,,,,none,,,POOL
+Nick Lucena,,,,none,,,POOL
+Nick Perkins,,,,none,,,POOL
+Nick Rakocevic,,,,none,,,POOL
+Noah Horchler,,,,none,,,POOL
+Norris Cole,,,,none,,,POOL
+Oenis Medina,,,,none,,,POOL
+Olumiye Oni,,,,none,,,POOL
+Omar Figueroa,,,,none,,,POOL
+Q.J. Peterson,,,,none,,,POOL
+R.J. Melendez,,,,none,,,POOL
+Rafael A. Pinzon Duperoy,,,,none,,,POOL
+Ramses J. Melendez Vega,,,,none,,,POOL
+Raymond Cintron Jr,,,,none,,,POOL
+Raúl «Tinajón» Feliciano,,,,none,,,POOL; MVP_YEARS
+Reinaldo Santana,,,,none,,,POOL
+Richard Nunez,,,,none,,,POOL
+Ricky Ledo,,,,none,,,POOL
+Rico Hopping,,,,none,,,POOL
+Robiel Morales,,,,none,,,POOL
+Rondae Hollis-Jefferson,,,,none,,,POOL
+Ryan Arcidiacono,,,,none,,,POOL
+Ryan Pearson,,,,none,,,POOL
+Rychell Janga,,,,none,,,POOL
+Sam Waardenburg,,,,none,,,POOL
+Scottie James,,,,none,,,POOL
+Sheldon Mac,,,,none,,,POOL
+Stephen Thompson Jr.,,,,none,,,POOL
+Stevie Thompson,,,,none,,,POOL
+Tai Odiase,,,,none,,,POOL
+Terence Davis,,,,none,,,POOL
+Theo Pinson,,,,none,,,POOL
+Theophilus A. Pinson Jr.,,,,none,,,POOL
+Timajh Parker,,,,none,,,POOL
+Timothy Soares,,,,none,,,POOL
+Tjader Fernandez,,,,none,,,POOL
+Tony Bishop Jr,,,,none,,,POOL
+Torrey Craig,,,,none,,,POOL
+Tory San Antonio,,,,none,,,POOL
+Travis Trice,,,,none,,,POOL; MVP_YEARS; SEASON_AWARDS
+Tremont Waters,,,,none,,,POOL
+Tyler Cook,,,,none,,,POOL
+Tyreke Evans,,,,none,,,POOL
+Tyrell Harrison,,,,none,,,POOL
+Vicktor Lakhin,,,,none,,,POOL
+Will Barton,,,,none,,,POOL
+Wilmer Lugo-Sanchez,,,,none,,,POOL
+Xavier Cooks,,,,none,,,POOL
+Xavier Zambrana,,,,none,,,POOL
+Yahir Cordero Melendez,,,,none,,,POOL
+Ysmael Romero,,,,none,,,POOL
+Zavier Simpson,,,,none,,,POOL
+Zhaire Jahi-Ihme Smith,,,,none,,,POOL
+Ángel Daniel Vassallo,,,,none,,,POOL; MVP_YEARS; SEASON_AWARDS
+Ángel «Munch» Cruz,,,,none,,,POOL
