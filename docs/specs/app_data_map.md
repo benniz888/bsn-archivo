@@ -1,209 +1,237 @@
 # Spec: App Data Map + web/data JSON Schema (PHASE_5, sub-phase 5A)
 
 Companion to [`app_data_sync_spec.md`](app_data_sync_spec.md) (the decision) and
-[`clean_data_storage_spec.md`](clean_data_storage_spec.md) (gzip). This file is
-the **contract 5B–5G build against**: which embedded block comes from where, and
-the exact shape of every `web/data/` file. No code in 5A.
+[`clean_data_storage_spec.md`](clean_data_storage_spec.md) (gzip). This is the
+contract 5B–5G build against.
+
+> **REWRITTEN 2026-09-09.** 5A–5D were first done against a **stale 2,214-line
+> `app/bsn_archivo.html`**. The real file is **6,286 lines / 519 KB**, ~90 data
+> blocks, **48 `build*()` functions**, a 55-builder batched-RAF boot behind a
+> splash screen, a `PROFILE` system, and deep-link routing. This rewrite is
+> against the real file. What survived the mistake, and what didn't, is in
+> [DECISION → Salvage].
 
 ## [PURPOSE]
 
-`app/bsn_archivo.html` (2,214 lines) carries ~30 embedded `const` data blocks.
-5A settles, per block: **regenerate from CSV | merge CSV + curated | leave
-hand-maintained**, then fixes the target JSON tree. The finding that shapes
-everything downstream:
+Decide, per embedded block: **regenerate from CSV | merge CSV over curated |
+leave hand-maintained**, then fix the `web/data/` JSON the app fetches.
 
-**The app is ~90% hand-curated editorial content with no CSV counterpart.**
-`data/clean/` is the *research archive* (3,303 players, 1,287 games, 39,669
-box-score rows, historic champions/scoring/awards 1948–2004). The app is a
-*curated magazine* (club colours, coach names, arena capacities, Hall-of-Fame
-essays, "on this day", the refuerzo-rule timeline, the Juega game pool). The two
-overlap only at champions, scoring titles, career leaders and records.
+### The finding, inverted
 
-So PHASE_5 is **not** "regenerate the app from CSVs". It is:
-1. sync the ~4 blocks that genuinely have a CSV source (§A), and
-2. expose the large CSV-only archive the app cannot currently show at all, as
-   fetched per-entity JSON (§D) — new capability, new UI in later sub-phases.
-Everything else stays inline, hand-edited (§C).
+The stale file was a simple artifact where only ~4 blocks had a CSV source. The
+**real app is a polished, gap-honest Spanish-first product** — and the
+`data/clean/` pipeline (PHASE_3C/3D/3E) has already produced most of the data
+the app documents as *missing*. `buildSources()` states, in the app UI:
+
+| App says (in `buildSources` / `buildCoverage`) | Pipeline actually has |
+|---|---|
+| "No existe ninguna base pública de estadísticas por temporada del BSN anterior a 2011" | `historic_scoring_champions.csv` 1948–2004, `player_season_stats_2001_2004.csv`, `player_season_leaders_2000_2002.csv` |
+| "No hay boxscores. Ninguno, de ninguna temporada." | `game_box_player.csv` — **39,669 rows / 1,292 games** (2001–03, 2008–13) |
+| "Posiciones completas solo de 2009, 2025 y 2026" | 5C derives standings for **2001–03 + 2008–13** from `game_results.csv` |
+| "MVP por año: 39 temporadas recuperadas" | `historic_awards.csv` MVP = **47 rows, 1958–2004** (+ ROY, DPOY) |
+| "Campeones de anotación 1956–65 y 1992–presente: … no se bajó" | `scoring_champions_reconciled.csv` — **1948–2021** |
+
+**So PHASE_5 has two tracks:**
+1. **Sync** the handful of blocks that mirror a CSV (`F.won/ru`, `champOf/ruOf`,
+   `SCORING`, arguably `MVP_YEARS`).
+2. **Feed the app's existing features** with the pipeline data that closes its
+   stated gaps — the player index, the season table, the `DATASETS` query
+   builder, `buildSources`/`buildCoverage`, standings. This is where the value
+   is, and it needs per-feature design, not a mechanical block swap.
+
+### The app's own merge architecture (this is what `hydrate()` plugs into)
+
+The owner already keeps **provenance-tagged source blocks separate and
+merges/derives at parse time** — a run of IIFEs around lines 1810–2470:
+- `translate()` (line ~1810) overwrites English display strings with Spanish
+  **keyed by name, in place** — explicitly *"rather than editing the source
+  tables, which would break their traceability to the research pass."*
+- `POOL` is assembled from `POOL` + `POOL_2026` + `POOL_PATCH` + `PLAYERS_NEW`
+  + `POOL_RGM` (cites `bsn_player_seasons_realgm.csv`, a RealGM file **not in
+  this repo** — L1) + auto-generated coach entries from `F`.
+- a "legend criterion" IIFE recomputes the `legend` tag from `LEADERS` /
+  `MVP_REPEAT` / `RECORDS` / `STONE`.
+- `PINDEX` (the player index) is lazily cross-referenced from **8 curated
+  blocks** in `buildPlayerIndex()`.
+
+`hydrate()` from `web/data` is **one more merge step** in this pattern: async,
+layered on top, never editing a source block. That is the D-043 rule generalised.
 
 ## [DECISION]
 
-### The franchise-key crosswalk (the one hard dependency for 5B)
+### Salvage — what the stale-file mistake cost
 
-The app keys franchises by a 3-letter code (`bay`, `sge`, `pon`, …, 30 keys);
-the pipeline keys them by `franchise_id` slug (`vaqueros_bayamon`,
-`atleticos_san_german`, …, 33 in `franchises.csv`). **5B's first task is an
-explicit, checked-in crosswalk** `app/franchise_key_map.csv`
-(`app_key,franchise_id,note`) — a curated naming file, not derived. Unmapped
-rows on either side are a hard error in the build (a franchise in `champions_
-reconciled` with no app key would silently drop a championship). 5A lists the
-30 app keys and 33 ids for the mapping in [OPEN_QUESTIONS] Q1.
-
-### Per-block classification
-
-| block (app line) | shape | consumed by | source | 5B action |
-|---|---|---|---|---|
-| `F` (757) | `{key:{name,abbr,city,founded,active,end?,c1,c2,colorSrc,coach?,won:[y],ru:[y],note?}}` | ribbon, titleStats, matrix, seasons, teams, games, today, juega | **MERGE**: `name/city/founded/status` ← `franchises.csv`; `won/ru` ← `champions_reconciled.csv` (via crosswalk); `c1/c2/colorSrc/coach/abbr/note/end` = **curated, keep** | emit `index/franchises.json` merging the two; curated fields from a new `app/franchise_curated.json` |
-| `champOf`/`ruOf` (1336) | derived `{year:key}` | ribbon, seasons, matrix | **REGEN** ← `champions_reconciled.csv` | fold into `index/seasons.json`; app derives the maps client-side |
-| `SCORING` (884) | `[[year,player,club,metric,value]]`, 1966–1991 (26) | scoring tab (chart + table) | **REGEN** ← `scoring_champions_reconciled.csv` (68 seasons 1948–2021) + `historic_scoring_champions.csv` | emit `index/scoring_titles.json`; **expansion** — 26 → ~68 rows, D4 `metric_era` preserved |
-| `LEADERS` (845) | `{category:[[rank,name,pos,years,total,gp,pg]]}` | leaders tab | **REGEN** ← `bsn_career_leaders.csv` (same 30-row seed) | emit `index/career_leaders.json`; carry D7 "floor, ~5yr stale" flag |
-| `RECORDS` (913) | `[[label,value,holder,year,note]]` (11) | records tab | **REGEN** ← `bsn_records.csv` (same seed) | emit `index/records.json` |
-| `MVP_REPEAT` (881) | `[[name,count]]` (7) | leaders tab | curated (derivable from `historic_awards.csv` later) | **keep inline** for MVP; note as a Q |
-| `ARENAS` (830) | `[[team,city,arena,capacity]]` (12) | teams tab | **curated, no CSV** | keep inline |
-| `COACHES` (927) | HOF coaches (11) | records tab | curated | keep inline |
-| `NBA_PLAYERS` (937) | (7) | records tab | curated | keep inline |
-| `RECENT` (947) | rich season recaps 2009–2026 (7) | recent tab | **curated editorial** (some facts overlap `champions_reconciled`, `game_results`) | keep inline; do not regen |
-| `HOF` (1034) | essay cards (~11) | HoF tab | **curated editorial** | keep inline |
-| `STONE`/`RETIRED` (1102/1109) | (4/2) | HoF tab | curated | keep inline |
-| `REF_RULES`/`REF_TIMELINE`/`REF_SCORERS` (1114/1121/1129) | refuerzo rules + 2024–25 timeline | refuerzos tab | **curated editorial** | keep inline |
-| `CALENDAR`/`NEXT_SEASON`/`ON_THIS_DAY`/`FINALS_2025`/`CLINCHERS`/`CHANNELS` (1138–1206) | today/games editorial | today, games | **curated editorial** | keep inline |
-| `STANDINGS` (1187) | `{year:{teams,games,rows:[[team,w,l]],note}}` — only 2009 | games tab | **NEW from CSV**: derive W–L from `game_results.csv` winners for 2001–03, 2008–13 | emit into `seasons/<year>.json`; keep the 2009 hand row as a cross-check |
-| `POOL` (1224) | Juega game pool `{n,d:[dec],c:[key],ppg,rpg,apg,pos,t:[tag],b}` (~45) | juega tab | **curated game data** (PC1 note in the block itself) | keep inline; PHASE_4B_GAME_POOL is its own scope |
-| `TAGS`/`NOTES`/image config | — | juega, seasons | curated | keep inline |
-| rules text, `REF_*` prose, tab copy in HTML | — | all tabs | curated | keep inline |
-
-### CSV-only archive → new fetched JSON (§D — no current app block)
-
-| CSV | → web/data | grain |
+| Work | Commit | Status against the real file |
 |---|---|---|
-| `players_canonical.csv` (3,303) + `player_aliases.csv` + `player_career_seasons.csv` + `player_id_map.csv` | `index/players.json` (light) + `players/<bsnpr_id>.json` (full) | one per player |
-| `game_results.csv` (1,287) + `game_box_player.csv` (39,669) | `games/<season>/index.json` + `games/<season>/<game_id>.json` | one per game |
-| `game_plays.csv.gz` (233,664) | `games/<season>/<game_id>_pbp.json` | one per game — **5F, gated on actor→id linking** |
-| `historic_scoring_champions.csv` (1948–2004) + `historic_awards.csv` (1958–2004) | `seasons/<year>.json` | one per season |
-| `player_season_leaders.csv` + `player_season_leaders_2000_2002.csv` + `player_season_stats_2001_2004.csv` | `seasons/<year>.json` | one per season |
-| `seasons_stats_tracked.csv` + `leader_coverage_gaps.csv` | `seasons/<year>.json` `.coverage` block | PC2/PC4 gap signal |
-| `franchise_events.csv` (D2 lineage) | `index/franchises.json` `.lineage` | per franchise |
+| **D-042** parse_players name fix | `a22027c` | ✅ untouched — pure pipeline, no app dependency |
+| **5B** `src/build_web_data.py` + `web/data/index/*.json` | `4634dad` | ✅ reads `data/clean/` only. Needs: (a) `cac` row in the crosswalk, (b) `caciques_humacao` added to the pipeline, (c) re-verify `diff_app_champions()` against the real `F` (regex `\n  ([a-z]{3}):\{` still matches — confirmed) |
+| **5B** `app/franchise_curated.json` | `4634dad` | ✅ **0 field diffs** vs the real `F` on the 32 shared keys — only missing `cac` |
+| **5B** `app/franchise_key_map.csv` | `4634dad` | ⚠️ 32 rows; real `F` has **33** (adds `cac`) |
+| **5C** `web/data/{players,seasons,games}/**` | `8891d78` | ✅ pure pipeline — fully valid |
+| **5D** `hydrate()` / `DATA` / `deriveChampions()` | *(uncommitted)* | ❌ **lost** — overwritten with the real file. Full redo against the boot architecture (see [5D, revised]) |
+
+### The franchise-key crosswalk (revised)
+
+Real `F` = **33 keys**. `franchises.csv` = 33 `franchise_id` — but **not a
+match**: the app has `cac` (Caciques de Humacao, 2009–2018, `active:0,end:2018`),
+which has **no `franchise_id`**; the pipeline has `santos_san_juan`, which has
+no app key (D5, folded into `cap`).
+
+**RESOLVED — owner 2026-09-09, done in 5B-FIX.** Wikipedia (Caciques de
+Humacao, Grises de Humacao): **two distinct franchises**, matching how `F`
+already splits `cac` and `hum`:
+- **`caciques_humacao`** — one continuous franchise: Toritos de Cayey
+  (2002–04) → Grises de Humacao (2005) → **renamed** Caciques de Humacao
+  (2010) → relocated away (Isabela, Guayama, ~2019). NEW `franchise_id`.
+  `city_franchise_map` HUMACAO → here (the archived Humacao games are all
+  2008–2013, inside this era). App key `cac`.
+- **`grises_humacao`** — a **separate 2021 expansion** (Wikipedia: "a new
+  franchise"), 2021–2023 → **Criollos de Caguas from 2024**. `franchises.csv`
+  founded corrected 2005 → 2021. App key `hum`. Never appears in the archived
+  game window.
+
+5B-FIX shipped: `franchises.csv` (+`caciques_humacao`, `grises_humacao` refounded
+2021), `city_franchise_map` (HUMACAO → `caciques_humacao`), `franchise_events`
+(+`toritos_cayey`→`caciques_humacao` 2005; the Grises→Criollos row upgraded to
+`verified` 2024), `franchise_key_map.csv` + `franchise_curated.json` (33 keys).
+`verify_web_data` / tests bumped 32 → 33. See `reconcile_spec.md`
+[OWNER_RESOLUTIONS].
+
+### Per-block classification (real file)
+
+**A — regenerate / sync from a CSV**
+
+| block (line) | shape | consumers | CSV | action |
+|---|---|---|---|---|
+| `F` `.won`/`.ru` (1076) | year arrays per franchise | `buildRibbon showSeason buildTitleStats buildTitleBars buildDynasties buildMatrix buildSeasonTable buildTiles showTeam buildClubCard drawFinal buildQB buildHub buildPlayerIndex` | `champions_reconciled.csv` | **hydrate — UNION** (D-043: keeps 1945/D5 + 1942-43/D3 that the CSV omits; 0 conflicts confirmed at build time) |
+| `champOf` / `ruOf` (2257) | derived `{year:key}` | as above | derived from `F` | wrap in `deriveChampions()`, re-run after hydrate |
+| `FKEYS` / `ACTIVE` (2264) | `Object.keys(F)` / active filter — **frozen at parse** | most `build*` | derived | recompute after hydrate (`FKEYS` stable; `ACTIVE` can drift if a `status` flips) |
+| `SCORING` (1205) | `[[yr,player,club,metric,val]]` 1966–1991 (26) | `buildScoringChart buildScoringTable buildPlayerIndex buildQB` | `scoring_champions_reconciled.csv` (1948–2021) | **hydrate — replace** in place (26 → ~68 rows). Needs `club_raw` added to `scoring_titles.json` |
+| `F` factual (name/city/founded/status/end) | | `showTeam` `buildTiles` `buildQB` … | `franchises.csv` | hydrate — replace factual, **keep curated** (colours/coach/abbr/note) |
+
+**A? — overlaps a CSV, owner call (5D.2 / later)**
+
+| `MVP_YEARS` (2065) | `[[yr,player,club]]` 1951–2018 (41) | `buildMVPYears buildPlayerIndex buildQB DATASETS.mvp` | `historic_awards.csv` MVP rows 1958–2004 (47) | the app calls these "39 recuperados"; the CSV has more + provenance. **Merge candidate** — but the app's are hand-verified with per-year clubs; needs care. |
+| `LEADERS` (1166) | career points/rebounds/assists top-10 (30) | `buildLeaders buildPlayerIndex buildQB` | `bsn_career_leaders.csv` (same 30-row seed) | low value to sync (identical); a D7 "floor, ~5 yr stale" banner is the only real add |
+| `RECORDS` (1234) | `[[rec,mark,who,yr,ctx]]` (11) | `buildRecords buildPlayerIndex buildQB` | `bsn_records.csv` (same seed) | low value |
+
+**B — NEW capability: feed an existing feature with CSV-only data (the real work)**
+
+| feature | app today | pipeline data | 5C-onwards |
+|---|---|---|---|
+| **Player index** (`buildPlayerIndex` / `PINDEX` / `showPlayer`, tab `jugadores`) | ~few-hundred players cross-ref'd from 8 curated blocks; `showPlayer` prints a big honest "lo que este archivo NO sabe" gap message | `players_canonical.csv` 3,303 + `player_career_seasons` + `player_id_map` + **`web/data/players/<id>.json` (5C, 1,076 files)** + box-score aggregates | add a "índice completo (3,303)" mode fed by `index/players.json`; `showPlayer` fetches `players/<id>.json` for career lines + box totals → shrinks the gap message |
+| **Season table / `showSeason`** (tab `historia`) | champion + runner-up + `NOTES[y]` only | **`web/data/seasons/<year>.json` (5C, 98 files)** — scoring champ, DPOY/ROY/MVP, derived standings, per-season leaders, coverage.gaps | `showSeason` fetches the season file → shows leaders / awards / standings inline where they exist |
+| **`DATASETS` query builder** (`buildQB`, tab `consulta`) | 14 datasets, all `rows:()=>[...from const blocks...]` | box scores, historic leaders, standings, awards | add `rows` sources: `boxscores`, `lideres_historicos` (1948–2004), `posiciones_historicas` (2001–13), `premios_historicos` — from `web/data` |
+| **`buildSources` / `buildCoverage`** (tab `fuentes`) | hard-coded gap list + `COVERAGE` %s that are **now partly wrong** | the pipeline manifests | rewrite the gap text; recompute `COVERAGE` bars from what's actually loaded |
+| **`STANDINGS`** (1509, only 2009) | one hand-entered season | 5C derived standings 2001–13 | `buildClubCard` / a standings view reads `seasons/<year>.json.standings` |
+
+**C — curated editorial, no CSV, stays inline**
+
+`ARENAS COACHES NBA_PLAYERS HOF STONE RETIRED REF_RULES REF_TIMELINE REF_SCORERS
+CALENDAR CAL_MILESTONES CAL_SHAPE NEXT_SEASON ON_THIS_DAY FINALS_2025 FINALS_2026
+FINALS_BY_YEAR SEMIS_2026 LEAD2026 AWARDS_2026 FIVE_2026 CLINCHERS CHANNELS POOL
+POOL_2026 POOL_PATCH POOL_RGM PLAYERS_NEW BIO BIO_ALIAS OWNERS NEWS SEASON_STATE
+VENUES STAND2026 GAMES GLOSARIO COVERAGE LEGEND_NOTE HUB CATS NOTES TABS MVP_REPEAT
+SEASON_AWARDS` — editorial prose, mini-games, 2026-season specifics, the
+`translate()` Spanish layer, user-facing copy. **The build script must never
+touch these** (PC1). `MVP_YEARS`/`SEASON_AWARDS`/`RECENT`-style blocks that
+happen to overlap a CSV stay curated unless explicitly merged in 5D.2+.
 
 ## [INTERFACES]
 
-### Target tree
+### `web/data/` tree — 5B + 5C, already built, unchanged by this rewrite
 
 ```
-web/
-  bsn_archivo.html            # the shell (moved/symlinked from app/ in 5G; app/ stays canonical until then)
-  sw.js                       # 5E
-  manifest.webmanifest        # 5E
-  data/
-    manifest.json             # { schema_version, source_commit, counts:{players,games,seasons,...} }
-    index/
-      franchises.json         # [ FranchiseIndex ]   §A+curated merge
-      seasons.json            # [ SeasonIndex ]      champions_reconciled
-      players.json            # [ PlayerIndex ]      3,303, light
-      scoring_titles.json     # [ ScoringTitle ]     scoring_champions_reconciled + historic
-      career_leaders.json     # { category: [CareerLeader] }
-      records.json            # [ Record ]
-    players/<bsnpr_id>.json    # PlayerFull
-    seasons/<year>.json        # SeasonFull
-    games/<season>/index.json  # [ GameIndex ]
-    games/<season>/<game_id>.json       # GameBox
-    games/<season>/<game_id>_pbp.json   # GamePBP   (5F, only if actor-linked)
+web/data/
+  manifest.json                       # { schema_version, source_digest, counts }
+  index/{franchises,seasons,players,scoring_titles,career_leaders,records}.json
+  players/<bsnpr_id>.json              # 1,076
+  seasons/<year>.json                 # 98
+  games/<season>/index.json + <game_id>.json   # 1,292 + 9
 ```
+Record shapes: see git `4634dad` / `8891d78`. **Additions this rewrite implies:**
+- `scoring_titles.json` — add `club_raw` (from `historic_scoring_champions.team_raw` / seed).
+- `index/franchises.json` — 33rd entry once `caciques_humacao` exists.
+- possibly `index/awards.json` (MVP/ROY/DPOY 1958–2004 from `historic_awards.csv`) for the `DATASETS` builder — 5D.2.
 
-### Record shapes (field → null when unrecorded — never 0, PC2)
+### App integration contract (revised for the real file)
 
-```
-FranchiseIndex = { franchise_id, app_key, name, city, founded:int, status:"active"|"defunct",
-                   end:int|null, abbr, colors:{c1,c2,src:"wiki"|"approx"}, coach:str|null,
-                   titles:[int], finals_lost:[int], note:str|null,
-                   lineage:[ {event_type, season:int|null, from:franchise_id|null, to:franchise_id|null, confidence, note} ] }
-SeasonIndex    = { season:int, champion:franchise_id|null, runner_up:franchise_id|null,
-                   agreement, confidence, note:str|null }
-PlayerIndex    = { id:int, name, norm, first_season:int|null, last_season:int|null,
-                   position:str|null, birth_year:int|null, nationality:str|null,
-                   n_seasons:int|null, has_profile:bool }
-ScoringTitle   = { season:int, metric_era:"total_points"|"ppg", player, club_raw,
-                   ppg:float|null, total_points:int|null, games:int|null,
-                   confidence, sources:[str], note:str|null }
-CareerLeader   = { rank:int, player, position:str|null, years, total:int|null,
-                   games_played:int|null, per_game:float|null }   # + list-level "stale_since" note (D7)
-Record         = { record, holder, value, season:int|null, note:str|null }
-PlayerFull     = { id, name, aliases:[{alias, type}], birth:{date:str|null, year:int|null, city:str|null},
-                   position:str|null, nationality:str|null, has_profile:bool,
-                   career:[ {season:int, team_raw, franchise_id:str|null, games:int|null, points:int|null} ],
-                   observations:[ {obs_source, season:int, club_raw, match_method, club_check} ],
-                   sources:[str] }
-SeasonFull     = { season:int, champion:franchise_id|null, runner_up:franchise_id|null,
-                   standings:[ {team_raw, franchise_id:str|null, w:int, l:int} ] | null,
-                   leaders:{ category: [ {rank:int, player_raw, club_raw, value:float|null, kind} ] } | null,
-                   awards:[ {award, player_raw, team_raw} ] | null,
-                   coverage:{ stats_tracked:{cat:bool}, gaps:[ {status, detail} ] },
-                   sources:[str] }
-GameIndex      = { game_id, date:str|null, a:{team_raw, score:int|null}, b:{team_raw, score:int|null} }
-GameBox        = { game_id, season:int, date:str|null, script,
-                   teams:{ a:{team_raw, franchise_id:str|null}, b:{...} },
-                   score:{ a:int|null, b:int|null }, quarters:{ a:[int], b:[int] } | null,
-                   box:[ {player_raw, bsnpr_id:int|null, team_raw, jersey, minutes:int|null,
-                          fg2m,fg2a,fg3m,fg3a,ftm,fta,oreb,dreb,reb,ast,stl,blk,pf,tov,pts,  # each int|null
-                          box_check:"ok"|"pts_mismatch"} ],
-                   sources:[str] }
-GamePBP        = { game_id, season:int, plays:[ {q:int, clock, seq:int, text, event_type:str|null,
-                          actor_raw:str|null, actor_id:int|null, team_raw:str|null} ] }
-```
+- **`DATA` object** — a fetch/cache helper matching the real `ST` wrapper
+  (`ST.json(k)` takes one arg; `ST.set`; `ST.wrote`). `base = location.protocol
+  === 'file:' ? null : new URL('data/', location.href).href`. Cache memory →
+  `localStorage` (`bsn:data:*`) → network. `syncVersion()` re-fetches
+  `manifest.json` each load, purges `bsn:data:*` on a `source_digest` change.
+- **Hydration point:** `runBoot()` (line 6284) becomes `async` — `await
+  hydrate()` (with a timeout race, ~2 s, so a slow network can't stall boot; the
+  splash screen already covers the wait), then the RAF batch loop. `hydrate()`
+  returns early on any fetch miss → every embedded block stands (this is the
+  `file://` and offline path).
+- **`hydrate()` merges, never replaces a source block** — same rule as
+  `translate()`. `F.won/ru` union; `SCORING` rebuilt in place; `deriveChampions()`
+  + `FKEYS`/`ACTIVE` recompute.
+- **Per-feature fetches** (5C-consumers) are lazy: `showPlayer(name)` /
+  `showSeason(y)` call `DATA.get('players/<id>.json')` on demand, render the
+  extra rows if present, keep the gap message if not (PC2 — never a silent zero).
+- **Deep links** already exist (`#jugador/georgie-torres` via `slug`); a fetched
+  player file must key by the same `slug(canonical_name)`.
+- **Naming:** `snake_case` files (C1). No wall-clock in any output (D-041).
 
-### Build contract (`make build-web-data`, 5B)
+## [RATIONALE]
 
-- **Deterministic.** `json.dumps(obj, ensure_ascii=False, sort_keys=True,
-  separators=(",",":"))` + `"\n"`. Floats formatted to a fixed precision
-  (`round(x, 2)` for ppg/pct). No wall-clock time in any file —
-  `manifest.json.source_commit` = `git rev-parse HEAD` is the version. Rerun on
-  the same commit ⇒ byte-identical tree ⇒ empty git diff (spec [INTERFACES]).
-- **Reads `data/clean/` only** (via `open_clean_text` for the `.gz`), plus the
-  two curated files under `app/`. Never the network. Idempotent.
-- **`web/data/` is a tracked deploy artifact** — not gitignored. Committed with
-  each ingest session's data changes.
-- **Gap contract (spec [INTERFACES]).** A missing file, a `null` field, or an
-  empty `leaders`/`standings` ⇒ the app renders its existing "not recorded" /
-  "N of 15 categories were never recorded" message. The build never writes `0`
-  for an unknown, never invents a row (PC1/PC2). `coverage.gaps` per season is a
-  first-class output (PC4).
-- **PBP gating (5F).** `<game_id>_pbp.json` is emitted only for games where
-  every play's `actor_raw` is resolved to a `bsnpr_id`. Until the PBP→identity
-  link exists, no PBP files are written and the app shows the PBP section as
-  "beta, per game" (spec OQ2).
+- **The app's merge architecture makes hydrate low-risk.** The owner already
+  layers `translate()`, `POOL_PATCH`, `POOL_RGM` etc. over source blocks at
+  parse time without editing them. `hydrate()` is the same move, async.
+- **Union not replace (D-043) is the house style.** `translate()`'s comment
+  spells out why: editing a source table breaks its traceability to the
+  research pass. Championship data: the app deliberately carries 1945 (D5) and
+  1942-43 (D3) that the reconciled CSV omits; a union keeps them, and the
+  build-time diff already confirms 0 *conflicts*.
+- **The gap-closing track is the point, and it's per-feature.** Mechanically
+  swapping `SCORING` is easy and low-value. Wiring `web/data/seasons/*.json`
+  into `showSeason`, or the 3,303-player index into `buildPlayerIndex`, changes
+  what the app *is* — and each needs a UI decision (how much thin data to show,
+  how to phrase "parcial"). These are their own sub-phases, not one commit.
+- **`buildSources` is now lying and must be fixed early.** An archive whose
+  "what's missing" page is wrong is worse than one with no such page (PC4).
 
 ## [ALTERNATIVES_REJECTED]
 
-- **Regenerate `RECENT` / `HOF` / `CLINCHERS` from `champions_reconciled` +
-  `game_results`.** Rejected — these are written prose with editorial judgement
-  (which facts to lead with, how to phrase a caveat). The CSVs can't produce
-  them and shouldn't try. They stay hand-edited; if a fact drifts, that's a
-  one-line manual fix, not a pipeline concern.
-- **One big `web/data/all.json`.** Rejected — that is the PC7 problem the spec
-  already killed. Per-entity chunking is the point.
-- **Derive the franchise crosswalk from name similarity.** Rejected — 3 of the
-  33 ids have no clean app-key match (Santos de San Juan, Club Náutico,
-  Cocoteros) and 2 app keys are era-ambiguous (`man` Osos vs `ate` Atenienses).
-  A checked-in curated map with a build-time completeness assert is the only
-  safe form (mirrors D-029 / `club_code_map`).
-- **Put `built_at` wall-clock in `manifest.json`.** Rejected — breaks the
-  deterministic-tree property. `source_commit` carries the version; `git log`
-  carries the "when".
+- **Regenerate `MVP_YEARS` / `SEASON_AWARDS` / `RECENT` / `FINALS_BY_YEAR` from
+  CSVs.** Rejected for now — hand-verified, per-year club attributions, editorial
+  phrasing the CSV can't produce. Merge only `MVP_YEARS` ↔ `historic_awards`,
+  and only in a dedicated 5D.2 with the diff shown.
+- **Replace the curated `POOL` / `PLAYERS_NEW` with `players_canonical`.**
+  Rejected — `POOL` is the Juega game corpus (verified, provenance-per-block);
+  the 3,303-player set is thin pre-2011 and would wreck the games. The full set
+  is a *new* player-index mode, not a `POOL` swap. (PHASE_4B_GAME_POOL owns any
+  `POOL` change.)
+- **One `bootstrap.json` codegen'd into the file.** Rejected — the file has no
+  build step and the owner's pattern is runtime merge, not codegen. Keep it.
+- **Hydrate inside a BOOT batch entry.** Rejected — BOOT entries run
+  synchronously in the RAF loop; an async hydrate wouldn't be awaited and
+  champion-consuming builders would race it. Must be `await`ed before the loop.
 
 ## [OPEN_QUESTIONS]
 
-1. **Franchise crosswalk (blocks 5B).** **32 app keys** (`bay sge pon san are que
-   gua cag car may agu man` active; `cap rio veg upr cno nau aib mor toi guy isa
-   coa faj hum ate vil cab agd con cay` defunct) vs **33 `franchise_id`** in
-   `franchises.csv`. The mapping is ~1:1 by name; the one extra id is
-   **`santos_san_juan`** (D5 — the 1945 dispute; the app folds it into `cap`).
-   5B builds `app/franchise_key_map.csv` (`app_key,franchise_id,note`) with a
-   build-time assert that every `champions_reconciled` / `franchises` id and
-   every app key is accounted for (an explicit `note` row for `santos_san_juan`,
-   whichever way the owner wants 1945 shown).
-2. **Which `won`/`ru` wins when app and `champions_reconciled` disagree?**
-   Default: the CSV (it's the reconciled, provenance-tracked source — B4 says
-   CSV is truth). The app's arrays get regenerated; a diff report at build time
-   flags every season where they differed so a human can eyeball it once.
-3. **`SCORING` metric switch (D4).** The CSV has `metric_era`; the app chart
-   currently plots only the ppg era (1971+). Keep that (chart = ppg era only,
-   table = full 1948–2021 with a metric column and a visible D4 divider).
-4. **Season standings from `game_results`.** W–L is derivable for 2001–03 +
-   2008–13 but the archive is not a complete game set for any season except
-   maybe 2009. Default: emit standings only where `game_results` covers ≥90% of
-   a plausible schedule, else omit (→ gap message). 5C decides the threshold
-   from the actual game counts.
-5. **`app/` vs `web/` for the shell.** 5A–5F keep editing `app/bsn_archivo.html`
-   as canonical. 5G moves/copies it to `web/` (the Pages-served root) and
-   settles whether `app/` becomes a symlink or is retired. Not decided now.
-6. **MVP/award history in the app.** `historic_awards.csv` (MVP/ROY/DPOY
-   1958–2004) could replace the curated `MVP_REPEAT` and feed a new awards view.
-   Deferred — not blocking; revisit after 5C.
+1. **CLOSED (owner 2026-09-09, shipped in 5B-FIX).** Caciques de Humacao and
+   the 2021 Grises de Humacao are two distinct franchises — see the crosswalk
+   section above and `reconcile_spec.md` [OWNER_RESOLUTIONS]. Follow-up: after
+   `hydrate()` (5D) the app's Franchises tab will show "Grises de Humacao ·
+   founded 2021" (the `hum` id = the 2021 expansion). Also `docs/project.md` D2
+   ("Grises de Humacao → Criollos de Caguas (2023)") should be refined — owner's
+   Tier-2 file.
+2. **How far to push the player index.** Default: keep the curated `PINDEX` as
+   the front page of tab `jugadores`; add a "buscar en los 3,303" affordance
+   that loads `index/players.json` and, on click, fetches `players/<id>.json`.
+   `showPlayer`'s gap message shrinks only for ids with real career/box data.
+3. **`SCORING` chart vs table (D4).** The chart plots the ppg era only. Keep
+   that; table gets the full 1948–2021 with a `metric_era` column + a visible
+   1970/71 divider.
+4. **`buildSources` rewrite — who owns the new gap text?** It's editorial. 5D
+   proposes the factual corrections (box scores exist, standings 2001–13 exist,
+   MVP 1958–2004 exists); the owner phrases them.
+5. **`app/` vs `web/` for the shell (5G).** Unchanged from before — 5G moves the
+   file to the Pages-served root; `app/` stays canonical until then.
+6. **`bsn_player_seasons_realgm.csv` / `bsnpr_scraper.py`.** Referenced by the
+   app (`POOL_RGM`, `buildSources`) but **not in this repo**. Out of PHASE_5
+   scope; flag that the app assumes external data the pipeline doesn't have.

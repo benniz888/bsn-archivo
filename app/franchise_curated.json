@@ -48,6 +48,14 @@
     "end": 1993,
     "note": "The Indios de Mayagüez under a different name and city."
   },
+  "cac": {
+    "abbr": "CAC",
+    "c1": "#7A2E3B",
+    "c2": "#E0C9A6",
+    "colorSrc": "approx",
+    "end": 2018,
+    "note": "Distintos de los Grises de Humacao. Las fechas se infieren de las temporadas en que aparece en el archivo, no de una fuente que las declare."
+  },
   "cag": {
     "abbr": "CAG",
     "c1": "#6B2C8F",

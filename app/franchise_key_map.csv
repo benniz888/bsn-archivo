@@ -20,14 +20,15 @@ nau,club_nautico_san_juan,
 aib,polluelos_aibonito,
 mor,titanes_morovis,
 toi,cocoteros_tortuguero,
+cay,toritos_cayey,"owner 2026-09-09 + wikipedia: relocated to Humacao as Grises (2005) -> Caciques -> see cac/caciques_humacao (franchise_events)"
 guy,brujos_guayama,D2/D-032: became man/osos_manati in 2023 (franchise_events relocated_renamed)
 isa,gallitos_isabela,
 coa,maratonistas_coamo,
 faj,cariduros_fajardo,
-hum,grises_humacao,D2: single-source claim it became cag/criollos_caguas in 2023 (unverified)
+hum,grises_humacao,"owner 2026-09-09 + wikipedia: the 2021 expansion 'Grises de Humacao' (2021-23) -> cag/criollos_caguas (2024). DISTINCT from cac (the 2005-19 Grises/Caciques)."
+cac,caciques_humacao,"owner 2026-09-09 + wikipedia:Caciques_de_Humacao: Toritos de Cayey -> Grises de Humacao (2005) -> Caciques (2010) -> relocated (Isabela, Guayama, ~2019). One franchise; the archived Humacao games (2008-2013) belong here."
 ate,atenienses_manati,"unrelated to man/osos_manati despite the shared city; defunct 2017"
 vil,avancinos_villalba,
 cab,tainos_cabo_rojo,D2: same franchise as may/indios_mayaguez
 agd,tiburones_aguadilla,D2: merged into san/cangrejeros_santurce in 1998
 con,conquistadores_aguada,
-cay,toritos_cayey,

@@ -41,8 +41,9 @@ class TestJdump:
 class TestCrosswalk:
     def test_loads_and_is_complete(self):
         app_to_fid, fid_to_app = b.load_crosswalk()   # sys.exit on an incomplete map
-        assert len(app_to_fid) == 32
+        assert len(app_to_fid) == 33
         assert app_to_fid["bay"] == "vaqueros_bayamon"
+        assert app_to_fid["cac"] == "caciques_humacao"   # 5B-FIX
         assert fid_to_app["osos_manati"] == "man"
 
     def test_every_app_key_has_curated_fields(self):
@@ -59,7 +60,7 @@ class TestBuild:
 
     def test_franchises_index(self):
         fr = json.loads((b.WEB / "index" / "franchises.json").read_text())
-        assert len(fr) == 32
+        assert len(fr) == 33
         bay = next(f for f in fr if f["app_key"] == "bay")
         assert bay["franchise_id"] == "vaqueros_bayamon"
         assert bay["colors"]["src"] == "wiki"

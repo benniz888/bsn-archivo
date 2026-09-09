@@ -118,10 +118,22 @@ reflects these.
   "relocated 2023 -> osos_manati". Atenienses de Manatí (2014–2017) is a
   **separate, unrelated** defunct franchise — the seed's "Osos founded 2014"
   was a conflation.
-- **Grises de Humacao → Criollos de Caguas — kept `single-source`, unverified.**
-  D2 asserts it; **neither Wikipedia corroborates it** — en.wiki's Criollos
-  article says only "refounded in 2023". Event row keeps D2's claim with that
-  caveat in the note; owner review still open.
+- **Grises / Caciques de Humacao — RESOLVED by owner 2026-09-09, two distinct
+  franchises (PHASE_5 5B-FIX).** Wikipedia (Caciques de Humacao, Grises de
+  Humacao):
+  - **`caciques_humacao`** = one continuous franchise: Toritos de Cayey
+    (2002–04) → relocated to Humacao as **Grises de Humacao (2005)** → renamed
+    **Caciques de Humacao (2010)** → relocated away (Isabela, then Guayama,
+    ~2019). NEW `franchise_id` (`franchises.csv`); `city_franchise_map` HUMACAO
+    now points here; the archived Humacao games (2008–2013) belong to it.
+  - **`grises_humacao`** = a **separate 2021 expansion** franchise (Wikipedia:
+    explicitly "a new franchise"), played 2021–2023, became **Criollos de
+    Caguas from 2024**. `franchises.csv` founded corrected 2005 → **2021**,
+    status → "renamed 2024 -> criollos_caguas". The earlier single-source 2023
+    claim is superseded; both `franchise_events` rows are now `verified`.
+  - App keys: `cac` ↔ `caciques_humacao`, `hum` ↔ `grises_humacao` (matches how
+    `F` already splits them). `docs/project.md` D2 ("Grises de Humacao →
+    Criollos de Caguas (2023)") should be refined to this — owner's Tier-2 file.
 - **Santos de San Juan — kept a distinct `franchise_id`, `relationship_unclear`.**
   No es.wiki or en.wiki article or sentence explains its relationship to
   Capitalinos de San Juan. Not merged.
@@ -211,8 +223,9 @@ D3 (`1942-1943` kept), D4 (`metric_era` flip), D6 (`1953` no_champion).
 1. **`reconcile_conflicts.csv`** — 2 rows left: champion **1945** (D5, es.wiki
    self-contradicts) and `franchise_founded` **Criollos 1969 vs 1976**. Both
    need a third source or an owner call.
-2. **Grises de Humacao → Criollos de Caguas** — D2's claim, not in Wikipedia.
-   Confirm from a PR-basketball news source or the Federación, or downgrade.
+2. **CLOSED (owner 2026-09-09, 5B-FIX).** Grises/Caciques de Humacao =
+   two distinct franchises (`caciques_humacao` 2005–19, `grises_humacao` 2021–23
+   → Criollos 2024), per Wikipedia. See [OWNER_RESOLUTIONS].
 3. **`club_code_map` `CA`/`CO`** — confirm which team each 2-letter code meant
    per season from the `equiposstat` URLs actually fetched.
 4. **Applying `player_id_map` to the observation tables** — not done here. Once

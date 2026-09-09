@@ -434,7 +434,7 @@ def verify_web_data(c: Checker) -> None:
                 f"web/data: manifest count for {name} matches the file", f"{manifest['counts'].get(name)} vs {n}")
 
     fr = json.loads((web / "index" / "franchises.json").read_text(encoding="utf-8"))
-    c.check(len({f["app_key"] for f in fr}) == 32, "web/data: franchises.json has all 32 app keys")
+    c.check(len({f["app_key"] for f in fr}) == 33, "web/data: franchises.json has all 33 app keys")
     c.check(all(f["name"] and f["franchise_id"] for f in fr),
             "web/data: every franchise row names a franchise_id + name")
     canon_fids = {r["franchise_id"] for r in _read("franchises.csv")}
