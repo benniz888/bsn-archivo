@@ -180,11 +180,23 @@ def clean_dob(raw: str) -> str:
 # grabbed when the page had no real <h*> name — 725 profiles were affected and
 # ended up canonically named "<Surname>, Estadísticas Jugador".
 _FIELD_SENTINELS = {"", "nan", "no se sabe", "estadisticas jugador",
-                    "estadistica jugador", "jugador", "jugadores"}
+                    "estadistica jugador", "jugador", "jugadores",
+                    "not found", "bad request", "forbidden",
+                    "internal server error", "service unavailable"}
+
+# A failed fetch/scrape sometimes concatenated an HTTP status line onto (or into)
+# a field — e.g. nombre "Error 404 Not Found" for id 405/1926/2089, whose
+# apellidos ("Frazer Thorne" etc.) are legitimate two-part surnames. Strip the
+# status token (+ any trailing reason phrase); keep whatever real text is left.
+_HTTP_ERR = re.compile(
+    r"\s*\b(?:https?\s+)?(?:error|err|http|status)\s*[:\-]?\s*[1-5]\d{2}\b"
+    r"(?:[\s:\-]+(?:not\s+found|bad\s+request|forbidden|unauthorized|"
+    r"internal\s+server\s+error|service\s+unavailable|gateway\s+timeout))?\.?",
+    re.I)
 
 
 def clean_field(raw: str) -> str:
-    s = squish(raw or "")
+    s = squish(_HTTP_ERR.sub(" ", squish(raw or "")))
     return "" if normalize(s) in _FIELD_SENTINELS else s
 
 
@@ -199,6 +211,13 @@ def parse_jugador() -> tuple[dict[str, dict], list[dict]]:
         src = meta.get("raw_wayback_url", "")
         ts = meta.get("wayback_timestamp", "")
         soup = BeautifulSoup(html, "html.parser")
+
+        # some jugador.asp snapshots captured the site's "Error 404 - Not Found"
+        # page instead of a profile — skip so its heading can't leak into a name
+        # (ids 405 / 1926 / 2089 were canonically "<Surname>, Error 404").
+        title = squish(soup.title.get_text()) if soup.title else ""
+        if re.match(r"error\s*[1-5]\d{2}\b", normalize(title)):
+            continue
 
         heading = ""
         for tag in soup.find_all(["h1", "h2", "h3", "h4"]):
@@ -267,10 +286,11 @@ def build_canonical(enc: dict[str, dict], prof: dict[str, dict]) -> list[dict]:
     for pid, e in sorted(enc.items(), key=lambda kv: int(kv[0])):
         p = prof.get(pid, {})
         apellidos = clean_field(e["apellidos"])
-        nombre = p.get("profile_name", "").split(",")[-1].strip() if p.get("profile_name") else clean_field(e["nombre"])
+        nombre = (clean_field(p["profile_name"].split(",")[-1])
+                  if p.get("profile_name") else clean_field(e["nombre"]))
         # jugador.asp heading is "Apellidos, Nombre"; prefer its apellidos if present
         if p.get("profile_name") and "," in p["profile_name"]:
-            apellidos = p["profile_name"].split(",")[0].strip() or apellidos
+            apellidos = clean_field(p["profile_name"].split(",")[0]) or apellidos
         canonical_name = f"{apellidos}, {nombre}".strip(" ,")
         birth_date = p.get("birth_date") or e["birth_date"]
         birth_year = ""
@@ -391,6 +411,15 @@ def _load_club_resolver():
         parts = _DE_SPLIT.split(r["canonical_name"], maxsplit=1)
         if len(parts) == 2:
             _reg_nick(parts[0], fid)
+
+    # "Grises" names two different Humacao franchises across eras — the 2005-19
+    # chain (now keyed caciques_humacao) and the separate 2021-23 grises_humacao
+    # expansion that became Criollos de Caguas (D-045). The resolver is
+    # season-blind and both appear in player_season_leaders.csv, so force the
+    # bare nick ambiguous: "Grises, Humacao" still resolves by city (→
+    # caciques_humacao, correct for every archived season), while a bare "Grises"
+    # stays unresolved (advisory no_obs_club) rather than a spurious contradiction.
+    nick_ambiguous.add(normalize("Grises"))
 
     def resolve_club(raw: str) -> str:
         if not raw:

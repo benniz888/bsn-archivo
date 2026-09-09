@@ -23,9 +23,12 @@ Session 002 (cont.) — all pushed to origin/main:
   only. Since: **5A rewritten** + **5B-FIX** (`caciques_humacao` / D-045) =
   77a3aae · **5D redo** (`DATA`+`hydrate()` into `runBoot()`) = c22ce10 ·
   **5D.2** (SCORING hydrate 26→68) = 6c6c8a5 · **5D.3a** (`showSeason` detail
-  from `seasons/*.json`) = uncommitted. Queue: 5D.3b (showPlayer + a hand-seeded
-  curated↔bsnpr_id crosswalk) → 5D.3c (full-archive search) → 5D.2b (MVP_YEARS)
-  → 5D.4 (gap text) → 5E (PWA) → 5G (deploy).
+  from `seasons/*.json`) = 8fd7c6f (pushed). **5D.3b IN PROGRESS**: crosswalk
+  `app/player_crosswalk.csv` built (386 curated names → 112 auto / 48 review /
+  226 none; matcher = `scratchpad/xwalk_match.py`) — sent to owner for spot-check
+  of the 48 review `bsnpr_id`s + the thin-JSON open question; no `showPlayer`
+  code until sign-off. Queue: 5D.3b impl → 5D.3c (full-archive search) → 5D.2b
+  (MVP_YEARS) → 5D.4 (gap text) → 5E (PWA) → 5G (deploy).
 
 Session 001 (2026-09-07): PHASE_1_ENUMERATE + PHASE_2_FETCH. Env bootstrapped,
 Wayback CDX enumerated (central finding negative — see below), 193 snapshots
@@ -931,11 +934,26 @@ harness — 1974 shows scoring champ + awards, 2009 shows standings + leaders,
 boot harness still 0 exceptions / 55 builders; `make verify` (329,510) / `make
 test` (153) unchanged (HTML only). **Owner:** browser render parity.
 
-##### 5D.3b — `showPlayer` career detail — QUEUED (needs the crosswalk)
-`app/player_crosswalk.csv` (`curated_name,bsnpr_id,note`) — I seed from the 103
-auto-matches + hand-add the legends with career-span/club sanity checks; owner
-spot-checks each `bsnpr_id`. Then `showPlayer` fetches `players/<id>.json` →
-career-by-season table + fills null stats, curated bio/tags kept on top.
+##### 5D.3b — `showPlayer` career detail — CROSSWALK BUILT, AWAITING OWNER SIGN-OFF
+`app/player_crosswalk.csv` — `curated_name,bsnpr_id,canonical_name,career_span,
+verdict,confidence,flag,evidence`, one row per curated PINDEX name (386).
+Matcher `scratchpad/xwalk_match.py`: curated BIO full-name + birth date + HOF
+span + scoring years + clubs + nicknames, scored (fuzzy Levenshtein ≤2 on
+full-name/alias, birth-year ±0) against `players_canonical` + `player_aliases`
++ `player_career_seasons` + `player_id_map`. Verdicts: **113 auto** (strong
+name/alias + birth year), **45 review** (surname + swap + decade/club only —
+owner confirms each id), **228 none** (no confident match; 5 explicit
+rejections with note — incl. Arnaldo Toro Jr vs Sr, José Ortiz ambiguity).
+Only ~78/158 matched ids have a built `web/data/players/<id>.json` today (rest
+are career-less canonical rows).
+Georgie Torres fixed: 790 → **788** "Torres Dougherty, George" (fuzzy full-name).
+Rolando Frazer → **2089** now clean after D-046 (was "Frazer Thorne, Error 404").
+**Open Q for owner:** emit a thin `players/<id>.json` for every canonical row
+(no career table) so the 82 career-less matches still get a real card, or fall
+back to curated-only + "sin ficha detallada"?
+Then `showPlayer` looks up an embedded `PLAYER_XWALK` block → fetches
+`players/<id>.json` → career-by-season table + fills null stats, curated
+bio/tags/warning kept on top.
 
 ##### 5D.3c — "Todo el archivo (3,303)" search mode — QUEUED
 `renderPlayerIndex` mode toggle: "Destacados (385)" (default) / "Todo (3,303)"
@@ -1165,6 +1183,30 @@ Decisions made session 002 (PHASE_4):
   (Criollos 1969 en.wiki vs 1976 seed).
 
 Decisions made session 002 (PHASE_5_APP_SYNC):
+- **D-046 — 404-page jugador.asp snapshots leaked into player names; fixed at
+  parse (owner-flagged, 5D.3b).** 3 profiles (ids 405, 1926, 2089) were
+  canonically `"<Surname>, Error 404"` — the Wayback capture of
+  `jugador.asp?id=N` was the site's "Error 404 - Not Found" page and the heading
+  scan grabbed "Error 404". `parse_jugador` now skips a capture whose `<title>`
+  matches `error \d{3}`, so the enciclopedia name wins: 2089 → **"Frazer
+  Thorne, Rolando"** (b.1958-07-03; "Frazer Thorne" is a legit two-part
+  surname, NOT corrupt — only the appended error string was), 1926 → "Ramos
+  Manso, Ramon", 405 → "Martin, Counzo". `clean_field` also strips an inline
+  `error/http/status <3-digit>` token as defence-in-depth. Scan of
+  `players_canonical` found only these 3 (all one root cause). Knock-on:
+  `has_profile` 1076→1073, aliases 24076→24071, `web/data/players/{405,1926,
+  2089}.json` become index-only. Bonus: Rolando Frazer's review-queue
+  observations (`ROLANDO FRAZER` 1981/1982 scoring champ, `Frazer, R.` Coamo
+  2001, `Frazer, Rolando` 1986) now resolve to id 2089 — they were "no
+  canonical name match" against the corrupt name.
+  Same rebuild also flushed **pre-existing `web/data` drift**: 5B-FIX (77a3aae)
+  committed the D-045 franchise CSVs without rebuilding `web/data`, so
+  `observations[].club_check` for ~11 Caciques/Grises de Humacao players was
+  stale. Rebuilt now. Also: `_load_club_resolver` marks the bare nick "Grises"
+  ambiguous (D-045 — two Humacao franchises reuse it, resolver is season-blind);
+  "Grises, Humacao" still resolves by city → `caciques_humacao`, bare "Grises"
+  → unresolved (advisory `no_obs_club`) instead of a false contradiction.
+  club_check is advisory only — no identity mappings changed (id_map still 649).
 - **D-045 — Grises/Caciques de Humacao = two distinct franchises (owner
   2026-09-09 + Wikipedia).** `caciques_humacao` = the continuous chain Toritos
   de Cayey (2002–04) → Grises de Humacao (2005) → Caciques (2010) → relocated

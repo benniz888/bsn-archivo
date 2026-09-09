@@ -3046,13 +3046,12 @@ bsnpr_id,alias,normalized_alias,alias_type,source
 404,"Reader, C.","reader, c",initial,derived
 404,"reader, cory","reader, cory",normalized,derived
 404,"Reader, Cory","reader, cory",paternal_surname,derived
-405,"Martin, Error 404","martin, error 404",canonical,derived
+405,"Martin, Counzo","martin, counzo",canonical,derived
 405,"Martin, Counzo","martin, counzo",enciclopedia,bsnpr
-405,Error 404 Martin,error 404 martin,given_family_order,derived
-405,"Martin, Error","martin, error",given_first_only,derived
-405,"Martin, E.","martin, e",initial,derived
-405,"martin, error 404","martin, error 404",normalized,derived
-405,"Martin, Error 404","martin, error 404",paternal_surname,derived
+405,Counzo Martin,counzo martin,given_family_order,derived
+405,"Martin, C.","martin, c",initial,derived
+405,"martin, counzo","martin, counzo",normalized,derived
+405,"Martin, Counzo","martin, counzo",paternal_surname,derived
 406,"Casiano, Crispy","casiano, crispy",canonical,derived
 406,"Casiano, Crispy","casiano, crispy",enciclopedia,bsnpr
 406,Crispy Casiano,crispy casiano,given_family_order,derived
@@ -14610,16 +14609,14 @@ bsnpr_id,alias,normalized_alias,alias_type,source
 1925,"otero montijo, ramon","otero montijo, ramon",normalized,derived
 1925,"Otero Montijo, Ramon","otero montijo, ramon",paternal_surname,derived
 1925,"Otero, Ramon","otero, ramon",paternal_surname,derived
-1926,"Ramos Manso, Error 404","ramos manso, error 404",canonical,derived
+1926,"Ramos Manso, Ramon","ramos manso, ramon",canonical,derived
 1926,"Ramos Manso, Ramon","ramos manso, ramon",enciclopedia,bsnpr
-1926,Error 404 Ramos Manso,error 404 ramos manso,given_family_order,derived
-1926,"Ramos Manso, Error","ramos manso, error",given_first_only,derived
-1926,"Ramos, Error","ramos, error",given_first_only,derived
-1926,"Ramos Manso, E.","ramos manso, e",initial,derived
-1926,"Ramos, E.","ramos, e",initial,derived
-1926,"ramos manso, error 404","ramos manso, error 404",normalized,derived
-1926,"Ramos Manso, Error 404","ramos manso, error 404",paternal_surname,derived
-1926,"Ramos, Error 404","ramos, error 404",paternal_surname,derived
+1926,Ramon Ramos Manso,ramon ramos manso,given_family_order,derived
+1926,"Ramos Manso, R.","ramos manso, r",initial,derived
+1926,"Ramos, R.","ramos, r",initial,derived
+1926,"ramos manso, ramon","ramos manso, ramon",normalized,derived
+1926,"Ramos Manso, Ramon","ramos manso, ramon",paternal_surname,derived
+1926,"Ramos, Ramon","ramos, ramon",paternal_surname,derived
 1927,"Rivas Contreras, Ramón","rivas contreras, ramon",canonical,derived
 1927,"Rivas Contreras, Ramón","rivas contreras, ramon",enciclopedia,bsnpr
 1927,Ramón Rivas Contreras,ramon rivas contreras,given_family_order,derived
@@ -15838,16 +15835,14 @@ bsnpr_id,alias,normalized_alias,alias_type,source
 2088,"febles eleutice, rolando","febles eleutice, rolando",normalized,derived
 2088,"Febles Eleutice, Rolando","febles eleutice, rolando",paternal_surname,derived
 2088,"Febles, Rolando","febles, rolando",paternal_surname,derived
-2089,"Frazer Thorne, Error 404","frazer thorne, error 404",canonical,derived
+2089,"Frazer Thorne, Rolando","frazer thorne, rolando",canonical,derived
 2089,"Frazer Thorne, Rolando","frazer thorne, rolando",enciclopedia,bsnpr
-2089,Error 404 Frazer Thorne,error 404 frazer thorne,given_family_order,derived
-2089,"Frazer Thorne, Error","frazer thorne, error",given_first_only,derived
-2089,"Frazer, Error","frazer, error",given_first_only,derived
-2089,"Frazer Thorne, E.","frazer thorne, e",initial,derived
-2089,"Frazer, E.","frazer, e",initial,derived
-2089,"frazer thorne, error 404","frazer thorne, error 404",normalized,derived
-2089,"Frazer Thorne, Error 404","frazer thorne, error 404",paternal_surname,derived
-2089,"Frazer, Error 404","frazer, error 404",paternal_surname,derived
+2089,Rolando Frazer Thorne,rolando frazer thorne,given_family_order,derived
+2089,"Frazer Thorne, R.","frazer thorne, r",initial,derived
+2089,"Frazer, R.","frazer, r",initial,derived
+2089,"frazer thorne, rolando","frazer thorne, rolando",normalized,derived
+2089,"Frazer Thorne, Rolando","frazer thorne, rolando",paternal_surname,derived
+2089,"Frazer, Rolando","frazer, rolando",paternal_surname,derived
 2090,"Hourruitiner Ortiz, Rolando","hourruitiner ortiz, rolando",canonical,derived
 2090,"Hourruitiner Ortiz, Rolando","hourruitiner ortiz, rolando",enciclopedia,bsnpr
 2090,Rolando Hourruitiner Ortiz,rolando hourruitiner ortiz,given_family_order,derived
