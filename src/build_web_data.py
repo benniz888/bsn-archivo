@@ -650,7 +650,13 @@ def build_seasons_detail() -> int:
             },
         }
         _jdump(rec, WEB / "seasons" / f"{s}.json")
-    return len(all_seasons)
+    return {
+        "season_files": len(all_seasons),
+        "seasons_with_leaders": sum(1 for s in all_seasons if leaders.get(s)),
+        "seasons_with_awards": sum(1 for s in all_seasons if awards.get(s)),
+        "seasons_with_standings": sum(1 for s in all_seasons if standings.get(s)),
+        "seasons_with_scoring_champ": sum(1 for s in all_seasons if s in hist_sc),
+    }
 
 
 def _quarters(v: str):
@@ -768,13 +774,16 @@ def main() -> int:
 
     # 5C — per-entity files
     n_pdetail, n_pthin = build_players_detail()
-    n_sdetail = build_seasons_detail()
+    season_counts = build_seasons_detail()
     n_games, n_gseasons = build_games()
     counts["player_files"] = n_pdetail
-    counts["season_files"] = n_sdetail
+    counts.update(season_counts)
     counts["game_files"] = n_games
     print(f"  -> web/data/players/*.json ({n_pdetail}; {n_pthin} thin / no career table)")
-    print(f"  -> web/data/seasons/*.json ({n_sdetail})")
+    print(f"  -> web/data/seasons/*.json ({season_counts['season_files']}; "
+          f"leaders {season_counts['seasons_with_leaders']}, "
+          f"awards {season_counts['seasons_with_awards']}, "
+          f"standings {season_counts['seasons_with_standings']})")
     print(f"  -> web/data/games/<season>/*.json ({n_games} games, {n_gseasons} seasons)")
 
     SOURCES = [
