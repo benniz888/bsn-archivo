@@ -118,9 +118,12 @@ database server.**
 
 ## [DEPLOY]
 
-Resolved 2026-09-09 (PHASE_5 5G). **Option A**: `web/` is the GitHub Pages
-site root, served from `main` branch `/web` folder — no `gh-pages` branch, no
-CI, no build step on GitHub's side.
+Resolved 2026-09-09 (PHASE_5 5G). `web/` is the GitHub Pages site root.
+GitHub's "deploy from a branch" only offers `/` or `/docs` (no arbitrary
+folder), and `/docs` already holds this framework's Tier-1/2/3 files — so
+`web/` is published by a **GitHub Actions workflow**
+(`.github/workflows/pages.yml`, the standard `upload-pages-artifact` +
+`deploy-pages` template). No `gh-pages` branch; the workflow is fire-and-forget.
 
 ```
 web/
@@ -140,8 +143,9 @@ web/
   `/<repo>/`. SW scope becomes `/<repo>/`.
 
 **One manual action (owner):** repo **Settings → Pages → Build and deployment
-→ Source: "Deploy from a branch" → Branch: `main`, folder: `/web` → Save.**
-First publish ~1 min; every later push to `main` redeploys automatically.
+→ Source: "GitHub Actions" → Save.** The next push runs the workflow (visible
+in the Actions tab, ~1 min). Custom domain, if ever wanted, goes in the same
+Pages settings and needs a `web/CNAME` file.
 
 **Redeploy after an ingest session:**
 ```
@@ -151,6 +155,8 @@ make site                     # only if the shell changed
 make verify && make test
 git add web app docs && git commit && git push
 ```
+The push triggers `pages.yml` only if `web/` changed (a docs-only commit
+doesn't redeploy).
 On the next visit `DATA.syncVersion()` sees the new digest, clears the
 `localStorage` cache and posts `purge-data` to the service worker, which drops
 `bsn-data`; fresh JSON loads. No cache-busting query strings needed.

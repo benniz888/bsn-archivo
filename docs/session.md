@@ -32,9 +32,11 @@ Session 002 (cont.) — all pushed to origin/main:
   deployed-reality gap/coverage copy) = 08e8cb4 (all pushed). **5E** (`web/sw.js` + registration
   + `syncVersion` purge hook) = b87d8db (pushed). **5E follow-up** (file:// archive
   message + `buildPlayerIndex` enrich-only, PINDEX 385→381) = 43cad16 (pushed).
-  **5G uncommitted**: `make site`, `web/index.html`+`.nojekyll`, verify+test
-  guards, spec `[DEPLOY]`. Queue: commit 5G → owner flips Pages toggle → live
-  check. PHASE_5 essentially complete after that (5F stays deferred).
+  **5G** (`make site`, `web/index.html`+`.nojekyll`, verify+test guards, spec
+  `[DEPLOY]`) = 65bca96. **5G-Actions uncommitted**: `.github/workflows/
+  pages.yml` publishes `web/` (branch-folder picker can't target `/web`).
+  Queue: commit → owner sets Pages source to "GitHub Actions" → live check.
+  PHASE_5 complete after that (5F stays deferred).
   5G (deploy — needs the site-dir layout decision: `bsn_archivo.html` +
   `data/` + `sw.js` colocated for GitHub Pages).
 
@@ -1096,9 +1098,12 @@ rebuild refreshes the cache.
 still-open PBP→identity linking task. Include as queued; execute only once
 linking exists, else ship the PBP tab as "beta, per-game" per spec OQ2 default.
 
-#### 5G — GitHub Pages deploy — CODE DONE (uncommitted); awaits owner Pages toggle
-**Option A** (owner-chosen): `web/` is the site root, served from `main:/web`.
-No `gh-pages`, no CI. Spec `[DEPLOY]` section added.
+#### 5G — GitHub Pages deploy — CODE DONE; awaits owner Pages toggle
+`web/` is the site root. GitHub's branch-folder picker only offers `/` or
+`/docs` (no `/web`), and `/docs` holds the Tier-1/2/3 files — so `web/` ships
+via **`.github/workflows/pages.yml`** (standard `upload-pages-artifact` +
+`deploy-pages`, `path: web`, triggers on push touching `web/**`). Spec
+`[DEPLOY]` section added. `= 65bca96` + the workflow commit.
 - `Makefile` **`site`** target: `cp app/bsn_archivo.html web/index.html` +
   `touch web/.nojekyll`. `app/bsn_archivo.html` stays source of truth;
   `web/index.html` is a committed artifact.
@@ -1109,8 +1114,9 @@ No `gh-pages`, no CI. Spec `[DEPLOY]` section added.
 - Local serve of `web/` (`python3 -m http.server`): `/`, `/sw.js`,
   `/data/manifest.json`, `/data/players/382.json`, `/data/index/*.json`,
   `/.nojekyll` all 200. `make verify` 329,515 / `make test` 157.
-**Owner action (one-time):** repo Settings → Pages → Deploy from a branch →
-`main` / `/web`. Then live-check `https://benniz888.github.io/bsn-archivo/`:
+**Owner action (one-time):** repo Settings → Pages → Source → **GitHub
+Actions**. The next push runs `pages.yml` (Actions tab, ~1 min). Then
+live-check `https://benniz888.github.io/bsn-archivo/`:
 hub renders, a player card fetches its JSON, SW registers (scope `/bsn-archivo/`),
 offline reload works, install prompt shows the BSN icon.
 
