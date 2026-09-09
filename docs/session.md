@@ -27,9 +27,10 @@ Session 002 (cont.) — all pushed to origin/main:
   · **5D.3b** crosswalk = 2670254 + thin JSON = f994edd + app wiring
   (`player_xwalk.json`, `PXWALK`/`FID2APP`, `loadPlayerExtra` career table) =
   bb69496 · **5D.3c** ("Todo el archivo" search) = 87d8c77 + filter-hide fix =
-  ba0cc68 (all pushed). **5D.2b uncommitted**: `index/mvp.json`, `MVP_YEARS`
-  39→63, `MVP_ID`/`MVP_ALSO` (1963/64 Báez footnote). Queue: commit 5D.2b →
-  5D.4 (gap text) → 5E (PWA) → 5G (deploy).
+  ba0cc68 · **5D.2b** (MVP_YEARS 39→63 + Báez footnote) = cb429bc · **5D.4
+  prep** (manifest coverage counts) = 735a58d (all pushed). **5D.4 app
+  uncommitted**: `DATA_TEXT`/`MANIFEST`, deployed-reality gap/coverage copy.
+  Queue: commit 5D.4 → 5E (PWA) → 5G (deploy).
 
 Session 001 (2026-09-07): PHASE_1_ENUMERATE + PHASE_2_FETCH. Env bootstrapped,
 Wayback CDX enumerated (central finding negative — see below), 193 snapshots
@@ -1015,10 +1016,26 @@ champOf 96→96, http 5 fetches / file 0). `make verify` 329,512 / `make test`
 154 unchanged (HTML only). **Owner: browser** — toggle feel, 500-row scroll
 perf, archive→curated routing, minimal card wording, mobile table width.
 
-#### 5D.4 — fix `buildSources` / `buildCoverage` gap text — QUEUED
-The app's "lo que falta" list and `COVERAGE` %s are now partly wrong (box scores,
-standings 2001–13, MVP 1958–2004 all exist). 5D proposes the factual
-corrections; owner phrases them.
+#### 5D.4 — gap text: deployed-reality overlay — DONE (uncommitted)
+Owner approved the drafted copy (`scratchpad/5d4_gap_text_draft.md`).
+**Prep** (committed `735a58d`): `build_seasons_detail` returns
+`seasons_with_{leaders,awards,standings,scoring_champ}` (15/47/9/57);
+`main()` folds them into `manifest.counts` (no digest change) so the copy
+cites live figures.
+**App**: `let MANIFEST=null, DATA_TEXT=false` — `hydrate()` sets both when
+`manifest.json` is present and overwrites `COVERAGE` in place with the
+deployed-era bars. `buildMVPYears` warning, the `buildSources` `gaps` list,
+and the closing "La pista que abre todo" cards each pick baked vs. hydrated
+copy on `DATA_TEXT`; hydrated numbers come from `MANIFEST.counts` via a local
+`nf()` (`toLocaleString('es-PR')`). Baked strings are untouched — they stay
+the honest `file://` baseline (champions-only, no box scores). Two stale
+cards → one past-tense card. Verified in `player_harness.js` (http: DATA_TEXT
+true, "No hay boxscores. Ninguno" gone, box-score count + "De dónde salieron
+los boxscores" present, stale "La pista" gone, COVERAGE 2000s 45→70; file:
+all baked strings intact) + `boot_harness.js` (0 exc, champOf 96→96).
+`make verify` 329,514 / `make test` 156.
+**Owner: browser** — the reworded copy in context, the `es-PR` number
+grouping, coverage-bar percentages (a feel, not math — tweak freely).
 
 #### 5E — PWA: service worker + offline cache + web manifest — after the 5D chain
 `web/sw.js` (cache the shell + fetched JSON, cache-first with network

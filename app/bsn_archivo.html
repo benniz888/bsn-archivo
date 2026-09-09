@@ -3284,6 +3284,10 @@ let PALL=null, XWALK_REV=null, PMODE='top';
    MVPs not in PINDEX). MVP_ALSO: year -> the name the archive records where it
    disagrees with the baked row (footnote, app value stays canonical). */
 let MVP_ID=null, MVP_ALSO=null;
+/* 5D.4 — set by hydrate() when web/data is present. DATA_TEXT flips the
+   "lo que falta" / coverage / MVP-warning copy from the file:// baseline
+   (champions-only) to the deployed reality; MANIFEST.counts feeds the numbers. */
+let MANIFEST=null, DATA_TEXT=false;
 function buildPlayerIndex(){
   if(!PINDEX){
     const map=new Map();
@@ -3717,7 +3721,18 @@ function buildSources(){
     ['2026','Dos cifras para la misma temporada','El export oficial del BSN cuenta solo temporada regular; RealGM incluye la postemporada. Trice aparece con 34 juegos y 18,4 puntos en uno y con 44 y 19,3 en el otro. Ninguna está mal. El archivo guarda las dos y no promedia.'],
     ['Dalmau, asistencias','Posible resolución','bsnpr.com lista al líder de asistencias como Raymond «Richie» Dalmau Santana con 455 juegos, no como Raymond Dalmau Pérez con 537. Si son dos personas distintas, la contradicción de 4,3 contra 5,1 desaparece. Sin confirmar.']
   ];
-  const gaps=[
+  const C=(DATA_TEXT&&MANIFEST)?MANIFEST.counts:null;
+  const nf=n=>Number(n).toLocaleString('es-PR');
+  const gaps = C ? [
+    'No hay una base pública de estadísticas por temporada del BSN anterior a 2001. Antes de eso el archivo solo tiene campeones, campeones de anotación y MVP.',
+    `Boxscores: ${nf(C.game_files)} partidos con caja completa, de las temporadas 2001–2003 y 2008–2013 — lo que sobrevivió en el Wayback Machine del motor de estadísticas de bsnpr.com. Fuera de esos años no hay ninguno.`,
+    `Posiciones: esas mismas ${C.seasons_with_standings} temporadas (derivadas de los partidos archivados, no siempre completas) más 2025 y 2026. 2004–2007 y 2014–2024 no tienen posiciones extraíbles.`,
+    `Campeones de anotación 1948–2021 (${C.scoring_titles} temporadas). Faltan 2022 en adelante.`,
+    'MVP 1958–2004 de la tabla histórica de bsnpr.com; los recientes según prensa. Faltan 1950, 1953, 1956 y varias temporadas recientes que ninguna fuente pública lista.',
+    `Premios y líderes por temporada (Novato, Defensa, líderes de cada categoría) solo donde bsnpr.com o Wikipedia los publican: ${C.seasons_with_awards} temporadas con algún premio, ${C.seasons_with_leaders} con tablas de líderes. 2014–2015 y 2019–2023 son los huecos grandes.`,
+    'Los números retirados de Bayamón (8) y Guaynabo (3) se publican como dígitos, sin nombres.',
+    'Líderes de carrera y récords vienen de Wikipedia y están ~5 años desactualizados: los jugadores activos aparecen sub-contados.'
+  ] : [
     'No existe ninguna base pública de estadísticas por temporada del BSN anterior a 2011. Ese es el muro real.',
     'MVP por año: 39 temporadas recuperadas de la tabla de ganadores repetidos y de las páginas de temporada. Faltan los ganadores de una sola vez, que Wikipedia publica dentro de un widget ordenable que no sobrevive a la extracción de texto.',
     'Solo existen páginas de temporada en Wikipedia para 2009, 2016, 2017, 2018 y 2024 en adelante. Entre 2010 y 2015 y entre 2019 y 2023 no hay fuente pública extraíble de premios ni de líderes.',
@@ -3726,26 +3741,15 @@ function buildSources(){
     'Posiciones completas solo de 2009, 2025 y 2026.',
     'No hay boxscores. Ninguno, de ninguna temporada.'
   ];
-  host.innerHTML=`
-    <div class="covergrid">${COVERAGE.map(c=>`
-      <div class="cov"><div class="cy">${esc(c[0])}</div>
-      <div class="cb"><div class="cf" style="width:${c[1]}%;background:${c[1]>60?'#25C26E':c[1]>40?'#1663D8':'#EF2B39'}"></div></div>
-      <div class="cl">${esc(c[2])}</div></div>`).join('')}</div>
-
-    <h3 class="sec">Conflictos entre fuentes</h3>
-    <div class="cards g2">${conflicts.map(c=>`<div class="card">
-      <div class="dim" style="font-size:11px;letter-spacing:.07em;font-weight:600">${esc(c[0]).toUpperCase()}</div>
-      <div style="font-weight:700;margin-top:3px">${esc(c[1])}</div>
-      <div class="muted" style="font-size:13.5px;margin-top:4px">${esc(c[2])}</div></div>`).join('')}</div>
-
-    <h3 class="sec">Cómo se decide quién es leyenda</h3>
-    <div class="cards g2">${LEGEND_NOTE.map(c=>`<div class="card">
-      <div style="font-weight:700">${esc(c[0])}</div>
-      <div class="muted" style="font-size:13.5px;margin-top:4px">${esc(c[1])}</div></div>`).join('')}</div>
-
-    <h3 class="sec">Lo que falta</h3>
-    <ul class="muted" style="font-size:14px;line-height:1.7;padding-left:18px">${gaps.map(g=>'<li>'+esc(g)+'</li>').join('')}</ul>
-
+  const pistaBlock = C ? `
+    <h3 class="sec">De dónde salieron los boxscores y los líderes</h3>
+    <div class="card"><p style="margin:0">El viejo motor de estadísticas de <b>bsnpr.com</b>
+    (<code>estadisticas/*.asp</code>, <code>jugadores/jugador?id=N</code>) está muerto en la web
+    actual, pero el Wayback Machine guardó buena parte: <b>${nf(C.game_files)} partidos</b> con caja de
+    2001–2003 y 2008–2013, la tabla de líderes por temporada, la de MVP históricos (1958–2004) y
+    <b>${nf(C.players)} fichas de jugador</b>. Todo eso se bajó, se parseó y es lo que llena las
+    pestañas de Temporadas y Jugadores cuando esta página se sirve desde un servidor. Lo que el
+    Wayback no capturó — sobre todo 2004–2007 y 2014–2023 — sigue siendo un hueco.</p></div>` : `
     <h3 class="sec">La pista que abre todo</h3>
     <div class="card" style="border-color:var(--ok)">
       <p style="margin:0 0 8px"><b>Hallazgo del 3 de septiembre de 2026:</b> bsnpr.com tiene páginas de jugador vivas en
@@ -3768,7 +3772,28 @@ function buildSources(){
       frena a los juegos y a las consultas por jugador.</p>
       <div class="note">Consulta CDX: <code>web.archive.org/cdx/search/cdx?url=bsnpr.com/estadisticas*&amp;output=json&amp;collapse=urlkey</code>
       — hay que correrla fuera de este archivo.</div>
-    </div>
+    </div>`;
+  host.innerHTML=`
+    <div class="covergrid">${COVERAGE.map(c=>`
+      <div class="cov"><div class="cy">${esc(c[0])}</div>
+      <div class="cb"><div class="cf" style="width:${c[1]}%;background:${c[1]>60?'#25C26E':c[1]>40?'#1663D8':'#EF2B39'}"></div></div>
+      <div class="cl">${esc(c[2])}</div></div>`).join('')}</div>
+
+    <h3 class="sec">Conflictos entre fuentes</h3>
+    <div class="cards g2">${conflicts.map(c=>`<div class="card">
+      <div class="dim" style="font-size:11px;letter-spacing:.07em;font-weight:600">${esc(c[0]).toUpperCase()}</div>
+      <div style="font-weight:700;margin-top:3px">${esc(c[1])}</div>
+      <div class="muted" style="font-size:13.5px;margin-top:4px">${esc(c[2])}</div></div>`).join('')}</div>
+
+    <h3 class="sec">Cómo se decide quién es leyenda</h3>
+    <div class="cards g2">${LEGEND_NOTE.map(c=>`<div class="card">
+      <div style="font-weight:700">${esc(c[0])}</div>
+      <div class="muted" style="font-size:13.5px;margin-top:4px">${esc(c[1])}</div></div>`).join('')}</div>
+
+    <h3 class="sec">Lo que falta</h3>
+    <ul class="muted" style="font-size:14px;line-height:1.7;padding-left:18px">${gaps.map(g=>'<li>'+esc(g)+'</li>').join('')}</ul>
+
+    ${pistaBlock}
 
     <h3 class="sec">De dónde sale cada cosa</h3>
     <div class="cards g2">
@@ -3806,9 +3831,10 @@ function buildMVPYears(){
   const missing=[];
   for(let y=1950;y<=LAST;y++){ if(!MVP_YEARS.some(r=>r[0]===y)) missing.push(y); }
   const n=el('div','warn');
-  n.innerHTML=`Recuperados ${MVP_YEARS.length} de las ${LAST-1949} temporadas desde 1950. `+
-    `Faltan ${missing.length}, casi todas de ganadores que solo lo lograron una vez: Wikipedia los publica dentro de un widget ordenable que no sobrevive a la extracción de texto. `+
-    `Años sin MVP en el archivo: ${missing.join(', ')}.`;
+  n.innerHTML=(DATA_TEXT
+    ? `Recuperados ${MVP_YEARS.length} de las ${LAST-1949} temporadas desde 1950. La tabla histórica de bsnpr.com (una sola captura de 2004) cubre 1958–2004; el resto sale de páginas de temporada y de la lista de ganadores repetidos. Faltan ${missing.length}: 1950, 1953 y 1956, más varias temporadas recientes que ninguna fuente pública lista todavía. `
+    : `Recuperados ${MVP_YEARS.length} de las ${LAST-1949} temporadas desde 1950. Faltan ${missing.length}, casi todas de ganadores que solo lo lograron una vez: Wikipedia los publica dentro de un widget ordenable que no sobrevive a la extracción de texto. `)
+    + `Años sin MVP en el archivo: ${missing.join(', ')}.`;
   $('#mvpYears').appendChild(n);
 }
 
@@ -6579,6 +6605,25 @@ async function hydrate(){
       }
     });
     MVP_YEARS.sort((a,b)=>a[0]-b[0]);
+  }
+
+  /* 5D.4 — deployed-reality copy for the "lo que falta" / coverage sections. */
+  const mf=await DATA.get('manifest.json');
+  if(mf && mf.counts){
+    MANIFEST=mf; DATA_TEXT=true;
+    const cov=[
+      ['1930s',20,'Campeones sí. Nada más.'],
+      ['1940s',25,'Campeones y una disputa sin resolver en 1945.'],
+      ['1950s',30,'Campeones, y MVP desde 1958.'],
+      ['1960s',45,'Campeones, MVP y campeones de anotación.'],
+      ['1970s',50,'Campeones, MVP, anotación, algunos récords.'],
+      ['1980s',55,'Igual, más MVP completo y líderes de carrera acumulados.'],
+      ['1990s',50,'Campeones, MVP y anotación completos; sin estadísticas por partido.'],
+      ['2000s',70,'MVP hasta 2004, anotación, y boxscores + posiciones de 2001–2003 y 2008–2009.'],
+      ['2010s',75,'Boxscores y posiciones 2010–2013; premios y líderes de 2016–2018; MVP disperso.'],
+      ['2020s',90,'Posiciones, finales juego a juego, premios completos, líderes, dueños.']
+    ];
+    COVERAGE.length=0; cov.forEach(r=>COVERAGE.push(r));
   }
 }
 
