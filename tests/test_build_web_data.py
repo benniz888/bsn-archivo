@@ -109,6 +109,15 @@ class TestBuild:
         idx = {x["id"] for x in json.loads((b.WEB / "index" / "players.json").read_text())}
         assert all(int(f.stem) in idx for f in (b.WEB / "players").glob("*.json"))
 
+    def test_player_xwalk(self):
+        xw = json.loads((b.WEB / "index" / "player_xwalk.json").read_text())
+        assert xw["georgie torres"] == 788           # owner spot-check
+        assert xw["jose piculin ortiz"] == 1271
+        assert "arnaldo toro" not in xw               # rejected -> none
+        idx = {x["id"] for x in json.loads((b.WEB / "index" / "players.json").read_text())}
+        assert all(v in idx for v in xw.values())     # every target is a real id
+        assert all(k == b._app_norm(k) for k in xw)   # keys already normalised
+
     def test_season_detail_nulls_not_empties(self):
         s = json.loads((b.WEB / "seasons" / "1953.json").read_text())
         assert s["champion"] is None and s["standings"] is None and s["leaders"] is None

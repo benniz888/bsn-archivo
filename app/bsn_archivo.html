@@ -914,6 +914,7 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
     <div id="playerSearch"></div>
     <div id="playerIndex"></div>
     <div id="playerDetail"></div>
+    <div id="playerExtra"></div>
 
     <h3 class="sec">Comparar</h3>
     <p class="lede">Escoge hasta tres jugadores y ponlos lado a lado. Las casillas vacías son huecos del archivo, no ceros.</p>
@@ -3268,6 +3269,11 @@ function showTeam(k){
    JUGADORES — one index built from every table in the archive
    ============================================================ */
 let PINDEX=null;
+/* 5D.3b — filled by hydrate() from web/data. PXWALK: norm(curated name) ->
+   bsnpr_id for the ~158 owner-reviewed matches. FID2APP: pipeline franchise_id
+   -> app 3-letter key, for linking career-row teams. Both null on file:// (no
+   fetch) — showPlayer then renders exactly the baked-in card. */
+let PXWALK=null, FID2APP=null;
 function buildPlayerIndex(){
   if(!PINDEX){
     const map=new Map();
@@ -3369,6 +3375,7 @@ function renderPlayerIndex(){
 function showPlayer(name){
   showTab('jugadores',true);
   buildPlayerIndex();
+  loadPlayerExtra(name);          /* 5D.3b — async, fills #playerExtra */
   const p=PINDEX.find(x=>norm(x.name)===norm(name));
   const host=$('#playerDetail');
   if(!p){ host.innerHTML='<p class="note">No está en el índice.</p>'; return; }
@@ -3406,6 +3413,54 @@ function showPlayer(name){
     <div class="note">Aparece en: ${esc(Array.from(p.src).join(' · '))}</div>
   </div>`;
   revealNode(host); host.scrollIntoView({block:'start',behavior:'smooth'});
+}
+/* 5D.3b — per-season career table from web/data/players/<id>.json, below the
+   curated card. Never rewrites the card above: the archive's season totals are
+   a different source (reg-season, post-2011) and are shown labelled as such,
+   not merged into the curated stat strip. file:// -> PXWALK null -> no-op. */
+async function loadPlayerExtra(name){
+  const host=$('#playerExtra'); if(!host) return;
+  const key=norm(name);
+  host.innerHTML=''; host.dataset.key=key;
+  if(!PXWALK) return;
+  const id=PXWALK[key]; if(id==null) return;
+  const d=await DATA.get('players/'+id+'.json');
+  if(!d || host.dataset.key!==key) return;
+
+  let h='';
+  const b=d.birth||{}, top=[];
+  if(b.date) top.push('n. '+esc(b.date)+(b.city?' · '+esc(b.city):''));
+  if(d.position) top.push(esc(d.position));
+  if(d.nationality && d.nationality!=='Puerto Rico') top.push(esc(d.nationality));
+  if(top.length) h+=`<div class="muted" style="font-size:13px">${top.join(' · ')}</div>`;
+
+  const car=d.career||[];
+  if(car.length){
+    let tp=0,tg=0; const sea=new Set();
+    car.forEach(c=>{ if(c.points!=null)tp+=c.points; if(c.games!=null)tg+=c.games; if(c.season)sea.add(c.season); });
+    const yrs=car.map(c=>c.season).filter(Boolean);
+    const lo=yrs.length?Math.min(...yrs):null, hi=yrs.length?Math.max(...yrs):null;
+    h+='<div class="note" style="margin-top:10px">Temporada por temporada</div>'
+      +'<div class="tblwrap"><table><thead><tr><th>Año</th><th>Equipo</th><th class="num">JJ</th><th class="num">PTS</th></tr></thead><tbody>'
+      +car.map(c=>{
+        const ak=FID2APP&&FID2APP[c.franchise_id];
+        const team=(ak&&F[ak])
+          ? `<button class="chip" style="padding:1px 7px" onclick="showTeam('${ak}')">${esc(F[ak].name)}</button>`
+          : esc(c.team_raw||'—');
+        return `<tr><td>${c.season||'—'}</td><td>${team}</td><td class="num">${c.games==null?'—':c.games}</td><td class="num">${c.points==null?'—':c.points.toLocaleString('es-PR')}</td></tr>`;
+      }).join('')
+      +'</tbody></table></div>';
+    if(tp||tg)
+      h+=`<div class="muted" style="font-size:12.5px;margin-top:6px">Totales del archivo: `
+        +`${tp.toLocaleString('es-PR')} puntos en ${tg.toLocaleString('es-PR')} juegos · `
+        +`${sea.size} temporada${sea.size===1?'':'s'}${lo?` (${lo}–${hi})`:''}. `
+        +`Serie regular; suma de la tabla por temporada de bsnpr.com, no incluye playoffs.</div>`;
+  }else{
+    h+=`<div class="note" style="margin-top:10px">Sin estadísticas por temporada en el archivo `
+      +`<span class="muted">— sin ficha detallada</span>.</div>`;
+  }
+  host.innerHTML=`<div class="card" style="margin-top:12px">${h}`
+    +`<div class="note">Ficha del archivo de bsnpr.com (jugador #${id}) vía Wayback Machine.</div></div>`;
 }
 
 let LEAD_CAT='points', LEAD_MODE='total';
@@ -6416,6 +6471,12 @@ async function hydrate(){
     rows.sort((a,b)=>a[0]-b[0]);
     SCORING.length=0; rows.forEach(r=>SCORING.push(r));
   }
+
+  /* 5D.3b — player career detail. FID2APP lets a career row link to its team;
+     PXWALK maps the curated index name to a bsnpr_id. */
+  FID2APP={}; fr.forEach(f=>{ if(f.franchise_id) FID2APP[f.franchise_id]=f.app_key; });
+  const xw=await DATA.get('index/player_xwalk.json');
+  if(xw) PXWALK=xw;
 }
 
 /* Last of all. The shelf and the folds read const tables declared

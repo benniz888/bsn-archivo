@@ -22,13 +22,12 @@ Session 002 (cont.) — all pushed to origin/main:
   lines. 5B (4634dad) + 5C (8891d78) + D-042 (a22027c) **survive** — pipeline
   only. Since: **5A rewritten** + **5B-FIX** (`caciques_humacao` / D-045) =
   77a3aae · **5D redo** (`DATA`+`hydrate()` into `runBoot()`) = c22ce10 ·
-  **5D.2** (SCORING hydrate 26→68) = 6c6c8a5 · **5D.3a** (`showSeason` detail
-  from `seasons/*.json`) = 8fd7c6f (pushed). **5D.3b IN PROGRESS**: crosswalk
-  `app/player_crosswalk.csv` built (386 curated names → 112 auto / 48 review /
-  226 none; matcher = `scratchpad/xwalk_match.py`) — sent to owner for spot-check
-  of the 48 review `bsnpr_id`s + the thin-JSON open question; no `showPlayer`
-  code until sign-off. Queue: 5D.3b impl → 5D.3c (full-archive search) → 5D.2b
-  (MVP_YEARS) → 5D.4 (gap text) → 5E (PWA) → 5G (deploy).
+  **5D.2** (SCORING hydrate 26→68) = 6c6c8a5 · **5D.3a** (`showSeason` detail) =
+  8fd7c6f · **D-046** (404-page player names + D-045 web/data rebuild) = 064e6ab
+  · **5D.3b** crosswalk = 2670254 + thin JSON = f994edd (all pushed). **5D.3b
+  app wiring uncommitted**: `player_xwalk.json` + `hydrate` `PXWALK`/`FID2APP` +
+  `loadPlayerExtra` career table. Queue: commit 5D.3b wiring → 5D.3c
+  (full-archive search) → 5D.2b (MVP_YEARS) → 5D.4 (gap text) → 5E (PWA) → 5G.
 
 Session 001 (2026-09-07): PHASE_1_ENUMERATE + PHASE_2_FETCH. Env bootstrapped,
 Wayback CDX enumerated (central finding negative — see below), 193 snapshots
@@ -952,11 +951,25 @@ test` (153) unchanged (HTML only). **Owner:** browser render parity.
   `career`/`observations`). `verify_web_data` +1 (file count == canonical
   count). web/data 18→27 MB / 4709 files. So every crosswalk id now has a real
   fetchable profile.
-- **NEXT (app code):** `showPlayer` looks up an embedded `PLAYER_XWALK` block →
-  `DATA.get('players/'+id+'.json')` → career-by-season table + fill null stat
-  strip when `career` non-empty; when empty, keep the curated card + an honest
-  "sin ficha detallada" note. Curated bio/tags/warning stay on top. Verify in
-  the DOM-stubbed harness; browser render parity = owner.
+- **App wiring — DONE (uncommitted).** `build_web_data` emits
+  `web/data/index/player_xwalk.json` (`{norm(curated name): bsnpr_id}`, 158
+  auto+review rows; `_app_norm` mirrors the app's `norm()`; CSV added to the
+  digest SOURCES). `hydrate()` fetches it → module-level `PXWALK`, and builds
+  `FID2APP` (`franchise_id → app key`) from the franchises fetch it already
+  does. New `#playerExtra` div + `loadPlayerExtra(name)` (async, called from
+  `showPlayer` like `loadSeasonExtra` from `showSeason`): `PXWALK[norm(name)]`
+  → `DATA.get('players/<id>.json')` → career-by-season table (Año/Equipo/JJ/PTS,
+  team linked via `FID2APP`) + a labelled "Totales del archivo … serie regular,
+  no incluye playoffs" line; empty career → "sin estadísticas por temporada …
+  sin ficha detallada". Never rewrites the curated card/strip above (PC1 —
+  different source). `file://` → `PXWALK`/`FID2APP` null → 0 fetches, card
+  byte-identical to today. `verify_web_data` +1 (every xwalk target is a real
+  id); +1 test. Verified in `scratchpad/player_harness.js`: http Dalmau/Mincy →
+  table+totals, Georgie Torres (thin) → "sin ficha", Mudiay (unmatched) → no
+  card; file 0 fetches; stale-click (Dalmau→Torres) doesn't leak. Boot harness
+  0 exceptions / champOf 96→96. **Owner: browser render parity** — table
+  layout/width, franchise chips, `toLocaleString('es-PR')` grouping (Node
+  renders "10,570", browser "10.570").
 
 ##### 5D.3c — "Todo el archivo (3,303)" search mode — QUEUED
 `renderPlayerIndex` mode toggle: "Destacados (385)" (default) / "Todo (3,303)"

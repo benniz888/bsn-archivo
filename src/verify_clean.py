@@ -452,6 +452,12 @@ def verify_web_data(c: Checker) -> None:
     c.check(not any(p["birth_year"] == 0 or p["first_season"] == 0 for p in players),
             "web/data: no 0 where a year is unknown (PC2 — null not zero)")
 
+    xw = json.loads((web / "index" / "player_xwalk.json").read_text(encoding="utf-8"))
+    pid_set = {p["id"] for p in players}
+    c.check(all(v in pid_set for v in xw.values()),
+            "web/data: every player_xwalk target is a real players_canonical id",
+            f"{len(xw)} entries")
+
     st = json.loads((web / "index" / "scoring_titles.json").read_text(encoding="utf-8"))
     c.check(all(bool(r["champion"]) != bool(r["dual"]) for r in st),
             "web/data: every scoring_titles row is champion XOR dual")

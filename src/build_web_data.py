@@ -221,6 +221,32 @@ def build_players_index() -> Path:
     return WEB / "index" / "players.json"
 
 
+def _app_norm(s: str) -> str:
+    """Match the app's `norm()` (bsn_archivo.html) exactly: lower, NFD, drop
+    combining marks, strip « » " ' . — no internal-whitespace collapse."""
+    s = unicodedata.normalize("NFD", (s or "").lower())
+    s = "".join(c for c in s if not 0x300 <= ord(c) <= 0x36F)
+    return re.sub(r"[«»\"'.]", "", s).strip()
+
+
+def build_player_xwalk() -> Path:
+    """web/data/index/player_xwalk.json — { norm(curated PINDEX name): bsnpr_id }
+    for the app's `showPlayer` career-detail lookup (5D.3b). Only rows the owner
+    signed off (verdict auto/review); `none` rows stay curated-only. Source of
+    truth is app/player_crosswalk.csv."""
+    out: dict[str, int] = {}
+    path = APP / "player_crosswalk.csv"
+    with open_clean_text(path, "r") as fh:
+        for r in csv.DictReader(fh):
+            if r["verdict"] not in ("auto", "review"):
+                continue
+            pid = _int(r["bsnpr_id"])
+            if pid is not None:
+                out[_app_norm(r["curated_name"])] = pid
+    _jdump(out, WEB / "index" / "player_xwalk.json")
+    return WEB / "index" / "player_xwalk.json"
+
+
 def _scoring_club_resolver():
     """A scoring-champion `club_raw` -> franchise_id. Wider than `_team_resolver`
     (city only): also matches a full franchise name and an unambiguous nickname,
@@ -637,6 +663,7 @@ def main() -> int:
         "scoring_titles": build_scoring_titles(),
         "career_leaders": build_career_leaders(),
         "records": build_records(),
+        "player_xwalk": build_player_xwalk(),
     }
     counts = {}
     for name, path in built.items():
@@ -665,7 +692,7 @@ def main() -> int:
         "seasons_stats_tracked.csv", "leader_coverage_gaps.csv",
         "city_franchise_map.csv", "game_results.csv", "game_box_player.csv",
         "bsn_career_leaders.csv", "bsn_records.csv",
-        "franchise_key_map.csv", "franchise_curated.json",
+        "franchise_key_map.csv", "franchise_curated.json", "player_crosswalk.csv",
     ]
     manifest = {
         "schema_version": SCHEMA_VERSION,
