@@ -3297,6 +3297,11 @@ function buildPlayerIndex(){
         pts:null,reb:null,ast:null,gp:null,ppg:null,years:null,pos:null,bio:null,mvp:0});
       return map.get(key);
     };
+    /* SCORING / MVP_YEARS / SEASON_AWARDS hold raw source names (and grow when
+       hydrate() swaps in the full tables). Only enrich a player already curated
+       from POOL/LEADERS/HOF — a bare scoring-champ name belongs in "Todo el
+       archivo", not "Destacados". Keeps the count stable across file:// / http. */
+    const getIf=n=>map.get(norm(n));
     ['points','rebounds','assists'].forEach(cat=>{
       LEADERS[cat].forEach(r=>{
         const p=get(r[1]); p.src.add('Líderes de carrera'); p.pos=p.pos||r[2]; p.years=p.years||r[3];
@@ -3317,7 +3322,8 @@ function buildPlayerIndex(){
       (h.hon||[]).forEach(x=>p.tags.add(x));
     });
     SCORING.forEach(s=>{
-      const p=get(s[1]); p.src.add('Campeones de anotación'); p.tags.add('Campeón de anotación '+s[0]);
+      const p=getIf(s[1]); if(!p) return;
+      p.src.add('Campeones de anotación'); p.tags.add('Campeón de anotación '+s[0]);
       const fk=FKEYS.find(k=>F[k].name===s[2]); if(fk)p.clubs.add(fk);
     });
     POOL.forEach(q=>{
@@ -3340,11 +3346,13 @@ function buildPlayerIndex(){
        searching a name like Carlos Arroyo returned nothing. */
     NBA_PLAYERS.forEach(r=>{const p=get(r[0]);p.src.add('BSN a la NBA');p.tags.add('NBA');p.bio=p.bio||r[1];});
     MVP_YEARS.forEach(r=>{
-      const p=get(r[1]); p.src.add('MVP por año'); p.tags.add('MVP '+r[0]);
+      const p=getIf(r[1]); if(!p) return;
+      p.src.add('MVP por año'); p.tags.add('MVP '+r[0]);
       const fk=FKEYS.find(k=>F[k].name===r[2]); if(fk)p.clubs.add(fk);
     });
     SEASON_AWARDS.forEach(r=>{
-      const p=get(r[2]); p.src.add('Premios por temporada'); p.tags.add(r[1]+' '+r[0]);
+      const p=getIf(r[2]); if(!p) return;
+      p.src.add('Premios por temporada'); p.tags.add(r[1]+' '+r[0]);
       const fk=FKEYS.find(k=>F[k].name===r[3]); if(fk)p.clubs.add(fk);
       if(r[4]&&!p.bio) p.bio=r[4];
     });
@@ -3412,7 +3420,13 @@ function renderPlayerIndex(){
 const ARCH_CAP=500;
 function renderArchiveIndex(q){
   const host=$('#playerIndex');
-  if(!PALL){ host.innerHTML='<p class="note">El índice completo del archivo aún se está cargando…</p>'; return; }
+  if(!PALL){
+    /* file:// (no data/ to reach) vs. hydrate still in flight over http. */
+    host.innerHTML = DATA.base===null
+      ? '<p class="note">El índice completo (3.303 jugadores) solo está disponible en la versión publicada, con conexión. Esta copia local trae los '+(PINDEX?PINDEX.length:385)+' jugadores destacados.</p>'
+      : '<p class="note">Cargando el índice completo del archivo…</p>';
+    return;
+  }
   const toks=q.split(/\s+/).filter(Boolean);
   const list=PALL.filter(p=>{ const n=p.norm||norm(p.name); return toks.every(t=>n.includes(t)); });
   const shown=list.slice(0,ARCH_CAP);

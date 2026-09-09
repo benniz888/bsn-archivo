@@ -29,8 +29,10 @@ Session 002 (cont.) — all pushed to origin/main:
   bb69496 · **5D.3c** ("Todo el archivo" search) = 87d8c77 + filter-hide fix =
   ba0cc68 · **5D.2b** (MVP_YEARS 39→63 + Báez footnote) = cb429bc · **5D.4
   prep** (manifest coverage counts) = 735a58d · **5D.4 app** (`DATA_TEXT`,
-  deployed-reality gap/coverage copy) = 08e8cb4 (all pushed). **5E uncommitted**:
-  `web/sw.js` + registration + `syncVersion` purge hook. Queue: commit 5E →
+  deployed-reality gap/coverage copy) = 08e8cb4 (all pushed). **5E** (`web/sw.js` + registration
+  + `syncVersion` purge hook) = b87d8db (pushed). **5E follow-up uncommitted**:
+  file:// archive-index message + `buildPlayerIndex` enrich-only (PINDEX
+  385→381, stable across modes). Queue: commit follow-up →
   5G (deploy — needs the site-dir layout decision: `bsn_archivo.html` +
   `data/` + `sw.js` colocated for GitHub Pages).
 
@@ -1070,6 +1072,21 @@ global — the harnesses' `global.navigator = {...}` silently no-ops; fixed in
 `sw.js` colocated):** SW registers (DevTools→Application), a second load works
 with Network→Offline, `file://` has no SW and no errors, and a redeployed data
 rebuild refreshes the cache.
+
+**5E follow-up (owner file:// testing, uncommitted with 5E):**
+- `renderArchiveIndex` stuck on "cargando…" forever on `file://` (PALL can
+  never load) → now branches on `DATA.base===null`: file:// shows "el índice
+  completo solo está disponible en la versión publicada … esta copia trae los
+  N destacados", http mid-hydrate keeps "Cargando…".
+- **`buildPlayerIndex` enrich-only (owner-approved).** The `SCORING` /
+  `MVP_YEARS` / `SEASON_AWARDS` loops used `get()` (creates an entry), so
+  hydrate's full tables (5D.2 SCORING 26→68, 5D.2b MVP 39→63) folded ~45 raw
+  all-caps names ("EDGAR LEON", "FUFI SANTORI"…) into "Destacados" and the
+  count drifted 385(file)→426(http). Now `getIf()` — enrich a curated player,
+  never mint a new one. **PINDEX = 381, stable file:// == http://**; −4 vs the
+  old baked 385 is a dedup bonus (e.g. "Samuel Betancourt" was a dup of
+  curated "Sammy Betancourt"). The raw names stay reachable via "Todo el
+  archivo (3.303)". `#pf`/`#pmode`/hub counts all read 381 now.
 
 #### 5F — PBP per-game JSON (gated, likely stays deferred)
 `web/data/games/<season>/<game_id>_pbp.json` — emitted **only** for games whose
