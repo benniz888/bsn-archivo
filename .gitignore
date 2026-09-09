@@ -7,6 +7,10 @@ __pycache__/
 .DS_Store
 data/raw/
 
+# stray recursive dir from browser-testing the app served over http (a `ln -s`
+# or `cp -r` of web/data run from inside web/data/). Never a real build output.
+web/data/data/
+
 # regenerable from a single CDX query (`make enumerate-root`); 5.9 MB, mostly
 # next-phase fetch targets. The human summary is docs/coverage_root.md (tracked).
 data/interim/cdx_root_inventory.csv

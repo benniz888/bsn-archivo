@@ -2255,10 +2255,15 @@ const PLAYERS_NEW=[
    DERIVED
    ============================================================ */
 const champOf={}, ruOf={};
-for(const k in F){
-  F[k].won.forEach(y=>champOf[y]=k);
-  F[k].ru.forEach(y=>ruOf[y]=k);
+function deriveChampions(){
+  for(const k in champOf) delete champOf[k];
+  for(const k in ruOf) delete ruOf[k];
+  for(const k in F){
+    F[k].won.forEach(y=>champOf[y]=k);
+    F[k].ru.forEach(y=>ruOf[y]=k);
+  }
 }
+deriveChampions();
 const YEARS=[];for(let y=1930;y<=2026;y++)YEARS.push(y);
 const LAST=2026, NSEASONS=YEARS.length;
 const FKEYS=Object.keys(F);
@@ -4548,6 +4553,39 @@ const ST={
 };
 
 /* ============================================================
+   DATA — fetch web/data/*.json when this file is served over http
+   (i.e. deployed). Opened as a local file there is no data/ to
+   reach, so get() returns null and every reader falls through to
+   the constants baked in near the top. Same layering idea as
+   translate(): merge over a source block, never edit it.
+   Cache: memory -> localStorage (bsn:data:*, via ST) -> network.
+   ============================================================ */
+const DATA={
+  base: location.protocol==='file:' ? null : new URL('data/',location.href).href,
+  mem:{},
+  async get(path,fresh){
+    if(this.base===null) return null;
+    if(!fresh && (path in this.mem)) return this.mem[path];
+    if(!fresh){ const c=ST.json('data:'+path); if(c!==null){ this.mem[path]=c; return c; } }
+    try{
+      const r=await fetch(this.base+path);
+      if(!r.ok) throw 0;
+      const j=await r.json();
+      this.mem[path]=j; ST.setJSON('data:'+path,j);
+      return j;
+    }catch(e){ if(!fresh) this.mem[path]=null; return null; }
+  },
+  /* Drop the cached JSON when web/data has been rebuilt (source_digest changed). */
+  async syncVersion(){
+    if(this.base===null) return;
+    const m=await this.get('manifest.json',true);
+    if(!m || ST.get('data:digest')===m.source_digest) return;
+    ST.keys().forEach(k=>{ if(k.indexOf('data:')===0 && k!=='data:digest') ST.del(k); });
+    this.mem={}; ST.set('data:digest',m.source_digest);
+  }
+};
+
+/* ============================================================
    HUB — the landing
 
    Thirteen sections arrived as one scroll. The hub makes arriving a
@@ -6083,7 +6121,11 @@ function finishBoot(){
   hideSplash();
 }
 
-function runBoot(){
+async function runBoot(){
+  /* Pull the built data before the builders run. Raced against a
+     timeout so a slow or dead network can't stall the boot — the
+     splash covers the wait, and hydrate() no-ops on a local open. */
+  await Promise.race([hydrate().catch(()=>{}), new Promise(r=>setTimeout(r,2500))]);
   let i=0;
   const total=BOOT.length;
   const raf=window.requestAnimationFrame||(fn=>setTimeout(fn,16));
@@ -6275,6 +6317,35 @@ function applyHash(){
      link lands on the thing itself instead of on a shelf. */
   if(a==='juega'&&b&&GAMES.some(g=>g.id===b)){ showTab('juega'); openGame(b); }
 }
+/* Merge the built franchise data over F when web/data is reachable
+   (deployed); a local-file open falls through untouched. Same rule as
+   translate(): layer over the source block, never edit it. Only F /
+   champions are wired now — SCORING and the per-player/-season fetches
+   are later sub-phases. */
+async function hydrate(){
+  await DATA.syncVersion();
+  const fr=await DATA.get('index/franchises.json');
+  if(!fr) return;
+  const yrs=a=>a.filter(t=>/^\d{4}$/.test(t)).map(Number);
+  const uni=(a,b)=>[...new Set([...a,...b])].sort((x,y)=>x-y);
+  for(const f of fr){
+    const k=f.app_key; if(!F[k]) continue;
+    Object.assign(F[k],{
+      name:f.name, abbr:f.abbr, city:f.city, founded:f.founded,
+      active:f.status==='active'?1:0, end:f.end,
+      c1:f.colors.c1, c2:f.colors.c2, colorSrc:f.colors.src,
+      coach:f.coach||undefined, note:f.note||undefined,
+      /* union, not replace: the reconciled CSV omits the D5-disputed
+         1945 (carried in F as Capitalinos + a caveat) and the D3
+         1942-43 split. Build-time check confirms 0 season CONFLICTS. */
+      won:uni(F[k].won, yrs(f.titles)),
+      ru:uni(F[k].ru, yrs(f.finals_lost)),
+    });
+  }
+  deriveChampions();
+  ACTIVE.length=0; FKEYS.forEach(k=>{ if(F[k].active) ACTIVE.push(k); });
+}
+
 /* Last of all. The shelf and the folds read const tables declared
    near the bottom of this script, so they cannot run inside the BOOT
    batches without hitting a temporal dead zone — finishBoot is called
