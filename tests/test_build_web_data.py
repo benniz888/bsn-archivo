@@ -90,6 +90,43 @@ class TestBuild:
         assert man["counts"]["seasons"] == 98
         assert len(man["source_digest"]) == 64      # sha256 hex
 
+    def test_player_detail_file(self):
+        p = json.loads((b.WEB / "players" / "37.json").read_text())
+        assert p["name"] == "Carmona Sanchez, Alejandro"
+        assert len(p["career"]) == 17
+        assert p["career"][0]["franchise_id"]        # team_raw resolved
+        assert all(c["games"] is None or isinstance(c["games"], int) for c in p["career"])
+        # detail files only for ids in the canonical index
+        idx = {x["id"] for x in json.loads((b.WEB / "index" / "players.json").read_text())}
+        assert all(int(f.stem) in idx for f in (b.WEB / "players").glob("*.json"))
+
+    def test_season_detail_nulls_not_empties(self):
+        s = json.loads((b.WEB / "seasons" / "1953.json").read_text())
+        assert s["champion"] is None and s["standings"] is None and s["leaders"] is None
+        s09 = json.loads((b.WEB / "seasons" / "2009.json").read_text())
+        assert s09["standings"]["rows"][0]["w"] >= s09["standings"]["rows"][-1]["w"]
+        assert s09["standings"]["complete"] is False   # 114 archived games < 140
+
+    def test_game_box_and_quarters(self):
+        g = json.loads((b.WEB / "games" / "2001" / "BS21001.json").read_text())
+        assert g["score"] == {"a": 95, "b": 82}
+        assert g["quarters"]["a"] == [24, 24, 28, 16]  # trailing 0-0 trimmed
+        assert len(g["box"]) == 21
+        assert any(row["bsnpr_id"] is None for row in g["box"])   # PC2
+        idx = json.loads((b.WEB / "games" / "2001" / "index.json").read_text())
+        assert len(idx) == 158 and idx == sorted(idx, key=lambda x: (x["date"] or "", x["game_id"]))
+
+
+class TestHelpers:
+    def test_norm(self):
+        assert b._norm("SAN GERMAN") == b._norm("San Germán") == "san german"
+        assert b._norm("  Río  Piedras ") == "rio piedras"
+
+    def test_team_resolver(self):
+        r = b._team_resolver()
+        assert r("SANTURCE") == r("Santurce") == "cangrejeros_santurce"
+        assert r("Nowhere") is None
+
     def test_source_digest_is_stable(self):
         d1 = b._source_digest(["franchises.csv", "franchise_curated.json"])
         d2 = b._source_digest(["franchise_curated.json", "franchises.csv"])

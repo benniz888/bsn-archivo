@@ -452,6 +452,42 @@ def verify_web_data(c: Checker) -> None:
     c.check(not any(p["birth_year"] == 0 or p["first_season"] == 0 for p in players),
             "web/data: no 0 where a year is unknown (PC2 — null not zero)")
 
+    # 5C — per-entity files
+    pdir, sdir, gdir = web / "players", web / "seasons", web / "games"
+    if not pdir.exists():
+        return
+    n_pfiles = len(list(pdir.glob("*.json")))
+    c.check(manifest["counts"].get("player_files") == n_pfiles,
+            "web/data: manifest player_files matches players/*.json count", str(n_pfiles))
+    n_sfiles = len(list(sdir.glob("*.json")))
+    c.check(manifest["counts"].get("season_files") == n_sfiles,
+            "web/data: manifest season_files matches seasons/*.json count", str(n_sfiles))
+    n_gfiles = sum(1 for p in gdir.rglob("*.json") if p.name != "index.json")
+    c.check(manifest["counts"].get("game_files") == n_gfiles,
+            "web/data: manifest game_files matches games/**/*.json count", str(n_gfiles))
+
+    # every player detail file is a real id; every game a real game_id
+    idx_ids = {p["id"] for p in players}
+    c.check(all(int(p.stem) in idx_ids for p in pdir.glob("*.json")),
+            "web/data: every players/<id>.json id is in the index")
+    box_gids = {r["game_id"] for r in _read("game_box_player.csv")}
+    res_gids = {r["game_id"] for r in _read("game_results.csv")}
+    file_gids = {p.stem for p in gdir.rglob("*.json") if p.name != "index.json"}
+    c.check(file_gids == (box_gids | res_gids),
+            "web/data: games/ files == every game_id in results ∪ box", f"{len(file_gids)}")
+
+    # PC2 spot-check: a blank stat cell must be null, not 0, in a game box
+    g = json.loads((gdir / "2001" / "BS21001.json").read_text(encoding="utf-8"))
+    c.check(g["box"] and all("pts" in b for b in g["box"]),
+            "web/data: game box rows carry the stat keys")
+    c.check(any(b["bsnpr_id"] is None for b in g["box"]),
+            "web/data: unresolved box player -> bsnpr_id null (PC2), not omitted")
+
+    # a season with no derived standings must say null, not an empty list
+    s1953 = json.loads((sdir / "1953.json").read_text(encoding="utf-8"))
+    c.check(s1953["standings"] is None and s1953["champion"] is None,
+            "web/data: season 1953 (D6 no champion) carries nulls, not empties")
+
 
 def main() -> int:
     c = Checker()

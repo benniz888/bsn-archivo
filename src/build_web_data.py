@@ -21,6 +21,7 @@ import hashlib
 import json
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
 from src.wayback_cdx import REPO_ROOT
@@ -60,6 +61,14 @@ def _jdump(obj, path: Path) -> int:
     text = json.dumps(obj, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n"
     path.write_text(text, encoding="utf-8")
     return len(obj)
+
+
+def _reset_dir(path: Path) -> None:
+    """Empty a generated subtree before rebuilding it, so a rerun after the data
+    shrinks leaves no orphan files (the tree must be a pure function of the CSVs)."""
+    if path.exists():
+        for p in sorted(path.rglob("*"), reverse=True):
+            p.unlink() if p.is_file() else p.rmdir()
 
 
 def _source_digest(inputs: list[str]) -> str:
@@ -283,6 +292,261 @@ def build_records() -> Path:
 
 
 # --------------------------------------------------------------------------- #
+# 5C — per-entity files: players/ seasons/ games/                              #
+# --------------------------------------------------------------------------- #
+def _team_resolver():
+    """team_raw (a bare, case-inconsistent city name in the game + leader data)
+    -> franchise_id | None, via city_franchise_map.csv. For the 2001-2013 game
+    seasons the San Juan / Rio Piedras era-ambiguity does not arise."""
+    city = {}
+    for r in _read("city_franchise_map.csv"):
+        city[_norm(r["normalized_city"])] = r["franchise_id"]
+
+    def resolve(team_raw: str) -> str | None:
+        return city.get(_norm(team_raw))
+    return resolve
+
+
+def _norm(s: str) -> str:
+    s = "".join(c for c in unicodedata.normalize("NFD", s or "")
+                if unicodedata.category(c) != "Mn")
+    return " ".join(s.lower().split())
+
+
+def _box_num_cols():
+    return ["minutes", "fg2m", "fg2a", "fg3m", "fg3a", "ftm", "fta",
+            "oreb", "dreb", "reb", "ast", "stl", "blk", "pf", "tov", "pts"]
+
+
+def build_players_detail() -> tuple[int, int]:
+    """web/data/players/<bsnpr_id>.json for every player with something beyond the
+    search index — a profile, career rows, or an id_map observation. The other
+    ~2,200 are index-only (players.json already carries their light record)."""
+    canon = {r["bsnpr_id"]: r for r in _read("players_canonical.csv")}
+    aliases: dict[str, list] = {}
+    for a in _read("player_aliases.csv"):
+        if a["alias_type"] not in ("canonical", "normalized"):
+            aliases.setdefault(a["bsnpr_id"], []).append(
+                {"alias": a["alias"], "type": a["alias_type"]})
+    career: dict[str, list] = {}
+    for r in _read("player_career_seasons.csv"):
+        career.setdefault(r["bsnpr_id"], []).append(r)
+    obs: dict[str, list] = {}
+    for r in _read("player_id_map.csv"):
+        obs.setdefault(r["bsnpr_id"], []).append(r)
+    resolve_team = _team_resolver()
+
+    # restrict to ids the identity spine actually knows — a career/obs row for an
+    # id absent from players_canonical (id 13352: a jugador.asp career with no
+    # enciclopedia entry) would be an unnamed, unsearchable file.
+    have_detail = (set(career) | set(obs)
+                   | {p for p, r in canon.items() if r["has_profile"] == "yes"}) & set(canon)
+    _reset_dir(WEB / "players")
+    n = 0
+    for pid in sorted(have_detail, key=int):
+        c = canon.get(pid, {})
+        rec = {
+            "id": int(pid),
+            "name": c.get("canonical_name") or "",
+            "aliases": sorted(aliases.get(pid, []), key=lambda a: (a["type"], a["alias"])),
+            "birth": {"date": c.get("birth_date") or None,
+                      "year": _int(c.get("birth_year")),
+                      "city": c.get("birth_city") or None},
+            "position": c.get("position") or None,
+            "nationality": c.get("nationality") or None,
+            "has_profile": c.get("has_profile") == "yes",
+            "career": sorted(
+                ({"season": _int(r["season"]), "team_raw": r["team_raw"],
+                  "franchise_id": resolve_team(r["team_raw"].split(",")[-1]),
+                  "games": _int(r["games"]), "points": _int(r["points"])}
+                 for r in career.get(pid, [])),
+                key=lambda x: (x["season"] or 0, x["team_raw"])),
+            "observations": sorted(
+                ({"obs_source": r["obs_source"], "season": _int(r["season"]),
+                  "club_raw": r["club_raw"], "match_method": r["match_method"],
+                  "club_check": r["club_check"]}
+                 for r in obs.get(pid, [])),
+                key=lambda x: (x["obs_source"], x["season"] or 0, x["club_raw"])),
+            "sources": [c["source_url"]] if c.get("source_url") else [],
+        }
+        _jdump(rec, WEB / "players" / f"{pid}.json")
+        n += 1
+    return n, len(canon) - n
+
+
+_LEADER_CATS_ES = {
+    "anotaciones": "scoring", "rebotes": "rebounds", "asistencias": "assists",
+    "bloqueos": "blocks", "cortes_balon": "steals", "turnovers": "turnovers",
+    "canastos_3": "threes", "canastos_3_pct": "three_pct", "rebotes_ofensivos": "off_rebounds",
+    "tiros_libres_anotados": "free_throws", "tiros_libres_pct": "free_throw_pct",
+}
+
+
+def _season_leaders() -> dict[str, dict]:
+    """season -> {category: [ {rank, player_raw, club_raw, value, games, kind} ]}
+    merged from the 1986/2007+ board and the 2000-2002 <pre> board."""
+    out: dict[str, dict] = {}
+    for r in _read("player_season_leaders.csv"):
+        cat = _LEADER_CATS_ES.get(r["category"], r["category"])
+        out.setdefault(r["season"], {}).setdefault(cat, []).append({
+            "rank": _int(r["rank"]), "player_raw": r["player_raw"],
+            "club_raw": r["club_raw"], "value": _float(r["prom"]),
+            "games": _int(r["games"]), "kind": r["prom_kind"],
+        })
+    for r in _read("player_season_leaders_2000_2002.csv"):
+        cat = _LEADER_CATS_ES.get(r["category"], r["category"])
+        if r["serie"] and r["serie"] != "Serie Regular":
+            continue
+        out.setdefault(r["season"], {}).setdefault(cat, []).append({
+            "rank": _int(r["rank"]), "player_raw": r["player_raw"],
+            "club_raw": r["club_raw"], "value": _float(r["prom"]),
+            "games": _int(r["games"]), "kind": r["prom_kind"],
+        })
+    for s in out:
+        for cat in out[s]:
+            out[s][cat].sort(key=lambda x: x["rank"] or 99)
+    return out
+
+
+def _standings_from_games(resolve_team) -> dict[str, list]:
+    """season -> [ {team_raw, franchise_id, w, l, games_recorded} ] from the
+    archived game_results. Marked partial in the season file — the archive is
+    not a complete game set for most seasons (5A OQ4)."""
+    rec: dict[str, dict] = {}
+    for r in _read("game_results.csv"):
+        a, b = _int(r["score_a"]), _int(r["score_b"])
+        if a is None or b is None:
+            continue
+        s = r["season"]
+        for team, mine, theirs in ((r["team_a_raw"], a, b), (r["team_b_raw"], b, a)):
+            key = _norm(team)
+            d = rec.setdefault(s, {}).setdefault(key, {"team_raw": team, "w": 0, "l": 0})
+            d["w" if mine > theirs else "l"] += 1
+    out = {}
+    for s, teams in rec.items():
+        rows = []
+        for d in teams.values():
+            rows.append({"team_raw": d["team_raw"].title(),
+                         "franchise_id": resolve_team(d["team_raw"]),
+                         "w": d["w"], "l": d["l"]})
+        rows.sort(key=lambda x: (-(x["w"] / max(x["w"] + x["l"], 1)), -x["w"], x["team_raw"]))
+        out[s] = rows
+    return out
+
+
+def build_seasons_detail() -> int:
+    champ = {r["season"]: r for r in _read("champions_reconciled.csv")}
+    tracked = {r["season"]: r for r in _read("seasons_stats_tracked.csv")}
+    gaps: dict[str, list] = {}
+    for r in _read("leader_coverage_gaps.csv"):
+        gaps.setdefault(r["season"], []).append({"status": r["status"], "detail": r["detail"]})
+    hist_sc: dict[str, dict] = {r["season"]: r for r in _read("historic_scoring_champions.csv")}
+    awards: dict[str, list] = {}
+    for r in _read("historic_awards.csv"):
+        awards.setdefault(r["season"], []).append(
+            {"award": r["award"], "player_raw": r["player_raw"], "team_raw": r["team_raw"]})
+    leaders = _season_leaders()
+    resolve_team = _team_resolver()
+    standings = _standings_from_games(resolve_team)
+    games_per_season: dict[str, int] = {}
+    for r in _read("game_results.csv"):
+        games_per_season[r["season"]] = games_per_season.get(r["season"], 0) + 1
+
+    all_seasons = (set(champ) | set(leaders) | set(awards) | set(hist_sc)
+                   | set(standings) | set(tracked))
+    _reset_dir(WEB / "seasons")
+    for s in sorted(all_seasons):
+        cr = champ.get(s, {})
+        st = standings.get(s)
+        rec = {
+            "season": s,
+            "champion": cr.get("champion_franchise_id") or None,
+            "runner_up": cr.get("runner_up_franchise_id") or None,
+            "agreement": cr.get("agreement") or None,
+            "confidence": cr.get("confidence") or None,
+            "standings": ({"rows": st, "games_recorded": games_per_season.get(s, 0),
+                           "complete": games_per_season.get(s, 0) >= 140,
+                           "note": "Derived from the games in the Wayback archive — "
+                                   "not a complete season unless flagged complete."}
+                          if st else None),
+            "leaders": leaders.get(s) or None,
+            "awards": awards.get(s) or None,
+            "scoring_champion": ({"player_raw": hist_sc[s]["player_raw"],
+                                  "team_raw": hist_sc[s]["team_raw"],
+                                  "total_points": _int(hist_sc[s]["total_points"]),
+                                  "ppg": _float(hist_sc[s]["ppg"]),
+                                  "metric_era": hist_sc[s]["metric_era"]}
+                                 if s in hist_sc else None),
+            "coverage": {
+                "stats_tracked": {k: (v == "1") for k, v in tracked.get(s, {}).items()
+                                  if k != "season"} or None,
+                "gaps": gaps.get(s) or None,
+            },
+        }
+        _jdump(rec, WEB / "seasons" / f"{s}.json")
+    return len(all_seasons)
+
+
+def _quarters(v: str):
+    """`"24-24-28-16-0-0"` -> `[24, 24, 28, 16]` (trailing padding zeros dropped).
+    All-zero / blank -> None."""
+    nums = [int(p) for p in (v or "").split("-") if p.lstrip("-").isdigit()]
+    last = next((i for i in range(len(nums), 0, -1) if nums[i - 1] != 0), 0)
+    return nums[:last] or None
+
+
+def build_games() -> tuple[int, int]:
+    resolve_team = _team_resolver()
+    results = {r["game_id"]: r for r in _read("game_results.csv")}
+    box: dict[str, list] = {}
+    for r in _read("game_box_player.csv"):
+        box.setdefault(r["game_id"], []).append(r)
+
+    all_gids = set(results) | set(box)
+    by_season: dict[str, list] = {}
+    _reset_dir(WEB / "games")
+    for gid in sorted(all_gids):
+        res = results.get(gid, {})
+        rows = box.get(gid, [])
+        season = res.get("season") or (rows[0]["season"] if rows else "unknown")
+        date = res.get("date") or (rows[0]["date"] if rows else None)
+
+        rec = {
+            "game_id": gid, "season": _int(season) if season.isdigit() else season,
+            "date": date, "script": res.get("script") or None,
+            "teams": {
+                "a": {"team_raw": res.get("team_a_raw") or None,
+                      "franchise_id": resolve_team(res.get("team_a_raw", ""))},
+                "b": {"team_raw": res.get("team_b_raw") or None,
+                      "franchise_id": resolve_team(res.get("team_b_raw", ""))},
+            },
+            "score": {"a": _int(res.get("score_a")), "b": _int(res.get("score_b"))},
+            "quarters": ({"a": _quarters(res.get("quarters_a")),
+                          "b": _quarters(res.get("quarters_b"))}
+                         if res.get("quarters_a") else None),
+            "box": sorted(
+                ({"player_raw": r["player_raw"], "bsnpr_id": _int(r["bsnpr_id"]),
+                  "team_raw": r["team_raw"], "jersey": r["jersey"] or None,
+                  "box_check": r["box_check"],
+                  **{c: _int(r[c]) for c in _box_num_cols()}}
+                 for r in rows),
+                key=lambda x: (x["team_raw"], -(x["pts"] or 0), x["player_raw"])),
+            "sources": sorted({r["source_url"] for r in ([res] if res else []) + rows if r.get("source_url")}),
+        }
+        _jdump(rec, WEB / "games" / str(season) / f"{gid}.json")
+        by_season.setdefault(season, []).append({
+            "game_id": gid, "date": date,
+            "a": {"team_raw": rec["teams"]["a"]["team_raw"], "score": rec["score"]["a"]},
+            "b": {"team_raw": rec["teams"]["b"]["team_raw"], "score": rec["score"]["b"]},
+        })
+
+    for season, lst in by_season.items():
+        lst.sort(key=lambda g: (g["date"] or "", g["game_id"]))
+        _jdump(lst, WEB / "games" / str(season) / "index.json")
+    return len(all_gids), len(by_season)
+
+
+# --------------------------------------------------------------------------- #
 # app won/ru vs champions_reconciled — diff report (5A OQ2)                     #
 # --------------------------------------------------------------------------- #
 def diff_app_champions(app_to_fid) -> list[str]:
@@ -334,9 +598,25 @@ def main() -> int:
         counts[name] = len(obj["categories"]) if name == "career_leaders" else len(obj)
         print(f"  -> {path.relative_to(REPO_ROOT)} ({counts[name]})")
 
+    # 5C — per-entity files
+    n_pdetail, n_pindex_only = build_players_detail()
+    n_sdetail = build_seasons_detail()
+    n_games, n_gseasons = build_games()
+    counts["player_files"] = n_pdetail
+    counts["season_files"] = n_sdetail
+    counts["game_files"] = n_games
+    print(f"  -> web/data/players/*.json ({n_pdetail}; {n_pindex_only} index-only)")
+    print(f"  -> web/data/seasons/*.json ({n_sdetail})")
+    print(f"  -> web/data/games/<season>/*.json ({n_games} games, {n_gseasons} seasons)")
+
     SOURCES = [
         "franchises.csv", "champions_reconciled.csv", "franchise_events.csv",
-        "players_canonical.csv", "scoring_champions_reconciled.csv",
+        "players_canonical.csv", "player_aliases.csv", "player_career_seasons.csv",
+        "player_id_map.csv", "scoring_champions_reconciled.csv",
+        "historic_scoring_champions.csv", "historic_awards.csv",
+        "player_season_leaders.csv", "player_season_leaders_2000_2002.csv",
+        "seasons_stats_tracked.csv", "leader_coverage_gaps.csv",
+        "city_franchise_map.csv", "game_results.csv", "game_box_player.csv",
         "bsn_career_leaders.csv", "bsn_records.csv",
         "franchise_key_map.csv", "franchise_curated.json",
     ]
