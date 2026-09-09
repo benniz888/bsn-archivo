@@ -410,6 +410,15 @@ def verify_web_data(c: Checker) -> None:
     """PHASE_5 / 5B. Skipped cleanly if `make build-web-data` has not run."""
     import json
     web = REPO_ROOT / "web" / "data"
+
+    # 5G — the Pages site root is main:/web; web/index.html is a committed copy
+    # of the shell. Fail loudly if it drifts (edit the app, then `make site`).
+    site_index = REPO_ROOT / "web" / "index.html"
+    if site_index.exists():
+        app_html = (REPO_ROOT / "app" / "bsn_archivo.html").read_bytes()
+        c.check(site_index.read_bytes() == app_html,
+                "web/index.html is byte-identical to app/bsn_archivo.html (run `make site`)")
+
     manifest_path = web / "manifest.json"
     if not manifest_path.exists():
         return

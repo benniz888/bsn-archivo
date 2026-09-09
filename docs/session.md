@@ -30,9 +30,11 @@ Session 002 (cont.) — all pushed to origin/main:
   ba0cc68 · **5D.2b** (MVP_YEARS 39→63 + Báez footnote) = cb429bc · **5D.4
   prep** (manifest coverage counts) = 735a58d · **5D.4 app** (`DATA_TEXT`,
   deployed-reality gap/coverage copy) = 08e8cb4 (all pushed). **5E** (`web/sw.js` + registration
-  + `syncVersion` purge hook) = b87d8db (pushed). **5E follow-up uncommitted**:
-  file:// archive-index message + `buildPlayerIndex` enrich-only (PINDEX
-  385→381, stable across modes). Queue: commit follow-up →
+  + `syncVersion` purge hook) = b87d8db (pushed). **5E follow-up** (file:// archive
+  message + `buildPlayerIndex` enrich-only, PINDEX 385→381) = 43cad16 (pushed).
+  **5G uncommitted**: `make site`, `web/index.html`+`.nojekyll`, verify+test
+  guards, spec `[DEPLOY]`. Queue: commit 5G → owner flips Pages toggle → live
+  check. PHASE_5 essentially complete after that (5F stays deferred).
   5G (deploy — needs the site-dir layout decision: `bsn_archivo.html` +
   `data/` + `sw.js` colocated for GitHub Pages).
 
@@ -1094,11 +1096,23 @@ rebuild refreshes the cache.
 still-open PBP→identity linking task. Include as queued; execute only once
 linking exists, else ship the PBP tab as "beta, per-game" per spec OQ2 default.
 
-#### 5G — GitHub Pages deploy
-Choose `/docs` output vs `gh-pages` branch (spec OQ1 default: GitHub Pages,
-`/docs`). Wire `make build-web-data` output + the shell into the served path;
-document the one-time repo Pages setting (owner action). **Verify:** live URL
-loads, tabs work, PWA installs from the deployed origin.
+#### 5G — GitHub Pages deploy — CODE DONE (uncommitted); awaits owner Pages toggle
+**Option A** (owner-chosen): `web/` is the site root, served from `main:/web`.
+No `gh-pages`, no CI. Spec `[DEPLOY]` section added.
+- `Makefile` **`site`** target: `cp app/bsn_archivo.html web/index.html` +
+  `touch web/.nojekyll`. `app/bsn_archivo.html` stays source of truth;
+  `web/index.html` is a committed artifact.
+- `verify_web_data` +1: `web/index.html` byte-identical to the shell
+  (drift → `verify: FAIL`, tested). +1 pytest (`test_site_index_matches_shell`).
+- `web/index.html` (540 KB copy) + `web/.nojekyll` committed. Shell is
+  base-path-clean → runs under `/<repo>/`, SW scope `/<repo>/`.
+- Local serve of `web/` (`python3 -m http.server`): `/`, `/sw.js`,
+  `/data/manifest.json`, `/data/players/382.json`, `/data/index/*.json`,
+  `/.nojekyll` all 200. `make verify` 329,515 / `make test` 157.
+**Owner action (one-time):** repo Settings → Pages → Deploy from a branch →
+`main` / `/web`. Then live-check `https://benniz888.github.io/bsn-archivo/`:
+hub renders, a player card fetches its JSON, SW registers (scope `/bsn-archivo/`),
+offline reload works, install prompt shows the BSN icon.
 
 **Sequencing:** 5A → 5B → 5C → 5D → 5E → (5F when linking lands) → 5G. Each is a
 `[PAUSE_CONDITIONS] P6` stop. 5D and 5G also touch outward-facing surfaces

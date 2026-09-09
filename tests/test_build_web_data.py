@@ -109,6 +109,13 @@ class TestBuild:
         idx = {x["id"] for x in json.loads((b.WEB / "index" / "players.json").read_text())}
         assert all(int(f.stem) in idx for f in (b.WEB / "players").glob("*.json"))
 
+    def test_site_index_matches_shell(self):
+        idx = b.WEB.parent / "index.html"
+        if not idx.exists():
+            pytest.skip("web/index.html not built (make site)")
+        assert idx.read_bytes() == (b.APP / "bsn_archivo.html").read_bytes()
+        assert (b.WEB.parent / ".nojekyll").exists()
+
     def test_mvp_index(self):
         mvp = json.loads((b.WEB / "index" / "mvp.json").read_text())
         yrs = [m["season"] for m in mvp]

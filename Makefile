@@ -54,7 +54,14 @@ fetch-historic:
 build-web-data:
 	.venv/bin/python -m src.build_web_data
 
+# Assemble the GitHub Pages site root (served from main:/web). The shell is a
+# committed byte-copy of app/bsn_archivo.html; `make verify` fails if it drifts.
+site:
+	cp app/bsn_archivo.html web/index.html
+	touch web/.nojekyll
+	@echo "web/ ready — Pages source: main branch, /web folder"
+
 test:
 	.venv/bin/pytest -q
 
-.PHONY: setup enumerate samples fetch parse verify enumerate-root fetch-pre2007 parse-pre2007 fetch-players parse-players reconcile enumerate-games fetch-games parse-games enumerate-historic fetch-historic build-web-data test
+.PHONY: setup enumerate samples fetch parse verify enumerate-root fetch-pre2007 parse-pre2007 fetch-players parse-players reconcile enumerate-games fetch-games parse-games enumerate-historic fetch-historic build-web-data site test

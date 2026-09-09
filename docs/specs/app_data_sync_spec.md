@@ -116,6 +116,45 @@ database server.**
   half-linked one — same "show gaps, don't fabricate" rule already governing
   the rest of the archive.
 
+## [DEPLOY]
+
+Resolved 2026-09-09 (PHASE_5 5G). **Option A**: `web/` is the GitHub Pages
+site root, served from `main` branch `/web` folder — no `gh-pages` branch, no
+CI, no build step on GitHub's side.
+
+```
+web/
+  index.html   committed byte-copy of app/bsn_archivo.html (`make site`)
+  .nojekyll     stops Jekyll from touching data/
+  sw.js         service worker (5E)
+  data/         make build-web-data output (committed)
+```
+
+- `app/bsn_archivo.html` stays the source of truth; `web/index.html` is a
+  build artifact like `web/data/`. `make verify` fails if the copy drifts
+  (`verify_web_data` byte-compares them). Git stores one shared blob while
+  they're identical.
+- The shell is base-path-agnostic (`DATA.base = new URL('data/',
+  location.href)`, `register('sw.js')`, inline data-URI manifest/icons, zero
+  absolute `/…` paths), so it runs unchanged under the project-pages prefix
+  `/<repo>/`. SW scope becomes `/<repo>/`.
+
+**One manual action (owner):** repo **Settings → Pages → Build and deployment
+→ Source: "Deploy from a branch" → Branch: `main`, folder: `/web` → Save.**
+First publish ~1 min; every later push to `main` redeploys automatically.
+
+**Redeploy after an ingest session:**
+```
+make parse-players ...        # whatever changed
+make build-web-data           # new source_digest in web/data/manifest.json
+make site                     # only if the shell changed
+make verify && make test
+git add web app docs && git commit && git push
+```
+On the next visit `DATA.syncVersion()` sees the new digest, clears the
+`localStorage` cache and posts `purge-data` to the service worker, which drops
+`bsn-data`; fresh JSON loads. No cache-busting query strings needed.
+
 ## [OPEN_QUESTIONS]
 
 These have defaults proposed below so they don't block starting the build
