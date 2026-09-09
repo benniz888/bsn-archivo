@@ -20,10 +20,12 @@ Session 002 (cont.) — all pushed to origin/main:
 - PHASE_5_APP_SYNC — **stale-file correction 2026-09-09** (D-044). 5A–5D were
   done vs an inherited 2,214-line `app/bsn_archivo.html`; the real file is 6,286
   lines. 5B (4634dad) + 5C (8891d78) + D-042 (a22027c) **survive** — pipeline
-  only. **5A rewritten** + **5B-FIX** (`caciques_humacao` / D-045) = 77a3aae.
-  **5D redo** (`DATA`+`hydrate()` into `runBoot()`) = c22ce10. **5D.2** (SCORING
-  26→68) = uncommitted. Queue: 5D.2b (MVP_YEARS merge) → 5D.3 (feed
-  showPlayer/showSeason) → 5D.4 (fix gap text) → 5E (PWA) → 5G (deploy).
+  only. Since: **5A rewritten** + **5B-FIX** (`caciques_humacao` / D-045) =
+  77a3aae · **5D redo** (`DATA`+`hydrate()` into `runBoot()`) = c22ce10 ·
+  **5D.2** (SCORING hydrate 26→68) = 6c6c8a5 · **5D.3a** (`showSeason` detail
+  from `seasons/*.json`) = uncommitted. Queue: 5D.3b (showPlayer + a hand-seeded
+  curated↔bsnpr_id crosswalk) → 5D.3c (full-archive search) → 5D.2b (MVP_YEARS)
+  → 5D.4 (gap text) → 5E (PWA) → 5G (deploy).
 
 Session 001 (2026-09-07): PHASE_1_ENUMERATE + PHASE_2_FETCH. Env bootstrapped,
 Wayback CDX enumerated (central finding negative — see below), 193 snapshots
@@ -901,10 +903,45 @@ rebuild byte-identical.
 `MVP_YEARS` (41, hand-verified, per-year clubs) vs `historic_awards.csv` MVP
 (47, 1958–2004). Merge with the diff shown; own sub-step.
 
-#### 5D.3 — feed `showPlayer` / `showSeason` from `web/data` per-entity JSON — QUEUED
-Lazy `DATA.get('players/<slug>.json')` / `seasons/<year>.json` on click; render
-the extra career lines / leaders / standings / awards where present; keep the
-gap message where not (PC2). Per the rewritten `app_data_map.md` [INTERFACES].
+#### 5D.3 — feed player/season views from `web/data` per-entity JSON — split 3 ways
+**Match-rate finding:** the app's ~385 curated PINDEX names and the pipeline's
+3,303 `players_canonical` are largely disjoint. Auto-matching a curated name to
+a `bsnpr_id` (norm / alias / swapped order): **only 103/385**. Georgie Torres,
+Raymond Dalmau, Neftalí Rivera etc. are *in* `players_canonical` but under forms
+like "Torres Dougherty, George" that no rule bridges; recent imports aren't in
+the pipeline at all. So a naive list-swap would gut the curated feature. →
+split: **5D.3a** (showSeason — no matching), **5D.3b** (showPlayer career
+detail, needs a hand-seeded `curated_name → bsnpr_id` crosswalk with owner
+spot-check), **5D.3c** ("Todo el archivo (3,303)" search mode alongside the
+curated "Destacados").
+
+##### 5D.3a — `showSeason` from `seasons/<year>.json` — COMPLETE 2026-09-09
+`app/bsn_archivo.html` +57/−9. New `<div id="seasonExtra">` after `#readout`;
+`showSeason` restructured (return→if/else) + fire `loadSeasonExtra(y)`; new
+`async loadSeasonExtra(y)` fetches `data/seasons/<y>.json` (via `DATA`, so
+`file://` → null → nothing extra) and appends, in a `.card`:
+- `scoring_champion` (57/98 seasons) — "Campeón de anotación: NAME · club · N por juego"
+- `awards` (47/98) — MVP / Defensa del Año / Novato del Año, `<dl class="kv">`
+- `standings` (9/98) — mini G/P table + "parcial, N juegos" note when `!complete` (PC4)
+- `leaders` (15/98) — rank-1 per category
+Player names stay `player_raw` text (no `showPlayer` link — that's 5D.3b).
+Stale-click guarded by `host.dataset.y`. **Verify:** `node --check`; season
+harness — 1974 shows scoring champ + awards, 2009 shows standings + leaders,
+`file:` = 0 fetches + nothing extra, stale-click (2009→1953) doesn't leak;
+boot harness still 0 exceptions / 55 builders; `make verify` (329,510) / `make
+test` (153) unchanged (HTML only). **Owner:** browser render parity.
+
+##### 5D.3b — `showPlayer` career detail — QUEUED (needs the crosswalk)
+`app/player_crosswalk.csv` (`curated_name,bsnpr_id,note`) — I seed from the 103
+auto-matches + hand-add the legends with career-span/club sanity checks; owner
+spot-checks each `bsnpr_id`. Then `showPlayer` fetches `players/<id>.json` →
+career-by-season table + fills null stats, curated bio/tags kept on top.
+
+##### 5D.3c — "Todo el archivo (3,303)" search mode — QUEUED
+`renderPlayerIndex` mode toggle: "Destacados (385)" (default) / "Todo (3,303)"
+from `index/players.json`. No-JSON ids (2,227) → card shows index fields + an
+explicit "sin ficha detallada" note (PC4). Optional `build_web_data` change:
+add a `search` alias string to `players.json`.
 
 #### 5D.4 — fix `buildSources` / `buildCoverage` gap text — QUEUED
 The app's "lo que falta" list and `COVERAGE` %s are now partly wrong (box scores,
@@ -1241,6 +1278,7 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
 | PHASE_3E | PASS | PASS | PASS | PASS | PASS | V1: T3E.1–T3E.6 done — enumerate (10,548 captures) + `coverage_games.md` + gated fetcher (`MAX_TRANCHE=500`, `--force-year` after approval) + box-score parser + PBP parser + verify + tests. Fetch is a multi-day throttled job, one tranche at a time (PC6); done so far: `gamestatwide` 864, `pogamestat` 1021, `boxscore` 261, `a2gamestatpbp` 2001+2004; 2002 fetching, 2003 queued; owner HOLD on `pogamestat`/`boxscore` 2007–09 + all `gameinfo`. V2: PC1 (`bsnpr_id` blank unless a unique season-in-career match — D1, no guesses; `jugada_raw` kept verbatim; `box_check` flags source pts-mismatch, doesn't rewrite); PC3 (`verify_games` provenance per row); PC4 (crammed/stub captures counted + dropped from results, gated tranches in `coverage_games.md`, `box_check`); PC5 (parse reads `data/raw/games/` only, idempotent); PC6 (`polite_get`, one GET/digest, 500-gate honoured, sequential chain). V3: no secrets; raw gitignored. V4: `make parse-games` + `make verify` green (326,175 checks); 125 pytest pass (+17); **`2·FG2 + 3·FG3 + FT == PTS` on every parsed box row (4/39,669 source-error `pts_mismatch`, flagged); made ≤ att always**. V5: snake_case, English, "why" comments. |
 | PHASE_4 | PASS | PASS | PASS | PASS | PASS | V1: T4.1–T4.5 done + owner-resolution follow-up. Franchise layer + champions_reconciled + scoring_champions_reconciled + reconcile_conflicts + verify + tests. V2: PC1 (D-027: code flags, human clears; `OWNER_RESOLUTIONS` dated + auditable; seed CSVs untouched; 1945 left `disputed`); D2 (`franchise_events.csv`, murky lineage = disputed); D3 (`1942`+`1942-1943` both kept); D4 (`metric_era` flip + 1971/1974 `dual_metric_d4` recording BOTH winners); D5 (1945 stays flagged); D6 (1953 no_champion). PC3 (provenance / `sources` per row). V3: no secrets; pure module. V4: `make reconcile` + `make verify` green (40,114 checks); 108 pytest pass (+17); 87/98 seed↔bsnpr `verified`. V5: snake_case, English, D2/D5 citations in comments. |
 | PHASE_5 / 5D (v1) | — | — | — | — | — | **VOIDED 2026-09-09 (D-044).** Built against the stale 2,214-line app; uncommitted, overwritten. Design carried forward to the redo. |
+| PHASE_5 / 5D.3a | PASS | PASS | PASS | PASS | PASS | V1: `showSeason` appends per-season detail from `seasons/<y>.json` (scoring champ / awards / standings / leaders) below the champion readout; new `#seasonExtra` div + `loadSeasonExtra()`. No `build*()` / build-script change. V2: PC2/PC4 (`file://` → `DATA.get` null → nothing extra, base readout unchanged; missing block → not rendered, no "—" spam; partial standings flagged "N juegos en el archivo"; player names stay `player_raw`, no fabricated link); union-safe (append-only, never touches the existing readout logic beyond return→if/else). V3: no secrets. V4: `node --check`; season harness — 1974 scoring champ + awards render, 2009 standings + leaders render, `file:` 0 fetches, stale-click (2009→1953) doesn't leak; boot harness 0 exceptions / 55 builders; `make verify` 329,510 / `make test` 153 unchanged (HTML only). Owner: browser render parity. V5: reuses `.card`/`.kv`/`.tblwrap`/`.note`; matches idiom. |
 | PHASE_5 / 5D.2 | PASS | PASS | PASS | PASS | PASS | V1: `build_scoring_titles` adds `club_raw`+`franchise_id` (new `_scoring_club_resolver`, 66/68 resolved); `hydrate()` rebuilds `SCORING` 26→68 (1948–2021), F-merge made **surgical** (founded/active/end/won/ru only — name/colours stay baked-in) and SCORING club falls back to the **baked-in** value for schema drift; `buildScoringChart` ticks/aria-label + `DATASETS.anotacion.label` data-driven; `verify_web_data` +3, +1 test. V2: PC1/PC2 (`file://` keeps the 26-row baked-in; 1971/1974 use the ppg champion as the baked-in table does; D4 `metric_era` per row); the 2 unresolved clubs → `club_raw`, not a guess; accented Spanish names no longer lost to the CSV form. V3: no secrets. V4: `node --check`; harness — SCORING 26→68 with clubs from JSON; **stale-schema harness** (`--stale-scoring`, HEAD's `scoring_titles.json`) → 1966–91 clubs kept from baked-in, 0 boot exceptions; `file:`=0 fetches; `make verify` green (329,510); `make test` 153 pass; `web/data` rebuild byte-identical. V5: matches idiom. |
 | PHASE_5 / 5D (redo) | PASS | PASS | PASS | PASS | PASS | V1: `app/bsn_archivo.html` +75/−4 — `DATA` object (+ `syncVersion` digest cache-bust, real `ST` API), `deriveChampions()`, `hydrate()` (union merge over `F`, curated fields kept, `ACTIVE` refresh), `runBoot()` → async with a 2.5 s hydrate race. No `build*()` / DOM code touched; SCORING → 5D.2. V2: PC1/PC2 (`file://` → `null`, embedded blocks stand — no fabrication, no silent-zero; failed fetch → `null`); D5/D3 (D-043 union keeps 1945 + 1942-43); D-032/D-045 (Osos 2023, Grises 2021 flow through); house rule (layer over the source block like `translate()`, never edit). V3: no secrets; `DATA.base` is `data/` relative to the page. V4: `node --check` clean; DOM-stubbed harness — `runBoot()` + all 55 BOOT builders + `finishBoot` no-throw in `http:` AND `file:`; `file:` = 0 fetches; `champOf` after hydrate = 0 lost / 0 gained / 0 changed; curated colours/coach preserved. `make verify`/`make test` unchanged (329,507 / 153 — HTML only). Browser render-parity is the owner's check. V5: matches the file's terse JS idiom + `/* why */` comment style. |
 | PHASE_5 / 5B-FIX | PASS | PASS | PASS | PASS | PASS | V1: `caciques_humacao` added to `franchises.csv` + `city_franchise_map` + `franchise_events` (owner D2, D-045); `grises_humacao` refounded 2021; crosswalk + curated JSON 32→33 (`cac`, re-extracted from real `F`, 0 diffs on the 32); `verify_web_data` + 2 tests 32→33. V2: PC1/D2 (two franchises per owner+Wikipedia, not a guess; `franchise_events` cites `wikipedia:Caciques_de_Humacao` / `Grises_de_Humacao`); the Grises→Criollos event upgraded single-source→verified with the source recorded; `docs/project.md` D2 flagged for owner (not edited — Tier 2). V3: no secrets. V4: `make build-web-data` (33 franchises, Humacao standings 2009/2012 → `caciques_humacao`); `make verify` green (329,507); `make test` 153 pass; rebuild byte-identical; `diff_app_champions` still "0 disagreements" against the real `F`. V5: snake_case, CSV note style matched. |
@@ -1259,7 +1297,7 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
 
 | Path | Status | Notes |
 |---|---|---|
-| `app/bsn_archivo.html` | real file = 46a0c5a; PHASE_5/5D touched | **6,286 → 6,357 lines** (was a stale 2,214-line inherited copy, replaced 2026-09-09). ~90 data blocks, 48 `build*()`, 55-builder batched-RAF boot behind a splash, `PROFILE` system, deep-link routing. 5D (redo) added the `DATA` fetch layer + `hydrate()` into `runBoot()` (additive — embedded blocks are the `file://` baseline). No build step, no deps. Do not restructure. |
+| `app/bsn_archivo.html` | real file = 46a0c5a; PHASE_5/5D* touched | **6,286 → ~6,430 lines** (was a stale 2,214-line inherited copy, replaced 2026-09-09). ~90 data blocks, 48 `build*()`, 55-builder batched-RAF boot behind a splash, `PROFILE` system, deep-link routing. 5D redo: `DATA` fetch layer + `hydrate()` into `runBoot()`. 5D.2: `SCORING` hydrates 26→68. 5D.3a: `showSeason` appends per-season detail from `seasons/<y>.json`. All additive — embedded blocks are the `file://` baseline. No build step, no deps. Do not restructure. |
 | `data/clean/bsn_champions_by_season.csv` | inherited, seed | 96 rows, 1930–2025. Gaps: 1953, 2024 runner-up. 1945 disputed. |
 | `data/clean/bsn_franchises.csv` | inherited, seed | 28 rows. Lineage not yet encoded as events. |
 | `data/clean/bsn_career_leaders.csv` | inherited, seed | 30 rows. ~5yr stale — floors only. |
@@ -1371,8 +1409,9 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
    vs the real 6,286-line `app/bsn_archivo.html` (`app_data_map.md`). 5B
    (4634dad) + 5C (8891d78) + D-042 (a22027c) survive — pipeline only. **5D
    lost.** Working tree has the real app file (uncommitted; "replace stale app
-   file" commit = 46a0c5a). Queue: 5B-FIX (77a3aae) + 5D redo (c22ce10) + **5D.2 DONE**
-   (SCORING 26→68, uncommitted) → **5D.2b next** (MVP_YEARS merge) → 5D.3 →
+   file" commit = 46a0c5a). Queue: 5D redo (c22ce10) + 5D.2 (6c6c8a5) + **5D.3a DONE** (showSeason
+   detail, uncommitted) → **5D.3b next** (showPlayer + crosswalk) → 5D.3c
+   (full-archive search) → 5D.2b (MVP_YEARS) → 5D.4 (gap text) → 5E → 5G.
    5D.3 (feed player/season views) → 5D.4 (fix `buildSources` gap text) → 5E
    (PWA) → 5G (deploy). One sub-phase per turn, pause + approve.
    Owner HOLD still stands on `pogamestat`/`boxscore` 2007–09 and all `gameinfo`.
@@ -1424,5 +1463,5 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
    D-042 name fix = a22027c. PHASE_5/5B = 4634dad. PHASE_5/5C = 8891d78.
    real app file = 46a0c5a. PHASE_5 5A-rewrite + 5B-FIX = 77a3aae.
    PHASE_5/5D redo = c22ce10 (all pushed). PHASE_5/5D v1 = VOIDED (D-044).
-   **PHASE_5/5D.2** (SCORING 26→68: `build_web_data` + `hydrate` + chart) +
-   this `docs/session.md` update = pending P4.
+   PHASE_5/5D.2 = 6c6c8a5 (pushed). **PHASE_5/5D.3a** (`showSeason` detail,
+   `app/bsn_archivo.html` +57/−9) + this `docs/session.md` update = pending P4.

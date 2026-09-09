@@ -859,6 +859,7 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
     </div>
     <div class="ribbon" id="ribbon"></div>
     <div class="readout" id="readout" role="status" aria-live="polite"><span class="dim">Toca una temporada.</span></div>
+    <div id="seasonExtra"></div>
     <div class="strip" id="titleStats"></div>
 
     <h3 class="sec">Títulos por franquicia</h3>
@@ -3046,16 +3047,63 @@ function showSeason(y,btn){
       <div class="win">Sin campeón registrado</div>
       <div class="lose">Esta temporada es un hueco del archivo, no un blanco.</div>
       <div class="meta">${esc(NOTES[y]||'Ninguna fuente consultada nombra un campeón para este año.')}</div></div>`;
-    return;
+  }else{
+    const f=F[k];
+    host.innerHTML=`<div class="yr" style="color:${f.c1}">${y}</div>
+      <div style="min-width:0">
+        <div class="win">${esc(f.name)}</div>
+        <div class="lose">${r?'venció a '+esc(F[r].name):'subcampeón no registrado'}</div>
+        <div class="meta">Título ${f.won.indexOf(y)+1} de ${f.won.length} para el club${NOTES[y]?' · '+esc(NOTES[y]):''}</div>
+        <div class="btnrow"><button class="btn" onclick="showTeam('${k}')" style="padding:5px 11px;font-size:12px">Ver ${esc(f.name.split(' de ')[0])}</button></div>
+      </div>`;
   }
-  const f=F[k];
-  host.innerHTML=`<div class="yr" style="color:${f.c1}">${y}</div>
-    <div style="min-width:0">
-      <div class="win">${esc(f.name)}</div>
-      <div class="lose">${r?'venció a '+esc(F[r].name):'subcampeón no registrado'}</div>
-      <div class="meta">Título ${f.won.indexOf(y)+1} de ${f.won.length} para el club${NOTES[y]?' · '+esc(NOTES[y]):''}</div>
-      <div class="btnrow"><button class="btn" onclick="showTeam('${k}')" style="padding:5px 11px;font-size:12px">Ver ${esc(f.name.split(' de ')[0])}</button></div>
-    </div>`;
+  loadSeasonExtra(y);
+}
+
+/* Per-season detail from web/data/seasons/<y>.json — scoring champion,
+   awards, standings, leaders — appended below the champion readout when
+   the file is reachable (deployed). A local-file open shows nothing
+   extra. Guarded against a fast second click by the dataset stamp. */
+const SEASON_AW={mvp:'Más Valioso',defensive_player:'Defensa del Año',rookie:'Novato del Año'};
+const SEASON_LC={scoring:'Anotación',rebounds:'Rebotes',assists:'Asistencias',blocks:'Bloqueos',
+  steals:'Robos',threes:'Triples',free_throws:'Tiros libres',turnovers:'Pérdidas',
+  off_rebounds:'Rebotes ofensivos',three_pct:'% de triples',free_throw_pct:'% de tiros libres'};
+async function loadSeasonExtra(y){
+  y=String(y);
+  const host=$('#seasonExtra'); if(!host) return;
+  host.innerHTML=''; host.dataset.y=y;
+  const d=await DATA.get('seasons/'+y+'.json');
+  if(!d || host.dataset.y!==y) return;
+  let h='';
+  const sc=d.scoring_champion;
+  if(sc){
+    const v=sc.metric_era==='ppg'
+      ? (sc.ppg!=null?sc.ppg+' por juego':'—')
+      : (sc.total_points!=null?sc.total_points.toLocaleString('es-PR')+' puntos':'—');
+    h+=`<dl class="kv"><dt>Campeón de anotación</dt><dd>${esc(sc.player_raw)}<span class="muted"> · ${esc(sc.team_raw||'')} · ${esc(v)}</span></dd></dl>`;
+  }
+  if(d.awards && d.awards.length){
+    h+='<dl class="kv">'+d.awards.map(a=>
+      `<dt>${esc(SEASON_AW[a.award]||a.award)}</dt><dd>${esc(a.player_raw)}<span class="muted"> · ${esc(a.team_raw||'')}</span></dd>`).join('')+'</dl>';
+  }
+  if(d.standings){
+    const st=d.standings;
+    h+=`<div class="note" style="margin-top:12px">Posiciones${st.complete?'':` <span class="muted">— parcial, ${st.games_recorded} juegos en el archivo</span>`}</div>`
+      +'<div class="tblwrap"><table><thead><tr><th>Equipo</th><th class="num">G</th><th class="num">P</th></tr></thead><tbody>'
+      +st.rows.map(row=>`<tr><td>${esc(row.team_raw)}</td><td class="num">${row.w}</td><td class="num">${row.l}</td></tr>`).join('')
+      +'</tbody></table></div>';
+  }
+  if(d.leaders){
+    h+='<div class="note" style="margin-top:12px">Líderes de la temporada</div><dl class="kv">';
+    for(const cat of Object.keys(d.leaders)){
+      const top=d.leaders[cat][0]; if(!top) continue;
+      h+=`<dt>${esc(SEASON_LC[cat]||cat)}</dt><dd>${esc(top.player_raw)}<span class="muted"> · ${top.value!=null?top.value:'—'}${top.club_raw?' · '+esc(top.club_raw):''}</span></dd>`;
+    }
+    h+='</dl>';
+  }
+  host.innerHTML = h
+    ? `<div class="card" style="margin-top:12px">${h}<div class="note">Del archivo de bsnpr.com vía Wayback Machine.</div></div>`
+    : '';
 }
 function buildTitleStats(){
   const withC=YEARS.filter(y=>champOf[y]).length;
