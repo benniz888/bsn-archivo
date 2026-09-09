@@ -1,18 +1,20 @@
 # SESSION STATE — TIER 3
 <!-- Authoritative for current state and task priority. Update at every phase exit. -->
 
-**SESSION:** 002 — PHASE_3 / 3B / 3C / 3D / 4 / 3E / 3E-STORAGE (continues 001)
+**SESSION:** 002 — PHASE_3 / 3B / 3C / 3D / 4 / 3E / 3E-STORAGE / 3G (continues 001)
 **DATE:** 2026-09-08
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
-Session 002 (cont.) — PHASE_3E_CLEAN_STORAGE (P2 storage-format call):
-`data/clean/game_plays.csv` (65 MB, 233,664 rows, grows every ingest session)
-was tripping GitHub's 50 MB warning and adding a fat blob to history on every
-`make parse-games`. Fixed: it is now committed **gzip-compressed**
-(`game_plays.csv.gz`, 2.7 MB) via a shared gzip-aware `_write_csv` /
-`open_clean_text` helper; content byte-identical (verified against the
-committed `.csv`). Decision + rejected alternatives (Git LFS, split-by-season,
-Parquet): `docs/specs/clean_data_storage_spec.md`.
+Session 002 (cont.):
+- PHASE_3E_CLEAN_STORAGE (commit 72d2b52) — P2 storage call. `game_plays.csv`
+  (65 MB, grows every ingest session, tripping GitHub's 50 MB warning + a fat
+  blob to history per `make parse-games`) → committed **gzipped**
+  (`game_plays.csv.gz`, 2.7 MB) via a shared `open_clean_text` / `_write_csv`
+  helper; content byte-identical. `docs/specs/clean_data_storage_spec.md`.
+- `app_data_sync_spec.md` committed (e5609ee) — owner-supplied PHASE_5 decision.
+- PHASE_3G_HISTORIC_FOLLOWUP (uncommitted) — **negative finding.** Fresh CDX on
+  all 3 owner /btw targets: everything already ingested by PHASE_3C. No new
+  clean rows. `docs/specs/historic_followup_spec.md`.
 
 Session 001 (2026-09-07): PHASE_1_ENUMERATE + PHASE_2_FETCH. Env bootstrapped,
 Wayback CDX enumerated (central finding negative — see below), 193 snapshots
@@ -43,10 +45,13 @@ Session 002:
 - PHASE_3E_CLEAN_STORAGE (this session, uncommitted) — P2 call: `game_plays.csv`
   (65 MB) → committed gzipped `game_plays.csv.gz` (2.7 MB). D-036 /
   `clean_data_storage_spec.md`.
-- PHASE_3G_HISTORIC_FOLLOWUP (QUEUED, **gate cleared**) — 3 root-level pre-2007
-  targets from an owner /btw: `lidereshistoricos.asp?t=*`, `lideres2002.asp`,
-  root `mvp.asp`. Enumerate `t` values, probe one per value, confirm the
-  category from the page itself, then fetch + parse.
+- PHASE_3G_HISTORIC_FOLLOWUP (this session, uncommitted) — **NEGATIVE FINDING.**
+  Fresh CDX per target: `lidereshistoricos.asp` has only `?t=3` (no other `t`
+  values ever archived); `?t=3` = scoring champs 1948–2004 + DPOY/ROY/MVP award
+  histories — **all already in `data/clean/` from PHASE_3C**. `lideres2002.asp`
+  already ingested (PHASE_3C `lideres200x` sweep). Root `mvp.asp` = a
+  byte-equivalent alias of `lidereshistoricos.asp?t=3` (0-diff cross-check).
+  No new rows. `historic_followup_spec.md`.
 
 ---
 
@@ -478,11 +483,52 @@ spec (H1/H2).
 `make parse-games` re-emits `game_plays.csv.gz` deterministically;
 `pandas.read_csv` reads it natively. Paused (P6), nothing committed (P4).
 
-### PHASE_3G_HISTORIC_FOLLOWUP — QUEUED, unblocked (owner /btw, 2026-09-08; gate cleared)
+### PHASE_3G_HISTORIC_FOLLOWUP — COMPLETE (2026-09-08). NEGATIVE FINDING.
 
-**GATE CLEARED 2026-09-08:** the `a2gamestatpbp` chain is complete (commit
-7f09013) — no other archive stream is running, so this phase is unblocked.
-Still one stream at a time (PC6): `ps aux | grep [f]etch` before any fetch.
+**Result: no new `data/clean/` rows. All three targets resolve to data already
+ingested by PHASE_3C.** Full detail: `docs/specs/historic_followup_spec.md`.
+
+**What each param value turned out to be** (confirmed from the pages, not assumed):
+- **`lidereshistoricos.asp`** — fresh CDX (`bsnpr.com/lidereshistoricos.asp*`)
+  shows **only `?t=3`** (7 caps / 5 digests, 2002-06→2004-09) + 1 bare capture
+  (same view). No `t=1`/`t=2`/`t=4`/… ever existed. `?t=3` = the "Líderes
+  Históricos" page: scoring champions 1948→2004 **+ DPOY (1964→2004) / ROY
+  (1958→2004) / MVP (1958→2004) award histories**. The 3 "unlabeled" tables the
+  probe spec guessed as rebounds/assists are those award histories (page section
+  headers `DEFENSA DEL AÑO` / `NOVATO DEL AÑO` / `JUGADOR MÁS VALIOSO`). **All of
+  it is already in `historic_scoring_champions.csv` + `historic_awards.csv`**
+  (PHASE_3C parsed the same `?t=3` 2004-09 capture). archive_probe_spec Q2 closed.
+- **`lideres2002.asp`** — bare (1 digest) + `?grupo=BS22&serie=1` (3 digests),
+  2002-05→2003-10. Serie-Regular player leaders, 8 categories × top-10. **Already
+  in `player_season_leaders_2000_2002.csv`** (80 rows for 2002 — the PHASE_3C
+  `lideres200x` sweep already covered `lideres2002`). `serie={3,4}` 2002 were
+  never archived.
+- **`mvp.asp` (root)** — bare only, 10 caps / 7 digests, 2004-04→2006-11.
+  **Byte-equivalent to `lidereshistoricos.asp?t=3`** — a second URL alias for
+  the same server-side view, same 4 tables, latest capture (2006) still stops at
+  2004. Cross-checked the 2006 capture against the clean tables: **0 diffs**
+  across 57 scoring seasons + 135 award rows. Not an independent source (same
+  bsnpr DB) → no `confidence` bump; kept as a 2nd provenance path (D-018), not
+  re-parsed.
+
+**The "all-time non-scoring leaders back to 1948" the follow-up hoped for do NOT
+exist in the archive.** Only `t=3` (award histories) was crawled. Routes to the
+newspaper / Federación track if ever needed.
+
+- T3G.1 — DONE. `src/enumerate_historic_followup.py` (`make enumerate-historic`).
+  `data/interim/cdx_historic_followup.csv` (27 captures, all statuses).
+- T3G.2 — DONE. `src/fetch_historic_followup.py` (`make fetch-historic`). 7
+  `mvp.asp` digests fetched (0 fail); lidereshistoricos/lideres2002 already on
+  disk from PHASE_3C. `MAX_TRANCHE=500` (all far under). Manifest tracked.
+- T3G.3 — DONE. Probed + confirmed each param value from the page; `mvp.asp`
+  corroboration cross-check (0 diffs). No parser — no new clean output.
+- T3G.4 — DONE. `historic_followup_spec.md` (H2); archive_probe_spec Q2 closed;
+  session.md updated.
+
+**Verify:** `make verify` green (326,175 checks, unchanged — no clean data
+touched); `make test` 129 pass. Paused (P6), nothing committed (P4).
+
+<details><summary>original scope (owner /btw)</summary>
 
 Three root-level pre-2007 targets the earlier probes noted but never ingested,
 in this order:
@@ -522,12 +568,11 @@ in this order:
   pre-2007 content. `player_raw` stays verbatim — D1 resolution is a later join.
 - Keep raw in `data/raw/pre2007/{lidereshistoricos,lideres2002,mvp}/` (PC5).
 
-**REPORT at phase exit: what each `t` value turned out to be** (the confirmed
-category per param value), coverage counts, and what landed in `data/clean/`.
-
 Cross-refs: `docs/specs/archive_probe_spec.md` (t=3 probe),
 `docs/specs/pre2007_ingest_spec.md` (lideres200x schema, D4 metric boundary),
 `data/clean/historic_scoring_champions.csv` (1948–2004, the overlap to dedup).
+
+</details>
 
 ### PHASE_4_RECONCILE — COMPLETE (2026-09-08, owner-requested)
 
@@ -786,6 +831,19 @@ Decisions made session 002 (PHASE_4):
   `relationship_unclear`, not merged. New `franchise_founded` conflict logged
   (Criollos 1969 en.wiki vs 1976 seed).
 
+Decision made session 002 (PHASE_3G_HISTORIC_FOLLOWUP):
+- **D-037 — PHASE_3G is a negative finding; no clean rows added.** Fresh CDX
+  confirmed `lidereshistoricos.asp` has only `?t=3` (award histories, already
+  parsed), `lideres2002.asp` was already covered by the PHASE_3C `lideres200x`
+  sweep, and root `mvp.asp` is a byte-equivalent alias of
+  `lidereshistoricos.asp?t=3` (0-diff cross-check vs `historic_scoring_champions`
+  + `historic_awards`). Per D-018, `mvp.asp` raw kept as a 2nd provenance path,
+  not re-parsed into duplicate rows; no `confidence` promotion (same bsnpr DB,
+  not independent). The hoped-for all-time rebounds/assists/blocks leaders back
+  to 1948 **are not in the archive** — newspaper/Federación track only. Probe
+  spec's "unlabeled tables = rebounds/assists" guess was wrong (they're
+  DPOY/ROY/MVP); archive_probe_spec Q2 closed. `historic_followup_spec.md`.
+
 Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
 - **D-036 — large clean tables are committed gzipped (`<name>.csv.gz`), not
   raw, split, or LFS'd.** `data/clean/` is NOT regenerable from a fresh clone
@@ -815,6 +873,7 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
 | PHASE_3D | PASS | PASS | PASS | PASS | PASS | V1: T3D.1–T3D.3 done — canonical spine (3,303 players) + aliases + career-seasons + id_map + review queue; tranche B enrichment fetch backgrounded (partial), T3D.4 = re-run parse on completion. V2: PC1 (no fuzzy match in id_map — D1; ambiguous → review queue); PC2 (`1/1/1900` → null, blank stats stay blank); PC3 (`verify_players` asserts provenance on every canonical row); PC4 (review queue is a first-class output with candidate ids + reason); PC6 (`polite_get`, one GET per id, background throttle); D1 (accent-stripped `normalized_name`, alias table, match needs season corroboration not name alone — asserted in verify). V3: no secrets. V4: `make parse-players` + `make verify` green (38,706 checks); 91 pytest pass (+12); id_map spot-checks correct (Carmona→37, Arroyo Carlos→273 via season). V5: snake_case, English. |
 | PHASE_3E | PASS | PASS | PASS | PASS | PASS | V1: T3E.1–T3E.6 done — enumerate (10,548 captures) + `coverage_games.md` + gated fetcher (`MAX_TRANCHE=500`, `--force-year` after approval) + box-score parser + PBP parser + verify + tests. Fetch is a multi-day throttled job, one tranche at a time (PC6); done so far: `gamestatwide` 864, `pogamestat` 1021, `boxscore` 261, `a2gamestatpbp` 2001+2004; 2002 fetching, 2003 queued; owner HOLD on `pogamestat`/`boxscore` 2007–09 + all `gameinfo`. V2: PC1 (`bsnpr_id` blank unless a unique season-in-career match — D1, no guesses; `jugada_raw` kept verbatim; `box_check` flags source pts-mismatch, doesn't rewrite); PC3 (`verify_games` provenance per row); PC4 (crammed/stub captures counted + dropped from results, gated tranches in `coverage_games.md`, `box_check`); PC5 (parse reads `data/raw/games/` only, idempotent); PC6 (`polite_get`, one GET/digest, 500-gate honoured, sequential chain). V3: no secrets; raw gitignored. V4: `make parse-games` + `make verify` green (326,175 checks); 125 pytest pass (+17); **`2·FG2 + 3·FG3 + FT == PTS` on every parsed box row (4/39,669 source-error `pts_mismatch`, flagged); made ≤ att always**. V5: snake_case, English, "why" comments. |
 | PHASE_4 | PASS | PASS | PASS | PASS | PASS | V1: T4.1–T4.5 done + owner-resolution follow-up. Franchise layer + champions_reconciled + scoring_champions_reconciled + reconcile_conflicts + verify + tests. V2: PC1 (D-027: code flags, human clears; `OWNER_RESOLUTIONS` dated + auditable; seed CSVs untouched; 1945 left `disputed`); D2 (`franchise_events.csv`, murky lineage = disputed); D3 (`1942`+`1942-1943` both kept); D4 (`metric_era` flip + 1971/1974 `dual_metric_d4` recording BOTH winners); D5 (1945 stays flagged); D6 (1953 no_champion). PC3 (provenance / `sources` per row). V3: no secrets; pure module. V4: `make reconcile` + `make verify` green (40,114 checks); 108 pytest pass (+17); 87/98 seed↔bsnpr `verified`. V5: snake_case, English, D2/D5 citations in comments. |
+| PHASE_3G | PASS | PASS | PASS | PASS | PASS | V1: fresh CDX per target (`cdx_historic_followup.csv`), probed + confirmed every param value from the page, reported what each is (see TASK_QUEUE). V2: PC1 (negative finding reported straight — no thin rows manufactured from a duplicate source; probe-spec's wrong guess corrected from the page's own section headers); PC3 (`mvp.asp` manifest tracked with provenance); PC4 (`t` gap reported as a gap — no other `t` value exists); PC5 (raw cached unmodified, gitignored); PC6 (`polite_get`, one GET/digest, single stream — `pgrep` confirmed no other fetcher); D-018 (duplicate `mvp.asp` source kept raw, not re-parsed). V3: no secrets. V4: `make verify` green (326,175 checks, unchanged — no clean data touched); `make test` 129 pass; `mvp.asp` 2006 capture cross-checked vs clean = 0 diffs / 57 scoring + 135 award rows. V5: snake_case, English, "why" comments. |
 | PHASE_3E_CLEAN_STORAGE | PASS | PASS | PASS | PASS | PASS | V1: P2 storage call made + logged (`clean_data_storage_spec.md`, H2 structure, alternatives rejected); `game_plays.csv` → `.csv.gz` via shared helper; old blob `git rm`'d; `make parse-games` re-emits it. V2: PC1 (content byte-identical to committed `.csv`, `diff` = 0 — no data touched); PC3 (provenance cols intact, `verify` asserts them on the gz-read rows); PC5 (parser still reads `data/raw/` only, idempotent + deterministic via `mtime=0`); PC7 (no new dependency — `gzip`/`csv`/`pandas` are stdlib+existing). V3: no secrets; read-only on raw. V4: `make verify` green (326,175 checks); `make test` 129 pass (+4: gz round-trip / magic / determinism / plain-path); `pandas.read_csv` reads the gz (233,664×17); `_write_csv` log line hardened against out-of-repo paths. V5: snake_case, English, "why" comments; `.csv.gz` double-extension convention documented. |
 
 ---
@@ -909,16 +968,22 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
 | `docs/specs/clean_data_storage_spec.md` | **new, S002 (PHASE_3E_CLEAN_STORAGE)** | P2 decision: large `data/clean/` tables committed gzipped (`.csv.gz`); the `open_clean_text` helper; Git LFS / split / Parquet rejected; >20 MB threshold; history-purge deferred. |
 | `docs/specs/app_data_sync_spec.md` | **new, S002 (owner-supplied, committed this session)** | PHASE_5 decision: static JSON generated at build time, fetched at runtime, GitHub Pages. Supersedes PC7. Unblocks PHASE_5_APP_SYNC (still do-not-start). |
 | `src/parse_wayback.py` | updated S002 (PHASE_3E_CLEAN_STORAGE) | +`open_clean_text()` gzip-transparent clean-table IO (`mtime=0`, deterministic); `_write_csv` routes through it + hardened log line. |
+| `src/enumerate_historic_followup.py` | **new, S002 (PHASE_3G)** | Fresh CDX per target (`lidereshistoricos`/`lideres2002`/`mvp` prefixes). `make enumerate-historic`. |
+| `src/fetch_historic_followup.py` | **new, S002 (PHASE_3G)** | One GET per distinct 200-digest, `MAX_TRANCHE=500`, `--script`. `make fetch-historic`. No parser (negative finding — nothing new to parse). |
+| `data/interim/cdx_historic_followup.csv` | **new, S002 (PHASE_3G)** | 27 captures across the 3 targets, every status. Tracked. |
+| `data/interim/fetch_manifest_historic_followup.csv` | **new, S002 (PHASE_3G)** | Every 200 capture → local file. Tracked. |
+| `data/raw/pre2007/mvp/` | **new, S002 (PHASE_3G)** | 7 `mvp.asp` captures 2004–2006. Byte-equivalent to `lidereshistoricos.asp?t=3`; kept as 2nd provenance (D-018). gitignored. |
+| `docs/specs/historic_followup_spec.md` | **new, S002 (PHASE_3G)** | The negative finding: all 3 targets already ingested by PHASE_3C; what each param value is; `mvp.asp` 0-diff corroboration; no clean rows added. |
 
 ---
 
 [NEXT_ACTIONS]
 
 1. **Owner-directed queue (2026-09-08 session), in order, pause after each:**
-   (a) PHASE_3E_CLEAN_STORAGE — **DONE this session** (`game_plays.csv.gz`);
-   (b) PHASE_3G_HISTORIC_FOLLOWUP — gate cleared, next up;
+   (a) PHASE_3E_CLEAN_STORAGE — **DONE** (`game_plays.csv.gz`, commit 72d2b52);
+   (b) PHASE_3G_HISTORIC_FOLLOWUP — **DONE** (negative finding, uncommitted);
    (c) PHASE_3F_IDENTITY_LIFT = NEXT_ACTIONS item 2a below (club-code
-   corroboration, code-only, no fetch).
+   corroboration, code-only, no fetch) — **next up**.
    Owner HOLD still stands on `pogamestat`/`boxscore` 2007–09 and all of
    `gameinfo` — do NOT fetch until owner reviews the PBP contents.
 2. **RANKED IDENTITY-LIFT PLAN** — box-score `bsnpr_id` resolution is 26% pre-2007
@@ -963,5 +1028,5 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
 9. `git`: PHASE_3 = 4ca04f2, 3B = 21f1a5f, 3C = a3b792a, 3D = 0d0d12d + 0640a1d,
    PHASE_4 = ac4a23e + d7c3024 + cd8ef54.
    PHASE_3E = d421922, e94fec9, 640964e, a041a60, 891fc12, 2d1928c, 7f09013.
-   PHASE_3E_CLEAN_STORAGE + `app_data_sync_spec.md` commit + this
-   `docs/session.md` H4 update = pending P4 (this session).
+   `app_data_sync_spec.md` = e5609ee. PHASE_3E_CLEAN_STORAGE = 72d2b52.
+   PHASE_3G + this `docs/session.md` H4 update = pending P4 (this session).

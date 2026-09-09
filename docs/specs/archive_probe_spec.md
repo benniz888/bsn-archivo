@@ -167,9 +167,15 @@ URL pattern (`bsnpr.com/*` or an explicit list), not just `bsnpr.com/estadistica
    confirmed the category headers from body text but `read_html` did not surface
    clean tables (layout `<table>` nesting). Needs a BeautifulSoup pass in the
    ingest phase. Are the numbers player season totals or phase-specific?
-2. **`lidereshistoricos.asp` — how far back, really?** The scoring table starts
-   1948. Do the later captures (2004) extend past 2001? What are the 3 unlabeled
-   `AÑO|JUGADOR|EQUIPO` categories (rebounds / assists / FT% / 3pt)?
+2. **CLOSED (PHASE_3G, 2026-09-08).** `lidereshistoricos.asp` scoring runs
+   **1948→2004** in the 2004-09 capture (already the one PHASE_3C parsed). The 3
+   "unlabeled" `AÑO|JUGADOR|EQUIPO` tables are **not** stat categories — they are
+   the **DPOY / ROY / MVP award histories** (page section headers `DEFENSA DEL
+   AÑO` / `NOVATO DEL AÑO` / `JUGADOR MÁS VALIOSO`), already in
+   `historic_awards.csv`. Only `?t=3` was ever archived — no other `t` value
+   exists, and there are no all-time rebounds/assists/blocks tables. `mvp.asp`
+   (root) is a byte-equivalent alias of the same page. See
+   `docs/specs/historic_followup_spec.md`.
 3. **`equiposstat.asp` (307×200, 2001–2007)** — unprobed. Per-team stat pages.
    Player rosters with per-game stats? This could be the bridge that fills the
    2002–2006 player gap. High priority to sample.
