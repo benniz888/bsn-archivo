@@ -109,6 +109,22 @@ class TestBuild:
         idx = {x["id"] for x in json.loads((b.WEB / "index" / "players.json").read_text())}
         assert all(int(f.stem) in idx for f in (b.WEB / "players").glob("*.json"))
 
+    def test_mvp_index(self):
+        mvp = json.loads((b.WEB / "index" / "mvp.json").read_text())
+        yrs = [m["season"] for m in mvp]
+        assert yrs == sorted(yrs) and len(set(yrs)) == len(yrs)
+        assert min(yrs) == 1958 and max(yrs) >= 2003
+        by_yr = {m["season"]: m for m in mvp}
+        assert by_yr[1973]["player"] == "Neftali Rivera"        # gap year the app lacks
+        assert by_yr[1963]["also"] == "Johny Baez"              # genuine disagreement -> footnote
+        assert by_yr[1962]["also"] is None                      # "TEO CRUZ" ~ "Teófilo Cruz", not flagged
+        assert by_yr[1959]["franchise_id"] == "capitanes_arecibo"
+
+    def test_titlecase(self):
+        assert b._titlecase("BILL McCADNEY") == "Bill McCadney"
+        assert b._titlecase("NEFTALI RIVERA") == "Neftali Rivera"
+        assert b._titlecase("JAVIER ‘TOÑITO’ COLON") == "Javier «Toñito» Colon"
+
     def test_player_xwalk(self):
         xw = json.loads((b.WEB / "index" / "player_xwalk.json").read_text())
         assert xw["georgie torres"] == 788           # owner spot-check

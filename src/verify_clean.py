@@ -458,6 +458,12 @@ def verify_web_data(c: Checker) -> None:
             "web/data: every player_xwalk target is a real players_canonical id",
             f"{len(xw)} entries")
 
+    mvp = json.loads((web / "index" / "mvp.json").read_text(encoding="utf-8"))
+    c.check(all(m["bsnpr_id"] is None or m["bsnpr_id"] in pid_set for m in mvp),
+            "web/data: every mvp.json bsnpr_id is a real players_canonical id")
+    c.check(mvp == sorted(mvp, key=lambda m: m["season"]) and len({m["season"] for m in mvp}) == len(mvp),
+            "web/data: mvp.json is season-sorted with one row per year")
+
     st = json.loads((web / "index" / "scoring_titles.json").read_text(encoding="utf-8"))
     c.check(all(bool(r["champion"]) != bool(r["dual"]) for r in st),
             "web/data: every scoring_titles row is champion XOR dual")

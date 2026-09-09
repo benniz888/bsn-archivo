@@ -26,9 +26,10 @@ Session 002 (cont.) — all pushed to origin/main:
   8fd7c6f · **D-046** (404-page player names + D-045 web/data rebuild) = 064e6ab
   · **5D.3b** crosswalk = 2670254 + thin JSON = f994edd + app wiring
   (`player_xwalk.json`, `PXWALK`/`FID2APP`, `loadPlayerExtra` career table) =
-  bb69496 (all pushed). **5D.3c uncommitted**: "Todo el archivo (3.303)" search
-  mode (`PALL`, `XWALK_REV`, `renderArchiveIndex`, minimal `renderArchiveCard`).
-  Queue: commit 5D.3c → 5D.2b (MVP_YEARS) → 5D.4 (gap text) → 5E (PWA) → 5G.
+  bb69496 · **5D.3c** ("Todo el archivo" search) = 87d8c77 + filter-hide fix =
+  ba0cc68 (all pushed). **5D.2b uncommitted**: `index/mvp.json`, `MVP_YEARS`
+  39→63, `MVP_ID`/`MVP_ALSO` (1963/64 Báez footnote). Queue: commit 5D.2b →
+  5D.4 (gap text) → 5E (PWA) → 5G (deploy).
 
 Session 001 (2026-09-07): PHASE_1_ENUMERATE + PHASE_2_FETCH. Env bootstrapped,
 Wayback CDX enumerated (central finding negative — see below), 193 snapshots
@@ -902,9 +903,28 @@ Bayamon","ppg",18.2]`; `file:` keeps the 26-row baked-in; 0 boot exceptions
 both modes. `make verify` green (329,510); `make test` 153 pass; `web/data`
 rebuild byte-identical.
 
-#### 5D.2b — MVP_YEARS ↔ historic_awards merge — QUEUED
-`MVP_YEARS` (41, hand-verified, per-year clubs) vs `historic_awards.csv` MVP
-(47, 1958–2004). Merge with the diff shown; own sub-step.
+#### 5D.2b — MVP_YEARS ↔ historic_awards merge — DONE (uncommitted)
+`build_web_data` → **`index/mvp.json`** (47 rows, 1958–2004) from
+`historic_awards.csv` `award==mvp`: `_titlecase(player_raw)` (accents can't be
+recovered from the 2004 all-caps `lidereshistoricos.asp?t=3` capture — noted
+limitation), `bsnpr_id` via `player_id_map`, `franchise_id` via
+`_team_resolver`, and `also` = the archive name **only** where a nickname/
+edit-distance-aware match (`_mvp_name_match`) says it genuinely disagrees with
+the app's baked row. `diff_app_mvp()` prints them at build time.
+Result: **2 genuine disagreements — 1963 & 1964, "Juan Báez" (app) vs "Johny
+Baez" (archive; pipeline has both `Baez, George`/782 and `Baez, Johnny`/1088)**;
+5 cosmetic auto-resolved (TEO↔Teófilo Cruz ×4, "GOERGIE" typo).
+App `hydrate()` union-merges (D-043): baked years never overwritten (they carry
+the accented forms), 24 gap years 1959–2003 added, `MVP_YEARS` 39→63 sorted.
+`MVP_ID` (year→bsnpr_id) lets a gap-year "Jugador" button route to the archive
+card (5D.3c); `MVP_ALSO` drives a subtle `†` tooltip ("El archivo también
+registra a Johny Báez para este año") on the 2 disagreement rows.
+`verify_web_data` +2, +2 tests (156). `file://` → `MVP_YEARS` stays 39.
+**Owner:** the `buildMVPYears` "Faltan N … casi todas de ganadores que solo lo
+lograron una vez: Wikipedia…" warning is now stale (count 38→14, and the gap
+shape changed) — needs rephrasing (5D.4-adjacent). Browser: the accent
+inconsistency between baked and gap-fill rows, the `†` tooltip, gap-year
+click-through.
 
 #### 5D.3 — feed player/season views from `web/data` per-entity JSON — split 3 ways
 **Match-rate finding:** the app's ~385 curated PINDEX names and the pipeline's

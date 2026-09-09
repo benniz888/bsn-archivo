@@ -3280,6 +3280,10 @@ let PXWALK=null, FID2APP=null;
    card. PMODE: 'top' (Destacados) | 'all' (Todo el archivo). All null/'top'
    on file:// — the toggle stays inert. */
 let PALL=null, XWALK_REV=null, PMODE='top';
+/* 5D.2b — MVP_ID: year -> bsnpr_id (archive-card click-through for gap-year
+   MVPs not in PINDEX). MVP_ALSO: year -> the name the archive records where it
+   disagrees with the baked row (footnote, app value stays canonical). */
+let MVP_ID=null, MVP_ALSO=null;
 function buildPlayerIndex(){
   if(!PINDEX){
     const map=new Map();
@@ -3792,7 +3796,11 @@ function buildMVPYears(){
   const rows=MVP_YEARS.map(r=>[r[0],r[1],r[2],Math.floor(r[0]/10)*10]);
   buildTable($('#mvpYears'),[
     {label:'Año',num:true},
-    {label:'Jugador',wide:true,render:v=>`<button class="btn" style="padding:2px 8px;font-size:12px" onclick="showPlayer(${JSON.stringify(v).replace(/"/g,'&quot;')})">${esc(v)}</button>`},
+    {label:'Jugador',wide:true,render:(v,r)=>{
+      const id=MVP_ID&&MVP_ID[r[0]], also=MVP_ALSO&&MVP_ALSO[r[0]];
+      const b=`<button class="btn" style="padding:2px 8px;font-size:12px" onclick="showPlayer(${JSON.stringify(v).replace(/"/g,'&quot;')}${id!=null?','+id:''})">${esc(v)}</button>`;
+      return also ? b+` <span class="muted" style="cursor:help" title="El archivo también registra a ${esc(also)} para este año">†</span>` : b;
+    }},
     {label:'Club',wide:true},{label:'Década',num:true}
   ],rows,{file:'mvp_por_ano',sort:0,dir:-1});
   const missing=[];
@@ -6554,6 +6562,24 @@ async function hydrate(){
   /* 5D.3c — the whole 3.303-row archive index, for "Todo el archivo" search. */
   const pa=await DATA.get('index/players.json');
   if(pa){ PALL=pa; if(typeof refreshPlayerIndexArchive==='function') refreshPlayerIndexArchive(); }
+
+  /* 5D.2b — fill MVP_YEARS gaps (1959-2003) from historic_awards. Union: a
+     baked year is never overwritten (it carries the accented name); a genuine
+     name disagreement is kept as a footnote via MVP_ALSO. */
+  const mvp=await DATA.get('index/mvp.json');
+  if(mvp){
+    MVP_ID={}; MVP_ALSO={};
+    const have=new Set(MVP_YEARS.map(r=>r[0]));
+    mvp.forEach(m=>{
+      if(m.bsnpr_id!=null) MVP_ID[m.season]=m.bsnpr_id;
+      if(m.also && have.has(m.season)) MVP_ALSO[m.season]=m.also;
+      if(!have.has(m.season)){
+        const ak=m.franchise_id&&FID2APP[m.franchise_id];
+        MVP_YEARS.push([m.season, m.player, (ak&&F[ak]&&F[ak].name) || m.team_raw || '—']);
+      }
+    });
+    MVP_YEARS.sort((a,b)=>a[0]-b[0]);
+  }
 }
 
 /* Last of all. The shelf and the folds read const tables declared

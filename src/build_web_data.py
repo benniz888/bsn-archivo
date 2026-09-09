@@ -388,6 +388,100 @@ def _box_num_cols():
             "oreb", "dreb", "reb", "ast", "stl", "blk", "pf", "tov", "pts"]
 
 
+def _lev(a: str, b: str) -> int:
+    if abs(len(a) - len(b)) > 3:
+        return 9
+    prev = list(range(len(b) + 1))
+    for i, ca in enumerate(a, 1):
+        cur = [i]
+        for j, cb in enumerate(b, 1):
+            cur.append(min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (ca != cb)))
+        prev = cur
+    return prev[-1]
+
+
+def _titlecase(s: str) -> str:
+    """ALL-CAPS archive name -> readable. Accents can't be recovered from the
+    source, so "NEFTALI" stays "Neftali"; "McCADNEY" -> "McCadney"."""
+    def cap(m):
+        w = m.group(0)
+        if w[:2].lower() == "mc" and len(w) > 2:
+            return "Mc" + w[2].upper() + w[3:].lower()
+        return w[0].upper() + w[1:].lower()
+    s = re.sub(r"[^\W\d_]+", cap, s, flags=re.UNICODE)
+    return s.replace("‘", "«").replace("’", "»").replace("'", "").replace('"', "")
+
+
+# MVP nicknames the archive's all-caps table uses in place of the given name
+_MVP_NICK = {"teo": "teofilo", "johny": "johnny", "pachin": "juan"}
+
+
+def _mvp_name_match(app_name: str, csv_name: str) -> bool:
+    """Same MVP or not — tolerant of the archive's nickname forms ("TEO CRUZ")
+    and typos ("GOERGIE"), strict on a genuinely different person."""
+    strip = lambda x: " ".join(re.sub(r"[’‘'`\"«».,\-]", " ", _norm(x)).split())
+    na, nb = strip(app_name), strip(csv_name)
+    if na == nb:
+        return True
+    ta, tb = na.split(), nb.split()
+    if not ta or not tb or _lev(ta[-1], tb[-1]) > 1:      # surname must be close
+        return False
+    ga, gb = ta[0], tb[0]
+    return (ga == gb or _lev(ga, gb) <= 2
+            or _MVP_NICK.get(ga) == gb or _MVP_NICK.get(gb) == ga)
+
+
+def _parse_app_mvp() -> dict[int, str]:
+    """{year: player} from the app's baked `const MVP_YEARS=[...]` block."""
+    html = (REPO_ROOT / "app" / "bsn_archivo.html").read_text(encoding="utf-8")
+    blk = html[html.index("const MVP_YEARS=["):html.index("];", html.index("const MVP_YEARS="))]
+    return {int(y): n for y, n, _c in re.findall(r"\[(\d{4}),'([^']*)','([^']*)'\]", blk)}
+
+
+def build_mvp() -> Path:
+    """web/data/index/mvp.json — the archive's MVP-por-año table (historic_awards
+    `award==mvp`, one 2004 capture of lidereshistoricos.asp?t=3, 1958-2003).
+    `also` is set only where this genuinely disagrees with the app's baked row
+    for a shared year (the app value stays canonical; `also` becomes a footnote).
+    """
+    app_mvp = _parse_app_mvp()
+    resolve_team = _team_resolver()
+    idmap: dict[tuple[str, str], str] = {}
+    for r in _read("player_id_map.csv"):
+        idmap[(_norm(r["player_raw"]), r["season"])] = r["bsnpr_id"]
+    out = []
+    for r in _read("historic_awards.csv"):
+        if r["award"] != "mvp":
+            continue
+        yr = _int(r["season"])
+        disagree = yr in app_mvp and not _mvp_name_match(app_mvp[yr], r["player_raw"])
+        out.append({
+            "season": yr,
+            "player": _titlecase(r["player_raw"]),
+            "player_raw": r["player_raw"],
+            "bsnpr_id": _int(idmap.get((_norm(r["player_raw"]), r["season"]))),
+            "franchise_id": resolve_team(r["team_raw"]),
+            "team_raw": _titlecase(r["team_raw"]),
+            "also": _titlecase(r["player_raw"]) if disagree else None,
+        })
+    out.sort(key=lambda m: m["season"])
+    _jdump(out, WEB / "index" / "mvp.json")
+    return WEB / "index" / "mvp.json"
+
+
+def diff_app_mvp() -> list[str]:
+    """Shared MVP years where the app and historic_awards genuinely name a
+    different player. Printed, not written — like diff_app_champions."""
+    app_mvp = _parse_app_mvp()
+    csv_mvp = {_int(r["season"]): r["player_raw"] for r in _read("historic_awards.csv")
+               if r["award"] == "mvp"}
+    diffs = []
+    for yr in sorted(set(app_mvp) & set(csv_mvp)):
+        if not _mvp_name_match(app_mvp[yr], csv_mvp[yr]):
+            diffs.append(f"  {yr}: app={app_mvp[yr]!r}  archive={csv_mvp[yr]!r}")
+    return diffs
+
+
 def build_players_detail() -> tuple[int, int]:
     """web/data/players/<bsnpr_id>.json for every id in players_canonical. Players
     with a profile / career rows / id_map observation get a full record; the rest
@@ -664,6 +758,7 @@ def main() -> int:
         "career_leaders": build_career_leaders(),
         "records": build_records(),
         "player_xwalk": build_player_xwalk(),
+        "mvp": build_mvp(),
     }
     counts = {}
     for name, path in built.items():
@@ -710,6 +805,14 @@ def main() -> int:
         print("\n".join(diffs))
     else:
         print("\n[app vs champions_reconciled] no disagreements")
+
+    mvp_diffs = diff_app_mvp()
+    if mvp_diffs:
+        print(f"\n[app MVP_YEARS vs historic_awards] {len(mvp_diffs)} genuine name disagreement(s) "
+              f"(app value stays canonical; carried as `also` footnote):")
+        print("\n".join(mvp_diffs))
+    else:
+        print("\n[app MVP_YEARS vs historic_awards] no genuine disagreements")
     return 0
 
 
