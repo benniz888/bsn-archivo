@@ -24,10 +24,11 @@ Session 002 (cont.) — all pushed to origin/main:
   77a3aae · **5D redo** (`DATA`+`hydrate()` into `runBoot()`) = c22ce10 ·
   **5D.2** (SCORING hydrate 26→68) = 6c6c8a5 · **5D.3a** (`showSeason` detail) =
   8fd7c6f · **D-046** (404-page player names + D-045 web/data rebuild) = 064e6ab
-  · **5D.3b** crosswalk = 2670254 + thin JSON = f994edd (all pushed). **5D.3b
-  app wiring uncommitted**: `player_xwalk.json` + `hydrate` `PXWALK`/`FID2APP` +
-  `loadPlayerExtra` career table. Queue: commit 5D.3b wiring → 5D.3c
-  (full-archive search) → 5D.2b (MVP_YEARS) → 5D.4 (gap text) → 5E (PWA) → 5G.
+  · **5D.3b** crosswalk = 2670254 + thin JSON = f994edd + app wiring
+  (`player_xwalk.json`, `PXWALK`/`FID2APP`, `loadPlayerExtra` career table) =
+  bb69496 (all pushed). **5D.3c uncommitted**: "Todo el archivo (3.303)" search
+  mode (`PALL`, `XWALK_REV`, `renderArchiveIndex`, minimal `renderArchiveCard`).
+  Queue: commit 5D.3c → 5D.2b (MVP_YEARS) → 5D.4 (gap text) → 5E (PWA) → 5G.
 
 Session 001 (2026-09-07): PHASE_1_ENUMERATE + PHASE_2_FETCH. Env bootstrapped,
 Wayback CDX enumerated (central finding negative — see below), 193 snapshots
@@ -971,11 +972,28 @@ test` (153) unchanged (HTML only). **Owner:** browser render parity.
   layout/width, franchise chips, `toLocaleString('es-PR')` grouping (Node
   renders "10,570", browser "10.570").
 
-##### 5D.3c — "Todo el archivo (3,303)" search mode — QUEUED
-`renderPlayerIndex` mode toggle: "Destacados (385)" (default) / "Todo (3,303)"
-from `index/players.json`. No-JSON ids (2,227) → card shows index fields + an
-explicit "sin ficha detallada" note (PC4). Optional `build_web_data` change:
-add a `search` alias string to `players.json`.
+##### 5D.3c — "Todo el archivo (3.303)" search mode — DONE (uncommitted), app-only
+`#pmode` select in `buildPlayerIndex`: "Destacados (385)" (default) / "Todo el
+archivo (3.303)". `hydrate` fetches `index/players.json` → `PALL` and builds
+`XWALK_REV` (bsnpr_id → curated name); `refreshPlayerIndexArchive()` repaints if
+the tab opened before hydrate. `renderPlayerIndex` branches: `PMODE==='all'` →
+`renderArchiveIndex(q)` — token-AND over `norm(name)` ("george torres" finds
+"Torres Dougherty, George"), `buildTable` cols **Jugador · Pos · Años · Temp.**,
+display capped at `ARCH_CAP=500` with a "Mostrando 500 de N — afiná la búsqueda"
+note. Row click → `openArchivePlayer(id,name)`: if `XWALK_REV[id]` →
+`showPlayer(curatedName)` (rich card); else `showPlayer(name,id)` → new
+`renderArchiveCard` minimal card (portrait, name as stored "Apellidos, Nombre",
+pos · años · nac., one "del índice del archivo" note) + `#playerExtra` career
+table / "sin ficha detallada" via `loadPlayerExtra(name,id)` (id-hint arg added).
+`applyHash` `#jugador/<slug>` falls back to `PALL` → `openArchivePlayer`.
+Names shown as-is ("Apellidos, Nombre") — owner: don't guess the split.
+`file://` → `PALL`/`XWALK_REV` null, toggle shows a loading note, 0 fetches.
+No build-script change. Verified in `player_harness.js` (http: 500-row cap +
+cap note, token-AND, curated-routing via XWALK_REV, archive-only → minimal card
++ 3.json fetch; file: loading note, 0 crashes) + `boot_harness.js` (0 exc,
+champOf 96→96, http 5 fetches / file 0). `make verify` 329,512 / `make test`
+154 unchanged (HTML only). **Owner: browser** — toggle feel, 500-row scroll
+perf, archive→curated routing, minimal card wording, mobile table width.
 
 #### 5D.4 — fix `buildSources` / `buildCoverage` gap text — QUEUED
 The app's "lo que falta" list and `COVERAGE` %s are now partly wrong (box scores,

@@ -3274,6 +3274,12 @@ let PINDEX=null;
    -> app 3-letter key, for linking career-row teams. Both null on file:// (no
    fetch) — showPlayer then renders exactly the baked-in card. */
 let PXWALK=null, FID2APP=null;
+/* 5D.3c — PALL: the 3.303 light rows from index/players.json (whole archive,
+   not just the 385 curated). XWALK_REV: bsnpr_id -> curated name, so an
+   archive-list click on someone who is a curated player lands on the rich
+   card. PMODE: 'top' (Destacados) | 'all' (Todo el archivo). All null/'top'
+   on file:// — the toggle stays inert. */
+let PALL=null, XWALK_REV=null, PMODE='top';
 function buildPlayerIndex(){
   if(!PINDEX){
     const map=new Map();
@@ -3342,18 +3348,36 @@ function buildPlayerIndex(){
     host.innerHTML=`<div class="filters">
       <div class="field" style="min-width:220px"><label for="pq">Buscar jugador</label>
         <input type="search" id="pq" placeholder="Nombre, club, honor…"></div>
-      <div class="field"><label for="pf">Filtro</label><select id="pf">
+      <div class="field"><label for="pmode">Índice</label><select id="pmode">
+        <option value="top">Destacados (${PINDEX.length})</option>
+        <option value="all">Todo el archivo${PALL?' ('+PALL.length.toLocaleString('es-PR')+')':''}</option>
+      </select></div>
+      <div class="field" id="pfField"><label for="pf">Filtro</label><select id="pf">
         <option value="">Todos (${PINDEX.length})</option>
         <option value="MVP">MVP</option><option value="Campeón de anotación">Campeones de anotación</option>
         <option value="10.000">10.000+ puntos</option><option value="NBA">Pasaron por la NBA</option>
         <option value="Refuerzo">Refuerzos</option><option value="Nativo">Nativos</option>
       </select></div></div>`;
-    $('#pq').oninput=renderPlayerIndex; $('#pf').onchange=renderPlayerIndex;
+    $('#pq').oninput=renderPlayerIndex;
+    $('#pf').onchange=renderPlayerIndex;
+    $('#pmode').onchange=e=>{ PMODE=e.target.value; renderPlayerIndex(); };
   }
   renderPlayerIndex();
 }
+/* Called from hydrate() once index/players.json lands, in case the tab was
+   already open. Refreshes the "Todo el archivo (N)" label + the list. */
+function refreshPlayerIndexArchive(){
+  const sel=$('#pmode');
+  if(sel && PALL){
+    const o=sel.querySelector('option[value="all"]');
+    if(o) o.textContent='Todo el archivo ('+PALL.length.toLocaleString('es-PR')+')';
+  }
+  if($('#playerSearch').dataset.built) renderPlayerIndex();
+}
 function renderPlayerIndex(){
   const q=norm($('#pq')?$('#pq').value:''), f=$('#pf')?$('#pf').value:'';
+  const pf=$('#pfField'); if(pf) pf.hidden = (PMODE==='all');
+  if(PMODE==='all'){ renderArchiveIndex(q); return; }
   const list=PINDEX.filter(p=>{
     const tags=Array.from(p.tags).join(' ');
     if(f && !tags.includes(f)) return false;
@@ -3372,13 +3396,56 @@ function renderPlayerIndex(){
     {label:'Fuentes',num:true}
   ],rows,{file:'jugadores_bsn',sort:4,dir:-1});
 }
-function showPlayer(name){
+/* 5D.3c — "Todo el archivo" mode: search index/players.json (all 3.303), not
+   the 385 curated. Token-AND over norm(name) so "george torres" finds
+   "Torres Dougherty, George". Display cap keeps the DOM bounded. */
+const ARCH_CAP=500;
+function renderArchiveIndex(q){
+  const host=$('#playerIndex');
+  if(!PALL){ host.innerHTML='<p class="note">El índice completo del archivo aún se está cargando…</p>'; return; }
+  const toks=q.split(/\s+/).filter(Boolean);
+  const list=PALL.filter(p=>{ const n=p.norm||norm(p.name); return toks.every(t=>n.includes(t)); });
+  const shown=list.slice(0,ARCH_CAP);
+  const span=p=>(p.first_season&&p.last_season)
+    ? (p.first_season===p.last_season?''+p.first_season:p.first_season+'–'+p.last_season) : '';
+  const rows=shown.map(p=>[p.name, p.position||'', span(p), p.n_seasons, p.id]);
+  buildTable(host,[
+    {label:'Jugador',wide:true,render:(v,r)=>`<button class="btn" style="padding:2px 8px;font-size:12px" onclick="openArchivePlayer(${r[4]},${JSON.stringify(v).replace(/"/g,'&quot;')})">${esc(v)}</button>`},
+    {label:'Pos'},{label:'Años'},{label:'Temp.',num:true}
+  ],rows,{file:'archivo_bsn',sort:0,dir:1,
+    note:list.length>ARCH_CAP?`Mostrando ${ARCH_CAP} de ${list.length.toLocaleString('es-PR')} — afiná la búsqueda.`:''});
+}
+function openArchivePlayer(id,name){
+  if(XWALK_REV && XWALK_REV[id]!=null){ showPlayer(XWALK_REV[id]); return; }  /* is a curated player -> rich card */
+  showPlayer(name,id);
+}
+function renderArchiveCard(name,id,host){
+  const r=(PALL||[]).find(x=>x.id===id)||{};
+  const span=(r.first_season&&r.last_season)
+    ? (r.first_season===r.last_season?''+r.first_season:r.first_season+'–'+r.last_season) : '';
+  const meta=[r.position,span,(r.nationality&&r.nationality!=='Puerto Rico')?r.nationality:''].filter(Boolean).join(' · ');
+  host.innerHTML=`<div class="card" style="margin-top:18px">
+    <div style="display:flex;gap:16px;flex-wrap:wrap">
+      ${portrait(name,'#1663D8','#EEF3FB',60,74)}
+      <div style="flex:1;min-width:230px">
+        <h3 style="font-size:24px">${esc(name)}</h3>
+        <div class="muted" style="font-size:13.5px">${esc(meta||'sin datos de posición o años')}</div>
+      </div>
+    </div>
+    <div class="note">Del índice del archivo — no es uno de los jugadores destacados con ficha curada. Lo que sigue es solo lo que registra el archivo de bsnpr.com.</div>
+  </div>`;
+  revealNode(host); host.scrollIntoView({block:'start',behavior:'smooth'});
+}
+function showPlayer(name,id){
   showTab('jugadores',true);
   buildPlayerIndex();
-  loadPlayerExtra(name);          /* 5D.3b — async, fills #playerExtra */
+  loadPlayerExtra(name,id);       /* 5D.3b/c — async, fills #playerExtra */
   const p=PINDEX.find(x=>norm(x.name)===norm(name));
   const host=$('#playerDetail');
-  if(!p){ host.innerHTML='<p class="note">No está en el índice.</p>'; return; }
+  if(!p){
+    if(id!=null){ renderArchiveCard(name,id,host); return; }  /* 5D.3c — archive-only player */
+    host.innerHTML='<p class="note">No está en el índice.</p>'; return;
+  }
   const c1=p.clubs.size?F[Array.from(p.clubs)[0]].c1:'#1663D8';
   const c2=p.clubs.size?F[Array.from(p.clubs)[0]].c2:'#EEF3FB';
   const missing=[];
@@ -3418,12 +3485,12 @@ function showPlayer(name){
    curated card. Never rewrites the card above: the archive's season totals are
    a different source (reg-season, post-2011) and are shown labelled as such,
    not merged into the curated stat strip. file:// -> PXWALK null -> no-op. */
-async function loadPlayerExtra(name){
+async function loadPlayerExtra(name,idHint){
   const host=$('#playerExtra'); if(!host) return;
-  const key=norm(name);
+  const id = (idHint!=null) ? idHint : (PXWALK && PXWALK[norm(name)]);
+  const key = (id!=null) ? 'id:'+id : norm(name);
   host.innerHTML=''; host.dataset.key=key;
-  if(!PXWALK) return;
-  const id=PXWALK[key]; if(id==null) return;
+  if(id==null) return;
   const d=await DATA.get('players/'+id+'.json');
   if(!d || host.dataset.key!==key) return;
 
@@ -6416,7 +6483,11 @@ function applyHash(){
   if(!h) return;
   const [a,b]=h.split('/');
   if(TABS.some(t=>t[0]===a)){ showTab(a); if(a==='equipos'&&b&&F[b]) showTeam(b); return; }
-  if(a==='jugador'&&b){ const p=PINDEX&&PINDEX.find(x=>slug(x.name)===b); if(p) showPlayer(p.name); }
+  if(a==='jugador'&&b){
+    const p=PINDEX&&PINDEX.find(x=>slug(x.name)===b);
+    if(p) showPlayer(p.name);
+    else { const q=PALL&&PALL.find(x=>slug(x.name)===b); if(q) openArchivePlayer(q.id,q.name); }  /* 5D.3c */
+  }
   /* #juega/temporada opens the game directly, so a demo or a shared
      link lands on the thing itself instead of on a shelf. */
   if(a==='juega'&&b&&GAMES.some(g=>g.id===b)){ showTab('juega'); openGame(b); }
@@ -6476,7 +6547,11 @@ async function hydrate(){
      PXWALK maps the curated index name to a bsnpr_id. */
   FID2APP={}; fr.forEach(f=>{ if(f.franchise_id) FID2APP[f.franchise_id]=f.app_key; });
   const xw=await DATA.get('index/player_xwalk.json');
-  if(xw) PXWALK=xw;
+  if(xw){ PXWALK=xw; XWALK_REV={}; for(const k in xw) XWALK_REV[xw[k]]=k; }
+
+  /* 5D.3c — the whole 3.303-row archive index, for "Todo el archivo" search. */
+  const pa=await DATA.get('index/players.json');
+  if(pa){ PALL=pa; if(typeof refreshPlayerIndexArchive==='function') refreshPlayerIndexArchive(); }
 }
 
 /* Last of all. The shelf and the folds read const tables declared
