@@ -78,6 +78,14 @@ class TestBuild:
         assert d71["champion"] is None
         assert d71["dual"]["ppg"]["player"] == "Teofilo Cruz"
         assert d71["dual"]["total_points"]["value"] == 566
+        # 5D.2 — club on every entry
+        assert d71["dual"]["ppg"]["franchise_id"] == "cangrejeros_santurce"
+        s67 = next(r for r in st if r["season"] == 1967)
+        assert s67["champion"]["club_raw"] == "Capitalinos de San Juan"
+        assert s67["champion"]["franchise_id"] == "capitalinos_san_juan"
+        resolved = sum(1 for r in st if (r["champion"] or {}).get("franchise_id")
+                       or (r["dual"] or {}).get("ppg", {}).get("franchise_id"))
+        assert resolved >= 0.9 * len(st)
 
     def test_players_index(self):
         pl = json.loads((b.WEB / "index" / "players.json").read_text())

@@ -452,6 +452,16 @@ def verify_web_data(c: Checker) -> None:
     c.check(not any(p["birth_year"] == 0 or p["first_season"] == 0 for p in players),
             "web/data: no 0 where a year is unknown (PC2 — null not zero)")
 
+    st = json.loads((web / "index" / "scoring_titles.json").read_text(encoding="utf-8"))
+    c.check(all(bool(r["champion"]) != bool(r["dual"]) for r in st),
+            "web/data: every scoring_titles row is champion XOR dual")
+    c.check(all(r["metric_era"] in ("ppg", "total_points") for r in st),
+            "web/data: scoring_titles metric_era valid (D4)")
+    resolved = sum(1 for r in st if (r["champion"] or {}).get("franchise_id")
+                   or (r["dual"] or {}).get("ppg", {}).get("franchise_id"))
+    c.check(resolved >= 0.9 * len(st),
+            "web/data: >=90% of scoring_titles rows resolve a franchise_id", f"{resolved}/{len(st)}")
+
     # 5C — per-entity files
     pdir, sdir, gdir = web / "players", web / "seasons", web / "games"
     if not pdir.exists():

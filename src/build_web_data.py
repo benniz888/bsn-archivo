@@ -32,6 +32,7 @@ APP = REPO_ROOT / "app"
 WEB = REPO_ROOT / "web" / "data"
 
 SCHEMA_VERSION = 1
+_DE_SPLIT = re.compile(r"\s+de\s+|,\s*", re.I)   # "Nick de City" / "Nick, City"
 
 
 # --------------------------------------------------------------------------- #
@@ -220,35 +221,78 @@ def build_players_index() -> Path:
     return WEB / "index" / "players.json"
 
 
+def _scoring_club_resolver():
+    """A scoring-champion `club_raw` -> franchise_id. Wider than `_team_resolver`
+    (city only): also matches a full franchise name and an unambiguous nickname,
+    since the sources give a mix ("SAN JUAN", "Capitanes de Arecibo", "Cariduros")."""
+    by_city = _team_resolver()
+    master = _read("franchises.csv")
+    by_name = {_norm(r["canonical_name"]): r["franchise_id"] for r in master}
+    by_nick: dict[str, str] = {}
+    ambiguous: set[str] = set()
+    for r in master:
+        parts = _DE_SPLIT.split(r["canonical_name"], maxsplit=1)
+        if len(parts) == 2:
+            n = _norm(parts[0])
+            if n in by_nick and by_nick[n] != r["franchise_id"]:
+                ambiguous.add(n)
+            else:
+                by_nick[n] = r["franchise_id"]
+
+    def resolve(raw: str) -> str | None:
+        if not raw:
+            return None
+        n = _norm(raw.split(",")[0])   # "Capitanes, Arecibo" -> "capitanes"
+        return (by_city(raw) or by_name.get(_norm(raw)) or by_name.get(n)
+                or (None if n in ambiguous else by_nick.get(n)))
+    return resolve
+
+
 def build_scoring_titles() -> Path:
+    hist = {r["season"]: r for r in _read("historic_scoring_champions.csv")}
+    seed = {r["season"]: r for r in _read("bsn_scoring_champions.csv")}
+    lead: dict[str, str] = {}
+    for r in _read("player_season_leaders.csv"):
+        if r["category"] == "anotaciones" and r["rank"] == "1":
+            lead[r["season"]] = r["club_raw"]
+    resolve = _scoring_club_resolver()
+
+    def club_of(season: str, prefer_raw: str = "") -> tuple:
+        raw = (prefer_raw or (seed[season]["club"] if season in seed else "")
+               or (hist[season]["team_raw"] if season in hist else "")
+               or lead.get(season, "")) or None
+        return raw, (resolve(raw) if raw else None)
+
     out = []
     for r in _read("scoring_champions_reconciled.csv"):
+        s = r["season"]
         rec = {
-            "season": _int(r["season"]),
-            "metric_era": r["metric_era"],
-            "agreement": r["agreement"],
-            "confidence": r["confidence"],
-            "sources": [s.strip() for s in r["sources"].split(";") if s.strip()],
-            "note": r["note"] or None,
-            "champion": None,
-            "dual": None,
+            "season": _int(s), "metric_era": r["metric_era"],
+            "agreement": r["agreement"], "confidence": r["confidence"],
+            "sources": [x.strip() for x in r["sources"].split(";") if x.strip()],
+            "note": r["note"] or None, "champion": None, "dual": None,
         }
         if r["agreement"] == "dual_metric_d4":
+            praw, pfid = club_of(s)
             rec["dual"] = {
-                "ppg": {"player": r["ppg_champion"], "value": _float(r["ppg_value"])},
+                "ppg": {"player": r["ppg_champion"], "value": _float(r["ppg_value"]),
+                        "club_raw": praw, "franchise_id": pfid},
                 "total_points": {"player": r["total_points_champion"],
-                                 "value": _int(r["total_points_value"])},
+                                 "value": _int(r["total_points_value"]),
+                                 "club_raw": (hist[s]["team_raw"] if s in hist else None),
+                                 "franchise_id": resolve(hist[s]["team_raw"]) if s in hist else None},
             }
         else:
-            player = r["historic_player"] or r["seed_player"] or r["leaders_player"] or None
+            craw, cfid = club_of(s)
             rec["champion"] = {
-                "player": player,
+                "player": r["historic_player"] or r["seed_player"] or r["leaders_player"] or None,
+                "club_raw": craw, "franchise_id": cfid,
                 "ppg": _float(r["historic_ppg"]) or _float(r["leaders_ppg"]),
                 "total_points": _int(r["historic_total"])
                 or (_int(r["seed_value"]) if r["metric_era"] == "total_points" else None),
             }
         out.append(rec)
-    out.sort(key=lambda s: s["season"] or 0)
+    out.sort(key=lambda x: x["season"] or 0)
     _jdump(out, WEB / "index" / "scoring_titles.json")
     return WEB / "index" / "scoring_titles.json"
 
@@ -614,6 +658,7 @@ def main() -> int:
         "players_canonical.csv", "player_aliases.csv", "player_career_seasons.csv",
         "player_id_map.csv", "scoring_champions_reconciled.csv",
         "historic_scoring_champions.csv", "historic_awards.csv",
+        "bsn_scoring_champions.csv",
         "player_season_leaders.csv", "player_season_leaders_2000_2002.csv",
         "seasons_stats_tracked.csv", "leader_coverage_gaps.csv",
         "city_franchise_map.csv", "game_results.csv", "game_box_player.csv",
