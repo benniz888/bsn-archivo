@@ -4789,6 +4789,8 @@ const DATA={
     if(!m || ST.get('data:digest')===m.source_digest) return;
     ST.keys().forEach(k=>{ if(k.indexOf('data:')===0 && k!=='data:digest') ST.del(k); });
     this.mem={}; ST.set('data:digest',m.source_digest);
+    /* 5E — drop the service worker's data cache in lockstep with the ST layer. */
+    try{ navigator.serviceWorker.controller.postMessage({type:'purge-data'}); }catch(e){}
   }
 };
 
@@ -6634,5 +6636,11 @@ async function hydrate(){
    They also need every builder's markup already in the DOM. */
 window.addEventListener('hashchange',applyHash);
 runBoot();
+
+/* 5E — offline/PWA. sw.js sits next to this file when deployed; on file://
+   there is no server and nothing registers. Failure is silent by design. */
+if('serviceWorker' in navigator && location.protocol!=='file:'){
+  window.addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); });
+}
 </script>
 </body></html>

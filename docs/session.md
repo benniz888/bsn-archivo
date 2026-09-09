@@ -28,9 +28,11 @@ Session 002 (cont.) — all pushed to origin/main:
   (`player_xwalk.json`, `PXWALK`/`FID2APP`, `loadPlayerExtra` career table) =
   bb69496 · **5D.3c** ("Todo el archivo" search) = 87d8c77 + filter-hide fix =
   ba0cc68 · **5D.2b** (MVP_YEARS 39→63 + Báez footnote) = cb429bc · **5D.4
-  prep** (manifest coverage counts) = 735a58d (all pushed). **5D.4 app
-  uncommitted**: `DATA_TEXT`/`MANIFEST`, deployed-reality gap/coverage copy.
-  Queue: commit 5D.4 → 5E (PWA) → 5G (deploy).
+  prep** (manifest coverage counts) = 735a58d · **5D.4 app** (`DATA_TEXT`,
+  deployed-reality gap/coverage copy) = 08e8cb4 (all pushed). **5E uncommitted**:
+  `web/sw.js` + registration + `syncVersion` purge hook. Queue: commit 5E →
+  5G (deploy — needs the site-dir layout decision: `bsn_archivo.html` +
+  `data/` + `sw.js` colocated for GitHub Pages).
 
 Session 001 (2026-09-07): PHASE_1_ENUMERATE + PHASE_2_FETCH. Env bootstrapped,
 Wayback CDX enumerated (central finding negative — see below), 193 snapshots
@@ -1037,11 +1039,37 @@ all baked strings intact) + `boot_harness.js` (0 exc, champOf 96→96).
 **Owner: browser** — the reworded copy in context, the `es-PR` number
 grouping, coverage-bar percentages (a feel, not math — tweak freely).
 
-#### 5E — PWA: service worker + offline cache + web manifest — after the 5D chain
-`web/sw.js` (cache the shell + fetched JSON, cache-first with network
-revalidate), `web/manifest.webmanifest` (installable). Register from the shell
-behind a feature check. **Verify:** SW registers; second load works offline
-(DevTools → offline); install prompt appears; no SW errors on `file://`.
+#### 5E — PWA service worker — DONE (uncommitted)
+Manifest + icons were already inline in the app `<head>` (data URIs, for the
+single-file "save to home screen" case) — owner: keep inline, no external
+`webmanifest`. 5E = the SW only.
+**`web/sw.js`** — two caches, no install-time precache (deployed filename
+unknown here): `bsn-shell` (the HTML doc, cached on first load) + `bsn-data`
+(the per-entity JSON). Routing, same-origin GET only, else passthrough:
+navigation → network-first + cache the doc, offline → cached shell;
+`data/**/manifest.json` → network-first (freshness signal); other `data` JSON
+→ stale-while-revalidate; a `{type:'purge-data'}` message → `caches.delete`
+the data cache. `activate` prunes any non-`bsn-*` cache + `clients.claim`.
+**App**: registration block after `runBoot()` — `'serviceWorker' in navigator
+&& location.protocol!=='file:'` → `navigator.serviceWorker.register('sw.js')`
+on `load` (silent-fail); `DATA.syncVersion()` posts `{type:'purge-data'}` to
+the SW controller when it detects a new `source_digest`, so the SW data cache
+drops in lockstep with the `ST` layer after a rebuild+redeploy.
+Verified: `node --check web/sw.js`; new `scratchpad/sw_harness.js` (stubbed
+`self`/`caches`/`fetch`, 16/16 — navigate network-first + offline fallback,
+data SWR + null-on-miss, manifest network-first, purge-data delete, POST /
+cross-origin / non-data passthrough); `boot_harness.js` (http → `register`
+called + digest change → `purge-data` posted; file → not registered; 0 exc,
+champOf 96→96). `make verify` 329,514 / `make test` 156 unchanged.
+**Harness note (D-047 candidate):** Node ≥21 ships a read-only `navigator`
+global — the harnesses' `global.navigator = {...}` silently no-ops; fixed in
+`boot_harness.js` with `Object.defineProperty`. `player_harness.js` /
+`season_harness.js` still assign directly (harmless — the app only reads
+`navigator.language` defensively).
+**Owner (browser, needs the deploy layout — `bsn_archivo.html` + `data/` +
+`sw.js` colocated):** SW registers (DevTools→Application), a second load works
+with Network→Offline, `file://` has no SW and no errors, and a redeployed data
+rebuild refreshes the cache.
 
 #### 5F — PBP per-game JSON (gated, likely stays deferred)
 `web/data/games/<season>/<game_id>_pbp.json` — emitted **only** for games whose
