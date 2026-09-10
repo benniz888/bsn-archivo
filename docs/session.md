@@ -109,7 +109,10 @@ Session 002 (cont.) — all pushed to origin/main:
   candidate's career table ±1 season, `club_check=confirms` by construction) —
   **53**. id_map 716→**800**, review queue 535→**451**. The long tail left
   (enciclopedia-absent imports, common names with no signal) needs a curated
-  crosswalk, not code. `make verify` PASS, `make test` 170.
+  crosswalk, not code. Commit `8307d06`, pushed + LIVE; 15 links spot-verified
+  against career tables (2 carry advisory `club_check=contradicts` — right
+  player, season-corroborated, club label differs). `make verify` PASS,
+  `make test` 170. **`identity_spine_spec` Q1–Q4 all closed by code.**
 - **Nav 12→8 tabs.** Inicio · La liga hoy · Historia · Equipos · Jugadores ·
   Consulta · Juega · Fuentes. `TABS` trimmed; `PANELS` = tab ids + `perfil`;
   `showTab`/`applyHash` gate on `PANELS.includes`. Perfil → a **gear button**
@@ -1750,12 +1753,13 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
       583→**535**, all 58 historic-champion rows linked;
       `scoring_titles.json` gains a `bsnpr_id` (64/68) → Ficha link in the
       "Campeones de anotación" table.
-   d. **DONE (PHASE_3J, identity_spine_spec Q4).** Two season-gated
-      `build_id_map` fallbacks for clipped / bare-surname observation names:
-      `name+season+trunc` (31) + `surname+season+club` (53). id_map 716→**800**,
-      review queue 535→**451**. The remaining ~451 are a genuine long tail
-      (enciclopedia-absent imports, common names with no signal) — an
-      owner-curated crosswalk is the only remaining lever.
+   d. **DONE (PHASE_3J, `8307d06`, LIVE — identity_spine_spec Q4).** Two
+      season-gated `build_id_map` fallbacks for clipped / bare-surname
+      observation names: `name+season+trunc` (31) + `surname+season+club` (53).
+      id_map 716→**800**, review queue 535→**451**. The remaining ~451 are a
+      genuine long tail (enciclopedia-absent imports, common names with no
+      signal) — an owner-curated crosswalk is the only remaining lever.
+      **Q1–Q4 all closed.**
 4. **PHASE_3E parse follow-ups** — PBP + (if ever un-held) `gameinfo` metadata are
    separate parse targets (`game_data_spec` Q5/Q6). game↔franchise join (Q4).
    Box vs `player_season_stats_2001_2004` cross-check (Q7).
