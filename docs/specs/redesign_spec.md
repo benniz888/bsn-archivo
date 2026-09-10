@@ -100,9 +100,19 @@ Historia):**
   `td:first-child{background:var(--deep)}` sat a shade lighter than the rest
   of the table (transparent cells showed the panel `--night` through). Added
   `.tblwrap{background:var(--deep)}` + an opaque `--zebra` token (a
-  translucent stripe ghosts through a sticky cell mid-scroll). Edge-shadow
-  `::after` moved `right:-1px` → `right:-10px` so it casts onto the scrolled
-  content instead of the frozen cell's own text.
+  translucent stripe ghosts through a sticky cell mid-scroll).
+
+**Second fix (owner-reported: text fragment bleeding through the sticky name
+cell on one row, "DA VIL" between name and PTS, while scrolled right):** the
+classic `position:sticky` + `border-collapse:collapse` bug — the shared cell
+border is painted by the *table*, not the cell, so it doesn't move with the
+sticky cell and a hairline of the horizontally-scrolled (or vertically
+adjacent) content shows through the 1px seam. `.tblwrap table` →
+`border-collapse:separate;border-spacing:0`; the row / header / cut-line
+separators become `box-shadow:inset 0 -1px 0 …` on each cell, which stays
+glued to the (sticky) cell. Sticky first-child cells get
+`background-clip:padding-box`. Edge-shadow `::after` re-anchored to
+`left:100%` (unambiguously the cell's right edge) `width:12px`.
 
 ### Commit 3 — light-mode refinement (pending)
 

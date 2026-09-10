@@ -488,27 +488,38 @@ h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
 table{border-collapse:collapse;width:100%;font-size:var(--fs-xs);min-width:360px}
 th{background:var(--raise);color:var(--ink-2);font-weight:700;font-size:var(--fs-3xs);letter-spacing:.06em;
   text-transform:uppercase;text-align:left;padding:8px 11px;border-bottom:1px solid var(--line);white-space:nowrap}
-.tblwrap.tall thead th{position:sticky;top:0;z-index:4}
-.tblwrap.tall thead th:first-child{z-index:6}
 th.sortable{cursor:pointer;user-select:none}
 th.sortable:hover{color:var(--blanco)}
 th .arrow{opacity:.55;font-size:9px;margin-left:3px}
 td{padding:6px 11px;border-bottom:1px solid var(--line-soft);white-space:nowrap}
 tr:last-child td{border-bottom:0}
 tbody tr:hover td{background:var(--raise)}
-.tblwrap.tall tbody tr:nth-child(even) td{background:var(--zebra)}
-.tblwrap.tall tbody tr:nth-child(even):hover td{background:var(--raise)}
 td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 td.name{white-space:normal;min-width:150px;font-weight:600}
 td.rank{color:var(--ink-3);width:32px}
+
+/* ---- .tblwrap tables: sticky column + header need border-collapse:separate.
+   With `collapse` the shared cell border is painted by the table, not the
+   cell, so a hairline of horizontally-scrolled content leaks through the
+   frozen column. As inset box-shadows the separators stay glued to each
+   (sticky) cell. */
+.tblwrap table{border-collapse:separate;border-spacing:0}
+.tblwrap th{border-bottom:0;box-shadow:inset 0 -1px 0 var(--line)}
+.tblwrap td{border-bottom:0;box-shadow:inset 0 -1px 0 var(--line-soft)}
+.tblwrap tr:last-child td{box-shadow:none}
+.tblwrap tr.cut td{box-shadow:inset 0 -1px 0 var(--azul)}
+.tblwrap.tall thead th{position:sticky;top:0;z-index:4}
+.tblwrap.tall thead th:first-child{z-index:6}
+.tblwrap.tall tbody tr:nth-child(even) td{background:var(--zebra)}
+.tblwrap.tall tbody tr:nth-child(even):hover td{background:var(--raise)}
 /* sticky first column — keeps the row's anchor (rank / year / name) in view
    while the numbers scroll. Opaque backgrounds match the ambient row state so
    the frozen column is invisible until the table is actually scrolled. */
-.tblwrap th:first-child{position:sticky;left:0;z-index:5;background:var(--raise)}
-.tblwrap td:first-child{position:sticky;left:0;z-index:3;background:var(--deep)}
+.tblwrap th:first-child{position:sticky;left:0;z-index:5;background:var(--raise);background-clip:padding-box}
+.tblwrap td:first-child{position:sticky;left:0;z-index:3;background:var(--deep);background-clip:padding-box}
 .tblwrap tbody tr:hover td:first-child{background:var(--raise)}
 .tblwrap th:first-child::after,.tblwrap td:first-child::after{content:"";position:absolute;
-  top:0;right:-10px;bottom:0;width:10px;pointer-events:none;
+  top:0;left:100%;bottom:0;width:12px;pointer-events:none;
   background:linear-gradient(90deg,var(--shadow),transparent);opacity:0;transition:opacity var(--dur-fast)}
 .tblwrap.scrolled th:first-child::after,.tblwrap.scrolled td:first-child::after{opacity:1}
 .tbl-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:var(--sp-3);font-size:var(--fs-2xs);color:var(--ink-3)}
