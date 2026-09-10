@@ -379,12 +379,23 @@ def merge_jug05(canon: list[dict], career: list[dict],
     list."""
     exact: dict[str, list[dict]] = defaultdict(list)
     byfam: dict[str, list[dict]] = defaultdict(list)
+    by_id: dict[str, dict] = {}
     for c in canon:
         exact[norm_key(c["canonical_name"])].append(c)
+        by_id[c["bsnpr_id"]] = c
         fam = normalize(c["apellidos"]).split()
         if fam:
             byfam[fam[0]].append(c)
     have = {(r["bsnpr_id"], int(r["season"]), normalize(r["team_raw"])) for r in career}
+
+    # tier 0 — hand-curated resolution of the name+birth-year collisions
+    # (nickname bridges, spelling variants). See docs/specs/jug05_spec.md.
+    xwalk: dict[tuple, str] = {}
+    xw_path = INTERIM_DIR / "jug05_xwalk.csv"
+    if xw_path.exists():
+        with xw_path.open(encoding="utf-8") as fh:
+            for row in csv.DictReader(fh):
+                xwalk[(norm_key(row["jug05_name"]), row["jug05_birth_date"])] = row["bsnpr_id"]
 
     def _match(j) -> dict | None:
         jyr = j["birth_date"][-4:] if j["birth_date"] else ""
@@ -420,9 +431,21 @@ def merge_jug05(canon: list[dict], career: list[dict],
             n += 1
         return n
 
-    enriched = added = 0
+    enriched = added = xw_hits = 0
     to_mint, review = [], []
     for j in jug05:
+        forced = xwalk.get((norm_key(j["name"]), j["birth_date"]))
+        if forced == "review":
+            review.append({"name": j["name"], "birth_date": j["birth_date"],
+                           "position": j["position"],
+                           "seasons": ";".join(str(s) for s, *_ in j["career"]),
+                           "collides_with": "xwalk: left in review"})
+            continue
+        if forced and forced in by_id:
+            xw_hits += 1
+            enriched += 1
+            added += _union_career(forced, j)
+            continue
         c = _match(j)
         if c:
             enriched += 1
@@ -459,9 +482,9 @@ def merge_jug05(canon: list[dict], career: list[dict],
         })
         added += _union_career(pid, j)
 
-    print(f"[jug05] {len(jug05)} players -> {enriched} enriched, {minted} minted "
-          f"(id {JUG05_ID_BASE+1}..{JUG05_ID_BASE+minted}), {len(review)} to review; "
-          f"{added} new career-season rows")
+    print(f"[jug05] {len(jug05)} players -> {enriched} enriched ({xw_hits} via xwalk), "
+          f"{minted} minted (id {JUG05_ID_BASE+1}..{JUG05_ID_BASE+minted}), "
+          f"{len(review)} to review; {added} new career-season rows")
     return {"enriched": enriched, "minted": minted, "review": len(review),
             "career_rows": added, "review_list": review}
 

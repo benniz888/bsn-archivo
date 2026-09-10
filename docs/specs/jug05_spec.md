@@ -78,22 +78,27 @@ Owner-approved 2026-09-09.
 
 600 pages → **200 distinct players** (deduped by name + birth date — the same
 player has several pages under different `r`/`r2` tokens). `merge_jug05` runs
-a 3-tier match against `players_canonical`:
+a hand-curated tier 0 (`data/interim/jug05_xwalk.csv`) then a 3-tier auto match
+against `players_canonical`:
 
 | tier | test | n | action |
 |---|---|--:|---|
-| enrich | exact name+year, OR canonical apellidos ⊇ jug05 apellidos (token-prefix) + given[0] + birth date ±7d | **123** | union career rows |
+| **xwalk** | name+DOB in `jug05_xwalk.csv` | **33** | force-enrich the mapped id (nickname bridges: Larry=Elías Ayuso, Bobby Joe=Roberto José Hatton, Michael=Ángel Miguel López, J.R.=«Milton» Henderson, …) |
+| enrich (auto) | exact name+year, OR canonical apellidos ⊇ jug05 apellidos (token-prefix) + given[0] + birth date ±7d | **123** | union career rows |
 | mint | no canonical match at all | **42** | new canonical `990001`+ (D-047) |
-| review | name + birth-year collides with a canonical but the fuller match fails | **35** | `jug05_review.csv`, spine unchanged |
+| review | name+birth-year collides but the fuller match fails and no xwalk entry | **2** | `jug05_review.csv` — both deliberate non-merges (Frank vs Iván López; a duplicate Fernando Ortiz page with a bad DOB year, already reaching id 697) |
 
-**+1,031 career-season rows** (877 to existing players). Net: `player_id_map`
-649 → **661**, review queue 602 → **590**, `players_canonical` 3,303 → **3,345**.
+**156 enriched + 42 minted + 2 review. +1,206 career-season rows.** Net:
+`player_id_map` 649 → **666**, review queue 602 → **585**, `players_canonical`
+3,303 → **3,345**. Deterministic through parse + build.
 
 ## [OPEN_QUESTIONS]
 
 1. **RESOLVED — owner chose (a):** mint with flagged synthetic ids (`990001`+,
    `source_id=wayback_bsnpr_jug05`, `has_profile=jug05`). D-047.
-2. `jug05_review.csv` (35) — nickname bridges ("Larry" Ayuso = Elías, "Bobby"
-   Brannen = Robert) and spelling variants (Jefrey/Jeffrion Aubry). A
-   prefix/nickname-aware pass could resolve most; deferred to the owner.
+2. **RESOLVED:** the 35 collisions were worked into `jug05_xwalk.csv` — 33
+   force-enriched (26 clear nickname/spelling bridges, 7 medium — DOB-exact but
+   a different given name, e.g. J.R. Henderson vs canonical "Milton"), 2 left
+   in review by design. `jug05_xwalk.csv` is a committed curated map, consulted
+   as tier 0 of `merge_jug05`.
 3. `jugador05.asp` (406 param-200s, same era) — not fetched. Possible follow-up.

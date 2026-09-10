@@ -353,6 +353,8 @@ player_season_leaders_2000_2002.csv,"Dalmau, Raymond",QUEBR,2002,1970,"Dalmau Sa
 player_season_leaders_2000_2002.csv,"Dalmau, Ricardo",QUEBR,2002,1992,"Dalmau Santana, Ricardo",name+season_in_career,confirms,single-source
 player_season_leaders_2000_2002.csv,"Davila, Miguel",CAGUA,2001,1660,"Davila Cordero, Miguel",name+season_in_career,confirms,single-source
 player_season_leaders_2000_2002.csv,"Davila, Miguel",MAYAG,2002,1660,"Davila Cordero, Miguel",name+season_in_career,confirms,single-source
+player_season_leaders_2000_2002.csv,"Davis, Nick",MOROV,2001,1693,"Davis Jackson, Nathanael",name+season_in_career,confirms,single-source
+player_season_leaders_2000_2002.csv,"Davis, Nick",MOROV,2002,1693,"Davis Jackson, Nathanael",name+season_in_career,confirms,single-source
 player_season_leaders_2000_2002.csv,"Diaz, Rafael",COAMO,2002,1863,"Diaz Burgos, Rafael",name+season_in_career,confirms,single-source
 player_season_leaders_2000_2002.csv,"Elisma, Eddie",PONCE,2001,499,"Elisma, Eddie",name+season_in_career,confirms,single-source
 player_season_leaders_2000_2002.csv,"Fajardo, Shariff",SAN G,2001,2165,"Fajardo Blanding, Shariff",name+season_in_career,confirms,single-source
@@ -438,9 +440,9 @@ player_season_stats_2001_2004.csv,"Calderon, A.",Capitanes de Arecibo,2001,238,"
 player_season_stats_2001_2004.csv,"Camacho, L.",Polluelos de Aibonito,2001,1468,"Camacho Rosado, Luis",name+season_in_career,confirms,single-source
 player_season_stats_2001_2004.csv,"Caraballo, J.",Maratonistas de Coamo,2001,1220,"Caraballo Leandry, Jose",name+season_in_career,confirms,single-source
 player_season_stats_2001_2004.csv,"Caraballo, J.",Maratonistas de Coamo,2003,1220,"Caraballo Leandry, Jose",name+season_in_career,contradicts,single-source
-player_season_stats_2001_2004.csv,"Carmona, A.",Indios de Mayaguez,2001,37,"Carmona Sanchez, Alejandro",name+season_in_career,confirms,single-source
-player_season_stats_2001_2004.csv,"Carmona, A.",Indios de Mayaguez,2002,37,"Carmona Sanchez, Alejandro",name+season_in_career,confirms,single-source
-player_season_stats_2001_2004.csv,"Carmona, A.",Maratonistas de Coamo,2002,37,"Carmona Sanchez, Alejandro",name+season_in_career,contradicts,single-source
+player_season_stats_2001_2004.csv,"Carmona, A.",Indios de Mayaguez,2001,37,"Carmona Sanchez, Alejandro",name+season+club,confirms,single-source
+player_season_stats_2001_2004.csv,"Carmona, A.",Indios de Mayaguez,2002,37,"Carmona Sanchez, Alejandro",name+season+club,confirms,single-source
+player_season_stats_2001_2004.csv,"Carmona, A.",Maratonistas de Coamo,2002,4,"Carmona Andino, Abel",name+season+club,confirms,single-source
 player_season_stats_2001_2004.csv,"Caro, I.",Indios de Mayaguez,2002,932,"Caro Beltran, Ismael",name+season_in_career,confirms,single-source
 player_season_stats_2001_2004.csv,"Carrawell, C.",Toritos de Cayey,2002,375,"Carrawell, Chris",name+season_in_career,confirms,single-source
 player_season_stats_2001_2004.csv,"Carter, J.",Brujos de Guayama,2001,989,"Carter Gaudino, James",name+season_in_career,confirms,single-source
@@ -476,6 +478,9 @@ player_season_stats_2001_2004.csv,"Cruz, R.",Capitanes de Arecibo,2002,1895,"Cru
 player_season_stats_2001_2004.csv,"Curbelo, J.",Piratas de Quebradillas,2001,1063,"Curbelo Melendez, Joel",name+season_in_career,confirms,single-source
 player_season_stats_2001_2004.csv,"Davila, M.",Criollos de Caguas,2001,1660,"Davila Cordero, Miguel",name+season_in_career,confirms,single-source
 player_season_stats_2001_2004.csv,"Davila, M.",Indios de Mayaguez,2002,1660,"Davila Cordero, Miguel",name+season_in_career,confirms,single-source
+player_season_stats_2001_2004.csv,"Davis, N.",Titanes de Morovis,2001,1693,"Davis Jackson, Nathanael",name+season_in_career,confirms,single-source
+player_season_stats_2001_2004.csv,"Davis, N.",Titanes de Morovis,2002,1693,"Davis Jackson, Nathanael",name+season_in_career,confirms,single-source
+player_season_stats_2001_2004.csv,"Davis, N.",Titanes de Morovis,2003,1693,"Davis Jackson, Nathanael",name+season_in_career,confirms,single-source
 player_season_stats_2001_2004.csv,"Diaz, R.",Maratonistas de Coamo,2002,1863,"Diaz Burgos, Rafael",name+season_in_career,confirms,single-source
 player_season_stats_2001_2004.csv,"Escalera, C.",Maratonistas de Coamo,2001,284,"Escalera Gonzalez, Carlos",name+season_in_career,confirms,single-source
 player_season_stats_2001_2004.csv,"Escalera, C.",Maratonistas de Coamo,2002,284,"Escalera Gonzalez, Carlos",name+season_in_career,confirms,single-source

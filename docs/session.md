@@ -50,9 +50,10 @@ Session 002 (cont.) — all pushed to origin/main:
 **SESSION 003 (2026-09-09):**
 - PHASE_6_APP_IA — reorganize / UX pass, structure only. **COMPLETE**, merged
   via PR #1 (`27c612c`), verified LIVE.
-- PHASE_3H_JUG05 — `jug05.asp` fetch (600 pages) + `merge_jug05` (3-tier match,
-  D-047 synthetic ids). **COMPLETE**: 123 enriched, 42 minted (`990001`+), 35
-  → `jug05_review.csv`. id_map 649→661, review 602→590, canonical 3,303→3,345.
+- PHASE_3H_JUG05 — `jug05.asp` fetch (600 pages) + `merge_jug05` (curated
+  `jug05_xwalk.csv` tier-0 + 3-tier auto, D-047 synthetic ids). **COMPLETE**:
+  156 enriched, 42 minted (`990001`+), 2 review. id_map 649→666, review
+  602→585, canonical 3,303→3,345, career-seasons +1,206.
 - **Nav 12→8 tabs.** Inicio · La liga hoy · Historia · Equipos · Jugadores ·
   Consulta · Juega · Fuentes. `TABS` trimmed; `PANELS` = tab ids + `perfil`;
   `showTab`/`applyHash` gate on `PANELS.includes`. Perfil → a **gear button**
@@ -1369,16 +1370,19 @@ Decisions made session 002 (PHASE_5_APP_SYNC):
 - **D-047 — a canonical id may be minted from a league source with no `?id=N`
   (PHASE_3H_JUG05, owner OQ1 = (a)).** `jug05.asp` is bsnpr.com's 2005-era
   player page, keyed by an opaque token, not an integer id. `merge_jug05` folds
-  its 200 distinct players into the spine: 123 enrich an existing canonical
-  (D1-tier match: exact, or apellidos token-prefix + given[0] + birth date
-  ±7d), **42 mint a new canonical row** — id `990001`+ (far above the real
-  ~13,352 range), `source_id=wayback_bsnpr_jug05`, `has_profile=jug05`,
-  `confidence=jug05-only` — and 35 name+birth-year collisions go to
-  `data/interim/jug05_review.csv`, never the spine. **D1 holds**: mints require
-  name + birth date + a career table from a league source with no existing
-  match; fuzzy/ambiguous still → review queue. Effect: `player_id_map`
-  649→661, review queue 602→590, `players_canonical` 3,303→3,345,
-  `player_career_seasons` +1,031. `jug05_spec.md` / `identity_spine_spec.md` Q3.
+  its 200 distinct players into the spine via a curated tier-0
+  (`data/interim/jug05_xwalk.csv`, 33 nickname/spelling bridges — Larry=Elías
+  Ayuso, Bobby Joe=Roberto José Hatton, J.R.=«Milton» Henderson, …) then a
+  3-tier auto match: **156 enrich an existing canonical** (D1-tier match: exact,
+  or apellidos token-prefix + given[0] + birth date ±7d), **42 mint a new
+  canonical row** — id `990001`+ (far above the real ~13,352 range),
+  `source_id=wayback_bsnpr_jug05`, `has_profile=jug05`, `confidence=jug05-only`
+  — and **2** name+birth collisions stay in `data/interim/jug05_review.csv`,
+  never the spine (deliberate non-merges). **D1 holds**: mints require name +
+  birth date + a career table from a league source with no existing match;
+  fuzzy/ambiguous still → review queue. Effect: `player_id_map` 649→666,
+  review queue 602→585, `players_canonical` 3,303→3,345,
+  `player_career_seasons` +1,206. `jug05_spec.md` / `identity_spine_spec.md` Q3.
 - **D-046 — 404-page jugador.asp snapshots leaked into player names; fixed at
   parse (owner-flagged, 5D.3b).** 3 profiles (ids 405, 1926, 2089) were
   canonically `"<Surname>, Error 404"` — the Wayback capture of
