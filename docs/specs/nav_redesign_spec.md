@@ -218,10 +218,23 @@ native `<details>` collapse on mobile.
   and colour-source chips kept.
 - Harness: `scratchpad/phero_harness.mjs`.
 
-#### 8.3c — section landings + `megaFeat` (pending)
+#### 8.3c — section landings + `megaFeat` visuals (DONE)
 
-The five `__landing` link grids → editorial cards (eyebrow + one line per
-view). `megaFeat` blocks get the matching mini visual. All links `#section/view`.
+- **`buildLanding`** — the plain `.landgrid` of text links becomes editorial
+  cards: `.lc-t` (label + a `→` that slides on hover) over `.lc-d` (one line
+  of copy from **`VIEW_DESC`**, keyed `sec → {slug: line}`, covering every
+  historia / jugadores / equipos / archivo view). Juega keeps its game shelf
+  (no `buildLanding`).
+- **`megaFeat`** — each of the five featured blocks gains a `.mf-viz`:
+  `topfranq` / `myteam` → the franchise's title comb (`titleComb`, a shared
+  helper now also used by `buildHero`, `showTeam`, the hub lead); `compare` →
+  `cmpMiniViz`; `daily` → `dotgrid`; `gap` → `COVERAGE` bars. Shown in both
+  the desktop dropdown and the landing feat block.
+- Harnesses: `view_router_harness` (VIEW_DESC completeness) + `mega_harness`
+  (every feat carries a viz) updated; `edhub`/`phero`/`mega_dom` stubs gained
+  `titleComb`.
+
+**PHASE_8 complete.**
 
 ## [ALTERNATIVES_REJECTED]
 

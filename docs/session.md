@@ -3,20 +3,21 @@
 
 **SESSION:** 003 — PHASE_5_APP_SYNC + PHASE_6_APP_IA + PHASE_3H/3I/3J (identity
   spine Q1–Q4, all LIVE) · PHASE_7 visual redesign (done, LIVE) ·
-  **PHASE_8_NAV_REDESIGN IN PROGRESS** (8.1 + 8.2 + 8.2b + 8.3a + 8.3b done:
-  8→5 nav + Hoy→Inicio + Consulta→Archivo; mega-menu; **each section is a view
+  **PHASE_8_NAV_REDESIGN COMPLETE, LIVE** (8.1 8.2 8.2b 8.3a 8.3b 8.3c):
+  8→5 nav + Hoy→Inicio + Consulta→Archivo; mega-menu; **each section a view
   router — #section/view URLs, subnav pill rail, folds retired**; **Inicio
-  hero/hub + player/team cards rebuilt as StatMuse-style editorial blocks**
-  (`.ed-*`/`.phero` + spark/sparkBars/dotgrid). 8.3c (landings + megaFeat
-  visuals) pending)
+  hero/hub + player/team cards + section landings + mega featured blocks
+  rebuilt as StatMuse-style editorial** (`.ed-*`/`.phero`/`.landcard` +
+  spark/sparkBars/dotgrid/titleComb)
 **DATE:** 2026-09-11
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
 **CURRENT STATE:** Archive is live at benniz888.github.io/bsn-archivo — shell
-fetches per-entity JSON from `web/data/`, offline-capable (SW), installable,
-8-tab IA. Data pipeline: 3,343 players (40 jug05-minted, D-047; 152 w/
-jugador05 bio) / 98 seasons / 1,292 games / 68 scoring titles (all champions
-now linked to a ficha) / 47 MVP. player_id_map 800, review queue 451.
+fetches per-entity JSON from `web/data/`, offline-capable (SW), installable.
+IA: 5 top-level sections, each a `#section/view` router (PHASE_8). Data
+pipeline: 3,343 players (40 jug05-minted, D-047; 152 w/ jugador05 bio) / 98
+seasons / 1,292 games / 68 scoring titles (all champions now linked to a
+ficha) / 47 MVP. player_id_map 800, review queue 451.
 **PHASE_7 visual redesign COMPLETE, LIVE** (`redesign_spec.md`, `73f3cfb` →
 commit 3): (1) Inter one-family + type/spacing tokens; (2) panel-enter motion,
 tab-underline grow, theme cross-fade, sticky first column + tall-table sticky-
@@ -63,10 +64,13 @@ portrait/crest + `<h3>` + sub + `.ed-stat` + `.phero-spark` + caption + note.
 of title years (sync); note computed ("el club más ganador" / "Último título
 en YYYY, hace N años · W-L en finales" / "N finales perdidas, aún sin
 título"); old title/finals chips folded in. strip/kv/roster/head-to-head
-untouched. 8.3c (section landings editorial grid + megaFeat visuals) pending.
-Harnesses: `view_router_harness`, `edhub_harness`, `phero_harness` (new) +
-`ia_harness`, `mega_harness`, `mega_dom_harness`, `nav_motion_harness`
-(updated). **Compact mobile header** thread resolved (mobile tab row gone).
+untouched. **8.3c — landings + mega visuals:** `buildLanding` grid → editorial
+cards (`.lc-t` label+arrow / `.lc-d` copy from `VIEW_DESC`); `megaFeat` blocks
+each gain a `.mf-viz` (`titleComb` shared helper / `cmpMiniViz` / `dotgrid` /
+`COVERAGE` bars). **PHASE_8 done.** Harnesses: `view_router_harness`,
+`edhub_harness`, `phero_harness` (new) + `ia_harness`, `mega_harness`,
+`mega_dom_harness`, `nav_motion_harness` (updated). **Compact mobile header**
+thread resolved (mobile tab row gone).
 
 Open threads:
 docs/project.md D2 refinement for the Grises/Caciques de Humacao split (D-045);

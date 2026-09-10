@@ -316,6 +316,11 @@ nav.tabs{border-top:1px solid var(--line-soft);position:relative}
 .mega-feat .fn{font-weight:800;font-size:var(--fs-num);line-height:1;letter-spacing:-.03em;margin-top:2px}
 .mega-feat .ft{font-weight:700;font-size:var(--fs-sm)}
 .mega-feat .fd{color:var(--ink-2);font-size:var(--fs-2xs);line-height:1.4}
+.mega-feat .mf-viz{color:var(--fuego)}
+.mega-feat .mf-viz svg{display:block;width:100%;max-width:180px;height:24px}
+.mega-feat .mf-viz .ed-cmp{width:100%;max-width:180px}
+.mega-feat .mf-dot{color:var(--ink-3)}
+.mega-feat .mf-dot svg{display:block;width:34px;height:34px}
 .mega-feat button.btn,.mega-feat a.btn{margin-top:var(--sp-2)}
 @media(prefers-reduced-motion:reduce){.mega{transition:none}}
 @media(max-width:859px){.mega{display:none}}
@@ -339,11 +344,16 @@ nav.tabs{border-top:1px solid var(--line-soft);position:relative}
 @media(prefers-reduced-motion:reduce){.view.view-enter{animation:none}}
 .viewhead{font-size:var(--fs-xl);text-transform:uppercase;letter-spacing:.005em;margin:0 0 var(--sp-3)}
 .landing>.mega-feat{margin-bottom:var(--sp-3)}
-.landgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:var(--sp-3);margin-top:var(--sp-5)}
-.landcard{display:block;border:1px solid var(--line);border-radius:12px;padding:var(--sp-4);
-  background:var(--card);color:var(--ink);text-decoration:none;font-weight:700;
-  transition:border-color var(--dur-fast),transform var(--dur-fast)}
-.landcard:hover{border-color:var(--ink-3);transform:translateY(-2px)}
+.landgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--sp-3);margin-top:var(--sp-5)}
+.landcard{display:flex;flex-direction:column;gap:var(--sp-1);border:1px solid var(--line);border-radius:12px;
+  padding:var(--sp-4);background:var(--card);color:var(--ink);text-decoration:none;
+  transition:border-color var(--dur-fast) var(--ease),transform var(--dur-fast) var(--ease),box-shadow var(--dur-fast) var(--ease)}
+.landcard:hover{border-color:var(--ink-3);transform:translateY(-2px);box-shadow:0 6px 16px var(--shadow)}
+.landcard .lc-t{font-weight:700;font-size:var(--fs-sm);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.landcard .lc-t i{font-style:normal;color:var(--fuego);transition:transform var(--dur-fast) var(--ease)}
+.landcard:hover .lc-t i{transform:translateX(3px)}
+.landcard .lc-d{color:var(--ink-2);font-size:var(--fs-2xs);line-height:1.45}
+@media(prefers-reduced-motion:reduce){.landcard,.landcard .lc-t i{transition:none}.landcard:hover{transform:none}}
 
 /* ── Plegado ──────────────────────────────────────────────────────
    Every tab had grown to five or six full sections stacked end to
@@ -2864,6 +2874,9 @@ function megaGo(target){
   if(s==='archivo'&&v==='preguntar'){ const i=$('#askInput'); if(i) setTimeout(()=>i.focus(),50); }
 }
 
+function titleComb(f,opts){
+  return f.won.length ? sparkBars(YEARS.map(y=>f.won.indexOf(y)>-1?1:0),opts||{w:180,h:24,gap:1}) : '';
+}
 function megaFeat(k){
   if(k==='topfranq'){
     const best=FKEYS.slice().sort((a,b)=>F[b].won.length-F[a].won.length)[0];
@@ -2872,13 +2885,16 @@ function megaFeat(k){
     return `<div class="fx">El más ganador</div>
       <div style="display:flex;align-items:center;gap:10px;margin-top:2px">${crest(best,34,42)}
         <div class="fn">${f.won.length}</div></div>
+      <div class="mf-viz" style="color:${f.c1}">${titleComb(f)}</div>
       <div class="ft">${esc(f.name.split(' de ')[0])}</div>
       <div class="fd">títulos en 97 temporadas${f.won.length?' · último en '+Math.max.apply(null,f.won):''}</div>
       <button class="btn" style="padding:6px 12px;font-size:12px" onclick="megaGo('titulos')">Ver todos</button>`;
   }
   if(k==='compare'){
+    const mv=cmpMiniViz('Georgie Torres','Mario Morales');
     return `<div class="fx">Comparar</div>
       <div class="ft" style="margin-top:2px">Georgie Torres ⇄ Mario Morales</div>
+      ${mv?`<div class="mf-viz">${mv}</div>`:''}
       <div class="fd">Dos o tres jugadores lado a lado — las casillas vacías son huecos del archivo, no ceros.</div>
       <button class="btn" style="padding:6px 12px;font-size:12px" onclick="closeMega();cmpPreset('Georgie Torres','Mario Morales')">Abrir</button>`;
   }
@@ -2887,6 +2903,7 @@ function megaFeat(k){
     return `<div class="fx">Tu equipo</div>
       ${f?`<div style="display:flex;align-items:center;gap:10px;margin-top:2px">${crest(p.club,30,36)}
         <div class="ft">${esc(f.name)}</div></div>
+        ${f.won.length?`<div class="mf-viz" style="color:${f.c1}">${titleComb(f,{w:180,h:22,gap:1})}</div>`:''}
         <div class="fd">${f.won.length?f.won.length+(f.won.length===1?' título':' títulos'):'sin títulos'} · el archivo se reordena a su alrededor</div>`
       : `<div class="fd" style="margin-top:2px">Escoge un club y el archivo se reordena a su alrededor — tu equipo primero en cada tabla.</div>`}
       <button class="btn" style="padding:6px 12px;font-size:12px" onclick="closeMega();showTab('perfil')">${f?'Cambiar':'Escoger club'}</button>`;
@@ -2894,7 +2911,9 @@ function megaFeat(k){
   if(k==='daily'){
     const n=(typeof puzzleNo==='function')?puzzleNo():'—';
     return `<div class="fx">Hoy</div>
-      <div class="fn" style="margin-top:2px">#${n}</div>
+      <div style="display:flex;align-items:flex-end;gap:12px;margin-top:2px">
+        <div class="fn">#${n}</div>
+        <span class="mf-dot">${dotgrid([0,1,0, 0,0,1, 1,0,0])}</span></div>
       <div class="ft">La Cuadrícula del día</div>
       <div class="fd">Nueve casillas, un jugador que encaje en cada cruce de club × logro.</div>
       <button class="btn" style="padding:6px 12px;font-size:12px" onclick="megaGo('cuadricula')">Jugar</button>`;
@@ -2902,6 +2921,7 @@ function megaFeat(k){
   if(k==='gap'){
     return `<div class="fx">Lo que este archivo no sabe</div>
       <div class="ft" style="margin-top:2px">Antes de 2011 no hay estadística por temporada</div>
+      <div class="mf-viz">${sparkBars(COVERAGE.map(c=>c[1]),{w:180,h:24,scale:100,gap:2})}</div>
       <div class="fd">Ese es el muro real. Todo lo demás — los huecos, los conflictos entre fuentes, de dónde sale cada dato — está aquí, dicho de frente.</div>
       <button class="btn" style="padding:6px 12px;font-size:12px" onclick="megaGo('cobertura')">Ver los huecos</button>`;
   }
@@ -3163,7 +3183,7 @@ function buildHero(){
       <div class="trophy">${crest(SEASON_STATE.champ,30,36)}
         <div><div class="t1">${esc(f.name)} — campeón 2026</div>
              <div class="t2">${esc(t2)}</div></div>
-        <span class="herospark" style="color:${f.c1}">${sparkBars(YEARS.map(y=>f.won.indexOf(y)>-1?1:0),{w:150,h:20,gap:1})}</span></div>
+        <span class="herospark" style="color:${f.c1}">${titleComb(f,{w:150,h:20,gap:1})}</span></div>
       <div style="flex:1"></div>
       <button class="btn" onclick="showView('historia','cinta')">Ver las 97 temporadas</button>
     </div>
@@ -3661,7 +3681,7 @@ function showTeam(k){
         <h3>${esc(f.name)}</h3>
         <div class="phero-sub">${esc(f.city)} · fundado ${f.founded}${f.active?'':' · desaparecido'+(f.end?' en '+f.end:'')}</div>
         <div class="phero-stat"><span class="ed-stat">${f.won.length}</span>
-          <span class="phero-spark" style="color:${f.c1}">${f.won.length?sparkBars(YEARS.map(y=>f.won.indexOf(y)>-1?1:0),{w:150,h:24,gap:1}):''}</span></div>
+          <span class="phero-spark" style="color:${f.c1}">${titleComb(f,{w:150,h:24,gap:1})}</span></div>
         <div class="phero-statl">${f.won.length===1?'título':'títulos'}</div>
         <div class="phero-note">${esc(heroNote)}</div>
         <div class="chips">
@@ -5331,7 +5351,7 @@ function buildHub(){
 
   blocks.push(edBlock({ lead:true, eye:lf===f?'Historia · tu club':'Historia',
     stat: lf.won.length,
-    viz: sparkBars(YEARS.map(y=>lf.won.indexOf(y)>-1?1:0),{w:220,h:32,gap:1}),
+    viz: titleComb(lf,{w:220,h:32,gap:1}),
     phrase:'títulos de '+lead+(mostEver?', el máximo de la liga':''),
     ctx:'La cinta de campeones, 1930 a 2026. Las dinastías se leen como franjas sólidas de color; los años flacos, como huecos.',
     act:'Ver la cinta', go:"showView('historia','cinta')" }));
@@ -7001,13 +7021,51 @@ function _subnavEl(sec,order,landLabel){
   });
   return nav;
 }
+/* one line per view — the section landing's editorial card copy (8.3c) */
+const VIEW_DESC={
+  historia:{
+    cinta:'Cada temporada desde 1930 con su campeón, pintada del color del club.',
+    titulos:'Quién ha ganado más en 97 temporadas.',
+    dinastias:'Las rachas de títulos seguidos, club por club.',
+    finales:'Cada emparejamiento de final y cuántas veces ocurrió.',
+    premios:'MVP, novato del año y líder de anotación, año por año.',
+    refuerzos:'La regla de nómina que más mueve el juego en el BSN.',
+    temporadas:'La tabla completa, filtrable y exportable a CSV.'
+  },
+  jugadores:{
+    buscar:'Todos los jugadores que el archivo puede nombrar con fuente.',
+    comparar:'Dos o tres carreras lado a lado; las casillas vacías son huecos.',
+    lideres:'Los totales de por vida: puntos, rebotes, asistencias.',
+    records:'Las marcas que la liga reconoce, con fecha y contexto.',
+    salon:'Los jugadores con ficha propia y, muchos, biografía.',
+    nba:'Los que llegaron a la liga estadounidense.',
+    dirigentes:'Los entrenadores que pasaron por aquí — varios, exjugadores.',
+    canchas:'Coliseos de Puerto Rico que llevan el nombre de un jugador.'
+  },
+  equipos:{
+    activos:'Los doce clubes que juegan hoy.',
+    duenos:'Quién es dueño de qué franquicia.',
+    desaparecidos:'Veinte clubes que ya no existen, con su historial de finales.',
+    retirados:'Camisetas que ningún otro jugador del club volverá a usar.'
+  },
+  archivo:{
+    preguntar:'Pregúntale al archivo en español.',
+    constructor:'Escoge una tabla, filtra, ordena y baja a CSV.',
+    cobertura:'Cuánto del archivo está verificado, por década, y de dónde sale cada dato.',
+    calendario:'Lo que se puede reconstruir del calendario del BSN, y lo que falta.',
+    glosario:'Las palabras que el archivo usa sin explicar en el resto de la app.'
+  }
+};
 function buildLanding(sec,order){
   const wrap=el('div','landing');
   const feat=el('div','mega-feat'); feat.innerHTML=megaFeat(NAV_MENU[sec].feat);
   wrap.appendChild(feat);
   const grid=el('div','landgrid');
+  const D=VIEW_DESC[sec]||{};
   order.forEach(([slug,label])=>{
-    const a=el('a','landcard'); a.href='#'+sec+'/'+slug; a.textContent=label;
+    const a=el('a','landcard'); a.href='#'+sec+'/'+slug;
+    a.innerHTML=`<span class="lc-t">${esc(label)}<i aria-hidden="true">→</i></span>`
+      + (D[slug]?`<span class="lc-d">${esc(D[slug])}</span>`:'');
     a.onclick=e=>{ e.preventDefault(); showView(sec,slug); };
     grid.appendChild(a);
   });
