@@ -220,10 +220,22 @@ no observation is both mapped and queued.
    `data/interim/player_historic_seed.csv` feed curated name→id resolution. No
    minting — every champion was already canonical. id_map 668 → **716**, review
    queue 583 → **535**, all 58 historic-champion rows now linked.
-4. **Truncated observation names** (`"Ayuso, Elias 'Lar"`, `"Morales, Mario
-   'Qui"`) — the leader-table cell width clips them. A prefix-aware alias match
-   (surname exact + given-name prefix) would resolve these safely when the
-   season also corroborates; not done yet (kept in review).
+4. **CLOSED (PHASE_3J, 2026-09-10).** Two season-gated fallbacks in
+   `build_id_map`, tried only when the normal name lookup finds nothing
+   (owner scope = A + C; a name+club-only path was rejected — season still
+   required):
+   - **truncated / nickname-clipped** (`"Ayuso, Elias 'Lar"` → strip the
+     quote-opened clip → `"Ayuso, Elias"`; `"Avila, Victor Man"` → surname
+     exact + all-but-last given token exact + last token a strict prefix) →
+     `match_method = name+season+trunc`. **31 links.**
+   - **bare surname / unmatched "surname, given"** (`lideres2000`'s
+     `"Ayuso" / SAN G / 2000`) → first apellido token + (given first-token
+     prefix, when present) + the observed club in that candidate's career
+     table within ±1 season → `match_method = surname+season+club`
+     (`club_check=confirms` by construction). **53 links.**
+   id_map 716 → **800**, review queue 535 → **451**. The long tail that
+   remains (imports absent from the enciclopedia, common names with no
+   corroborating signal) needs an owner-curated crosswalk, not code.
 5. **Multiple birth dates for one id** across enciclopedia captures — not yet
    seen, but `parse_enciclopedia` takes the first non-null and does not check
    for disagreement. Add a conflict flag if it ever fires.

@@ -25,6 +25,8 @@ Curated inputs (hand-maintained, consulted by the build):
   data/interim/player_historic_seed.csv + app/player_crosswalk.csv  curated
     name→id for the 1948–2004 scoring champions (PHASE_3I); scoring titles seed
     `first_season`/`last_season` and corroborate via `match_method=name+season+title`.
+  PHASE_3J — `build_id_map` season-gated fallbacks for clipped / bare-surname
+    observation names: `name+season+trunc`, `surname+season+club`.
 
 D1 rules enforced:
   - canonical ids are the league's own (`?id=N`) — no fuzzy dedup *within* the
@@ -1055,6 +1057,18 @@ def build_id_map(canon: list[dict], aliases: list[dict],
     seed_override = {normalize(nm): pid for nm, pid in _historic_seed_ids() if pid in by_pid}
     title_by_name = _title_seasons_by_key()
 
+    # PHASE_3J (identity_spine_spec Q4) — indexes for the truncated / bare-surname
+    # fallbacks: first apellido token -> {pid}, and -> [(given tokens, pid)].
+    surname_idx: dict[str, set[str]] = defaultdict(set)
+    prefix_idx: dict[str, list[tuple[list[str], str]]] = defaultdict(list)
+    for c in canon:
+        at, gt = normalize(c["apellidos"]).split(), normalize(c["nombre"]).split()
+        if at:
+            surname_idx[at[0]].add(c["bsnpr_id"])
+            if gt:
+                prefix_idx[at[0]].append((gt, c["bsnpr_id"]))
+    _CLIP = re.compile(r"\s*['\"‘’“”][^'\"‘’“”]*$")
+
     career_by_pid: dict[str, set[int]] = {}
     for r in career:
         career_by_pid.setdefault(r["bsnpr_id"], set()).add(r["season"])
@@ -1112,6 +1126,40 @@ def build_id_map(canon: list[dict], aliases: list[dict],
         def club_ids(pool: set[str]) -> list[str]:
             return sorted(p for p in pool if obs_fid and obs_fid in club_by_pid.get(p, set()))
 
+        def q4_fallback():
+            """PHASE_3J (identity_spine_spec Q4) — a truncated or bare-surname
+            observed name, resolved only when the season also corroborates."""
+            if sy is None:
+                return None
+            head, _, tail = pr.partition(",")
+            st, gt = normalize(head).split(), normalize(tail).split()
+            # A. drop a trailing quote-opened clip: "Elias 'Lar" -> "Elias"
+            cleaned = _CLIP.sub("", pr).strip(" ,.")
+            if cleaned and cleaned != pr:
+                cc = {p for p in (alias_idx.get(normalize(cleaned))
+                                  or key_idx.get(norm_key(cleaned)) or set()) if in_career(p)}
+                if len(cc) == 1:
+                    return next(iter(cc)), "name+season+trunc"
+            # A'. trailing partial given token, no quote: "Victor Man" -> "Victor Manuel"
+            if st and gt and len(gt[-1]) >= 3:
+                hit = {pid for cg, pid in prefix_idx.get(st[0], [])
+                       if len(gt) <= len(cg)
+                       and all(cg[i] == gt[i] for i in range(len(gt) - 1))
+                       and cg[len(gt) - 1].startswith(gt[-1]) and cg[len(gt) - 1] != gt[-1]}
+                hit = {p for p in hit if in_career(p)}
+                if len(hit) == 1:
+                    return next(iter(hit)), "name+season+trunc"
+            # C. bare surname (or an unmatched "surname, given") -> surname + club + season
+            if st:
+                pool = surname_idx.get(st[0], set())
+                if gt:   # tighten with the given first-token prefix when it is present
+                    pool = {p for p in pool
+                            if (normalize(by_pid[p]["nombre"]).split()[:1] or [""])[0].startswith(gt[0])}
+                sc = {p for p in pool if club_in_season(p)}
+                if len(sc) == 1:
+                    return next(iter(sc)), "surname+season+club"
+            return None
+
         corroborated = {pid for pid in cands if in_career(pid)}
         club_hits = {pid for pid in corroborated if club_in_season(pid)}
 
@@ -1160,9 +1208,18 @@ def build_id_map(canon: list[dict], aliases: list[dict],
                            "club_franchise_id": obs_fid, "club_match_ids": "|".join(club_ids(cands)),
                            "reason": "multiple name candidates, none corroborated by season"})
         else:
-            review.append({**o, "candidate_ids": "", "candidate_names": "",
-                           "club_franchise_id": obs_fid, "club_match_ids": "",
-                           "reason": "no canonical name match"})
+            hit = q4_fallback()
+            if hit:
+                pid, method = hit
+                mapped.append({**o, "bsnpr_id": pid,
+                               "canonical_name": by_pid[pid]["canonical_name"],
+                               "match_method": method,
+                               "club_check": club_check(pid),
+                               "confidence": "single-source"})
+            else:
+                review.append({**o, "candidate_ids": "", "candidate_names": "",
+                               "club_franchise_id": obs_fid, "club_match_ids": "",
+                               "reason": "no canonical name match"})
 
     return mapped, review
 

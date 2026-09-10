@@ -287,8 +287,12 @@ def verify_players(c: Checker) -> None:
     c.check(all(m.get("club_check", "") in CLUB_CHECK_OK for m in idmap),
             "player_id_map: club_check values valid")
     c.check(all(m["club_check"] == "confirms"
-                for m in idmap if m["match_method"] == "name+season+club"),
-            "player_id_map: name+season+club matches all carry club_check=confirms")
+                for m in idmap if m["match_method"] in ("name+season+club", "surname+season+club")),
+            "player_id_map: (sur)name+season+club matches all carry club_check=confirms")
+    # PHASE_3J: the Q4 fallbacks are season-gated by construction
+    c.check(all("season" in m["match_method"]
+                for m in idmap if m["match_method"] in ("name+season+trunc", "surname+season+club")),
+            "player_id_map: Q4 fallback matches all name a season corroboration")
 
     if (CLEAN_DIR / "player_bios.csv").exists():
         bios = _read("player_bios.csv")

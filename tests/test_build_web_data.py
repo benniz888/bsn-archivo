@@ -202,6 +202,23 @@ class TestBuild:
         leon = next(r for r in b._read("players_canonical.csv") if r["bsnpr_id"] == "507")
         assert (leon["first_season"], leon["last_season"]) == ("1988", "1990")
 
+    def test_q4_truncated_and_bare_surname(self):
+        # PHASE_3J (identity_spine_spec Q4) — season-gated fallbacks.
+        idm = b._read("player_id_map.csv")
+        by = {(m["obs_source"], m["player_raw"], m["season"]): m for m in idm}
+        # A — trailing quote-clip stripped, then exact + season
+        t = by[("player_season_leaders.csv", "Ayuso, Elias 'Lar", "2012")]
+        assert t["bsnpr_id"] == "574" and t["match_method"] == "name+season+trunc"
+        # A' — trailing partial given token, prefix + season
+        a = by[("player_season_leaders.csv", "Avila, Victor Man", "2008")]
+        assert a["bsnpr_id"] == "2446" and a["match_method"] == "name+season+trunc"
+        # C — bare surname resolved by club + season
+        c = by[("player_season_leaders_2000_2002.csv", "Ayuso", "2000")]
+        assert c["bsnpr_id"] == "574" and c["match_method"] == "surname+season+club"
+        assert c["club_check"] == "confirms"
+        n_q4 = sum(1 for m in idm if m["match_method"] in ("name+season+trunc", "surname+season+club"))
+        assert n_q4 >= 70
+
     def test_season_detail_nulls_not_empties(self):
         s = json.loads((b.WEB / "seasons" / "1953.json").read_text())
         assert s["champion"] is None and s["standings"] is None and s["leaders"] is None
