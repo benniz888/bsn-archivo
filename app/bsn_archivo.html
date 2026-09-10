@@ -221,7 +221,7 @@ h1,h2,h3,h4{font-family:inherit;font-weight:800;
   letter-spacing:-.02em;line-height:var(--lh-head);margin:0}
 /* big numerals — Inter wants tighter tracking and true tabular figures at
    display size, where Barlow Condensed used to give the compression. */
-.clock .n,.strip .n,.seriesrow .sc,.answer .abig,.readout .yr,.hubn,.hubhead{
+.clock .n,.strip .n,.seriesrow .sc,.answer .abig,.readout .yr,.ed-stat,.hubhead{
   letter-spacing:-.03em;font-feature-settings:"tnum" 1,"cv05" 1}
 a{color:var(--azul-hi);text-decoration-thickness:1px;text-underline-offset:2px}
 a:hover{color:var(--blanco)}
@@ -482,7 +482,8 @@ h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
 /* ---------- hero: the offseason clock ---------- */
 .hero{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
   background:radial-gradient(130% 130% at 10% -8%,var(--hero-a),var(--hero-c) 78%)}
-.herotop{padding:20px 18px 16px;display:flex;gap:18px;flex-wrap:wrap;align-items:flex-end}
+.hero .ed-eye{padding:16px 18px 0}
+.herotop{padding:8px 18px 16px;display:flex;gap:18px;flex-wrap:wrap;align-items:flex-end}
 .clock{flex:none}
 .clock .n{font-family:inherit;font-weight:800;font-size:var(--fs-hero);
   line-height:.86;letter-spacing:-.025em}
@@ -492,9 +493,31 @@ h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
 .herotext p{margin:8px 0 0;color:var(--ink-2);font-size:14px;max-width:52ch}
 .herofoot{border-top:1px solid var(--line);padding:12px 18px;display:flex;gap:14px;flex-wrap:wrap;
   align-items:center;background:var(--wash)}
-.trophy{display:flex;align-items:center;gap:10px}
+.trophy{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .trophy .t1{font-weight:700;font-size:15px}
 .trophy .t2{color:var(--ink-2);font-size:12.5px}
+.herospark{display:inline-flex;align-items:flex-end;flex:0 0 auto}
+.herospark svg{display:block;width:150px;height:20px}
+
+/* "La liga ahora" — native disclosure on mobile (first one open), all
+   shown on desktop. No JS: replaces the deleted foldSections for Inicio. */
+.liga{border-top:1px solid var(--line-soft)}
+.liga:first-of-type{border-top:0}
+.liga>summary{font-family:inherit;font-weight:800;font-size:var(--fs-md);line-height:var(--lh-head);
+  padding:var(--sp-4) 0;cursor:pointer;list-style:none;display:flex;align-items:center;gap:var(--sp-3)}
+.liga>summary::-webkit-details-marker{display:none}
+.liga>summary::before{content:"";flex:0 0 auto;width:7px;height:7px;
+  border-right:2px solid var(--ink-3);border-bottom:2px solid var(--ink-3);
+  transform:rotate(-45deg);transition:transform var(--dur-fast) var(--ease)}
+.liga[open]>summary::before{transform:rotate(45deg)}
+.liga>summary:focus-visible{outline:2px solid var(--fuego);outline-offset:2px;border-radius:6px}
+.liga>:not(summary){margin-bottom:var(--sp-4)}
+@media(min-width:860px){
+  .liga>summary{font-size:var(--fs-lg);pointer-events:none;padding:var(--sp-6) 0 var(--sp-2)}
+  .liga:first-of-type>summary{padding-top:var(--sp-4)}
+  .liga>summary::before{display:none}
+  .liga:not([open])>:not(summary){display:block}
+}
 
 /* ---------- series card (Final Brava) ---------- */
 .series{background:var(--deep);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
@@ -763,30 +786,47 @@ tr.cut td{border-bottom:1px solid var(--azul)}
    rather than a scroll. Every card carries a real number pulled from
    the data: a hub of live counts is worth looking at, a hub of nine
    labels is a menu. */
-.hubtop{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;
-  padding:20px 0 16px;border-bottom:1px solid var(--line-soft)}
-.hubdate{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+.hubtop{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;padding:var(--sp-6) 0 0}
 .hubhead{font-family:inherit;font-weight:800;
-  font-size:clamp(27px,6.4vw,42px);text-transform:uppercase;line-height:1.02;margin-top:5px}
+  font-size:clamp(24px,5.4vw,36px);text-transform:uppercase;line-height:1.05}
 .hublede{color:var(--ink-2);font-size:14px;max-width:46ch;margin:7px 0 0}
 .hubsearch{margin:16px 0 4px;position:relative}
 .hubsearch input{padding:13px 15px;font-size:16px;border-radius:var(--r);
   border-color:var(--azul-deep);background:var(--deep)}
 .hubsearch input:focus{border-color:var(--azul-hi);outline:none}
-.hubgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(152px,1fr));gap:10px;margin-top:16px}
-.hubcard{display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;
-  background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 13px 13px;
-  cursor:pointer;color:inherit;font:inherit;
-  transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease}
-.hubcard:hover{transform:translateY(-2px);border-color:var(--ink-3);box-shadow:0 6px 16px var(--shadow)}
-.hubcard:active{transform:translateY(0)}
-.hubicon{width:21px;height:21px;stroke:var(--ink-3);fill:none;stroke-width:1.7;
-  stroke-linecap:round;stroke-linejoin:round}
-.hubcard:hover .hubicon{stroke:var(--fuego)}
-.hubn{font-family:inherit;font-weight:800;font-size:var(--fs-num);line-height:1;margin-top:2px}
-.hubt{font-weight:700;font-size:14.5px;line-height:1.15}
-.hubd{color:var(--ink-3);font-size:11.5px;line-height:1.35}
-@media(prefers-reduced-motion:reduce){.hubcard{transition:none}}
+/* ── Editorial blocks (PHASE_8.3) — a headline stat + a phrase + one line
+   of context + a supporting visual, not a number in a box. Inicio hub,
+   the player/team heros, the mega-menu featured blocks. */
+.ed{display:flex;flex-direction:column;gap:var(--sp-2);text-align:left;width:100%;
+  background:var(--card);border:1px solid var(--line);border-radius:14px;padding:var(--sp-4);
+  color:var(--ink);font:inherit;cursor:pointer;
+  transition:transform var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease),box-shadow var(--dur-fast) var(--ease)}
+.ed:hover{transform:translateY(-2px);border-color:var(--ink-3);box-shadow:0 6px 18px var(--shadow)}
+.ed:active{transform:none}
+.ed-eye{font-size:var(--fs-3xs);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+.ed-row{display:flex;align-items:flex-end;gap:var(--sp-3);flex-wrap:wrap;min-height:1px}
+.ed-stat{font-family:inherit;font-weight:800;font-size:var(--fs-xl);line-height:.9;
+  letter-spacing:-.03em;font-feature-settings:"tnum" 1}
+.ed-viz{flex:0 0 auto;color:var(--fuego);display:inline-flex;align-items:flex-end}
+.ed-viz svg{display:block;width:96px;height:24px}
+.ed-phrase{font-weight:700;font-size:var(--fs-sm);line-height:1.2}
+.ed-ctx{color:var(--ink-2);font-size:var(--fs-2xs);line-height:1.45;max-width:48ch}
+.ed-act{margin-top:auto;padding-top:var(--sp-1);font-weight:700;font-size:var(--fs-2xs);
+  color:var(--fuego);display:inline-flex;align-items:center;gap:5px;align-self:flex-start}
+.ed:hover .ed-act{gap:9px}
+.ed-cmp{display:flex;flex-direction:column;gap:4px;width:96px}
+.ed-cmp i{display:block;height:7px;border-radius:999px;background:var(--line-soft)}
+.ed-cmp i>b{display:block;height:100%;border-radius:999px}
+@media(prefers-reduced-motion:reduce){.ed{transition:none}.ed:hover{transform:none}}
+
+.edhub{display:grid;gap:var(--sp-3);margin-top:var(--sp-5)}
+.edhub .ed-lead{grid-column:1/-1;padding:var(--sp-5)}
+.edhub .ed-lead .ed-stat{font-size:clamp(40px,7vw,64px)}
+.edhub .ed-lead .ed-phrase{font-size:var(--fs-md)}
+.edhub .ed-lead .ed-ctx{font-size:var(--fs-xs);max-width:58ch}
+.edhub .ed-lead .ed-viz svg{width:clamp(120px,32vw,260px);height:32px}
+@media(min-width:620px){.edhub{grid-template-columns:1fr 1fr}}
+@media(min-width:1000px){.edhub{grid-template-columns:repeat(4,1fr)}}
 
 /* ---------- misc ---------- */
 .kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:13.5px;margin-top:10px}
@@ -884,8 +924,8 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
 <!-- ═══════════ INICIO — home + the live "Ahora" view (PHASE_8) ═══════════ -->
 <section id="inicio" role="tabpanel" aria-labelledby="tab-inicio">
   <div class="panel">
+    <div id="heroBox"></div>
     <div id="hubTop"></div>
-    <div id="hubPrimer"></div>
     <div class="hubsearch">
       <input type="search" id="hubSearch" onkeydown="hubAsk(event)"
              placeholder="Prueba: cuándo murió Piculín · 1971 · títulos de Bayamón"
@@ -893,7 +933,7 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
     </div>
     <div id="hubGrid"></div>
     <p class="note" id="hubFoot"></p>
-    <div id="heroBox"></div>
+    <div id="hubPrimer"></div>
 
     <div class="phead">
       <div class="tri"></div>
@@ -901,34 +941,48 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
       <p class="lede">Dónde está el BSN en este momento — la Final Brava de 2026, cómo terminaron las posiciones, y lo que viene.</p>
     </div>
 
-    <h3 class="sec">Lo próximo</h3>
-    <p class="lede">Cuándo se espera que arranque la temporada y qué fechas vienen. Lo confirmado y lo estimado van marcados aparte.</p>
-    <div id="calCount"></div>
-    <div id="calNext"></div>
+    <details class="liga" open>
+      <summary>Lo próximo</summary>
+      <p class="lede">Cuándo se espera que arranque la temporada y qué fechas vienen. Lo confirmado y lo estimado van marcados aparte.</p>
+      <div id="calCount"></div>
+      <div id="calNext"></div>
+    </details>
 
-    <h3 class="sec">La Final Brava 2026</h3>
-    <p class="lede">La serie final de 2026, juego por juego. «Final Brava» es como la liga le llama a su final.</p>
-    <div id="finalBrava"></div>
+    <details class="liga">
+      <summary>La Final Brava 2026</summary>
+      <p class="lede">La serie final de 2026, juego por juego. «Final Brava» es como la liga le llama a su final.</p>
+      <div id="finalBrava"></div>
+    </details>
 
-    <h3 class="sec">Finales anteriores, juego a juego</h3>
-    <p class="lede">Las tres finales que se pudieron reconstruir partido por partido (2024–2026). Las demás existen como resultado, no como serie — ver Historia.</p>
-    <div id="finalsByYear"></div>
+    <details class="liga">
+      <summary>Finales anteriores, juego a juego</summary>
+      <p class="lede">Las tres finales que se pudieron reconstruir partido por partido (2024–2026). Las demás existen como resultado, no como serie — ver Historia.</p>
+      <div id="finalsByYear"></div>
+    </details>
 
-    <h3 class="sec">Posiciones BSN 2026</h3>
-    <p class="lede">Cómo terminó la fase regular: doce equipos, 34 juegos cada uno, ordenados por victorias.</p>
-    <div id="standings2026"></div>
+    <details class="liga">
+      <summary>Posiciones BSN 2026</summary>
+      <p class="lede">Cómo terminó la fase regular: doce equipos, 34 juegos cada uno, ordenados por victorias.</p>
+      <div id="standings2026"></div>
+    </details>
 
-    <h3 class="sec">Líderes 2026</h3>
-    <p class="lede">Los que más anotaron, rebotearon y asistieron en la última temporada.</p>
-    <div id="leaders2026"></div>
+    <details class="liga">
+      <summary>Líderes 2026</summary>
+      <p class="lede">Los que más anotaron, rebotearon y asistieron en la última temporada.</p>
+      <div id="leaders2026"></div>
+    </details>
 
-    <h3 class="sec">En esta fecha</h3>
-    <p class="lede">Lo que pasó un día como hoy en la historia de la liga. Cambia todos los días.</p>
-    <div id="onThisDay"></div>
+    <details class="liga">
+      <summary>En esta fecha</summary>
+      <p class="lede">Lo que pasó un día como hoy en la historia de la liga. Cambia todos los días.</p>
+      <div id="onThisDay"></div>
+    </details>
 
-    <h3 class="sec">Canales oficiales</h3>
-    <p class="lede">Este archivo no compite con la liga: cubre lo que la app oficial no guarda. Para hoy, ve directo a la fuente.</p>
-    <div id="channels"></div>
+    <details class="liga">
+      <summary>Canales oficiales</summary>
+      <p class="lede">Este archivo no compite con la liga: cubre lo que la app oficial no guarda. Para hoy, ve directo a la fuente.</p>
+      <div id="channels"></div>
+    </details>
   </div>
 </section>
 
@@ -2662,6 +2716,48 @@ function portrait(name,c1,c2,w=54,h=66){
 }
 
 /* ============================================================
+   MINI VISUALS (PHASE_8.3) — tiny SVGs for the editorial blocks.
+   viewBox only, painted with currentColor so the caller's colour
+   flows through and both themes work. No layout read.
+   ============================================================ */
+function spark(vals,opts){
+  opts=opts||{};
+  const pts=vals.map(v=>(typeof v==='number'&&v===v)?v:null);
+  const nums=pts.filter(v=>v!=null);
+  if(nums.length<2) return '';
+  const w=opts.w||96, h=opts.h||24, pad=2;
+  const mn=Math.min.apply(null,nums), mx=Math.max.apply(null,nums), rng=(mx-mn)||1;
+  const step=(w-pad*2)/(pts.length-1);
+  const xy=pts.map((v,i)=>v==null?null:[pad+i*step, h-pad-((v-mn)/rng)*(h-pad*2)]).filter(Boolean);
+  const d=xy.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+  const first=xy[0], last=xy[xy.length-1];
+  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true">`
+    + (opts.area?`<path d="${d} L ${last[0].toFixed(1)} ${h} L ${first[0].toFixed(1)} ${h} Z" fill="currentColor" opacity=".14"/>`:'')
+    + `<path d="${d}" fill="none" stroke="currentColor" stroke-width="${opts.sw||1.6}" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>`
+    + (opts.dot?`<circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="2.2" fill="currentColor"/>`:'')
+    + `</svg>`;
+}
+function sparkBars(vals,opts){
+  opts=opts||{};
+  const w=opts.w||140, h=opts.h||22, n=vals.length||1;
+  const cells=vals.map(v=>+v||0);
+  const mx=opts.scale||Math.max.apply(null,[1].concat(cells));
+  const bw=Math.max(1,(w/n)-(opts.gap==null?0.6:opts.gap));
+  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true">`
+    + cells.map((v,i)=>{ if(v<=0) return ''; const bh=Math.max(1.5,(v/mx)*h);
+        return `<rect x="${(i*(w/n)).toFixed(2)}" y="${(h-bh).toFixed(2)}" width="${bw.toFixed(2)}" height="${bh.toFixed(2)}" fill="currentColor"/>`; }).join('')
+    + `</svg>`;
+}
+function dotgrid(cells){
+  const s=10,g=4,W=3*s+2*g;
+  return `<svg viewBox="0 0 ${W} ${W}" aria-hidden="true">`
+    + cells.slice(0,9).map((on,i)=>{ const c=i%3,r=(i/3)|0;
+        return `<rect x="${c*(s+g)}" y="${r*(s+g)}" width="${s}" height="${s}" rx="2" `
+          + `fill="${on?'currentColor':'none'}" stroke="currentColor" stroke-opacity="${on?1:.4}" stroke-width="1.4"/>`; }).join('')
+    + `</svg>`;
+}
+
+/* ============================================================
    NAVIGATION
    ============================================================ */
 /* PHASE_8 — 8→5 top nav. The wordmark is Inicio (home + the live "Ahora"
@@ -3035,8 +3131,14 @@ function buildHero(){
     n=since; u='días desde el último juego'; h='Debería estar rodando';
     p='La fecha estimada de apertura ya pasó y la liga no ha anunciado la real.';
   }
+  const d=new Date();
+  const eye = (DIAS[d.getDay()]+' '+d.getDate()+' de '+MESES[d.getMonth()]+' de '+d.getFullYear()).toUpperCase();
+  const backToBack = f.won.indexOf(2025)>-1 && Math.max.apply(null,f.won)===2026;
+  const mostEver = FKEYS.every(k=>F[k].won.length<=f.won.length);
+  const t2 = 'título '+SEASON_STATE.title+' · '+(backToBack?'bicampeonato':(mostEver?'el máximo de la liga':'récord del club'));
   $('#heroBox').innerHTML=`
   <div class="hero">
+    <div class="ed-eye">BSN · ${esc(eye)}</div>
     <div class="herotop">
       <div class="clock"><div class="n">${n}</div><div class="u">${esc(u)}</div></div>
       <div class="herotext">
@@ -3048,7 +3150,8 @@ function buildHero(){
     <div class="herofoot">
       <div class="trophy">${crest(SEASON_STATE.champ,30,36)}
         <div><div class="t1">${esc(f.name)} — campeón 2026</div>
-             <div class="t2">Título número ${SEASON_STATE.title} · bicampeonato</div></div></div>
+             <div class="t2">${esc(t2)}</div></div>
+        <span class="herospark" style="color:${f.c1}">${sparkBars(YEARS.map(y=>f.won.indexOf(y)>-1?1:0),{w:150,h:20,gap:1})}</span></div>
       <div style="flex:1"></div>
       <button class="btn" onclick="showView('historia','cinta')">Ver las 97 temporadas</button>
     </div>
@@ -5128,12 +5231,6 @@ const DATA={
    from the archive rather than a static label, so the front page is
    worth reading even if you go no further.
    ============================================================ */
-/* Every count is wrapped: a hub that blanks because one global moved
-   is worse than a hub with one missing number. */
-function hubNum(fn,fallback){
-  try{ const v=fn(); return (v===null||v===undefined||v!==v)?fallback:v; }
-  catch(e){ return fallback; }
-}
 function fmtLongDate(iso){
   const p=String(iso).split('-');
   if(p.length!==3) return String(iso);
@@ -5144,24 +5241,6 @@ const MESES=['enero','febrero','marzo','abril','mayo','junio',
              'julio','agosto','septiembre','octubre','noviembre','diciembre'];
 const DIAS=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
 
-/* PHASE_8 — the five sections behind the wordmark. `act` (optional) overrides
-   the plain showTab(tab) click. Reworked into editorial blocks in 8.3. */
-const HUB=[
-  {tab:'historia',t:'Historia',d:'La cinta de campeones, temporada por temporada, y los premios por año.',
-   n:()=>hubNum(()=>YEARS.length,'—'),l:'temporadas'},
-  {tab:'jugadores',t:'Jugadores',d:'El índice, las biografías, líderes de carrera y el Salón.',
-   n:()=>hubNum(()=>PINDEX.length,'—'),l:'en el índice'},
-  {tab:'jugadores',t:'Comparar',d:'Dos o tres jugadores lado a lado. Georgie Torres contra Mario Morales, para empezar.',
-   act:"cmpPreset('Georgie Torres','Mario Morales')",
-   n:()=>hubNum(()=>(PINDEX?PINDEX.length:0),'—'),l:'jugadores para elegir'},
-  {tab:'equipos',t:'Equipos',d:'Cada franquicia que ha pisado la liga, viva o desaparecida.',
-   n:()=>hubNum(()=>FKEYS.length,'—'),l:'franquicias'},
-  {tab:'juega',t:'Juega',d:'La Cuadrícula del día, la Temporada Perfecta y dos más.',
-   n:()=>hubNum(()=>puzzleNo(),'—'),l:'cuadrícula de hoy',pre:'#'},
-  {tab:'archivo',t:'Archivo',d:'Pregunta en español, exporta a CSV, y mira qué falta y de dónde sale cada dato.',
-   n:()=>hubNum(()=>ASKERS.length,'—'),l:'tipos de pregunta'}
-];
-
 function hubAsk(e){
   if(e.key!=='Enter') return;
   const v=$('#hubSearch').value.trim();
@@ -5170,40 +5249,94 @@ function hubAsk(e){
   runAsk(v);
 }
 
+/* one editorial block: eyebrow · headline stat + visual · phrase · context · action */
+function edBlock(o){
+  const stat = (o.stat!=null && o.stat!=='') ? `<div class="ed-stat">${esc(String(o.stat))}</div>` : '';
+  const viz  = o.viz ? `<span class="ed-viz">${o.viz}</span>` : '';
+  return `<button class="ed${o.lead?' ed-lead':''}" onclick="${o.go}">
+    <div class="ed-eye">${esc(o.eye)}</div>
+    ${(stat||viz)?`<div class="ed-row">${stat}${viz}</div>`:''}
+    <div class="ed-phrase">${esc(o.phrase)}</div>
+    <div class="ed-ctx">${esc(o.ctx)}</div>
+    <span class="ed-act">${esc(o.act)} <span aria-hidden="true">→</span></span>
+  </button>`;
+}
+function cmpMiniViz(a,b){
+  if(!PINDEX) return '';
+  const pa=PINDEX.find(p=>norm(p.name)===norm(a)), pb=PINDEX.find(p=>norm(p.name)===norm(b));
+  if(!pa||!pb||pa.pts==null||pb.pts==null) return '';
+  const mx=Math.max(pa.pts,pb.pts)||1;
+  const bar=(v,c)=>`<i><b style="width:${Math.round(v/mx*100)}%;background:${c}"></b></i>`;
+  return `<span class="ed-cmp">${bar(pa.pts,'var(--azul)')}${bar(pb.pts,'var(--rojo)')}</span>`;
+}
+
 function buildHub(){
-  const d=new Date();
   const pr=prof();
-  const club=pr.club;
-  const f=club&&F[club]?F[club]:null;
+  const club=pr.club, f=club&&F[club]?F[club]:null;
+  const cn = f ? f.name.split(' de ')[0] : null;
 
   $('#hubTop').innerHTML=`
     <div class="hubtop">
       <div style="flex:1;min-width:240px">
-        <div class="hubdate">${DIAS[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}</div>
         <div class="hubhead">${pr.name ? 'Hola, '+esc(pr.name)
-          : (f?'El archivo, desde '+esc(f.name.split(' de ')[0]):'El archivo del BSN')}</div>
+          : (f?'El archivo, desde '+esc(cn):'El archivo del BSN')}</div>
         <p class="hublede">${f
-          ? esc(f.won.length?f.name.split(' de ')[0]+' tiene '+f.won.length+(f.won.length===1?' título':' títulos')+
+          ? esc(f.won.length?cn+' tiene '+f.won.length+(f.won.length===1?' título':' títulos')+
                 ' en las 97 temporadas que cubre este archivo.'
-              : f.name.split(' de ')[0]+' nunca ha ganado. Está en el archivo igual.')
+              : cn+' nunca ha ganado. Está en el archivo igual.')
           : 'Noventa y siete temporadas, 1930 a 2026. Escoge por dónde entrar, o pregunta directamente.'}</p>
       </div>
       ${f?`<div style="display:flex;align-items:center;gap:10px">${crest(club,40,48)}</div>`:''}
     </div>`;
 
-  const icon=id=>{const t=TABS.find(x=>x[0]===id);return t?t[2]:'';};
-  $('#hubGrid').innerHTML='<div class="hubgrid">'+HUB.map(c=>`
-    <button class="hubcard" onclick="showTab('${c.tab}');${c.act?c.act.replace(/"/g,'&quot;')+';':''}">
-      <svg class="hubicon" viewBox="0 0 24 24" aria-hidden="true"><path d="${icon(c.tab)}"/></svg>
-      <div class="hubn">${c.pre||''}${esc(String(c.n()))}</div>
-      <div class="hubt">${esc(c.t)}</div>
-      <div class="hubd">${esc(c.l)} · ${esc(c.d)}</div>
-    </button>`).join('')+'</div>';
+  /* LEAD — the user's club title comb, or Bayamón (the all-time leader) */
+  const lf = (f && f.won.length) ? f : F.bay;
+  const lead = lf===f ? cn : 'Bayamón';
+  const mostEver = FKEYS.every(k=>F[k].won.length<=lf.won.length);
+  const blocks=[];
+
+  blocks.push(edBlock({ lead:true, eye:lf===f?'Historia · tu club':'Historia',
+    stat: lf.won.length,
+    viz: sparkBars(YEARS.map(y=>lf.won.indexOf(y)>-1?1:0),{w:220,h:32,gap:1}),
+    phrase:'títulos de '+lead+(mostEver?', el máximo de la liga':''),
+    ctx:'La cinta de campeones, 1930 a 2026. Las dinastías se leen como franjas sólidas de color; los años flacos, como huecos.',
+    act:'Ver la cinta', go:"showView('historia','cinta')" }));
+
+  const nJug = (PALL&&PALL.length) ? PALL.length : (PINDEX?PINDEX.length:0);
+  const topPts = PINDEX ? PINDEX.filter(p=>p.pts!=null).map(p=>p.pts).sort((x,y)=>x-y).slice(-7) : [];
+  blocks.push(edBlock({ eye:'Jugadores',
+    stat: nJug ? nJug.toLocaleString('es-PR') : '—',
+    viz: topPts.length>=2 ? spark(topPts,{area:true,w:96,h:24}) : '',
+    phrase:'jugadores con fuente',
+    ctx:'Cada ficha dice también qué no se sabe de él.',
+    act:'El índice', go:"showView('jugadores','buscar')" }));
+
+  blocks.push(edBlock({ eye:'Comparar',
+    viz: cmpMiniViz('Georgie Torres','Mario Morales'),
+    phrase:'Georgie Torres  ⇄  Mario Morales',
+    ctx:'Dos carreras lado a lado. Las casillas vacías son huecos del archivo, no ceros.',
+    act:'Comparar', go:"cmpPreset('Georgie Torres','Mario Morales')" }));
+
+  const jn = (typeof puzzleNo==='function') ? puzzleNo() : null;
+  blocks.push(edBlock({ eye:'Juega',
+    stat: jn!=null ? '#'+jn : '',
+    viz: dotgrid([0,1,0, 0,0,1, 1,0,0]),
+    phrase:'La Cuadrícula de hoy',
+    ctx:'Nueve cruces de club × logro. Un jugador que encaje en cada uno.',
+    act:'Jugar', go:"showView('juega','cuadricula')" }));
+
+  blocks.push(edBlock({ eye:'Archivo', stat:'2011',
+    viz: sparkBars(COVERAGE.map(c=>c[1]),{w:110,h:24,scale:100,gap:1.5}),
+    phrase:'el muro real',
+    ctx:'Antes de 2011 no hay estadística por temporada del BSN. El archivo enseña ese hueco y todos los demás.',
+    act:'Cobertura', go:"showView('archivo','cobertura')" }));
+
+  $('#hubGrid').innerHTML='<div class="edhub">'+blocks.join('')+'</div>';
 
   buildPrimer();
   $('#hubFoot').textContent = f
-    ? 'Toca cualquier tarjeta para entrar. Cambia de club desde la píldora de arriba.'
-    : 'Toca cualquier tarjeta para entrar. Escoge un club en Equipos y el archivo se reordena a su alrededor.';
+    ? 'Cambia de club desde la píldora de arriba y el archivo se reordena a su alrededor.'
+    : 'Escoge un club en Equipos y el archivo se reordena a su alrededor.';
 }
 
 function buildProfile(){

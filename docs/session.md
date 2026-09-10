@@ -3,10 +3,12 @@
 
 **SESSION:** 003 — PHASE_5_APP_SYNC + PHASE_6_APP_IA + PHASE_3H/3I/3J (identity
   spine Q1–Q4, all LIVE) · PHASE_7 visual redesign (done, LIVE) ·
-  **PHASE_8_NAV_REDESIGN IN PROGRESS** (8.1 + 8.2 + 8.2b done: 8→5 nav +
-  Hoy→Inicio + Consulta→Archivo; mega-menu; **each section is now a view
-  router — #section/view URLs, subnav pill rail, folds retired**. 8.3 =
-  editorial blocks, pending)
+  **PHASE_8_NAV_REDESIGN IN PROGRESS** (8.1 + 8.2 + 8.2b + 8.3a done: 8→5 nav +
+  Hoy→Inicio + Consulta→Archivo; mega-menu; **each section is a view router —
+  #section/view URLs, subnav pill rail, folds retired**; **Inicio hero/hub
+  rebuilt as StatMuse-style editorial blocks** (`.ed-*` + spark/sparkBars/
+  dotgrid; 1 lead + 4 secondary; «La liga ahora» → native `<details>`). 8.3b
+  (player/team heros) + 8.3c (landings + megaFeat) pending)
 **DATE:** 2026-09-11
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
@@ -46,11 +48,17 @@ parse + expanded `MOVED` (`records`→`jugadores/records`, `refuerzos`→
 `foldSections`, `goSection`/`goEl`/`MEGA_ACT`/`buildMega`, `#jugMode`,
 `.jump`/`.fold*` CSS, the ≥1120px auto-expand block, `.secfeat`. `showTeam`/
 `showPlayer`/`showSeason`/`setJugView`/`cmpPreset`/`openGame`/`hubAsk`
-re-pointed to `showView`. 8.3 = editorial blocks (5 section landings, Inicio
-hero/hub, showPlayer, showTeam) linking to `#section/view`. Harnesses:
-`view_router_harness` (new) + `ia_harness`, `mega_harness`, `mega_dom_harness`,
-`nav_motion_harness` (all updated). **Compact mobile header** thread resolved
-(mobile tab row gone).
+re-pointed to `showView`. **8.3a — Inicio editorial rebuild:** `spark`/
+`sparkBars`/`dotgrid` mini-SVG helpers + `.ed`/`.edhub` CSS; `buildHub`
+rebuilt as 1 lead (Historia — club/Bayamón title comb) + 4 secondary
+(Jugadores/Comparar/Juega/Archivo), `HUB`+`hubNum` deleted; `buildHero` gets
+a date eyebrow + champion title sparkline; Inicio markup reordered (hero
+first); «La liga ahora» 7 blocks wrapped in `<details class="liga">` (first
+open) — native disclosure on mobile, all-visible on desktop, no JS. 8.3b
+(showPlayer/showTeam editorial heros) + 8.3c (section landings + megaFeat
+visuals) pending. Harnesses: `view_router_harness`, `edhub_harness` (new) +
+`ia_harness`, `mega_harness`, `mega_dom_harness`, `nav_motion_harness`
+(updated). **Compact mobile header** thread resolved (mobile tab row gone).
 
 Open threads:
 docs/project.md D2 refinement for the Grises/Caciques de Humacao split (D-045);

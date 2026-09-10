@@ -161,12 +161,52 @@ mechanism, one level deeper.
   `syncSubnav`/`setHash`) + updated `ia_harness`, `mega_harness`,
   `mega_dom_harness`, `nav_motion_harness`.
 
-### 8.3 — editorial blocks (pending)
+### 8.3 — editorial blocks
 
-`.ed-*` CSS + a sparkline SVG helper; the five section **landings** get the
-editorial card grid; rebuild `buildHub` + the Inicio hero; rebuild `showPlayer`
-and `showTeam` heros (mockups C and B from the proposal); upgrade the
-`megaFeat` blocks. All links target `#section/view`, not scroll anchors.
+Owner-approved 2026-09-11: hub = **1 lead + 4 secondary** (Historia lead;
+Jugadores / Comparar / Juega / Archivo secondary); hero leads with the
+**season-state countdown** + reigning champion; **"La liga ahora"** gets a
+native `<details>` collapse on mobile.
+
+#### 8.3a — `.ed-*` system + Inicio hero/hub (DONE)
+
+- **Mini visuals** (`spark`, `sparkBars`, `dotgrid`) — viewBox-only SVG painted
+  with `currentColor`, no layout read. `spark` = polyline (+ `opts.area` band,
+  `opts.dot` endpoint); `sparkBars` = one `<rect>` per value (`opts.scale` for
+  %); `dotgrid` = 3×3.
+- **`.ed`** block — eyebrow · `.ed-row` (headline `.ed-stat` + `.ed-viz`) ·
+  `.ed-phrase` · `.ed-ctx` · `.ed-act` (arrow, grows on hover). `edBlock(o)`
+  builds one; `o.go` is the onclick (`showView(...)` / `cmpPreset(...)`).
+- **`.edhub`** — CSS grid: `.ed-lead` spans the row, four secondary below
+  (1col <620, 2col 620–1000, 4col ≥1000).
+- **`buildHub`** rebuilt: `HUB` array + `hubNum` deleted. Five blocks —
+  **lead** Historia (the profile club's title comb, or Bayamón the all-time
+  leader; `sparkBars` of title years) → `#historia/cinta`; **Jugadores**
+  (`PALL`/`PINDEX` count + `spark` of the top-7 career-points) → `#jugadores/buscar`;
+  **Comparar** (`cmpMiniViz` two-bar, degrades to nothing on `file://`) →
+  `cmpPreset`; **Juega** (`#<puzzleNo>` + `dotgrid`) → `#juega/cuadricula`;
+  **Archivo** ("2011" + `sparkBars` of `COVERAGE`) → `#archivo/cobertura`.
+- **`buildHero`** — adds an `.ed-eye` (today's date) and the champion's title
+  `sparkBars` in the trophy foot; `t2` computed (bicampeonato / máximo / récord).
+- **Inicio markup reordered:** `#heroBox` → `#hubTop` → `.hubsearch` →
+  `#hubGrid` → `#hubFoot` → `#hubPrimer` (was: hub grid first, hero buried).
+- **"La liga ahora"** — the 7 blocks wrapped in `<details class="liga">`
+  (first `open`). Mobile: native disclosure, chevron via `::before`. Desktop
+  ≥860px: `summary` styled as a plain header (`pointer-events:none`), and
+  `.liga:not([open])>:not(summary){display:block}` forces all content visible.
+  No JS — the Inicio replacement for the deleted `foldSections`.
+- Harness: `scratchpad/edhub_harness.mjs`.
+
+#### 8.3b — `showPlayer` + `showTeam` heros (pending)
+
+Editorial hero above the existing card: one defining number + a `spark`
+(player: per-season points from `web/data`; team: titles by year), then the
+full strip / kv-list / roster unchanged.
+
+#### 8.3c — section landings + `megaFeat` (pending)
+
+The five `__landing` link grids → editorial cards (eyebrow + one line per
+view). `megaFeat` blocks get the matching mini visual. All links `#section/view`.
 
 ## [ALTERNATIVES_REJECTED]
 
