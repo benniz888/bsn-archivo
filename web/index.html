@@ -773,9 +773,18 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
   <div class="panel">
     <div id="heroBox"></div>
 
+    <h3 class="sec">Lo próximo</h3>
+    <p class="lede">Cuándo se espera que arranque la temporada y qué fechas vienen. Lo confirmado y lo estimado van marcados aparte.</p>
+    <div id="calCount"></div>
+    <div id="calNext"></div>
+
     <h3 class="sec">La Final Brava 2026</h3>
     <p class="lede">La serie final de 2026, juego por juego. «Final Brava» es como la liga le llama a su final.</p>
     <div id="finalBrava"></div>
+
+    <h3 class="sec">Finales anteriores, juego a juego</h3>
+    <p class="lede">Las tres finales que se pudieron reconstruir partido por partido (2024–2026). Las demás existen como resultado, no como serie — ver Historia.</p>
+    <div id="finalsByYear"></div>
 
     <h3 class="sec">Posiciones BSN 2026</h3>
     <p class="lede">Cómo terminó la fase regular: doce equipos, 34 juegos cada uno, ordenados por victorias.</p>
@@ -797,36 +806,6 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
     <h3 class="sec">Canales oficiales</h3>
     <p class="lede">Este archivo no compite con la liga: cubre lo que la app oficial no guarda. Para hoy, ve directo a la fuente.</p>
     <div id="channels"></div>
-  </div>
-</section>
-
-<!-- ═══════════ CALENDARIO ═══════════ -->
-<section id="calendario" hidden role="tabpanel" aria-labelledby="tab-calendario">
-  <div class="panel">
-    <div class="phead">
-      <div class="tri"></div>
-      <h2 class="big">Calendario</h2>
-      <p class="lede">Cuándo corre la temporada, qué viene después y qué todavía no se ha
-        anunciado. Lo que está confirmado y lo que es un estimado van marcados aparte.</p>
-    </div>
-    <div id="calCount"></div>
-
-    <h3 class="sec">Lo próximo</h3>
-    <p class="lede">Las fechas que vienen, cada una marcada según lo segura que sea.</p>
-    <div id="calNext"></div>
-
-    <h3 class="sec">La forma del año</h3>
-    <p class="lede">El BSN no publica un calendario permanente, pero tres temporadas seguidas
-      dan un patrón bastante firme.</p>
-    <div id="calShape"></div>
-
-    <h3 class="sec">Temporada por temporada</h3>
-    <p class="lede">Las fechas exactas de las últimas tres temporadas, para comparar el patrón.</p>
-    <div id="calendarBox"></div>
-
-    <h3 class="sec">Los juegos, uno por uno</h3>
-    <p class="lede">Lo que este archivo no tiene, dicho de frente.</p>
-    <div id="calGap"></div>
   </div>
 </section>
 
@@ -878,10 +857,6 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
     <p class="lede">Rachas de títulos seguidos. Ganar dos veces es difícil; estas son las que ganaron más.</p>
     <div id="dynasties"></div>
 
-    <h3 class="sec">Finales, juego a juego</h3>
-    <p class="lede">Las tres finales que se pudieron reconstruir partido por partido. Las demás existen como resultado, no como serie.</p>
-    <div id="finalsByYear"></div>
-
     <h3 class="sec">Finales, cara a cara</h3>
     <p class="lede">Filas: campeón. Columnas: subcampeón. La celda es cuántas veces esa final ocurrió.</p>
     <div id="matrix"></div>
@@ -898,6 +873,16 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
     <p class="lede">El que más anotó cada temporada. Ojo: hasta 1970 se medía por puntos totales y después por promedio, así que las cifras de las dos épocas no se comparan directamente.</p>
     <div id="scoringChart"></div>
     <div id="scoringTable"></div>
+
+    <h3 class="sec">Los refuerzos: la regla que cambia el juego</h3>
+    <p class="lede">La regla que más mueve el baloncesto en el BSN no es de baloncesto: es de nómina. Tres importados por club desde 2025, y todo lo que eso arrastra.</p>
+    <div id="refRules"></div>
+    <h4 class="sub">Cómo llegó la tercera plaza</h4>
+    <p class="lede">La liga pasó en 2025 de dos refuerzos por equipo a tres. Esto es cómo se llegó ahí.</p>
+    <div id="refTimeline"></div>
+    <h4 class="sub">Qué pasó con la anotación</h4>
+    <p class="lede">Si más refuerzos suben la anotación, debería verse en los números.</p>
+    <div id="refScorers"></div>
 
     <h3 class="sec">Todas las temporadas</h3>
     <p class="lede">Cada temporada desde 1930 con su campeón y su subcampeón. Se puede filtrar y bajar a CSV.</p>
@@ -974,24 +959,6 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
   </div>
 </section>
 
-<!-- ═══════════ REFUERZOS ═══════════ -->
-<section id="refuerzos" hidden role="tabpanel" aria-labelledby="tab-refuerzos">
-  <div class="panel">
-    <div class="phead">
-      <div class="tri"></div>
-      <h2 class="big">Refuerzos</h2>
-      <p class="lede">La regla que más cambia el juego en el BSN no es de baloncesto: es de nómina. Tres importados por club, y todo lo que eso mueve.</p>
-    </div>
-    <div id="refRules"></div>
-    <h3 class="sec">Cómo llegó la tercera plaza</h3>
-    <p class="lede">La liga cambió en 2025 de dos refuerzos por equipo a tres. Esto es cómo se llegó ahí.</p>
-    <div id="refTimeline"></div>
-    <h3 class="sec">Qué pasó con la anotación</h3>
-    <p class="lede">Si más refuerzos suben la anotación, debería verse en los números. Aquí están.</p>
-    <div id="refScorers"></div>
-  </div>
-</section>
-
 <!-- ═══════════ JUEGA ═══════════ -->
 <section id="juega" hidden role="tabpanel" aria-labelledby="tab-juega">
   <div class="panel">
@@ -1054,6 +1021,18 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
       <p class="lede">Un archivo que esconde sus huecos vale menos que uno que los enseña. Aquí está todo lo que falta, lo que está en disputa, y de dónde sale cada dato.</p>
     </div>
     <div id="sourcesBox"></div>
+
+    <h3 class="sec">Calendario y cobertura de temporada</h3>
+    <p class="lede">El BSN no publica un calendario permanente. Esto es lo que se puede reconstruir del patrón de las últimas temporadas, y lo que el archivo no tiene.</p>
+    <h4 class="sub">La forma del año</h4>
+    <p class="lede">Tres temporadas seguidas dan un patrón bastante firme.</p>
+    <div id="calShape"></div>
+    <h4 class="sub">Temporada por temporada</h4>
+    <p class="lede">Las fechas exactas de las últimas tres temporadas, para comparar el patrón.</p>
+    <div id="calendarBox"></div>
+    <h4 class="sub">Los juegos, uno por uno</h4>
+    <p class="lede">Lo que este archivo no tiene, dicho de frente.</p>
+    <div id="calGap"></div>
 
     <h3 class="sec">Glosario</h3>
     <p class="lede">Las palabras que este archivo usa sin explicar en el resto de la app.
@@ -6519,7 +6498,7 @@ function applyHash(){
   const h=(location.hash||'').replace(/^#/,'');
   if(!h) return;
   const [a,b]=h.split('/');
-  const MOVED={records:'historia'};   /* PHASE_6 — old tab hashes -> new home */
+  const MOVED={records:'historia',calendario:'hoy',refuerzos:'historia'};   /* PHASE_6 — old tab hashes -> new home */
   if(MOVED[a]){ showTab(MOVED[a]); return; }
   const sec=document.getElementById(a);
   if(sec && sec.getAttribute('role')==='tabpanel'){ showTab(a); if(a==='equipos'&&b&&F[b]) showTeam(b); return; }
