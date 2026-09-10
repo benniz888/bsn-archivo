@@ -1,9 +1,9 @@
 # SESSION STATE — TIER 3
 <!-- Authoritative for current state and task priority. Update at every phase exit. -->
 
-**SESSION:** 003 — PHASE_5_APP_SYNC + PHASE_6_APP_IA + PHASE_3H (jug05/jugador05)
-  + PHASE_3I (scoring-title seed) + PHASE_3J (Q4 name fallbacks) — all complete, LIVE
-**DATE:** 2026-09-10
+**SESSION:** 003 — PHASE_5_APP_SYNC + PHASE_6_APP_IA + PHASE_3H/3I/3J (identity
+  spine Q1–Q4, all LIVE) · **PHASE_7 visual redesign IN PROGRESS** (commit 1/3 done)
+**DATE:** 2026-09-11
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
 **CURRENT STATE:** Archive is live at benniz888.github.io/bsn-archivo — shell
@@ -11,7 +11,9 @@ fetches per-entity JSON from `web/data/`, offline-capable (SW), installable,
 8-tab IA. Data pipeline: 3,343 players (40 jug05-minted, D-047; 152 w/
 jugador05 bio) / 98 seasons / 1,292 games / 68 scoring titles (all champions
 now linked to a ficha) / 47 MVP. player_id_map 800, review queue 451.
-**No phase in flight.** Open threads (all owner-side / minor):
+**PHASE_7 in flight** (`redesign_spec.md`) — commit 1 (Inter + type scale +
+spacing tokens) done, LIVE; commit 2 = motion + table density + desktop
+auto-expand; commit 3 = light-mode refinement. Open threads (owner-side / minor):
 docs/project.md D2 refinement for the Grises/Caciques de Humacao split (D-045);
 the ~451-row review-queue long tail (needs an owner-curated crosswalk — Q1-Q4
 are all closed by code); PHASE_3D id 13352 (jugador.asp career, no players_canonical

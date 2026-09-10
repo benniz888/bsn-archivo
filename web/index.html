@@ -41,7 +41,7 @@
 <meta name="application-name" content="BSN Archivo">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;1,14..32,400&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
    BSN ARCHIVO — design system
@@ -115,6 +115,32 @@
   --r-sm:6px;
   --maxw:1120px;
   --bar:64px;           /* mobile bottom bar */
+
+  /* ---- type scale (PHASE_7) — modular, ratio ~1.20, base 15 ---- */
+  --fs-3xs:11px;   /* table headers, meta labels (uppercase + tracked) */
+  --fs-2xs:12px;   /* notes, captions, chips */
+  --fs-xs:13px;    /* dense table cells */
+  --fs-sm:14px;    /* secondary body, form controls */
+  --fs-base:15px;  /* body */
+  --fs-md:18px;    /* lede, h4 */
+  --fs-lg:22px;    /* h3 */
+  --fs-xl:27px;    /* h2 */
+  --fs-2xl:clamp(30px,5vw,40px);   /* h2.big, hub head */
+  --fs-num:31px;                   /* big stat numerals */
+  --fs-hero:clamp(52px,14vw,86px); /* the offseason clock */
+  --lh-body:1.5;
+  --lh-head:1.15;
+
+  /* ---- spacing — 4px base ---- */
+  --sp-1:4px;  --sp-2:8px;  --sp-3:12px;  --sp-4:16px;  --sp-5:24px;
+  --sp-6:32px; --sp-7:48px; --sp-8:64px;  --sp-9:96px;
+
+  /* ---- motion (used from commit 2) ---- */
+  --ease:cubic-bezier(.22,.8,.3,1);
+  --ease-io:cubic-bezier(.4,0,.2,1);
+  --dur-fast:120ms;
+  --dur:200ms;
+  --dur-slow:340ms;
 }
 
 /* ---------- light ----------
@@ -174,14 +200,20 @@
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 body{
   margin:0;background:var(--night);color:var(--ink);
-  font-family:"Barlow",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  font-size:15.5px;line-height:1.55;font-variant-numeric:tabular-nums;
-  -webkit-font-smoothing:antialiased;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  font-size:var(--fs-base);line-height:var(--lh-body);font-variant-numeric:tabular-nums;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
   padding-bottom:calc(var(--bar) + env(safe-area-inset-bottom));
 }
 @media(min-width:860px){body{padding-bottom:0}}
-h1,h2,h3,h4{font-family:"Barlow Condensed","Barlow",sans-serif;font-weight:700;
-  letter-spacing:.005em;line-height:1.04;margin:0}
+/* one family — the tricolor rule carries the identity, so headings lean on
+   weight + negative tracking rather than a separate display face. */
+h1,h2,h3,h4{font-family:inherit;font-weight:800;
+  letter-spacing:-.02em;line-height:var(--lh-head);margin:0}
+/* big numerals — Inter wants tighter tracking and true tabular figures at
+   display size, where Barlow Condensed used to give the compression. */
+.clock .n,.strip .n,.seriesrow .sc,.answer .abig,.readout .yr,.hubn,.hubhead{
+  letter-spacing:-.03em;font-feature-settings:"tnum" 1,"cv05" 1}
 a{color:var(--azul-hi);text-decoration-thickness:1px;text-underline-offset:2px}
 a:hover{color:var(--blanco)}
 button{font:inherit}
@@ -215,7 +247,7 @@ html.standalone .splash{padding-top:max(env(safe-area-inset-top),44px)}
 html.standalone .toprow{padding-top:6px;padding-bottom:12px}
 .mark{display:flex;align-items:center;gap:9px;flex:none;background:none;border:0;padding:0;cursor:pointer;color:inherit}
 .mark svg{display:block}
-.markname{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:19px;letter-spacing:.02em;line-height:1}
+.markname{font-family:inherit;font-weight:800;font-size:18px;letter-spacing:-.02em;line-height:1}
 .marksub{font-size:10px;color:var(--ink-3);letter-spacing:.09em;text-transform:uppercase;line-height:1;margin-top:3px}
 .topspace{flex:1}
 .clubpill{display:flex;align-items:center;gap:7px;background:transparent;color:var(--ink);
@@ -258,7 +290,7 @@ nav.tabs{border-top:1px solid var(--line-soft)}
 .tile:active{transform:translateY(0)}
 .tileart{display:block;width:100%;height:104px}
 .tilebody{padding:11px 13px 13px}
-.tiletitle{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:19px;line-height:1.1}
+.tiletitle{font-family:inherit;font-weight:800;font-size:19px;line-height:1.1}
 .tiledesc{color:var(--ink-2);font-size:12.5px;line-height:1.45;margin-top:4px}
 .tilemeta{display:flex;align-items:center;gap:8px;margin-top:9px;font-size:11px;
   color:var(--ink-3);letter-spacing:.06em;font-weight:700;text-transform:uppercase}
@@ -269,7 +301,7 @@ nav.tabs{border-top:1px solid var(--line-soft)}
 @keyframes stagein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .stagebar{display:flex;align-items:center;gap:12px;margin:14px 0 12px;
   padding-bottom:10px;border-bottom:1px solid var(--line)}
-.stagetitle{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px}
+.stagetitle{font-family:inherit;font-weight:800;font-size:22px}
 
 /* ── Comparar ─────────────────────────────────────────────────────
    Bars grow on render so the eye is pulled along the length of the
@@ -327,7 +359,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,
   color:var(--ink);cursor:pointer;text-align:left;padding:16px 2px;font:inherit}
 .foldhead:hover .foldtitle{color:var(--ink)}
 .foldhead:focus-visible{outline:2px solid var(--fuego);outline-offset:2px;border-radius:6px}
-.foldtitle{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:19px;letter-spacing:.01em;flex:1}
+.foldtitle{font-family:inherit;font-weight:800;font-size:19px;letter-spacing:.01em;flex:1}
 .foldchev{flex:0 0 auto;width:18px;height:18px;color:var(--ink-3);transition:transform .18s ease}
 .foldhead[aria-expanded="true"] .foldchev{transform:rotate(90deg);color:var(--fuego)}
 .foldbody{padding:0 0 20px}
@@ -336,9 +368,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,
 .tabscroll{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;max-width:var(--maxw);margin:0 auto;
   padding:0 calc(10px + env(safe-area-inset-right)) 0 calc(10px + env(safe-area-inset-left))}
 .tabscroll::-webkit-scrollbar{display:none}
-nav.tabs button{background:none;border:0;color:var(--ink-3);font-size:13.5px;font-weight:600;
+nav.tabs button{background:none;border:0;color:var(--ink-3);font-weight:700;
   padding:12px 12px 10px;white-space:nowrap;cursor:pointer;position:relative;
-  font-family:"Barlow Condensed",sans-serif;font-size:16px;letter-spacing:.02em}
+  font-size:var(--fs-sm);letter-spacing:-.01em}
 nav.tabs button:hover{color:var(--ink)}
 nav.tabs button[aria-selected="true"]{color:var(--blanco)}
 nav.tabs button[aria-selected="true"]::after{content:"";position:absolute;left:9px;right:9px;bottom:0;height:3px;
@@ -358,22 +390,22 @@ nav.tabs button[aria-selected="true"]::after{content:"";position:absolute;left:9
 
 /* ---------- sections ---------- */
 section[hidden]{display:none}
-.panel{padding:22px 0 64px}
-.phead{margin-bottom:18px}
-.phead .tri{width:74px;margin-bottom:10px}
-h2.big{font-size:clamp(26px,6vw,40px);text-transform:uppercase;letter-spacing:.01em}
-.lede{color:var(--ink-2);max-width:70ch;font-size:14.5px;margin:8px 0 0}
-h3.sec{font-size:20px;margin:34px 0 12px;text-transform:uppercase;letter-spacing:.02em;
-  display:flex;align-items:center;gap:10px}
+.panel{padding:var(--sp-5) 0 var(--sp-8)}
+.phead{margin-bottom:var(--sp-5)}
+.phead .tri{width:74px;margin-bottom:var(--sp-3)}
+h2.big{font-size:var(--fs-2xl);text-transform:uppercase;letter-spacing:.005em}
+.lede{color:var(--ink-2);max-width:70ch;font-size:var(--fs-sm);margin:var(--sp-2) 0 0}
+h3.sec{font-size:var(--fs-lg);margin:var(--sp-6) 0 var(--sp-3);text-transform:uppercase;letter-spacing:.015em;
+  display:flex;align-items:center;gap:var(--sp-3)}
 h3.sec::after{content:"";flex:1;height:1px;background:var(--line)}
-h4.sub{font-size:16px;margin:20px 0 8px;color:var(--ink)}
-.note{color:var(--ink-3);font-size:12.5px;line-height:1.5;margin-top:10px}
+h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
+.note{color:var(--ink-3);font-size:var(--fs-2xs);line-height:1.5;margin-top:var(--sp-3)}
 .muted{color:var(--ink-2)}
 .dim{color:var(--ink-3)}
 
 /* ---------- cards ---------- */
-.card{background:var(--deep);border:1px solid var(--line);border-radius:var(--r);padding:16px}
-.cards{display:grid;gap:12px}
+.card{background:var(--deep);border:1px solid var(--line);border-radius:var(--r);padding:var(--sp-4)}
+.cards{display:grid;gap:var(--sp-3)}
 .g2{grid-template-columns:1fr}
 @media(min-width:720px){.g2{grid-template-columns:1fr 1fr}}
 .g3{grid-template-columns:1fr}
@@ -385,8 +417,8 @@ h4.sub{font-size:16px;margin:20px 0 8px;color:var(--ink)}
   background:radial-gradient(120% 140% at 8% 0%,var(--hero-a) 0%,var(--hero-b) 52%,var(--hero-c) 100%)}
 .herotop{padding:20px 18px 16px;display:flex;gap:18px;flex-wrap:wrap;align-items:flex-end}
 .clock{flex:none}
-.clock .n{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:clamp(54px,15vw,86px);
-  line-height:.86;letter-spacing:-.01em}
+.clock .n{font-family:inherit;font-weight:800;font-size:var(--fs-hero);
+  line-height:.86;letter-spacing:-.025em}
 .clock .u{font-size:12.5px;color:var(--ink-2);letter-spacing:.1em;text-transform:uppercase;margin-top:6px}
 .herotext{flex:1;min-width:230px}
 .herotext h1{font-size:clamp(22px,4.6vw,30px);text-transform:uppercase}
@@ -403,14 +435,14 @@ h4.sub{font-size:16px;margin:20px 0 8px;color:var(--ink)}
 .seriesrow+.seriesrow{border-top:1px solid var(--line-soft)}
 .seriesrow.win{background:linear-gradient(90deg,var(--tint-ok-soft),transparent 60%)}
 .seriesrow .nm{flex:1;font-weight:600;font-size:16px}
-.seriesrow .sc{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:30px;line-height:1}
+.seriesrow .sc{font-family:inherit;font-weight:800;font-size:var(--fs-num);line-height:1}
 .seriesrow.lose .nm,.seriesrow.lose .sc{color:var(--ink-3)}
 
 /* ---------- stat strip ---------- */
 .strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;
   background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:14px}
 .strip>div{background:var(--deep);padding:14px}
-.strip .n{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:30px;line-height:1}
+.strip .n{font-family:inherit;font-weight:800;font-size:var(--fs-num);line-height:1}
 .strip .l{color:var(--ink-2);font-size:11.5px;margin-top:6px;line-height:1.35}
 
 /* ---------- tables ---------- */
@@ -466,7 +498,7 @@ select{cursor:pointer}
 .answer{margin-top:14px;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--deep)}
 .answer .ahead{padding:16px 18px;background:linear-gradient(115deg,var(--ahead-a),var(--ahead-b) 70%)}
 .answer .aq{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--aq-ink);font-weight:600}
-.answer .abig{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:clamp(24px,5.4vw,38px);
+.answer .abig{font-family:inherit;font-weight:800;font-size:clamp(24px,5.4vw,38px);
   line-height:1.05;margin-top:6px}
 .answer .asub{color:var(--ink-2);font-size:13.5px;margin-top:7px}
 .answer .abody{padding:0}
@@ -489,7 +521,7 @@ select{cursor:pointer}
 .cell.sel{box-shadow:0 0 0 2px var(--rojo)}
 .readout{border:1px solid var(--line);border-radius:var(--r);background:var(--deep);margin-top:14px;
   padding:16px;min-height:96px;display:flex;gap:14px;align-items:center}
-.readout .yr{font-family:"Barlow Condensed",sans-serif;font-size:40px;line-height:1;color:var(--ink-3);flex:none;font-weight:700}
+.readout .yr{font-size:var(--fs-2xl);line-height:1;color:var(--ink-3);flex:none;font-weight:800;letter-spacing:-.03em}
 .readout .win{font-weight:700;font-size:17px}
 .readout .lose{color:var(--ink-2);font-size:13.5px;margin-top:2px}
 .readout .meta{color:var(--ink-3);font-size:12px;margin-top:7px;white-space:normal}
@@ -520,8 +552,7 @@ select{cursor:pointer}
 
 /* ---------- standings ---------- */
 .standhead{display:flex;align-items:baseline;gap:10px;margin:18px 0 6px}
-.standhead h4{font-size:15px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-2);
-  font-family:"Barlow Condensed",sans-serif}
+.standhead h4{font-size:var(--fs-xs);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);font-weight:700}
 td.team{display:flex;align-items:center;gap:9px;white-space:nowrap;font-weight:600}
 tr.me td{background:var(--tint-rojo-soft)}
 tr.cut td{border-bottom:1px solid var(--azul)}
@@ -582,7 +613,7 @@ tr.cut td{border-bottom:1px solid var(--azul)}
           calc(24px + env(safe-area-inset-bottom)) calc(24px + env(safe-area-inset-left))}
 .splash.gone{opacity:0;pointer-events:none}
 .splashinner{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;max-width:260px}
-.splashname{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:27px;
+.splashname{font-family:inherit;font-weight:800;font-size:27px;
   letter-spacing:.03em;line-height:1}
 .splashsub{font-size:10.5px;color:var(--ink-3);letter-spacing:.14em;text-transform:uppercase;
   margin-top:-9px}
@@ -603,7 +634,7 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 .primer{border:1px solid var(--azul);border-radius:var(--r);padding:16px 16px 14px;
   margin:16px 0 4px;background:linear-gradient(160deg,var(--tint-azul),transparent 70%)}
 .primerhead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
-.primerhead h3{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:20px;
+.primerhead h3{font-family:inherit;font-weight:800;font-size:20px;
   text-transform:uppercase;letter-spacing:.02em;flex:1}
 .primer p{margin:9px 0 0;font-size:14px;line-height:1.55;color:var(--ink-2);max-width:68ch}
 .primer .x{background:none;border:0;color:var(--ink-3);font:inherit;font-size:12.5px;
@@ -639,7 +670,7 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 .hubtop{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;
   padding:20px 0 16px;border-bottom:1px solid var(--line-soft)}
 .hubdate{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
-.hubhead{font-family:"Barlow Condensed",sans-serif;font-weight:700;
+.hubhead{font-family:inherit;font-weight:800;
   font-size:clamp(27px,6.4vw,42px);text-transform:uppercase;line-height:1.02;margin-top:5px}
 .hublede{color:var(--ink-2);font-size:14px;max-width:46ch;margin:7px 0 0}
 .hubsearch{margin:16px 0 4px;position:relative}
@@ -656,7 +687,7 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 .hubicon{width:21px;height:21px;stroke:var(--ink-3);fill:none;stroke-width:1.7;
   stroke-linecap:round;stroke-linejoin:round}
 .hubcard:hover .hubicon{stroke:var(--fuego)}
-.hubn{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:29px;line-height:1;margin-top:2px}
+.hubn{font-family:inherit;font-weight:800;font-size:var(--fs-num);line-height:1;margin-top:2px}
 .hubt{font-weight:700;font-size:14.5px;line-height:1.15}
 .hubd{color:var(--ink-3);font-size:11.5px;line-height:1.35}
 @media(prefers-reduced-motion:reduce){.hubcard{transition:none}}
@@ -2521,7 +2552,7 @@ function crestSVG(k,w,h){
       <stop offset="0" stop-color="${f.c1}"/><stop offset="1" stop-color="${f.c1}" stop-opacity=".72"/>
     </linearGradient></defs>
     <path d="M2 3h36v29c0 8-12 13-18 14C14 45 2 40 2 32Z" fill="url(#${id})" stroke="${f.c2}" stroke-width="1.6"/>
-    <text x="20" y="26" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-weight="700"
+    <text x="20" y="26" text-anchor="middle" font-family="Inter,sans-serif" font-weight="800"
       font-size="14" fill="${f.c2}">${esc(f.abbr)}</text>
   </svg>`;
 }
@@ -2537,7 +2568,7 @@ function portrait(name,c1,c2,w=54,h=66){
     <rect width="54" height="66" rx="5" fill="${c1}" opacity=".22"/>
     <circle cx="27" cy="25" r="12" fill="${c1}" opacity=".55"/>
     <path d="M6 66c2-14 10-20 21-20s19 6 21 20Z" fill="${c1}" opacity=".55"/>
-    <text x="27" y="30" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-weight="700"
+    <text x="27" y="30" text-anchor="middle" font-family="Inter,sans-serif" font-weight="800"
       font-size="17" fill="${c2}">${esc(ini)}</text></svg>`;
   const img=USE_IMAGES?imgTry(PLAYER_DIR+slug(name),PLAYER_EXT,'',name):'';
   return `<span class="crest" style="width:${w}px;height:${h}px" id="${id}">${svg}${img}</span>`;
@@ -3117,7 +3148,7 @@ function buildDynasties(){
   host.innerHTML='<div class="cards g3">'+runs.slice(0,9).map(r=>`
     <div class="card" style="display:flex;gap:12px;align-items:center">
       ${crest(r.k,32,38)}
-      <div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:26px;line-height:1">${r.n} seguidos</div>
+      <div><div style="font-family:inherit;font-weight:800;font-size:26px;line-height:1">${r.n} seguidos</div>
       <div style="font-weight:600;font-size:13.5px">${esc(F[r.k].name.split(' de ')[0])}</div>
       <div class="dim" style="font-size:12px">${r.start}–${r.end}</div></div></div>`).join('')+'</div>'+
     `<p class="note">${runs.length} rachas de dos o más títulos consecutivos en 97 temporadas. Bayamón 2025–26 es la primera desde Ponce en 2014–15.</p>`;
@@ -3607,7 +3638,7 @@ function buildRecords(){
   $('#recordList').innerHTML='<div class="cards g2">'+RECORDS.map(r=>`
     <div class="card">
       <div style="display:flex;align-items:baseline;gap:10px">
-        <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:32px;line-height:1;color:var(--rojo)">${esc(r[1])}</span>
+        <span style="font-family:inherit;font-weight:800;font-size:32px;line-height:1;color:var(--rojo)">${esc(r[1])}</span>
         <span style="font-weight:700">${esc(r[0])}</span></div>
       <div class="muted" style="font-size:13.5px;margin-top:4px">${esc(r[2])} · ${r[3]}</div>
       ${r[4]?`<div class="note">${esc(r[4])}</div>`:''}</div>`).join('')+'</div>';
@@ -3654,7 +3685,7 @@ function buildNBA(){
 function buildRetiredNums(){
   $('#retiredList').innerHTML='<div class="cards g2">'+RETIRED.map(r=>`
     <div class="card"><div style="font-weight:700">${esc(r[0])}</div>
-    <div style="font-family:'Barlow Condensed',sans-serif;font-size:24px;margin-top:4px">${esc(r[2])}</div>
+    <div style="font-weight:800;letter-spacing:-.02em;font-size:22px;margin-top:4px">${esc(r[2])}</div>
     <div class="note">${r[1]} números. La liga los publica como dígitos, sin nombres — y el archivo no los adivina.</div></div>`).join('')+'</div>';
 }
 
@@ -5752,11 +5783,11 @@ function drawPicks(){
     h+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0">
       <div class="card" style="text-align:center;border-color:#E8B23A;padding:10px">
         <div style="font-size:11px;letter-spacing:.1em;font-weight:700;color:#E8B23A">EQUIPO</div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:30px;line-height:1.1">${esc(F[DR.club].abbr)}</div>
+        <div style="font-family:inherit;font-weight:800;font-size:30px;line-height:1.1">${esc(F[DR.club].abbr)}</div>
         <div class="dim" style="font-size:11.5px">${esc(F[DR.club].name)}</div></div>
       <div class="card" style="text-align:center;border-color:#9B6BE0;padding:10px">
         <div style="font-size:11px;letter-spacing:.1em;font-weight:700;color:#9B6BE0">DÉCADA</div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:30px;line-height:1.1">${DR.dec}s</div>
+        <div style="font-family:inherit;font-weight:800;font-size:30px;line-height:1.1">${DR.dec}s</div>
         <div class="dim" style="font-size:11.5px">${poolFor(DR.club,DR.dec).length} disponibles</div></div>
     </div>
     <div class="btnrow" style="margin-bottom:12px">
@@ -5835,7 +5866,7 @@ function finishDraft(){
     : 'Se queda fuera.';
   drawPicks();
   $('#dResult').innerHTML=`<div class="card" style="margin-top:14px;border-color:${wins>=25?'var(--ok)':'var(--line)'}">
-    <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:46px;line-height:1">${wins}-${34-wins}</div>
+    <div style="font-family:inherit;font-weight:800;font-size:46px;line-height:1">${wins}-${34-wins}</div>
     <div class="muted" style="font-size:15px;margin-top:4px">${esc(verdict)}</div>
     <div class="scoreline"><span>Base <b>${base.toFixed(0)}</b></span><span>Bonos <b>+${bonus}</b></span>
       <span>Total <b>${total.toFixed(0)}</b></span></div>
