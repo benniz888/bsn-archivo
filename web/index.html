@@ -221,6 +221,10 @@ button{font:inherit}
   padding:0 calc(16px + env(safe-area-inset-right)) 0 calc(16px + env(safe-area-inset-left))}
 :focus-visible{outline:2px solid var(--azul-hi);outline-offset:2px;border-radius:3px}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+/* one-shot: cross-fade colours on a manual theme switch (never on first paint) */
+html.theming *,html.theming *::before,html.theming *::after{
+  transition:background-color var(--dur) linear,border-color var(--dur) linear,
+             color var(--dur) linear,fill var(--dur) linear,stroke var(--dur) linear!important}
 
 /* the tricolor rule — flag as structure */
 .tri{height:3px;border-radius:2px;
@@ -362,9 +366,21 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,
 .foldtitle{font-family:inherit;font-weight:800;font-size:19px;letter-spacing:.01em;flex:1}
 .foldchev{flex:0 0 auto;width:18px;height:18px;color:var(--ink-3);transition:transform .18s ease}
 .foldhead[aria-expanded="true"] .foldchev{transform:rotate(90deg);color:var(--fuego)}
-.foldbody{padding:0 0 20px}
+.foldbody{padding:0 0 var(--sp-5)}
 .foldbody[hidden]{display:none}
 @media (prefers-reduced-motion:reduce){.foldchev{transition:none}}
+/* ── Desktop: show the whole page (basketball-reference density). The
+   disclosures collapse to plain section headers and every body is open. */
+@media(min-width:1120px){
+  .panel .jump{display:none}
+  .foldbody,.foldbody[hidden]{display:block}
+  .foldhead{cursor:default;pointer-events:none;padding:var(--sp-6) 0 var(--sp-3);
+    text-transform:uppercase;letter-spacing:.015em}
+  .fold:first-of-type .foldhead{padding-top:var(--sp-4)}
+  .foldchev{display:none}
+  .foldtitle{font-size:var(--fs-lg);display:flex;align-items:center;gap:var(--sp-3)}
+  .foldtitle::after{content:"";flex:1;height:1px;background:var(--line)}
+}
 .tabscroll{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;max-width:var(--maxw);margin:0 auto;
   padding:0 calc(10px + env(safe-area-inset-right)) 0 calc(10px + env(safe-area-inset-left))}
 .tabscroll::-webkit-scrollbar{display:none}
@@ -374,8 +390,11 @@ nav.tabs button{background:none;border:0;color:var(--ink-3);font-weight:700;
 nav.tabs button:hover{color:var(--ink)}
 nav.tabs button[aria-selected="true"]{color:var(--blanco)}
 nav.tabs button[aria-selected="true"]::after{content:"";position:absolute;left:9px;right:9px;bottom:0;height:3px;
-  border-radius:2px 2px 0 0;
+  border-radius:2px 2px 0 0;transform-origin:center;
+  animation:tabink var(--dur) var(--ease) both;
   background:linear-gradient(90deg,var(--rojo) 0 33.3%,var(--flag-w) 33.3% 66.6%,var(--azul) 66.6% 100%)}
+@keyframes tabink{from{transform:scaleX(.15);opacity:0}to{transform:none;opacity:1}}
+@media(prefers-reduced-motion:reduce){nav.tabs button[aria-selected="true"]::after{animation:none}}
 
 /* ---------- mobile bottom bar (mirrors the league app) ---------- */
 .bottombar{position:fixed;left:0;right:0;bottom:0;z-index:70;display:flex;
@@ -391,6 +410,10 @@ nav.tabs button[aria-selected="true"]::after{content:"";position:absolute;left:9
 /* ---------- sections ---------- */
 section[hidden]{display:none}
 .panel{padding:var(--sp-5) 0 var(--sp-8)}
+/* a tab switch is a view change — give it a short settle instead of a jump */
+@keyframes panelin{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.panel-enter>.panel,.panel.panel-enter{animation:panelin var(--dur) var(--ease) both}
+@media(prefers-reduced-motion:reduce){.panel-enter>.panel,.panel.panel-enter{animation:none}}
 .phead{margin-bottom:var(--sp-5)}
 .phead .tri{width:74px;margin-bottom:var(--sp-3)}
 h2.big{font-size:var(--fs-2xl);text-transform:uppercase;letter-spacing:.005em}
@@ -445,22 +468,39 @@ h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
 .strip .n{font-family:inherit;font-weight:800;font-size:var(--fs-num);line-height:1}
 .strip .l{color:var(--ink-2);font-size:11.5px;margin-top:6px;line-height:1.35}
 
-/* ---------- tables ---------- */
-.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);margin-top:12px;
-  -webkit-overflow-scrolling:touch}
-table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:460px}
-th{background:var(--raise);color:var(--ink-2);font-weight:600;font-size:11px;letter-spacing:.07em;
-  text-transform:uppercase;text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+/* ---------- tables ----------
+   Density modelled on basketball-reference: tight rows, a sticky first
+   column so the name/rank stays put while the numbers scroll, a sticky
+   header + zebra once a table is long enough to scroll vertically. */
+.tblwrap{position:relative;overflow:auto;border:1px solid var(--line);border-radius:var(--r);
+  margin-top:var(--sp-3);-webkit-overflow-scrolling:touch}
+.tblwrap.tall{max-height:min(68vh,600px)}
+table{border-collapse:collapse;width:100%;font-size:var(--fs-xs);min-width:360px}
+th{background:var(--raise);color:var(--ink-2);font-weight:700;font-size:var(--fs-3xs);letter-spacing:.06em;
+  text-transform:uppercase;text-align:left;padding:8px 11px;border-bottom:1px solid var(--line);white-space:nowrap}
+.tblwrap.tall thead th{position:sticky;top:0;z-index:4}
+.tblwrap.tall thead th:first-child{z-index:6}
 th.sortable{cursor:pointer;user-select:none}
 th.sortable:hover{color:var(--blanco)}
 th .arrow{opacity:.55;font-size:9px;margin-left:3px}
-td{padding:9px 12px;border-bottom:1px solid var(--line-soft);white-space:nowrap}
+td{padding:6px 11px;border-bottom:1px solid var(--line-soft);white-space:nowrap}
 tr:last-child td{border-bottom:0}
 tbody tr:hover td{background:var(--raise)}
+.tblwrap.tall tbody tr:nth-child(even) td{background:var(--hair)}
+.tblwrap.tall tbody tr:nth-child(even):hover td{background:var(--raise)}
 td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
-td.name{white-space:normal;min-width:160px;font-weight:600}
-td.rank{color:var(--ink-3);width:34px}
-.tbl-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px;font-size:12.5px;color:var(--ink-3)}
+td.name{white-space:normal;min-width:150px;font-weight:600}
+td.rank{color:var(--ink-3);width:32px}
+/* sticky first column */
+.tblwrap th:first-child{position:sticky;left:0;z-index:5;background:var(--raise)}
+.tblwrap td:first-child{position:sticky;left:0;z-index:3;background:var(--deep)}
+.tblwrap tbody tr:hover td:first-child{background:var(--raise)}
+.tblwrap.tall tbody tr:nth-child(even) td:first-child{background:var(--raise)}
+.tblwrap th:first-child::after,.tblwrap td:first-child::after{content:"";position:absolute;
+  top:0;right:-1px;bottom:0;width:10px;pointer-events:none;
+  background:linear-gradient(90deg,var(--shadow),transparent);opacity:0;transition:opacity var(--dur-fast)}
+.tblwrap.scrolled th:first-child::after,.tblwrap.scrolled td:first-child::after{opacity:1}
+.tbl-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:var(--sp-3);font-size:var(--fs-2xs);color:var(--ink-3)}
 
 /* ---------- controls ---------- */
 input[type=search],input[type=text],select,textarea{
@@ -2618,8 +2658,13 @@ function buildNav(){
 }
 function showTab(id,noScroll){
   if(!PANELS.includes(id)) return;   /* includes 'perfil', which has no nav button */
+  const changed = CURRENT!==id;
   CURRENT=id;
   PANELS.forEach(t=>{ const s=document.getElementById(t); if(s) s.hidden = (t!==id); });
+  const shown=document.getElementById(id);
+  if(shown && changed){   /* re-trigger the enter animation */
+    shown.classList.remove('panel-enter'); void shown.offsetWidth; shown.classList.add('panel-enter');
+  }
   TABS.forEach(([t])=>{
     const btn=document.getElementById('tab-'+t);
     if(btn) btn.setAttribute('aria-selected',t===id?'true':'false');
@@ -2629,7 +2674,10 @@ function showTab(id,noScroll){
   });
   const active=document.getElementById('tab-'+id);
   if(active&&active.scrollIntoView) active.scrollIntoView({block:'nearest',inline:'center'});
-  if(!noScroll) window.scrollTo({top:0,behavior:'instant' in window?'auto':'auto'});
+  if(!noScroll){
+    const smooth = changed && !matchMedia('(prefers-reduced-motion:reduce)').matches;
+    window.scrollTo({top:0,behavior:smooth?'smooth':'auto'});
+  }
 }
 
 /* ============================================================
@@ -2659,6 +2707,7 @@ function buildTable(host,cols,rows,opts){
   }
   function render(){
     const data=sorted();
+    wrap.classList.toggle('tall',data.length>24);   /* sticky header + zebra */
     let h='<table><thead><tr>';
     cols.forEach((c,i)=>{
       const arrow = state.sort===i ? `<span class="arrow">${state.dir>0?'▲':'▼'}</span>` : '';
@@ -2682,6 +2731,9 @@ function buildTable(host,cols,rows,opts){
         render();
       };
     });
+    /* right-edge shadow on the sticky first column, only once scrolled */
+    const onScroll=()=>wrap.classList.toggle('scrolled',wrap.scrollLeft>2);
+    wrap.onscroll=onScroll; onScroll();
     meta.innerHTML=`<span>${data.length} fila${data.length===1?'':'s'}</span>`;
     const b=el('button','btn'); b.style.padding='5px 10px'; b.style.fontSize='12px';
     b.textContent='Descargar CSV';
@@ -5255,6 +5307,12 @@ function applyTheme(t){
    there is room to say what it means. */
 function setTheme(t){
   setProf('theme',t);
+  const de=document.documentElement;
+  if(!matchMedia('(prefers-reduced-motion:reduce)').matches){
+    de.classList.add('theming');
+    clearTimeout(setTheme._t);
+    setTheme._t=setTimeout(()=>de.classList.remove('theming'),260);
+  }
   applyTheme();
   const b=$('#profBody'); if(b&&b.innerHTML) buildProfile();
 }

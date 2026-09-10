@@ -58,11 +58,30 @@ Everything lives in `app/bsn_archivo.html` (`<link>` + `<style>` + a few inline
 - **No behaviour or layout-structure change** beyond the font swap and a looser
   vertical rhythm.
 
-### Commit 2 — motion + density (pending)
+### Commit 2 — motion + density (DONE)
 
-`panel-enter` transition on every `showTab`; sliding tab underline; theme
-cross-fade; sticky table header + first column; tighter data rows; zebra option
-for long tables; desktop ≥1120px auto-expand of `foldSections()`.
+- **`panel-enter`** — `@keyframes panelin` (opacity 0→1 + `translateY(7px→0)`,
+  `--dur --ease`) on `.panel-enter>.panel`; `showTab` re-triggers it via
+  `remove → offsetWidth → add`, only when the tab actually changed. Scroll-to-top
+  becomes `behavior:'smooth'` on a real change (auto under reduced-motion).
+- **Tab underline** grows in — `@keyframes tabink` (`scaleX(.15)→1` + fade) on
+  the selected button's `::after`.
+- **Theme cross-fade** — `setTheme` adds `html.theming` for 260ms, which enables
+  a one-shot `transition:background-color/border-color/color/fill/stroke --dur`
+  on `*`. Never on first paint (`applyTheme`/`initTheme` don't add it).
+- **Tables** — sticky first column on every `.tblwrap` (opaque bg, right-edge
+  shadow via `::after` toggled by a `.scrolled` class from an `onscroll`
+  listener); `buildTable` adds `.tall` when `rows > 24` → `max-height:min(68vh,
+  600px)` + sticky `thead th` + zebra (`tr:nth-child(even)`). Rows tightened:
+  `td` `9/12` → `6/11`, `th` `10/12` → `8/11`, table font `13.5` → `--fs-xs`,
+  `min-width` `460` → `360`.
+- **Desktop ≥1120px** — `@media` block: `.foldbody` all `display:block`,
+  `.jump` hidden, `.foldhead` → a plain uppercase section header with a trailing
+  hairline (`pointer-events:none`, chevron hidden). `foldSections()` unchanged —
+  CSS-only override. Mobile keeps the disclosures.
+
+Harness: `scratchpad/nav_motion_harness.mjs` (panel-enter add/skip, smooth
+scroll, unknown-id guard).
 
 ### Commit 3 — light-mode refinement (pending)
 
