@@ -90,9 +90,12 @@ lever). Deterministic through parse + build (`manifest.json` md5
 
 The nickname bridges also surfaced two jug05-minted rows that are duplicates of
 real canonical ids the encyclopedia carries under a different given name:
-`990004` "Liriano, Aneury" = id 93, `990030` "Ortiz, Irving" = id 2261. Merging
-those renumbers the minted range, so it is a `jug05_xwalk.csv` follow-up, not
-this phase.
+`990004` "Liriano, Aneury" = id 93, `990030` "Ortiz, Irving" = id 2261. **Both
+merged** — added to `jug05_xwalk.csv`, so `merge_jug05` now force-enriches
+93 / 2261 instead of minting: jug05 mint **42 → 40**, `players_canonical`
+**3,345 → 3,343**, id_map 666 → **668** (id 2261 gained a corroborated career).
+The 40 remaining minted ids renumber contiguously (`990001..990040`) — synthetic
+flagged ids, not stable external keys.
 
 ## [OPEN_QUESTIONS]
 
@@ -104,6 +107,5 @@ this phase.
 2. **Deferred (owner decision 5):** surface `bio.notes_es` on the player card.
 3. **RESOLVED:** `jugador05_xwalk.csv` worked the 26 review rows — 23 bridged
    (13 high, 10 medium), 3 left in review by design.
-4. `jug05_xwalk.csv` follow-up: `990004`/`990030` are minted duplicates of ids
-   93 / 2261 (found via the jugador05 bridges). Merging renumbers the minted
-   range.
+4. **RESOLVED:** `990004`/`990030` (minted duplicates of ids 93 / 2261, found
+   via the jugador05 bridges) merged into `jug05_xwalk.csv` — mint 42 → 40.

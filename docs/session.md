@@ -7,7 +7,7 @@
 
 **CURRENT STATE:** Archive is live at benniz888.github.io/bsn-archivo — shell
 fetches per-entity JSON from `web/data/`, offline-capable (SW), installable,
-8-tab IA. Data pipeline: 3,345 players (42 jug05-minted, D-047; 152 w/
+8-tab IA. Data pipeline: 3,343 players (40 jug05-minted, D-047; 152 w/
 jugador05 bio) / 98 seasons / 1,292 games / 68 scoring
 titles / 47 MVP. **No phase in flight.** Open threads (all owner-side / minor):
 docs/project.md D2 refinement for the Grises/Caciques de Humacao split (D-045);
@@ -53,8 +53,8 @@ Session 002 (cont.) — all pushed to origin/main:
   via PR #1 (`27c612c`), verified LIVE.
 - PHASE_3H_JUG05 — `jug05.asp` fetch (600 pages) + `merge_jug05` (curated
   `jug05_xwalk.csv` tier-0 + 3-tier auto, D-047 synthetic ids). **COMPLETE**:
-  156 enriched, 42 minted (`990001`+), 2 review. id_map 649→666, review
-  602→585, canonical 3,303→3,345, career-seasons +1,206.
+  158 enriched, 40 minted (`990001`+), 2 review. id_map 649→668, review
+  602→583, canonical 3,303→3,343, career-seasons +1,206.
 - PHASE_3H follow-up — `jugador05.asp` fetch (600 pages, 2005-06 scouting
   bios, NO stat table) + `merge_jugador05` (enrich-only, never mints — D1).
   **COMPLETE (data-only; app surface deferred):** curated `jug05_xwalk.csv` +
@@ -63,8 +63,8 @@ Session 002 (cont.) — all pushed to origin/main:
   `data/clean/player_bios.csv` (152 rows, 98 w/ prose) → `bio` block in
   `web/data/players/<id>.json`. id_map / review queue **unchanged** (not a
   lever). 15 DOB conflicts parked in `jugador05_dob_conflicts.csv` (deferred).
-  Bridges found `990004`/`990030` are minted dups of ids 93/2261 → jug05_xwalk
-  follow-up. `docs/specs/jugador05_spec.md`.
+  Bridges found `990004`/`990030` were minted dups of ids 93/2261 — merged
+  into `jug05_xwalk.csv` (mint 42→40). `docs/specs/jugador05_spec.md`.
 - **Nav 12→8 tabs.** Inicio · La liga hoy · Historia · Equipos · Jugadores ·
   Consulta · Juega · Fuentes. `TABS` trimmed; `PANELS` = tab ids + `perfil`;
   `showTab`/`applyHash` gate on `PANELS.includes`. Perfil → a **gear button**
@@ -1382,17 +1382,17 @@ Decisions made session 002 (PHASE_5_APP_SYNC):
   (PHASE_3H_JUG05, owner OQ1 = (a)).** `jug05.asp` is bsnpr.com's 2005-era
   player page, keyed by an opaque token, not an integer id. `merge_jug05` folds
   its 200 distinct players into the spine via a curated tier-0
-  (`data/interim/jug05_xwalk.csv`, 33 nickname/spelling bridges — Larry=Elías
+  (`data/interim/jug05_xwalk.csv`, 35 nickname/spelling bridges — Larry=Elías
   Ayuso, Bobby Joe=Roberto José Hatton, J.R.=«Milton» Henderson, …) then a
-  3-tier auto match: **156 enrich an existing canonical** (D1-tier match: exact,
-  or apellidos token-prefix + given[0] + birth date ±7d), **42 mint a new
+  3-tier auto match: **158 enrich an existing canonical** (D1-tier match: exact,
+  or apellidos token-prefix + given[0] + birth date ±7d), **40 mint a new
   canonical row** — id `990001`+ (far above the real ~13,352 range),
   `source_id=wayback_bsnpr_jug05`, `has_profile=jug05`, `confidence=jug05-only`
   — and **2** name+birth collisions stay in `data/interim/jug05_review.csv`,
   never the spine (deliberate non-merges). **D1 holds**: mints require name +
   birth date + a career table from a league source with no existing match;
-  fuzzy/ambiguous still → review queue. Effect: `player_id_map` 649→666,
-  review queue 602→585, `players_canonical` 3,303→3,345,
+  fuzzy/ambiguous still → review queue. Effect: `player_id_map` 649→668,
+  review queue 602→583, `players_canonical` 3,303→3,343,
   `player_career_seasons` +1,206. `jug05_spec.md` / `identity_spine_spec.md` Q3.
 - **D-046 — 404-page jugador.asp snapshots leaked into player names; fixed at
   parse (owner-flagged, 5D.3b).** 3 profiles (ids 405, 1926, 2089) were
@@ -1682,16 +1682,15 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
       (needs 2b/2c), not signal-limited.
    b. **DONE (PHASE_3H_JUG05).** `jug05.asp` fetched (600 distinct digests,
       3 per-year tranches) + `merge_jug05` (curated `jug05_xwalk.csv` tier-0 +
-      3-tier auto). 156 enriched · 42 minted (`990001`+, D-047) · 2 review.
-      `player_id_map` 649→666, review queue 602→585, `player_career_seasons`
+      3-tier auto). 158 enriched · 40 minted (`990001`+, D-047) · 2 review.
+      `player_id_map` 649→668, review queue 602→583, `player_career_seasons`
       +1,206. identity_spine_spec Q3 closed. Committed + pushed + LIVE (`aab011c`).
       **Follow-up DONE:** `jugador05.asp` (600 pages, 2005-06 scouting bios,
       no stat table) → `merge_jugador05` enrich-only (never mints — D1), curated
       `jugador05_xwalk.csv` tier-0. 152 matched / 3 review; 159 empty spine
       fields filled, `player_bios.csv` (152 rows). id_map / review queue
       unchanged — not a lever, its value is biographical (`jugador05_spec.md`).
-      Deferred: 15-row DOB-conflict fix, the player-card prose surface,
-      `990004`/`990030` minted-dup merge.
+      Deferred: 15-row DOB-conflict fix, the player-card prose surface.
    c. **Manual historic seed** (identity_spine_spec Q3; last, hand work). A
       hand-built list for the ~50 historic scoring champions 1948–1970 and the
       `lideres2000` surname-only leaders absent from the encyclopedia — the bulk

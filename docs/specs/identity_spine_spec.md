@@ -197,19 +197,20 @@ no observation is both mapped and queued.
    by season" bucket still does not move on club alone — those candidates have no
    career-season data at/near the observed season. Blocked on Q3 (missing career
    spans), not on the club signal.
-3. **CLOSED (PHASE_3H, 2026-09-09) via `jug05.asp`** — `jug05_spec.md`.
-   600 pages → 200 distinct players: **123 enriched** an existing canonical
-   (D1-tier match), **42 minted** as new canonical rows with flagged synthetic
-   ids (`990001`+, `source_id=wayback_bsnpr_jug05`, `has_profile=jug05`,
-   `confidence=jug05-only` — **D-047**), **35 → `jug05_review.csv`** (nickname
-   bridges / spelling variants, need a human). **+1,031 career-season rows**
-   (877 to existing players) → id_map 649→661, review queue 602→590.
+3. **CLOSED (PHASE_3H, 2026-09-09) via `jug05.asp` + `jugador05.asp`** —
+   `jug05_spec.md`, `jugador05_spec.md`. `jug05.asp`: 600 pages → 200 distinct →
+   **158 enriched**, **40 minted** (`990001`+, `source_id=wayback_bsnpr_jug05`,
+   `has_profile=jug05`, `confidence=jug05-only` — **D-047**), 2 review; curated
+   `jug05_xwalk.csv` tier-0 for the 35 nickname/spelling collisions. **+1,206
+   career-season rows** → id_map 649→668, review queue 602→583.
+   `jugador05.asp` (2005-06 scouting bios, no stat table): enrich-only, 152
+   matched, 159 empty spine fields filled, `player_bios.csv`.
    **D1 amendment (D-047):** a canonical id may be minted from a *league*
    source that has no `?id=N` (jug05.asp is bsnpr.com's own 2005-era player
    page, keyed by an opaque token) when name + birth date + a career table are
    all present and no existing canonical matches; the id is flagged. Fuzzy /
    colliding cases still go to the review queue, never the spine — D1 intact.
-   `jugador05.asp` and the ~50-champion manual seed remain as later options.
+   The ~50-champion manual seed remains as a later option.
 4. **Truncated observation names** (`"Ayuso, Elias 'Lar"`, `"Morales, Mario
    'Qui"`) — the leader-table cell width clips them. A prefix-aware alias match
    (surname exact + given-name prefix) would resolve these safely when the

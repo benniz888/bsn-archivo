@@ -33,4 +33,6 @@ jug05_name,jug05_birth_date,bsnpr_id,confidence,note
 "Victor, Isiah",7/6/1978,2390,high,"Isiah = Isaiah Victor White; DOB exact"
 "Villegas, Sammy",3/7/1983,2145,high,"Sammy = Samuel Villegas Avilés; DOB exact"
 "Western, Franklyn",4/16/1970,757,high,"Franklyn = Franklin Western Canales; canonical DOB close"
+"Liriano, Aneury",,93,high,"Aneury = Aneuris Liriano Lugo (id 93, ficha 2003-08); jug05 2003-05 is a subset. Was minting 990004; jugador05 confirms the same bridge"
+"Ortiz, Irving",,2261,high,"Irving = Víctor Irving Ortiz Espada (id 2261, ficha but no career); jug05 2003-04 career unions in. Was minting 990030; jugador05 confirms"
 "Lopez, Frank",5/12/1985,review,low,"Frank vs Iván, position mismatch (Escolta vs Delantero), only one season — not merged"

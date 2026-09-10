@@ -89,14 +89,14 @@ class TestBuild:
 
     def test_players_index(self):
         pl = json.loads((b.WEB / "index" / "players.json").read_text())
-        assert len(pl) == 3345                       # 3303 league ids + 42 jug05-minted (D-047)
+        assert len(pl) == 3343                       # 3303 league ids + 40 jug05-minted (D-047)
         assert all(isinstance(p["id"], int) for p in pl)
         assert pl == sorted(pl, key=lambda p: p["id"])
-        assert sum(1 for p in pl if p["id"] > 990000) == 42
+        assert sum(1 for p in pl if p["id"] > 990000) == 40
 
     def test_manifest_counts_match(self):
         man = json.loads((b.WEB / "manifest.json").read_text())
-        assert man["counts"]["players"] == 3345
+        assert man["counts"]["players"] == 3343
         assert man["counts"]["seasons"] == 98
         assert len(man["source_digest"]) == 64      # sha256 hex
 

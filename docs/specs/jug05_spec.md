@@ -83,14 +83,14 @@ against `players_canonical`:
 
 | tier | test | n | action |
 |---|---|--:|---|
-| **xwalk** | name+DOB in `jug05_xwalk.csv` | **33** | force-enrich the mapped id (nickname bridges: Larry=Elías Ayuso, Bobby Joe=Roberto José Hatton, Michael=Ángel Miguel López, J.R.=«Milton» Henderson, …) |
+| **xwalk** | name+DOB in `jug05_xwalk.csv` | **35** | force-enrich the mapped id (nickname bridges: Larry=Elías Ayuso, Bobby Joe=Roberto José Hatton, Michael=Ángel Miguel López, J.R.=«Milton» Henderson, …). Includes Aneury=Aneuris Liriano (id 93) and Irving=Víctor Irving Ortiz (id 2261), added after `jugador05.asp` showed the first pass had minted them |
 | enrich (auto) | exact name+year, OR canonical apellidos ⊇ jug05 apellidos (token-prefix) + given[0] + birth date ±7d | **123** | union career rows |
-| mint | no canonical match at all | **42** | new canonical `990001`+ (D-047) |
+| mint | no canonical match at all | **40** | new canonical `990001`+ (D-047) |
 | review | name+birth-year collides but the fuller match fails and no xwalk entry | **2** | `jug05_review.csv` — both deliberate non-merges (Frank vs Iván López; a duplicate Fernando Ortiz page with a bad DOB year, already reaching id 697) |
 
-**156 enriched + 42 minted + 2 review. +1,206 career-season rows.** Net:
-`player_id_map` 649 → **666**, review queue 602 → **585**, `players_canonical`
-3,303 → **3,345**. Deterministic through parse + build.
+**158 enriched + 40 minted + 2 review. +1,206 career-season rows.** Net:
+`player_id_map` 649 → **668**, review queue 602 → **583**, `players_canonical`
+3,303 → **3,343**. Deterministic through parse + build.
 
 ## [OPEN_QUESTIONS]
 
@@ -100,5 +100,6 @@ against `players_canonical`:
    force-enriched (26 clear nickname/spelling bridges, 7 medium — DOB-exact but
    a different given name, e.g. J.R. Henderson vs canonical "Milton"), 2 left
    in review by design. `jug05_xwalk.csv` is a committed curated map, consulted
-   as tier 0 of `merge_jug05`.
-3. `jugador05.asp` (406 param-200s, same era) — not fetched. Possible follow-up.
+   as tier 0 of `merge_jug05`. Later +2 rows (Liriano/Ortiz, see xwalk table)
+   after `jugador05.asp` exposed them as minted duplicates.
+3. **RESOLVED:** `jugador05.asp` fetched + parsed — `jugador05_spec.md`.
