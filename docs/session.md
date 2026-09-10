@@ -1661,18 +1661,20 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
    Owner Tier-2 touch: `docs/project.md` D2 — refine "Grises → Criollos (2023)"
    per D-045.
 3. **RANKED IDENTITY-LIFT PLAN** — box-score `bsnpr_id` resolution 26% pre-2007
-   / 74% modern; review queue **602** rows (315 season-not-in-known-span · 199
-   no-name-match · 79 multi-candidate-no-season · 9 multi-match) — post D-042.
+   / 74% modern; review queue **585** rows (602 post-D-042, −17 after
+   PHASE_3H_JUG05; breakdown was 315 season-not-in-known-span · 199
+   no-name-match · 79 multi-candidate-no-season · 9 multi-match).
    a. **DONE (PHASE_3F).** Club-code corroboration wired into
       `parse_players.build_id_map` — +10 `name+season+club`, name+season
       ambiguity bucket 15→5, `club_match_ids` hints on 42 review rows.
       identity_spine_spec Q2 closed. The 106 bucket did NOT move — data-limited
       (needs 2b/2c), not signal-limited.
-   b. **Fetch `jug05.asp` / `jugador05.asp`** (identity_spine_spec Q3; ~600
-      captures each, 2005–2007-era player pages — **GATED >500, needs owner OK**).
-      Extends `players_canonical` + `player_career_seasons` into the 2004–2007
-      gap the enciclopedia misses, which is where most of the 361
-      "season-not-in-known-span" rows fall.
+   b. **DONE (PHASE_3H_JUG05).** `jug05.asp` fetched (600 distinct digests,
+      3 per-year tranches) + `merge_jug05` (curated `jug05_xwalk.csv` tier-0 +
+      3-tier auto). 156 enriched · 42 minted (`990001`+, D-047) · 2 review.
+      `player_id_map` 649→666, review queue 602→585, `player_career_seasons`
+      +1,206. identity_spine_spec Q3 closed. Committed + pushed + LIVE (`aab011c`).
+      `jugador05.asp` (406 param-200s, same era) left as a possible follow-up.
    c. **Manual historic seed** (identity_spine_spec Q3; last, hand work). A
       hand-built list for the ~50 historic scoring champions 1948–1970 and the
       `lideres2000` surname-only leaders absent from the encyclopedia — the bulk
