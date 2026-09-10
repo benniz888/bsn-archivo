@@ -1,9 +1,18 @@
 # SESSION STATE — TIER 3
 <!-- Authoritative for current state and task priority. Update at every phase exit. -->
 
-**SESSION:** 002 — PHASE_3 / 3B / 3C / 3D / 4 / 3E / 3E-STORAGE / 3G / 3F (continues 001)
-**DATE:** 2026-09-08
+**SESSION:** 003 — PHASE_5_APP_SYNC (complete, LIVE) + PHASE_6_APP_IA (complete, LIVE)
+**DATE:** 2026-09-09
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
+
+**CURRENT STATE:** Archive is live at benniz888.github.io/bsn-archivo — shell
+fetches per-entity JSON from `web/data/`, offline-capable (SW), installable,
+8-tab IA. Data pipeline: 3,303 players / 98 seasons / 1,292 games / 68 scoring
+titles / 47 MVP. **No phase in flight.** Open threads (all owner-side / minor):
+docs/project.md D2 refinement for the Grises/Caciques de Humacao split (D-045);
+PHASE_3D id 13352 (jugador.asp career, no players_canonical row); PHASE_5F
+(per-game PBP JSON) deferred behind PBP↔bsnpr_id linking; real crest/portrait
+images (drop into `web/img/`, `make build-web-data`).
 
 Session 002 (cont.) — all pushed to origin/main:
 - `app_data_sync_spec.md` (e5609ee) — owner-supplied PHASE_5 decision.
@@ -39,8 +48,10 @@ Session 002 (cont.) — all pushed to origin/main:
   **PHASE_5_APP_SYNC COMPLETE** (5F/PBP deferred behind PBP↔identity linking).
 
 **SESSION 003 (2026-09-09):** PHASE_6_APP_IA — reorganize / UX pass, structure
-only (no colours/type/style). Plan approved in full. Done on branch
-**`phase-6-app-ia`** (7 commits, not merged — awaits owner browser review):
+only (no colours/type/style). **COMPLETE** — plan approved in full, 8 commits
+on `phase-6-app-ia`, merged to `main` via PR #1 (`27c612c`), **verified LIVE**
+at benniz888.github.io/bsn-archivo (nav, gear-icon Perfil, `#comparar` deep
+link all confirmed). Branch deleted.
 - **Nav 12→8 tabs.** Inicio · La liga hoy · Historia · Equipos · Jugadores ·
   Consulta · Juega · Fuentes. `TABS` trimmed; `PANELS` = tab ids + `perfil`;
   `showTab`/`applyHash` gate on `PANELS.includes`. Perfil → a **gear button**
