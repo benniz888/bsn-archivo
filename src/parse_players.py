@@ -591,18 +591,22 @@ def merge_jugador05(canon: list[dict], bios: list[dict]) -> dict:
         if fam:
             byfam[fam[0]].append(c)
 
-    # tier 0 — the same hand-curated nickname bridges jug05 uses. jugador05 is
-    # the same 2005-06 roster, so "Ayuso, Larry" etc. resolve here too. Keyed on
-    # name+DOB first, then name alone when that surname maps to exactly one id.
+    # tier 0 — hand-curated bridges. jug05_xwalk.csv covers the shared 2005-06
+    # roster ("Ayuso, Larry" etc.); jugador05_xwalk.csv adds this source's own
+    # review rows and wins on a conflict. Keyed on name+DOB first, then name
+    # alone when that surname maps to exactly one id.
     xwalk: dict[tuple, str] = {}
     xwalk_name: dict[str, set] = defaultdict(set)
-    xw_path = INTERIM_DIR / "jug05_xwalk.csv"
-    if xw_path.exists():
-        with xw_path.open(encoding="utf-8") as fh:
+    for fn, ncol, dcol in (("jug05_xwalk.csv", "jug05_name", "jug05_birth_date"),
+                           ("jugador05_xwalk.csv", "jugador05_name", "jugador05_birth_date")):
+        p = INTERIM_DIR / fn
+        if not p.exists():
+            continue
+        with p.open(encoding="utf-8") as fh:
             for row in csv.DictReader(fh):
-                k = norm_key(row["jug05_name"])
-                xwalk[(k, row["jug05_birth_date"])] = row["bsnpr_id"]
-                xwalk_name[k].add(row["bsnpr_id"])
+                k = norm_key(row[ncol])
+                xwalk[(k, row[dcol])] = row["bsnpr_id"]
+                xwalk_name.setdefault(k, set()).add(row["bsnpr_id"])
 
     def _match(j) -> dict | None:
         nk = norm_key(j["name"])

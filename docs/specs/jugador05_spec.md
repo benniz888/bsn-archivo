@@ -68,28 +68,42 @@ Owner-approved 2026-09-09. "Defer 4 and 5, wire in the data-only pipeline."
 - **A player-card "Reseña (2005–06)" surface.** Owner deferred (decision 5);
   the data ships in `web/data`, the app change is a separate follow-up.
 
-## [RESULT] (2026-09-09)
+## [RESULT] (2026-09-10)
 
-600 pages → **155 distinct players** (128 w/ DOB, 99 w/ prose). `merge_jugador05`:
+600 pages → **155 distinct players** (128 w/ DOB, 99 w/ prose). `merge_jugador05`
+runs a hand-curated tier 0 (`jug05_xwalk.csv` for the shared roster +
+`jugador05_xwalk.csv` for this source's own 26 review rows — 23 bridged, 3 left)
+then the auto match:
 
-| outcome | n |
-|---|--:|
-| matched to canonical | **129** |
-| — empty spine fields filled | **112** (birth_year +10, birth_city +38, position +35, +nationality) |
-| — `player_bios.csv` rows | **129** (87 w/ prose) |
-| DOB disagreements (flagged, deferred) | **11** |
-| to review (no match, can't mint) | **26** |
+| outcome | first pass | + jugador05_xwalk |
+|---|--:|--:|
+| matched to canonical | 129 | **152** |
+| — empty spine fields filled | 112 | **159** (birth-year coverage 2,007 → **2,019**) |
+| — `player_bios.csv` rows | 129 | **152** (98 w/ prose) |
+| DOB disagreements (flagged, deferred) | 11 | **15** |
+| to review (no match, can't mint) | 26 | **3** — Kevin/Kelvin Bonilla, "Tito" López, the 1967-dated Fernando Ortiz page (all deliberate) |
 
 Net on the spine: `players_canonical` unchanged at **3,345**; `player_id_map`
 and the review queue **unchanged** (666 / 585 — jugador05 is not an id-map
-lever). birth-year coverage 2,007 → **2,017**. Deterministic through parse +
-build (`manifest.json` md5 `efdbc50a798af6ea5bd6f96b867e13ea`).
+lever). Deterministic through parse + build (`manifest.json` md5
+`01ecca8432450acd86d0313879212f01`).
+
+The nickname bridges also surfaced two jug05-minted rows that are duplicates of
+real canonical ids the encyclopedia carries under a different given name:
+`990004` "Liriano, Aneury" = id 93, `990030` "Ortiz, Irving" = id 2261. Merging
+those renumbers the minted range, so it is a `jug05_xwalk.csv` follow-up, not
+this phase.
 
 ## [OPEN_QUESTIONS]
 
-1. **Deferred (owner decision 4):** `jugador05_dob_conflicts.csv` — 11 canonical
-   birth dates jugador05 (+ jug05) contradict. A future pass could correct
-   `players_canonical` from the two 2005-era sources agreeing.
+1. **Deferred (owner decision 4):** `jugador05_dob_conflicts.csv` — now **15**
+   canonical birth dates jugador05 (+ jug05) contradict, all month/day
+   transpositions except `417` Daniel Guzmán (canonical `2/20/1948` is a plain
+   error). A future pass could correct `players_canonical` from the two
+   2005-era sources agreeing.
 2. **Deferred (owner decision 5):** surface `bio.notes_es` on the player card.
-3. A curated `jugador05_xwalk.csv` for the ~15 of 26 review rows that do have a
-   canonical row but couldn't be matched confidently (both DOBs absent).
+3. **RESOLVED:** `jugador05_xwalk.csv` worked the 26 review rows — 23 bridged
+   (13 high, 10 medium), 3 left in review by design.
+4. `jug05_xwalk.csv` follow-up: `990004`/`990030` are minted duplicates of ids
+   93 / 2261 (found via the jugador05 bridges). Merging renumbers the minted
+   range.
