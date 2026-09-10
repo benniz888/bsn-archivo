@@ -523,6 +523,7 @@ def build_players_detail() -> tuple[int, int]:
     obs: dict[str, list] = {}
     for r in _read("player_id_map.csv"):
         obs.setdefault(r["bsnpr_id"], []).append(r)
+    bios = {r["bsnpr_id"]: r for r in _read("player_bios.csv")}
     resolve_team = _team_resolver()
 
     # one file per canonical id. A career/obs row for an id absent from
@@ -556,7 +557,20 @@ def build_players_detail() -> tuple[int, int]:
                 key=lambda x: (x["obs_source"], x["season"] or 0, x["club_raw"])),
             "sources": [c["source_url"]] if c.get("source_url") else [],
         }
-        if not (rec["career"] or rec["observations"] or rec["has_profile"]):
+        b = bios.get(pid)
+        if b:
+            rec["bio"] = {
+                "notes_es": b["notes_es"] or None,
+                "birthplace": b["birthplace"] or None,
+                "roster": {"team": b["roster_team"] or None,
+                           "year": _int(b["roster_year"]),
+                           "jersey": b["jersey"] or None},
+                "source": b["source_id"],
+            }
+            if b["source_url"] and b["source_url"] not in rec["sources"]:
+                rec["sources"].append(b["source_url"])
+        if not (rec["career"] or rec["observations"] or rec["has_profile"]
+                or (b and b["notes_es"])):
             n_thin += 1
         _jdump(rec, WEB / "players" / f"{pid}.json")
         n += 1
@@ -812,6 +826,7 @@ def main() -> int:
     SOURCES = [
         "franchises.csv", "champions_reconciled.csv", "franchise_events.csv",
         "players_canonical.csv", "player_aliases.csv", "player_career_seasons.csv",
+        "player_bios.csv",
         "player_id_map.csv", "scoring_champions_reconciled.csv",
         "historic_scoring_champions.csv", "historic_awards.csv",
         "bsn_scoring_champions.csv",

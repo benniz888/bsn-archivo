@@ -33,6 +33,9 @@ fetch-players:
 fetch-jug05:
 	.venv/bin/python -m src.fetch_jug05
 
+fetch-jugador05:
+	.venv/bin/python -m src.fetch_jugador05
+
 parse-players:
 	.venv/bin/python -m src.parse_players
 
@@ -67,4 +70,4 @@ site:
 test:
 	.venv/bin/pytest -q
 
-.PHONY: setup enumerate samples fetch parse verify enumerate-root fetch-pre2007 parse-pre2007 fetch-players fetch-jug05 parse-players reconcile enumerate-games fetch-games parse-games enumerate-historic fetch-historic build-web-data site test
+.PHONY: setup enumerate samples fetch parse verify enumerate-root fetch-pre2007 parse-pre2007 fetch-players fetch-jug05 fetch-jugador05 parse-players reconcile enumerate-games fetch-games parse-games enumerate-historic fetch-historic build-web-data site test

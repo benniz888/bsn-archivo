@@ -12,6 +12,8 @@ Outputs (all PC3-complete):
     last_season, position, nationality (from jugador.asp where available).
   data/clean/player_aliases.csv       bsnpr_id, alias, alias_type, source.
   data/clean/player_career_seasons.csv  bsnpr_id, season, team_raw (jugador.asp).
+  data/clean/player_bios.csv          bsnpr_id -> 2005-06 scouting prose +
+    birthplace/roster context (jugador05.asp, enrich-only — PHASE_3H follow-up).
   data/clean/player_id_map.csv        observation player_raw -> bsnpr_id, with
     match_method + confidence. Only rows that clear the D1 bar land here.
   data/interim/player_review_queue.csv  everything that did not — ambiguous or
@@ -490,6 +492,204 @@ def merge_jug05(canon: list[dict], career: list[dict],
 
 
 # --------------------------------------------------------------------------- #
+# tranche D — jugador05.asp (PHASE_3H follow-up)                                #
+# --------------------------------------------------------------------------- #
+# jugador05.asp is the 2005-06 sibling of jug05.asp: a scouting bio, NOT a
+# stat page. One block per file:
+#   <TEAM> [<jersey>] - <Apellido> , <Nombre>
+#   Origen: <birthplace>  Edad: <age>  Fecha: <M/D/YYYY>
+#   Altura: <h>  Peso: <w>  Posición: <pos>
+#   Notas Sobresalientes: <scouting prose>
+# No career table -> these NEVER mint (D1). They enrich empty spine fields on
+# a matched canonical row and contribute the prose to player_bios.csv.
+JUGADOR05_SOURCE_ID = "wayback_bsnpr_jugador05"
+# BeautifulSoup drops the HTML comment that used to separate the roster <select>
+# from the heading, so the block reads: "... Foros Jugador <TEAM> [<num>] -
+# <Ape> , <Nom> Origen: ... Notas Sobresalientes: <prose> ©". Anchor on the
+# standalone "Jugador" heading label and walk the fixed label sequence; every
+# value can be empty.
+_J05_BLOCK = re.compile(
+    r"\bJugador\s+(?P<team>[^-<>]{2,40}?)\s+-\s+"
+    r"(?P<ape>[^,<>]{1,40}?)\s*,\s*(?P<nom>[^,<>]{1,40}?)\s+"
+    r"Origen:\s*(?P<origen>.*?)\s*"
+    r"Edad:\s*(?P<edad>\d*)\s*"
+    r"Fecha:\s*(?P<fecha>[\d/]*)\s*"
+    r"Altura:\s*(?P<altura>[\d'\u2019.\- ]*?)\s*"
+    r"Peso:\s*(?P<peso>\d*)\s*"
+    r"Posici[oó]n:\s*(?P<pos>[A-Za-z\u00c0-\u017e/ ]*?)\s*"
+    r"Notas\s+Sobresalientes:\s*(?P<notas>.*?)\s*(?:\u00a9|$)", re.S)
+_J05_TEAMNUM = re.compile(r"\s+(\d{1,3})$")
+_J05_POS = _J5_POS
+
+
+def parse_jugador05() -> list[dict]:
+    """The 2005-06 scouting bio page. One record per file; deduped across a
+    player's several roster pages on name+birth_date, keeping the fullest."""
+    out: list[dict] = []
+    for _p, html, meta, retrieved_at in _iter_files("jugador05"):
+        txt = " ".join(BeautifulSoup(html, "html.parser").get_text(" ").split())
+        if "Notas Sobresalientes" not in txt or "Origen:" not in txt:
+            continue
+        m = _J05_BLOCK.search(txt)
+        if not m:
+            continue
+        team_raw = squish(m.group("team"))
+        jersey = ""
+        tn = _J05_TEAMNUM.search(team_raw)
+        if tn:
+            jersey, team_raw = tn.group(1), _J05_TEAMNUM.sub("", team_raw)
+        ape = clean_field(m.group("ape"))
+        nom = clean_field(m.group("nom"))
+        if not ape or not nom:
+            continue
+        name = f"{squish(ape)}, {squish(nom)}"
+        origen = squish(m.group("origen"))
+        country = origen.split(",")[-1].strip() if origen else ""
+        nationality = ("Puerto Rico" if "puerto rico" in country.lower()
+                       else country if country and country != origen else "")
+        pos = _J05_POS.search(m.group("pos") or "")
+        notas = squish(m.group("notas"))
+        out.append({
+            "name": name, "apellidos": squish(ape), "nombre": squish(nom),
+            "birth_date": clean_dob(m.group("fecha")),
+            "position": pos.group(0) if pos else "",
+            "birth_city": origen, "nationality": nationality,
+            "roster_team": team_raw, "roster_year": (meta.get("wayback_timestamp", "") or "")[:4],
+            "jersey": jersey, "notes_es": notas,
+            "source_url": meta.get("raw_wayback_url", ""), "retrieved_at": retrieved_at,
+        })
+
+    def _score(r: dict) -> tuple:
+        return (bool(r["birth_date"]), bool(r["position"]), bool(r["birth_city"]),
+                len(r["notes_es"]))
+
+    dedup: dict[tuple, dict] = {}
+    for r in out:
+        k = (norm_key(r["name"]), r["birth_date"])
+        if k not in dedup or _score(r) > _score(dedup[k]):
+            dedup[k] = r
+    players = list(dedup.values())
+    print(f"[jugador05] {len(out)} pages -> {len(players)} distinct players "
+          f"({sum(1 for r in players if r['birth_date'])} w/ DOB, "
+          f"{sum(1 for r in players if r['notes_es'])} w/ notes)")
+    return players
+
+
+def merge_jugador05(canon: list[dict], bios: list[dict]) -> dict:
+    """Enrich-only: match each jugador05 bio to a canonical row (same test as
+    merge_jug05 minus the mint tier), fill *empty* spine fields
+    (birth_date/birth_year, birth_city, nationality, position) — never
+    overwrite — and emit a player_bios row for the prose. No match -> review.
+    Mutates `canon` in place; returns counts + (bio_rows, review_list)."""
+    exact: dict[str, list[dict]] = defaultdict(list)
+    byfam: dict[str, list[dict]] = defaultdict(list)
+    by_id: dict[str, dict] = {}
+    for c in canon:
+        exact[norm_key(c["canonical_name"])].append(c)
+        by_id[c["bsnpr_id"]] = c
+        fam = normalize(c["apellidos"]).split()
+        if fam:
+            byfam[fam[0]].append(c)
+
+    # tier 0 — the same hand-curated nickname bridges jug05 uses. jugador05 is
+    # the same 2005-06 roster, so "Ayuso, Larry" etc. resolve here too. Keyed on
+    # name+DOB first, then name alone when that surname maps to exactly one id.
+    xwalk: dict[tuple, str] = {}
+    xwalk_name: dict[str, set] = defaultdict(set)
+    xw_path = INTERIM_DIR / "jug05_xwalk.csv"
+    if xw_path.exists():
+        with xw_path.open(encoding="utf-8") as fh:
+            for row in csv.DictReader(fh):
+                k = norm_key(row["jug05_name"])
+                xwalk[(k, row["jug05_birth_date"])] = row["bsnpr_id"]
+                xwalk_name[k].add(row["bsnpr_id"])
+
+    def _match(j) -> dict | None:
+        nk = norm_key(j["name"])
+        forced = xwalk.get((nk, j["birth_date"]))
+        if forced is None and len(xwalk_name.get(nk, ())) == 1:
+            forced = next(iter(xwalk_name[nk]))
+        if forced == "review":
+            return None
+        if forced and forced in by_id:
+            return by_id[forced]
+        jyr = j["birth_date"][-4:] if j["birth_date"] else ""
+        # exact full name: accept unless both sides carry a birth year and they
+        # disagree (a missing canonical year is the case we most want to fill).
+        for c in exact.get(nk, []):
+            if not jyr or not c["birth_year"] or c["birth_year"] == jyr:
+                return c
+        jfam, jgiv, jd = normalize(j["apellidos"]).split(), normalize(j["nombre"]).split(), _pdate(j["birth_date"])
+        if not (jfam and jgiv):
+            return None
+        for c in byfam.get(jfam[0], []):
+            cfam, cgiv = normalize(c["apellidos"]).split(), normalize(c["nombre"]).split()
+            if cfam[:len(jfam)] != jfam and jfam[:len(cfam)] != cfam:
+                continue
+            if not cgiv or cgiv[0] != jgiv[0]:
+                continue
+            cd = _pdate(c["birth_date"])
+            if jd and cd:
+                if abs((jd - cd).days) <= 7:
+                    return c
+                continue                       # both dated, and they disagree
+            if jyr and c["birth_year"]:
+                if c["birth_year"] == jyr:
+                    return c
+                continue                       # both have a year, and it differs
+        return None
+
+    matched = filled = 0
+    bios_by_id: dict[str, dict] = {}
+    review, dob_conflicts = [], []
+    for j in bios:
+        c = _match(j)
+        if not c:
+            review.append({"name": j["name"], "birth_date": j["birth_date"],
+                           "position": j["position"], "birth_city": j["birth_city"],
+                           "roster_team": j["roster_team"], "roster_year": j["roster_year"],
+                           "note": "no canonical match; jugador05 has no career table so cannot mint (D1)"})
+            continue
+        matched += 1
+        pid = c["bsnpr_id"]
+        if j["birth_date"]:
+            if not c["birth_date"]:
+                c["birth_date"] = j["birth_date"]
+                c["birth_year"] = j["birth_date"].split("/")[-1]
+                filled += 1
+            elif _pdate(c["birth_date"]) != _pdate(j["birth_date"]):
+                dob_conflicts.append({"bsnpr_id": pid, "canonical_name": c["canonical_name"],
+                                      "canonical_dob": c["birth_date"], "jugador05_dob": j["birth_date"]})
+        for spine, src in (("birth_city", "birth_city"), ("nationality", "nationality"),
+                           ("position", "position")):
+            if not c.get(spine) and j.get(src):
+                c[spine] = j[src]
+                filled += 1
+        row = {
+            "bsnpr_id": pid, "notes_es": j["notes_es"], "birthplace": j["birth_city"],
+            "roster_team": j["roster_team"], "roster_year": j["roster_year"],
+            "jersey": j["jersey"], "source_id": JUGADOR05_SOURCE_ID,
+            "source_url": j["source_url"], "retrieved_at": j["retrieved_at"],
+        }
+        # a player with both a 2005 and a 2006 page: keep the one with prose,
+        # else the later roster year.
+        prev = bios_by_id.get(pid)
+        if prev is None or (len(row["notes_es"]), row["roster_year"]) > (len(prev["notes_es"]), prev["roster_year"]):
+            bios_by_id[pid] = row
+
+    bio_rows = list(bios_by_id.values())
+    print(f"[jugador05] {len(bios)} players -> {matched} matched "
+          f"({filled} empty spine fields filled, {len(dob_conflicts)} DOB disagreements), "
+          f"{len(review)} to review; {len(bio_rows)} bio rows "
+          f"({sum(1 for b in bio_rows if b['notes_es'])} w/ prose)")
+    for d in dob_conflicts[:12]:
+        print(f"    DOB? {d['bsnpr_id']:>5} {d['canonical_name']:<30} "
+              f"canonical {d['canonical_dob']}  vs jugador05 {d['jugador05_dob']}")
+    return {"matched": matched, "filled": filled, "disagree": len(dob_conflicts),
+            "bio_rows": bio_rows, "review_list": review, "dob_conflicts": dob_conflicts}
+
+
+# --------------------------------------------------------------------------- #
 # assembly                                                                     #
 # --------------------------------------------------------------------------- #
 def build_canonical(enc: dict[str, dict], prof: dict[str, dict]) -> list[dict]:
@@ -801,6 +1001,12 @@ def main() -> int:
     jug05_review: list[dict] = []
     if (RAW_DIR / "jug05").exists():
         jug05_review = merge_jug05(canon, career, parse_jug05())["review_list"]
+    j05b_review: list[dict] = []
+    j05b_bios: list[dict] = []
+    j05b_dob: list[dict] = []
+    if (RAW_DIR / "jugador05").exists():
+        r = merge_jugador05(canon, parse_jugador05())   # enrich-only; never mints (D1)
+        j05b_review, j05b_bios, j05b_dob = r["review_list"], r["bio_rows"], r["dob_conflicts"]
     aliases = build_aliases(canon, enc)   # after minting, so jug05 rows get aliases
     mapped, review = build_id_map(canon, aliases, career)
 
@@ -830,6 +1036,17 @@ def main() -> int:
     _write_csv(INTERIM_DIR / "jug05_review.csv",
                sorted(jug05_review, key=lambda r: r["name"]),
                ["name", "birth_date", "position", "seasons", "collides_with"])
+    _write_csv(CLEAN_DIR / "player_bios.csv",
+               sorted(j05b_bios, key=lambda r: int(r["bsnpr_id"])),
+               ["bsnpr_id", "notes_es", "birthplace", "roster_team", "roster_year",
+                "jersey", "source_id", "source_url", "retrieved_at"])
+    _write_csv(INTERIM_DIR / "jugador05_review.csv",
+               sorted(j05b_review, key=lambda r: r["name"]),
+               ["name", "birth_date", "position", "birth_city", "roster_team",
+                "roster_year", "note"])
+    _write_csv(INTERIM_DIR / "jugador05_dob_conflicts.csv",
+               sorted(j05b_dob, key=lambda r: int(r["bsnpr_id"])),
+               ["bsnpr_id", "canonical_name", "canonical_dob", "jugador05_dob"])
 
     with_profile = sum(1 for c in canon if c["has_profile"] == "yes")
     with_birth = sum(1 for c in canon if c["birth_year"])

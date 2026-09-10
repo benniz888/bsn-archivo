@@ -7,7 +7,8 @@
 
 **CURRENT STATE:** Archive is live at benniz888.github.io/bsn-archivo — shell
 fetches per-entity JSON from `web/data/`, offline-capable (SW), installable,
-8-tab IA. Data pipeline: 3,345 players (42 jug05-minted, D-047) / 98 seasons / 1,292 games / 68 scoring
+8-tab IA. Data pipeline: 3,345 players (42 jug05-minted, D-047; 129 w/
+jugador05 bio) / 98 seasons / 1,292 games / 68 scoring
 titles / 47 MVP. **No phase in flight.** Open threads (all owner-side / minor):
 docs/project.md D2 refinement for the Grises/Caciques de Humacao split (D-045);
 PHASE_3D id 13352 (jugador.asp career, no players_canonical row); PHASE_5F
@@ -54,6 +55,14 @@ Session 002 (cont.) — all pushed to origin/main:
   `jug05_xwalk.csv` tier-0 + 3-tier auto, D-047 synthetic ids). **COMPLETE**:
   156 enriched, 42 minted (`990001`+), 2 review. id_map 649→666, review
   602→585, canonical 3,303→3,345, career-seasons +1,206.
+- PHASE_3H follow-up — `jugador05.asp` fetch (600 pages, 2005-06 scouting
+  bios, NO stat table) + `merge_jugador05` (enrich-only, never mints — D1).
+  **COMPLETE (data-only; app surface deferred):** 155 distinct → 129 matched,
+  26 review; 112 empty spine fields filled (birth-year coverage 2,007→2,017),
+  new `data/clean/player_bios.csv` (129 rows, 87 w/ prose) → `bio` block in
+  `web/data/players/<id>.json`. id_map / review queue **unchanged** (not a
+  lever). 11 DOB conflicts parked in `jugador05_dob_conflicts.csv` (deferred).
+  `docs/specs/jugador05_spec.md`.
 - **Nav 12→8 tabs.** Inicio · La liga hoy · Historia · Equipos · Jugadores ·
   Consulta · Juega · Fuentes. `TABS` trimmed; `PANELS` = tab ids + `perfil`;
   `showTab`/`applyHash` gate on `PANELS.includes`. Perfil → a **gear button**
@@ -1674,7 +1683,12 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
       3-tier auto). 156 enriched · 42 minted (`990001`+, D-047) · 2 review.
       `player_id_map` 649→666, review queue 602→585, `player_career_seasons`
       +1,206. identity_spine_spec Q3 closed. Committed + pushed + LIVE (`aab011c`).
-      `jugador05.asp` (406 param-200s, same era) left as a possible follow-up.
+      **Follow-up DONE:** `jugador05.asp` (600 pages, 2005-06 scouting bios,
+      no stat table) → `merge_jugador05` enrich-only (never mints — D1). 129
+      matched / 26 review; 112 empty spine fields filled, `player_bios.csv`
+      (129 rows). id_map / review queue unchanged — not a lever, its value is
+      biographical (`jugador05_spec.md`). Deferred: 11-row DOB-conflict fix,
+      the player-card prose surface.
    c. **Manual historic seed** (identity_spine_spec Q3; last, hand work). A
       hand-built list for the ~50 historic scoring champions 1948–1970 and the
       `lideres2000` surname-only leaders absent from the encyclopedia — the bulk

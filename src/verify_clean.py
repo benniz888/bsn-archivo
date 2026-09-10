@@ -268,6 +268,17 @@ def verify_players(c: Checker) -> None:
                 for m in idmap if m["match_method"] == "name+season+club"),
             "player_id_map: name+season+club matches all carry club_check=confirms")
 
+    if (CLEAN_DIR / "player_bios.csv").exists():
+        bios = _read("player_bios.csv")
+        c.check(all(b["bsnpr_id"] in canon_ids for b in bios),
+                "player_bios: every row points at a canonical id")
+        bio_ids = [b["bsnpr_id"] for b in bios]
+        c.check(len(bio_ids) == len(set(bio_ids)), "player_bios: one row per bsnpr_id")
+        c.check(all(b["source_id"] == "wayback_bsnpr_jugador05" and b["source_url"] for b in bios),
+                "player_bios: every row carries jugador05 provenance (PC3)")
+        c.check(all(b["notes_es"] or b["birthplace"] or b["roster_team"] for b in bios),
+                "player_bios: no empty rows")
+
     review = _read_interim("player_review_queue.csv")
     c.check(all(r["reason"] for r in review), "review_queue: every row states a reason")
     # a (source, player_raw, season) is either mapped or in review — never both
@@ -513,6 +524,13 @@ def verify_web_data(c: Checker) -> None:
     idx_ids = {p["id"] for p in players}
     c.check(all(int(p.stem) in idx_ids for p in pdir.glob("*.json")),
             "web/data: every players/<id>.json id is in the index")
+    if (CLEAN_DIR / "player_bios.csv").exists():
+        bio_ids = {b["bsnpr_id"] for b in _read("player_bios.csv")}
+        emitted = {p.stem for p in pdir.glob("*.json")
+                   if "bio" in json.loads(p.read_text(encoding="utf-8"))}
+        c.check(emitted == bio_ids,
+                "web/data: players/<id>.json `bio` block on exactly the player_bios rows",
+                f"{len(emitted)} vs {len(bio_ids)}")
     box_gids = {r["game_id"] for r in _read("game_box_player.csv")}
     res_gids = {r["game_id"] for r in _read("game_results.csv")}
     file_gids = {p.stem for p in gdir.rglob("*.json") if p.name != "index.json"}

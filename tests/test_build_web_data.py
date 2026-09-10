@@ -110,6 +110,18 @@ class TestBuild:
         idx = {x["id"] for x in json.loads((b.WEB / "index" / "players.json").read_text())}
         assert all(int(f.stem) in idx for f in (b.WEB / "players").glob("*.json"))
 
+    def test_player_bio_block(self):
+        # jugador05.asp enrich-only (PHASE_3H follow-up): a `bio` block appears
+        # on exactly the player_bios.csv rows, and carries jugador05 provenance.
+        bio_ids = {r["bsnpr_id"] for r in b._read("player_bios.csv")}
+        assert bio_ids
+        emitted = {f.stem for f in (b.WEB / "players").glob("*.json")
+                   if "bio" in json.loads(f.read_text())}
+        assert emitted == bio_ids
+        sample = json.loads((b.WEB / "players" / f"{sorted(bio_ids, key=int)[0]}.json").read_text())
+        assert sample["bio"]["source"] == "wayback_bsnpr_jugador05"
+        assert any(u for u in sample["sources"] if "jugador05" in u)
+
     def test_assets_empty_by_default(self):
         man = json.loads((b.WEB / "manifest.json").read_text())
         assert isinstance(man["assets"], dict)
