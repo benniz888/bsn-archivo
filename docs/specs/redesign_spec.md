@@ -144,6 +144,21 @@ glued to the (sticky) cell. Sticky first-child cells get
 Harness: `scratchpad/theme_harness.mjs` (auto→light→dark→auto cycle, icon +
 label per preference, resolves+paints).
 
+**Follow-up (owner-reported mobile behaviour — pre-existing, not PHASE_7; the
+viewport `<meta>` was untouched since the scaffold commit and `overscroll-
+behavior` was never in the file):**
+- Viewport `<meta>` + `maximum-scale=1, user-scalable=no`.
+- `html{overscroll-behavior:none; overflow-x:clip; touch-action:pan-x pan-y}` +
+  `body{overscroll-behavior:none; overflow-x:clip}` — no rubber-band at the
+  ends, no sideways pan, no pinch / double-tap zoom. `overflow-x:clip` (not
+  `hidden`) so `<html>` doesn't become a scroll container and break the
+  tables' `position:sticky` columns; `touch-action:pan-x pan-y` still lets
+  every nested scroller (tables, `.jump`, `.tabscroll`) work.
+- Theme cross-fade list trimmed further (dropped `.tblwrap`/`.hero`/`.series`/
+  `.answer`/`.primer`/`.glos`/`.readout`) — the desktop lag the owner noticed
+  was the count of expanded surfaces transitioning at once; `body` + chrome +
+  `.card` + controls is enough for the effect.
+
 ## [ALTERNATIVES_REJECTED]
 
 - **Hybrid type (Inter + a condensed display face).** Considered and offered;
