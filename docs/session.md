@@ -2,7 +2,8 @@
 <!-- Authoritative for current state and task priority. Update at every phase exit. -->
 
 **SESSION:** 003 — PHASE_5_APP_SYNC + PHASE_6_APP_IA + PHASE_3H/3I/3J (identity
-  spine Q1–Q4, all LIVE) · **PHASE_7 visual redesign — all 3 commits done, LIVE**
+  spine Q1–Q4, all LIVE) · PHASE_7 visual redesign (done, LIVE) ·
+  **PHASE_8_NAV_REDESIGN IN PROGRESS** (commit 1/3 done: 8→5 nav, Hoy→Inicio, Consulta→Archivo)
 **DATE:** 2026-09-11
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
@@ -22,11 +23,17 @@ decorative gradients flattened, 10 JS hexes → tokens, header `auto/light/dark`
 cycle. + follow-up (`7709ec0`): locked the mobile viewport — `maximum-scale=1,
 user-scalable=no` + `html{overscroll-behavior:none;overflow-x:clip;
 touch-action:pan-x pan-y}` (no bounce/pan/zoom; all pre-existing, not PHASE_7).
-Harnesses: `nav_motion`, `table`, `theme` (`scratchpad/`). Open threads:
-**PHASE_7 follow-up (owner /btw, not urgent): compact mobile header** — the
-sticky header (wordmark + theme/gear icons + "Mi equipo" pill) plus the tab
-row eat a lot of vertical space before content; wants a collapsed/condensed
-treatment on phones.
+Harnesses: `nav_motion`, `table`, `theme` (`scratchpad/`).
+
+**PHASE_8_NAV_REDESIGN in flight** (`nav_redesign_spec.md`) — commit 1/3 done:
+8→5 top nav (wordmark=Inicio, which absorbed Hoy; Consulta folded into
+Archivo=ex-Fuentes); `NAV`/`BOTTOM` split; `MOVED` redirects for the retired
+hashes; club pill still in header (moves in 8.2). 8.2 = mega-menu +
+mobile section-landing; 8.3 = editorial blocks (Inicio hero/hub, showPlayer,
+showTeam). Harness `ia_harness.mjs`. The **compact mobile header** thread is
+subsumed — 8.1 already drops toward it (mobile tab row goes in 8.2).
+
+Open threads:
 docs/project.md D2 refinement for the Grises/Caciques de Humacao split (D-045);
 the ~451-row review-queue long tail (needs an owner-curated crosswalk — Q1-Q4
 are all closed by code); PHASE_3D id 13352 (jugador.asp career, no players_canonical

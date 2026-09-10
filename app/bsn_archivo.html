@@ -401,11 +401,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,
   padding:0 calc(10px + env(safe-area-inset-right)) 0 calc(10px + env(safe-area-inset-left))}
 .tabscroll::-webkit-scrollbar{display:none}
 nav.tabs button{background:none;border:0;color:var(--ink-3);font-weight:700;
-  padding:12px 12px 10px;white-space:nowrap;cursor:pointer;position:relative;
+  padding:13px 4px 12px;margin:0 9px;white-space:nowrap;cursor:pointer;position:relative;
   font-size:var(--fs-sm);letter-spacing:-.01em}
 nav.tabs button:hover{color:var(--ink)}
-nav.tabs button[aria-selected="true"]{color:var(--blanco)}
-nav.tabs button[aria-selected="true"]::after{content:"";position:absolute;left:9px;right:9px;bottom:0;height:3px;
+nav.tabs button[aria-selected="true"]{color:var(--blanco);font-weight:800}
+nav.tabs button[aria-selected="true"]::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
   border-radius:2px 2px 0 0;transform-origin:center;
   animation:tabink var(--dur) var(--ease) both;
   background:linear-gradient(90deg,var(--rojo) 0 33.3%,var(--flag-w) 33.3% 66.6%,var(--azul) 66.6% 100%)}
@@ -852,7 +852,7 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
 
 <main class="wrap">
 
-<!-- ═══════════ INICIO ═══════════ -->
+<!-- ═══════════ INICIO — home + the live "Ahora" view (PHASE_8) ═══════════ -->
 <section id="inicio" role="tabpanel" aria-labelledby="tab-inicio">
   <div class="panel">
     <div id="hubTop"></div>
@@ -864,13 +864,13 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
     </div>
     <div id="hubGrid"></div>
     <p class="note" id="hubFoot"></p>
-  </div>
-</section>
-
-<!-- ═══════════ HOY ═══════════ -->
-<section id="hoy" hidden role="tabpanel" aria-labelledby="tab-hoy">
-  <div class="panel">
     <div id="heroBox"></div>
+
+    <div class="phead">
+      <div class="tri"></div>
+      <h2 class="big">La liga ahora</h2>
+      <p class="lede">Dónde está el BSN en este momento — la Final Brava de 2026, cómo terminaron las posiciones, y lo que viene.</p>
+    </div>
 
     <h3 class="sec">Lo próximo</h3>
     <p class="lede">Cuándo se espera que arranque la temporada y qué fechas vienen. Lo confirmado y lo estimado van marcados aparte.</p>
@@ -904,28 +904,6 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
 </section>
 
 <!-- ═══════════ CONSULTA ═══════════ -->
-<section id="consulta" hidden role="tabpanel" aria-labelledby="tab-consulta">
-  <div class="panel">
-    <div class="phead">
-      <div class="tri"></div>
-      <h2 class="big">Consulta</h2>
-      <p class="lede">Pregunta en español o arma la consulta tú mismo. Todo sale del archivo local — sin internet, sin API, sin esperar. Cada resultado se puede exportar a CSV.</p>
-    </div>
-
-    <div class="ask">
-      <input type="search" id="askInput" placeholder="¿Quién ganó en 1971?  ·  títulos de Bayamón  ·  líder de anotación 1987"
-             autocomplete="off" spellcheck="false" aria-label="Pregunta al archivo">
-    </div>
-    <div class="chips" id="askChips"></div>
-    <div id="askAnswer" role="status" aria-live="polite"></div>
-
-    <h3 class="sec">Constructor de consultas</h3>
-    <p class="lede">Escoge una tabla, filtra, ordena y bájala. Es el mismo trabajo que harías en SQL, sobre los datos que este archivo puede verificar. La rejilla de cobertura por década vive ahora en Fuentes.</p>
-    <div id="qbControls"></div>
-    <div id="qbResult"></div>
-  </div>
-</section>
-
 <!-- ═══════════ HISTORIA ═══════════ -->
 <section id="historia" hidden role="tabpanel" aria-labelledby="tab-historia">
   <div class="panel">
@@ -1116,13 +1094,28 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
 </section>
 
 <!-- ═══════════ FUENTES ═══════════ -->
-<section id="fuentes" hidden role="tabpanel" aria-labelledby="tab-fuentes">
+<!-- ═══════════ ARCHIVO — ask + provenance + gaps (PHASE_8: was Consulta + Fuentes) ═══════════ -->
+<section id="archivo" hidden role="tabpanel" aria-labelledby="tab-archivo">
   <div class="panel">
     <div class="phead">
       <div class="tri"></div>
-      <h2 class="big">Fuentes y huecos</h2>
-      <p class="lede">Un archivo que esconde sus huecos vale menos que uno que los enseña. Aquí está todo lo que falta, lo que está en disputa, y de dónde sale cada dato.</p>
+      <h2 class="big">El archivo</h2>
+      <p class="lede">Pregúntale directamente, o mira qué tiene, qué le falta y de dónde sale cada dato. Un archivo que esconde sus huecos vale menos que uno que los enseña.</p>
     </div>
+
+    <div class="ask">
+      <input type="search" id="askInput" placeholder="¿Quién ganó en 1971?  ·  títulos de Bayamón  ·  líder de anotación 1987"
+             autocomplete="off" spellcheck="false" aria-label="Pregunta al archivo">
+    </div>
+    <div class="chips" id="askChips"></div>
+    <div id="askAnswer" role="status" aria-live="polite"></div>
+
+    <h3 class="sec">Constructor de consultas</h3>
+    <p class="lede">Escoge una tabla, filtra, ordena y bájala a CSV. El mismo trabajo que harías en SQL, sobre los datos que este archivo puede verificar.</p>
+    <div id="qbControls"></div>
+    <div id="qbResult"></div>
+
+    <h3 class="sec">Cobertura del archivo</h3>
     <p class="lede">La cobertura no es pareja. Esta rejilla dice, por década, cuánto del archivo está verificado — para que nadie construya un análisis sobre un hueco.</p>
     <div id="coverage"></div>
     <div id="sourcesBox"></div>
@@ -1152,7 +1145,7 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
   <footer class="foot">
     <div class="tri" style="width:60px;margin-bottom:12px"></div>
     <p style="margin:0">BSN Archivo · construido por <b>bennizpr</b> · San Juan, Puerto Rico.<br>
-    Archivo personal. Los datos vienen de fuentes públicas citadas en «Fuentes y huecos». No está afiliado al Baloncesto Superior Nacional.</p>
+    Archivo personal. Los datos vienen de fuentes públicas citadas en «El archivo». No está afiliado al Baloncesto Superior Nacional.</p>
   </footer>
 </div>
 
@@ -2356,7 +2349,7 @@ const ACTIVE=FKEYS.filter(k=>F[k].active);
 
 const NOTES={
   1942:'Wikipedia en español separa 1942 y 1942-43; San Germán ganó ambas. Aquí van juntas, por eso el club aparece con 13 y no 14.',
-  1945:'Las fuentes discrepan sobre el campeón. Ver Fuentes.',
+  1945:'Las fuentes discrepan sobre el campeón. Ver «El archivo».',
   1953:'Ninguna fuente consultada registra campeón.',
   2024:'Subcampeón confirmado en la página de la temporada, no en la tabla de la franquicia.',
   2026:'Confirmado: 81-74 en el séptimo juego, 23 de agosto de 2026.'
@@ -2645,28 +2638,30 @@ function portrait(name,c1,c2,w=54,h=66){
 /* ============================================================
    NAVIGATION
    ============================================================ */
-/* PHASE_6 — 9→8 nav tabs. Perfil moved to the gear button (settings, not a
-   destination); Calendario / Récords / Refuerzos dissolved into Hoy / Historia
-   / Equipos / Fuentes. Section ids are unchanged so showTab / deep links / the
-   ~55 builders keep working. */
+/* PHASE_8 — 8→5 top nav. The wordmark is Inicio (home + the live "Ahora"
+   view, which absorbed the old Hoy). Consulta folded into Archivo (was
+   Fuentes). Perfil stays on the gear button. Section ids that survive keep
+   showTab / deep links / the ~55 builders working; old hashes are redirected
+   in applyHash().
+   TABS[0] (inicio) is the home target — rendered in the mobile bottom bar
+   but NOT the desktop top strip (that's NAV = TABS.slice(1)). */
 const TABS=[
   ['inicio','Inicio','M3 11 12 3l9 8M5 10v10h14V10'],
-  ['hoy','La liga hoy','M12 7v5l3 2M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18'],
   ['historia','Historia','M4 5h16M4 12h16M4 19h10'],
-  ['equipos','Equipos','M4 5h6v6H4ZM14 5h6v6h-6ZM4 13h6v6H4ZM14 13h6v6h-6'],
   ['jugadores','Jugadores','M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4 21c0-4 4-6 8-6s8 2 8 6'],
-  ['consulta','Consulta','M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14ZM20 20l-4-4'],
+  ['equipos','Equipos','M4 5h6v6H4ZM14 5h6v6h-6ZM4 13h6v6H4ZM14 13h6v6h-6'],
   ['juega','Juega','M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18ZM3 12h18M12 3c3 4 3 14 0 18M12 3c-3 4-3 14 0 18'],
-  ['fuentes','Fuentes','M6 3h9l4 4v14H6ZM15 3v4h4M9 12h7M9 16h7']
+  ['archivo','Archivo','M6 3h9l4 4v14H6ZM15 3v4h4M9 12h7M9 16h7']
 ];
-const BOTTOM=['inicio','hoy','historia','jugadores','consulta'];
+const NAV=TABS.slice(1);                 /* desktop top strip — inicio is the wordmark */
+const BOTTOM=TABS.map(t=>t[0]);          /* mobile bottom bar — all 6 */
 /* Every <section role="tabpanel"> id. Perfil has no nav button (gear only). */
 const PANELS=[...TABS.map(t=>t[0]),'perfil'];
 let CURRENT='inicio';
 
 function buildNav(){
   const s=$('#tabscroll'); s.innerHTML='';
-  TABS.forEach(([id,label])=>{
+  NAV.forEach(([id,label])=>{
     const b=el('button');
     b.id='tab-'+id; b.textContent=label; b.setAttribute('role','tab');
     b.setAttribute('aria-selected',id===CURRENT?'true':'false');
@@ -2693,7 +2688,7 @@ function showTab(id,noScroll){
   if(shown && changed){   /* re-trigger the enter animation */
     shown.classList.remove('panel-enter'); void shown.offsetWidth; shown.classList.add('panel-enter');
   }
-  TABS.forEach(([t])=>{
+  NAV.forEach(([t])=>{
     const btn=document.getElementById('tab-'+t);
     if(btn) btn.setAttribute('aria-selected',t===id?'true':'false');
   });
@@ -3590,7 +3585,7 @@ function showPlayer(name,id){
     </div>
     ${dagger?'<div class="warn">† 2.302 asistencias en 537 juegos da 4,3 por juego, no 5,1 como publica la fuente. La contradicción está en el dato original y no se ha resuelto; por eso su promedio de asistencias no se usa en los juegos.</div>':''}
     ${missing.length?`<div class="warn">Lo que este archivo <b>no</b> sabe de ${esc(p.name.split(' ')[0])}: ${esc(missing.join(', '))}. Antes de 2011 no existe ninguna base pública de estadísticas por temporada del BSN.</div>`:''}
-    ${p.legendWhy?`<div class="note"><b>Leyenda</b> por: ${esc(p.legendWhy.join(" · "))}. El criterio está en Fuentes.</div>`:''}
+    ${p.legendWhy?`<div class="note"><b>Leyenda</b> por: ${esc(p.legendWhy.join(" · "))}. El criterio está en «El archivo».</div>`:''}
     <div class="btnrow"><button class="btn" onclick="cmpFromPlayer(${JSON.stringify(p.name).replace(/"/g,'&quot;')})">Comparar con otro jugador</button></div>
     <div class="note">Aparece en: ${esc(Array.from(p.src).join(' · '))}</div>
   </div>`;
@@ -3825,7 +3820,7 @@ const LEGEND_NOTE=[
    'Seis nombres que tenían la etiqueta no pasan las pruebas y ahora aparecen como «Figura del BSN»: Carlos Arroyo, J. J. Barea, Butch Lee, Jerome Mincy, Sammy Betancourt y Raúl «Tinajón» Feliciano. No es que valgan menos. Es que su huella está en la NBA, en la selección o en los años ochenta, y este archivo no guarda todavía las cifras que lo probarían. El hueco es del archivo, no del jugador.']
 ];
 function buildSources(){
-  const host=$('#fuentes').querySelector('#sourcesBox');
+  const host=$('#sourcesBox');
   const conflicts=[
     ['1945','Campeón en disputa','Wikipedia en inglés dice Capitalinos de San Juan; la de español, Santos de San Juan. Ambas coinciden en el subcampeón, Gallitos de la UPR. El archivo carga la versión inglesa y lo marca.'],
     ['1942–43','Temporada partida','Español separa 1942 y 1942-43, ambas de San Germán. Aquí van juntas, así que San Germán aparece con 13 títulos donde casi todas las fuentes dicen 14. Arreglarlo necesita una clave de temporada que admita años partidos.'],
@@ -4395,7 +4390,7 @@ const ASKERS=[
     if(!/que es|que significa|que quiere decir|definicion de|what is|explicame/.test(q)) return null;
     const g=glosByText(q); if(!g) return null;
     return {q:'Glosario', big:esc(g.t), sub:esc(g.d),
-      chips:`<button class="chip" onclick="showTab('fuentes')">Ver el glosario completo</button>`};
+      chips:`<button class="chip" onclick="showTab('archivo')">Ver el glosario completo</button>`};
   },
   /* fallecidos: la lista completa que el archivo sí puede dar */
   q=>{
@@ -4513,7 +4508,7 @@ const ASKERS=[
     if(m){
       const y=+m[1], r=MVP_YEARS.find(x=>x[0]===y);
       if(!r) return {q:'MVP '+y,big:'No está en el archivo',
-        sub:'Solo se recuperaron los ganadores repetidos y las temporadas con página propia. Ver Fuentes.',
+        sub:'Solo se recuperaron los ganadores repetidos y las temporadas con página propia. Ver «El archivo».',
         foot:'Hueco conocido.'};
       return {q:'Más Valioso '+y,big:esc(r[1]),sub:esc(r[2]),
         chips:`<button class="chip" onclick="showPlayer(${JSON.stringify(r[1]).replace(/"/g,'&quot;')})">Ficha</button>`};
@@ -4533,7 +4528,7 @@ const ASKERS=[
       const s=SCORING.find(x=>x[0]===y);
       if(!s) return {q:'Campeón de anotación '+y,big:'No está en el archivo',
         sub:'Solo se han bajado los años 1966–1991. Los tramos 1956–65 y 1992 en adelante están en la misma tabla de Wikipedia, sin bajar.',
-        foot:'Hueco conocido, listado en Fuentes.'};
+        foot:'Hueco conocido, listado en «El archivo».'};
       return {q:'Campeón de anotación '+y,big:esc(s[1]),
         sub:`${esc(s[2])} · ${s[4]} ${s[3]==='ppg'?'por juego':'puntos en total'}`,
         chips:`<button class="chip" onclick="showPlayer(${JSON.stringify(s[1]).replace(/"/g,'&quot;')})">Ficha</button>`};
@@ -4929,37 +4924,29 @@ const MESES=['enero','febrero','marzo','abril','mayo','junio',
              'julio','agosto','septiembre','octubre','noviembre','diciembre'];
 const DIAS=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
 
-/* PHASE_6 — live-state entry points only, not a mirror of the tab bar.
-   `act` (optional) overrides the plain showTab(tab) click. */
+/* PHASE_8 — the five sections behind the wordmark. `act` (optional) overrides
+   the plain showTab(tab) click. Reworked into editorial blocks in 8.3. */
 const HUB=[
-  {tab:'hoy',t:'La liga hoy',d:'Dónde está la liga ahora mismo y la Final Brava de 2026.',
-   n:()=>hubNum(()=>{
-     const d=daysBetween(todayISO(),SEASON_STATE.nextEstimate);
-     return d>0?d:Math.abs(daysBetween(SEASON_STATE.lastGame,todayISO()));
-   },'—'),
-   l:'días'},
-  {tab:'juega',t:'Juega',d:'La Cuadrícula del día, la Temporada Perfecta y dos más.',
-   n:()=>hubNum(()=>puzzleNo(),'—'),l:'cuadrícula de hoy',pre:'#'},
+  {tab:'historia',t:'Historia',d:'La cinta de campeones, temporada por temporada, y los premios por año.',
+   n:()=>hubNum(()=>YEARS.length,'—'),l:'temporadas'},
+  {tab:'jugadores',t:'Jugadores',d:'El índice, las biografías, líderes de carrera y el Salón.',
+   n:()=>hubNum(()=>PINDEX.length,'—'),l:'en el índice'},
   {tab:'jugadores',t:'Comparar',d:'Dos o tres jugadores lado a lado. Georgie Torres contra Mario Morales, para empezar.',
    act:"cmpPreset('Georgie Torres','Mario Morales')",
    n:()=>hubNum(()=>(PINDEX?PINDEX.length:0),'—'),l:'jugadores para elegir'},
-  {tab:'jugadores',t:'Jugadores',d:'El índice, las biografías, líderes de carrera y el Salón.',
-   n:()=>hubNum(()=>PINDEX.length,'—'),l:'en el índice'},
-  {tab:'historia',t:'Historia',d:'La cinta de campeones, temporada por temporada, y los premios por año.',
-   n:()=>hubNum(()=>YEARS.length,'—'),l:'temporadas'},
   {tab:'equipos',t:'Equipos',d:'Cada franquicia que ha pisado la liga, viva o desaparecida.',
    n:()=>hubNum(()=>FKEYS.length,'—'),l:'franquicias'},
-  {tab:'consulta',t:'Consulta',d:'Pregunta en español o arma la consulta y expórtala a CSV.',
-   n:()=>hubNum(()=>ASKERS.length,'—'),l:'tipos de pregunta'},
-  {tab:'fuentes',t:'Fuentes',d:'Todo lo que falta, lo que está en disputa y de dónde sale cada dato.',
-   n:()=>hubNum(()=>COVERAGE?COVERAGE.length:0,'—'),l:'décadas medidas'}
+  {tab:'juega',t:'Juega',d:'La Cuadrícula del día, la Temporada Perfecta y dos más.',
+   n:()=>hubNum(()=>puzzleNo(),'—'),l:'cuadrícula de hoy',pre:'#'},
+  {tab:'archivo',t:'Archivo',d:'Pregunta en español, exporta a CSV, y mira qué falta y de dónde sale cada dato.',
+   n:()=>hubNum(()=>ASKERS.length,'—'),l:'tipos de pregunta'}
 ];
 
 function hubAsk(e){
   if(e.key!=='Enter') return;
   const v=$('#hubSearch').value.trim();
   if(!v) return;
-  showTab('consulta');
+  showTab('archivo');
   runAsk(v);
 }
 
@@ -5239,7 +5226,7 @@ function buildPrimer(){
         cancha es talento puertorriqueño.</p>
       <p>Este archivo cubre las 97 temporadas: quién ganó, quién anotó, quién jugó y qué se
         perdió por el camino. Si una palabra no te suena, está en el
-        <button class="x" onclick="showTab('fuentes')">glosario</button>.</p>
+        <button class="x" onclick="showTab('archivo')">glosario</button>.</p>
     </div>`;
 }
 
@@ -6405,7 +6392,7 @@ const BOOT=[
   ['reglas de refuerzos',buildRefRules],
   ['línea de tiempo',buildRefTimeline],
   ['anotadores refuerzos',buildRefScorers],
-  ['fuentes',buildSources],
+  ['archivo',buildSources],
   ['glosario',buildGlossary],
   ['primer',buildPrimer],
   ['perfil',buildProfile],
@@ -6487,7 +6474,7 @@ async function runBoot(){
    while the streak strip showed today's number. */
 setInterval(checkRollover,60000);
 
-/* Deep links: #consulta, #equipos/bay, #jugador/georgie-torres */
+/* Deep links: #archivo, #equipos/bay, #jugador/georgie-torres */
 /* ============================================================
    PLEGADO DE SECCIONES
 
@@ -6649,7 +6636,9 @@ function applyHash(){
   const h=(location.hash||'').replace(/^#/,'');
   if(!h) return;
   const parts=h.split('/'), [a,b]=parts;
-  const MOVED={records:'historia',calendario:'hoy',refuerzos:'historia'};   /* PHASE_6 — old tab hashes -> new home */
+  const MOVED={records:'historia',refuerzos:'historia',               /* PHASE_6 */
+               hoy:'inicio',calendario:'inicio',                      /* PHASE_8 — Hoy folded into Inicio */
+               consulta:'archivo',fuentes:'archivo'};                 /* PHASE_8 — Consulta folded into Archivo */
   if(MOVED[a]){ showTab(MOVED[a]); return; }
   if(a==='comparar'){   /* #comparar/georgie-torres/mario-morales */
     showTab('jugadores'); setJugView('comparar');
