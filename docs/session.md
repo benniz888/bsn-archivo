@@ -57,11 +57,12 @@ Session 002 (cont.) — all pushed to origin/main:
   602→583, canonical 3,303→3,343, career-seasons +1,206.
 - PHASE_3H follow-up — `jugador05.asp` fetch (600 pages, 2005-06 scouting
   bios, NO stat table) + `merge_jugador05` (enrich-only, never mints — D1).
-  **COMPLETE (data-only; app surface deferred):** curated `jug05_xwalk.csv` +
+  **COMPLETE:** curated `jug05_xwalk.csv` +
   `jugador05_xwalk.csv` tier-0 then auto match → 155 distinct → **152 matched,
   3 review**; 159 empty spine fields filled (birth-year coverage 2,007→2,019),
   `data/clean/player_bios.csv` (152 rows, 98 w/ prose) → `bio` block in
-  `web/data/players/<id>.json`. id_map / review queue **unchanged** (not a
+  `web/data/players/<id>.json` → **"Reseña de bsnpr.com" blurb** in
+  `loadPlayerExtra` (player card). id_map / review queue **unchanged** (not a
   lever). Of 15 DOB conflicts, **10 corrected** via
   `data/interim/player_dob_overrides.csv` (`apply_dob_overrides()` after
   `build_canonical` — 9 jug05+jugador05 concur, +1 impossible enciclopedia
@@ -1694,7 +1695,8 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
       fields filled, `player_bios.csv` (152 rows). id_map / review queue
       unchanged — not a lever, its value is biographical (`jugador05_spec.md`).
       DOB conflicts: 10/15 corrected (`player_dob_overrides.csv`), 5 residual.
-      Deferred: the player-card prose surface (`bio.notes_es`).
+      `bio.notes_es` surfaced as a "Reseña de bsnpr.com" blurb on the player
+      card (`loadPlayerExtra`). Phase fully closed.
    c. **Manual historic seed** (identity_spine_spec Q3; last, hand work). A
       hand-built list for the ~50 historic scoring champions 1948–1970 and the
       `lideres2000` surname-only leaders absent from the encyclopedia — the bulk

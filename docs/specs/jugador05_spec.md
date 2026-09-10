@@ -69,8 +69,6 @@ Owner-approved 2026-09-09. "Defer 4 and 5, wire in the data-only pipeline."
   file only acts when jug05 **and** jugador05 independently agree against the
   enciclopedia (or the enciclopedia value is impossible, e.g. id 417's
   `2/20/1948`). A lone jugador05 disagreement stays flagged, not applied.
-- **A player-card "Reseña (2005–06)" surface.** Owner deferred (decision 5);
-  the data ships in `web/data`, the app change is a separate follow-up.
 
 ## [RESULT] (2026-09-10)
 
@@ -110,7 +108,10 @@ flagged ids, not stable external keys.
    is impossible. The **5 residual** (139 Luna Colón, 812 Jiménez, 911 Soto,
    2016 Lugo — jugador05-only; 2090 Hourruitiner — canonical + jug05 agree,
    jugador05 is the outlier) stay flagged in `jugador05_dob_conflicts.csv`.
-2. **Deferred (owner decision 5):** surface `bio.notes_es` on the player card.
+2. **RESOLVED (owner decision 5):** `loadPlayerExtra` renders `bio.notes_es`
+   as a "Reseña de bsnpr.com · <roster year>" blurb above the season table;
+   a player whose only archive record is the reseña now reads "sólo la reseña
+   de arriba" instead of "sin ficha detallada".
 3. **RESOLVED:** `jugador05_xwalk.csv` worked the 26 review rows — 23 bridged
    (13 high, 10 medium), 3 left in review by design.
 4. **RESOLVED:** `990004`/`990030` (minted duplicates of ids 93 / 2261, found

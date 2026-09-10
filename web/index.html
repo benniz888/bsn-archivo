@@ -3505,6 +3505,15 @@ async function loadPlayerExtra(name,idHint){
   if(d.nationality && d.nationality!=='Puerto Rico') top.push(esc(d.nationality));
   if(top.length) h+=`<div class="muted" style="font-size:13px">${top.join(' · ')}</div>`;
 
+  /* jugador05.asp scouting note (2005–06), where the archive has one */
+  const bio=d.bio||null;
+  if(bio && bio.notes_es){
+    const yr=bio.roster && bio.roster.year;
+    h+=`<div class="note" style="margin-top:10px">Reseña de bsnpr.com`
+      +`<span class="muted">${yr?' · '+yr:''}</span></div>`
+      +`<p class="muted" style="font-size:13.5px;margin:4px 0 0;line-height:1.5">${esc(bio.notes_es)}</p>`;
+  }
+
   const car=d.career||[];
   if(car.length){
     let tp=0,tg=0; const sea=new Set();
@@ -3528,7 +3537,7 @@ async function loadPlayerExtra(name,idHint){
         +`Serie regular; suma de la tabla por temporada de bsnpr.com, no incluye playoffs.</div>`;
   }else{
     h+=`<div class="note" style="margin-top:10px">Sin estadísticas por temporada en el archivo `
-      +`<span class="muted">— sin ficha detallada</span>.</div>`;
+      +`<span class="muted">— ${bio&&bio.notes_es?'sólo la reseña de arriba':'sin ficha detallada'}</span>.</div>`;
   }
   host.innerHTML=`<div class="card" style="margin-top:12px">${h}`
     +`<div class="note">Ficha del archivo de bsnpr.com (jugador #${id}) vía Wayback Machine.</div></div>`;
