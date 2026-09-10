@@ -89,20 +89,21 @@ class TestBuild:
 
     def test_players_index(self):
         pl = json.loads((b.WEB / "index" / "players.json").read_text())
-        assert len(pl) == 3303
+        assert len(pl) == 3345                       # 3303 league ids + 42 jug05-minted (D-047)
         assert all(isinstance(p["id"], int) for p in pl)
         assert pl == sorted(pl, key=lambda p: p["id"])
+        assert sum(1 for p in pl if p["id"] > 990000) == 42
 
     def test_manifest_counts_match(self):
         man = json.loads((b.WEB / "manifest.json").read_text())
-        assert man["counts"]["players"] == 3303
+        assert man["counts"]["players"] == 3345
         assert man["counts"]["seasons"] == 98
         assert len(man["source_digest"]) == 64      # sha256 hex
 
     def test_player_detail_file(self):
         p = json.loads((b.WEB / "players" / "37.json").read_text())
         assert p["name"] == "Carmona Sanchez, Alejandro"
-        assert len(p["career"]) == 17
+        assert len(p["career"]) >= 17                # jug05 (D-047) added pre-2007 seasons
         assert p["career"][0]["franchise_id"]        # team_raw resolved
         assert all(c["games"] is None or isinstance(c["games"], int) for c in p["career"])
         # detail files only for ids in the canonical index

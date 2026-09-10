@@ -74,9 +74,26 @@ Owner-approved 2026-09-09.
 - **Manual seed list for the ~50 pre-1970 historic scoring champions** — the
   other Q3 candidate. Not mutually exclusive; deferred.
 
+## [RESULT] (2026-09-09)
+
+600 pages → **200 distinct players** (deduped by name + birth date — the same
+player has several pages under different `r`/`r2` tokens). `merge_jug05` runs
+a 3-tier match against `players_canonical`:
+
+| tier | test | n | action |
+|---|---|--:|---|
+| enrich | exact name+year, OR canonical apellidos ⊇ jug05 apellidos (token-prefix) + given[0] + birth date ±7d | **123** | union career rows |
+| mint | no canonical match at all | **42** | new canonical `990001`+ (D-047) |
+| review | name + birth-year collides with a canonical but the fuller match fails | **35** | `jug05_review.csv`, spine unchanged |
+
+**+1,031 career-season rows** (877 to existing players). Net: `player_id_map`
+649 → **661**, review queue 602 → **590**, `players_canonical` 3,303 → **3,345**.
+
 ## [OPEN_QUESTIONS]
 
-1. jug05-only players with no canonical match — leave in the review queue
-   (current plan, D1-strict), or promote to new canonical ids with a
-   `jug05`-provenance flag? Default: review queue; revisit if the count is
-   large and the names are clean.
+1. **RESOLVED — owner chose (a):** mint with flagged synthetic ids (`990001`+,
+   `source_id=wayback_bsnpr_jug05`, `has_profile=jug05`). D-047.
+2. `jug05_review.csv` (35) — nickname bridges ("Larry" Ayuso = Elías, "Bobby"
+   Brannen = Robert) and spelling variants (Jefrey/Jeffrion Aubry). A
+   prefix/nickname-aware pass could resolve most; deferred to the owner.
+3. `jugador05.asp` (406 param-200s, same era) — not fetched. Possible follow-up.

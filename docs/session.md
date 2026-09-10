@@ -7,7 +7,7 @@
 
 **CURRENT STATE:** Archive is live at benniz888.github.io/bsn-archivo — shell
 fetches per-entity JSON from `web/data/`, offline-capable (SW), installable,
-8-tab IA. Data pipeline: 3,303 players / 98 seasons / 1,292 games / 68 scoring
+8-tab IA. Data pipeline: 3,345 players (42 jug05-minted, D-047) / 98 seasons / 1,292 games / 68 scoring
 titles / 47 MVP. **No phase in flight.** Open threads (all owner-side / minor):
 docs/project.md D2 refinement for the Grises/Caciques de Humacao split (D-045);
 PHASE_3D id 13352 (jugador.asp career, no players_canonical row); PHASE_5F
@@ -47,11 +47,12 @@ Session 002 (cont.) — all pushed to origin/main:
   only listed files), kills the `img/` 404s.
   **PHASE_5_APP_SYNC COMPLETE** (5F/PBP deferred behind PBP↔identity linking).
 
-**SESSION 003 (2026-09-09):** PHASE_6_APP_IA — reorganize / UX pass, structure
-only (no colours/type/style). **COMPLETE** — plan approved in full, 8 commits
-on `phase-6-app-ia`, merged to `main` via PR #1 (`27c612c`), **verified LIVE**
-at benniz888.github.io/bsn-archivo (nav, gear-icon Perfil, `#comparar` deep
-link all confirmed). Branch deleted.
+**SESSION 003 (2026-09-09):**
+- PHASE_6_APP_IA — reorganize / UX pass, structure only. **COMPLETE**, merged
+  via PR #1 (`27c612c`), verified LIVE.
+- PHASE_3H_JUG05 — `jug05.asp` fetch (600 pages) + `merge_jug05` (3-tier match,
+  D-047 synthetic ids). **COMPLETE**: 123 enriched, 42 minted (`990001`+), 35
+  → `jug05_review.csv`. id_map 649→661, review 602→590, canonical 3,303→3,345.
 - **Nav 12→8 tabs.** Inicio · La liga hoy · Historia · Equipos · Jugadores ·
   Consulta · Juega · Fuentes. `TABS` trimmed; `PANELS` = tab ids + `perfil`;
   `showTab`/`applyHash` gate on `PANELS.includes`. Perfil → a **gear button**
@@ -1105,7 +1106,7 @@ data SWR + null-on-miss, manifest network-first, purge-data delete, POST /
 cross-origin / non-data passthrough); `boot_harness.js` (http → `register`
 called + digest change → `purge-data` posted; file → not registered; 0 exc,
 champOf 96→96). `make verify` 329,514 / `make test` 156 unchanged.
-**Harness note (D-047 candidate):** Node ≥21 ships a read-only `navigator`
+**Harness note:** Node ≥21 ships a read-only `navigator`
 global — the harnesses' `global.navigator = {...}` silently no-ops; fixed in
 `boot_harness.js` with `Object.defineProperty`. `player_harness.js` /
 `season_harness.js` still assign directly (harmless — the app only reads
@@ -1365,6 +1366,19 @@ Decisions made session 002 (PHASE_4):
   (Criollos 1969 en.wiki vs 1976 seed).
 
 Decisions made session 002 (PHASE_5_APP_SYNC):
+- **D-047 — a canonical id may be minted from a league source with no `?id=N`
+  (PHASE_3H_JUG05, owner OQ1 = (a)).** `jug05.asp` is bsnpr.com's 2005-era
+  player page, keyed by an opaque token, not an integer id. `merge_jug05` folds
+  its 200 distinct players into the spine: 123 enrich an existing canonical
+  (D1-tier match: exact, or apellidos token-prefix + given[0] + birth date
+  ±7d), **42 mint a new canonical row** — id `990001`+ (far above the real
+  ~13,352 range), `source_id=wayback_bsnpr_jug05`, `has_profile=jug05`,
+  `confidence=jug05-only` — and 35 name+birth-year collisions go to
+  `data/interim/jug05_review.csv`, never the spine. **D1 holds**: mints require
+  name + birth date + a career table from a league source with no existing
+  match; fuzzy/ambiguous still → review queue. Effect: `player_id_map`
+  649→661, review queue 602→590, `players_canonical` 3,303→3,345,
+  `player_career_seasons` +1,031. `jug05_spec.md` / `identity_spine_spec.md` Q3.
 - **D-046 — 404-page jugador.asp snapshots leaked into player names; fixed at
   parse (owner-flagged, 5D.3b).** 3 profiles (ids 405, 1926, 2089) were
   canonically `"<Surname>, Error 404"` — the Wayback capture of

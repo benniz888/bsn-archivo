@@ -36,6 +36,7 @@ import json
 import re
 import sys
 import unicodedata
+from collections import defaultdict
 from datetime import datetime, timezone
 from io import StringIO
 from pathlib import Path
@@ -276,6 +277,193 @@ def parse_jugador() -> tuple[dict[str, dict], list[dict]]:
         }
     print(f"[jugador] {n} profiles parsed, {len(career)} career-season rows")
     return profiles, career
+
+
+# --------------------------------------------------------------------------- #
+# tranche C — jug05.asp (PHASE_3H)                                             #
+# --------------------------------------------------------------------------- #
+JUG05_SOURCE_ID = "wayback_bsnpr_jug05"
+_J5_NAME = re.compile(r"Estad[ií]sticas\s+Jugador\s+(.+?)\s+Ciudad\s+Nacimiento", re.S)
+_J5_BIO = re.compile(r"Ciudad\s+Nacimiento\s+Edad\s+Posici[oó]n\s+Altura\s+Peso\s+"
+                     r"(.*?)\s+A[nñ]o\s+Equipo\s+3pi", re.S)
+_J5_DOB = re.compile(r"\b(\d{1,2}/\d{1,2}/\d{4})\b")
+_J5_POS = re.compile(r"\b(Armador|Escolta|Alero|Delantero|Centro)"
+                     r"(?:\s*/\s*(?:Armador|Escolta|Alero|Delantero|Centro))?\b")
+_J5_CAR = re.compile(r"A[nñ]o\s+Equipo\s+3pi.+?JJ\s+PTS\s+%\s+(.+?)(?:\s+Temporadas:|\s+©|\Z)", re.S)
+_J5_ROW = re.compile(r"(\d{4})\s+([A-ZÑÁÉÍÓÚ.\- ]+?)\s+(?=\d)(.+?)(?=\s+\d{4}\s+[A-ZÑ]|\Z)", re.S)
+
+
+def parse_jug05() -> list[dict]:
+    """The 2005-era player page: one record per file (deduped by digest at fetch
+    time). Name is always present; birth date ~89%, position ~99%, career
+    ~95%. No league id — these only enrich existing canonical rows (D1)."""
+    out: list[dict] = []
+    for p, html, meta, retrieved_at in _iter_files("jug05"):
+        txt = " ".join(BeautifulSoup(html, "html.parser").get_text(" ").split())
+        if "Ciudad Nacimiento" not in txt:
+            continue
+        m = _J5_NAME.search(txt)
+        name = clean_field(m.group(1)) if m else ""
+        if not name or "," not in name:
+            continue
+        bio = (_J5_BIO.search(txt) or [None, ""])[1] if _J5_BIO.search(txt) else ""
+        dob = clean_dob((_J5_DOB.search(bio) or [None, ""])[1] if _J5_DOB.search(bio) else "")
+        pos = _J5_POS.search(bio)
+        career: list[tuple] = []
+        cm = _J5_CAR.search(txt)
+        if cm:
+            for r in _J5_ROW.finditer(cm.group(1)):
+                yr = int(r.group(1))
+                if yr < 1929 or yr > 2030:
+                    continue
+                team = squish(r.group(2))
+                # row tail is: 3pi 3pa % 2pi 2pa % TLI TLA % ASIS apg REB rpg JJ PTS ppg
+                # a complete row ends on the ppg float; JJ/PTS are the two ints before it.
+                toks = re.findall(r"\d+\.\d+|\d+%|\d+", r.group(3))
+                jj = pts = None
+                if len(toks) >= 3 and re.fullmatch(r"\d+\.\d+", toks[-1]):
+                    if toks[-3].isdigit():
+                        jj = int(toks[-3])
+                    if toks[-2].isdigit():
+                        pts = int(toks[-2])
+                career.append((yr, team, jj, pts))
+        ape, _, nom = name.partition(",")
+        out.append({
+            "name": name, "apellidos": squish(ape), "nombre": clean_field(nom),
+            "birth_date": dob, "position": pos.group(0) if pos else "",
+            "career": career, "source_url": meta.get("raw_wayback_url", ""),
+            "retrieved_at": retrieved_at,
+        })
+    # the same player has several pages (different r/r2 tokens -> different
+    # digests); collapse on name+birth_date, keeping the fullest career.
+    dedup: dict[tuple, dict] = {}
+    for r in out:
+        k = (norm_key(r["name"]), r["birth_date"])
+        cur = dedup.get(k)
+        if cur is None or len(r["career"]) > len(cur["career"]):
+            r = {**r, "career": sorted(set(r["career"]))}
+            dedup[k] = r
+    players = list(dedup.values())
+    print(f"[jug05] {len(out)} pages -> {len(players)} distinct players, "
+          f"{sum(len(r['career']) for r in players)} career-season rows")
+    return players
+
+
+JUG05_ID_BASE = 990000   # minted ids: far above the league's real ?id=N range
+
+
+def _pdate(s: str):
+    """M/D/YYYY (the bsnpr.com format) -> date, or None."""
+    m = _DATE_RE.search(s or "")
+    if not m:
+        return None
+    try:
+        mo, d, y = m.group(1).split("/")
+        return datetime(int(y), int(mo), int(d)).date()
+    except (ValueError, TypeError):
+        return None
+
+
+def merge_jug05(canon: list[dict], career: list[dict],
+                jug05: list[dict]) -> dict:
+    """Fold jug05 players into the spine. Three tiers:
+      - enrich  — the player is already canonical (exact name+year, or the
+                  canonical apellidos is a token-prefix of jug05's / vice-versa
+                  with the given name and birth date agreeing) -> union career.
+      - mint    — no canonical match at all -> a new canonical row with a
+                  flagged synthetic id (JUG05_ID_BASE + n, has_profile=jug05,
+                  D-047). PHASE_3H / owner OQ1 = (a).
+      - review  — the name+birth-year collides with a canonical but the fuller
+                  match fails -> jug05_review.csv, no change to the spine.
+    Mutates `canon` and `career` in place. Returns a counts dict + the review
+    list."""
+    exact: dict[str, list[dict]] = defaultdict(list)
+    byfam: dict[str, list[dict]] = defaultdict(list)
+    for c in canon:
+        exact[norm_key(c["canonical_name"])].append(c)
+        fam = normalize(c["apellidos"]).split()
+        if fam:
+            byfam[fam[0]].append(c)
+    have = {(r["bsnpr_id"], int(r["season"]), normalize(r["team_raw"])) for r in career}
+
+    def _match(j) -> dict | None:
+        jyr = j["birth_date"][-4:] if j["birth_date"] else ""
+        for c in exact.get(norm_key(j["name"]), []):
+            if not jyr or c["birth_year"] == jyr:
+                return c
+        jfam, jgiv, jd = normalize(j["apellidos"]).split(), normalize(j["nombre"]).split(), _pdate(j["birth_date"])
+        if not (jfam and jgiv):
+            return None
+        for c in byfam.get(jfam[0], []):
+            cfam, cgiv = normalize(c["apellidos"]).split(), normalize(c["nombre"]).split()
+            if cfam[:len(jfam)] != jfam and jfam[:len(cfam)] != cfam:
+                continue
+            if not cgiv or cgiv[0] != jgiv[0]:
+                continue
+            cd = _pdate(c["birth_date"])
+            if jd and cd and abs((jd - cd).days) <= 7:
+                return c
+            if (not jd or not cd) and jyr and c["birth_year"] == jyr:
+                return c
+        return None
+
+    def _union_career(pid, j):
+        n = 0
+        for yr, team, jj, pts in j["career"]:
+            k = (pid, yr, normalize(team))
+            if k in have:
+                continue
+            have.add(k)
+            career.append({"bsnpr_id": pid, "season": yr, "team_raw": team,
+                           "games": jj, "points": pts, "source_id": JUG05_SOURCE_ID,
+                           "source_url": j["source_url"], "retrieved_at": j["retrieved_at"]})
+            n += 1
+        return n
+
+    enriched = added = 0
+    to_mint, review = [], []
+    for j in jug05:
+        c = _match(j)
+        if c:
+            enriched += 1
+            added += _union_career(c["bsnpr_id"], j)
+            continue
+        jfam = normalize(j["apellidos"]).split()
+        jyr = j["birth_date"][-4:] if j["birth_date"] else ""
+        collide = [x for x in byfam.get(jfam[0], []) if jyr and x["birth_year"] == jyr] if jfam else []
+        (review if collide else to_mint).append(j)
+        if collide:
+            review[-1] = {"name": j["name"], "birth_date": j["birth_date"],
+                          "position": j["position"],
+                          "seasons": ";".join(str(s) for s, *_ in j["career"]),
+                          "collides_with": " | ".join(f'{x["bsnpr_id"]} {x["canonical_name"]}' for x in collide)}
+
+    to_mint.sort(key=lambda j: (norm_key(j["name"]), j["birth_date"]))
+    minted = 0
+    for j in to_mint:
+        pid = str(JUG05_ID_BASE + minted + 1)
+        minted += 1
+        yrs = [s for s, *_ in j["career"]]
+        by = j["birth_date"].split("/")[-1] if j["birth_date"] else ""
+        canon.append({
+            "bsnpr_id": pid, "canonical_name": j["name"],
+            "normalized_name": normalize(j["name"]),
+            "apellidos": j["apellidos"], "nombre": j["nombre"], "nickname": "",
+            "birth_date": j["birth_date"], "birth_year": by, "birth_city": "",
+            "nationality": "", "position": j["position"],
+            "first_season": str(min(yrs)) if yrs else "",
+            "last_season": str(max(yrs)) if yrs else "",
+            "n_seasons": str(len(set(yrs))), "has_profile": "jug05",
+            "confidence": "jug05-only", "source_id": JUG05_SOURCE_ID,
+            "source_url": j["source_url"], "retrieved_at": j["retrieved_at"],
+        })
+        added += _union_career(pid, j)
+
+    print(f"[jug05] {len(jug05)} players -> {enriched} enriched, {minted} minted "
+          f"(id {JUG05_ID_BASE+1}..{JUG05_ID_BASE+minted}), {len(review)} to review; "
+          f"{added} new career-season rows")
+    return {"enriched": enriched, "minted": minted, "review": len(review),
+            "career_rows": added, "review_list": review}
 
 
 # --------------------------------------------------------------------------- #
@@ -587,10 +775,14 @@ def main() -> int:
     enc = parse_enciclopedia()
     prof, career = parse_jugador()
     canon = build_canonical(enc, prof)
-    aliases = build_aliases(canon, enc)
+    jug05_review: list[dict] = []
+    if (RAW_DIR / "jug05").exists():
+        jug05_review = merge_jug05(canon, career, parse_jug05())["review_list"]
+    aliases = build_aliases(canon, enc)   # after minting, so jug05 rows get aliases
     mapped, review = build_id_map(canon, aliases, career)
 
-    _write_csv(CLEAN_DIR / "players_canonical.csv", canon, [
+    _write_csv(CLEAN_DIR / "players_canonical.csv",
+               sorted(canon, key=lambda c: int(c["bsnpr_id"])), [
         "bsnpr_id", "canonical_name", "normalized_name", "apellidos", "nombre",
         "nickname", "birth_date", "birth_year", "birth_city", "nationality",
         "position", "first_season", "last_season", "n_seasons", "has_profile",
@@ -612,6 +804,9 @@ def main() -> int:
                ["obs_source", "player_raw", "club_raw", "season",
                 "candidate_ids", "candidate_names", "club_franchise_id",
                 "club_match_ids", "reason"])
+    _write_csv(INTERIM_DIR / "jug05_review.csv",
+               sorted(jug05_review, key=lambda r: r["name"]),
+               ["name", "birth_date", "position", "seasons", "collides_with"])
 
     with_profile = sum(1 for c in canon if c["has_profile"] == "yes")
     with_birth = sum(1 for c in canon if c["birth_year"])

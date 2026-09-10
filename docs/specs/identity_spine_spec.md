@@ -197,13 +197,19 @@ no observation is both mapped and queued.
    by season" bucket still does not move on club alone — those candidates have no
    career-season data at/near the observed season. Blocked on Q3 (missing career
    spans), not on the club signal.
-3. **Pre-2007 players with no enciclopedia entry** (~199 "no canonical name
-   match", mostly `historic_scoring_champions` 1948–1970 and `lideres2000`
-   surname-only) **and modern players whose `jugador.asp` season table is stale**
-   (the 361 "season not in known career span" + the 106 bucket). Candidates: the
-   old `/jugador.asp` scheme, `jug05.asp`/`jugador05.asp` (GATED >500), or a
-   manual seed list for the ~50 historic scoring champions. This is the main
-   lever left for the review queue.
+3. **CLOSED (PHASE_3H, 2026-09-09) via `jug05.asp`** — `jug05_spec.md`.
+   600 pages → 200 distinct players: **123 enriched** an existing canonical
+   (D1-tier match), **42 minted** as new canonical rows with flagged synthetic
+   ids (`990001`+, `source_id=wayback_bsnpr_jug05`, `has_profile=jug05`,
+   `confidence=jug05-only` — **D-047**), **35 → `jug05_review.csv`** (nickname
+   bridges / spelling variants, need a human). **+1,031 career-season rows**
+   (877 to existing players) → id_map 649→661, review queue 602→590.
+   **D1 amendment (D-047):** a canonical id may be minted from a *league*
+   source that has no `?id=N` (jug05.asp is bsnpr.com's own 2005-era player
+   page, keyed by an opaque token) when name + birth date + a career table are
+   all present and no existing canonical matches; the id is flagged. Fuzzy /
+   colliding cases still go to the review queue, never the spine — D1 intact.
+   `jugador05.asp` and the ~50-champion manual seed remain as later options.
 4. **Truncated observation names** (`"Ayuso, Elias 'Lar"`, `"Morales, Mario
    'Qui"`) — the leader-table cell width clips them. A prefix-aware alias match
    (surname exact + given-name prefix) would resolve these safely when the
