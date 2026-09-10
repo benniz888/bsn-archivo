@@ -999,8 +999,8 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
   </div>
 </section>
 
-<!-- ═══════════ FUENTES ═══════════ -->
-<section id="perfil" hidden role="tabpanel" aria-labelledby="tab-perfil">
+<!-- ═══════════ PERFIL (gear button, not a nav tab) ═══════════ -->
+<section id="perfil" hidden role="tabpanel" aria-label="Ajustes y tu perfil">
   <div class="panel">
     <div class="phead">
       <div class="tri"></div>
@@ -1016,6 +1016,7 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
   </div>
 </section>
 
+<!-- ═══════════ FUENTES ═══════════ -->
 <section id="fuentes" hidden role="tabpanel" aria-labelledby="tab-fuentes">
   <div class="panel">
     <div class="phead">
@@ -3795,12 +3796,9 @@ function buildSources(){
     </div>
 
     <h3 class="sec">Escudos y fotos</h3>
-    <div class="card"><p style="margin:0">Todos los escudos y retratos están dibujados en SVG. Si pones un archivo en
-      <code>web/img/crest/&lt;clave&gt;.png</code> o <code>web/img/player/&lt;nombre-en-slug&gt;.jpg</code> y corres
-      <code>make build-web-data</code>, la versión publicada lo carga automáticamente — sin tocar el código.
-      Con cero imágenes, todo se ve igual de bien.</p>
-      <p class="note" style="margin-top:8px">Para uso personal. Los logos reales y las fotos de jugadores necesitan permiso
-      antes de que esto sea público: es la razón principal por la que Apple rechaza apps de este tipo.</p></div>`;
+    <div class="card"><p style="margin:0">Todos los escudos y retratos están dibujados en SVG con los colores reales del club.
+      Los logos oficiales y las fotos de jugadores necesitarían permiso para publicarse — es la razón principal por la que
+      Apple rechaza apps de este tipo — así que este archivo no los usa. Con cero imágenes, todo se ve igual de bien.</p></div>`;
 }
 /* ============================================================
    PREMIOS, MVP POR AÑO Y FINALES JUEGO A JUEGO
