@@ -197,6 +197,10 @@ class TestBuild:
         assert fel["first_season"] == "1948" and fel["last_season"] == "1955"
         tor = next(r for r in b._read("players_canonical.csv") if r["bsnpr_id"] == "788")
         assert (tor["first_season"], tor["last_season"]) == ("1977", "1987")  # Georgie Torres
+        # id 507 "León, Edgar" resolves past the id-507/508 norm_key collision
+        # (normalized-alias index picks 507) — its span is seeded, 508 untouched
+        leon = next(r for r in b._read("players_canonical.csv") if r["bsnpr_id"] == "507")
+        assert (leon["first_season"], leon["last_season"]) == ("1988", "1990")
 
     def test_season_detail_nulls_not_empties(self):
         s = json.loads((b.WEB / "seasons" / "1953.json").read_text())

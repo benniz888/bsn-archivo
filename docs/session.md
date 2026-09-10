@@ -92,7 +92,7 @@ Session 002 (cont.) — all pushed to origin/main:
   `data/interim/player_historic_seed.csv` (Farmer→172, Simms→2314, authoritative)
   feed curated name→id. **No minting** — every champion existed. id_map
   668→**716**, review queue 583→**535**, all 58 historic-champion rows linked,
-  40 spans seeded. `build_scoring_titles` resolves a `bsnpr_id` (64/68) →
+  43 spans seeded. `build_scoring_titles` resolves a `bsnpr_id` (64/68) →
   the "Campeones de anotación" table renders a **Ficha** button. Deterministic;
   `make verify` PASS, `make test` 169.
 - **Nav 12→8 tabs.** Inicio · La liga hoy · Historia · Equipos · Jugadores ·

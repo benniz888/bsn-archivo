@@ -25,9 +25,10 @@ match"; scope = **historic champions only**.
    and D1-compatible (not "name alone": name **+** a league per-season record).
 
 2. **`seed_historic_spans(canon, aliases)`** — a pre-step before `build_id_map`.
-   `_title_seasons()` maps `norm_key(champion name) → {season}`; for a name that
-   resolves (via the alias/norm_key index) to a single canonical id, its
-   `first_season`/`last_season` are extended to span the title years.
+   `_title_seasons()` maps raw champion name → `{season}`; each name is resolved
+   the same way `build_id_map` resolves an observation (normalized-alias index,
+   then norm_key index), and for a name that resolves to a single canonical id
+   its `first_season`/`last_season` are extended to span the title years.
    `n_seasons` is left untouched — a title run is not a season count. Then
    `build_id_map`'s existing `in_career` test corroborates the observation
    naturally; where the pre-step couldn't resolve a unique id (ambiguous alias
@@ -72,18 +73,21 @@ match"; scope = **historic champions only**.
 
 ## [RESULT] (2026-09-10)
 
-`[historic-seed] 40 canonical career spans seeded/extended from scoring titles`.
+`[historic-seed] 43 canonical career spans seeded/extended from scoring titles`.
+(`seed_historic_spans` resolves a champion name via the normalized-alias index
+first, then the norm_key index — so id-507/508 style "same sorted tokens"
+collisions still seed the row whose alias actually matches.)
 
 | | before | after |
 |---|--:|--:|
 | `player_id_map` | 668 | **716** (+48) |
 | review queue | 583 | **535** (−48) |
 | historic-champion review rows | 39 (of 58 obs) | **0** |
-| `name+season+title` links | 0 | 4 (the rest resolve as `name+season_in_career` off the seeded span) |
+| `name+season+title` links | 0 | 1 (the rest resolve as `name+season_in_career` off the seeded span) |
 | `scoring_titles.json` rows with a `bsnpr_id` | 0 | **64 / 68** |
 
 `players_canonical` unchanged at **3,343** (no minting). Deterministic through
-parse + build (`manifest.json` md5 `206fee5fa09ea51bb4d13948bbb5a33c`).
+parse + build (`manifest.json` md5 `859711e4f8ed974d881310042a86f76e`).
 `make verify` PASS, `make test` 169 passed.
 
 ## [OPEN_QUESTIONS]

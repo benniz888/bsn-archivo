@@ -945,7 +945,7 @@ _TITLE_FILES = [
 
 
 def _title_seasons() -> dict[str, set[int]]:
-    """norm_key(champion name) -> {season} across the scoring-title records."""
+    """raw champion name -> {season} across the scoring-title records."""
     out: dict[str, set[int]] = defaultdict(set)
     for fname, cols in _TITLE_FILES:
         fp = CLEAN_DIR / fname
@@ -959,7 +959,15 @@ def _title_seasons() -> dict[str, set[int]]:
                 for col in cols:
                     nm = squish(r.get(col, ""))
                     if nm:
-                        out[norm_key(nm)].add(int(sy))
+                        out[nm].add(int(sy))
+    return out
+
+
+def _title_seasons_by_key() -> dict[str, set[int]]:
+    """norm_key(champion name) -> {season} — the view `build_id_map` tests."""
+    out: dict[str, set[int]] = defaultdict(set)
+    for nm, seasons in _title_seasons().items():
+        out[norm_key(nm)] |= seasons
     return out
 
 
@@ -1004,11 +1012,15 @@ def seed_historic_spans(canon: list[dict], aliases: list[dict]) -> int:
         if pid in by_pid:
             alias_idx[normalize(nm)].add(pid)
             key_idx[norm_key(nm)].add(pid)
-    seed_override = {norm_key(nm): pid for nm, pid in _historic_seed_ids() if pid in by_pid}
+    seed_override = {normalize(nm): pid for nm, pid in _historic_seed_ids() if pid in by_pid}
 
     seeded = 0
-    for nk, seasons in _title_seasons().items():
-        cands = {seed_override[nk]} if nk in seed_override else key_idx.get(nk)
+    for nm, seasons in _title_seasons().items():
+        # resolve the champion name the same way build_id_map does
+        if normalize(nm) in seed_override:
+            cands = {seed_override[normalize(nm)]}
+        else:
+            cands = alias_idx.get(normalize(nm)) or key_idx.get(norm_key(nm))
         if not cands or len(cands) != 1:
             continue
         c = by_pid[next(iter(cands))]
@@ -1041,7 +1053,7 @@ def build_id_map(canon: list[dict], aliases: list[dict],
             key_idx.setdefault(norm_key(nm), set()).add(pid)
     # …and the historic seed as an authoritative override of the candidate set
     seed_override = {normalize(nm): pid for nm, pid in _historic_seed_ids() if pid in by_pid}
-    title_by_name = _title_seasons()
+    title_by_name = _title_seasons_by_key()
 
     career_by_pid: dict[str, set[int]] = {}
     for r in career:
