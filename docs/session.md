@@ -93,8 +93,12 @@ Session 002 (cont.) — all pushed to origin/main:
   feed curated name→id. **No minting** — every champion existed. id_map
   668→**716**, review queue 583→**535**, all 58 historic-champion rows linked,
   43 spans seeded. `build_scoring_titles` resolves a `bsnpr_id` (64/68) →
-  the "Campeones de anotación" table renders a **Ficha** button. Deterministic;
-  `make verify` PASS, `make test` 169.
+  the "Campeones de anotación" table renders a **Ficha** button; `mvp.json`
+  gains ids for the historic MVP/scoring-champ overlap (Teo Cruz, Frontera,
+  Frazer, G. Torres, E. León, Farmer). Commits `59f3b9c` + `0c0504b` (the
+  fix — `seed_historic_spans` now resolves names via the normalized-alias
+  index first, so id-507/508 "same sorted tokens" collisions still seed).
+  Deterministic; `make verify` PASS, `make test` 169. Fichas live-verified.
 - **Nav 12→8 tabs.** Inicio · La liga hoy · Historia · Equipos · Jugadores ·
   Consulta · Juega · Fuentes. `TABS` trimmed; `PANELS` = tab ids + `perfil`;
   `showTab`/`applyHash` gate on `PANELS.includes`. Perfil → a **gear button**
@@ -1724,9 +1728,10 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
       `bio.notes_es` surfaced as a "Reseña de bsnpr.com" blurb on the player
       card (`loadPlayerExtra`). Commits `9123a21`→`a67dc57`, all pushed + LIVE.
       **PHASE_3H fully closed** — identity_spine_spec Q3 done.
-   c. **DONE (PHASE_3I, `historic_seed_spec.md`).** The scoring champions
-      1948–2004 were all already canonical, just unlinked (no `jugador.asp`
-      profile → no span). A title record is a per-season attestation:
+   c. **DONE (PHASE_3I, `historic_seed_spec.md`; `59f3b9c`+`0c0504b`, LIVE).**
+      The scoring champions 1948–2004 were all already canonical, just unlinked
+      (no `jugador.asp` profile → no span). A title record is a per-season
+      attestation:
       `seed_historic_spans()` seeds `first/last_season` from title years,
       `build_id_map` gains `name+season+title`, and `app/player_crosswalk.csv` +
       `data/interim/player_historic_seed.csv` (Farmer→172, Simms→2314) feed
