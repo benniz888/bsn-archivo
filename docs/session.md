@@ -2,7 +2,8 @@
 <!-- Authoritative for current state and task priority. Update at every phase exit. -->
 
 **SESSION:** 003 — PHASE_5_APP_SYNC (complete, LIVE) + PHASE_6_APP_IA (complete, LIVE)
-**DATE:** 2026-09-09
+  + PHASE_3H_JUG05 & jugador05 follow-up (complete, LIVE)
+**DATE:** 2026-09-10
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
 **CURRENT STATE:** Archive is live at benniz888.github.io/bsn-archivo — shell
@@ -51,24 +52,36 @@ Session 002 (cont.) — all pushed to origin/main:
 **SESSION 003 (2026-09-09):**
 - PHASE_6_APP_IA — reorganize / UX pass, structure only. **COMPLETE**, merged
   via PR #1 (`27c612c`), verified LIVE.
-- PHASE_3H_JUG05 — `jug05.asp` fetch (600 pages) + `merge_jug05` (curated
-  `jug05_xwalk.csv` tier-0 + 3-tier auto, D-047 synthetic ids). **COMPLETE**:
-  158 enriched, 40 minted (`990001`+), 2 review. id_map 649→668, review
-  602→583, canonical 3,303→3,343, career-seasons +1,206.
-- PHASE_3H follow-up — `jugador05.asp` fetch (600 pages, 2005-06 scouting
-  bios, NO stat table) + `merge_jugador05` (enrich-only, never mints — D1).
-  **COMPLETE:** curated `jug05_xwalk.csv` +
-  `jugador05_xwalk.csv` tier-0 then auto match → 155 distinct → **152 matched,
-  3 review**; 159 empty spine fields filled (birth-year coverage 2,007→2,019),
-  `data/clean/player_bios.csv` (152 rows, 98 w/ prose) → `bio` block in
-  `web/data/players/<id>.json` → **"Reseña de bsnpr.com" blurb** in
-  `loadPlayerExtra` (player card). id_map / review queue **unchanged** (not a
-  lever). Of 15 DOB conflicts, **10 corrected** via
-  `data/interim/player_dob_overrides.csv` (`apply_dob_overrides()` after
-  `build_canonical` — 9 jug05+jugador05 concur, +1 impossible enciclopedia
-  value), 5 residual flagged. Bridges found `990004`/`990030` were minted
-  dups of ids 93/2261 — merged into `jug05_xwalk.csv` (mint 42→40).
-  `docs/specs/jugador05_spec.md`.
+- **PHASE_3H (jug05.asp + jugador05.asp) — FULLY COMPLETE, LIVE.**
+  `identity_spine_spec.md` Q3 closed. Commits: base jug05 `aab011c` · jug05
+  review bridges `aab011c`(T5) · jugador05 fetch+parse `9123a21` · jugador05
+  review bridges `39956e3` · minted-dup merge `d6140fd` · DOB corrections
+  `6ae72f9` · bio card surface `a67dc57`. Specs: `jug05_spec.md`,
+  `jugador05_spec.md`, `identity_spine_spec.md` Q3.
+  - **jug05.asp** (600 pages, 2005-07 stat pages) → `merge_jug05`, curated
+    `jug05_xwalk.csv` tier-0 (35 bridges) + 3-tier auto: **158 enriched,
+    40 minted** (`990001..990040`, D-047 flagged), 2 review. career-seasons
+    +1,206. `player_id_map` 649→668, review queue 602→583, `players_canonical`
+    3,303→**3,343**.
+  - **jugador05.asp** (600 pages, 2005-06 scouting bios — no stat table) →
+    `merge_jugador05` enrich-only (never mints — D1), `jug05_xwalk.csv` +
+    curated `jugador05_xwalk.csv` tier-0: 155 distinct → **152 matched, 3
+    review**; 159 empty spine fields filled (birth-year coverage 2,007→2,019).
+    `data/clean/player_bios.csv` (152 rows, 98 w/ prose) → `bio` block in
+    `web/data/players/<id>.json` → **"Reseña de bsnpr.com" blurb** in
+    `loadPlayerExtra`. Not an id-map lever — value is biographical.
+  - **Minted-dup merge:** `990004`/`990030` were dups of ids 93/2261 (found via
+    the jugador05 bridges) → `jug05_xwalk.csv` (jug05 mint 42→40).
+  - **DOB corrections:** `data/interim/player_dob_overrides.csv` +
+    `apply_dob_overrides()` (after `build_canonical`, only when the current
+    value still matches `old_dob`). 10/15 conflicts corrected — 9 where jug05
+    **and** jugador05 concur against the enciclopedia, +1 impossible value
+    (id 417 `2/20/1948`). 5 residual flagged in `jugador05_dob_conflicts.csv`.
+  - **Residuals (all deliberate, nothing pending):** 3 jugador05 review rows
+    (Kevin/Kelvin Bonilla, "Tito" López, the 1967-dated Fernando Ortiz page);
+    5 flagged DOB conflicts (single-source or the two 2005 sources disagree);
+    2 jug05 review rows. The ~50-champion manual historic seed
+    (identity_spine_spec Q3) remains a separate, later option.
 - **Nav 12→8 tabs.** Inicio · La liga hoy · Historia · Equipos · Jugadores ·
   Consulta · Juega · Fuentes. `TABS` trimmed; `PANELS` = tab ids + `perfil`;
   `showTab`/`applyHash` gate on `PANELS.includes`. Perfil → a **gear button**
@@ -1696,7 +1709,8 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
       unchanged — not a lever, its value is biographical (`jugador05_spec.md`).
       DOB conflicts: 10/15 corrected (`player_dob_overrides.csv`), 5 residual.
       `bio.notes_es` surfaced as a "Reseña de bsnpr.com" blurb on the player
-      card (`loadPlayerExtra`). Phase fully closed.
+      card (`loadPlayerExtra`). Commits `9123a21`→`a67dc57`, all pushed + LIVE.
+      **PHASE_3H fully closed** — identity_spine_spec Q3 done.
    c. **Manual historic seed** (identity_spine_spec Q3; last, hand work). A
       hand-built list for the ~50 historic scoring champions 1948–1970 and the
       `lideres2000` surname-only leaders absent from the encyclopedia — the bulk
