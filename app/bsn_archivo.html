@@ -2561,6 +2561,8 @@ const TABS=[
   ['fuentes','Fuentes','M6 3h9l4 4v14H6ZM15 3v4h4M9 12h7M9 16h7']
 ];
 const BOTTOM=['inicio','hoy','historia','jugadores','consulta'];
+/* Every <section role="tabpanel"> id. Perfil has no nav button (gear only). */
+const PANELS=[...TABS.map(t=>t[0]),'perfil'];
 let CURRENT='inicio';
 
 function buildNav(){
@@ -2584,10 +2586,9 @@ function buildNav(){
   });
 }
 function showTab(id,noScroll){
-  const target=document.getElementById(id);
-  if(!target || target.getAttribute('role')!=='tabpanel') return;   /* also gates #perfil: a real panel with no nav button */
+  if(!PANELS.includes(id)) return;   /* includes 'perfil', which has no nav button */
   CURRENT=id;
-  document.querySelectorAll('section[role="tabpanel"]').forEach(s=>{ s.hidden = (s!==target); });
+  PANELS.forEach(t=>{ const s=document.getElementById(t); if(s) s.hidden = (t!==id); });
   TABS.forEach(([t])=>{
     const btn=document.getElementById('tab-'+t);
     if(btn) btn.setAttribute('aria-selected',t===id?'true':'false');
@@ -6526,8 +6527,12 @@ function applyHash(){
     else if(n1){ CMP=[n1]; drawCompare(); }
     return;
   }
-  const sec=document.getElementById(a);
-  if(sec && sec.getAttribute('role')==='tabpanel'){ showTab(a); if(a==='equipos'&&b&&F[b]) showTeam(b); return; }
+  if(PANELS.includes(a)){
+    showTab(a);
+    if(a==='equipos'&&b&&F[b]) showTeam(b);
+    if(a==='historia'&&b&&/^\d{4}$/.test(b) && typeof showSeason==='function') showSeason(+b);
+    return;
+  }
   if(a==='jugador'&&b){
     const p=PINDEX&&PINDEX.find(x=>slug(x.name)===b);
     if(p) showPlayer(p.name);
