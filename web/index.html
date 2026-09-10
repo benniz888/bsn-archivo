@@ -934,7 +934,7 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
       </svg>
     </button>
     <button class="clubpill" id="clubPill" onclick="showTab('perfil')">
-      <span id="clubPillCrest"></span><span id="clubPillName">Mi equipo</span><span class="plus">+</span>
+      <span id="clubPillCrest"></span><span id="clubPillName">Mi club</span><span class="plus">+</span>
     </button>
   </div>
   <nav class="tabs" aria-label="Secciones">
@@ -1032,7 +1032,7 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
     <p class="lede">Rachas de títulos seguidos. Ganar dos veces es difícil; estas son las que ganaron más.</p>
     <div id="dynasties"></div>
 
-    <h3 class="sec">Finales, cara a cara</h3>
+    <h3 class="sec">El careo de las finales</h3>
     <p class="lede">Filas: campeón. Columnas: subcampeón. La celda es cuántas veces esa final ocurrió.</p>
     <div id="matrix"></div>
 
@@ -1076,11 +1076,11 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
     </div>
     <h4 class="sub">Activos</h4>
     <div class="tiles" id="tilesActive"></div>
-    <h4 class="sub">Quién es dueño de qué</h4>
+    <h4 class="sub">Quién es el apoderado</h4>
     <div id="owners"></div>
     <h4 class="sub">Franquicias desaparecidas</h4>
     <div class="tiles" id="tilesGone"></div>
-    <h4 class="sub">Números retirados</h4>
+    <h4 class="sub">Camisetas retiradas</h4>
     <p class="lede">Camisetas que ningún otro jugador del club volverá a usar.</p>
     <div id="retiredList"></div>
     <div id="teamDetail"></div>
@@ -1145,7 +1145,7 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
     <div class="phead">
       <div class="tri"></div>
       <h2 class="big">Juega</h2>
-      <p class="lede">Cuatro juegos sobre el archivo. Todos usan el mismo grupo verificado de jugadores, así que ninguno inventa una respuesta.</p>
+      <p class="lede">Cuatro juegos sobre el archivo. Todos usan la misma nómina verificada de jugadores, así que ninguno inventa una respuesta.</p>
     </div>
 
     <div id="streakStrip"></div>
@@ -1214,7 +1214,7 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
     <div class="chips" id="askChips"></div>
     <div id="askAnswer" role="status" aria-live="polite"></div>
 
-    <h3 class="sec">Constructor de consultas</h3>
+    <h3 class="sec">Consulta a la medida</h3>
     <p class="lede">Escoge una tabla, filtra, ordena y bájala a CSV. El mismo trabajo que harías en SQL, sobre los datos que este archivo puede verificar.</p>
     <div id="qbControls"></div>
     <div id="qbResult"></div>
@@ -2842,26 +2842,26 @@ function buildNav(){
 const NAV_MENU={
   historia:{cols:[
     ['Campeones',[['La cinta 1930–2026','cinta'],['Títulos por franquicia','titulos'],['Dinastías','dinastias']]],
-    ['Finales',[['Cara a cara','finales']]],
+    ['Finales',[['El careo','finales']]],
     ['Premios',[['MVP y premios por año','premios'],['Campeones de anotación','premios']]],
     ['La liga',[['La regla de los refuerzos','refuerzos']]]
   ],feat:'topfranq'},
   jugadores:{cols:[
     ['Buscar',[['El índice completo','buscar'],['Comparar','comparar']]],
     ['Los mejores',[['Líderes de carrera','lideres'],['Récords de la liga','records'],['Salón de la Fama','salon']]],
-    ['Más allá',[['Del BSN a la NBA','nba'],['Dirigentes','dirigentes'],['Canchas con su nombre','canchas']]]
+    ['Más allá',[['Del BSN a la NBA','nba'],['Dirigentes','dirigentes'],['Canchas y coliseos','canchas']]]
   ],feat:'compare'},
   equipos:{cols:[
     ['Franquicias',[['Los 12 activos','activos'],['Franquicias desaparecidas','desaparecidos']]],
     ['Historia',[['Títulos por franquicia','historia/titulos'],['Números retirados','retirados']]],
-    ['Negocio',[['Quién es dueño de qué','duenos']]]
+    ['Los apoderados',[['Quién es el apoderado','duenos']]]
   ],feat:'myteam'},
   juega:{cols:[
     ['Hoy',[['La Cuadrícula del día','cuadricula']]],
     ['Modos',[['Temporada Perfecta','temporada'],['Quién soy','quiensoy'],['Sube y baja','subeybaja']]]
   ],feat:'daily'},
   archivo:{cols:[
-    ['Preguntar',[['Consulta en español','preguntar'],['Constructor + CSV','constructor']]],
+    ['Preguntar',[['Consulta en español','preguntar'],['Consulta a la medida','constructor']]],
     ['El estado del archivo',[['Cobertura, huecos y fuentes','cobertura'],['Calendario de temporada','calendario']]],
     ['Referencia',[['Glosario','glosario']]]
   ],feat:'gap'}
@@ -3187,7 +3187,7 @@ function buildHero(){
              <div class="t2">${esc(t2)}</div></div>
         <span class="herospark" style="color:${f.c1}">${titleComb(f,{w:150,h:20,gap:1})}</span></div>
       <div style="flex:1"></div>
-      <button class="btn" onclick="showView('historia','cinta')">Ver las 97 temporadas</button>
+      <button class="btn" onclick="showView('historia','cinta')">Ver la cinta</button>
     </div>
   </div>`;
 }
@@ -3308,7 +3308,7 @@ function pickClub(k){
 }
 function drawClubPill(){
   const k=ST.get('club');
-  $('#clubPillName').textContent = k ? F[k].name.split(' de ')[0] : 'Mi equipo';
+  $('#clubPillName').textContent = k ? F[k].name.split(' de ')[0] : 'Mi club';
   $('#clubPillCrest').innerHTML = k ? crest(k,20,24) : '';
 }
 function buildClubCard(){
@@ -3705,7 +3705,7 @@ function showTeam(k){
     <div id="teamOpp"></div>
   </div>`;
   if(oppRows.length){
-    const t=el('div'); t.innerHTML='<h4 class="sub">Cara a cara en finales</h4>'; $('#teamOpp').appendChild(t);
+    const t=el('div'); t.innerHTML='<h4 class="sub">El careo en finales</h4>'; $('#teamOpp').appendChild(t);
     const tt=el('div'); $('#teamOpp').appendChild(tt);
     buildTable(tt,[{label:'Rival',wide:true},{label:'Ganadas',num:true},{label:'Perdidas',num:true},{label:'Total',num:true}],
       oppRows,{file:'finales_'+k,sort:3,dir:-1});
@@ -3917,7 +3917,7 @@ function showPlayer(name,id){
   const host=$('#playerDetail');
   if(!p){
     if(id!=null){ renderArchiveCard(name,id,host); return; }  /* 5D.3c — archive-only player */
-    host.innerHTML='<p class="note">No está en el índice.</p>'; return;
+    host.innerHTML='<p class="note">No aparece en el índice.</p>'; return;
   }
   const c1=p.clubs.size?F[Array.from(p.clubs)[0]].c1:'var(--azul)';
   const c2=p.clubs.size?F[Array.from(p.clubs)[0]].c2:'var(--blanco)';
@@ -5423,11 +5423,11 @@ function buildProfile(){
       </div>
 
       <div class="profrow">
-        <div class="proflab"><div class="pl">Mi equipo</div>
+        <div class="proflab"><div class="pl">Mi club</div>
           <div class="ph">Reordena el inicio y marca tu club en las tablas.</div></div>
         <div class="profctl">${clubs}
           <p class="note">${f?'Ahora mismo: '+esc(f.name)+'. Tócalo otra vez para quitarlo.'
-                            :'Sin equipo. Toca uno para escogerlo.'}</p></div>
+                            :'Sin club. Toca uno para escogerlo.'}</p></div>
       </div>
 
       <div class="profrow">
@@ -5442,10 +5442,10 @@ function buildProfile(){
       </div>
 
       <div class="profrow">
-        <div class="proflab"><div class="pl">Explicación del BSN</div>
+        <div class="proflab"><div class="pl">¿Qué es el BSN?</div>
           <div class="ph">El recuadro de bienvenida en el inicio.</div></div>
         <div class="profctl">
-          <div class="modebtns" role="group" aria-label="Explicación del BSN">
+          <div class="modebtns" role="group" aria-label="¿Qué es el BSN?">
             <button onclick="showPrimer()" aria-selected="${p.primer!=='off'?'true':'false'}">Mostrar</button>
             <button onclick="dismissPrimer()" aria-selected="${p.primer==='off'?'true':'false'}">Ocultar</button>
           </div>
@@ -5974,7 +5974,7 @@ function drawBoard(){
       <button role="tab" aria-selected="${GMODE==='practice'}" onclick="setGMode('practice')">Práctica</button>
     </div>
     <div class="dim" style="font-size:12.5px">9 intentos · cada intento cuenta, acierte o falle · ningún jugador se repite<br>
-      El grupo verificado es de ${POOL.length} jugadores; el autocompletar te enseña quiénes existen.</div>
+      La nómina verificada es de ${POOL.length} jugadores; el autocompletar te enseña quiénes existen.</div>
   </div>
   <div class="gridwrap"><div class="gridtable">
     <div class="gcorner"></div>`;
@@ -6063,7 +6063,7 @@ function submitGuess(){
   if(!v) return;
   const p=POOL.find(x=>norm(x.n)===v) || POOL.find(x=>norm(x.n).includes(v));
   const [i,j]=GB.sel;
-  if(!p){ $('#gMsg').textContent='Ese nombre no está en el grupo verificado. No gasta intento.'; $('#gMsg').className='msg bad'; return; }
+  if(!p){ $('#gMsg').textContent='Ese nombre no está en la nómina verificada. No gasta intento.'; $('#gMsg').className='msg bad'; return; }
   if(GB.used.has(p.n)){ $('#gMsg').textContent='Ya lo usaste. No gasta intento.'; $('#gMsg').className='msg bad'; return; }
   const ok=GB.sol[i][j].some(x=>x.n===p.n);
   GB.guesses++;
@@ -6529,7 +6529,7 @@ function cmpAdd(name){
   if(!v) return;
   const p=cmpFind(v);
   const msg=$('#cmpMsg');
-  if(!p){ if(msg) msg.textContent='No está en el índice: '+v; return; }
+  if(!p){ if(msg) msg.textContent='No aparece en el índice: '+v; return; }
   if(CMP.includes(p.name)){ if(msg) msg.textContent='Ya está en la comparación.'; return; }
   if(CMP.length>=3){ if(msg) msg.textContent='Tres es el máximo. Quita a uno primero.'; return; }
   CMP.push(p.name);
@@ -6932,7 +6932,7 @@ const GAMES=[
    <rect x="112" y="66" width="24" height="24" rx="3" fill="#EF2B39" fill-opacity=".85"/>`},
   {id:'temporada',t:'La Temporada Perfecta',
    d:'Gira equipo y década, coloca cinco posiciones en la cancha y descubre cuántos de 34 gana tu quinteto.',
-   meta:'Draft · 5 puestos',
+   meta:'Quinteto · 5 puestos',
    art:`<defs><linearGradient id="ga2" x1="0" y1="0" x2="1" y2="1">
      <stop offset="0" stop-color="#7A3A12"/><stop offset="1" stop-color="#1A0E06"/></linearGradient></defs>
    <rect width="320" height="104" fill="url(#ga2)"/>
@@ -6997,7 +6997,7 @@ const VIEW_MAP={
   historia:{ pre:['cinta','La cinta'], split:'h3.sec', map:[
     ['Títulos por franquicia',['titulos','Títulos']],
     ['Dinastías',['dinastias','Dinastías']],
-    ['Finales, cara a cara',['finales','Finales']],
+    ['El careo de las finales',['finales','Finales']],
     ['Premios y líderes',['premios','Premios']],
     ['Los refuerzos',['refuerzos','Refuerzos']],
     ['Todas las temporadas',['temporadas','Todas las temporadas']]
@@ -7009,16 +7009,16 @@ const VIEW_MAP={
     ['Salón',['salon','Salón']],
     ['Del BSN a la NBA',['nba','A la NBA']],
     ['Dirigentes',['dirigentes','Dirigentes']],
-    ['Honrados en concreto',['canchas','Canchas']]
+    ['Honrados en concreto',['canchas','Canchas y coliseos']]
   ]},
   equipos:{ split:'h4.sub', detail:['equipo','#teamDetail'], map:[
     ['Activos',['activos','Activos']],
-    ['Quién es dueño',['duenos','Dueños']],
+    ['Quién es el apoderado',['duenos','Apoderados']],
     ['Franquicias desaparecidas',['desaparecidos','Desaparecidas']],
-    ['Números retirados',['retirados','Números retirados']]
+    ['Camisetas retiradas',['retirados','Camisetas retiradas']]
   ]},
   archivo:{ pre:['preguntar','Preguntar'], split:'h3.sec', map:[
-    ['Constructor de consultas',['constructor','Constructor']],
+    ['Consulta a la medida',['constructor','A la medida']],
     ['Cobertura del archivo',['cobertura','Cobertura y fuentes']],
     ['Calendario y cobertura',['calendario','Calendario']],
     ['Glosario',['glosario','Glosario']]
@@ -7061,7 +7061,7 @@ const VIEW_DESC={
   },
   equipos:{
     activos:'Los doce clubes que juegan hoy.',
-    duenos:'Quién es dueño de qué franquicia.',
+    duenos:'Quién es el apoderado de cada franquicia.',
     desaparecidos:'Veinte clubes que ya no existen, con su historial de finales.',
     retirados:'Camisetas que ningún otro jugador del club volverá a usar.'
   },

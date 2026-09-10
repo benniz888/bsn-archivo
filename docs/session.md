@@ -77,6 +77,18 @@ desktop, first-only on mobile), re-run on the 860px `matchMedia` change;
 `mega_dom_harness`, `nav_motion_harness` (updated). **Compact mobile header**
 thread resolved (mobile tab row gone).
 
+**LANG pass 1 (owner-reviewed before apply):** BSN/PR vernacular on generic
+chrome — Dueños→**Apoderados** (Equipos view/h4/mega group; already glossed);
+"Finales, cara a cara"→**El careo de las finales** (+ team-card h4, mega item
+"El careo"); "Canchas"→**Canchas y coliseos**; "Números retirados" h4/subnav
+→**Camisetas retiradas** (mega item + team-card kv kept literal); "Constructor
+de consultas"→**Consulta a la medida** (pill "A la medida"); hero btn "Ver las
+97 temporadas"→**Ver la cinta**; Draft·5→**Quinteto·5**; profile "Mi equipo"
+→**Mi club** (+ clubpill), "Explicación del BSN"→**¿Qué es el BSN?**; game
+"grupo verificado"→**nómina verificada** (×3); "No está en el índice"→**No
+aparece…** (×2). Deferred: equipo/club/franquicia consistency sweep; the
+ownership-prose "dueño" instances (John Herrero / Yadier Molina / Bad Bunny).
+
 Open threads:
 docs/project.md D2 refinement for the Grises/Caciques de Humacao split (D-045);
 the ~451-row review-queue long tail (needs an owner-curated crosswalk — Q1-Q4
