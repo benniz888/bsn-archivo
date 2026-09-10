@@ -6,6 +6,7 @@ src/parse_players.py. The end-to-end build is checked by `make parse-players`
 from src.parse_players import (
     clean_field, extract_nickname, normalize, norm_key, strip_accents,
     strip_nickname, _load_club_resolver, _J05_BLOCK, _J05_TEAMNUM, merge_jugador05,
+    apply_dob_overrides,
 )
 
 
@@ -152,3 +153,24 @@ class TestMergeJugador05:
         r = merge_jugador05([self._canon(canonical_name="Otro, Nombre", apellidos="Otro", nombre="Nombre")],
                             [self._bio()])
         assert r["matched"] == 0 and len(r["review_list"]) == 1
+
+    def test_dob_settled_suppresses_conflict(self):
+        canon = [self._canon(birth_date="4/3/1980", birth_year="1980")]
+        r = merge_jugador05(canon, [self._bio()], dob_settled={"1"})
+        assert r["dob_conflicts"] == []          # id 1 already adjudicated
+
+
+class TestDobOverrides:
+    def test_applies_only_on_matching_old_value(self, tmp_path, monkeypatch):
+        import src.parse_players as P
+        (tmp_path / "player_dob_overrides.csv").write_text(
+            "bsnpr_id,canonical_name,old_dob,new_dob,confidence,basis\n"
+            '1,"A, B",11/1/1981,1/11/1981,high,"swap"\n'
+            '2,"C, D",9/9/1990,1/1/1991,low,"stale expected"\n')
+        monkeypatch.setattr(P, "INTERIM_DIR", tmp_path)
+        canon = [{"bsnpr_id": "1", "birth_date": "11/1/1981", "birth_year": "1981"},
+                 {"bsnpr_id": "2", "birth_date": "5/5/1985", "birth_year": "1985"}]
+        done = P.apply_dob_overrides(canon)
+        assert canon[0]["birth_date"] == "1/11/1981" and canon[0]["birth_year"] == "1981"
+        assert canon[1]["birth_date"] == "5/5/1985"   # stale old_dob -> not touched
+        assert done == {"1", "2"}                     # both are "settled" for conflict-logging

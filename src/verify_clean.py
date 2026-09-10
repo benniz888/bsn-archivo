@@ -242,6 +242,19 @@ def verify_players(c: Checker) -> None:
             c.check(int(r["first_season"]) <= int(r["last_season"]),
                     f"players_canonical: {tag} first_season <= last_season")
 
+    canon_by_id = {r["bsnpr_id"]: r for r in canon}
+    ovr_path = REPO_ROOT / "data" / "interim" / "player_dob_overrides.csv"
+    if ovr_path.exists():
+        with ovr_path.open(encoding="utf-8") as fh:
+            ovr = list(csv.DictReader(fh))
+        c.check(all(o["bsnpr_id"] in canon_by_id for o in ovr),
+                "player_dob_overrides: every row targets a canonical id")
+        c.check(all(canon_by_id[o["bsnpr_id"]]["birth_date"] == o["new_dob"]
+                    for o in ovr if o["bsnpr_id"] in canon_by_id),
+                "player_dob_overrides: every override is reflected in players_canonical")
+        c.check(all(o["basis"] and o["confidence"] for o in ovr),
+                "player_dob_overrides: every row states a basis + confidence")
+
     aliases = _read("player_aliases.csv")
     canon_ids = set(ids)
     c.check(all(a["bsnpr_id"] in canon_ids for a in aliases),

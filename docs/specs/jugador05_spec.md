@@ -52,8 +52,11 @@ Owner-approved 2026-09-09. "Defer 4 and 5, wire in the data-only pipeline."
    - `data/interim/jugador05_review.csv` — the no-match rows (2005-06 imports
      with no encyclopedia entry; can't mint — no career table).
    - `data/interim/jugador05_dob_conflicts.csv` — matched rows where canonical
-     and jugador05 give different birth dates. **Deferred worklist** (owner
-     decision 4): not fixed in this phase.
+     and jugador05 give different birth dates. The clear ones (jug05 **and**
+     jugador05 concur against the enciclopedia) are corrected via
+     `data/interim/player_dob_overrides.csv`, applied by `apply_dob_overrides()`
+     right after `build_canonical`; the file keeps only the residual
+     single-source / sources-disagree cases.
    - `build_web_data` folds a `bio` block into `web/data/players/<id>.json`;
      a bio with prose no longer counts a player as "thin / no ficha".
 
@@ -62,9 +65,10 @@ Owner-approved 2026-09-09. "Defer 4 and 5, wire in the data-only pipeline."
 - **Minting the 26 no-match rows.** No career table → D1 forbids it. They stay
   in review; a curated `jugador05_xwalk.csv` (Facey→2233, Hourruitiner
   Rolando→2090, Wharton→1357, Venzen→808 …) is a possible follow-up.
-- **Auto-correcting the 11 DOB conflicts** from jugador05 (all are M/D
-  transpositions the `jug05_xwalk.csv` notes already suspect). Owner deferred
-  (decision 4) — enrich-only never overwrites.
+- **Correcting a canonical DOB from a single 2005-era source.** The overrides
+  file only acts when jug05 **and** jugador05 independently agree against the
+  enciclopedia (or the enciclopedia value is impossible, e.g. id 417's
+  `2/20/1948`). A lone jugador05 disagreement stays flagged, not applied.
 - **A player-card "Reseña (2005–06)" surface.** Owner deferred (decision 5);
   the data ships in `web/data`, the app change is a separate follow-up.
 
@@ -80,7 +84,7 @@ then the auto match:
 | matched to canonical | 129 | **152** |
 | — empty spine fields filled | 112 | **159** (birth-year coverage 2,007 → **2,019**) |
 | — `player_bios.csv` rows | 129 | **152** (98 w/ prose) |
-| DOB disagreements (flagged, deferred) | 11 | **15** |
+| DOB disagreements | 11 | **15** → 10 corrected (`player_dob_overrides.csv`), **5** residual |
 | to review (no match, can't mint) | 26 | **3** — Kevin/Kelvin Bonilla, "Tito" López, the 1967-dated Fernando Ortiz page (all deliberate) |
 
 Net on the spine: `players_canonical` unchanged at **3,345**; `player_id_map`
@@ -99,11 +103,13 @@ flagged ids, not stable external keys.
 
 ## [OPEN_QUESTIONS]
 
-1. **Deferred (owner decision 4):** `jugador05_dob_conflicts.csv` — now **15**
-   canonical birth dates jugador05 (+ jug05) contradict, all month/day
-   transpositions except `417` Daniel Guzmán (canonical `2/20/1948` is a plain
-   error). A future pass could correct `players_canonical` from the two
-   2005-era sources agreeing.
+1. **RESOLVED (owner decision 4):** of the 15 canonical/jugador05 DOB
+   disagreements, **10 corrected** via `player_dob_overrides.csv` — 9 where
+   jug05 and jugador05 independently concur against the enciclopedia (M/D
+   transpositions and day slips), plus `417` Daniel Guzmán whose `2/20/1948`
+   is impossible. The **5 residual** (139 Luna Colón, 812 Jiménez, 911 Soto,
+   2016 Lugo — jugador05-only; 2090 Hourruitiner — canonical + jug05 agree,
+   jugador05 is the outlier) stay flagged in `jugador05_dob_conflicts.csv`.
 2. **Deferred (owner decision 5):** surface `bio.notes_es` on the player card.
 3. **RESOLVED:** `jugador05_xwalk.csv` worked the 26 review rows — 23 bridged
    (13 high, 10 medium), 3 left in review by design.

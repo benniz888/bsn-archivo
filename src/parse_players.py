@@ -575,12 +575,16 @@ def parse_jugador05() -> list[dict]:
     return players
 
 
-def merge_jugador05(canon: list[dict], bios: list[dict]) -> dict:
+def merge_jugador05(canon: list[dict], bios: list[dict],
+                    dob_settled: set[str] | None = None) -> dict:
     """Enrich-only: match each jugador05 bio to a canonical row (same test as
     merge_jug05 minus the mint tier), fill *empty* spine fields
     (birth_date/birth_year, birth_city, nationality, position) — never
     overwrite — and emit a player_bios row for the prose. No match -> review.
+    `dob_settled` ids already had their birth date adjudicated by
+    `apply_dob_overrides`, so a lingering jugador05 disagreement is not re-logged.
     Mutates `canon` in place; returns counts + (bio_rows, review_list)."""
+    dob_settled = dob_settled or set()
     exact: dict[str, list[dict]] = defaultdict(list)
     byfam: dict[str, list[dict]] = defaultdict(list)
     by_id: dict[str, dict] = {}
@@ -661,7 +665,7 @@ def merge_jugador05(canon: list[dict], bios: list[dict]) -> dict:
                 c["birth_date"] = j["birth_date"]
                 c["birth_year"] = j["birth_date"].split("/")[-1]
                 filled += 1
-            elif _pdate(c["birth_date"]) != _pdate(j["birth_date"]):
+            elif _pdate(c["birth_date"]) != _pdate(j["birth_date"]) and pid not in dob_settled:
                 dob_conflicts.append({"bsnpr_id": pid, "canonical_name": c["canonical_name"],
                                       "canonical_dob": c["birth_date"], "jugador05_dob": j["birth_date"]})
         for spine, src in (("birth_city", "birth_city"), ("nationality", "nationality"),
@@ -696,6 +700,37 @@ def merge_jugador05(canon: list[dict], bios: list[dict]) -> dict:
 # --------------------------------------------------------------------------- #
 # assembly                                                                     #
 # --------------------------------------------------------------------------- #
+def apply_dob_overrides(canon: list[dict]) -> set[str]:
+    """Hand-curated corrections to enciclopedia birth dates, each corroborated
+    by the 2005-era jug05 / jugador05 player pages (mostly M/D transpositions).
+    `data/interim/player_dob_overrides.csv`. Applied only when the current
+    canonical value still equals the recorded `old_dob` — a re-parse that
+    changed it upstream logs a skip instead of silently clobbering. An empty
+    `new_dob` nulls a value known to be wrong with no trusted replacement."""
+    p = INTERIM_DIR / "player_dob_overrides.csv"
+    if not p.exists():
+        return set()
+    by_id = {c["bsnpr_id"]: c for c in canon}
+    done: set[str] = set()
+    skipped = 0
+    with p.open(encoding="utf-8") as fh:
+        for row in csv.DictReader(fh):
+            c = by_id.get(row["bsnpr_id"])
+            if c is None:
+                continue
+            done.add(row["bsnpr_id"])
+            if c["birth_date"] != row["old_dob"]:
+                print(f"  [dob-override] id {row['bsnpr_id']}: canonical is "
+                      f"{c['birth_date']!r}, not the recorded {row['old_dob']!r} — skipped")
+                skipped += 1
+                continue
+            c["birth_date"] = row["new_dob"]
+            c["birth_year"] = row["new_dob"].split("/")[-1] if row["new_dob"] else ""
+    print(f"[dob-overrides] {len(done) - skipped} applied"
+          + (f", {skipped} skipped (stale)" if skipped else ""))
+    return done
+
+
 def build_canonical(enc: dict[str, dict], prof: dict[str, dict]) -> list[dict]:
     rows: list[dict] = []
     for pid, e in sorted(enc.items(), key=lambda kv: int(kv[0])):
@@ -1002,6 +1037,7 @@ def main() -> int:
     enc = parse_enciclopedia()
     prof, career = parse_jugador()
     canon = build_canonical(enc, prof)
+    dob_settled = apply_dob_overrides(canon)   # curated birth-date fixes, jug05/jugador05-corroborated
     jug05_review: list[dict] = []
     if (RAW_DIR / "jug05").exists():
         jug05_review = merge_jug05(canon, career, parse_jug05())["review_list"]
@@ -1009,7 +1045,7 @@ def main() -> int:
     j05b_bios: list[dict] = []
     j05b_dob: list[dict] = []
     if (RAW_DIR / "jugador05").exists():
-        r = merge_jugador05(canon, parse_jugador05())   # enrich-only; never mints (D1)
+        r = merge_jugador05(canon, parse_jugador05(), dob_settled)   # enrich-only; never mints (D1)
         j05b_review, j05b_bios, j05b_dob = r["review_list"], r["bio_rows"], r["dob_conflicts"]
     aliases = build_aliases(canon, enc)   # after minting, so jug05 rows get aliases
     mapped, review = build_id_map(canon, aliases, career)

@@ -62,9 +62,12 @@ Session 002 (cont.) — all pushed to origin/main:
   3 review**; 159 empty spine fields filled (birth-year coverage 2,007→2,019),
   `data/clean/player_bios.csv` (152 rows, 98 w/ prose) → `bio` block in
   `web/data/players/<id>.json`. id_map / review queue **unchanged** (not a
-  lever). 15 DOB conflicts parked in `jugador05_dob_conflicts.csv` (deferred).
-  Bridges found `990004`/`990030` were minted dups of ids 93/2261 — merged
-  into `jug05_xwalk.csv` (mint 42→40). `docs/specs/jugador05_spec.md`.
+  lever). Of 15 DOB conflicts, **10 corrected** via
+  `data/interim/player_dob_overrides.csv` (`apply_dob_overrides()` after
+  `build_canonical` — 9 jug05+jugador05 concur, +1 impossible enciclopedia
+  value), 5 residual flagged. Bridges found `990004`/`990030` were minted
+  dups of ids 93/2261 — merged into `jug05_xwalk.csv` (mint 42→40).
+  `docs/specs/jugador05_spec.md`.
 - **Nav 12→8 tabs.** Inicio · La liga hoy · Historia · Equipos · Jugadores ·
   Consulta · Juega · Fuentes. `TABS` trimmed; `PANELS` = tab ids + `perfil`;
   `showTab`/`applyHash` gate on `PANELS.includes`. Perfil → a **gear button**
@@ -1690,7 +1693,8 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
       `jugador05_xwalk.csv` tier-0. 152 matched / 3 review; 159 empty spine
       fields filled, `player_bios.csv` (152 rows). id_map / review queue
       unchanged — not a lever, its value is biographical (`jugador05_spec.md`).
-      Deferred: 15-row DOB-conflict fix, the player-card prose surface.
+      DOB conflicts: 10/15 corrected (`player_dob_overrides.csv`), 5 residual.
+      Deferred: the player-card prose surface (`bio.notes_es`).
    c. **Manual historic seed** (identity_spine_spec Q3; last, hand work). A
       hand-built list for the ~50 historic scoring champions 1948–1970 and the
       `lideres2000` surname-only leaders absent from the encyclopedia — the bulk
