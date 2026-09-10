@@ -50,11 +50,34 @@ Owner-approved 2026-09-11:
 - No mega-menu yet — nav items are plain `showTab`. Harness:
   `scratchpad/ia_harness.mjs`.
 
-### 8.2 — mega-menu (pending)
+### 8.2 — mega-menu (DONE)
 
-Desktop hover/focus dropdown per nav item — grouped link columns + one featured
-block; mouse-leave / Esc / scroll dismiss; keyboard nav. Mobile: each section
-opens with its featured block + a restyled `foldSections` chip rail.
+- **`NAV_MENU`** — data for the 5 sections: `cols` (grouped `[label, target]`
+  link lists) + a `feat` key. Targets are either an `h3.sec`/`h4.sub` heading
+  prefix (accent-insensitive) resolved by **`goSection(tab, needle)`** — which
+  `showTab`s, opens the fold via `revealNode(foldbody)` and smooth-scrolls — or
+  a `__key` dispatched through **`MEGA_ACT`** (`__cmp` → Comparar view,
+  `__daily`/`__perfect`/`__quiz`/`__hl` → `openGame(id)`, `__ask` → focus the
+  ask input, `__active`/`__gone` → `goEl` to the crest grids).
+- **Desktop:** `#megaPanel` inside `nav.tabs` (`position:absolute; top:100%`).
+  `openMega(id)` on `mouseenter`/`focus` of a nav button → renders
+  `.mega-inner` (`.mega-cols` + `.mega-feat`), `.open` fades it in. `mouseleave`
+  → `scheduleClose` (140ms, cancelled by re-entering the button or the panel).
+  `Escape` and any `scroll` → `closeMega`. `aria-haspopup`/`aria-expanded` on
+  the buttons.
+- **`megaFeat(k)`** — the featured block: `topfranq` (most-titled franchise,
+  crest + N + line), `compare` (Torres ⇄ Morales), `myteam` (club picker,
+  re-rendered on club change), `daily` (today's Cuadrícula #N), `gap`
+  ("antes de 2011 no hay estadística por temporada"). Plain in 8.2; 8.3 makes
+  these full editorial blocks.
+- **Mobile:** `@media(max-width:859px)` hides `nav.tabs` entirely (bottom bar
+  is the nav) and `.mega`. `buildMega()` drops a `.secfeat` (= the same
+  `megaFeat` block) at the top of each nav section, and the `foldSections`
+  `.jump` chip rail is enlarged (`--fs-sm`, 7×14 padding) as the section's
+  sub-nav.
+- Harnesses: `scratchpad/mega_harness.mjs` (menu data integrity, every target
+  resolves, CSS gates) + `mega_dom_harness.mjs` (open/close, aria, mobile
+  no-op, `megaGo` dispatch).
 
 ### 8.3 — editorial blocks (pending)
 

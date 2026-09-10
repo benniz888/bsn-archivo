@@ -286,7 +286,42 @@ html.standalone .toprow{padding-top:6px;padding-bottom:12px}
 /* The nav lives inside the sticky header so the two never
    overlap at any font size — pinning the nav to a hard-coded
    top offset breaks the moment the header grows. */
-nav.tabs{border-top:1px solid var(--line-soft)}
+nav.tabs{border-top:1px solid var(--line-soft);position:relative}
+
+/* ---------- mega-menu (PHASE_8.2) — Apple/Airbnb dropdown ----------
+   Desktop only. Hover or keyboard-focus a top item; the panel drops with
+   grouped link columns + one featured block. Hidden on mobile — there the
+   bottom bar goes straight to the section. */
+.mega{position:absolute;top:100%;left:0;right:0;z-index:55;
+  padding:0 calc(16px + env(safe-area-inset-right)) 0 calc(16px + env(safe-area-inset-left));
+  opacity:0;transform:translateY(-6px);pointer-events:none;
+  transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease)}
+.mega.open{opacity:1;transform:none;pointer-events:auto}
+.mega-inner{max-width:var(--maxw);margin:0 auto;background:var(--deep);
+  border:1px solid var(--line);border-top:0;border-radius:0 0 14px 14px;
+  box-shadow:0 16px 40px var(--shadow);
+  display:grid;grid-template-columns:1fr minmax(220px,300px);gap:var(--sp-5);
+  padding:var(--sp-5) var(--sp-5) var(--sp-6)}
+.mega-cols{display:flex;flex-wrap:wrap;gap:var(--sp-5) var(--sp-6)}
+.mega-col{min-width:150px}
+.mega-col h4{font-size:var(--fs-3xs);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:700;margin-bottom:var(--sp-2)}
+.mega-col a,.mega-col button{display:block;width:100%;text-align:left;background:none;border:0;
+  color:var(--ink-2);font:inherit;font-size:var(--fs-sm);padding:5px 0;cursor:pointer;
+  border-radius:var(--r-sm);transition:color var(--dur-fast)}
+.mega-col a:hover,.mega-col button:hover{color:var(--blanco)}
+.mega-feat{background:var(--raise);border:1px solid var(--line);border-radius:12px;
+  padding:var(--sp-4);display:flex;flex-direction:column;gap:var(--sp-1);align-self:start}
+.mega-feat .fx{font-size:var(--fs-3xs);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+.mega-feat .fn{font-weight:800;font-size:var(--fs-num);line-height:1;letter-spacing:-.03em;margin-top:2px}
+.mega-feat .ft{font-weight:700;font-size:var(--fs-sm)}
+.mega-feat .fd{color:var(--ink-2);font-size:var(--fs-2xs);line-height:1.4}
+.mega-feat button.btn,.mega-feat a.btn{margin-top:var(--sp-2)}
+@media(prefers-reduced-motion:reduce){.mega{transition:none}}
+@media(max-width:859px){.mega{display:none}}
+/* the same featured block, shown at the top of the section on a phone */
+.secfeat{margin:var(--sp-3) 0 var(--sp-1)}
+@media(min-width:860px){.secfeat{display:none}}
 
 /* ── Plegado ──────────────────────────────────────────────────────
    Every tab had grown to five or six full sections stacked end to
@@ -360,11 +395,16 @@ nav.tabs{border-top:1px solid var(--line-soft)}
   .tile{transition:none}
 }
 
-.jump{display:flex;gap:6px;overflow-x:auto;padding:2px 0 12px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.jump{display:flex;gap:var(--sp-2);overflow-x:auto;padding:2px 0 var(--sp-3);scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .jump::-webkit-scrollbar{display:none}
 .jump button{flex:0 0 auto;background:transparent;border:1px solid var(--line);color:var(--ink-3);
-  border-radius:999px;padding:5px 12px;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;
-  white-space:nowrap;transition:color .15s,border-color .15s,background .15s}
+  border-radius:999px;padding:5px 12px;font:inherit;font-size:var(--fs-2xs);font-weight:600;cursor:pointer;
+  white-space:nowrap;transition:color var(--dur-fast),border-color var(--dur-fast),background var(--dur-fast)}
+/* on a phone the jump rail IS the section's sub-navigation — give it presence */
+@media(max-width:859px){
+  .jump{gap:var(--sp-2);padding-bottom:var(--sp-4);margin-top:var(--sp-1)}
+  .jump button{padding:7px 14px;font-size:var(--fs-sm)}
+}
 .jump button:hover{color:var(--ink);border-color:var(--ink-3)}
 .jump button:focus-visible{outline:2px solid var(--fuego);outline-offset:2px}
 /* Keyboard focus was invisible on most controls, which is a defect
@@ -422,6 +462,9 @@ nav.tabs button[aria-selected="true"]::after{content:"";position:absolute;left:0
 .bottombar button[aria-selected="true"]{color:var(--blanco)}
 .bottombar button[aria-selected="true"] svg{stroke:var(--rojo)}
 @media(min-width:860px){.bottombar{display:none}}
+/* PHASE_8.2 — on a phone the bottom bar is the nav; the top tab row goes.
+   header.top keeps its own bottom border as the separator. */
+@media(max-width:859px){nav.tabs{display:none}}
 
 /* ---------- sections ---------- */
 section[hidden]{display:none}
@@ -847,6 +890,7 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
   </div>
   <nav class="tabs" aria-label="Secciones">
     <div class="tabscroll" id="tabscroll" role="tablist"></div>
+    <div id="megaPanel" class="mega"></div>
   </nav>
 </header>
 
@@ -2666,7 +2710,11 @@ function buildNav(){
     b.id='tab-'+id; b.textContent=label; b.setAttribute('role','tab');
     b.setAttribute('aria-selected',id===CURRENT?'true':'false');
     b.setAttribute('aria-controls',id);
-    b.onclick=()=>showTab(id);
+    b.setAttribute('aria-haspopup','true'); b.setAttribute('aria-expanded','false');
+    b.onclick=()=>{ closeMega(); showTab(id); };
+    b.onmouseenter=()=>openMega(id);
+    b.onmouseleave=scheduleClose;
+    b.onfocus=()=>openMega(id);
     s.appendChild(b);
   });
   const bb=$('#bottombar'); bb.innerHTML='';
@@ -2679,6 +2727,168 @@ function buildNav(){
     bb.appendChild(b);
   });
 }
+
+/* ============================================================
+   MEGA-MENU (PHASE_8.2)
+   Desktop: hover / focus a top item -> a panel with the section's
+   sub-pages in grouped columns + one featured block. Mobile: the panel
+   is display:none — the bottom bar goes straight to the section, which
+   carries a .secfeat block + the .jump chip rail as its sub-nav.
+   ============================================================ */
+const NAV_MENU={
+  historia:{cols:[
+    ['Campeones',[['La cinta 1930–2026','Todas las temporadas'],['Títulos por franquicia','Títulos por franquicia'],['Dinastías','Dinastías']]],
+    ['Finales',[['Cara a cara','Finales, cara a cara']]],
+    ['Premios',[['MVP y premios por año','Premios y líderes'],['Campeones de anotación','Premios y líderes']]],
+    ['La liga',[['La regla de los refuerzos','Los refuerzos']]]
+  ],feat:'topfranq'},
+  jugadores:{cols:[
+    ['Buscar',[['El índice completo','__jugtop'],['Comparar','__cmp']]],
+    ['Los mejores',[['Líderes de carrera','Líderes de carrera'],['Récords de la liga','Récords de la liga'],['Salón de la Fama','Salón']]],
+    ['Más allá',[['Del BSN a la NBA','Del BSN a la NBA'],['Dirigentes','Dirigentes'],['Canchas con su nombre','Honrados en concreto']]]
+  ],feat:'compare'},
+  equipos:{cols:[
+    ['Franquicias',[['Los 12 activos','__active'],['Franquicias desaparecidas','__gone']]],
+    ['Historia',[['Títulos por franquicia','Títulos por franquicia'],['Números retirados','Números retirados']]],
+    ['Negocio',[['Quién es dueño de qué','Quién es dueño']]]
+  ],feat:'myteam'},
+  juega:{cols:[
+    ['Hoy',[['La Cuadrícula del día','__daily']]],
+    ['Modos',[['Temporada Perfecta','__perfect'],['Quién soy','__quiz'],['Sube y baja','__hl']]]
+  ],feat:'daily'},
+  archivo:{cols:[
+    ['Preguntar',[['Consulta en español','__ask'],['Constructor + CSV','Constructor de consultas']]],
+    ['Qué hay y qué falta',[['Cobertura por temporada','Cobertura del archivo'],['Lo que falta','Lo que falta'],['Conflictos entre fuentes','Conflictos entre fuentes']]],
+    ['De dónde sale',[['Boxscores y líderes','De dónde salieron'],['Cómo se decide «leyenda»','Cómo se decide'],['Escudos y fotos','Escudos y fotos']]],
+    ['Referencia',[['Glosario','Glosario']]]
+  ],feat:'gap'}
+};
+const MEGA_ACT={
+  __jugtop:()=>{ showTab('jugadores'); if(typeof setJugView==='function') setJugView('buscar'); },
+  __cmp:()=>{ showTab('jugadores'); if(typeof setJugView==='function') setJugView('comparar'); },
+  __active:()=>goEl('equipos','tilesActive'),
+  __gone:()=>goEl('equipos','tilesGone'),
+  __ask:()=>{ showTab('archivo'); const i=$('#askInput'); if(i){ i.scrollIntoView({block:'center'}); i.focus(); } },
+  __daily:()=>{ showTab('juega'); if(typeof openGame==='function') openGame('cuadricula'); },
+  __perfect:()=>{ showTab('juega'); if(typeof openGame==='function') openGame('temporada'); },
+  __quiz:()=>{ showTab('juega'); if(typeof openGame==='function') openGame('quiensoy'); },
+  __hl:()=>{ showTab('juega'); if(typeof openGame==='function') openGame('subeybaja'); }
+};
+
+/* jump to a section: showTab, then open + scroll the h3.sec / fold whose
+   heading starts with `needle` (accent-insensitive). */
+function goSection(tab,needle){
+  showTab(tab);
+  setTimeout(()=>{
+    const sec=document.getElementById(tab); if(!sec) return;
+    const nn=norm(needle);
+    const heads=[...sec.querySelectorAll('.foldtitle,h3.sec,h4.sub')];
+    const t=heads.find(x=>norm(x.textContent).startsWith(nn)) || heads.find(x=>norm(x.textContent).includes(nn));
+    if(!t){ return; }
+    const fold=t.closest('.fold');
+    if(fold){ const body=fold.querySelector('.foldbody'); if(body) revealNode(body); }
+    (fold||t).scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});
+  },30);
+}
+function goEl(tab,id){
+  showTab(tab);
+  setTimeout(()=>{ const e=$('#'+id); if(e) e.scrollIntoView({block:'start',behavior:'smooth'}); },30);
+}
+let MEGA_TAB=null;
+function megaGo(target){
+  const tab=MEGA_TAB;
+  closeMega();
+  if(MEGA_ACT[target]) MEGA_ACT[target]();
+  else goSection(tab||CURRENT,target);
+}
+
+function megaFeat(k){
+  if(k==='topfranq'){
+    const best=FKEYS.slice().sort((a,b)=>F[b].won.length-F[a].won.length)[0];
+    if(!best) return '';
+    const f=F[best];
+    return `<div class="fx">El más ganador</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:2px">${crest(best,34,42)}
+        <div class="fn">${f.won.length}</div></div>
+      <div class="ft">${esc(f.name.split(' de ')[0])}</div>
+      <div class="fd">títulos en 97 temporadas${f.won.length?' · último en '+Math.max.apply(null,f.won):''}</div>
+      <button class="btn" style="padding:6px 12px;font-size:12px" onclick="megaGo('Títulos por franquicia')">Ver todos</button>`;
+  }
+  if(k==='compare'){
+    return `<div class="fx">Comparar</div>
+      <div class="ft" style="margin-top:2px">Georgie Torres ⇄ Mario Morales</div>
+      <div class="fd">Dos o tres jugadores lado a lado — las casillas vacías son huecos del archivo, no ceros.</div>
+      <button class="btn" style="padding:6px 12px;font-size:12px" onclick="closeMega();cmpPreset('Georgie Torres','Mario Morales')">Abrir</button>`;
+  }
+  if(k==='myteam'){
+    const p=prof(), f=p.club&&F[p.club]?F[p.club]:null;
+    return `<div class="fx">Tu equipo</div>
+      ${f?`<div style="display:flex;align-items:center;gap:10px;margin-top:2px">${crest(p.club,30,36)}
+        <div class="ft">${esc(f.name)}</div></div>
+        <div class="fd">${f.won.length?f.won.length+(f.won.length===1?' título':' títulos'):'sin títulos'} · el archivo se reordena a su alrededor</div>`
+      : `<div class="fd" style="margin-top:2px">Escoge un club y el archivo se reordena a su alrededor — tu equipo primero en cada tabla.</div>`}
+      <button class="btn" style="padding:6px 12px;font-size:12px" onclick="closeMega();showTab('perfil')">${f?'Cambiar':'Escoger club'}</button>`;
+  }
+  if(k==='daily'){
+    const n=(typeof puzzleNo==='function')?puzzleNo():'—';
+    return `<div class="fx">Hoy</div>
+      <div class="fn" style="margin-top:2px">#${n}</div>
+      <div class="ft">La Cuadrícula del día</div>
+      <div class="fd">Nueve casillas, un jugador que encaje en cada cruce de club × logro.</div>
+      <button class="btn" style="padding:6px 12px;font-size:12px" onclick="megaGo('__daily')">Jugar</button>`;
+  }
+  if(k==='gap'){
+    return `<div class="fx">Lo que este archivo no sabe</div>
+      <div class="ft" style="margin-top:2px">Antes de 2011 no hay estadística por temporada</div>
+      <div class="fd">Ese es el muro real. Todo lo demás — los huecos, los conflictos entre fuentes, de dónde sale cada dato — está aquí, dicho de frente.</div>
+      <button class="btn" style="padding:6px 12px;font-size:12px" onclick="megaGo('Lo que falta')">Ver los huecos</button>`;
+  }
+  return '';
+}
+
+function buildMega(){
+  /* also drop a mobile featured block at the top of each nav section */
+  Object.keys(NAV_MENU).forEach(id=>{
+    const sec=document.getElementById(id); if(!sec) return;
+    const panel=sec.querySelector(':scope > .panel'); if(!panel) return;
+    let sf=panel.querySelector(':scope > .secfeat');
+    if(!sf){ sf=el('div','secfeat mega-feat');
+      const phead=panel.querySelector(':scope > .phead');
+      panel.insertBefore(sf, phead ? phead.nextSibling : panel.firstChild);
+    }
+    sf.innerHTML=megaFeat(NAV_MENU[id].feat);
+  });
+}
+
+let megaCloseT=null;
+function scheduleClose(){ clearTimeout(megaCloseT); megaCloseT=setTimeout(closeMega,140); }
+function cancelClose(){ clearTimeout(megaCloseT); }
+function closeMega(){
+  cancelClose();
+  const p=$('#megaPanel'); if(p){ p.classList.remove('open'); }
+  MEGA_TAB=null;
+  NAV.forEach(([t])=>{ const b=$('#tab-'+t); if(b) b.setAttribute('aria-expanded','false'); });
+}
+function openMega(id){
+  cancelClose();
+  const menu=NAV_MENU[id], p=$('#megaPanel'); if(!menu||!p) return;
+  if(matchMedia('(max-width:859px)').matches) return;
+  MEGA_TAB=id;
+  const cols=menu.cols.map(([h,items])=>
+    `<div class="mega-col"><h4>${esc(h)}</h4>${items.map(([l,tg])=>
+      `<button type="button" onclick="megaGo(${JSON.stringify(tg).replace(/"/g,'&quot;')})">${esc(l)}</button>`).join('')}</div>`).join('');
+  p.innerHTML=`<div class="mega-inner">
+    <div class="mega-cols">${cols}</div>
+    <div class="mega-feat">${megaFeat(menu.feat)}</div>
+  </div>`;
+  p.classList.add('open');
+  p.onmouseenter=cancelClose;
+  p.onmouseleave=scheduleClose;
+  NAV.forEach(([t])=>{ const b=$('#tab-'+t); if(b) b.setAttribute('aria-expanded', t===id?'true':'false'); });
+}
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeMega(); });
+window.addEventListener('scroll',()=>{ if($('#megaPanel')&&$('#megaPanel').classList.contains('open')) closeMega(); },{passive:true});
+
 function showTab(id,noScroll){
   if(!PANELS.includes(id)) return;   /* includes 'perfil', which has no nav button */
   const changed = CURRENT!==id;
@@ -2948,7 +3158,7 @@ function buildClubPicker(){
 }
 function pickClub(k){
   setProf('club', prof().club===k ? null : k);
-  buildClubPicker(); buildClubCard(); drawClubPill(); buildStandings2026();
+  buildClubPicker(); buildClubCard(); drawClubPill(); buildStandings2026(); if(typeof buildMega==='function') buildMega();
   try{ buildHub(); }catch(e){ console.error('BSN: falló el hub al cambiar de club',e); }
   const b=$('#profBody'); if(b&&b.innerHTML) buildProfile();
 }
@@ -5115,7 +5325,7 @@ function resetProfile(){
   PROFILE=Object.assign({},PROFILE_DEFAULTS);
   saveProfile();
   applyTheme();
-  buildClubPicker(); buildClubCard(); drawClubPill(); buildStandings2026();
+  buildClubPicker(); buildClubCard(); drawClubPill(); buildStandings2026(); if(typeof buildMega==='function') buildMega();
   try{ buildHub(); }catch(e){ console.error('BSN: falló el hub tras restaurar',e); }
   buildProfile();
   $('#profMsg').textContent='Preferencias restauradas. Tu progreso sigue intacto.';
@@ -6436,6 +6646,7 @@ function finishBoot(){
   clearTimeout(SPLASH_DEADLINE);
   try{ buildShelf(); }catch(e){ console.error('BSN: falló el estante',e); }
   try{ foldSections(); }catch(e){ console.error('BSN: falló el plegado',e); }
+  try{ buildMega(); }catch(e){ console.error('BSN: falló el mega-menú',e); }
   if(location.hash){
     try{ applyHash(); }catch(e){ console.error('BSN: falló el enlace directo',e); }
   }else{
