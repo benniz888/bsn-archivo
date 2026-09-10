@@ -3,7 +3,10 @@
 
 **SESSION:** 003 — PHASE_5_APP_SYNC + PHASE_6_APP_IA + PHASE_3H/3I/3J (identity
   spine Q1–Q4, all LIVE) · PHASE_7 visual redesign (done, LIVE) ·
-  **PHASE_8_NAV_REDESIGN IN PROGRESS** (commits 1–2/3 done: 8→5 nav + Hoy→Inicio + Consulta→Archivo; desktop mega-menu + mobile section-landing)
+  **PHASE_8_NAV_REDESIGN IN PROGRESS** (8.1 + 8.2 + 8.2b done: 8→5 nav +
+  Hoy→Inicio + Consulta→Archivo; mega-menu; **each section is now a view
+  router — #section/view URLs, subnav pill rail, folds retired**. 8.3 =
+  editorial blocks, pending)
 **DATE:** 2026-09-11
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
@@ -25,17 +28,29 @@ user-scalable=no` + `html{overscroll-behavior:none;overflow-x:clip;
 touch-action:pan-x pan-y}` (no bounce/pan/zoom; all pre-existing, not PHASE_7).
 Harnesses: `nav_motion`, `table`, `theme` (`scratchpad/`).
 
-**PHASE_8_NAV_REDESIGN in flight** (`nav_redesign_spec.md`) — commits 1–2/3:
+**PHASE_8_NAV_REDESIGN in flight** (`nav_redesign_spec.md`) — 8.1 + 8.2 + 8.2b:
 8→5 top nav (wordmark=Inicio, absorbed Hoy; Consulta folded into Archivo);
-`NAV`/`BOTTOM` split; `MOVED` redirects. **8.2:** desktop mega-menu
-(`#megaPanel`, `NAV_MENU` cols + `megaFeat` featured block, hover/focus open,
-Esc/scroll/leave close, `goSection`/`MEGA_ACT` dispatch); **mobile** — top tab
-row removed (`@media max-width:859px`), each section leads with a `.secfeat`
-block + the enlarged `.jump` chip rail as sub-nav. Club pill still in header
-(the `myteam` featured block replaces it in 8.3's editorial pass). 8.3 =
-editorial blocks (Inicio hero/hub, showPlayer, showTeam). Harnesses:
-`ia_harness`, `mega_harness`, `mega_dom_harness`. **Compact mobile header**
-thread is largely resolved — mobile tab row is gone.
+`NAV`/`BOTTOM` split. **8.2:** desktop mega-menu (`#megaPanel`, `NAV_MENU` cols
++ `megaFeat`). **8.2b — section view router:** each of the 5 nav sections is now
+a set of focused `.view` divs, one shown at a time, each with a `#section/view`
+URL. `showTab`→`_showPanel` (panel toggle) + `showView(sec,view)` (view
+toggle). `buildViews()` (replaces `foldSections`) assembles them at boot from
+`VIEW_MAP`; a `.subnav` pill rail switches them; a synthetic `__landing` view
+(featured block + link grid) is the section overview. `applyHash` two-token
+parse + expanded `MOVED` (`records`→`jugadores/records`, `refuerzos`→
+`historia/refuerzos`, `consulta`→`archivo/preguntar`, `fuentes`→
+`archivo/cobertura`, `#historia/<yr>`→`historia/temporada/<yr>`,
+`#equipos/<key>`→`equipos/equipo/<key>`, `#jugador/<slug>`→
+`jugadores/jugador/<slug>`, `#comparar/a/b`→`jugadores/comparar/a/b`).
+`setHash` + `HASH_ECHO` guard the `hashchange` re-entry. **Retired:**
+`foldSections`, `goSection`/`goEl`/`MEGA_ACT`/`buildMega`, `#jugMode`,
+`.jump`/`.fold*` CSS, the ≥1120px auto-expand block, `.secfeat`. `showTeam`/
+`showPlayer`/`showSeason`/`setJugView`/`cmpPreset`/`openGame`/`hubAsk`
+re-pointed to `showView`. 8.3 = editorial blocks (5 section landings, Inicio
+hero/hub, showPlayer, showTeam) linking to `#section/view`. Harnesses:
+`view_router_harness` (new) + `ia_harness`, `mega_harness`, `mega_dom_harness`,
+`nav_motion_harness` (all updated). **Compact mobile header** thread resolved
+(mobile tab row gone).
 
 Open threads:
 docs/project.md D2 refinement for the Grises/Caciques de Humacao split (D-045);

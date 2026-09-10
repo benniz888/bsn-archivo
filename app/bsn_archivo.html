@@ -319,9 +319,31 @@ nav.tabs{border-top:1px solid var(--line-soft);position:relative}
 .mega-feat button.btn,.mega-feat a.btn{margin-top:var(--sp-2)}
 @media(prefers-reduced-motion:reduce){.mega{transition:none}}
 @media(max-width:859px){.mega{display:none}}
-/* the same featured block, shown at the top of the section on a phone */
-.secfeat{margin:var(--sp-3) 0 var(--sp-1)}
-@media(min-width:860px){.secfeat{display:none}}
+
+/* ── Section view router (PHASE_8.2b) ─────────────────────────────
+   Each nav section is a set of focused views, one shown at a time,
+   each with its own #section/view URL. A pill rail under the title
+   switches them; bare #section shows a landing that lists them
+   (a plain list here, an editorial grid in 8.3). */
+.subnav{display:flex;gap:var(--sp-2);overflow-x:auto;scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;margin:0 0 var(--sp-5);padding-bottom:2px}
+.subnav::-webkit-scrollbar{display:none}
+.subnav button{flex:0 0 auto;background:transparent;border:1px solid var(--line);
+  color:var(--ink-3);border-radius:999px;padding:7px 14px;font:inherit;
+  font-size:var(--fs-sm);font-weight:600;cursor:pointer;white-space:nowrap;
+  transition:color var(--dur-fast),border-color var(--dur-fast),background var(--dur-fast)}
+.subnav button:hover{color:var(--ink);border-color:var(--ink-3)}
+.subnav button[aria-current="true"]{color:var(--night);background:var(--ink);border-color:var(--ink)}
+.view[hidden]{display:none}
+.view.view-enter{animation:panelin var(--dur) var(--ease) both}
+@media(prefers-reduced-motion:reduce){.view.view-enter{animation:none}}
+.viewhead{font-size:var(--fs-xl);text-transform:uppercase;letter-spacing:.005em;margin:0 0 var(--sp-3)}
+.landing>.mega-feat{margin-bottom:var(--sp-3)}
+.landgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:var(--sp-3);margin-top:var(--sp-5)}
+.landcard{display:block;border:1px solid var(--line);border-radius:12px;padding:var(--sp-4);
+  background:var(--card);color:var(--ink);text-decoration:none;font-weight:700;
+  transition:border-color var(--dur-fast),transform var(--dur-fast)}
+.landcard:hover{border-color:var(--ink-3);transform:translateY(-2px)}
 
 /* ── Plegado ──────────────────────────────────────────────────────
    Every tab had grown to five or six full sections stacked end to
@@ -395,48 +417,11 @@ nav.tabs{border-top:1px solid var(--line-soft);position:relative}
   .tile{transition:none}
 }
 
-.jump{display:flex;gap:var(--sp-2);overflow-x:auto;padding:2px 0 var(--sp-3);scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.jump::-webkit-scrollbar{display:none}
-.jump button{flex:0 0 auto;background:transparent;border:1px solid var(--line);color:var(--ink-3);
-  border-radius:999px;padding:5px 12px;font:inherit;font-size:var(--fs-2xs);font-weight:600;cursor:pointer;
-  white-space:nowrap;transition:color var(--dur-fast),border-color var(--dur-fast),background var(--dur-fast)}
-/* on a phone the jump rail IS the section's sub-navigation — give it presence */
-@media(max-width:859px){
-  .jump{gap:var(--sp-2);padding-bottom:var(--sp-4);margin-top:var(--sp-1)}
-  .jump button{padding:7px 14px;font-size:var(--fs-sm)}
-}
-.jump button:hover{color:var(--ink);border-color:var(--ink-3)}
-.jump button:focus-visible{outline:2px solid var(--fuego);outline-offset:2px}
 /* Keyboard focus was invisible on most controls, which is a defect
    rather than a preference: without it the app cannot be operated
    without a mouse. One rule, every interactive element. */
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,
 [tabindex]:focus-visible{outline:2px solid var(--fuego);outline-offset:2px;border-radius:6px}
-.jump button[aria-current="true"]{color:var(--night);background:var(--ink);border-color:var(--ink)}
-.fold{border-top:1px solid var(--line-soft)}
-.fold:first-of-type{border-top:0}
-.foldhead{display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;
-  color:var(--ink);cursor:pointer;text-align:left;padding:16px 2px;font:inherit}
-.foldhead:hover .foldtitle{color:var(--ink)}
-.foldhead:focus-visible{outline:2px solid var(--fuego);outline-offset:2px;border-radius:6px}
-.foldtitle{font-family:inherit;font-weight:800;font-size:19px;letter-spacing:.01em;flex:1}
-.foldchev{flex:0 0 auto;width:18px;height:18px;color:var(--ink-3);transition:transform .18s ease}
-.foldhead[aria-expanded="true"] .foldchev{transform:rotate(90deg);color:var(--fuego)}
-.foldbody{padding:0 0 var(--sp-5)}
-.foldbody[hidden]{display:none}
-@media (prefers-reduced-motion:reduce){.foldchev{transition:none}}
-/* ── Desktop: show the whole page (basketball-reference density). The
-   disclosures collapse to plain section headers and every body is open. */
-@media(min-width:1120px){
-  .panel .jump{display:none}
-  .foldbody,.foldbody[hidden]{display:block}
-  .foldhead{cursor:default;pointer-events:none;padding:var(--sp-6) 0 var(--sp-3);
-    text-transform:uppercase;letter-spacing:.015em}
-  .fold:first-of-type .foldhead{padding-top:var(--sp-4)}
-  .foldchev{display:none}
-  .foldtitle{font-size:var(--fs-lg);display:flex;align-items:center;gap:var(--sp-3)}
-  .foldtitle::after{content:"";flex:1;height:1px;background:var(--line)}
-}
 .tabscroll{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;max-width:var(--maxw);margin:0 auto;
   padding:0 calc(10px + env(safe-area-inset-right)) 0 calc(10px + env(safe-area-inset-left))}
 .tabscroll::-webkit-scrollbar{display:none}
@@ -1032,10 +1017,7 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
       <h2 class="big">Jugadores</h2>
       <p class="lede">El índice reúne a todos los jugadores que este archivo puede nombrar con fuente. Cada ficha dice también qué no se sabe de él.</p>
     </div>
-    <div id="jugMode" class="modebtns" role="tablist" aria-label="Modo">
-      <button role="tab" id="jugmode-buscar" aria-selected="true" onclick="setJugView('buscar')">Buscar</button>
-      <button role="tab" id="jugmode-comparar" aria-selected="false" onclick="setJugView('comparar')">Comparar</button>
-    </div>
+    <!-- PHASE_8.2b — Buscar / Comparar are router views now (subnav pills), not an in-panel toggle. -->
 
     <div id="jugComparar" hidden>
       <p class="lede">Dos o tres jugadores lado a lado. Las casillas vacías son huecos del archivo, no ceros.</p>
@@ -2729,77 +2711,49 @@ function buildNav(){
 }
 
 /* ============================================================
-   MEGA-MENU (PHASE_8.2)
+   MEGA-MENU (PHASE_8.2 / 8.2b)
    Desktop: hover / focus a top item -> a panel with the section's
-   sub-pages in grouped columns + one featured block. Mobile: the panel
-   is display:none — the bottom bar goes straight to the section, which
-   carries a .secfeat block + the .jump chip rail as its sub-nav.
+   views in grouped columns + one featured block. Mobile: the panel
+   is display:none — the bottom bar goes to the section landing, which
+   lists the same views. Every menu target is a view slug within the
+   section (or "section/slug" to cross over); megaGo routes exactly
+   like a subnav pill or a deep link — no scroll-jumping.
    ============================================================ */
 const NAV_MENU={
   historia:{cols:[
-    ['Campeones',[['La cinta 1930–2026','Todas las temporadas'],['Títulos por franquicia','Títulos por franquicia'],['Dinastías','Dinastías']]],
-    ['Finales',[['Cara a cara','Finales, cara a cara']]],
-    ['Premios',[['MVP y premios por año','Premios y líderes'],['Campeones de anotación','Premios y líderes']]],
-    ['La liga',[['La regla de los refuerzos','Los refuerzos']]]
+    ['Campeones',[['La cinta 1930–2026','cinta'],['Títulos por franquicia','titulos'],['Dinastías','dinastias']]],
+    ['Finales',[['Cara a cara','finales']]],
+    ['Premios',[['MVP y premios por año','premios'],['Campeones de anotación','premios']]],
+    ['La liga',[['La regla de los refuerzos','refuerzos']]]
   ],feat:'topfranq'},
   jugadores:{cols:[
-    ['Buscar',[['El índice completo','__jugtop'],['Comparar','__cmp']]],
-    ['Los mejores',[['Líderes de carrera','Líderes de carrera'],['Récords de la liga','Récords de la liga'],['Salón de la Fama','Salón']]],
-    ['Más allá',[['Del BSN a la NBA','Del BSN a la NBA'],['Dirigentes','Dirigentes'],['Canchas con su nombre','Honrados en concreto']]]
+    ['Buscar',[['El índice completo','buscar'],['Comparar','comparar']]],
+    ['Los mejores',[['Líderes de carrera','lideres'],['Récords de la liga','records'],['Salón de la Fama','salon']]],
+    ['Más allá',[['Del BSN a la NBA','nba'],['Dirigentes','dirigentes'],['Canchas con su nombre','canchas']]]
   ],feat:'compare'},
   equipos:{cols:[
-    ['Franquicias',[['Los 12 activos','__active'],['Franquicias desaparecidas','__gone']]],
-    ['Historia',[['Títulos por franquicia','Títulos por franquicia'],['Números retirados','Números retirados']]],
-    ['Negocio',[['Quién es dueño de qué','Quién es dueño']]]
+    ['Franquicias',[['Los 12 activos','activos'],['Franquicias desaparecidas','desaparecidos']]],
+    ['Historia',[['Títulos por franquicia','historia/titulos'],['Números retirados','retirados']]],
+    ['Negocio',[['Quién es dueño de qué','duenos']]]
   ],feat:'myteam'},
   juega:{cols:[
-    ['Hoy',[['La Cuadrícula del día','__daily']]],
-    ['Modos',[['Temporada Perfecta','__perfect'],['Quién soy','__quiz'],['Sube y baja','__hl']]]
+    ['Hoy',[['La Cuadrícula del día','cuadricula']]],
+    ['Modos',[['Temporada Perfecta','temporada'],['Quién soy','quiensoy'],['Sube y baja','subeybaja']]]
   ],feat:'daily'},
   archivo:{cols:[
-    ['Preguntar',[['Consulta en español','__ask'],['Constructor + CSV','Constructor de consultas']]],
-    ['Qué hay y qué falta',[['Cobertura por temporada','Cobertura del archivo'],['Lo que falta','Lo que falta'],['Conflictos entre fuentes','Conflictos entre fuentes']]],
-    ['De dónde sale',[['Boxscores y líderes','De dónde salieron'],['Cómo se decide «leyenda»','Cómo se decide'],['Escudos y fotos','Escudos y fotos']]],
-    ['Referencia',[['Glosario','Glosario']]]
+    ['Preguntar',[['Consulta en español','preguntar'],['Constructor + CSV','constructor']]],
+    ['El estado del archivo',[['Cobertura, huecos y fuentes','cobertura'],['Calendario de temporada','calendario']]],
+    ['Referencia',[['Glosario','glosario']]]
   ],feat:'gap'}
 };
-const MEGA_ACT={
-  __jugtop:()=>{ showTab('jugadores'); if(typeof setJugView==='function') setJugView('buscar'); },
-  __cmp:()=>{ showTab('jugadores'); if(typeof setJugView==='function') setJugView('comparar'); },
-  __active:()=>goEl('equipos','tilesActive'),
-  __gone:()=>goEl('equipos','tilesGone'),
-  __ask:()=>{ showTab('archivo'); const i=$('#askInput'); if(i){ i.scrollIntoView({block:'center'}); i.focus(); } },
-  __daily:()=>{ showTab('juega'); if(typeof openGame==='function') openGame('cuadricula'); },
-  __perfect:()=>{ showTab('juega'); if(typeof openGame==='function') openGame('temporada'); },
-  __quiz:()=>{ showTab('juega'); if(typeof openGame==='function') openGame('quiensoy'); },
-  __hl:()=>{ showTab('juega'); if(typeof openGame==='function') openGame('subeybaja'); }
-};
-
-/* jump to a section: showTab, then open + scroll the h3.sec / fold whose
-   heading starts with `needle` (accent-insensitive). */
-function goSection(tab,needle){
-  showTab(tab);
-  setTimeout(()=>{
-    const sec=document.getElementById(tab); if(!sec) return;
-    const nn=norm(needle);
-    const heads=[...sec.querySelectorAll('.foldtitle,h3.sec,h4.sub')];
-    const t=heads.find(x=>norm(x.textContent).startsWith(nn)) || heads.find(x=>norm(x.textContent).includes(nn));
-    if(!t){ return; }
-    const fold=t.closest('.fold');
-    if(fold){ const body=fold.querySelector('.foldbody'); if(body) revealNode(body); }
-    (fold||t).scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});
-  },30);
-}
-function goEl(tab,id){
-  showTab(tab);
-  setTimeout(()=>{ const e=$('#'+id); if(e) e.scrollIntoView({block:'start',behavior:'smooth'}); },30);
-}
 let MEGA_TAB=null;
 function megaGo(target){
-  const tab=MEGA_TAB;
+  const from=MEGA_TAB||CURRENT;
   closeMega();
-  if(MEGA_ACT[target]) MEGA_ACT[target]();
-  else goSection(tab||CURRENT,target);
+  let s=from, v=target;
+  if(target.indexOf('/')>-1){ const parts=target.split('/'); s=parts[0]; v=parts[1]; }
+  showView(s,v);
+  if(s==='archivo'&&v==='preguntar'){ const i=$('#askInput'); if(i) setTimeout(()=>i.focus(),50); }
 }
 
 function megaFeat(k){
@@ -2812,7 +2766,7 @@ function megaFeat(k){
         <div class="fn">${f.won.length}</div></div>
       <div class="ft">${esc(f.name.split(' de ')[0])}</div>
       <div class="fd">títulos en 97 temporadas${f.won.length?' · último en '+Math.max.apply(null,f.won):''}</div>
-      <button class="btn" style="padding:6px 12px;font-size:12px" onclick="megaGo('Títulos por franquicia')">Ver todos</button>`;
+      <button class="btn" style="padding:6px 12px;font-size:12px" onclick="megaGo('titulos')">Ver todos</button>`;
   }
   if(k==='compare'){
     return `<div class="fx">Comparar</div>
@@ -2835,28 +2789,23 @@ function megaFeat(k){
       <div class="fn" style="margin-top:2px">#${n}</div>
       <div class="ft">La Cuadrícula del día</div>
       <div class="fd">Nueve casillas, un jugador que encaje en cada cruce de club × logro.</div>
-      <button class="btn" style="padding:6px 12px;font-size:12px" onclick="megaGo('__daily')">Jugar</button>`;
+      <button class="btn" style="padding:6px 12px;font-size:12px" onclick="megaGo('cuadricula')">Jugar</button>`;
   }
   if(k==='gap'){
     return `<div class="fx">Lo que este archivo no sabe</div>
       <div class="ft" style="margin-top:2px">Antes de 2011 no hay estadística por temporada</div>
       <div class="fd">Ese es el muro real. Todo lo demás — los huecos, los conflictos entre fuentes, de dónde sale cada dato — está aquí, dicho de frente.</div>
-      <button class="btn" style="padding:6px 12px;font-size:12px" onclick="megaGo('Lo que falta')">Ver los huecos</button>`;
+      <button class="btn" style="padding:6px 12px;font-size:12px" onclick="megaGo('cobertura')">Ver los huecos</button>`;
   }
   return '';
 }
 
-function buildMega(){
-  /* also drop a mobile featured block at the top of each nav section */
+/* the featured block also heads each section's landing view; re-render
+   it on club change (the "myteam" variant reads the stored club). */
+function paintLandingFeats(){
   Object.keys(NAV_MENU).forEach(id=>{
-    const sec=document.getElementById(id); if(!sec) return;
-    const panel=sec.querySelector(':scope > .panel'); if(!panel) return;
-    let sf=panel.querySelector(':scope > .secfeat');
-    if(!sf){ sf=el('div','secfeat mega-feat');
-      const phead=panel.querySelector(':scope > .phead');
-      panel.insertBefore(sf, phead ? phead.nextSibling : panel.firstChild);
-    }
-    sf.innerHTML=megaFeat(NAV_MENU[id].feat);
+    const host=document.querySelector('#'+id+' .view[data-view="__landing"] .landing > .mega-feat');
+    if(host) host.innerHTML=megaFeat(NAV_MENU[id].feat);
   });
 }
 
@@ -2889,8 +2838,10 @@ function openMega(id){
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeMega(); });
 window.addEventListener('scroll',()=>{ if($('#megaPanel')&&$('#megaPanel').classList.contains('open')) closeMega(); },{passive:true});
 
-function showTab(id,noScroll){
-  if(!PANELS.includes(id)) return;   /* includes 'perfil', which has no nav button */
+/* toggle the <section> panels + nav aria; returns whether the section
+   actually changed. The public entry is showTab(); deep links and the
+   subnav call showView() which calls this. */
+function _showPanel(id,noScroll){
   const changed = CURRENT!==id;
   CURRENT=id;
   PANELS.forEach(t=>{ const s=document.getElementById(t); if(s) s.hidden = (t!==id); });
@@ -2911,6 +2862,62 @@ function showTab(id,noScroll){
     const smooth = changed && !matchMedia('(prefers-reduced-motion:reduce)').matches;
     window.scrollTo({top:0,behavior:smooth?'smooth':'auto'});
   }
+  return changed;
+}
+
+/* Public nav entry. A nav word / bottom-bar tap / hub card lands on the
+   section's landing view (its overview). Deep links, the subnav and the
+   mega-menu go through showView() directly. */
+function showTab(id,noScroll){
+  if(!PANELS.includes(id)) return;   /* includes 'perfil', which has no nav button */
+  _showPanel(id,noScroll);
+  if(VIEW_SECS.indexOf(id)>-1) showView(id,'__landing',{panel:false,noScroll:true,fromNav:true});
+  else setHash(id);
+}
+
+/* ============================================================
+   SECTION VIEW ROUTER (PHASE_8.2b)
+   Each nav section holds a set of .view divs — one shown at a time,
+   each with a #section/view URL and a subnav pill. buildViews()
+   assembles them from the section markup at boot (replaced
+   foldSections). showView() is the single switch.
+   ============================================================ */
+const VIEW_SECS=['historia','jugadores','equipos','juega','archivo'];
+let VIEW_NOW={};
+let HASH_ECHO=null;
+function setHash(h){
+  if(('#'+h)===location.hash) return;
+  HASH_ECHO=h;
+  try{ location.hash=h; }catch(e){}
+}
+
+function showView(sec,view,opts){
+  opts=opts||{};
+  if(VIEW_SECS.indexOf(sec)<0){ showTab(sec,opts.noScroll); return; }
+  let panelChanged=false;
+  if(opts.panel!==false) panelChanged=_showPanel(sec,true);
+  const S=document.getElementById(sec); if(!S) return;
+  const panel=S.querySelector(':scope > .panel'); if(!panel) return;
+  const views=Array.from(panel.querySelectorAll(':scope > .view'));
+  if(!views.length) return;
+  let target=views.find(v=>v.dataset.view===view) || views.find(v=>v.dataset.view==='__landing');
+  if(!target) return;
+  const now=target.dataset.view;
+  views.forEach(v=>{ v.hidden = v!==target; });
+  if(!panelChanged && !opts.fromNav && VIEW_NOW[sec]!==now){
+    target.classList.remove('view-enter'); void target.offsetWidth; target.classList.add('view-enter');
+  }
+  VIEW_NOW[sec]=now;
+  syncSubnav(sec,now);
+  if(!opts.fromHash && !opts.noHash) setHash(now==='__landing'?sec:sec+'/'+now);
+  if(!opts.noScroll){
+    const smooth=!matchMedia('(prefers-reduced-motion:reduce)').matches;
+    window.scrollTo({top:0,behavior:smooth?'smooth':'auto'});
+  }
+}
+function syncSubnav(sec,view){
+  const nav=document.querySelector('#'+sec+' .subnav'); if(!nav) return;
+  Array.from(nav.children).forEach(b=>b.setAttribute('aria-current',String(b.dataset.view===view)));
 }
 
 /* ============================================================
@@ -3043,7 +3050,7 @@ function buildHero(){
         <div><div class="t1">${esc(f.name)} — campeón 2026</div>
              <div class="t2">Título número ${SEASON_STATE.title} · bicampeonato</div></div></div>
       <div style="flex:1"></div>
-      <button class="btn" onclick="showTab('historia')">Ver las 97 temporadas</button>
+      <button class="btn" onclick="showView('historia','cinta')">Ver las 97 temporadas</button>
     </div>
   </div>`;
 }
@@ -3158,7 +3165,7 @@ function buildClubPicker(){
 }
 function pickClub(k){
   setProf('club', prof().club===k ? null : k);
-  buildClubPicker(); buildClubCard(); drawClubPill(); buildStandings2026(); if(typeof buildMega==='function') buildMega();
+  buildClubPicker(); buildClubCard(); drawClubPill(); buildStandings2026(); if(typeof paintLandingFeats==='function') paintLandingFeats();
   try{ buildHub(); }catch(e){ console.error('BSN: falló el hub al cambiar de club',e); }
   const b=$('#profBody'); if(b&&b.innerHTML) buildProfile();
 }
@@ -3332,6 +3339,8 @@ function buildRibbon(){
   }
 }
 function showSeason(y,btn){
+  showView('historia','cinta',{noScroll:true,noHash:true});   /* the ribbon + readout live here */
+  setHash('historia/temporada/'+y);
   document.querySelectorAll('.cell.sel').forEach(c=>c.classList.remove('sel'));
   if(btn) btn.classList.add('sel');
   else { const b=document.querySelector('.cell[data-y="'+y+'"]'); if(b) b.classList.add('sel'); }
@@ -3509,7 +3518,8 @@ function buildTiles(){
     .sort((a,b)=>F[a].name.localeCompare(F[b].name,'es')).map(tile).join('');
 }
 function showTeam(k){
-  showTab('equipos',true);
+  showView('equipos','equipo',{noScroll:true,noHash:true});
+  setHash('equipos/equipo/'+k);
   const f=F[k], host=$('#teamDetail');
   const v=VENUES[k];
   const last=f.won.length?Math.max.apply(null,f.won):null;
@@ -3755,8 +3765,8 @@ function renderArchiveCard(name,id,host){
   revealNode(host); host.scrollIntoView({block:'start',behavior:'smooth'});
 }
 function showPlayer(name,id){
-  showTab('jugadores',true);
-  if(typeof setJugView==='function') setJugView('buscar');   /* a player card lives in the Buscar view */
+  showView('jugadores','buscar',{noScroll:true,noHash:true});   /* a player card lives in the Buscar view */
+  setHash('jugadores/jugador/'+slug(name));
   buildPlayerIndex();
   loadPlayerExtra(name,id);       /* 5D.3b/c — async, fills #playerExtra */
   const p=PINDEX.find(x=>norm(x.name)===norm(name));
@@ -4600,7 +4610,7 @@ const ASKERS=[
     if(!/que es|que significa|que quiere decir|definicion de|what is|explicame/.test(q)) return null;
     const g=glosByText(q); if(!g) return null;
     return {q:'Glosario', big:esc(g.t), sub:esc(g.d),
-      chips:`<button class="chip" onclick="showTab('archivo')">Ver el glosario completo</button>`};
+      chips:`<button class="chip" onclick="showView('archivo','glosario')">Ver el glosario completo</button>`};
   },
   /* fallecidos: la lista completa que el archivo sí puede dar */
   q=>{
@@ -4659,7 +4669,7 @@ const ASKERS=[
     return {q:'Campeón '+y, big:esc(f.name),
       sub:(r?'Venció a '+esc(F[r].name)+'. ':'')+`Fue su título número ${nth} de ${f.won.length}.`,
       chips:`<button class="chip" onclick="showTeam('${k}')">Ver ${esc(f.name.split(' de ')[0])}</button>`+
-            `<button class="chip" onclick="showTab('historia');showSeason(${y})">Ver en la cinta</button>`,
+            `<button class="chip" onclick="showSeason(${y})">Ver en la cinta</button>`,
       foot:NOTES[y]||''};
   },
   /* decade */
@@ -4831,7 +4841,7 @@ function ask(qraw){
   /* fallback: fuzzy search across everything the archive names */
   buildPlayerIndex();
   const hits=[];
-  YEARS.forEach(y=>{ if(String(y).includes(q)) hits.push(['Temporada',String(y),champOf[y]?F[champOf[y]].name:'sin campeón',()=>{showTab('historia');showSeason(y);}]); });
+  YEARS.forEach(y=>{ if(String(y).includes(q)) hits.push(['Temporada',String(y),champOf[y]?F[champOf[y]].name:'sin campeón',()=>showSeason(y)]); });
   FKEYS.forEach(k=>{ if(norm(F[k].name+' '+F[k].city).includes(q)) hits.push(['Club',F[k].name,F[k].won.length+' títulos',()=>showTeam(k)]); });
   PINDEX.forEach(p=>{ if(norm(p.name).includes(q)) hits.push(['Jugador',p.name,Array.from(p.tags).slice(0,2).join(' · '),()=>showPlayer(p.name)]); });
   BIO.forEach(b=>{ if(norm(b.n).includes(q)) hits.push(['Biografía',bioShort(b),
@@ -5156,7 +5166,7 @@ function hubAsk(e){
   if(e.key!=='Enter') return;
   const v=$('#hubSearch').value.trim();
   if(!v) return;
-  showTab('archivo');
+  showView('archivo','preguntar');
   runAsk(v);
 }
 
@@ -5325,7 +5335,7 @@ function resetProfile(){
   PROFILE=Object.assign({},PROFILE_DEFAULTS);
   saveProfile();
   applyTheme();
-  buildClubPicker(); buildClubCard(); drawClubPill(); buildStandings2026(); if(typeof buildMega==='function') buildMega();
+  buildClubPicker(); buildClubCard(); drawClubPill(); buildStandings2026(); if(typeof paintLandingFeats==='function') paintLandingFeats();
   try{ buildHub(); }catch(e){ console.error('BSN: falló el hub tras restaurar',e); }
   buildProfile();
   $('#profMsg').textContent='Preferencias restauradas. Tu progreso sigue intacto.';
@@ -5436,7 +5446,7 @@ function buildPrimer(){
         cancha es talento puertorriqueño.</p>
       <p>Este archivo cubre las 97 temporadas: quién ganó, quién anotó, quién jugó y qué se
         perdió por el camino. Si una palabra no te suena, está en el
-        <button class="x" onclick="showTab('archivo')">glosario</button>.</p>
+        <button class="x" onclick="showView('archivo','glosario')">glosario</button>.</p>
     </div>`;
 }
 
@@ -6343,22 +6353,29 @@ function cmpClear(){ CMP=[]; const m=$('#cmpMsg'); if(m) m.textContent=''; drawC
 /* PHASE_6 — Comparar is a promoted mode inside Jugadores (Buscar | Comparar),
    not a buried accordion. */
 let JUGVIEW='buscar';
+/* PHASE_8.2b — Buscar / Comparar are now sibling views of the router.
+   Kept as a shim: some call sites still ask by name. */
 function setJugView(v){
   v = (v==='comparar') ? 'comparar' : 'buscar';
   JUGVIEW=v;
-  const b=$('#jugBuscar'), c=$('#jugComparar');
-  if(b) b.hidden = v!=='buscar';
-  if(c) c.hidden = v!=='comparar';
-  ['buscar','comparar'].forEach(m=>{ const btn=$('#jugmode-'+m); if(btn) btn.setAttribute('aria-selected',String(m===v)); });
+  showView('jugadores',v);
   if(v==='comparar'){ try{ buildCompare(); }catch(e){ console.error('BSN: falló Comparar',e); } }
 }
 function cmpFromPlayer(name){
-  showTab('jugadores',true); setJugView('comparar'); cmpAdd(name);
+  showView('jugadores','comparar',{noScroll:true});
+  try{ buildCompare(); }catch(e){}
+  cmpAdd(name);
   const o=$('#cmpOut'); if(o&&o.scrollIntoView) o.scrollIntoView({block:'start',behavior:'smooth'});
 }
 /* Two taps to a real comparison beats an empty box and a blinking
    cursor — most people cannot name a second BSN player on demand. */
-function cmpPreset(a,b){ setJugView('comparar'); CMP=[a,b].filter(n=>cmpFind(n)); drawCompare(); }
+function cmpPreset(a,b){
+  showView('jugadores','comparar',{noScroll:true,noHash:true});
+  try{ buildCompare(); }catch(e){}
+  CMP=[a,b].filter(n=>cmpFind(n));
+  if(CMP.length===2) setHash('jugadores/comparar/'+slug(a)+'/'+slug(b));
+  drawCompare();
+}
 
 const CMP_PRESETS=[
   ['Georgie Torres','Mario Morales','El uno contra el dos'],
@@ -6645,8 +6662,7 @@ const SPLASH_DEADLINE=setTimeout(hideSplash,9000);
 function finishBoot(){
   clearTimeout(SPLASH_DEADLINE);
   try{ buildShelf(); }catch(e){ console.error('BSN: falló el estante',e); }
-  try{ foldSections(); }catch(e){ console.error('BSN: falló el plegado',e); }
-  try{ buildMega(); }catch(e){ console.error('BSN: falló el mega-menú',e); }
+  try{ buildViews(); }catch(e){ console.error('BSN: falló el enrutador de vistas',e); }
   if(location.hash){
     try{ applyHash(); }catch(e){ console.error('BSN: falló el enlace directo',e); }
   }else{
@@ -6758,121 +6774,222 @@ function buildShelf(){
   </button>`).join('');
 }
 function openGame(id){
-  GAMES.forEach(g=>{ const s=$('#stage-'+g.id); if(s) s.hidden = g.id!==id; });
-  const shelf=$('#gameShelf'); if(shelf) shelf.hidden=true;
+  if(!GAMES.some(g=>g.id===id)) return;
+  showView('juega',id);
   GAME_OPEN=id;
-  const st=$('#stage-'+id);
-  if(st && st.scrollIntoView) st.scrollIntoView({block:'start',behavior:'smooth'});
 }
 function closeGame(){
-  GAMES.forEach(g=>{ const s=$('#stage-'+g.id); if(s) s.hidden=true; });
-  const shelf=$('#gameShelf'); if(shelf) shelf.hidden=false;
+  showView('juega','__landing');
   GAME_OPEN=null;
-  const j=$('#juega'); if(j && j.scrollIntoView) j.scrollIntoView({block:'start',behavior:'smooth'});
 }
 document.addEventListener('keydown',e=>{ if(e.key==='Escape' && GAME_OPEN) closeGame(); });
 
-function foldSections(){
-  const hosts=new Set();
-  document.querySelectorAll('section[role="tabpanel"] h3.sec').forEach(x=>hosts.add(x.parentNode));
-  hosts.forEach(panel=>{
-    const sec=panel.closest('section');
-    const heads=Array.from(panel.children).filter(n=>n.tagName==='H3'&&n.classList.contains('sec'));
-    if(heads.length<2) return;            /* one section is not a list */
-    const jump=el('div','jump'); jump.setAttribute('role','tablist');
-    const folds=[];
-    heads.forEach((head,i)=>{
-      const fold=el('div','fold');
-      const btn=el('button','foldhead');
-      btn.type='button';
-      btn.innerHTML='<svg class="foldchev" viewBox="0 0 24 24" fill="none" aria-hidden="true">'+
-        '<path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>'+
-        '<span class="foldtitle">'+head.textContent+'</span>';
-      const body=el('div','foldbody');
-      head.parentNode.insertBefore(fold,head);
-      let n=head.nextSibling;
-      head.remove();
-      while(n && !(n.tagName==='H3'&&n.classList.contains('sec'))){
-        const next=n.nextSibling; body.appendChild(n); n=next;
-      }
-      fold.appendChild(btn); fold.appendChild(body);
-      const key='fold:'+sec.id+':'+i;
-      const saved=ST.get(key);
-      const open = saved==null ? i===0 : saved==='1';
-      body.hidden=!open; btn.setAttribute('aria-expanded',String(open));
-      btn.onclick=()=>{
-        const now=body.hidden;
-        body.hidden=!now; btn.setAttribute('aria-expanded',String(now));
-        ST.set(key,now?'1':'0');
-        syncJump();
-        if(now) btn.scrollIntoView({block:'nearest',behavior:'smooth'});
-      };
-      const chip=el('button'); chip.type='button'; chip.textContent=head.textContent;
-      chip.onclick=()=>{
-        if(body.hidden){ body.hidden=false; btn.setAttribute('aria-expanded','true'); ST.set(key,'1'); }
-        syncJump();
-        btn.scrollIntoView({block:'start',behavior:'smooth'});
-      };
-      jump.appendChild(chip);
-      folds.push({btn,body,chip});
+/* ── buildViews ───────────────────────────────────────────────────
+   Runs once, after every builder has written its markup. Each nav
+   section's h3.sec (h4.sub in Equipos) blocks, plus the pre-heading
+   content, become focused .view divs; a synthetic __landing view is
+   prepended; a .subnav pill rail switches them. Replaces foldSections. */
+const VIEW_MAP={
+  historia:{ pre:['cinta','La cinta'], split:'h3.sec', map:[
+    ['Títulos por franquicia',['titulos','Títulos']],
+    ['Dinastías',['dinastias','Dinastías']],
+    ['Finales, cara a cara',['finales','Finales']],
+    ['Premios y líderes',['premios','Premios']],
+    ['Los refuerzos',['refuerzos','Refuerzos']],
+    ['Todas las temporadas',['temporadas','Todas las temporadas']]
+  ]},
+  jugadores:{ host:'#jugBuscar', drop:['#jugMode'], pre:['buscar','Buscar'], split:'h3.sec',
+    adopt:[['#jugComparar','comparar','Comparar']], map:[
+    ['Líderes de carrera',['lideres','Líderes de carrera']],
+    ['Récords de la liga',['records','Récords']],
+    ['Salón',['salon','Salón']],
+    ['Del BSN a la NBA',['nba','A la NBA']],
+    ['Dirigentes',['dirigentes','Dirigentes']],
+    ['Honrados en concreto',['canchas','Canchas']]
+  ]},
+  equipos:{ split:'h4.sub', detail:['equipo','#teamDetail'], map:[
+    ['Activos',['activos','Activos']],
+    ['Quién es dueño',['duenos','Dueños']],
+    ['Franquicias desaparecidas',['desaparecidos','Desaparecidas']],
+    ['Números retirados',['retirados','Números retirados']]
+  ]},
+  archivo:{ pre:['preguntar','Preguntar'], split:'h3.sec', map:[
+    ['Constructor de consultas',['constructor','Constructor']],
+    ['Cobertura del archivo',['cobertura','Cobertura y fuentes']],
+    ['Calendario y cobertura',['calendario','Calendario']],
+    ['Glosario',['glosario','Glosario']]
+  ]}
+};
+function _mkView(sec,slug){
+  const d=el('div','view'); d.dataset.view=slug; d.dataset.sec=sec; d.hidden=true; return d;
+}
+function _subnavEl(sec,order,landLabel){
+  const nav=el('div','subnav'); nav.setAttribute('role','tablist');
+  nav.setAttribute('aria-label','Vistas de '+sec);
+  [['__landing',landLabel||'Resumen']].concat(order).forEach(([slug,label])=>{
+    const b=el('button'); b.type='button'; b.dataset.view=slug; b.textContent=label;
+    b.setAttribute('role','tab');
+    b.onclick=()=>showView(sec,slug);
+    nav.appendChild(b);
+  });
+  return nav;
+}
+function buildLanding(sec,order){
+  const wrap=el('div','landing');
+  const feat=el('div','mega-feat'); feat.innerHTML=megaFeat(NAV_MENU[sec].feat);
+  wrap.appendChild(feat);
+  const grid=el('div','landgrid');
+  order.forEach(([slug,label])=>{
+    const a=el('a','landcard'); a.href='#'+sec+'/'+slug; a.textContent=label;
+    a.onclick=e=>{ e.preventDefault(); showView(sec,slug); };
+    grid.appendChild(a);
+  });
+  wrap.appendChild(grid);
+  return wrap;
+}
+function buildJuegaViews(panel){
+  const phead=panel.querySelector(':scope > .phead');
+  const stages=Array.from(panel.querySelectorAll(':scope > .stage'));
+  const land=_mkView('juega','__landing');
+  Array.from(panel.children).forEach(n=>{
+    if(n===phead || (n.classList&&n.classList.contains('stage'))) return;
+    land.appendChild(n);                       /* streakStrip, storageNote, gameShelf */
+  });
+  const order=[];
+  stages.forEach(s=>{
+    s.classList.add('view'); s.dataset.view=s.id.replace('stage-',''); s.dataset.sec='juega'; s.hidden=true;
+    const g=GAMES.find(x=>x.id===s.dataset.view);
+    order.push([s.dataset.view, g?g.t:s.dataset.view]);
+  });
+  panel.insertBefore(_subnavEl('juega',order,'Juegos'), phead?phead.nextSibling:panel.firstChild);
+  panel.insertBefore(land, panel.querySelector(':scope > .subnav').nextSibling);
+  stages.forEach(s=>panel.appendChild(s));
+  VIEW_NOW.juega='__landing'; syncSubnav('juega','__landing');
+}
+function buildViews(){
+  VIEW_SECS.forEach(sec=>{
+    const S=document.getElementById(sec); if(!S) return;
+    const panel=S.querySelector(':scope > .panel'); if(!panel) return;
+    if(sec==='juega'){ buildJuegaViews(panel); return; }
+    const cfg=VIEW_MAP[sec], phead=panel.querySelector(':scope > .phead');
+    (cfg.drop||[]).forEach(sel=>{ const e=panel.querySelector(sel); if(e) e.remove(); });
+    const host = cfg.host ? panel.querySelector(cfg.host) : panel;
+    if(!host) return;
+    const kids=Array.from(host.children).filter(n=>n!==phead);
+    const isHead=n=>n.matches && n.matches(cfg.split);
+    const order=[];
+    /* group: nodes before the first heading, then one group per heading */
+    let pre=[], groups=[], cur=null;
+    kids.forEach(n=>{
+      if(isHead(n)){ cur={head:n,nodes:[]}; groups.push(cur); }
+      else if(cur) cur.nodes.push(n);
+      else pre.push(n);
     });
-    function syncJump(){ folds.forEach(f=>f.chip.setAttribute('aria-current',String(!f.body.hidden))); }
-    syncJump();
-    const phead=panel.querySelector(':scope > .phead');
-    if(phead && phead.nextSibling) panel.insertBefore(jump,phead.nextSibling);
-    else panel.insertBefore(jump,panel.firstChild);
+    /* pre view */
+    if(cfg.pre && pre.length){
+      const v=_mkView(sec,cfg.pre[0]);
+      pre.forEach(n=>v.appendChild(n));
+      panel.appendChild(v); order.push(cfg.pre);
+    }
+    /* adopt an existing container (Comparar) */
+    (cfg.adopt||[]).forEach(a=>{
+      const e=panel.querySelector(a[0])||S.querySelector(a[0]);
+      if(e){ e.classList.add('view'); e.dataset.view=a[1]; e.dataset.sec=sec; e.hidden=true;
+        if(!e.querySelector(':scope > .viewhead')){ const hd=el('h2','viewhead'); hd.textContent=a[2]; e.insertBefore(hd,e.firstChild); }
+        panel.appendChild(e); order.push([a[1],a[2]]); }
+    });
+    /* heading views */
+    groups.forEach(g=>{
+      const found=(cfg.map||[]).find(m=>norm(g.head.textContent).indexOf(norm(m[0]))===0);
+      const vslug = found ? found[1][0] : slug_(g.head.textContent);
+      const label = found ? found[1][1] : g.head.textContent;
+      const v=_mkView(sec,vslug);
+      const hd=el('h2','viewhead'); hd.textContent=g.head.textContent; v.appendChild(hd);
+      g.nodes.forEach(n=>v.appendChild(n));
+      g.head.remove();
+      panel.appendChild(v); order.push([vslug,label]);
+    });
+    /* detail-only view, reached via showTeam / deep link (not in the subnav) */
+    if(cfg.detail){
+      const v=_mkView(sec,cfg.detail[0]);
+      const d=panel.querySelector(cfg.detail[1]);
+      v.appendChild(d||el('div'));
+      panel.appendChild(v);
+    }
+    /* drop an emptied host wrapper (jugBuscar) */
+    if(cfg.host){ const hw=panel.querySelector(cfg.host); if(hw && !hw.children.length) hw.remove(); }
+    /* landing + subnav */
+    const land=_mkView(sec,'__landing');
+    land.appendChild(buildLanding(sec,order));
+    const firstView=panel.querySelector(':scope > .view');
+    panel.insertBefore(land, firstView);
+    panel.insertBefore(_subnavEl(sec,order), phead?phead.nextSibling:panel.firstChild);
+    VIEW_NOW[sec]='__landing'; syncSubnav(sec,'__landing');
   });
 }
+const slug_=s=>slug(s).split('-').slice(0,3).join('-')||'v';
 
-/* A deep link or a click-through can land on a node inside a closed
-   fold; scrolling to something display:none silently does nothing. */
+/* A deep link or a click-through can target a node inside a hidden
+   view; surface that view first (scrolling to display:none does nothing). */
 function revealNode(node){
   let n=node;
-  while(n && n!==document.body){
-    if(n.classList && n.classList.contains('foldbody') && n.hidden){
-      n.hidden=false;
-      const btn=n.previousElementSibling;
-      if(btn && btn.classList.contains('foldhead')) btn.setAttribute('aria-expanded','true');
-      const jump=n.closest('.panel') && n.closest('.panel').querySelector('.jump');
-      if(jump){
-        const folds=Array.from(n.closest('.panel').querySelectorAll('.foldbody'));
-        Array.from(jump.children).forEach((c,i)=>c.setAttribute('aria-current',String(!folds[i].hidden)));
-      }
+  while(n && n.nodeType===1){
+    if(n.classList && n.classList.contains('view') && n.hidden && n.dataset.sec){
+      showView(n.dataset.sec, n.dataset.view, {noScroll:true, noHash:true});
+      return;
     }
     n=n.parentNode;
   }
 }
 
 function applyHash(){
-  const h=(location.hash||'').replace(/^#/,'');
-  if(!h) return;
-  const parts=h.split('/'), [a,b]=parts;
-  const MOVED={records:'historia',refuerzos:'historia',               /* PHASE_6 */
-               hoy:'inicio',calendario:'inicio',                      /* PHASE_8 — Hoy folded into Inicio */
-               consulta:'archivo',fuentes:'archivo'};                 /* PHASE_8 — Consulta folded into Archivo */
-  if(MOVED[a]){ showTab(MOVED[a]); return; }
-  if(a==='comparar'){   /* #comparar/georgie-torres/mario-morales */
-    showTab('jugadores'); setJugView('comparar');
-    const nm=s=>{ const x=(PINDEX||[]).find(p=>slug(p.name)===s); return x?x.name:null; };
-    const n1=nm(b), n2=nm(parts[2]);
+  let raw=(location.hash||'').replace(/^#/,'');
+  if(HASH_ECHO!==null && raw===HASH_ECHO){ HASH_ECHO=null; return; }
+  HASH_ECHO=null;
+  if(!raw){ showTab('inicio'); return; }
+  let p=raw.split('/');
+  /* legacy single-token redirects (PHASE_6 + PHASE_8) */
+  const MOVED={hoy:'inicio',calendario:'inicio',ahora:'inicio',
+               records:'jugadores/records',refuerzos:'historia/refuerzos',
+               consulta:'archivo/preguntar',fuentes:'archivo/cobertura'};
+  if(p.length===1 && MOVED[p[0]]) p=MOVED[p[0]].split('/');
+  /* legacy shape redirects */
+  if(p[0]==='historia' && /^\d{4}$/.test(p[1]||'')) p=['historia','temporada',p[1]];
+  if(p[0]==='historia' && p[1]==='records') p=['historia'];        /* PHASE_6 alias */
+  if(p[0]==='equipos' && p[1] && F[p[1]]) p=['equipos','equipo',p[1]];
+  if(p[0]==='jugador' && p[1]) p=['jugadores','jugador',p[1]];
+  if(p[0]==='comparar') p=['jugadores','comparar',p[1],p[2]];
+  const a=p[0], b=p[1], c=p[2];
+
+  if(a==='jugadores' && b==='comparar'){
+    showView('jugadores','comparar',{fromHash:true,noScroll:true});
+    const nm=s=>{ const x=(PINDEX||[]).find(q=>slug(q.name)===s); return x?x.name:null; };
+    const n1=nm(c), n2=nm(p[3]);
     if(n1&&n2) cmpPreset(n1,n2);
     else if(n1){ CMP=[n1]; drawCompare(); }
     return;
   }
-  if(PANELS.includes(a)){
-    showTab(a);
-    if(a==='equipos'&&b&&F[b]) showTeam(b);
-    if(a==='historia'&&b&&/^\d{4}$/.test(b) && typeof showSeason==='function') showSeason(+b);
+  if(a==='jugadores' && b==='jugador' && c){
+    showView('jugadores','buscar',{fromHash:true,noScroll:true});
+    const pl=PINDEX&&PINDEX.find(x=>slug(x.name)===c);
+    if(pl) showPlayer(pl.name);
+    else { const q=PALL&&PALL.find(x=>slug(x.name)===c); if(q&&typeof openArchivePlayer==='function') openArchivePlayer(q.id,q.name); }
     return;
   }
-  if(a==='jugador'&&b){
-    const p=PINDEX&&PINDEX.find(x=>slug(x.name)===b);
-    if(p) showPlayer(p.name);
-    else { const q=PALL&&PALL.find(x=>slug(x.name)===b); if(q) openArchivePlayer(q.id,q.name); }  /* 5D.3c */
+  if(a==='equipos' && b==='equipo' && c && F[c]){ showTeam(c); return; }
+  if(a==='historia' && b==='temporada' && /^\d{4}$/.test(c||'')){
+    showView('historia','cinta',{fromHash:true,noScroll:true});
+    if(typeof showSeason==='function') showSeason(+c);
+    return;
   }
-  /* #juega/temporada opens the game directly, so a demo or a shared
-     link lands on the thing itself instead of on a shelf. */
-  if(a==='juega'&&b&&GAMES.some(g=>g.id===b)){ showTab('juega'); openGame(b); }
+  if(a==='juega' && b && GAMES.some(g=>g.id===b)){ showView('juega',b,{fromHash:true}); GAME_OPEN=b; return; }
+
+  if(PANELS.includes(a)){
+    if(b && VIEW_SECS.indexOf(a)>-1) showView(a,b,{fromHash:true});
+    else showTab(a);
+    return;
+  }
+  showTab('inicio');
 }
 /* Merge the built data over the baked-in blocks when web/data is
    reachable (deployed); a local-file open falls through untouched. Same

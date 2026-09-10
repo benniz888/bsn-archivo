@@ -25,8 +25,26 @@ Owner-approved 2026-09-11:
    theme · gear.
 4. **Mobile:** top tab row removed; bottom bar carries all 6
    (`Inicio · Historia · Jugadores · Equipos · Juega · Archivo`). Tapping goes
-   to the section, which opens with its featured block + a chip rail of
-   sub-sections — the same content as the desktop mega-panel.
+   to the section landing, which lists its views.
+
+Owner-approved 2026-09-11 (revision — supersedes the scroll-anchor model of
+commit 8.2):
+
+5. **Each nav section is a view router**, not one long scroll. Every former
+   `h3.sec` block, plus the pre-heading content, is a **focused view** with its
+   own `#section/view` URL. A `.subnav` pill rail under the section title
+   switches them. Still one HTML file, JS-driven views (no build step, opens
+   from `file://`).
+6. **The nav word opens a section landing** — an overview page listing the
+   section's views (a plain link grid in 8.2b, an editorial card grid in 8.3).
+   Bare `#historia` → that landing.
+7. **Sub-nav = a pill row under the section title.** Horizontal-scroll on
+   mobile. Replaces the `.jump` chip rail and the disclosure folds entirely
+   (`foldSections`, `revealNode`, the desktop ≥1120px auto-expand block — all
+   removed).
+8. **8.3 editorial blocks link to real views** (`#section/view` /
+   `showView(...)`), never scroll anchors.
+9. **Rollout:** one commit for the router (8.2b), then 8.3.
 
 ## [COMMITS]
 
@@ -50,7 +68,7 @@ Owner-approved 2026-09-11:
 - No mega-menu yet — nav items are plain `showTab`. Harness:
   `scratchpad/ia_harness.mjs`.
 
-### 8.2 — mega-menu (DONE)
+### 8.2 — mega-menu (DONE — routing superseded by 8.2b)
 
 - **`NAV_MENU`** — data for the 5 sections: `cols` (grouped `[label, target]`
   link lists) + a `feat` key. Targets are either an `h3.sec`/`h4.sub` heading
@@ -79,10 +97,76 @@ Owner-approved 2026-09-11:
   resolves, CSS gates) + `mega_dom_harness.mjs` (open/close, aria, mobile
   no-op, `megaGo` dispatch).
 
+### 8.2b — section view router (DONE)
+
+Turns the five nav sections into view routers. One reviewable commit.
+
+**Routing model** — one HTML file, JS views. `showTab(section)` toggles the 7
+`<section>` panels (was `showTab`'s whole job; now `_showPanel`); the new
+`showView(section, view)` toggles the `.view` divs inside a section — same
+mechanism, one level deeper.
+
+- **`buildViews()`** (replaces `foldSections`) runs once in `finishBoot` after
+  every builder. Per-section config `VIEW_MAP`: `split` selector (`h3.sec`, or
+  `h4.sub` for Equipos), a `pre` slug for the content before the first heading,
+  a `map` of heading-text → `[slug,label]`, plus `adopt` (an existing hidden
+  container → a view, e.g. `#jugComparar`), `detail` (a view reached only via a
+  handler, not the subnav, e.g. `#teamDetail` → `equipo`), `drop` (dead markup),
+  `host` (split a child, not `.panel` — `#jugBuscar`). Juega is custom: the
+  pre-stage content (`streakStrip`/`storageNote`/`gameShelf`) is `__landing`,
+  each `.stage` is a view. Each section gets a synthetic **`__landing`** view
+  (featured block + link grid) prepended, and a **`.subnav`** pill rail after
+  the `.phead`.
+- **Views** —
+  `historia`: `cinta` (pre) · titulos · dinastias · finales · premios · refuerzos · temporadas.
+  `jugadores`: `buscar` (pre) · comparar (adopted) · lideres · records · salon · nba · dirigentes · canchas.
+  `equipos`: activos · duenos · desaparecidos · retirados · `equipo` (detail-only).
+  `juega`: `__landing` (shelf) · cuadricula · temporada · quiensoy · subeybaja.
+  `archivo`: `preguntar` (pre) · constructor · cobertura (grid + `#sourcesBox`) · calendario · glosario.
+- **URLs** — `#historia`, `#historia/dinastias`, `#historia/temporada/1971`
+  (season detail, renders in `cinta`), `#jugadores/jugador/<slug>` (in
+  `buscar`), `#jugadores/comparar/a/b`, `#equipos/equipo/<key>`,
+  `#juega/cuadricula`, `#archivo/glosario`, … `showView` writes the hash;
+  `setHash` guards a re-entrancy echo (`HASH_ECHO`) so the `hashchange`
+  listener doesn't double-route. Every navigation is a history entry —
+  back/forward walk the view history.
+- **`applyHash`** — two-token parse + expanded `MOVED`:
+  `hoy`/`calendario`→`inicio`, `records`→`jugadores/records`,
+  `refuerzos`→`historia/refuerzos`, `consulta`→`archivo/preguntar`,
+  `fuentes`→`archivo/cobertura`; shape redirects `#historia/<year>`→
+  `historia/temporada/<year>`, `#equipos/<key>`→`equipos/equipo/<key>`,
+  `#jugador/<slug>`→`jugadores/jugador/<slug>`, `#comparar/a/b`→
+  `jugadores/comparar/a/b`. Unknown → `#inicio`.
+- **Mega-menu** — `NAV_MENU` targets are now view slugs (or `section/slug` to
+  cross over); `megaGo` → `showView`. `goSection`/`goEl`/`MEGA_ACT` deleted.
+  `megaFeat` blocks head each landing (`buildLanding`); `paintLandingFeats`
+  re-renders them on club change (was `buildMega`'s `.secfeat` drop).
+- **Retired:** `foldSections`, `revealNode` (repurposed → surface a hidden
+  view), `goSection`, `goEl`, `MEGA_ACT`, `buildMega`, `#jugMode` markup, the
+  `.jump`/`.fold*` CSS, the `@media(min-width:1120px)` auto-expand block, the
+  `.secfeat` CSS.
+- **Detail entry points re-pointed:** `showTeam` → `showView('equipos','equipo')`
+  + `setHash`; `showPlayer` → `showView('jugadores','buscar')` + `setHash`;
+  `showSeason` → `showView('historia','cinta')` + `setHash`; `setJugView`
+  (shim), `cmpPreset`, `cmpFromPlayer`, `openGame`/`closeGame`, `hubAsk` and the
+  glossary buttons all route through `showView`.
+- **Layout-measurement audit:** no builder reads `offsetWidth`/`clientWidth`/
+  `getBoundingClientRect` (charts are SVG `viewBox` + CSS scale), and all
+  render fine while their view is `hidden` — no rebuild-on-show registry
+  needed.
+- **Boot default** writes `#inicio` to the URL (harmless; not
+  `replaceState` — accepted).
+- Harnesses: `scratchpad/view_router_harness.mjs` (menu→view integrity,
+  `applyHash` redirect table, behavioural stub of `_showPanel`/`showView`/
+  `syncSubnav`/`setHash`) + updated `ia_harness`, `mega_harness`,
+  `mega_dom_harness`, `nav_motion_harness`.
+
 ### 8.3 — editorial blocks (pending)
 
-`.ed-*` CSS + a sparkline SVG helper; rebuild `buildHub` + the Inicio hero;
-rebuild `showPlayer` and `showTeam` heros (mockups C and B from the proposal).
+`.ed-*` CSS + a sparkline SVG helper; the five section **landings** get the
+editorial card grid; rebuild `buildHub` + the Inicio hero; rebuild `showPlayer`
+and `showTeam` heros (mockups C and B from the proposal); upgrade the
+`megaFeat` blocks. All links target `#section/view`, not scroll anchors.
 
 ## [ALTERNATIVES_REJECTED]
 
@@ -92,3 +176,14 @@ rebuild `showPlayer` and `showTeam` heros (mockups C and B from the proposal).
   addresses the tall-mobile-header thread.
 - **Editorial treatment everywhere now.** Scoped to the 3 anchor surfaces;
   quick-fact pairs elsewhere are a later pass.
+- **Scroll-anchor sub-navigation (commit 8.2).** Each mega-menu item / mobile
+  chip scrolled to a heading within one long section page. Replaced in 8.2b by
+  real per-view routes — the owner wanted each item to be its own focused
+  page, and 8.3's editorial blocks needed real link targets.
+- **Split `#sourcesBox` into its own `procedencia` view.** Kept inside
+  `cobertura` for 8.2b (one `buildSources` innerHTML write; splitting means
+  restructuring that builder). Revisit if the Archivo menu needs the
+  granularity.
+- **`history.replaceState` for in-app navigation.** Used `location.hash =`
+  (a history entry per view) so Back walks the view trail — the "separate
+  pages" feel the owner asked for.
