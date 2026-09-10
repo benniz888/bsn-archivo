@@ -33,12 +33,39 @@ Session 002 (cont.) — all pushed to origin/main:
   + `syncVersion` purge hook) = b87d8db (pushed). **5E follow-up** (file:// archive
   message + `buildPlayerIndex` enrich-only, PINDEX 385→381) = 43cad16 (pushed).
   **5G** (`make site`, workflow `pages.yml`) = 65bca96/62a3874/a721f6e →
-  **LIVE** at benniz888.github.io/bsn-archivo. **5G-A uncommitted**: image
-  asset manifest (`_scan_assets` → `manifest.assets`, `imgTry` probes only
-  listed files) — kills the `img/` 404s. **PHASE_5 complete** after this
-  commits (5F deferred).
-  5G (deploy — needs the site-dir layout decision: `bsn_archivo.html` +
-  `data/` + `sw.js` colocated for GitHub Pages).
+  **LIVE** at benniz888.github.io/bsn-archivo. **5G-A** = 8566975 (pushed) —
+  image asset manifest (`_scan_assets` → `manifest.assets`, `imgTry` probes
+  only listed files), kills the `img/` 404s.
+  **PHASE_5_APP_SYNC COMPLETE** (5F/PBP deferred behind PBP↔identity linking).
+
+**SESSION 003 (2026-09-09):** PHASE_6_APP_IA — reorganize / UX pass, structure
+only (no colours/type/style). Plan approved in full. Done on branch
+**`phase-6-app-ia`** (7 commits, not merged — awaits owner browser review):
+- **Nav 12→8 tabs.** Inicio · La liga hoy · Historia · Equipos · Jugadores ·
+  Consulta · Juega · Fuentes. `TABS` trimmed; `PANELS` = tab ids + `perfil`;
+  `showTab`/`applyHash` gate on `PANELS.includes`. Perfil → a **gear button**
+  in the header (no nav tab). Bottom bar → inicio/hoy/historia/jugadores/
+  consulta. Hub grid 11→8 live-state cards (+ a "Comparar" card).
+- **Dissolved (content rehomed, section deleted, `applyHash` redirect):**
+  Récords → Historia (MVP/premios/anotación by year, one `<h3>`) + Jugadores
+  (#recordList/#nbaList/#coachList) + Equipos (#retiredList); Calendario →
+  La liga hoy (countdown + "Lo próximo" + "Finales anteriores j-a-j", the last
+  moved out of Historia) + Fuentes ("Calendario y cobertura" fold); Refuerzos
+  → Historia ("Los refuerzos: la regla que cambia el juego" `<h3>`).
+- **Dedup:** the COVERAGE grid renders once, in Fuentes (removed from Consulta
+  and from `buildSources`' inline template). "Mi equipo" picker removed from
+  La liga hoy — Perfil is the only club home now; the rich `#clubCard` moved
+  there under "Tu club". `buildClubPicker`/`buildClubCard` guarded.
+- **Comparar promoted:** Jugadores = `Buscar | Comparar` switch (`#jugMode` →
+  `setJugView`, wrappers `#jugBuscar` / `#jugComparar`). The "Comparar" `<h3>`
+  accordion is gone. New deep link `#comparar/<slug>/<slug>`; new `#historia/
+  <year>`; every `showPlayer` card has a "Comparar con otro jugador" button;
+  the Inicio hub card seeds Georgie Torres vs Mario Morales.
+- **Cut:** the developer image-drop-in text from Fuentes.
+Verified each commit: `node --check` + boot/player/season/sw + a new
+`scratchpad/nav_smoke.js` (all 9 panels switch, redirects, `#comparar`). No
+data/pipeline change — `make verify` 329,517 / `make test` 159 throughout.
+Recommend squash-merge after the owner's browser pass.
 
 Session 001 (2026-09-07): PHASE_1_ENUMERATE + PHASE_2_FETCH. Env bootstrapped,
 Wayback CDX enumerated (central finding negative — see below), 193 snapshots
