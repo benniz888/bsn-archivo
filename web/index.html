@@ -794,11 +794,6 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
     <p class="lede">Los que más anotaron, rebotearon y asistieron en la última temporada.</p>
     <div id="leaders2026"></div>
 
-    <h3 class="sec">Mi equipo</h3>
-    <p class="lede">Escoge un club y el archivo se reordena a su alrededor: sequía, rival histórico, títulos, y su temporada 2026.</p>
-    <div id="clubPicker"></div>
-    <div id="clubCard"></div>
-
     <h3 class="sec">En esta fecha</h3>
     <p class="lede">Lo que pasó un día como hoy en la historia de la liga. Cambia todos los días.</p>
     <div id="onThisDay"></div>
@@ -826,13 +821,9 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
     <div id="askAnswer" role="status" aria-live="polite"></div>
 
     <h3 class="sec">Constructor de consultas</h3>
-    <p class="lede">Escoge una tabla, filtra, ordena y bájala. Es el mismo trabajo que harías en SQL, sobre los datos que este archivo puede verificar.</p>
+    <p class="lede">Escoge una tabla, filtra, ordena y bájala. Es el mismo trabajo que harías en SQL, sobre los datos que este archivo puede verificar. La rejilla de cobertura por década vive ahora en Fuentes.</p>
     <div id="qbControls"></div>
     <div id="qbResult"></div>
-
-    <h3 class="sec">Qué se puede consultar y qué no</h3>
-    <p class="lede">La cobertura no es pareja. Esta rejilla dice, por década, cuánto del archivo está verificado — para que nadie construya un análisis sobre un hueco.</p>
-    <div id="coverage"></div>
   </div>
 </section>
 
@@ -1010,6 +1001,10 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
         hay servidor, no sale nada de aquí.</p>
     </div>
     <div id="profBody"></div>
+
+    <h3 class="sec">Tu club</h3>
+    <p class="lede">Escoge un club arriba y el archivo se reordena a su alrededor: sequía, rival histórico, títulos y su temporada 2026. También te marca en las tablas.</p>
+    <div id="clubCard"></div>
   </div>
 </section>
 
@@ -1020,6 +1015,8 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
       <h2 class="big">Fuentes y huecos</h2>
       <p class="lede">Un archivo que esconde sus huecos vale menos que uno que los enseña. Aquí está todo lo que falta, lo que está en disputa, y de dónde sale cada dato.</p>
     </div>
+    <p class="lede">La cobertura no es pareja. Esta rejilla dice, por década, cuánto del archivo está verificado — para que nadie construya un análisis sobre un hueco.</p>
+    <div id="coverage"></div>
     <div id="sourcesBox"></div>
 
     <h3 class="sec">Calendario y cobertura de temporada</h3>
@@ -2826,6 +2823,7 @@ function buildLeaders2026(){
 
 function buildClubPicker(){
   const host=$('#clubPicker');
+  if(!host) return;   /* PHASE_6 — picker lives in Perfil now (its own tiles); this id is gone from Hoy */
   const cur=ST.get('club');
   host.innerHTML='<div class="tiles">'+ACTIVE.map(k=>
     `<button class="tile" aria-pressed="${k===cur?'true':'false'}" onclick="pickClub('${k}')">
@@ -2845,6 +2843,7 @@ function drawClubPill(){
 }
 function buildClubCard(){
   const host=$('#clubCard');
+  if(!host) return;
   const k=ST.get('club');
   if(!k){ host.innerHTML='<p class="note">Sin club escogido. Toca uno arriba.</p>'; return; }
   const f=F[k];
@@ -3757,11 +3756,6 @@ function buildSources(){
       — hay que correrla fuera de este archivo.</div>
     </div>`;
   host.innerHTML=`
-    <div class="covergrid">${COVERAGE.map(c=>`
-      <div class="cov"><div class="cy">${esc(c[0])}</div>
-      <div class="cb"><div class="cf" style="width:${c[1]}%;background:${c[1]>60?'#25C26E':c[1]>40?'#1663D8':'#EF2B39'}"></div></div>
-      <div class="cl">${esc(c[2])}</div></div>`).join('')}</div>
-
     <h3 class="sec">Conflictos entre fuentes</h3>
     <div class="cards g2">${conflicts.map(c=>`<div class="card">
       <div class="dim" style="font-size:11px;letter-spacing:.07em;font-weight:600">${esc(c[0]).toUpperCase()}</div>
