@@ -23,6 +23,10 @@ cycle. + follow-up (`7709ec0`): locked the mobile viewport — `maximum-scale=1,
 user-scalable=no` + `html{overscroll-behavior:none;overflow-x:clip;
 touch-action:pan-x pan-y}` (no bounce/pan/zoom; all pre-existing, not PHASE_7).
 Harnesses: `nav_motion`, `table`, `theme` (`scratchpad/`). Open threads:
+**PHASE_7 follow-up (owner /btw, not urgent): compact mobile header** — the
+sticky header (wordmark + theme/gear icons + "Mi equipo" pill) plus the tab
+row eat a lot of vertical space before content; wants a collapsed/condensed
+treatment on phones.
 docs/project.md D2 refinement for the Grises/Caciques de Humacao split (D-045);
 the ~451-row review-queue long tail (needs an owner-curated crosswalk — Q1-Q4
 are all closed by code); PHASE_3D id 13352 (jugador.asp career, no players_canonical
