@@ -521,8 +521,11 @@ h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
 .herospark{display:inline-flex;align-items:flex-end;flex:0 0 auto}
 .herospark svg{display:block;width:150px;height:20px}
 
-/* "La liga ahora" — native disclosure on mobile (first one open), all
-   shown on desktop. No JS: replaces the deleted foldSections for Inicio. */
+/* "La liga ahora" — <details> disclosures. Open state is managed by
+   ligaFold() (all open on desktop, first-only on a phone) because the
+   engines disagree on how they hide closed content — Chrome's
+   ::details-content can't be forced visible with display:block, so a
+   CSS-only "show all on desktop" left the blocks unclickable there. */
 .liga{border-top:1px solid var(--line-soft)}
 .liga:first-of-type{border-top:0}
 .liga>summary{font-family:inherit;font-weight:800;font-size:var(--fs-md);line-height:var(--lh-head);
@@ -532,13 +535,12 @@ h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
   border-right:2px solid var(--ink-3);border-bottom:2px solid var(--ink-3);
   transform:rotate(-45deg);transition:transform var(--dur-fast) var(--ease)}
 .liga[open]>summary::before{transform:rotate(45deg)}
+.liga>summary:hover::before{border-color:var(--ink)}
 .liga>summary:focus-visible{outline:2px solid var(--fuego);outline-offset:2px;border-radius:6px}
 .liga>:not(summary){margin-bottom:var(--sp-4)}
 @media(min-width:860px){
-  .liga>summary{font-size:var(--fs-lg);pointer-events:none;padding:var(--sp-6) 0 var(--sp-2)}
+  .liga>summary{font-size:var(--fs-lg);padding:var(--sp-6) 0 var(--sp-2)}
   .liga:first-of-type>summary{padding-top:var(--sp-4)}
-  .liga>summary::before{display:none}
-  .liga:not([open])>:not(summary){display:block}
 }
 
 /* ---------- series card (Final Brava) ---------- */
@@ -6846,10 +6848,25 @@ function hideSplash(){
    can outlive its own failure is worse than no load screen. */
 const SPLASH_DEADLINE=setTimeout(hideSplash,9000);
 
+/* "La liga ahora" open state: every block open on desktop, only the first
+   on a phone. Managed here — not in CSS — because a closed <details> hides
+   its content differently across engines (Chrome's ::details-content is not
+   overridable), which had left the desktop blocks unclickable. */
+function ligaFold(){
+  const wide = matchMedia('(min-width:860px)').matches;
+  document.querySelectorAll('#inicio .liga').forEach((d,i)=>{ d.open = wide || i===0; });
+}
+if(window.matchMedia){
+  const _lmq=matchMedia('(min-width:860px)');
+  if(_lmq.addEventListener) _lmq.addEventListener('change',ligaFold);
+  else if(_lmq.addListener) _lmq.addListener(ligaFold);
+}
+
 function finishBoot(){
   clearTimeout(SPLASH_DEADLINE);
   try{ buildShelf(); }catch(e){ console.error('BSN: falló el estante',e); }
   try{ buildViews(); }catch(e){ console.error('BSN: falló el enrutador de vistas',e); }
+  try{ ligaFold(); }catch(e){ console.error('BSN: falló «La liga ahora»',e); }
   if(location.hash){
     try{ applyHash(); }catch(e){ console.error('BSN: falló el enlace directo',e); }
   }else{

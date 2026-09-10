@@ -67,7 +67,12 @@ título"); old title/finals chips folded in. strip/kv/roster/head-to-head
 untouched. **8.3c — landings + mega visuals:** `buildLanding` grid → editorial
 cards (`.lc-t` label+arrow / `.lc-d` copy from `VIEW_DESC`); `megaFeat` blocks
 each gain a `.mf-viz` (`titleComb` shared helper / `cmpMiniViz` / `dotgrid` /
-`COVERAGE` bars). **PHASE_8 done.** Harnesses: `view_router_harness`,
+`COVERAGE` bars). **PHASE_8 done.** **Bugfix:** «La liga ahora» `<details>`
+were unclickable on desktop Chrome — the CSS-only "show all on desktop"
+(`summary{pointer-events:none}` + a `display:block` override that Chrome's
+`::details-content` ignores). Now `ligaFold()` sets `.open` directly (all on
+desktop, first-only on mobile), re-run on the 860px `matchMedia` change;
+`pointer-events:none` removed. Harnesses: `view_router_harness`,
 `edhub_harness`, `phero_harness` (new) + `ia_harness`, `mega_harness`,
 `mega_dom_harness`, `nav_motion_harness` (updated). **Compact mobile header**
 thread resolved (mobile tab row gone).

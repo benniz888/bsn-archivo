@@ -190,11 +190,16 @@ native `<details>` collapse on mobile.
   `sparkBars` in the trophy foot; `t2` computed (bicampeonato / máximo / récord).
 - **Inicio markup reordered:** `#heroBox` → `#hubTop` → `.hubsearch` →
   `#hubGrid` → `#hubFoot` → `#hubPrimer` (was: hub grid first, hero buried).
-- **"La liga ahora"** — the 7 blocks wrapped in `<details class="liga">`
-  (first `open`). Mobile: native disclosure, chevron via `::before`. Desktop
-  ≥860px: `summary` styled as a plain header (`pointer-events:none`), and
-  `.liga:not([open])>:not(summary){display:block}` forces all content visible.
-  No JS — the Inicio replacement for the deleted `foldSections`.
+- **"La liga ahora"** — the 7 blocks wrapped in `<details class="liga">`,
+  chevron via `::before`. **Open state managed by `ligaFold()`** (called in
+  `finishBoot`, re-run on a `matchMedia('(min-width:860px)')` change): every
+  block `open` on desktop, only the first on a phone. *Fix on top of 8.3a
+  (`7df81c1`→bugfix): the original CSS-only "show all on desktop"
+  (`summary{pointer-events:none}` + `.liga:not([open])>:not(summary)
+  {display:block}`) left the blocks unclickable **and** still hidden in
+  Chrome — its `::details-content` can't be forced visible with
+  `display:block`. `ligaFold` sets `.open` directly; `pointer-events:none`
+  removed so a summary is always clickable.*
 - Harness: `scratchpad/edhub_harness.mjs`.
 
 #### 8.3b — `showPlayer` + `showTeam` heros (DONE)
