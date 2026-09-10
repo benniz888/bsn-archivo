@@ -472,6 +472,18 @@ h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
 
 /* ---------- cards ---------- */
 .card{background:var(--deep);border:1px solid var(--line);border-radius:var(--r);padding:var(--sp-4)}
+/* editorial hero atop a player / team card (PHASE_8.3b) — one defining
+   number + a sparkline; the strip / kv-list / roster below stay as they were. */
+.phero{display:flex;gap:var(--sp-4);flex-wrap:wrap;align-items:flex-start}
+.phero-body{flex:1;min-width:230px;display:flex;flex-direction:column;gap:var(--sp-2)}
+.phero-body h3{font-size:var(--fs-xl);text-transform:uppercase;letter-spacing:-.01em}
+.phero-sub{color:var(--ink-3);font-size:var(--fs-xs)}
+.phero-stat{display:flex;align-items:flex-end;gap:var(--sp-3);flex-wrap:wrap;margin-top:var(--sp-1);min-height:1px}
+.phero-stat .ed-stat{font-size:clamp(38px,9vw,56px);line-height:.82}
+.phero-spark{display:inline-flex;align-items:flex-end;flex:0 0 auto}
+.phero-spark svg{display:block;width:clamp(96px,24vw,150px);height:26px}
+.phero-statl{color:var(--ink-2);font-size:var(--fs-3xs);text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+.phero-note{color:var(--ink-2);font-size:var(--fs-2xs);line-height:1.4;max-width:52ch}
 .cards{display:grid;gap:var(--sp-3)}
 .g2{grid-template-columns:1fr}
 @media(min-width:720px){.g2{grid-template-columns:1fr 1fr}}
@@ -3636,16 +3648,23 @@ function showTeam(k){
   const retired=RETIRED.find(r=>r[0]===f.name);
   const roster=POOL.filter(p=>p.c.includes(k));
 
+  const mostEver = f.won.length>0 && FKEYS.every(x=>F[x].won.length<=f.won.length);
+  const drought = last ? LAST-last : null;
+  const heroNote = f.won.length
+    ? (mostEver ? 'El club más ganador de la liga · '+f.won.length+'-'+f.ru.length+' en finales'
+       : 'Último título en '+last+(drought>0?', hace '+drought+(drought===1?' año':' años'):'')+' · '+f.won.length+'-'+f.ru.length+' en finales')
+    : (f.ru.length ? f.ru.length+(f.ru.length===1?' final perdida':' finales perdidas')+', aún sin título' : 'Sin finales en el archivo');
   host.innerHTML=`<div class="card" style="margin-top:22px;border-color:${f.c1}">
-    <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start">
+    <div class="phero">
       ${crest(k,58,70)}
-      <div style="flex:1;min-width:230px">
-        <h3 style="font-size:26px;text-transform:uppercase">${esc(f.name)}</h3>
-        <div class="muted" style="font-size:13.5px">${esc(f.city)} · fundado ${f.founded}${f.active?'':' · desaparecido'+(f.end?' en '+f.end:'')}</div>
+      <div class="phero-body">
+        <h3>${esc(f.name)}</h3>
+        <div class="phero-sub">${esc(f.city)} · fundado ${f.founded}${f.active?'':' · desaparecido'+(f.end?' en '+f.end:'')}</div>
+        <div class="phero-stat"><span class="ed-stat">${f.won.length}</span>
+          <span class="phero-spark" style="color:${f.c1}">${f.won.length?sparkBars(YEARS.map(y=>f.won.indexOf(y)>-1?1:0),{w:150,h:24,gap:1}):''}</span></div>
+        <div class="phero-statl">${f.won.length===1?'título':'títulos'}</div>
+        <div class="phero-note">${esc(heroNote)}</div>
         <div class="chips">
-          <span class="tag gold">${f.won.length} título${f.won.length===1?'':'s'}</span>
-          <span class="tag">${finals} finales · ${f.won.length}-${f.ru.length}</span>
-          ${last?`<span class="tag">Último título ${last}${LAST-last>0?' · '+(LAST-last)+' años':''}</span>`:''}
           ${st?`<span class="tag blue">2026: ${st[1]}-${st[2]} (${st[3].toFixed(3).replace('0.','.')})</span>`:''}
           <span class="tag" title="Origen del color">${f.colorSrc==='wiki'?'Colores verificados':'Colores aproximados'}</span>
         </div>
@@ -3887,15 +3906,23 @@ function showPlayer(name,id){
   if(p.gp==null)missing.push('juegos');
   if(!p.years)missing.push('años activos');
   const dagger = norm(p.name)==='raymond dalmau';
+  let bigN=null,bigL='';
+  if(p.pts!=null){ bigN=num(p.pts); bigL='puntos de carrera'; }
+  else if(p.ppg!=null){ bigN=p.ppg; bigL='puntos por juego'; }
+  else if(p.mvp){ bigN=p.mvp; bigL=p.mvp===1?'premio MVP':'premios MVP'; }
+  else if(p.gp!=null){ bigN=num(p.gp); bigL='juegos en el archivo'; }
   host.innerHTML=`<div class="card" style="margin-top:18px;border-color:${c1}">
-    <div style="display:flex;gap:16px;flex-wrap:wrap">
+    <div class="phero">
       ${portrait(p.name,c1,c2,60,74)}
-      <div style="flex:1;min-width:230px">
-        <h3 style="font-size:24px">${esc(p.name)}</h3>
-        <div class="muted" style="font-size:13.5px">${esc([p.pos,p.years].filter(Boolean).join(' · ')||'posición y años sin registrar')}</div>
-        ${p.bio?`<p class="muted" style="font-size:14px;margin:8px 0 0">${esc(p.bio)}</p>`:''}
+      <div class="phero-body">
+        <h3>${esc(p.name)}</h3>
+        <div class="phero-sub">${esc([p.pos,p.years].filter(Boolean).join(' · ')||'posición y años sin registrar')}</div>
+        ${bigN!=null?`<div class="phero-stat"><span class="ed-stat">${bigN}</span>
+          <span class="phero-spark" id="playerSpark" style="color:${c1}"></span></div>
+          <div class="phero-statl">${esc(bigL)}</div>`:''}
         <div class="chips">${Array.from(p.tags).map(t=>`<span class="tag ${/MVP|Leyenda|10\.000/.test(t)?'gold':''}">${esc(t)}</span>`).join('')}</div>
         <div class="chips">${Array.from(p.clubs).map(c=>`<button class="chip" onclick="showTeam('${c}')">${esc(F[c].name)}</button>`).join('')}</div>
+        ${p.bio?`<p class="phero-note" style="margin:2px 0 0">${esc(p.bio)}</p>`:''}
       </div>
     </div>
     <div class="strip" style="margin-top:14px">
@@ -3944,6 +3971,13 @@ async function loadPlayerExtra(name,idHint){
   }
 
   const car=d.career||[];
+  /* 8.3b — fill the hero sparkline with points-by-season (the guard above
+     already dropped a stale load, so #playerSpark belongs to this player). */
+  const sp=$('#playerSpark');
+  if(sp && car.length){
+    const pv=car.slice().sort((a,b)=>(a.season||0)-(b.season||0)).map(c=>c.points==null?null:c.points);
+    if(pv.filter(v=>v!=null).length>=2) sp.innerHTML=spark(pv,{area:true,dot:true,w:150,h:26});
+  }
   if(car.length){
     let tp=0,tg=0; const sea=new Set();
     car.forEach(c=>{ if(c.points!=null)tp+=c.points; if(c.games!=null)tg+=c.games; if(c.season)sea.add(c.season); });

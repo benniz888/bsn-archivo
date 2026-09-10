@@ -197,11 +197,26 @@ native `<details>` collapse on mobile.
   No JS — the Inicio replacement for the deleted `foldSections`.
 - Harness: `scratchpad/edhub_harness.mjs`.
 
-#### 8.3b — `showPlayer` + `showTeam` heros (pending)
+#### 8.3b — `showPlayer` + `showTeam` heros (DONE)
 
-Editorial hero above the existing card: one defining number + a `spark`
-(player: per-season points from `web/data`; team: titles by year), then the
-full strip / kv-list / roster unchanged.
+- **`.phero`** — the card's top block: portrait/crest · `<h3>` · `.phero-sub`
+  (pos·years / city·founded) · `.phero-stat` (`.ed-stat` + `.phero-spark`) ·
+  `.phero-statl` caption · `.phero-note`. The strip / kv-list / roster /
+  head-to-head / warnings below are untouched.
+- **`showPlayer`** — defining stat picked in order: career points → ppg →
+  MVP count → games (`bigN`/`bigL`); no stat row if none. `#playerSpark`
+  placeholder in the hero; `loadPlayerExtra` fills it with
+  `spark(pointsBySeason, {area,dot})` once `players/<id>.json` arrives (≥2
+  seasons of points), after the existing `host.dataset.key` stale-load guard —
+  so it's safe against a rapid re-navigation, and empty on `file://`. Bio
+  moved into the hero as `.phero-note`.
+- **`showTeam`** — `.ed-stat` = title count; `.phero-spark` = `sparkBars` of
+  title years (synchronous, `f.won`; omitted at 0 titles). `.phero-note`
+  computed: "el club más ganador de la liga" / "Último título en YYYY, hace N
+  años · W-L en finales" / "N finales perdidas, aún sin título". The old
+  `título`/`finales`/`Último título` chips folded into the hero; the 2026-record
+  and colour-source chips kept.
+- Harness: `scratchpad/phero_harness.mjs`.
 
 #### 8.3c — section landings + `megaFeat` (pending)
 

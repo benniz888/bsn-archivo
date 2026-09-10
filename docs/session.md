@@ -3,12 +3,12 @@
 
 **SESSION:** 003 — PHASE_5_APP_SYNC + PHASE_6_APP_IA + PHASE_3H/3I/3J (identity
   spine Q1–Q4, all LIVE) · PHASE_7 visual redesign (done, LIVE) ·
-  **PHASE_8_NAV_REDESIGN IN PROGRESS** (8.1 + 8.2 + 8.2b + 8.3a done: 8→5 nav +
-  Hoy→Inicio + Consulta→Archivo; mega-menu; **each section is a view router —
-  #section/view URLs, subnav pill rail, folds retired**; **Inicio hero/hub
-  rebuilt as StatMuse-style editorial blocks** (`.ed-*` + spark/sparkBars/
-  dotgrid; 1 lead + 4 secondary; «La liga ahora» → native `<details>`). 8.3b
-  (player/team heros) + 8.3c (landings + megaFeat) pending)
+  **PHASE_8_NAV_REDESIGN IN PROGRESS** (8.1 + 8.2 + 8.2b + 8.3a + 8.3b done:
+  8→5 nav + Hoy→Inicio + Consulta→Archivo; mega-menu; **each section is a view
+  router — #section/view URLs, subnav pill rail, folds retired**; **Inicio
+  hero/hub + player/team cards rebuilt as StatMuse-style editorial blocks**
+  (`.ed-*`/`.phero` + spark/sparkBars/dotgrid). 8.3c (landings + megaFeat
+  visuals) pending)
 **DATE:** 2026-09-11
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
@@ -54,9 +54,17 @@ rebuilt as 1 lead (Historia — club/Bayamón title comb) + 4 secondary
 (Jugadores/Comparar/Juega/Archivo), `HUB`+`hubNum` deleted; `buildHero` gets
 a date eyebrow + champion title sparkline; Inicio markup reordered (hero
 first); «La liga ahora» 7 blocks wrapped in `<details class="liga">` (first
-open) — native disclosure on mobile, all-visible on desktop, no JS. 8.3b
-(showPlayer/showTeam editorial heros) + 8.3c (section landings + megaFeat
-visuals) pending. Harnesses: `view_router_harness`, `edhub_harness` (new) +
+open) — native disclosure on mobile, all-visible on desktop, no JS.
+**8.3b — player/team editorial heros:** `.phero` block atop the card —
+portrait/crest + `<h3>` + sub + `.ed-stat` + `.phero-spark` + caption + note.
+`showPlayer`: defining stat (pts→ppg→MVP→gp) + `#playerSpark` filled by
+`loadPlayerExtra` with `spark(pointsBySeason)` after the stale-load guard
+(empty on file://); bio → `.phero-note`. `showTeam`: title count + `sparkBars`
+of title years (sync); note computed ("el club más ganador" / "Último título
+en YYYY, hace N años · W-L en finales" / "N finales perdidas, aún sin
+título"); old title/finals chips folded in. strip/kv/roster/head-to-head
+untouched. 8.3c (section landings editorial grid + megaFeat visuals) pending.
+Harnesses: `view_router_harness`, `edhub_harness`, `phero_harness` (new) +
 `ia_harness`, `mega_harness`, `mega_dom_harness`, `nav_motion_harness`
 (updated). **Compact mobile header** thread resolved (mobile tab row gone).
 
