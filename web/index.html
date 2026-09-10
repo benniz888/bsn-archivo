@@ -911,15 +911,22 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
       <h2 class="big">Jugadores</h2>
       <p class="lede">El índice reúne a todos los jugadores que este archivo puede nombrar con fuente. Cada ficha dice también qué no se sabe de él.</p>
     </div>
+    <div id="jugMode" class="modebtns" role="tablist" aria-label="Modo">
+      <button role="tab" id="jugmode-buscar" aria-selected="true" onclick="setJugView('buscar')">Buscar</button>
+      <button role="tab" id="jugmode-comparar" aria-selected="false" onclick="setJugView('comparar')">Comparar</button>
+    </div>
+
+    <div id="jugComparar" hidden>
+      <p class="lede">Dos o tres jugadores lado a lado. Las casillas vacías son huecos del archivo, no ceros.</p>
+      <div id="cmpPick"></div>
+      <div id="cmpOut"></div>
+    </div>
+
+    <div id="jugBuscar">
     <div id="playerSearch"></div>
     <div id="playerIndex"></div>
     <div id="playerDetail"></div>
     <div id="playerExtra"></div>
-
-    <h3 class="sec">Comparar</h3>
-    <p class="lede">Escoge hasta tres jugadores y ponlos lado a lado. Las casillas vacías son huecos del archivo, no ceros.</p>
-    <div id="cmpPick"></div>
-    <div id="cmpOut"></div>
 
     <h3 class="sec">Líderes de carrera</h3>
     <p class="lede">Los totales de por vida: puntos, rebotes y asistencias acumulados en toda una carrera.</p>
@@ -947,6 +954,7 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
     <h3 class="sec">Honrados en concreto</h3>
     <p class="lede">Canchas y coliseos de Puerto Rico que llevan el nombre de un jugador.</p>
     <div id="stone"></div>
+    </div><!-- /jugBuscar -->
   </div>
 </section>
 
@@ -3430,6 +3438,7 @@ function renderArchiveCard(name,id,host){
 }
 function showPlayer(name,id){
   showTab('jugadores',true);
+  if(typeof setJugView==='function') setJugView('buscar');   /* a player card lives in the Buscar view */
   buildPlayerIndex();
   loadPlayerExtra(name,id);       /* 5D.3b/c — async, fills #playerExtra */
   const p=PINDEX.find(x=>norm(x.name)===norm(name));
@@ -3469,6 +3478,7 @@ function showPlayer(name,id){
     ${dagger?'<div class="warn">† 2.302 asistencias en 537 juegos da 4,3 por juego, no 5,1 como publica la fuente. La contradicción está en el dato original y no se ha resuelto; por eso su promedio de asistencias no se usa en los juegos.</div>':''}
     ${missing.length?`<div class="warn">Lo que este archivo <b>no</b> sabe de ${esc(p.name.split(' ')[0])}: ${esc(missing.join(', '))}. Antes de 2011 no existe ninguna base pública de estadísticas por temporada del BSN.</div>`:''}
     ${p.legendWhy?`<div class="note"><b>Leyenda</b> por: ${esc(p.legendWhy.join(" · "))}. El criterio está en Fuentes.</div>`:''}
+    <div class="btnrow"><button class="btn" onclick="cmpFromPlayer(${JSON.stringify(p.name).replace(/"/g,'&quot;')})">Comparar con otro jugador</button></div>
     <div class="note">Aparece en: ${esc(Array.from(p.src).join(' · '))}</div>
   </div>`;
   revealNode(host); host.scrollIntoView({block:'start',behavior:'smooth'});
@@ -6002,9 +6012,25 @@ function cmpAdd(name){
 }
 function cmpRemove(n){ CMP=CMP.filter(x=>x!==n); drawCompare(); }
 function cmpClear(){ CMP=[]; const m=$('#cmpMsg'); if(m) m.textContent=''; drawCompare(); }
+/* PHASE_6 — Comparar is a promoted mode inside Jugadores (Buscar | Comparar),
+   not a buried accordion. */
+let JUGVIEW='buscar';
+function setJugView(v){
+  v = (v==='comparar') ? 'comparar' : 'buscar';
+  JUGVIEW=v;
+  const b=$('#jugBuscar'), c=$('#jugComparar');
+  if(b) b.hidden = v!=='buscar';
+  if(c) c.hidden = v!=='comparar';
+  ['buscar','comparar'].forEach(m=>{ const btn=$('#jugmode-'+m); if(btn) btn.setAttribute('aria-selected',String(m===v)); });
+  if(v==='comparar'){ try{ buildCompare(); }catch(e){ console.error('BSN: falló Comparar',e); } }
+}
+function cmpFromPlayer(name){
+  showTab('jugadores',true); setJugView('comparar'); cmpAdd(name);
+  const o=$('#cmpOut'); if(o&&o.scrollIntoView) o.scrollIntoView({block:'start',behavior:'smooth'});
+}
 /* Two taps to a real comparison beats an empty box and a blinking
    cursor — most people cannot name a second BSN player on demand. */
-function cmpPreset(a,b){ CMP=[a,b].filter(n=>cmpFind(n)); drawCompare(); }
+function cmpPreset(a,b){ setJugView('comparar'); CMP=[a,b].filter(n=>cmpFind(n)); drawCompare(); }
 
 const CMP_PRESETS=[
   ['Georgie Torres','Mario Morales','El uno contra el dos'],
@@ -6491,9 +6517,17 @@ function revealNode(node){
 function applyHash(){
   const h=(location.hash||'').replace(/^#/,'');
   if(!h) return;
-  const [a,b]=h.split('/');
+  const parts=h.split('/'), [a,b]=parts;
   const MOVED={records:'historia',calendario:'hoy',refuerzos:'historia'};   /* PHASE_6 — old tab hashes -> new home */
   if(MOVED[a]){ showTab(MOVED[a]); return; }
+  if(a==='comparar'){   /* #comparar/georgie-torres/mario-morales */
+    showTab('jugadores'); setJugView('comparar');
+    const nm=s=>{ const x=(PINDEX||[]).find(p=>slug(p.name)===s); return x?x.name:null; };
+    const n1=nm(b), n2=nm(parts[2]);
+    if(n1&&n2) cmpPreset(n1,n2);
+    else if(n1){ CMP=[n1]; drawCompare(); }
+    return;
+  }
   const sec=document.getElementById(a);
   if(sec && sec.getAttribute('role')==='tabpanel'){ showTab(a); if(a==='equipos'&&b&&F[b]) showTeam(b); return; }
   if(a==='jugador'&&b){
