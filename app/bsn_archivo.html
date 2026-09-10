@@ -734,6 +734,14 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
             aria-label="Cambiar de tema">
       <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"></svg>
     </button>
+    <button class="themebtn" id="gearBtn" onclick="showTab('perfil')" title="Ajustes y tu perfil"
+            aria-label="Ajustes">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.31.22.65.22 1v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </button>
     <button class="clubpill" id="clubPill" onclick="showTab('perfil')">
       <span id="clubPillCrest"></span><span id="clubPillName">Mi equipo</span><span class="plus">+</span>
     </button>
@@ -765,9 +773,18 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
   <div class="panel">
     <div id="heroBox"></div>
 
+    <h3 class="sec">Lo próximo</h3>
+    <p class="lede">Cuándo se espera que arranque la temporada y qué fechas vienen. Lo confirmado y lo estimado van marcados aparte.</p>
+    <div id="calCount"></div>
+    <div id="calNext"></div>
+
     <h3 class="sec">La Final Brava 2026</h3>
     <p class="lede">La serie final de 2026, juego por juego. «Final Brava» es como la liga le llama a su final.</p>
     <div id="finalBrava"></div>
+
+    <h3 class="sec">Finales anteriores, juego a juego</h3>
+    <p class="lede">Las tres finales que se pudieron reconstruir partido por partido (2024–2026). Las demás existen como resultado, no como serie — ver Historia.</p>
+    <div id="finalsByYear"></div>
 
     <h3 class="sec">Posiciones BSN 2026</h3>
     <p class="lede">Cómo terminó la fase regular: doce equipos, 34 juegos cada uno, ordenados por victorias.</p>
@@ -777,11 +794,6 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
     <p class="lede">Los que más anotaron, rebotearon y asistieron en la última temporada.</p>
     <div id="leaders2026"></div>
 
-    <h3 class="sec">Mi equipo</h3>
-    <p class="lede">Escoge un club y el archivo se reordena a su alrededor: sequía, rival histórico, títulos, y su temporada 2026.</p>
-    <div id="clubPicker"></div>
-    <div id="clubCard"></div>
-
     <h3 class="sec">En esta fecha</h3>
     <p class="lede">Lo que pasó un día como hoy en la historia de la liga. Cambia todos los días.</p>
     <div id="onThisDay"></div>
@@ -789,36 +801,6 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
     <h3 class="sec">Canales oficiales</h3>
     <p class="lede">Este archivo no compite con la liga: cubre lo que la app oficial no guarda. Para hoy, ve directo a la fuente.</p>
     <div id="channels"></div>
-  </div>
-</section>
-
-<!-- ═══════════ CALENDARIO ═══════════ -->
-<section id="calendario" hidden role="tabpanel" aria-labelledby="tab-calendario">
-  <div class="panel">
-    <div class="phead">
-      <div class="tri"></div>
-      <h2 class="big">Calendario</h2>
-      <p class="lede">Cuándo corre la temporada, qué viene después y qué todavía no se ha
-        anunciado. Lo que está confirmado y lo que es un estimado van marcados aparte.</p>
-    </div>
-    <div id="calCount"></div>
-
-    <h3 class="sec">Lo próximo</h3>
-    <p class="lede">Las fechas que vienen, cada una marcada según lo segura que sea.</p>
-    <div id="calNext"></div>
-
-    <h3 class="sec">La forma del año</h3>
-    <p class="lede">El BSN no publica un calendario permanente, pero tres temporadas seguidas
-      dan un patrón bastante firme.</p>
-    <div id="calShape"></div>
-
-    <h3 class="sec">Temporada por temporada</h3>
-    <p class="lede">Las fechas exactas de las últimas tres temporadas, para comparar el patrón.</p>
-    <div id="calendarBox"></div>
-
-    <h3 class="sec">Los juegos, uno por uno</h3>
-    <p class="lede">Lo que este archivo no tiene, dicho de frente.</p>
-    <div id="calGap"></div>
   </div>
 </section>
 
@@ -839,13 +821,9 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
     <div id="askAnswer" role="status" aria-live="polite"></div>
 
     <h3 class="sec">Constructor de consultas</h3>
-    <p class="lede">Escoge una tabla, filtra, ordena y bájala. Es el mismo trabajo que harías en SQL, sobre los datos que este archivo puede verificar.</p>
+    <p class="lede">Escoge una tabla, filtra, ordena y bájala. Es el mismo trabajo que harías en SQL, sobre los datos que este archivo puede verificar. La rejilla de cobertura por década vive ahora en Fuentes.</p>
     <div id="qbControls"></div>
     <div id="qbResult"></div>
-
-    <h3 class="sec">Qué se puede consultar y qué no</h3>
-    <p class="lede">La cobertura no es pareja. Esta rejilla dice, por década, cuánto del archivo está verificado — para que nadie construya un análisis sobre un hueco.</p>
-    <div id="coverage"></div>
   </div>
 </section>
 
@@ -870,13 +848,32 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
     <p class="lede">Rachas de títulos seguidos. Ganar dos veces es difícil; estas son las que ganaron más.</p>
     <div id="dynasties"></div>
 
-    <h3 class="sec">Finales, juego a juego</h3>
-    <p class="lede">Las tres finales que se pudieron reconstruir partido por partido. Las demás existen como resultado, no como serie.</p>
-    <div id="finalsByYear"></div>
-
     <h3 class="sec">Finales, cara a cara</h3>
     <p class="lede">Filas: campeón. Columnas: subcampeón. La celda es cuántas veces esa final ocurrió.</p>
     <div id="matrix"></div>
+
+    <h3 class="sec">Premios y líderes por temporada</h3>
+    <p class="lede">El premio mayor, los demás galardones y el líder de anotación, año por año.</p>
+    <h4 class="sub">MVP por año</h4>
+    <p class="lede">El premio mayor de la temporada regular, con el club que lo ganó.</p>
+    <div id="mvpYears"></div>
+    <h4 class="sub">Premios por temporada</h4>
+    <p class="lede">MVP, novato del año y demás galardones.</p>
+    <div id="seasonAwards"></div>
+    <h4 class="sub">Campeones de anotación</h4>
+    <p class="lede">El que más anotó cada temporada. Ojo: hasta 1970 se medía por puntos totales y después por promedio, así que las cifras de las dos épocas no se comparan directamente.</p>
+    <div id="scoringChart"></div>
+    <div id="scoringTable"></div>
+
+    <h3 class="sec">Los refuerzos: la regla que cambia el juego</h3>
+    <p class="lede">La regla que más mueve el baloncesto en el BSN no es de baloncesto: es de nómina. Tres importados por club desde 2025, y todo lo que eso arrastra.</p>
+    <div id="refRules"></div>
+    <h4 class="sub">Cómo llegó la tercera plaza</h4>
+    <p class="lede">La liga pasó en 2025 de dos refuerzos por equipo a tres. Esto es cómo se llegó ahí.</p>
+    <div id="refTimeline"></div>
+    <h4 class="sub">Qué pasó con la anotación</h4>
+    <p class="lede">Si más refuerzos suben la anotación, debería verse en los números.</p>
+    <div id="refScorers"></div>
 
     <h3 class="sec">Todas las temporadas</h3>
     <p class="lede">Cada temporada desde 1930 con su campeón y su subcampeón. Se puede filtrar y bajar a CSV.</p>
@@ -899,6 +896,9 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
     <div id="owners"></div>
     <h4 class="sub">Franquicias desaparecidas</h4>
     <div class="tiles" id="tilesGone"></div>
+    <h4 class="sub">Números retirados</h4>
+    <p class="lede">Camisetas que ningún otro jugador del club volverá a usar.</p>
+    <div id="retiredList"></div>
     <div id="teamDetail"></div>
   </div>
 </section>
@@ -911,15 +911,22 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
       <h2 class="big">Jugadores</h2>
       <p class="lede">El índice reúne a todos los jugadores que este archivo puede nombrar con fuente. Cada ficha dice también qué no se sabe de él.</p>
     </div>
+    <div id="jugMode" class="modebtns" role="tablist" aria-label="Modo">
+      <button role="tab" id="jugmode-buscar" aria-selected="true" onclick="setJugView('buscar')">Buscar</button>
+      <button role="tab" id="jugmode-comparar" aria-selected="false" onclick="setJugView('comparar')">Comparar</button>
+    </div>
+
+    <div id="jugComparar" hidden>
+      <p class="lede">Dos o tres jugadores lado a lado. Las casillas vacías son huecos del archivo, no ceros.</p>
+      <div id="cmpPick"></div>
+      <div id="cmpOut"></div>
+    </div>
+
+    <div id="jugBuscar">
     <div id="playerSearch"></div>
     <div id="playerIndex"></div>
     <div id="playerDetail"></div>
     <div id="playerExtra"></div>
-
-    <h3 class="sec">Comparar</h3>
-    <p class="lede">Escoge hasta tres jugadores y ponlos lado a lado. Las casillas vacías son huecos del archivo, no ceros.</p>
-    <div id="cmpPick"></div>
-    <div id="cmpOut"></div>
 
     <h3 class="sec">Líderes de carrera</h3>
     <p class="lede">Los totales de por vida: puntos, rebotes y asistencias acumulados en toda una carrera.</p>
@@ -927,69 +934,27 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
     <div id="leadBars"></div>
     <div id="leadTable"></div>
 
+    <h3 class="sec">Récords de la liga</h3>
+    <p class="lede">Las marcas que la liga reconoce, con la fecha y el contexto que las hace legibles.</p>
+    <div id="recordList"></div>
+
     <h3 class="sec">Salón: los que definieron la liga</h3>
     <p class="lede">Dieciocho jugadores con ficha propia. Muchos tienen biografía: pregúntale al buscador quién fue cada quien.</p>
     <div id="hofControls"></div>
     <div id="hofList"></div>
 
-    <h3 class="sec">Honrados en concreto</h3>
-    <p class="lede">Canchas y coliseos de Puerto Rico que llevan el nombre de un jugador.</p>
-    <div id="stone"></div>
-  </div>
-</section>
-
-<!-- ═══════════ RÉCORDS ═══════════ -->
-<section id="records" hidden role="tabpanel" aria-labelledby="tab-records">
-  <div class="panel">
-    <div class="phead">
-      <div class="tri"></div>
-      <h2 class="big">Récords</h2>
-      <p class="lede">Las marcas que la liga reconoce, con la fecha y el contexto que las hace legibles.</p>
-    </div>
-    <div id="recordList"></div>
-
-    <h3 class="sec">MVP por año</h3>
-    <p class="lede">El premio mayor de la temporada regular, temporada por temporada, con el club que lo ganó.</p>
-    <div id="mvpYears"></div>
-
-    <h3 class="sec">Premios por temporada</h3>
-    <p class="lede">MVP, novato del año y demás galardones, año por año.</p>
-    <div id="seasonAwards"></div>
-
-    <h3 class="sec">Campeones de anotación</h3>
-    <p class="lede">El que más anotó cada temporada. Ojo: hasta 1970 se medía por puntos totales y después por promedio, así que las cifras de las dos épocas no se comparan directamente.</p>
-    <div id="scoringChart"></div>
-    <div id="scoringTable"></div>
+    <h3 class="sec">Del BSN a la NBA</h3>
+    <p class="lede">Los que llegaron a la liga estadounidense. Butch Lee fue el primero en jugar; Piculín Ortiz el que más lejos llegó en el sorteo.</p>
+    <div id="nbaList"></div>
 
     <h3 class="sec">Dirigentes que pasaron por aquí</h3>
     <p class="lede">«Dirigente» es el entrenador. Varios son exjugadores que volvieron desde el banco.</p>
     <div id="coachList"></div>
 
-    <h3 class="sec">Del BSN a la NBA</h3>
-    <p class="lede">Los que llegaron a la liga estadounidense. Butch Lee fue el primero en jugar; Piculín Ortiz el que más lejos llegó en el sorteo.</p>
-    <div id="nbaList"></div>
-
-    <h3 class="sec">Números retirados</h3>
-    <p class="lede">Camisetas que ningún otro jugador del club volverá a usar.</p>
-    <div id="retiredList"></div>
-  </div>
-</section>
-
-<!-- ═══════════ REFUERZOS ═══════════ -->
-<section id="refuerzos" hidden role="tabpanel" aria-labelledby="tab-refuerzos">
-  <div class="panel">
-    <div class="phead">
-      <div class="tri"></div>
-      <h2 class="big">Refuerzos</h2>
-      <p class="lede">La regla que más cambia el juego en el BSN no es de baloncesto: es de nómina. Tres importados por club, y todo lo que eso mueve.</p>
-    </div>
-    <div id="refRules"></div>
-    <h3 class="sec">Cómo llegó la tercera plaza</h3>
-    <p class="lede">La liga cambió en 2025 de dos refuerzos por equipo a tres. Esto es cómo se llegó ahí.</p>
-    <div id="refTimeline"></div>
-    <h3 class="sec">Qué pasó con la anotación</h3>
-    <p class="lede">Si más refuerzos suben la anotación, debería verse en los números. Aquí están.</p>
-    <div id="refScorers"></div>
+    <h3 class="sec">Honrados en concreto</h3>
+    <p class="lede">Canchas y coliseos de Puerto Rico que llevan el nombre de un jugador.</p>
+    <div id="stone"></div>
+    </div><!-- /jugBuscar -->
   </div>
 </section>
 
@@ -1034,8 +999,8 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
   </div>
 </section>
 
-<!-- ═══════════ FUENTES ═══════════ -->
-<section id="perfil" hidden role="tabpanel" aria-labelledby="tab-perfil">
+<!-- ═══════════ PERFIL (gear button, not a nav tab) ═══════════ -->
+<section id="perfil" hidden role="tabpanel" aria-label="Ajustes y tu perfil">
   <div class="panel">
     <div class="phead">
       <div class="tri"></div>
@@ -1044,9 +1009,14 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
         hay servidor, no sale nada de aquí.</p>
     </div>
     <div id="profBody"></div>
+
+    <h3 class="sec">Tu club</h3>
+    <p class="lede">Escoge un club arriba y el archivo se reordena a su alrededor: sequía, rival histórico, títulos y su temporada 2026. También te marca en las tablas.</p>
+    <div id="clubCard"></div>
   </div>
 </section>
 
+<!-- ═══════════ FUENTES ═══════════ -->
 <section id="fuentes" hidden role="tabpanel" aria-labelledby="tab-fuentes">
   <div class="panel">
     <div class="phead">
@@ -1054,7 +1024,21 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
       <h2 class="big">Fuentes y huecos</h2>
       <p class="lede">Un archivo que esconde sus huecos vale menos que uno que los enseña. Aquí está todo lo que falta, lo que está en disputa, y de dónde sale cada dato.</p>
     </div>
+    <p class="lede">La cobertura no es pareja. Esta rejilla dice, por década, cuánto del archivo está verificado — para que nadie construya un análisis sobre un hueco.</p>
+    <div id="coverage"></div>
     <div id="sourcesBox"></div>
+
+    <h3 class="sec">Calendario y cobertura de temporada</h3>
+    <p class="lede">El BSN no publica un calendario permanente. Esto es lo que se puede reconstruir del patrón de las últimas temporadas, y lo que el archivo no tiene.</p>
+    <h4 class="sub">La forma del año</h4>
+    <p class="lede">Tres temporadas seguidas dan un patrón bastante firme.</p>
+    <div id="calShape"></div>
+    <h4 class="sub">Temporada por temporada</h4>
+    <p class="lede">Las fechas exactas de las últimas tres temporadas, para comparar el patrón.</p>
+    <div id="calendarBox"></div>
+    <h4 class="sub">Los juegos, uno por uno</h4>
+    <p class="lede">Lo que este archivo no tiene, dicho de frente.</p>
+    <div id="calGap"></div>
 
     <h3 class="sec">Glosario</h3>
     <p class="lede">Las palabras que este archivo usa sin explicar en el resto de la app.
@@ -2562,21 +2546,23 @@ function portrait(name,c1,c2,w=54,h=66){
 /* ============================================================
    NAVIGATION
    ============================================================ */
+/* PHASE_6 — 9→8 nav tabs. Perfil moved to the gear button (settings, not a
+   destination); Calendario / Récords / Refuerzos dissolved into Hoy / Historia
+   / Equipos / Fuentes. Section ids are unchanged so showTab / deep links / the
+   ~55 builders keep working. */
 const TABS=[
   ['inicio','Inicio','M3 11 12 3l9 8M5 10v10h14V10'],
-  ['hoy','Hoy','M12 7v5l3 2M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18'],
-  ['calendario','Calendario','M4 6h16v14H4ZM4 10h16M8 3v4M16 3v4'],
-  ['consulta','Consulta','M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14ZM20 20l-4-4'],
+  ['hoy','La liga hoy','M12 7v5l3 2M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18'],
   ['historia','Historia','M4 5h16M4 12h16M4 19h10'],
   ['equipos','Equipos','M4 5h6v6H4ZM14 5h6v6h-6ZM4 13h6v6H4ZM14 13h6v6h-6'],
   ['jugadores','Jugadores','M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4 21c0-4 4-6 8-6s8 2 8 6'],
-  ['records','Récords','M7 4h10v5a5 5 0 0 1-10 0ZM9 19h6M12 14v5'],
-  ['refuerzos','Refuerzos','M12 3v18M3 12h18'],
+  ['consulta','Consulta','M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14ZM20 20l-4-4'],
   ['juega','Juega','M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18ZM3 12h18M12 3c3 4 3 14 0 18M12 3c-3 4-3 14 0 18'],
-  ['fuentes','Fuentes','M6 3h9l4 4v14H6ZM15 3v4h4M9 12h7M9 16h7'],
-  ['perfil','Perfil','M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM5 21a7 7 0 0 1 14 0']
+  ['fuentes','Fuentes','M6 3h9l4 4v14H6ZM15 3v4h4M9 12h7M9 16h7']
 ];
-const BOTTOM=['inicio','consulta','historia','equipos','juega'];
+const BOTTOM=['inicio','hoy','historia','jugadores','consulta'];
+/* Every <section role="tabpanel"> id. Perfil has no nav button (gear only). */
+const PANELS=[...TABS.map(t=>t[0]),'perfil'];
 let CURRENT='inicio';
 
 function buildNav(){
@@ -2600,11 +2586,10 @@ function buildNav(){
   });
 }
 function showTab(id,noScroll){
-  if(!TABS.some(t=>t[0]===id)) return;
+  if(!PANELS.includes(id)) return;   /* includes 'perfil', which has no nav button */
   CURRENT=id;
+  PANELS.forEach(t=>{ const s=document.getElementById(t); if(s) s.hidden = (t!==id); });
   TABS.forEach(([t])=>{
-    const sec=document.getElementById(t);
-    if(sec) sec.hidden = (t!==id);
     const btn=document.getElementById('tab-'+t);
     if(btn) btn.setAttribute('aria-selected',t===id?'true':'false');
   });
@@ -2848,6 +2833,7 @@ function buildLeaders2026(){
 
 function buildClubPicker(){
   const host=$('#clubPicker');
+  if(!host) return;   /* PHASE_6 — picker lives in Perfil now (its own tiles); this id is gone from Hoy */
   const cur=ST.get('club');
   host.innerHTML='<div class="tiles">'+ACTIVE.map(k=>
     `<button class="tile" aria-pressed="${k===cur?'true':'false'}" onclick="pickClub('${k}')">
@@ -2867,6 +2853,7 @@ function drawClubPill(){
 }
 function buildClubCard(){
   const host=$('#clubCard');
+  if(!host) return;
   const k=ST.get('club');
   if(!k){ host.innerHTML='<p class="note">Sin club escogido. Toca uno arriba.</p>'; return; }
   const f=F[k];
@@ -3453,6 +3440,7 @@ function renderArchiveCard(name,id,host){
 }
 function showPlayer(name,id){
   showTab('jugadores',true);
+  if(typeof setJugView==='function') setJugView('buscar');   /* a player card lives in the Buscar view */
   buildPlayerIndex();
   loadPlayerExtra(name,id);       /* 5D.3b/c — async, fills #playerExtra */
   const p=PINDEX.find(x=>norm(x.name)===norm(name));
@@ -3492,6 +3480,7 @@ function showPlayer(name,id){
     ${dagger?'<div class="warn">† 2.302 asistencias en 537 juegos da 4,3 por juego, no 5,1 como publica la fuente. La contradicción está en el dato original y no se ha resuelto; por eso su promedio de asistencias no se usa en los juegos.</div>':''}
     ${missing.length?`<div class="warn">Lo que este archivo <b>no</b> sabe de ${esc(p.name.split(' ')[0])}: ${esc(missing.join(', '))}. Antes de 2011 no existe ninguna base pública de estadísticas por temporada del BSN.</div>`:''}
     ${p.legendWhy?`<div class="note"><b>Leyenda</b> por: ${esc(p.legendWhy.join(" · "))}. El criterio está en Fuentes.</div>`:''}
+    <div class="btnrow"><button class="btn" onclick="cmpFromPlayer(${JSON.stringify(p.name).replace(/"/g,'&quot;')})">Comparar con otro jugador</button></div>
     <div class="note">Aparece en: ${esc(Array.from(p.src).join(' · '))}</div>
   </div>`;
   revealNode(host); host.scrollIntoView({block:'start',behavior:'smooth'});
@@ -3779,11 +3768,6 @@ function buildSources(){
       — hay que correrla fuera de este archivo.</div>
     </div>`;
   host.innerHTML=`
-    <div class="covergrid">${COVERAGE.map(c=>`
-      <div class="cov"><div class="cy">${esc(c[0])}</div>
-      <div class="cb"><div class="cf" style="width:${c[1]}%;background:${c[1]>60?'#25C26E':c[1]>40?'#1663D8':'#EF2B39'}"></div></div>
-      <div class="cl">${esc(c[2])}</div></div>`).join('')}</div>
-
     <h3 class="sec">Conflictos entre fuentes</h3>
     <div class="cards g2">${conflicts.map(c=>`<div class="card">
       <div class="dim" style="font-size:11px;letter-spacing:.07em;font-weight:600">${esc(c[0]).toUpperCase()}</div>
@@ -3813,12 +3797,9 @@ function buildSources(){
     </div>
 
     <h3 class="sec">Escudos y fotos</h3>
-    <div class="card"><p style="margin:0">Todos los escudos y retratos están dibujados en SVG. Si pones un archivo en
-      <code>web/img/crest/&lt;clave&gt;.png</code> o <code>web/img/player/&lt;nombre-en-slug&gt;.jpg</code> y corres
-      <code>make build-web-data</code>, la versión publicada lo carga automáticamente — sin tocar el código.
-      Con cero imágenes, todo se ve igual de bien.</p>
-      <p class="note" style="margin-top:8px">Para uso personal. Los logos reales y las fotos de jugadores necesitan permiso
-      antes de que esto sea público: es la razón principal por la que Apple rechaza apps de este tipo.</p></div>`;
+    <div class="card"><p style="margin:0">Todos los escudos y retratos están dibujados en SVG con los colores reales del club.
+      Los logos oficiales y las fotos de jugadores necesitarían permiso para publicarse — es la razón principal por la que
+      Apple rechaza apps de este tipo — así que este archivo no los usa. Con cero imágenes, todo se ve igual de bien.</p></div>`;
 }
 /* ============================================================
    PREMIOS, MVP POR AÑO Y FINALES JUEGO A JUEGO
@@ -4824,34 +4805,28 @@ const MESES=['enero','febrero','marzo','abril','mayo','junio',
              'julio','agosto','septiembre','octubre','noviembre','diciembre'];
 const DIAS=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
 
+/* PHASE_6 — live-state entry points only, not a mirror of the tab bar.
+   `act` (optional) overrides the plain showTab(tab) click. */
 const HUB=[
-  {tab:'hoy',t:'Hoy',d:'Dónde está la liga ahora mismo y la Final Brava de 2026.',
+  {tab:'hoy',t:'La liga hoy',d:'Dónde está la liga ahora mismo y la Final Brava de 2026.',
    n:()=>hubNum(()=>{
      const d=daysBetween(todayISO(),SEASON_STATE.nextEstimate);
      return d>0?d:Math.abs(daysBetween(SEASON_STATE.lastGame,todayISO()));
    },'—'),
    l:'días'},
-  {tab:'historia',t:'Historia',d:'La cinta de campeones, temporada por temporada.',
+  {tab:'juega',t:'Juega',d:'La Cuadrícula del día, la Temporada Perfecta y dos más.',
+   n:()=>hubNum(()=>puzzleNo(),'—'),l:'cuadrícula de hoy',pre:'#'},
+  {tab:'jugadores',t:'Comparar',d:'Dos o tres jugadores lado a lado. Georgie Torres contra Mario Morales, para empezar.',
+   act:"cmpPreset('Georgie Torres','Mario Morales')",
+   n:()=>hubNum(()=>(PINDEX?PINDEX.length:0),'—'),l:'jugadores para elegir'},
+  {tab:'jugadores',t:'Jugadores',d:'El índice, las biografías, líderes de carrera y el Salón.',
+   n:()=>hubNum(()=>PINDEX.length,'—'),l:'en el índice'},
+  {tab:'historia',t:'Historia',d:'La cinta de campeones, temporada por temporada, y los premios por año.',
    n:()=>hubNum(()=>YEARS.length,'—'),l:'temporadas'},
   {tab:'equipos',t:'Equipos',d:'Cada franquicia que ha pisado la liga, viva o desaparecida.',
    n:()=>hubNum(()=>FKEYS.length,'—'),l:'franquicias'},
-  {tab:'jugadores',t:'Jugadores',d:'Líderes de carrera, Salón de la Fama y comparaciones.',
-   n:()=>hubNum(()=>PINDEX.length,'—'),l:'en el índice'},
-  {tab:'juega',t:'Juega',d:'La Cuadrícula del día, la Temporada Perfecta y dos más.',
-   n:()=>hubNum(()=>puzzleNo(),'—'),l:'cuadrícula de hoy',pre:'#'},
-  {tab:'records',t:'Récords',d:'Marcas de la liga, títulos de anotación y los que llegaron a la NBA.',
-   n:()=>hubNum(()=>RECORDS.length,'—'),l:'récords'},
-  {tab:'refuerzos',t:'Refuerzos',d:'Las reglas de importados y lo que cambiaron en 2024.',
-   n:()=>hubNum(()=>3,'—'),l:'por club en 2025'},
-  {tab:'calendario',t:'Calendario',d:'Cuándo corre la temporada y qué falta por anunciar.',
-   n:()=>hubNum(()=>{
-     const d=daysBetween(todayISO(),SEASON_STATE.nextEstimate);
-     return d>0?d:0;
-   },'—'),l:'días para la apertura estimada'},
   {tab:'consulta',t:'Consulta',d:'Pregunta en español o arma la consulta y expórtala a CSV.',
    n:()=>hubNum(()=>ASKERS.length,'—'),l:'tipos de pregunta'},
-  {tab:'jugadores',t:'Biografías',d:'Quién fue cada quien: nacimiento, apodo, vida y fuentes.',
-   n:()=>hubNum(()=>BIO.length,'—'),l:'fichas con fuente'},
   {tab:'fuentes',t:'Fuentes',d:'Todo lo que falta, lo que está en disputa y de dónde sale cada dato.',
    n:()=>hubNum(()=>COVERAGE?COVERAGE.length:0,'—'),l:'décadas medidas'}
 ];
@@ -4887,7 +4862,7 @@ function buildHub(){
 
   const icon=id=>{const t=TABS.find(x=>x[0]===id);return t?t[2]:'';};
   $('#hubGrid').innerHTML='<div class="hubgrid">'+HUB.map(c=>`
-    <button class="hubcard" onclick="showTab('${c.tab}')">
+    <button class="hubcard" onclick="showTab('${c.tab}');${c.act?c.act.replace(/"/g,'&quot;')+';':''}">
       <svg class="hubicon" viewBox="0 0 24 24" aria-hidden="true"><path d="${icon(c.tab)}"/></svg>
       <div class="hubn">${c.pre||''}${esc(String(c.n()))}</div>
       <div class="hubt">${esc(c.t)}</div>
@@ -6036,9 +6011,25 @@ function cmpAdd(name){
 }
 function cmpRemove(n){ CMP=CMP.filter(x=>x!==n); drawCompare(); }
 function cmpClear(){ CMP=[]; const m=$('#cmpMsg'); if(m) m.textContent=''; drawCompare(); }
+/* PHASE_6 — Comparar is a promoted mode inside Jugadores (Buscar | Comparar),
+   not a buried accordion. */
+let JUGVIEW='buscar';
+function setJugView(v){
+  v = (v==='comparar') ? 'comparar' : 'buscar';
+  JUGVIEW=v;
+  const b=$('#jugBuscar'), c=$('#jugComparar');
+  if(b) b.hidden = v!=='buscar';
+  if(c) c.hidden = v!=='comparar';
+  ['buscar','comparar'].forEach(m=>{ const btn=$('#jugmode-'+m); if(btn) btn.setAttribute('aria-selected',String(m===v)); });
+  if(v==='comparar'){ try{ buildCompare(); }catch(e){ console.error('BSN: falló Comparar',e); } }
+}
+function cmpFromPlayer(name){
+  showTab('jugadores',true); setJugView('comparar'); cmpAdd(name);
+  const o=$('#cmpOut'); if(o&&o.scrollIntoView) o.scrollIntoView({block:'start',behavior:'smooth'});
+}
 /* Two taps to a real comparison beats an empty box and a blinking
    cursor — most people cannot name a second BSN player on demand. */
-function cmpPreset(a,b){ CMP=[a,b].filter(n=>cmpFind(n)); drawCompare(); }
+function cmpPreset(a,b){ setJugView('comparar'); CMP=[a,b].filter(n=>cmpFind(n)); drawCompare(); }
 
 const CMP_PRESETS=[
   ['Georgie Torres','Mario Morales','El uno contra el dos'],
@@ -6525,8 +6516,23 @@ function revealNode(node){
 function applyHash(){
   const h=(location.hash||'').replace(/^#/,'');
   if(!h) return;
-  const [a,b]=h.split('/');
-  if(TABS.some(t=>t[0]===a)){ showTab(a); if(a==='equipos'&&b&&F[b]) showTeam(b); return; }
+  const parts=h.split('/'), [a,b]=parts;
+  const MOVED={records:'historia',calendario:'hoy',refuerzos:'historia'};   /* PHASE_6 — old tab hashes -> new home */
+  if(MOVED[a]){ showTab(MOVED[a]); return; }
+  if(a==='comparar'){   /* #comparar/georgie-torres/mario-morales */
+    showTab('jugadores'); setJugView('comparar');
+    const nm=s=>{ const x=(PINDEX||[]).find(p=>slug(p.name)===s); return x?x.name:null; };
+    const n1=nm(b), n2=nm(parts[2]);
+    if(n1&&n2) cmpPreset(n1,n2);
+    else if(n1){ CMP=[n1]; drawCompare(); }
+    return;
+  }
+  if(PANELS.includes(a)){
+    showTab(a);
+    if(a==='equipos'&&b&&F[b]) showTeam(b);
+    if(a==='historia'&&b&&/^\d{4}$/.test(b) && typeof showSeason==='function') showSeason(+b);
+    return;
+  }
   if(a==='jugador'&&b){
     const p=PINDEX&&PINDEX.find(x=>slug(x.name)===b);
     if(p) showPlayer(p.name);
