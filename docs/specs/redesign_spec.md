@@ -80,8 +80,29 @@ Everything lives in `app/bsn_archivo.html` (`<link>` + `<style>` + a few inline
   hairline (`pointer-events:none`, chevron hidden). `foldSections()` unchanged —
   CSS-only override. Mobile keeps the disclosures.
 
-Harness: `scratchpad/nav_motion_harness.mjs` (panel-enter add/skip, smooth
-scroll, unknown-id guard).
+Harnesses: `scratchpad/nav_motion_harness.mjs` (panel-enter add/skip, smooth
+scroll, unknown-id guard); `scratchpad/table_harness.mjs` (`.tall` at >24 rows,
+`.scrolled` toggling from `scrollLeft`).
+
+**Fix on top of commit 2 (owner-reported theme-toggle glitch on Jugadores /
+Historia):**
+- The theme cross-fade used `html.theming * !important` — that forced a
+  `transition:background-color` onto every `position:sticky` table cell
+  (commit 2), every SVG stroke in the Comparar radar, and all ~96 franchise-
+  coloured `.cell` buttons in the Historia ribbon, and suppressed those
+  elements' own `transition:transform`. Re-compositing that many sticky /
+  SVG layers over 200ms is the jank; other tabs have none of it.
+- Replaced with an explicit ~18-selector list — ground + header/nav/bottom
+  bar + `.card`/`.tblwrap`/`.hero`/`.series`/`.answer`/`.primer`/`.glos`/
+  `.readout` + `.btn`/`.chip`/`.tag` + form controls. Tables, SVG, ribbon
+  cells and comparison bars now snap in one frame (imperceptible, and crisper).
+- Also fixed: `.tblwrap` had no `background`, so the sticky
+  `td:first-child{background:var(--deep)}` sat a shade lighter than the rest
+  of the table (transparent cells showed the panel `--night` through). Added
+  `.tblwrap{background:var(--deep)}` + an opaque `--zebra` token (a
+  translucent stripe ghosts through a sticky cell mid-scroll). Edge-shadow
+  `::after` moved `right:-1px` → `right:-10px` so it casts onto the scrolled
+  content instead of the frozen cell's own text.
 
 ### Commit 3 — light-mode refinement (pending)
 

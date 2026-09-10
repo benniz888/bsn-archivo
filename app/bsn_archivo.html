@@ -96,6 +96,7 @@
   --statusbar:#070C18;
   --hair:rgba(255,255,255,.03);
   --hair-2:rgba(255,255,255,.02);
+  --zebra:#101A30;      /* opaque — a sticky cell can't use a translucent stripe */
   --tint-rojo:rgba(239,43,57,.12);
   --tint-rojo-soft:rgba(239,43,57,.09);
   --tint-azul:rgba(22,99,216,.14);
@@ -180,6 +181,7 @@
   --shadow:rgba(11,23,48,.14);
   --hair:rgba(11,23,48,.035);
   --hair-2:rgba(11,23,48,.02);
+  --zebra:#F4F7FC;
   --tint-rojo:rgba(200,18,31,.10);
   --tint-rojo-soft:rgba(200,18,31,.07);
   --tint-azul:rgba(15,82,184,.10);
@@ -221,10 +223,18 @@ button{font:inherit}
   padding:0 calc(16px + env(safe-area-inset-right)) 0 calc(16px + env(safe-area-inset-left))}
 :focus-visible{outline:2px solid var(--azul-hi);outline-offset:2px;border-radius:3px}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
-/* one-shot: cross-fade colours on a manual theme switch (never on first paint) */
-html.theming *,html.theming *::before,html.theming *::after{
+/* one-shot: cross-fade the ground + chrome on a manual theme switch (never on
+   first paint). Deliberately a short, explicit list — a `* !important` sweep
+   re-composites every position:sticky table cell and every SVG stroke on the
+   data-heavy tabs, which janks. Small elements just snap; that reads fine. */
+html.theming,html.theming body,
+html.theming header.top,html.theming nav.tabs,html.theming .bottombar,
+html.theming .card,html.theming .tblwrap,html.theming .hero,html.theming .series,
+html.theming .answer,html.theming .primer,html.theming .glos,html.theming .readout,
+html.theming .btn,html.theming .chip,html.theming .tag,
+html.theming input,html.theming select,html.theming textarea{
   transition:background-color var(--dur) linear,border-color var(--dur) linear,
-             color var(--dur) linear,fill var(--dur) linear,stroke var(--dur) linear!important}
+             color var(--dur) linear!important}
 
 /* the tricolor rule — flag as structure */
 .tri{height:3px;border-radius:2px;
@@ -473,7 +483,7 @@ h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
    column so the name/rank stays put while the numbers scroll, a sticky
    header + zebra once a table is long enough to scroll vertically. */
 .tblwrap{position:relative;overflow:auto;border:1px solid var(--line);border-radius:var(--r);
-  margin-top:var(--sp-3);-webkit-overflow-scrolling:touch}
+  margin-top:var(--sp-3);background:var(--deep);-webkit-overflow-scrolling:touch}
 .tblwrap.tall{max-height:min(68vh,600px)}
 table{border-collapse:collapse;width:100%;font-size:var(--fs-xs);min-width:360px}
 th{background:var(--raise);color:var(--ink-2);font-weight:700;font-size:var(--fs-3xs);letter-spacing:.06em;
@@ -486,18 +496,19 @@ th .arrow{opacity:.55;font-size:9px;margin-left:3px}
 td{padding:6px 11px;border-bottom:1px solid var(--line-soft);white-space:nowrap}
 tr:last-child td{border-bottom:0}
 tbody tr:hover td{background:var(--raise)}
-.tblwrap.tall tbody tr:nth-child(even) td{background:var(--hair)}
+.tblwrap.tall tbody tr:nth-child(even) td{background:var(--zebra)}
 .tblwrap.tall tbody tr:nth-child(even):hover td{background:var(--raise)}
 td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 td.name{white-space:normal;min-width:150px;font-weight:600}
 td.rank{color:var(--ink-3);width:32px}
-/* sticky first column */
+/* sticky first column — keeps the row's anchor (rank / year / name) in view
+   while the numbers scroll. Opaque backgrounds match the ambient row state so
+   the frozen column is invisible until the table is actually scrolled. */
 .tblwrap th:first-child{position:sticky;left:0;z-index:5;background:var(--raise)}
 .tblwrap td:first-child{position:sticky;left:0;z-index:3;background:var(--deep)}
 .tblwrap tbody tr:hover td:first-child{background:var(--raise)}
-.tblwrap.tall tbody tr:nth-child(even) td:first-child{background:var(--raise)}
 .tblwrap th:first-child::after,.tblwrap td:first-child::after{content:"";position:absolute;
-  top:0;right:-1px;bottom:0;width:10px;pointer-events:none;
+  top:0;right:-10px;bottom:0;width:10px;pointer-events:none;
   background:linear-gradient(90deg,var(--shadow),transparent);opacity:0;transition:opacity var(--dur-fast)}
 .tblwrap.scrolled th:first-child::after,.tblwrap.scrolled td:first-child::after{opacity:1}
 .tbl-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:var(--sp-3);font-size:var(--fs-2xs);color:var(--ink-3)}
