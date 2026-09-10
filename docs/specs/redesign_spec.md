@@ -114,12 +114,35 @@ glued to the (sticky) cell. Sticky first-child cells get
 `background-clip:padding-box`. Edge-shadow `::after` re-anchored to
 `left:100%` (unambiguously the cell's right edge) `width:12px`.
 
-### Commit 3 — light-mode refinement (pending)
+### Commit 3 — light-mode refinement (DONE)
 
-`--raise`/`--line` firmer, tints 10–14%, softer `--shadow`; flatten decorative
-gradients (`.answer .ahead`, `.primer`, `.seriesrow.win`); ~10 hardcoded hexes
-in JS → tokens; header theme control → `auto/light/dark` cycle; per-crest
-legibility pass on the light ground.
+- **Light palette tweaks:** `--raise` `#E7EDF7`→`#E1E9F5`, `--line`
+  `#CBD8EC`→`#C3D2E8`, `--line-soft` `#E1E8F4`→`#DDE6F3` (firmer surfaces /
+  gridlines vs white cards); `--shadow` `.14`→`.10` alpha; every `--tint-*`
+  bumped ~2–3pts (7–13% → 8–14% — the old values were faint on paper).
+- **Dark:** `--shadow` `.35`→`.28`; hover box-shadows tightened
+  (`0 10px 28px`→`0 6px 18px`, `0 8px 22px`→`0 6px 16px`) — Apple-style
+  smaller/softer.
+- **Decorative gradients flattened** to solid tints: `.answer .ahead`,
+  `.primer`, `.seriesrow.win`, `.gcell.ok`/`.gcell.bad`. `.hero` radial
+  simplified 3-stop → 2-stop (kept — functional depth). Crest / tile-art
+  gradients and the `.cell.empty` hatch stay (illustration / state, not
+  decoration).
+- **10 hardcoded hexes in JS render code → CSS vars:** `showPlayer` /
+  `renderArchiveCard` portrait + card colours (`#1663D8`/`#EEF3FB` →
+  `var(--azul)`/`var(--blanco)`), `buildLeaders` bar colour, the scoring-champ
+  trajectory chart, the coverage-bar fill, `CMP_FALLBACK`. The BSN wordmark
+  mark and the game-tile illustration scenes keep fixed hexes by design.
+- **Header theme control → `auto → light → dark` cycle.** New half-filled-disc
+  icon for `auto`; the icon + `aria-label` now show the *stored preference*
+  ("Tema: automático (sigue el sistema) · toca para cambiar a claro"). The
+  profile page keeps its explicit 3-button group.
+- **Per-crest legibility pass:** all 33 franchise `c1` primaries clear ≥2.83:1
+  against the light page (lowest: SG orange `#F26A21`). Legible as a
+  border / label / crest fill on light — no colour changes needed.
+
+Harness: `scratchpad/theme_harness.mjs` (auto→light→dark→auto cycle, icon +
+label per preference, resolves+paints).
 
 ## [ALTERNATIVES_REJECTED]
 

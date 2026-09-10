@@ -2,7 +2,7 @@
 <!-- Authoritative for current state and task priority. Update at every phase exit. -->
 
 **SESSION:** 003 — PHASE_5_APP_SYNC + PHASE_6_APP_IA + PHASE_3H/3I/3J (identity
-  spine Q1–Q4, all LIVE) · **PHASE_7 visual redesign IN PROGRESS** (commits 1–2/3 done)
+  spine Q1–Q4, all LIVE) · **PHASE_7 visual redesign — all 3 commits done, LIVE**
 **DATE:** 2026-09-11
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
@@ -11,10 +11,15 @@ fetches per-entity JSON from `web/data/`, offline-capable (SW), installable,
 8-tab IA. Data pipeline: 3,343 players (40 jug05-minted, D-047; 152 w/
 jugador05 bio) / 98 seasons / 1,292 games / 68 scoring titles (all champions
 now linked to a ficha) / 47 MVP. player_id_map 800, review queue 451.
-**PHASE_7 in flight** (`redesign_spec.md`) — commit 1 (Inter + type/spacing
-tokens) + commit 2 (panel-enter motion, tab-underline grow, theme cross-fade,
-sticky-first-column + tall-table sticky-header/zebra, desktop ≥1120px
-auto-expand) done, LIVE; commit 3 = light-mode refinement. Open threads:
+**PHASE_7 visual redesign COMPLETE, LIVE** (`redesign_spec.md`, `73f3cfb` →
+commit 3): (1) Inter one-family + type/spacing tokens; (2) panel-enter motion,
+tab-underline grow, theme cross-fade, sticky first column + tall-table sticky-
+header/zebra, desktop ≥1120px auto-expand of folded sections — + 2 owner-
+reported fixes (theme-toggle jank on Jugadores/Historia from the `*` cross-
+fade; sticky-column bleed-through from `border-collapse:collapse`); (3) light-
+mode refinement — firmer surfaces/gridlines, tint bump, softer shadows,
+decorative gradients flattened, 10 JS hexes → tokens, header `auto/light/dark`
+cycle. Harnesses: `nav_motion`, `table`, `theme` (`scratchpad/`). Open threads:
 docs/project.md D2 refinement for the Grises/Caciques de Humacao split (D-045);
 the ~451-row review-queue long tail (needs an owner-curated crosswalk — Q1-Q4
 are all closed by code); PHASE_3D id 13352 (jugador.asp career, no players_canonical

@@ -91,7 +91,7 @@
   --hero-a:#153A78; --hero-b:#0C1B3A; --hero-c:#070C18;
   --empty-a:#132038; --empty-b:#0C1428;
   --ahead-a:#092F70; --ahead-b:#0A1730;
-  --shadow:rgba(0,0,0,.35);
+  --shadow:rgba(0,0,0,.28);
   --flag-w:#FFFFFF;
   --statusbar:#070C18;
   --hair:rgba(255,255,255,.03);
@@ -154,9 +154,9 @@
   --night:#F1F4FA;
   --deep:#FFFFFF;
   --card:#FFFFFF;
-  --raise:#E7EDF7;
-  --line:#CBD8EC;
-  --line-soft:#E1E8F4;
+  --raise:#E1E9F5;      /* firmer table-header / chip tint against white cards */
+  --line:#C3D2E8;       /* crisper gridlines (BR density) */
+  --line-soft:#DDE6F3;
 
   --azul:#0F52B8;
   --azul-hi:#0A3E90;
@@ -177,17 +177,17 @@
   --wash:rgba(203,216,236,.34);
   --hero-a:#C6DAF6; --hero-b:#E3EDFA; --hero-c:#F1F4FA;
   --empty-a:#DCE4F1; --empty-b:#EDF1F8;
-  --ahead-a:#D3E3FA; --ahead-b:#EEF4FC;
-  --shadow:rgba(11,23,48,.14);
-  --hair:rgba(11,23,48,.035);
+  --ahead-a:#DCE9FA; --ahead-b:#DCE9FA;   /* flattened — see .answer .ahead */
+  --shadow:rgba(11,23,48,.10);            /* softer, per Apple polish */
+  --hair:rgba(11,23,48,.04);
   --hair-2:rgba(11,23,48,.02);
-  --zebra:#F4F7FC;
-  --tint-rojo:rgba(200,18,31,.10);
-  --tint-rojo-soft:rgba(200,18,31,.07);
-  --tint-azul:rgba(15,82,184,.10);
-  --tint-ok:rgba(10,122,66,.13);
-  --tint-ok-soft:rgba(10,122,66,.07);
-  --tint-fuego:rgba(194,74,5,.09);
+  --zebra:#F3F6FC;
+  --tint-rojo:rgba(200,18,31,.12);
+  --tint-rojo-soft:rgba(200,18,31,.08);
+  --tint-azul:rgba(15,82,184,.12);
+  --tint-ok:rgba(10,122,66,.14);
+  --tint-ok-soft:rgba(10,122,66,.09);
+  --tint-fuego:rgba(194,74,5,.11);
   --on-rojo:#8E1119;
   --on-rojo-2:#8E1119;
   --on-azul:#0A3E90;
@@ -299,7 +299,7 @@ nav.tabs{border-top:1px solid var(--line-soft)}
 .tile{position:relative;display:block;width:100%;text-align:left;padding:0;overflow:hidden;
   border:1px solid var(--line);border-radius:16px;background:var(--card);cursor:pointer;
   transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}
-.tile:hover{transform:translateY(-2px);border-color:var(--ink-3);box-shadow:0 10px 28px var(--shadow)}
+.tile:hover{transform:translateY(-2px);border-color:var(--ink-3);box-shadow:0 6px 18px var(--shadow)}
 .tile:focus-visible{outline:2px solid var(--fuego);outline-offset:2px}
 .tile:active{transform:translateY(0)}
 .tileart{display:block;width:100%;height:104px}
@@ -447,7 +447,7 @@ h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
 
 /* ---------- hero: the offseason clock ---------- */
 .hero{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
-  background:radial-gradient(120% 140% at 8% 0%,var(--hero-a) 0%,var(--hero-b) 52%,var(--hero-c) 100%)}
+  background:radial-gradient(130% 130% at 10% -8%,var(--hero-a),var(--hero-c) 78%)}
 .herotop{padding:20px 18px 16px;display:flex;gap:18px;flex-wrap:wrap;align-items:flex-end}
 .clock{flex:none}
 .clock .n{font-family:inherit;font-weight:800;font-size:var(--fs-hero);
@@ -466,7 +466,7 @@ h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
 .series{background:var(--deep);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
 .seriesrow{display:flex;align-items:center;gap:12px;padding:14px 16px}
 .seriesrow+.seriesrow{border-top:1px solid var(--line-soft)}
-.seriesrow.win{background:linear-gradient(90deg,var(--tint-ok-soft),transparent 60%)}
+.seriesrow.win{background:var(--tint-ok-soft)}
 .seriesrow .nm{flex:1;font-weight:600;font-size:16px}
 .seriesrow .sc{font-family:inherit;font-weight:800;font-size:var(--fs-num);line-height:1}
 .seriesrow.lose .nm,.seriesrow.lose .sc{color:var(--ink-3)}
@@ -558,7 +558,7 @@ select{cursor:pointer}
   background:var(--deep)}
 .ask input:focus{border-color:var(--azul-hi);outline:none}
 .answer{margin-top:14px;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--deep)}
-.answer .ahead{padding:16px 18px;background:linear-gradient(115deg,var(--ahead-a),var(--ahead-b) 70%)}
+.answer .ahead{padding:16px 18px;background:var(--ahead-a)}
 .answer .aq{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--aq-ink);font-weight:600}
 .answer .abig{font-family:inherit;font-weight:800;font-size:clamp(24px,5.4vw,38px);
   line-height:1.05;margin-top:6px}
@@ -633,8 +633,8 @@ tr.cut td{border-bottom:1px solid var(--azul)}
   cursor:pointer;color:inherit;font-size:11.5px;text-align:center;line-height:1.2;position:relative}
 .gcell:hover:not(:disabled){border-color:var(--azul)}
 .gcell[aria-pressed="true"]{border-color:var(--rojo);box-shadow:0 0 0 1px var(--rojo) inset}
-.gcell.ok{background:linear-gradient(160deg,var(--tint-ok),transparent);border-color:var(--ok-line)}
-.gcell.bad{background:linear-gradient(160deg,var(--tint-rojo),transparent);border-color:var(--rojo-deep)}
+.gcell.ok{background:var(--tint-ok);border-color:var(--ok-line)}
+.gcell.bad{background:var(--tint-rojo);border-color:var(--rojo-deep)}
 .gcell .pn{font-weight:600}
 .gcell .pr{font-size:10.5px;color:var(--ink-2)}
 .gcell .plus{font-size:22px;color:var(--ink-3);font-weight:300}
@@ -694,7 +694,7 @@ tr.cut td{border-bottom:1px solid var(--azul)}
    The archive assumes a lot of context — refuerzos, La Más Dura, the
    1930 start — and a reader without it bounces off the numbers. */
 .primer{border:1px solid var(--azul);border-radius:var(--r);padding:16px 16px 14px;
-  margin:16px 0 4px;background:linear-gradient(160deg,var(--tint-azul),transparent 70%)}
+  margin:16px 0 4px;background:var(--tint-azul)}
 .primerhead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 .primerhead h3{font-family:inherit;font-weight:800;font-size:20px;
   text-transform:uppercase;letter-spacing:.02em;flex:1}
@@ -744,7 +744,7 @@ tr.cut td{border-bottom:1px solid var(--azul)}
   background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 13px 13px;
   cursor:pointer;color:inherit;font:inherit;
   transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease}
-.hubcard:hover{transform:translateY(-2px);border-color:var(--ink-3);box-shadow:0 8px 22px var(--shadow)}
+.hubcard:hover{transform:translateY(-2px);border-color:var(--ink-3);box-shadow:0 6px 16px var(--shadow)}
 .hubcard:active{transform:translateY(0)}
 .hubicon{width:21px;height:21px;stroke:var(--ink-3);fill:none;stroke-width:1.7;
   stroke-linecap:round;stroke-linejoin:round}
@@ -823,7 +823,7 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
       </span>
     </button>
     <div class="topspace"></div>
-    <button class="themebtn" id="themeBtn" onclick="toggleTheme()" title="Claro / oscuro"
+    <button class="themebtn" id="themeBtn" onclick="toggleTheme()" title="Tema: automático / claro / oscuro"
             aria-label="Cambiar de tema">
       <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"></svg>
     </button>
@@ -3533,7 +3533,7 @@ function renderArchiveCard(name,id,host){
   const meta=[r.position,span,(r.nationality&&r.nationality!=='Puerto Rico')?r.nationality:''].filter(Boolean).join(' · ');
   host.innerHTML=`<div class="card" style="margin-top:18px">
     <div style="display:flex;gap:16px;flex-wrap:wrap">
-      ${portrait(name,'#1663D8','#EEF3FB',60,74)}
+      ${portrait(name,'var(--azul)','var(--blanco)',60,74)}
       <div style="flex:1;min-width:230px">
         <h3 style="font-size:24px">${esc(name)}</h3>
         <div class="muted" style="font-size:13.5px">${esc(meta||'sin datos de posición o años')}</div>
@@ -3554,8 +3554,8 @@ function showPlayer(name,id){
     if(id!=null){ renderArchiveCard(name,id,host); return; }  /* 5D.3c — archive-only player */
     host.innerHTML='<p class="note">No está en el índice.</p>'; return;
   }
-  const c1=p.clubs.size?F[Array.from(p.clubs)[0]].c1:'#1663D8';
-  const c2=p.clubs.size?F[Array.from(p.clubs)[0]].c2:'#EEF3FB';
+  const c1=p.clubs.size?F[Array.from(p.clubs)[0]].c1:'var(--azul)';
+  const c2=p.clubs.size?F[Array.from(p.clubs)[0]].c2:'var(--blanco)';
   const missing=[];
   if(p.pts==null)missing.push('puntos de carrera');
   if(p.reb==null)missing.push('rebotes');
@@ -3662,7 +3662,7 @@ function buildLeaderControls(){
 function buildLeaders(){
   const src=LEADERS[LEAD_CAT].slice();
   const rows=src.sort((a,b)=>LEAD_MODE==='total'?b[4]-a[4]:b[6]-a[6]);
-  const col=LEAD_CAT==='points'?'#EF2B39':LEAD_CAT==='rebounds'?'#1663D8':'#25C26E';
+  const col=LEAD_CAT==='points'?'var(--rojo)':LEAD_CAT==='rebounds'?'var(--azul)':'var(--ok)';
   bars($('#leadBars'),rows.map(r=>[r[1],LEAD_MODE==='total'?r[4]:r[6],col]),null,
     v=>LEAD_MODE==='total'?v.toLocaleString('es-PR'):v.toFixed(1));
   buildTable($('#leadTable'),[
@@ -3687,7 +3687,7 @@ function buildHOF(){
   });
   $('#hofList').innerHTML='<div class="cards g2">'+list.map(h=>`
     <div class="card" style="display:flex;gap:13px">
-      ${portrait(h.n,'#1663D8','#EEF3FB',48,58)}
+      ${portrait(h.n,'var(--azul)','var(--blanco)',48,58)}
       <div style="min-width:0">
         <div style="font-weight:700;font-size:16px">${esc(h.n)}</div>
         <div class="dim" style="font-size:12px">${esc(h.yrs)} · ${esc(h.pos)}</div>
@@ -3729,13 +3729,13 @@ function buildScoringChart(){
   let g='';
   for(let v=y0;v<=y1;v+=5) g+=`<line x1="${pad}" y1="${Y(v)}" x2="${W-12}" y2="${Y(v)}" stroke="var(--line)"/>
     <text x="6" y="${Y(v)+4}" fill="var(--ink-3)" font-size="10">${v}</text>`;
-  const dots=pts.map(p=>`<circle cx="${X(p[0]).toFixed(1)}" cy="${Y(p[4]).toFixed(1)}" r="3.2" fill="#EF2B39">
+  const dots=pts.map(p=>`<circle cx="${X(p[0]).toFixed(1)}" cy="${Y(p[4]).toFixed(1)}" r="3.2" fill="var(--rojo)">
     <title>${p[0]} — ${esc(p[1])}, ${p[4]}</title></circle>`).join('');
   const tvals=[]; for(let v=Math.ceil(x0/5)*5; v<=x1; v+=(x1-x0>28?10:5)) tvals.push(v);
   const ticks=tvals.map(v=>`<text x="${X(v)}" y="${H-10}" fill="var(--ink-3)" font-size="10" text-anchor="middle">${v}</text>`).join('');
   $('#scoringChart').innerHTML=`<div class="card" style="padding:10px"><svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto" role="img"
     aria-label="Promedio del campeón de anotación por temporada, ${x0} a ${x1}">
-    ${g}<path d="${path}" fill="none" stroke="#EF2B39" stroke-width="2"/>${dots}${ticks}</svg></div>
+    ${g}<path d="${path}" fill="none" stroke="var(--rojo)" stroke-width="2"/>${dots}${ticks}</svg></div>
     <p class="note">Hasta 1970 la liga premiaba puntos totales; desde 1971, promedio. Las dos series no son comparables, así que solo se grafica la segunda.</p>`;
 }
 function buildScoringTable(){
@@ -4839,7 +4839,7 @@ function copyQB(){
 function buildCoverage(){
   $('#coverage').innerHTML='<div class="covergrid">'+COVERAGE.map(c=>`
     <div class="cov"><div class="cy">${esc(c[0])}</div>
-    <div class="cb"><div class="cf" style="width:${c[1]}%;background:${c[1]>60?'#25C26E':c[1]>40?'#1663D8':'#EF2B39'}"></div></div>
+    <div class="cb"><div class="cf" style="width:${c[1]}%;background:${c[1]>60?'var(--ok)':c[1]>40?'var(--azul)':'var(--rojo)'}"></div></div>
     <div class="cl">${esc(c[2])}</div></div>`).join('')+'</div>'+
     '<p class="note">El porcentaje es cuánto de lo que uno querría saber de esa década está en el archivo, no una medida de exactitud. Los años treinta son el 20% porque solo hay campeones.</p>';
 }
@@ -5296,8 +5296,12 @@ const THEME_BAR={dark:'#070C18',light:'#F1F4FA'};
 const THEME_ICON={
   dark:'<path d="M20.6 13.4A8.5 8.5 0 1 1 10.6 3.4a6.9 6.9 0 0 0 10 10Z"/>',
   light:'<circle cx="12" cy="12" r="4.1"/><path d="M12 2.7v2.2M12 19.1v2.2M4.9 12H2.7M21.3 12h-2.2'
-       +'M6.9 6.9 5.3 5.3M18.7 18.7l-1.6-1.6M17.1 6.9l1.6-1.6M5.3 18.7l1.6-1.6"/>'
+       +'M6.9 6.9 5.3 5.3M18.7 18.7l-1.6-1.6M17.1 6.9l1.6-1.6M5.3 18.7l1.6-1.6"/>',
+  /* half-filled disc — the platform glyph for "follow the system" */
+  auto:'<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18Z" fill="currentColor" stroke="none"/>'
 };
+const THEME_NEXT={auto:'light',light:'dark',dark:'auto'};
+const THEME_ES={auto:'automático',light:'claro',dark:'oscuro'};
 function osTheme(){
   return (window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches)
     ? 'light' : 'dark';
@@ -5316,17 +5320,15 @@ function applyTheme(t){
   document.documentElement.setAttribute('data-theme',t);
   const m=document.querySelector('meta[name="theme-color"]');
   if(m) m.setAttribute('content',THEME_BAR[t]);
-  /* The control shows the theme it would switch TO, not the one in
-     use — a sun on a dark page reads as "go light", which is what
-     pressing it does. */
+  /* The header control now cycles auto → light → dark, so it shows the
+     *stored preference* — the "auto" disc when following the system. */
+  const pref=prof().theme;
   const i=$('#themeIcon');
-  if(i) i.innerHTML=THEME_ICON[t==='light'?'dark':'light'];
+  if(i) i.innerHTML=THEME_ICON[pref]||THEME_ICON.auto;
   const b=$('#themeBtn');
-  if(b) b.setAttribute('aria-label',t==='light'?'Cambiar a modo oscuro':'Cambiar a modo claro');
+  if(b) b.setAttribute('aria-label',
+    'Tema: '+THEME_ES[pref]+(pref==='auto'?' (sigue el sistema)':'')+' · toca para cambiar a '+THEME_ES[THEME_NEXT[pref]]);
 }
-/* The header button is a two-way switch and therefore always sets an
-   explicit preference; 'auto' is offered on the profile page, where
-   there is room to say what it means. */
 function setTheme(t){
   setProf('theme',t);
   const de=document.documentElement;
@@ -5338,7 +5340,7 @@ function setTheme(t){
   applyTheme();
   const b=$('#profBody'); if(b&&b.innerHTML) buildProfile();
 }
-function toggleTheme(){ setTheme(resolvedTheme()==='light'?'dark':'light'); }
+function toggleTheme(){ setTheme(THEME_NEXT[prof().theme]||'light'); }
 function initTheme(){
   applyTheme();
   /* Only meaningful in auto: follow the system if it changes while the
@@ -6108,7 +6110,7 @@ function poolDatalist(){
    bar would read as "worst", and the archive does not know that.
    ============================================================ */
 let CMP=[];
-const CMP_FALLBACK=['#1663D8','#EF2B39','#25C26E'];
+const CMP_FALLBACK=['var(--azul)','var(--rojo)','var(--ok)'];
 
 function cmpFind(name){
   if(!PINDEX) return null;
