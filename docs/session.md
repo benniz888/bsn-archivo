@@ -1,19 +1,21 @@
 # SESSION STATE — TIER 3
 <!-- Authoritative for current state and task priority. Update at every phase exit. -->
 
-**SESSION:** 003 — PHASE_5_APP_SYNC (complete, LIVE) + PHASE_6_APP_IA (complete, LIVE)
-  + PHASE_3H_JUG05 & jugador05 follow-up (complete, LIVE)
+**SESSION:** 003 — PHASE_5_APP_SYNC + PHASE_6_APP_IA + PHASE_3H (jug05/jugador05)
+  + PHASE_3I (historic scoring-title seed) — all complete, LIVE
 **DATE:** 2026-09-10
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
 **CURRENT STATE:** Archive is live at benniz888.github.io/bsn-archivo — shell
 fetches per-entity JSON from `web/data/`, offline-capable (SW), installable,
 8-tab IA. Data pipeline: 3,343 players (40 jug05-minted, D-047; 152 w/
-jugador05 bio) / 98 seasons / 1,292 games / 68 scoring
-titles / 47 MVP. **No phase in flight.** Open threads (all owner-side / minor):
+jugador05 bio) / 98 seasons / 1,292 games / 68 scoring titles (all champions
+now linked to a ficha) / 47 MVP. player_id_map 716, review queue 535.
+**No phase in flight.** Open threads (all owner-side / minor):
 docs/project.md D2 refinement for the Grises/Caciques de Humacao split (D-045);
-PHASE_3D id 13352 (jugador.asp career, no players_canonical row); PHASE_5F
-(per-game PBP JSON) deferred behind PBP↔bsnpr_id linking; real crest/portrait
+identity_spine_spec Q4 (truncated / bare-surname observation names — the last
+review-queue lever); PHASE_3D id 13352 (jugador.asp career, no players_canonical
+row); PHASE_5F (per-game PBP JSON) deferred behind PBP↔bsnpr_id linking; real crest/portrait
 images (drop into `web/img/`, `make build-web-data`).
 
 Session 002 (cont.) — all pushed to origin/main:
@@ -80,8 +82,19 @@ Session 002 (cont.) — all pushed to origin/main:
   - **Residuals (all deliberate, nothing pending):** 3 jugador05 review rows
     (Kevin/Kelvin Bonilla, "Tito" López, the 1967-dated Fernando Ortiz page);
     5 flagged DOB conflicts (single-source or the two 2005 sources disagree);
-    2 jug05 review rows. The ~50-champion manual historic seed
-    (identity_spine_spec Q3) remains a separate, later option.
+    2 jug05 review rows.
+- **PHASE_3I — historic scoring-title seed — COMPLETE, LIVE** (`historic_seed_spec.md`,
+  identity_spine_spec Q3 closed). The 1948–2004 scoring champions were all
+  already canonical but unlinked (no profile → no career span). A title record
+  is a per-season attestation → `seed_historic_spans()` seeds
+  `first/last_season` from title years; `build_id_map` gains
+  `match_method=name+season+title`; `app/player_crosswalk.csv` (additive) +
+  `data/interim/player_historic_seed.csv` (Farmer→172, Simms→2314, authoritative)
+  feed curated name→id. **No minting** — every champion existed. id_map
+  668→**716**, review queue 583→**535**, all 58 historic-champion rows linked,
+  40 spans seeded. `build_scoring_titles` resolves a `bsnpr_id` (64/68) →
+  the "Campeones de anotación" table renders a **Ficha** button. Deterministic;
+  `make verify` PASS, `make test` 169.
 - **Nav 12→8 tabs.** Inicio · La liga hoy · Historia · Equipos · Jugadores ·
   Consulta · Juega · Fuentes. `TABS` trimmed; `PANELS` = tab ids + `perfil`;
   `showTab`/`applyHash` gate on `PANELS.includes`. Perfil → a **gear button**
@@ -1711,11 +1724,18 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
       `bio.notes_es` surfaced as a "Reseña de bsnpr.com" blurb on the player
       card (`loadPlayerExtra`). Commits `9123a21`→`a67dc57`, all pushed + LIVE.
       **PHASE_3H fully closed** — identity_spine_spec Q3 done.
-   c. **Manual historic seed** (identity_spine_spec Q3; last, hand work). A
-      hand-built list for the ~50 historic scoring champions 1948–1970 and the
-      `lideres2000` surname-only leaders absent from the encyclopedia — the bulk
-      of the 346 "no canonical name match" rows. Seed file only; never edited
-      into `players_canonical` by code (D1).
+   c. **DONE (PHASE_3I, `historic_seed_spec.md`).** The scoring champions
+      1948–2004 were all already canonical, just unlinked (no `jugador.asp`
+      profile → no span). A title record is a per-season attestation:
+      `seed_historic_spans()` seeds `first/last_season` from title years,
+      `build_id_map` gains `name+season+title`, and `app/player_crosswalk.csv` +
+      `data/interim/player_historic_seed.csv` (Farmer→172, Simms→2314) feed
+      curated name→id. **No minting.** id_map 668→**716**, review queue
+      583→**535**, all 58 historic-champion rows linked;
+      `scoring_titles.json` gains a `bsnpr_id` (64/68) → Ficha link in the
+      "Campeones de anotación" table. Remaining Q3 lever = the `lideres2000`
+      bare-surname / truncated-name buckets (identity_spine_spec Q4), a
+      separate phase.
 4. **PHASE_3E parse follow-ups** — PBP + (if ever un-held) `gameinfo` metadata are
    separate parse targets (`game_data_spec` Q5/Q6). game↔franchise join (Q4).
    Box vs `player_season_stats_2001_2004` cross-check (Q7).

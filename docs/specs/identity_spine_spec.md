@@ -211,6 +211,15 @@ no observation is both mapped and queued.
    all present and no existing canonical matches; the id is flagged. Fuzzy /
    colliding cases still go to the review queue, never the spine — D1 intact.
    The ~50-champion manual seed remains as a later option.
+   **UPDATE — CLOSED (PHASE_3I, 2026-09-10) — `historic_seed_spec.md`.** Scoring
+   titles (`historic_scoring_champions` / `scoring_champions_reconciled`) are a
+   per-season league attestation: for a *unique* canonical name candidate they
+   corroborate the season (owner-approved). `seed_historic_spans()` seeds
+   `first_season`/`last_season` from title years, `build_id_map` gains
+   `match_method = name+season+title`, and `app/player_crosswalk.csv` +
+   `data/interim/player_historic_seed.csv` feed curated name→id resolution. No
+   minting — every champion was already canonical. id_map 668 → **716**, review
+   queue 583 → **535**, all 58 historic-champion rows now linked.
 4. **Truncated observation names** (`"Ayuso, Elias 'Lar"`, `"Morales, Mario
    'Qui"`) — the leader-table cell width clips them. A prefix-aware alias match
    (surname exact + given-name prefix) would resolve these safely when the

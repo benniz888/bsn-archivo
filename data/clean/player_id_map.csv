@@ -1,23 +1,62 @@
 obs_source,player_raw,club_raw,season,bsnpr_id,canonical_name,match_method,club_check,confidence
+historic_scoring_champions.csv,ADOLFO PORRATA,SAN JUAN,1967,10,"Porrata Doria, Adolfo",name+season_in_career,no_career_club,single-source
+historic_scoring_champions.csv,ANTHONY FARMER,PONCE,1999,172,"Farmer, Anthony",name+season_in_career,no_career_club,single-source
+historic_scoring_champions.csv,CARL SIMPSON,CAROLINA,2001,270,"Simpson, Carl",name+season_in_career,no_career_club,single-source
 historic_scoring_champions.csv,CARLOS ESCALERA,COAMO,2003,284,"Escalera Gonzalez, Carlos",name+season_in_career,confirms,single-source
 historic_scoring_champions.csv,CHRISTIAN DALMAU,SAN GERMAN,2004,382,"Dalmau Santana, Christian",name+season_in_career,confirms,single-source
+historic_scoring_champions.csv,DOMINGO GONZALEZ,SAN JUAN,1954,483,"Gonzalez, Domingo",name+season_in_career,no_career_club,single-source
 historic_scoring_champions.csv,EDDIE CASIANO,SAN GERMAN,1996,498,"Casiano Ojeda, Eddie",name+season_in_career,confirms,single-source
 historic_scoring_champions.csv,EDDIE CASIANO,SAN GERMAN,1997,498,"Casiano Ojeda, Eddie",name+season_in_career,confirms,single-source
+historic_scoring_champions.csv,EDGAR LEON,FAJARDO,1988,507,"León, Edgar",name+season+title,no_career_club,single-source
+historic_scoring_champions.csv,EDGAR LEON,FAJARDO,1990,507,"León, Edgar",name+season+title,no_career_club,single-source
+historic_scoring_champions.csv,EDWIN PELLOT,ISABELA,1991,553,"Pellot Rosa, Edwin",name+season+title,no_career_club,single-source
 historic_scoring_champions.csv,ELIAS AYUSO,SAN GERMAN,2002,574,"Ayuso Carrillo, Elias",name+season_in_career,confirms,single-source
+historic_scoring_champions.csv,EVELIO DROZ,BAYAMON,1959,655,"Droz Ramos, Evelio",name+season_in_career,no_career_club,single-source
+historic_scoring_champions.csv,FRANK CORTES,SAN JUAN,1971,745,"Cortes Quiñones, Frank",name+season_in_career,no_career_club,single-source
+historic_scoring_champions.csv,FUFI SANTORI,UPR,1952,1176,"Santori Coll, Jose",name+season_in_career,no_career_club,single-source
+historic_scoring_champions.csv,GEORGIE TORRES,FAJARDO,1977,788,"Torres Dougherty, George",name+season_in_career,no_career_club,single-source
+historic_scoring_champions.csv,GEORGIE TORRES,FAJARDO,1978,788,"Torres Dougherty, George",name+season_in_career,no_career_club,single-source
+historic_scoring_champions.csv,GEORGIE TORRES,FAJARDO,1979,788,"Torres Dougherty, George",name+season_in_career,no_career_club,single-source
+historic_scoring_champions.csv,GEORGIE TORRES,FAJARDO,1984,788,"Torres Dougherty, George",name+season_in_career,no_career_club,single-source
+historic_scoring_champions.csv,GEORGIE TORRES,FAJARDO,1985,788,"Torres Dougherty, George",name+season_in_career,no_career_club,single-source
+historic_scoring_champions.csv,GEORGIE TORRES,FAJARDO,1986,788,"Torres Dougherty, George",name+season_in_career,no_career_club,single-source
+historic_scoring_champions.csv,GEORGIE TORRES,FAJARDO,1987,788,"Torres Dougherty, George",name+season_in_career,no_career_club,single-source
+historic_scoring_champions.csv,JAIME FRONTERA,ARECIBO,1966,974,"Frontera Colley, Jaime",name+season_in_career,no_career_club,single-source
+historic_scoring_champions.csv,JIM MALDONADO,ARECIBO,1983,1046,"Maldonado Chabot, Jim",name+season_in_career,no_career_club,single-source
 historic_scoring_champions.csv,JOEL CURBELO,CAROLINA,1995,1063,"Curbelo Melendez, Joel",name+season_in_career,confirms,single-source
+historic_scoring_champions.csv,JOHNNY BAEZ,RIO PIEDRAS,1957,1088,"Baez, Johnny",name+season_in_career,no_career_club,single-source
+historic_scoring_champions.csv,JOHNNY BAEZ,RIO PIEDRAS,1961,1088,"Baez, Johnny",name+season_in_career,no_career_club,single-source
+historic_scoring_champions.csv,JOHNNY BAEZ,SANTURCE,1964,1088,"Baez, Johnny",name+season_in_career,no_career_club,single-source
+historic_scoring_champions.csv,MARIO MORALES,GUAYNABO,1980,1584,"Morales Micheo, Mario",name+season_in_career,no_career_club,single-source
+historic_scoring_champions.csv,MARIO MORALES,GUAYNABO,1993,1584,"Morales Micheo, Mario",name+season_in_career,no_career_club,single-source
+historic_scoring_champions.csv,MARTIN ANZA,BAYAMON,1963,1594,"Anza, Martin",name+season_in_career,no_career_club,single-source
 historic_scoring_champions.csv,NEFTALI RIVERA,QUEBRADILLAS,1969,1698,"Rivera Olivera, Neftali",name+season_in_career,confirms,single-source
 historic_scoring_champions.csv,NEFTALI RIVERA,QUEBRADILLAS,1973,1698,"Rivera Olivera, Neftali",name+season_in_career,confirms,single-source
 historic_scoring_champions.csv,ORLANDO VEGA,QUEBRADILLAS,1994,1759,"Vega Smith, Orlando",name+season_in_career,confirms,single-source
 historic_scoring_champions.csv,ORLANDO VEGA,QUEBRADILLAS,1998,1759,"Vega Smith, Orlando",name+season_in_career,confirms,single-source
+historic_scoring_champions.csv,PACHIN VICENS,PONCE,1958,1327,"Vicens Sastre, Juan",name+season_in_career,no_career_club,single-source
+historic_scoring_champions.csv,RAFAEL VALLE,SAN JUAN,1956,1892,"Valle, Rafael",name+season_in_career,no_career_club,single-source
+historic_scoring_champions.csv,RAUL FELICIANO,UPR,1948,1943,"Feliciano Rodriguez, Raul",name+season_in_career,no_career_club,single-source
+historic_scoring_champions.csv,RAUL FELICIANO,UPR,1949,1943,"Feliciano Rodriguez, Raul",name+season_in_career,no_career_club,single-source
+historic_scoring_champions.csv,RAUL FELICIANO,UPR,1950,1943,"Feliciano Rodriguez, Raul",name+season_in_career,no_career_club,single-source
+historic_scoring_champions.csv,RAUL FELICIANO,UPR,1951,1943,"Feliciano Rodriguez, Raul",name+season_in_career,no_career_club,single-source
+historic_scoring_champions.csv,RAUL FELICIANO,UPR,1952,1943,"Feliciano Rodriguez, Raul",name+season_in_career,no_career_club,single-source
+historic_scoring_champions.csv,RAUL FELICIANO,UPR,1953,1943,"Feliciano Rodriguez, Raul",name+season_in_career,no_career_club,single-source
+historic_scoring_champions.csv,RAUL FELICIANO,RIO PIEDRAS,1955,1943,"Feliciano Rodriguez, Raul",name+season_in_career,no_career_club,single-source
 historic_scoring_champions.csv,RAYMOND DALMAU,QUEBRADILLAS,1968,1962,"Dalmau Perez, Raymond",name+season_in_career,confirms,single-source
 historic_scoring_champions.csv,RAYMOND DALMAU,QUEBRADILLAS,1970,1962,"Dalmau Perez, Raymond",name+season_in_career,confirms,single-source
 historic_scoring_champions.csv,RAYMOND DALMAU,QUEBRADILLAS,1974,1962,"Dalmau Perez, Raymond",name+season_in_career,confirms,single-source
 historic_scoring_champions.csv,RICHIE PIETRI,SAN GERMAN,1965,2024,"Pietri Villanueva, Richard",name+season_in_career,confirms,single-source
+historic_scoring_champions.csv,ROLANDO FRAZER,AIBONITO,1981,2089,"Frazer Thorne, Rolando",name+season_in_career,no_career_club,single-source
+historic_scoring_champions.csv,ROLANDO FRAZER,AIBONITO,1982,2089,"Frazer Thorne, Rolando",name+season_in_career,no_career_club,single-source
 historic_scoring_champions.csv,SAMMY BETANCOURT,SAN JUAN,1972,2147,"Betancourt Fernandez, Samuel",name+season_in_career,contradicts,single-source
 historic_scoring_champions.csv,SAMMY BETANCOURT,SAN JUAN,1975,2147,"Betancourt Fernandez, Samuel",name+season_in_career,contradicts,single-source
 historic_scoring_champions.csv,SAMMY BETANCOURT,SAN JUAN,1976,2147,"Betancourt Fernandez, Samuel",name+season_in_career,contradicts,single-source
+historic_scoring_champions.csv,TEO CRUZ,SANTURCE,1960,2200,"Cruz Downs, Teofilo",name+season_in_career,no_career_club,single-source
+historic_scoring_champions.csv,TEO CRUZ,SANTURCE,1962,2200,"Cruz Downs, Teofilo",name+season_in_career,no_career_club,single-source
 historic_scoring_champions.csv,WESLEY CORREA,MOROVIS,1989,2278,"Correa Crump, Wesley",name+season_in_career,confirms,single-source
 historic_scoring_champions.csv,WESLEY CORREA,MOROVIS,1992,2278,"Correa Crump, Wesley",name+season_in_career,confirms,single-source
+historic_scoring_champions.csv,WILLIE SIMMS,MOROVIS,2000,2314,"Simms, William",name+season_in_career,no_career_club,single-source
 player_season_leaders.csv,"Agbai, Uka","Cariduros, Fajardo",2007,2394,"Agbai, Uka",name+season_in_career,confirms,single-source
 player_season_leaders.csv,"Agbai, Uka",Cariduros,2008,2394,"Agbai, Uka",name+season_in_career,confirms,single-source
 player_season_leaders.csv,"Akindele, Jeleel",,2018,13035,"Akindele, Jeleel",name+season_in_career,no_obs_club,single-source
@@ -42,6 +81,8 @@ player_season_leaders.csv,"Ayuso, Larry",Cangrejeros,2008,574,"Ayuso Carrillo, E
 player_season_leaders.csv,"Ayuso, Larry",Cangrejeros,2009,574,"Ayuso Carrillo, Elias",name+season_in_career,confirms,single-source
 player_season_leaders.csv,"Ayuso, Larry",Capitanes,2010,574,"Ayuso Carrillo, Elias",name+season_in_career,confirms,single-source
 player_season_leaders.csv,"Balkman, Renaldo",Capitanes,2014,2849,"Balkman, Renaldo",name+season_in_career,confirms,single-source
+player_season_leaders.csv,"Bass, Paris",Atleticos,2020,13271,"Bass, Paris",name+season_in_career,no_career_club,single-source
+player_season_leaders.csv,"Bass, Paris",Atleticos,2021,13271,"Bass, Paris",name+season_in_career,no_career_club,single-source
 player_season_leaders.csv,"Beard, Tanoka",Cariduros,2008,2490,"Beard, Tanoka",name+season_in_career,confirms,single-source
 player_season_leaders.csv,"Benson, Lee",Vaqueros,2008,1429,"Benson, Lee",name+season_in_career,confirms,single-source
 player_season_leaders.csv,"Benson, Lee",Gigantes,2009,1429,"Benson, Lee",name+season_in_career,contradicts,single-source
@@ -269,6 +310,7 @@ player_season_leaders.csv,"Rodriguez, Erick",Brujos,2012,624,"Rodriguez Mandes, 
 player_season_leaders.csv,"Rodriguez, Erick",Brujos,2013,624,"Rodriguez Mandes, Erick",name+season_in_career,confirms,single-source
 player_season_leaders.csv,"Rodriguez, Joey",Atleticos,2012,2698,"Rodriguez, Joey",name+season_in_career,confirms,single-source
 player_season_leaders.csv,"Rodriguez, Jonathan",,2018,2516,"Rodriguez, Jonathan",name+season_in_career,no_obs_club,single-source
+player_season_leaders.csv,"Rodriguez, Jose G.",Brujos,2020,13055,"Rodriguez, Jose G.",name+season+title,no_career_club,single-source
 player_season_leaders.csv,"Rodriguez, Ruben",Vaqueros,1986,2113,"Rodriguez Leon, Ruben",name+season_in_career,confirms,single-source
 player_season_leaders.csv,"Romero, Ismael",,2018,13064,"Romero Fernandez, Ismael",name+season_in_career,no_obs_club,single-source
 player_season_leaders.csv,"Rosario, Jose R.",,2007,1272,"Rosario Amaro, Jose R.",name+season_in_career,no_obs_club,single-source
@@ -301,8 +343,12 @@ player_season_leaders.csv,"Soto, Joseph R.",Vaqueros,2018,13011,"Soto Rivera, Jo
 player_season_leaders.csv,"Strong, Carlos",Atleticos,2012,2647,"Strong, Carlos",name+season_in_career,confirms,single-source
 player_season_leaders.csv,"Strong, Carlos",Atleticos,2013,2647,"Strong, Carlos",name+season_in_career,confirms,single-source
 player_season_leaders.csv,"Strong, Carlos",Atleticos,2014,2647,"Strong, Carlos",name+season_in_career,confirms,single-source
+player_season_leaders.csv,"Suero, Gerardo",Vaqueros,2019,13209,"Suero, Gerardo",name+season_in_career,no_career_club,single-source
+player_season_leaders.csv,"Suero, Gerardo",Cariduros,2020,13209,"Suero, Gerardo",name+season_in_career,no_career_club,single-source
+player_season_leaders.csv,"Terry, Reyshawn",,2018,13000,"Terry, Reyshawn",name+season_in_career,no_obs_club,single-source
 player_season_leaders.csv,"Thornton, Al",Brujos,2012,2740,"Thornton, Al",name+season_in_career,confirms,single-source
 player_season_leaders.csv,"Thornton, Al",Brujos,2014,2740,"Thornton, Al",name+season_in_career,confirms,single-source
+player_season_leaders.csv,"Torres, George",Cariduros,1986,788,"Torres Dougherty, George",name+season_in_career,no_career_club,single-source
 player_season_leaders.csv,"Torruellas, Frank",Gallitos,1986,751,"Torruellas Kortright, Frank",name+season_in_career,no_obs_club,single-source
 player_season_leaders.csv,"Traylor, Robert",,2007,2424,"Traylor, Robert",name+season_in_career,no_obs_club,single-source
 player_season_leaders.csv,"Traylor, Robert",Cangrejeros,2008,2424,"Traylor, Robert",name+season_in_career,confirms,single-source
@@ -392,6 +438,7 @@ player_season_leaders_2000_2002.csv,"Santiago, Edwin",SANTU,2001,555,"Santiago R
 player_season_leaders_2000_2002.csv,"Santiago, Edwin",SANTU,2002,555,"Santiago Rivera, Edwin",name+season_in_career,confirms,single-source
 player_season_leaders_2000_2002.csv,"Santiago, Orlando",SANTU,2001,1760,"Santiago Cordero, Orlando",name+season_in_career,confirms,single-source
 player_season_leaders_2000_2002.csv,"Santiago, Orlando",SANTU,2002,1760,"Santiago Cordero, Orlando",name+season_in_career,confirms,single-source
+player_season_leaders_2000_2002.csv,"Simpson, Carl",CAROL,2001,270,"Simpson, Carl",name+season_in_career,no_career_club,single-source
 player_season_leaders_2000_2002.csv,"Travieso, Carmelo",BAYAM,2001,344,"Travieso Peña, Carmelo",name+season_in_career,confirms,single-source
 player_season_leaders_2000_2002.csv,"Travieso, Carmelo",BAYAM,2002,344,"Travieso Peña, Carmelo",name+season_in_career,confirms,single-source
 player_season_leaders_2000_2002.csv,"Vazquez, De Juan",ISABE,2002,461,"Vazquez Woodley, De Juan",name+season_in_career,confirms,single-source
@@ -638,6 +685,7 @@ player_season_stats_2001_2004.csv,"Santiago, O.",Cangrejeros de Santurce,2001,17
 player_season_stats_2001_2004.csv,"Santiago, O.",Cangrejeros de Santurce,2003,1760,"Santiago Cordero, Orlando",name+season_in_career,confirms,single-source
 player_season_stats_2001_2004.csv,"Santiago, R.",Brujos de Guayama,2001,2000,"Santiago Acosta, Ricardo",name+season_in_career,confirms,single-source
 player_season_stats_2001_2004.csv,"Santiago, R.",Capitanes de Arecibo,2002,2000,"Santiago Acosta, Ricardo",name+season_in_career,confirms,single-source
+player_season_stats_2001_2004.csv,"Simpson, C.",Gigantes de Carolina,2001,270,"Simpson, Carl",name+season_in_career,no_career_club,single-source
 player_season_stats_2001_2004.csv,"Soto, E.",Indios de Mayaguez,2001,651,"Soto Diaz, Eugenio Felipe",name+season_in_career,confirms,single-source
 player_season_stats_2001_2004.csv,"Soto, E.",Leones de Ponce,2001,651,"Soto Diaz, Eugenio Felipe",name+season_in_career,confirms,single-source
 player_season_stats_2001_2004.csv,"Soto, E.",Titanes de Morovis,2001,651,"Soto Diaz, Eugenio Felipe",name+season_in_career,contradicts,single-source

@@ -19,6 +19,13 @@ Outputs (all PC3-complete):
   data/interim/player_review_queue.csv  everything that did not — ambiguous or
     name-only matches, with the candidate ids and the reason.
 
+Curated inputs (hand-maintained, consulted by the build):
+  data/interim/jug05_xwalk.csv / jugador05_xwalk.csv  nickname bridges (PHASE_3H)
+  data/interim/player_dob_overrides.csv  birth-date corrections (PHASE_3H)
+  data/interim/player_historic_seed.csv + app/player_crosswalk.csv  curated
+    name→id for the 1948–2004 scoring champions (PHASE_3I); scoring titles seed
+    `first_season`/`last_season` and corroborate via `match_method=name+season+title`.
+
 D1 rules enforced:
   - canonical ids are the league's own (`?id=N`) — no fuzzy dedup *within* the
     canonical table.
@@ -920,6 +927,102 @@ def _load_observations() -> list[dict]:
     return list(uniq.values())
 
 
+# --------------------------------------------------------------------------- #
+# PHASE_3I — historic scoring-title seed                                        #
+# --------------------------------------------------------------------------- #
+# The 1948–1971 scoring champions are all in `players_canonical` but have no
+# `jugador.asp` profile, so `build_id_map` has no career span to test a season
+# against and parks them in review. bsnpr.com's own records page names them the
+# season's scoring champion — an authoritative per-season attestation (owner-
+# approved as corroboration for a *unique* name candidate, D1-compatible).
+
+_TITLE_FILES = [
+    ("historic_scoring_champions.csv", ["player_raw"]),
+    ("scoring_champions_reconciled.csv",
+     ["ppg_champion", "total_points_champion", "historic_player",
+      "leaders_player", "seed_player"]),
+]
+
+
+def _title_seasons() -> dict[str, set[int]]:
+    """norm_key(champion name) -> {season} across the scoring-title records."""
+    out: dict[str, set[int]] = defaultdict(set)
+    for fname, cols in _TITLE_FILES:
+        fp = CLEAN_DIR / fname
+        if not fp.exists():
+            continue
+        with fp.open(encoding="utf-8") as fh:
+            for r in csv.DictReader(fh):
+                sy = r.get("season", "")
+                if not re.fullmatch(r"\d{4}", sy):
+                    continue
+                for col in cols:
+                    nm = squish(r.get(col, ""))
+                    if nm:
+                        out[norm_key(nm)].add(int(sy))
+    return out
+
+
+def _crosswalk_name_ids() -> list[tuple[str, str]]:
+    """(name, bsnpr_id) from the owner-curated `app/player_crosswalk.csv`
+    (verdict auto/review, id present). **Additive** — an extra alias that can
+    resolve a "no name match" row; it never overrides an existing candidate."""
+    xw = REPO_ROOT / "app" / "player_crosswalk.csv"
+    if not xw.exists():
+        return []
+    with xw.open(encoding="utf-8") as fh:
+        return [(r["curated_name"], r["bsnpr_id"]) for r in csv.DictReader(fh)
+                if r.get("bsnpr_id") and r.get("verdict") in ("auto", "review")]
+
+
+def _historic_seed_ids() -> list[tuple[str, str]]:
+    """(observed_name, bsnpr_id) from `data/interim/player_historic_seed.csv`.
+    **Authoritative** — a hand-curated resolution that replaces the candidate set
+    (used for the dup-canonical champion rows the auto matcher can't split)."""
+    seed = INTERIM_DIR / "player_historic_seed.csv"
+    if not seed.exists():
+        return []
+    with seed.open(encoding="utf-8") as fh:
+        return [(r["observed_name"], r["bsnpr_id"])
+                for r in csv.DictReader(fh) if r.get("bsnpr_id")]
+
+
+def seed_historic_spans(canon: list[dict], aliases: list[dict]) -> int:
+    """Extend `first_season`/`last_season` on a canonical row when a scoring-title
+    record uniquely names it — so `build_id_map` can then corroborate the
+    observation, and the app can show the years we can document the player active.
+    Runs before `build_id_map`; mutates `canon` in place."""
+    by_pid = {c["bsnpr_id"]: c for c in canon}
+    alias_idx: dict[str, set[str]] = defaultdict(set)
+    key_idx: dict[str, set[str]] = defaultdict(set)
+    for a in aliases:
+        alias_idx[a["normalized_alias"]].add(a["bsnpr_id"])
+        key_idx[norm_key(a["alias"])].add(a["bsnpr_id"])
+    for c in canon:
+        key_idx[norm_key(c["canonical_name"])].add(c["bsnpr_id"])
+    for nm, pid in _crosswalk_name_ids():
+        if pid in by_pid:
+            alias_idx[normalize(nm)].add(pid)
+            key_idx[norm_key(nm)].add(pid)
+    seed_override = {norm_key(nm): pid for nm, pid in _historic_seed_ids() if pid in by_pid}
+
+    seeded = 0
+    for nk, seasons in _title_seasons().items():
+        cands = {seed_override[nk]} if nk in seed_override else key_idx.get(nk)
+        if not cands or len(cands) != 1:
+            continue
+        c = by_pid[next(iter(cands))]
+        lo = min([*seasons, int(c["first_season"])] if c["first_season"] else seasons)
+        hi = max([*seasons, int(c["last_season"])] if c["last_season"] else seasons)
+        if (str(lo), str(hi)) != (c["first_season"], c["last_season"]):
+            c["first_season"], c["last_season"] = str(lo), str(hi)
+            # n_seasons stays as-is: a title run is not a season count, and we
+            # have no record of how many seasons these players actually played.
+            seeded += 1
+    print(f"[historic-seed] {seeded} canonical career spans seeded/extended from scoring titles")
+    return seeded
+
+
 def build_id_map(canon: list[dict], aliases: list[dict],
                  career: list[dict]) -> tuple[list[dict], list[dict]]:
     by_pid = {c["bsnpr_id"]: c for c in canon}
@@ -931,6 +1034,14 @@ def build_id_map(canon: list[dict], aliases: list[dict],
         key_idx.setdefault(norm_key(a["alias"]), set()).add(a["bsnpr_id"])
     for c in canon:
         key_idx.setdefault(norm_key(c["canonical_name"]), set()).add(c["bsnpr_id"])
+    # PHASE_3I — the owner-curated crosswalk as an extra (additive) alias source
+    for nm, pid in _crosswalk_name_ids():
+        if pid in by_pid:
+            alias_idx.setdefault(normalize(nm), set()).add(pid)
+            key_idx.setdefault(norm_key(nm), set()).add(pid)
+    # …and the historic seed as an authoritative override of the candidate set
+    seed_override = {normalize(nm): pid for nm, pid in _historic_seed_ids() if pid in by_pid}
+    title_by_name = _title_seasons()
 
     career_by_pid: dict[str, set[int]] = {}
     for r in career:
@@ -952,7 +1063,10 @@ def build_id_map(canon: list[dict], aliases: list[dict],
 
     for o in _load_observations():
         pr, season = o["player_raw"], o["season"]
-        cands = alias_idx.get(normalize(pr), set()) or key_idx.get(norm_key(pr), set())
+        if normalize(pr) in seed_override:
+            cands = {seed_override[normalize(pr)]}
+        else:
+            cands = alias_idx.get(normalize(pr), set()) or key_idx.get(norm_key(pr), set())
         cands = set(cands)
         sy = int(season) if re.fullmatch(r"\d{4}", season) else None
         obs_fid = resolve_club(o["club_raw"])
@@ -989,11 +1103,24 @@ def build_id_map(canon: list[dict], aliases: list[dict],
         corroborated = {pid for pid in cands if in_career(pid)}
         club_hits = {pid for pid in corroborated if club_in_season(pid)}
 
+        # PHASE_3I: bsnpr.com's records name this player the season's scoring
+        # champion — a per-season attestation. Owner-approved corroboration for
+        # a *unique* name candidate (D1: not name alone).
+        title_ok = (sy is not None and len(cands) == 1
+                    and sy in title_by_name.get(norm_key(pr), set()))
+
         if len(corroborated) == 1:
             pid = next(iter(corroborated))
             mapped.append({**o, "bsnpr_id": pid,
                            "canonical_name": by_pid[pid]["canonical_name"],
                            "match_method": "name+season_in_career",
+                           "club_check": club_check(pid),
+                           "confidence": "single-source"})
+        elif title_ok:
+            pid = next(iter(cands))
+            mapped.append({**o, "bsnpr_id": pid,
+                           "canonical_name": by_pid[pid]["canonical_name"],
+                           "match_method": "name+season+title",
                            "club_check": club_check(pid),
                            "confidence": "single-source"})
         elif len(corroborated) > 1 and len(club_hits) == 1:
@@ -1048,6 +1175,7 @@ def main() -> int:
         r = merge_jugador05(canon, parse_jugador05(), dob_settled)   # enrich-only; never mints (D1)
         j05b_review, j05b_bios, j05b_dob = r["review_list"], r["bio_rows"], r["dob_conflicts"]
     aliases = build_aliases(canon, enc)   # after minting, so jug05 rows get aliases
+    seed_historic_spans(canon, aliases)   # PHASE_3I — title-attested career spans
     mapped, review = build_id_map(canon, aliases, career)
 
     _write_csv(CLEAN_DIR / "players_canonical.csv",

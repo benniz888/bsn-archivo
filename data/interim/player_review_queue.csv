@@ -1,5 +1,4 @@
 obs_source,player_raw,club_raw,season,candidate_ids,candidate_names,club_franchise_id,club_match_ids,reason
-historic_scoring_champions.csv,ANTHONY FARMER,PONCE,1999,171|172,"Farmer, Anthony | Farmer, Anthony",leones_ponce,,"multiple name candidates, none corroborated by season"
 player_season_stats_2001_2004.csv,"Acevedo, J.",Gallitos de Isabela,2001,1091|1132|2505,"Acevedo Medina, Jonathan | Acevedo, Jose | Acevedo, Jeffrey",gallitos_isabela,1091,"multiple name candidates, none corroborated by season"
 player_season_stats_2001_2004.csv,"Ayala, A.",Gigantes de Carolina,2001,2895|48|77,"Ayala Serrano, Angel | Ayala De jesus, Alexander | Ayala Delgado, Amaury",gigantes_carolina,,"multiple name candidates, none corroborated by season"
 player_season_leaders.csv,"Berdiel, Miguel Ali",Brujos,2019,1666|990001,"Berdiel Aponte, Miguel Ali | Berdiel, Miguel Alí",brujos_guayama,,"multiple name candidates, none corroborated by season"
@@ -9,7 +8,6 @@ player_season_stats_2001_2004.csv,"Colon, F.",Piratas de Quebradillas,2001,711|7
 player_season_leaders_2000_2002.csv,"Colon, Francisco",QUEBR,2002,711|737,"Colon Oquendo, Francisco | Colon Ortiz, Francisco",piratas_quebradillas,,"multiple name candidates, none corroborated by season"
 player_season_leaders.csv,"Cruz, Alvin",Vaqueros,2020,73|74,"Cruz, Alvin | Cruz Torres, Alvin",vaqueros_bayamon,73|74,"multiple name candidates, none corroborated by season"
 player_season_stats_2001_2004.csv,"Delgado, A.",Leones de Ponce,2001,155|177|178,"Delgado, Anibal | Delgado, Antonio | Delgado, Antonio",leones_ponce,,"multiple name candidates, none corroborated by season"
-historic_scoring_champions.csv,EDWIN PELLOT,ISABELA,1991,2388|553,"Pellot Rosa, Edwin | Pellot Rosa, Edwin",gallitos_isabela,,"multiple name candidates, none corroborated by season"
 player_season_stats_2001_2004.csv,"Farmer, A.",Criollos de Caguas,2001,171|172,"Farmer, Anthony | Farmer, Anthony",criollos_caguas,,"multiple name candidates, none corroborated by season"
 player_season_stats_2001_2004.csv,"Farmer, A.",Maratonistas de Coamo,2003,171|172,"Farmer, Anthony | Farmer, Anthony",maratonistas_coamo,,"multiple name candidates, none corroborated by season"
 player_season_leaders_2000_2002.csv,"Farmer, Tony",CAGUA,2001,171|172,"Farmer, Anthony | Farmer, Anthony",criollos_caguas,,"multiple name candidates, none corroborated by season"
@@ -69,7 +67,6 @@ player_season_stats_2001_2004.csv,"Soto, H.",Titanes de Morovis,2001,868|911,"So
 player_season_stats_2001_2004.csv,"Strickland, M.",Gigantes de Carolina,2002,1587|1588,"Strickland, Mark | Strickland, Mark",gigantes_carolina,,"multiple name candidates, none corroborated by season"
 player_season_stats_2001_2004.csv,"Torres, D.",Polluelos de Aibonito,2001,2363|459|480|490,"Torres Negron, Dario | Torres, Dax | Torres, Diego | Torres, Douglas",polluelos_aibonito,,"multiple name candidates, none corroborated by season"
 player_season_stats_2001_2004.csv,"Torres, G.",Gigantes de Carolina,2001,788|789|790,"Torres Dougherty, George | Torres Perez, George | Torres Rivera, George",gigantes_carolina,,"multiple name candidates, none corroborated by season"
-player_season_leaders.csv,"Torres, George",Cariduros,1986,788|789|790,"Torres Dougherty, George | Torres Perez, George | Torres Rivera, George",cariduros_fajardo,,"multiple name candidates, none corroborated by season"
 player_season_leaders.csv,"Vidot, Grimaldi",Capitanes,1986,826|827|990027,"Vidot Colon, Grimaldi | Vidot Hernandez, Grimaldi | Vidot, Grimaldi",capitanes_arecibo,826|990027,"multiple name candidates, none corroborated by season"
 player_season_stats_2001_2004.csv,"Alomar, H.",Toritos de Cayey,2002,910|990002,"Alomar Melero, Huascar | Alomar, Huascar",toritos_cayey,910|990002,multiple players match name + season span
 player_season_stats_2001_2004.csv,"Berdiel, M.",Maratonistas de Coamo,2001,1666|990001,"Berdiel Aponte, Miguel Ali | Berdiel, Miguel Alí",maratonistas_coamo,1666|990001,multiple players match name + season span
@@ -160,13 +157,6 @@ player_season_leaders.csv,"Figueroa, Angel Luis",Mets,2010,,,mets_guaynabo,,no c
 player_season_leaders.csv,"Figueroa, Angel Luis",Piratas,2012,,,piratas_quebradillas,,no canonical name match
 player_season_leaders.csv,"Figueroa, Angel Luis",Brujos,2013,,,brujos_guayama,,no canonical name match
 player_season_leaders.csv,"Fortuna, Manuel",Leones,2013,,,leones_ponce,,no canonical name match
-historic_scoring_champions.csv,GEORGIE TORRES,FAJARDO,1977,,,cariduros_fajardo,,no canonical name match
-historic_scoring_champions.csv,GEORGIE TORRES,FAJARDO,1978,,,cariduros_fajardo,,no canonical name match
-historic_scoring_champions.csv,GEORGIE TORRES,FAJARDO,1979,,,cariduros_fajardo,,no canonical name match
-historic_scoring_champions.csv,GEORGIE TORRES,FAJARDO,1984,,,cariduros_fajardo,,no canonical name match
-historic_scoring_champions.csv,GEORGIE TORRES,FAJARDO,1985,,,cariduros_fajardo,,no canonical name match
-historic_scoring_champions.csv,GEORGIE TORRES,FAJARDO,1986,,,cariduros_fajardo,,no canonical name match
-historic_scoring_champions.csv,GEORGIE TORRES,FAJARDO,1987,,,cariduros_fajardo,,no canonical name match
 player_season_leaders_2000_2002.csv,Goldston,ARECI,2000,,,capitanes_arecibo,,no canonical name match
 player_season_leaders.csv,"Green, Davin",Gallitos,2010,,,,,no canonical name match
 player_season_leaders.csv,"Han, Francis Jo",Criollos,2009,,,criollos_caguas,,no canonical name match
@@ -279,13 +269,11 @@ player_season_leaders.csv,"Vassallo, Angel Dani",Leones,2019,,,leones_ponce,,no 
 player_season_leaders.csv,"Vassallo, Ángel Dani",Leones,2020,,,leones_ponce,,no canonical name match
 player_season_leaders_2000_2002.csv,Vega,CAGUA,2000,,,criollos_caguas,,no canonical name match
 player_season_leaders.csv,"Vega, Christophe",Vaqueros,2008,,,vaqueros_bayamon,,no canonical name match
-historic_scoring_champions.csv,WILLIE SIMMS,MOROVIS,2000,,,titanes_morovis,,no canonical name match
 player_season_stats_2001_2004.csv,"Wiley, J.",Brujos de Guayama,2001,,,brujos_guayama,,no canonical name match
 player_season_leaders.csv,"Williams, Leon Verno",Cangrejeros,2013,,,cangrejeros_santurce,,no canonical name match
 player_season_leaders.csv,"Williams, Leon Verno",Cangrejeros,2014,,,cangrejeros_santurce,,no canonical name match
 player_season_leaders_2000_2002.csv,Wilson,COAMO,2000,,,maratonistas_coamo,,no canonical name match
 player_season_leaders_2000_2002.csv,"Wilson, Monti",AIBON,2001,,,polluelos_aibonito,,no canonical name match
-historic_scoring_champions.csv,ADOLFO PORRATA,SAN JUAN,1967,10,"Porrata Doria, Adolfo",capitalinos_san_juan,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Abreu, Alex",Santeros,2019,12998,"Abreu Vazquez, Alex",santeros_aguada,12998,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Abreu, Álex",Cariduros,2021,12998,"Abreu Vazquez, Alex",cariduros_fajardo,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Akindele, Jeleel",Vaqueros,2020,13035,"Akindele, Jeleel",vaqueros_bayamon,13035,"unique name match, season not in known career span (or player has no profile yet)"
@@ -306,8 +294,6 @@ player_season_stats_2001_2004.csv,"Aviles, L.",Gigantes de Carolina,2002,1530,"A
 player_season_leaders.csv,"Ballinger, Adam",,2007,2346,"Ballinger, Adam",,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_stats_2001_2004.csv,"Barnes, L.",Maratonistas de Coamo,2001,1417,"Barnes, Lamont",maratonistas_coamo,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_stats_2001_2004.csv,"Barrientos, A.",Capitanes de Arecibo,2001,234,"Barrientos Valle, Axel",capitanes_arecibo,,"unique name match, season not in known career span (or player has no profile yet)"
-player_season_leaders.csv,"Bass, Paris",Atleticos,2020,13271,"Bass, Paris",atleticos_san_german,,"unique name match, season not in known career span (or player has no profile yet)"
-player_season_leaders.csv,"Bass, Paris",Atleticos,2021,13271,"Bass, Paris",atleticos_san_german,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Belardo, Gabriel J.",Brujos,2020,2815,"Belardo Del Rio, Gabriel J.",brujos_guayama,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_stats_2001_2004.csv,"Benson, M.",Brujos de Guayama,2001,1590,"Benson Carrasco, Mark Anthony",brujos_guayama,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_stats_2001_2004.csv,"Benson, M.",Cangrejeros de Santurce,2001,1590,"Benson Carrasco, Mark Anthony",cangrejeros_santurce,,"unique name match, season not in known career span (or player has no profile yet)"
@@ -324,7 +310,6 @@ player_season_leaders.csv,"Branch, Onzie",Atleticos,2020,12969,"Branch, Onzie",a
 player_season_stats_2001_2004.csv,"Bravo, A.",Gallitos de Isabela,2001,228,"Bravo, Arturo",gallitos_isabela,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Brown, Ernest",,2007,633,"Brown Stubbs, Ernest",,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Burgess, Chris",,2012,374,"Burgess, Chris",,,"unique name match, season not in known career span (or player has no profile yet)"
-historic_scoring_champions.csv,CARL SIMPSON,CAROLINA,2001,270,"Simpson, Carl",gigantes_carolina,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_stats_2001_2004.csv,"Calderon, J.",Capitanes de Arecibo,2002,1237,"Calderon, Jose l.",capitanes_arecibo,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_stats_2001_2004.csv,"Calderon, Y.",Capitanes de Arecibo,2002,2333,"Calderon Sierra, Yorell",capitanes_arecibo,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_stats_2001_2004.csv,"Carrasquillo, A.",Criollos de Caguas,2001,196,"Carrasquillo Rivera, Antonio",criollos_caguas,,"unique name match, season not in known career span (or player has no profile yet)"
@@ -351,7 +336,6 @@ player_season_stats_2001_2004.csv,"Colon, P.",Capitanes de Arecibo,2002,1797,"Co
 player_season_leaders.csv,"Costner, Brandon",,2018,13045,"Costner, Brandon",,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_stats_2001_2004.csv,"Cotte, J.",Capitanes de Arecibo,2001,1077,"Cotte Martinez, John",capitanes_arecibo,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_stats_2001_2004.csv,"Cotte, J.",Toritos de Cayey,2002,1077,"Cotte Martinez, John",toritos_cayey,,"unique name match, season not in known career span (or player has no profile yet)"
-historic_scoring_champions.csv,DOMINGO GONZALEZ,SAN JUAN,1954,483,"Gonzalez, Domingo",capitalinos_san_juan,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_stats_2001_2004.csv,"Daily, K.",Titanes de Morovis,2003,1406,"Daily, Kevin",titanes_morovis,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Daniels, Will",Brujos,2020,12964,"Daniels, Will",brujos_guayama,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_stats_2001_2004.csv,"Davila, F.",Brujos de Guayama,2001,666,"Davila Ortiz, Felix",brujos_guayama,,"unique name match, season not in known career span (or player has no profile yet)"
@@ -365,9 +349,6 @@ player_season_leaders.csv,"Diaz, Guillermo",Cariduros,2021,2666,"Diaz, Guillermo
 player_season_stats_2001_2004.csv,"Dionisio, M.",Capitanes de Arecibo,2002,1644,"Dionisio Rivera, Miguel",capitanes_arecibo,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_stats_2001_2004.csv,"Domenech, I.",Cangrejeros de Santurce,2001,923,"Domenech, Irving",cangrejeros_santurce,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Duran, Cliff",Vaqueros,2021,2367,"Duran Colon, Cliff",vaqueros_bayamon,,"unique name match, season not in known career span (or player has no profile yet)"
-historic_scoring_champions.csv,EDGAR LEON,FAJARDO,1988,507,"León, Edgar",cariduros_fajardo,,"unique name match, season not in known career span (or player has no profile yet)"
-historic_scoring_champions.csv,EDGAR LEON,FAJARDO,1990,507,"León, Edgar",cariduros_fajardo,,"unique name match, season not in known career span (or player has no profile yet)"
-historic_scoring_champions.csv,EVELIO DROZ,BAYAMON,1959,655,"Droz Ramos, Evelio",vaqueros_bayamon,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_stats_2001_2004.csv,"Echevarria, A.",Brujos de Guayama,2001,209,"Echevarria Diaz, Armando",brujos_guayama,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_stats_2001_2004.csv,"Echevarria, A.",Leones de Ponce,2001,209,"Echevarria Diaz, Armando",leones_ponce,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_stats_2001_2004.csv,"Echevarria, A.",Maratonistas de Coamo,2002,209,"Echevarria Diaz, Armando",maratonistas_coamo,,"unique name match, season not in known career span (or player has no profile yet)"
@@ -376,8 +357,6 @@ player_season_leaders.csv,"Elonu, Chinemelu",Capitanes,2021,13031,"Elonu, Chinem
 player_season_leaders.csv,"Emory, Carlos",Piratas,2021,2838,"Emory, Carlos",piratas_quebradillas,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Erazo, Josue",Atleticos,2020,13233,"Erazo Torres, Josue",atleticos_san_german,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Ere, Ebi",Caciques,2014,2347,"Ere Bell, Ebi",caciques_humacao,,"unique name match, season not in known career span (or player has no profile yet)"
-historic_scoring_champions.csv,FRANK CORTES,SAN JUAN,1971,745,"Cortes Quiñones, Frank",capitalinos_san_juan,,"unique name match, season not in known career span (or player has no profile yet)"
-historic_scoring_champions.csv,FUFI SANTORI,UPR,1952,1176,"Santori Coll, Jose",gallitos_upr,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_stats_2001_2004.csv,"Facey, V.",Titanes de Morovis,2001,2233,"Facey Mendez, Vicente",titanes_morovis,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_stats_2001_2004.csv,"Facey, V.",Maratonistas de Coamo,2002,2233,"Facey Mendez, Vicente",maratonistas_coamo,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_stats_2001_2004.csv,"Facey, V.",Maratonistas de Coamo,2003,2233,"Facey Mendez, Vicente",maratonistas_coamo,,"unique name match, season not in known career span (or player has no profile yet)"
@@ -418,11 +397,6 @@ player_season_leaders_2000_2002.csv,"Higgs, Nate",CAROL,2002,1691,"Higgs, Nate",
 player_season_leaders.csv,"Hodge Jr., Walter",Capitanes,2021,2514,"Hodge Jr., Walter",capitanes_arecibo,2514,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Howard, Jordan",Brujos,2020,13200,"Howard, Jordan",brujos_guayama,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_stats_2001_2004.csv,"Howard, S.",Capitanes de Arecibo,2002,2181,"Howard, Stephen",capitanes_arecibo,,"unique name match, season not in known career span (or player has no profile yet)"
-historic_scoring_champions.csv,JAIME FRONTERA,ARECIBO,1966,974,"Frontera Colley, Jaime",capitanes_arecibo,,"unique name match, season not in known career span (or player has no profile yet)"
-historic_scoring_champions.csv,JIM MALDONADO,ARECIBO,1983,1046,"Maldonado Chabot, Jim",capitanes_arecibo,,"unique name match, season not in known career span (or player has no profile yet)"
-historic_scoring_champions.csv,JOHNNY BAEZ,RIO PIEDRAS,1957,1088,"Baez, Johnny",cardenales_rio_piedras,,"unique name match, season not in known career span (or player has no profile yet)"
-historic_scoring_champions.csv,JOHNNY BAEZ,RIO PIEDRAS,1961,1088,"Baez, Johnny",cardenales_rio_piedras,,"unique name match, season not in known career span (or player has no profile yet)"
-historic_scoring_champions.csv,JOHNNY BAEZ,SANTURCE,1964,1088,"Baez, Johnny",cangrejeros_santurce,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Jefferson, Cory",Atleticos,2020,13266,"Jefferson, Cory",atleticos_san_german,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Johnson, Daniel",Piratas,2014,12924,"Johnson, Daniel",piratas_quebradillas,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Jones, Joseph",Santeros,2019,2877,"Jones, Joseph",santeros_aguada,,"unique name match, season not in known career span (or player has no profile yet)"
@@ -441,9 +415,6 @@ player_season_leaders.csv,"Liz, Victor",Leones,2019,2778,"Liz, Victor",leones_po
 player_season_leaders.csv,"Liz, Víctor",Leones,2021,2778,"Liz, Victor",leones_ponce,2778,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_stats_2001_2004.csv,"Long, A.",Brujos de Guayama,2001,225,"Long, Art",brujos_guayama,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Lopez, Federico",Mets,1986,660,"Lopez Camacho, Federico",mets_guaynabo,,"unique name match, season not in known career span (or player has no profile yet)"
-historic_scoring_champions.csv,MARIO MORALES,GUAYNABO,1980,1584,"Morales Micheo, Mario",mets_guaynabo,,"unique name match, season not in known career span (or player has no profile yet)"
-historic_scoring_champions.csv,MARIO MORALES,GUAYNABO,1993,1584,"Morales Micheo, Mario",mets_guaynabo,,"unique name match, season not in known career span (or player has no profile yet)"
-historic_scoring_champions.csv,MARTIN ANZA,BAYAMON,1963,1594,"Anza, Martin",vaqueros_bayamon,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_stats_2001_2004.csv,"Machado, A.",Gallitos de Isabela,2001,13,"Machado Torres, Adrian",gallitos_isabela,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_stats_2001_2004.csv,"Machado, A.",Gallitos de Isabela,2002,13,"Machado Torres, Adrian",gallitos_isabela,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Malcom, Ernesto",Atleticos,1986,634,"Malcom, Ernesto",atleticos_san_german,,"unique name match, season not in known career span (or player has no profile yet)"
@@ -478,7 +449,6 @@ player_season_leaders.csv,"Ocasio, Jonathan",Grises,2021,12992,"Ocasio Tulloch, 
 player_season_leaders.csv,"Ofoegbu, Ike",Indios,2010,2634,"Ofoegbu, Ike",,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Ofoegbu, Ike",,2018,2634,"Ofoegbu, Ike",,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Ortiz, David",Capitanes,1986,454,"Ortiz Valle, David",capitanes_arecibo,,"unique name match, season not in known career span (or player has no profile yet)"
-historic_scoring_champions.csv,PACHIN VICENS,PONCE,1958,1327,"Vicens Sastre, Juan",leones_ponce,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Pacheco, Bradley",Maratonistas,1986,253,"Pacheco Nevares, Bradley",maratonistas_coamo,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Pacheco, Georgie",Brujos,2021,13275,"Pacheco Ortiz, Georgie",brujos_guayama,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Paige, Jaysean",Indios,2021,13280,"Paige, Jaysean",,,"unique name match, season not in known career span (or player has no profile yet)"
@@ -500,16 +470,6 @@ player_season_leaders.csv,"Powell, Josh",,2012,2756,"Powell, Josh",,,"unique nam
 player_season_leaders.csv,"Powell, Josh",Santeros,2018,2756,"Powell, Josh",santeros_aguada,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Putney, Raphiael",,2018,13162,"Putney, Raphiael",,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_stats_2001_2004.csv,"Quijano, F.",Gigantes de Carolina,2002,728,"Quijano Rivera, Francisco",gigantes_carolina,,"unique name match, season not in known career span (or player has no profile yet)"
-historic_scoring_champions.csv,RAFAEL VALLE,SAN JUAN,1956,1892,"Valle, Rafael",capitalinos_san_juan,,"unique name match, season not in known career span (or player has no profile yet)"
-historic_scoring_champions.csv,RAUL FELICIANO,UPR,1948,1943,"Feliciano Rodriguez, Raul",gallitos_upr,,"unique name match, season not in known career span (or player has no profile yet)"
-historic_scoring_champions.csv,RAUL FELICIANO,UPR,1949,1943,"Feliciano Rodriguez, Raul",gallitos_upr,,"unique name match, season not in known career span (or player has no profile yet)"
-historic_scoring_champions.csv,RAUL FELICIANO,UPR,1950,1943,"Feliciano Rodriguez, Raul",gallitos_upr,,"unique name match, season not in known career span (or player has no profile yet)"
-historic_scoring_champions.csv,RAUL FELICIANO,UPR,1951,1943,"Feliciano Rodriguez, Raul",gallitos_upr,,"unique name match, season not in known career span (or player has no profile yet)"
-historic_scoring_champions.csv,RAUL FELICIANO,UPR,1952,1943,"Feliciano Rodriguez, Raul",gallitos_upr,,"unique name match, season not in known career span (or player has no profile yet)"
-historic_scoring_champions.csv,RAUL FELICIANO,UPR,1953,1943,"Feliciano Rodriguez, Raul",gallitos_upr,,"unique name match, season not in known career span (or player has no profile yet)"
-historic_scoring_champions.csv,RAUL FELICIANO,RIO PIEDRAS,1955,1943,"Feliciano Rodriguez, Raul",cardenales_rio_piedras,,"unique name match, season not in known career span (or player has no profile yet)"
-historic_scoring_champions.csv,ROLANDO FRAZER,AIBONITO,1981,2089,"Frazer Thorne, Rolando",polluelos_aibonito,,"unique name match, season not in known career span (or player has no profile yet)"
-historic_scoring_champions.csv,ROLANDO FRAZER,AIBONITO,1982,2089,"Frazer Thorne, Rolando",polluelos_aibonito,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Ramos, Enrique",Cariduros,2019,13056,"Ramos Abad, Enrique",cariduros_fajardo,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Ramos, Ramon",,1986,1926,"Ramos Manso, Ramon",,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Reese, Derek",Cariduros,2020,13113,"Reese, Derek",cariduros_fajardo,,"unique name match, season not in known career span (or player has no profile yet)"
@@ -524,7 +484,6 @@ player_season_leaders.csv,"Rivera, Juan ramon",Leones,1986,1356,"Rivera Diaz, Ju
 player_season_stats_2001_2004.csv,"Rivera, O.",Capitanes de Arecibo,2001,1740,"Rivera Hernandez, Omar",capitanes_arecibo,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_stats_2001_2004.csv,"Rivera, O.",Capitanes de Arecibo,2002,1740,"Rivera Hernandez, Omar",capitanes_arecibo,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Rodriguez, Jose G.",Brujos,2019,13055,"Rodriguez, Jose G.",brujos_guayama,13055,"unique name match, season not in known career span (or player has no profile yet)"
-player_season_leaders.csv,"Rodriguez, Jose G.",Brujos,2020,13055,"Rodriguez, Jose G.",brujos_guayama,13055,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Rodriguez, Jose G.",Piratas,2021,13055,"Rodriguez, Jose G.",piratas_quebradillas,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Rodriguez, Wilfredo '",Capitanes,2020,13170,"Rodriguez Valentin, Wilfredo",capitanes_arecibo,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Rodríguez, Jonathan",Santeros,2020,2516,"Rodriguez, Jonathan",santeros_aguada,2516,"unique name match, season not in known career span (or player has no profile yet)"
@@ -541,22 +500,15 @@ player_season_leaders.csv,"Rudd, Victor",Cariduros,2021,13210,"Rudd, Victor",car
 player_season_leaders.csv,"Ruiz, Jared",Indios,2020,12942,"Ruiz Melendez, Jared",,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Russell, Walker",Piratas,2010,2620,"Russell Jr., Walker",piratas_quebradillas,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_stats_2001_2004.csv,"Simms, W.",Gallitos de Isabela,2002,2314,"Simms, William",gallitos_isabela,,"unique name match, season not in known career span (or player has no profile yet)"
-player_season_stats_2001_2004.csv,"Simpson, C.",Gigantes de Carolina,2001,270,"Simpson, Carl",gigantes_carolina,,"unique name match, season not in known career span (or player has no profile yet)"
-player_season_leaders_2000_2002.csv,"Simpson, Carl",CAROL,2001,270,"Simpson, Carl",gigantes_carolina,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Smith, Donta",Cangrejeros,2021,2569,"Smith, Donta",cangrejeros_santurce,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Smith, Russ",Cariduros,2020,13255,"Smith, Russ",cariduros_fajardo,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_stats_2001_2004.csv,"Soler, J.",Gallitos de Isabela,2002,1375,"Soler, Julio",gallitos_isabela,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Sosa, Jose",Mets,1986,1171,"Sosa Oliveras, Jose",mets_guaynabo,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Stockton, David",Mets,2021,13286,"Stockton, David",mets_guaynabo,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Suarez, Rasham",Indios,2019,12961,"Suarez Donis, Rasham",,,"unique name match, season not in known career span (or player has no profile yet)"
-player_season_leaders.csv,"Suero, Gerardo",Vaqueros,2019,13209,"Suero, Gerardo",vaqueros_bayamon,,"unique name match, season not in known career span (or player has no profile yet)"
-player_season_leaders.csv,"Suero, Gerardo",Cariduros,2020,13209,"Suero, Gerardo",cariduros_fajardo,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Suero, Gerardo",Grises,2021,13209,"Suero, Gerardo",,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Sweetney, Michael",Vaqueros,2012,2651,"Sweetney, Michael",vaqueros_bayamon,,"unique name match, season not in known career span (or player has no profile yet)"
-historic_scoring_champions.csv,TEO CRUZ,SANTURCE,1960,2200,"Cruz Downs, Teofilo",cangrejeros_santurce,,"unique name match, season not in known career span (or player has no profile yet)"
-historic_scoring_champions.csv,TEO CRUZ,SANTURCE,1962,2200,"Cruz Downs, Teofilo",cangrejeros_santurce,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Taylor, Tyshawn",,2014,2888,"Taylor, Tyshawn",,,"unique name match, season not in known career span (or player has no profile yet)"
-player_season_leaders.csv,"Terry, Reyshawn",,2018,13000,"Terry, Reyshawn",,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Terry, Reyshawn",Vaqueros,2020,13000,"Terry, Reyshawn",vaqueros_bayamon,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_stats_2001_2004.csv,"Thomas, A.",Capitanes de Arecibo,2002,21,"Thomas, Aki",capitanes_arecibo,,"unique name match, season not in known career span (or player has no profile yet)"
 player_season_leaders.csv,"Thompson, Deon",Leones,2021,13306,"Thompson, Deon",leones_ponce,,"unique name match, season not in known career span (or player has no profile yet)"

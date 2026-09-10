@@ -306,6 +306,14 @@ def build_scoring_titles() -> Path:
             lead[r["season"]] = r["club_raw"]
     resolve = _scoring_club_resolver()
 
+    # champion name + season -> bsnpr_id (PHASE_3I: historic champions now resolve)
+    champ_id: dict[tuple, int | None] = {}
+    for r in _read("player_id_map.csv"):
+        champ_id[(_norm(r["player_raw"]), r["season"])] = _int(r["bsnpr_id"])
+
+    def pid_for(name: str, season: str):
+        return champ_id.get((_norm(name or ""), season))
+
     def club_of(season: str, prefer_raw: str = "") -> tuple:
         raw = (prefer_raw or (seed[season]["club"] if season in seed else "")
                or (hist[season]["team_raw"] if season in hist else "")
@@ -325,17 +333,21 @@ def build_scoring_titles() -> Path:
             praw, pfid = club_of(s)
             rec["dual"] = {
                 "ppg": {"player": r["ppg_champion"], "value": _float(r["ppg_value"]),
-                        "club_raw": praw, "franchise_id": pfid},
+                        "club_raw": praw, "franchise_id": pfid,
+                        "bsnpr_id": pid_for(r["ppg_champion"], s)},
                 "total_points": {"player": r["total_points_champion"],
                                  "value": _int(r["total_points_value"]),
                                  "club_raw": (hist[s]["team_raw"] if s in hist else None),
-                                 "franchise_id": resolve(hist[s]["team_raw"]) if s in hist else None},
+                                 "franchise_id": resolve(hist[s]["team_raw"]) if s in hist else None,
+                                 "bsnpr_id": pid_for(r["total_points_champion"], s)},
             }
         else:
             craw, cfid = club_of(s)
+            cname = r["historic_player"] or r["seed_player"] or r["leaders_player"] or None
             rec["champion"] = {
-                "player": r["historic_player"] or r["seed_player"] or r["leaders_player"] or None,
+                "player": cname,
                 "club_raw": craw, "franchise_id": cfid,
+                "bsnpr_id": pid_for(cname, s),
                 "ppg": _float(r["historic_ppg"]) or _float(r["leaders_ppg"]),
                 "total_points": _int(r["historic_total"])
                 or (_int(r["seed_value"]) if r["metric_era"] == "total_points" else None),

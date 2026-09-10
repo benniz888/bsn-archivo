@@ -4,6 +4,7 @@ in `make verify`; these pin the value coercion, the crosswalk assert, and the
 deterministic JSON writer.
 """
 
+import csv
 import json
 
 import pytest
@@ -86,6 +87,13 @@ class TestBuild:
         resolved = sum(1 for r in st if (r["champion"] or {}).get("franchise_id")
                        or (r["dual"] or {}).get("ppg", {}).get("franchise_id"))
         assert resolved >= 0.9 * len(st)
+        # PHASE_3I — historic champions now carry a bsnpr_id (title attestation)
+        s48 = next(r for r in st if r["season"] == 1948)
+        assert s48["champion"]["player"] == "RAUL FELICIANO"
+        assert s48["champion"]["bsnpr_id"] == 1943
+        with_id = sum(1 for r in st if (r["champion"] or {}).get("bsnpr_id")
+                      or (r["dual"] or {}).get("ppg", {}).get("bsnpr_id"))
+        assert with_id >= 0.85 * len(st)
 
     def test_players_index(self):
         pl = json.loads((b.WEB / "index" / "players.json").read_text())
@@ -174,6 +182,21 @@ class TestBuild:
         idx = {x["id"] for x in json.loads((b.WEB / "index" / "players.json").read_text())}
         assert all(v in idx for v in xw.values())     # every target is a real id
         assert all(k == b._app_norm(k) for k in xw)   # keys already normalised
+
+    def test_historic_champion_seed(self):
+        # PHASE_3I — 1948-71 scoring champions: linked in the id map (title
+        # attestation) and their canonical career span seeded from title years.
+        idm = b._read("player_id_map.csv")
+        hist = [m for m in idm if m["obs_source"] == "historic_scoring_champions.csv"]
+        assert len(hist) >= 55                       # ~all 58 rows now mapped
+        assert all(m["bsnpr_id"] for m in hist)
+        rv = list(csv.DictReader(
+            (b.WEB.parents[1] / "data" / "interim" / "player_review_queue.csv").open()))
+        assert not [r for r in rv if r["obs_source"] == "historic_scoring_champions.csv"]
+        fel = next(r for r in b._read("players_canonical.csv") if r["bsnpr_id"] == "1943")
+        assert fel["first_season"] == "1948" and fel["last_season"] == "1955"
+        tor = next(r for r in b._read("players_canonical.csv") if r["bsnpr_id"] == "788")
+        assert (tor["first_season"], tor["last_season"]) == ("1977", "1987")  # Georgie Torres
 
     def test_season_detail_nulls_not_empties(self):
         s = json.loads((b.WEB / "seasons" / "1953.json").read_text())

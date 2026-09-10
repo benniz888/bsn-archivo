@@ -255,6 +255,15 @@ def verify_players(c: Checker) -> None:
         c.check(all(o["basis"] and o["confidence"] for o in ovr),
                 "player_dob_overrides: every row states a basis + confidence")
 
+    seed_path = REPO_ROOT / "data" / "interim" / "player_historic_seed.csv"
+    if seed_path.exists():
+        with seed_path.open(encoding="utf-8") as fh:
+            seed = list(csv.DictReader(fh))
+        c.check(all(s["bsnpr_id"] in canon_by_id for s in seed),
+                "player_historic_seed: every row targets a canonical id")
+        c.check(all(s["note"] and s["confidence"] for s in seed),
+                "player_historic_seed: every row states a note + confidence")
+
     aliases = _read("player_aliases.csv")
     canon_ids = set(ids)
     c.check(all(a["bsnpr_id"] in canon_ids for a in aliases),

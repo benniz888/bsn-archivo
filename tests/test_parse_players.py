@@ -174,3 +174,44 @@ class TestDobOverrides:
         assert canon[0]["birth_date"] == "1/11/1981" and canon[0]["birth_year"] == "1981"
         assert canon[1]["birth_date"] == "5/5/1985"   # stale old_dob -> not touched
         assert done == {"1", "2"}                     # both are "settled" for conflict-logging
+
+
+class TestHistoricSeed:
+    def test_title_uniquely_seeds_span(self, tmp_path, monkeypatch):
+        import src.parse_players as P
+        clean = tmp_path / "clean"; interim = tmp_path / "interim"; app = tmp_path / "app"
+        clean.mkdir(); interim.mkdir(); app.mkdir()
+        (clean / "historic_scoring_champions.csv").write_text(
+            "season,player_raw,team_raw\n1948,RAUL FELICIANO,UPR\n1955,RAUL FELICIANO,UPR\n"
+            "1999,ANTHONY FARMER,PONCE\n")
+        (clean / "scoring_champions_reconciled.csv").write_text(
+            "season,historic_player\n1948,RAUL FELICIANO\n")
+        (interim / "player_historic_seed.csv").write_text(
+            "observed_name,bsnpr_id,confidence,note\nANTHONY FARMER,172,low,dup pick\n")
+        (app / "player_crosswalk.csv").write_text(
+            "curated_name,bsnpr_id,verdict\n")
+        monkeypatch.setattr(P, "CLEAN_DIR", clean)
+        monkeypatch.setattr(P, "INTERIM_DIR", interim)
+        monkeypatch.setattr(P, "REPO_ROOT", tmp_path)
+        canon = [
+            {"bsnpr_id": "1943", "canonical_name": "Feliciano Rodriguez, Raul",
+             "first_season": "", "last_season": "", "n_seasons": ""},
+            {"bsnpr_id": "171", "canonical_name": "Farmer, Anthony",
+             "first_season": "", "last_season": "", "n_seasons": ""},
+            {"bsnpr_id": "172", "canonical_name": "Farmer, Anthony",
+             "first_season": "", "last_season": "", "n_seasons": ""},
+        ]
+        aliases = [
+            {"bsnpr_id": "1943", "alias": "Feliciano, Raul", "normalized_alias": "feliciano, raul"},
+            {"bsnpr_id": "171", "alias": "Farmer, Anthony", "normalized_alias": "farmer, anthony"},
+            {"bsnpr_id": "172", "alias": "Farmer, Anthony", "normalized_alias": "farmer, anthony"},
+        ]
+        n = P.seed_historic_spans(canon, aliases)
+        by = {c["bsnpr_id"]: c for c in canon}
+        assert (by["1943"]["first_season"], by["1943"]["last_season"]) == ("1948", "1955")
+        assert by["1943"]["n_seasons"] == ""                       # not a season count
+        # Farmer: two canonical rows share the name -> ambiguous, so the seed
+        # override picks 172 and only 172 gets the span
+        assert (by["172"]["first_season"], by["172"]["last_season"]) == ("1999", "1999")
+        assert by["171"]["first_season"] == ""
+        assert n == 2

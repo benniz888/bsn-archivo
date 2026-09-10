@@ -4591,8 +4591,12 @@ const DATASETS={
   },
   anotacion:{
     get label(){ return 'Campeones de anotación ('+(SCORING.length?SCORING[0][0]+'–'+SCORING[SCORING.length-1][0]:'')+')'; },
-    cols:[{label:'Año',num:true},{label:'Jugador',wide:true},{label:'Club',wide:true},{label:'Métrica'},{label:'Valor',num:true}],
-    rows:()=>SCORING.map(s=>[s[0],s[1],s[2],s[3]==='ppg'?'promedio':'total',s[4]]),
+    cols:[{label:'Año',num:true},
+      {label:'Jugador',wide:true,render:(v,r)=>r[5]!=null
+        ? `<button class="btn" style="padding:2px 8px;font-size:12px" onclick="showPlayer(${JSON.stringify(v).replace(/"/g,'&quot;')},${r[5]})">${esc(v)}</button>`
+        : esc(v)},
+      {label:'Club',wide:true},{label:'Métrica'},{label:'Valor',num:true}],
+    rows:()=>SCORING.map(s=>[s[0],s[1],s[2],s[3]==='ppg'?'promedio':'total',s[4],s[5]!=null?s[5]:null]),
     yearCol:0, clubCols:[2]
   },
   records:{
@@ -6596,7 +6600,7 @@ async function hydrate(){
       const c=s.dual?s.dual.ppg:s.champion; if(!c) continue;
       const metric=s.metric_era==='ppg'?'ppg':'total';
       const val=metric==='ppg'?(c.value!=null?c.value:c.ppg):c.total_points;
-      if(val!=null) rows.push([s.season,c.player,club(c,s.season),metric,val]);
+      if(val!=null) rows.push([s.season,c.player,club(c,s.season),metric,val,c.bsnpr_id!=null?c.bsnpr_id:null]);
     }
     rows.sort((a,b)=>a[0]-b[0]);
     SCORING.length=0; rows.forEach(r=>SCORING.push(r));
