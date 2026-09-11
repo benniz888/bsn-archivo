@@ -53,7 +53,8 @@
    from the league's own app and reserved for "happening now".
 
    The signature device is the tricolor rule — a 3px red/white/blue
-   bar. It marks the active tab and heads every major section, so
+   bar (one shared gradient, --tri). It marks the active tab, heads
+   every major section, and leads every player/team hero card, so
    the flag is structural rather than decorative.
    ============================================================ */
 :root{
@@ -72,6 +73,10 @@
   --rojo-deep:#8E1119;
   --blanco:#EEF3FB;
   --fuego:#FF6A1A;      /* live / in-progress only */
+  /* the tricolor rule's gradient, as one token — .tri and the nav active-tab
+     underline both read this instead of each carrying their own copy of the
+     same three stops (visual-motif pass, step A). */
+  --tri:linear-gradient(90deg,var(--rojo) 0 33.3%,var(--flag-w) 33.3% 66.6%,var(--azul) 66.6% 100%);
 
   /* text */
   --ink:#EEF3FB;
@@ -243,8 +248,7 @@ html.theming input,html.theming select,html.theming textarea{
              color var(--dur) linear!important}
 
 /* the tricolor rule — flag as structure */
-.tri{height:3px;border-radius:2px;
-  background:linear-gradient(90deg,var(--rojo) 0 33.3%,var(--flag-w) 33.3% 66.6%,var(--azul) 66.6% 100%)}
+.tri{height:3px;border-radius:2px;background:var(--tri)}
 /* On a light ground the flag's white stripe would read as a gap in
    the rule rather than as part of it, so it gets a hairline. */
 [data-theme="light"] .tri{box-shadow:inset 0 0 0 1px rgba(11,23,48,.10)}
@@ -443,7 +447,7 @@ nav.tabs button[aria-selected="true"]{color:var(--blanco);font-weight:800}
 nav.tabs button[aria-selected="true"]::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
   border-radius:2px 2px 0 0;transform-origin:center;
   animation:tabink var(--dur) var(--ease) both;
-  background:linear-gradient(90deg,var(--rojo) 0 33.3%,var(--flag-w) 33.3% 66.6%,var(--azul) 66.6% 100%)}
+  background:var(--tri)}
 @keyframes tabink{from{transform:scaleX(.15);opacity:0}to{transform:none;opacity:1}}
 @media(prefers-reduced-motion:reduce){nav.tabs button[aria-selected="true"]::after{animation:none}}
 
@@ -469,7 +473,11 @@ section[hidden]{display:none}
 .panel-enter>.panel,.panel.panel-enter{animation:panelin var(--dur) var(--ease) both}
 @media(prefers-reduced-motion:reduce){.panel-enter>.panel,.panel.panel-enter{animation:none}}
 .phead{margin-bottom:var(--sp-5)}
-.phead .tri{width:74px;margin-bottom:var(--sp-3)}
+/* .phero-tri: the same lead-in mark as a section phead, sized for the
+   player/team hero card instead (visual-motif pass, step A — the tricolor
+   previously appeared only once per section landing, never on the cards
+   themselves). */
+.phead .tri,.phero-tri{width:74px;margin-bottom:var(--sp-3)}
 h2.big{font-size:var(--fs-2xl);text-transform:uppercase;letter-spacing:.005em}
 .lede{color:var(--ink-2);max-width:70ch;font-size:var(--fs-sm);margin:var(--sp-2) 0 0}
 h3.sec{font-size:var(--fs-lg);margin:var(--sp-6) 0 var(--sp-3);text-transform:uppercase;letter-spacing:.015em;
@@ -3734,6 +3742,7 @@ function showTeam(k){
         : 'Sin título todavía, con '+f.ru.length+(f.ru.length===1?' final jugada':' finales jugadas')+' en el archivo.')
     : 'Sin finales registradas en el archivo.');
   host.innerHTML=`<div class="card" style="margin-top:22px;border-color:${f.c1}">
+    <div class="tri phero-tri"></div>
     <div class="phero">
       ${crest(k,58,70)}
       <div class="phero-body">
@@ -3994,6 +4003,7 @@ function showPlayer(name,id,season){
   else if(p.mvp){ bigN=p.mvp; bigL=p.mvp===1?'premio MVP':'premios MVP'; }
   else if(p.gp!=null){ bigN=num(p.gp); bigL='juegos en el archivo'; }
   host.innerHTML=`<div class="card" style="margin-top:18px;border-color:${c1}">
+    <div class="tri phero-tri"></div>
     <div class="phero">
       ${portrait(p.name,c1,c2,60,74)}
       <div class="phero-body">
