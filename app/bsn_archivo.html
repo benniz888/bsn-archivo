@@ -2828,7 +2828,15 @@ const CREST_ICONS={
 function crestSVG(k,w,h){
   const f=F[k]; if(!f) return '';
   const id='cg'+k+w;
-  const icon=f.art && CREST_ICONS[f.art] ? CREST_ICONS[f.art](f.c1,f.c2) : '';
+  /* Owner-reported bug (live screenshot, all 12 active teams): the icon
+     paths in CREST_ICONS were drawn at full shield scale (hat-to-legs on
+     the cowboy spans ~y9-100 of the 130-tall viewBox) and rendered with no
+     scale-down at all, so they crowded the abbreviation instead of leaving
+     it room. Wrapped in a scale transform around (56,44) so the icon
+     shrinks and sits higher, without touching a single path coordinate in
+     CREST_ICONS itself. */
+  const icon=f.art && CREST_ICONS[f.art]
+    ? `<g transform="translate(56,44) scale(.6) translate(-56,-44)">${CREST_ICONS[f.art](f.c1,f.c2)}</g>` : '';
   const abbrY=icon?116:74, abbrSize=icon?17:32;
   return `<svg width="${w}" height="${h}" viewBox="0 0 112 130" aria-hidden="true">
     <defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">
@@ -2878,10 +2886,19 @@ function portrait(name,c1,c2,w=54,h=66,pos){
   const id='pt'+slug(name);
   const ini=name.replace(/[«»]/g,'').split(/\s+/).filter(Boolean).slice(0,2).map(s=>s[0]).join('');
   const pose=posPose(pos);
+  /* the circle/body opacity used to be .55 — low enough that its visible
+     color is actually a blend with whatever's behind it (the page ground,
+     which flips light/dark with the theme), while the initials drawn on
+     top use a fixed team hex (c2). A team whose c2 happens to be dark
+     (San Germán #141414, Santurce #191919, ...) reads fine over the light-
+     theme blend and goes dark-on-dark over the dark-theme blend. Only the
+     shapes the text actually sits on need to be near-opaque to stop
+     depending on theme; the backdrop rect stays translucent for the
+     layered look, since no text sits on it. */
   const body=pose ? POSE_ICON[pose](c1,c2)
     : `<rect x="18" y="8" width="54" height="66" rx="5" fill="${c1}" opacity=".22"/>
-       <circle cx="45" cy="33" r="12" fill="${c1}" opacity=".55"/>
-       <path d="M24 74c2-14 10-20 21-20s19 6 21 20Z" fill="${c1}" opacity=".55"/>`;
+       <circle cx="45" cy="33" r="12" fill="${c1}" opacity=".92"/>
+       <path d="M24 74c2-14 10-20 21-20s19 6 21 20Z" fill="${c1}" opacity=".92"/>`;
   const ty=pose ? 29 : 38;
   const svg=`<svg width="${w}" height="${h}" viewBox="0 0 90 118" aria-hidden="true">
     ${body}
