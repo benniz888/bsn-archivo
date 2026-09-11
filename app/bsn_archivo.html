@@ -53,9 +53,10 @@
    from the league's own app and reserved for "happening now".
 
    The signature device is the tricolor rule — a 3px red/white/blue
-   bar (one shared gradient, --tri). It marks the active tab, heads
-   every major section, and leads every player/team hero card, so
-   the flag is structural rather than decorative.
+   bar (one shared gradient, --tri). It marks the active tab on both
+   desktop and mobile, heads every major section, leads every player/
+   team hero card, and — as a fading lead-in, --tri-fade — opens every
+   h3.sec divider, so the flag is structural rather than decorative.
    ============================================================ */
 :root{
   /* ground */
@@ -77,6 +78,12 @@
      underline both read this instead of each carrying their own copy of the
      same three stops (visual-motif pass, step A). */
   --tri:linear-gradient(90deg,var(--rojo) 0 33.3%,var(--flag-w) 33.3% 66.6%,var(--azul) 66.6% 100%);
+  /* step B — a lead-in variant for long hairlines (h3.sec's trailing rule):
+     tricolor for a short stretch sized like .tri itself, fading into the
+     ordinary line color for whatever length remains, so a rule that can run
+     600-900px on desktop doesn't read as three giant color blocks. px stops
+     (not %) so this works at any container width without per-instance math. */
+  --tri-fade:linear-gradient(90deg,var(--rojo) 0 14px,var(--flag-w) 14px 28px,var(--azul) 28px 42px,var(--line) 60px);
 
   /* text */
   --ink:#EEF3FB;
@@ -162,6 +169,12 @@
   --raise:#E1E9F5;      /* firmer table-header / chip tint against white cards */
   --line:#C3D2E8;       /* crisper gridlines (BR density) */
   --line-soft:#DDE6F3;
+  /* --tri-fade's middle stop swaps --flag-w for --line: at 1px tall there's
+     no room for .tri's usual hairline-border trick (an inset border that
+     size would just fill the whole line), so on a white card the white
+     stripe would vanish outright instead of merely needing a border. --line
+     is already the visible mid-tone this ground uses for every other rule. */
+  --tri-fade:linear-gradient(90deg,var(--rojo) 0 14px,var(--line) 14px 28px,var(--azul) 28px 42px,var(--line) 60px);
 
   --azul:#0F52B8;
   --azul-hi:#0A3E90;
@@ -251,7 +264,8 @@ html.theming input,html.theming select,html.theming textarea{
 .tri{height:3px;border-radius:2px;background:var(--tri)}
 /* On a light ground the flag's white stripe would read as a gap in
    the rule rather than as part of it, so it gets a hairline. */
-[data-theme="light"] .tri{box-shadow:inset 0 0 0 1px rgba(11,23,48,.10)}
+[data-theme="light"] .tri,
+[data-theme="light"] .bottombar button[aria-selected="true"]::before{box-shadow:inset 0 0 0 1px rgba(11,23,48,.10)}
 
 /* ---------- top bar ---------- */
 header.top{position:sticky;top:0;z-index:60;background:var(--scrim);
@@ -455,11 +469,18 @@ nav.tabs button[aria-selected="true"]::after{content:"";position:absolute;left:0
 .bottombar{position:fixed;left:0;right:0;bottom:0;z-index:70;display:flex;
   background:var(--scrim-bar);backdrop-filter:blur(14px);border-top:1px solid var(--line);
   padding-bottom:env(safe-area-inset-bottom)}
-.bottombar button{flex:1;background:none;border:0;color:var(--ink-3);display:flex;flex-direction:column;
+.bottombar button{position:relative;flex:1;background:none;border:0;color:var(--ink-3);display:flex;flex-direction:column;
   align-items:center;gap:3px;padding:9px 2px 8px;cursor:pointer;font-size:10.5px;font-weight:600}
 .bottombar button svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.7}
 .bottombar button[aria-selected="true"]{color:var(--blanco)}
 .bottombar button[aria-selected="true"] svg{stroke:var(--rojo)}
+/* step B — the bottom bar is a phone's *only* nav (nav.tabs, which already
+   carries this mark, is desktop-only), so the active tab gets the same
+   device the desktop underline uses, just relocated to the bar's top edge
+   instead of the button's own bottom. Icon tint stays — this sits alongside
+   it, not instead of it. */
+.bottombar button[aria-selected="true"]::before{content:"";position:absolute;top:0;left:8px;right:8px;
+  height:3px;border-radius:0 0 2px 2px;background:var(--tri)}
 @media(min-width:860px){.bottombar{display:none}}
 /* PHASE_8.2 — on a phone the bottom bar is the nav; the top tab row goes.
    header.top keeps its own bottom border as the separator. */
@@ -482,7 +503,7 @@ h2.big{font-size:var(--fs-2xl);text-transform:uppercase;letter-spacing:.005em}
 .lede{color:var(--ink-2);max-width:70ch;font-size:var(--fs-sm);margin:var(--sp-2) 0 0}
 h3.sec{font-size:var(--fs-lg);margin:var(--sp-6) 0 var(--sp-3);text-transform:uppercase;letter-spacing:.015em;
   display:flex;align-items:center;gap:var(--sp-3)}
-h3.sec::after{content:"";flex:1;height:1px;background:var(--line)}
+h3.sec::after{content:"";flex:1;height:1px;background:var(--tri-fade)}
 h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
 .note{color:var(--ink-3);font-size:var(--fs-2xs);line-height:1.5;margin-top:var(--sp-3)}
 .muted{color:var(--ink-2)}
