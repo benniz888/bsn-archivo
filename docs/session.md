@@ -89,6 +89,19 @@ de consultas"→**Consulta a la medida** (pill "A la medida"); hero btn "Ver las
 aparece…** (×2). Deferred: equipo/club/franquicia consistency sweep; the
 ownership-prose "dueño" instances (John Herrero / Yadier Molina / Bad Bunny).
 
+**Bugfix: black button text on dark cards** (Temporada Perfecta candidate
+picker, Sube y Baja choice cards). Root cause: `<button>` doesn't inherit
+`color` from the page by default (only `.btn`/`.chip`/etc. set their own);
+`.card` — reused as `<button class="card">` in both spots — never set
+`color` because it had only ever been used on `<div>`s before. Fixed at the
+root: `button{font:inherit}` → `+color:inherit` (global, systemic — protects
+any future class reused on a button) and `.card{...}` → `+color:inherit`
+(matches the existing `.tile{color:inherit}` precedent). Note: the owner's
+first diagnosis of this (a `.rec`/`.result`/`--surface`/`--bone` class
+collision) was based on a stale, untracked Desktop copy of the file, not
+this repo — that copy has no bearing on this codebase and was ignored.
+Harness: `scratchpad/button_color_harness.mjs`.
+
 Open threads:
 docs/project.md D2 refinement for the Grises/Caciques de Humacao split (D-045);
 the ~451-row review-queue long tail (needs an owner-curated crosswalk — Q1-Q4
