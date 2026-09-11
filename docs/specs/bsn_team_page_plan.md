@@ -1,5 +1,9 @@
 # Spec: Team page "time warp" — coliseo, rivalry, lore
 
+**Status: built, live, owner-verified** (`d6e9375`) — Guaynabo, Bayamón,
+Arecibo checked on desktop; coliseo data, rival lines, lore/fallback text
+all correct.
+
 Revises the original plan (kept below as history) with the owner's review
 answers + facts confirmed against the live repo and outside sources before
 writing any code.

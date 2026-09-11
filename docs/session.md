@@ -8,7 +8,9 @@
   router — #section/view URLs, subnav pill rail, folds retired**; **Inicio
   hero/hub + player/team cards + section landings + mega featured blocks
   rebuilt as StatMuse-style editorial** (`.ed-*`/`.phero`/`.landcard` +
-  spark/sparkBars/dotgrid/titleComb)
+  spark/sparkBars/dotgrid/titleComb) · LANG pass 1 (BSN/PR vernacular,
+  owner-reviewed and applied) · button-color bugfix · **team page "time
+  warp" DONE, LIVE, owner-verified** (coliseo data, rivalry, lore)
 **DATE:** 2026-09-11
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
@@ -102,7 +104,9 @@ collision) was based on a stale, untracked Desktop copy of the file, not
 this repo — that copy has no bearing on this codebase and was ignored.
 Harness: `scratchpad/button_color_harness.mjs`.
 
-**Team page "time warp"** (`docs/specs/bsn_team_page_plan.md`) — extends
+**Team page "time warp" — DONE, LIVE, owner-verified** (Guaynabo, Bayamón,
+Arecibo checked on desktop: coliseo data, rival lines, lore/fallback text
+all correct). `docs/specs/bsn_team_page_plan.md` — extends
 `showTeam()`'s existing `.phero` masthead (8.3b) rather than a new card.
 `VENUES` extended `[name,cap]`→`[name,cap,nickname,opened]` (both nullable);
 Guaynabo corrected — was `"Coliseo Fernando «Rube» Hernández"`, 3500 (wrong);
@@ -119,8 +123,9 @@ surfaces the top rival as its own line, reusing the same `opp`/`rivalKeys`
 the existing "careo" table is built from (never a second, divergent count);
 every club gets a lore line — `TEAM_LORE[k]` or a live-derived fallback
 sentence from `F[key]`, so none is ever empty. Old "Cancha" kv row dropped
-(folded into the richer `.phero-venue` line); zero new CSS — reuses
-`.phero-note`. Noted, not fixed (out of scope, confirmed dead/unread): a
+(folded into a richer coliseo line); zero new CSS — the venue/rival/lore
+lines all reuse the existing `.phero-note` class as-is, no new selector.
+Noted, not fixed (out of scope, confirmed dead/unread): a
 separate unused `ARENAS` array (~line 1333) still has its own stale
 Guaynabo row. Defunct franchises (Humacao included) deferred to a follow-up
 phase, gated on D-045. Harness: `scratchpad/phero_harness.mjs` (extended).
