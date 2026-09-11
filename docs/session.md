@@ -461,6 +461,44 @@ and published it as a third artifact so the owner can see the confirmed-
 deployed output directly: https://claude.ai/code/artifact/6ea21aff-c17b-423d-89d2-67ee6bf17b20.
 `make verify`/`make test` green, all 6 other harnesses green.
 
+**Round 2 — the actual bug, found after the owner caught the first "fix"
+not working.** Owner confirmed round 1's icon scale-down was genuinely
+live (screenshot matched the deployed transform), but Cangrejeros/Leones
+still visibly overlapped their text — meaning the icon was never the real
+cause. Re-derived the shield's own boundary geometrically instead of
+guessing: its lower edge is a cubic bezier (not a rectangle), and the
+abbreviation had sat at a fixed `y=116` since the very first version —
+independent of icon size. Computed the shield's real half-width at that
+height directly from the path's actual control points: **~9px** (~18px
+total) — nowhere near enough for a 3-letter abbreviation (~30-38px wide).
+The text was spilling past the shield's own tapered point on every icon-
+bearing crest the whole time; round 1's icon fix was real and correctly
+shipped, it just wasn't what the owner was seeing. Moved text to `y=105`
+(shield half-width there: ~30px, comfortable margin), `abbrSize` 17→16.
+`illustrated_figures_harness.mjs` extended to parse the shield's real
+bezier control points out of the live path string and binary-search its
+half-width at both y-positions, rather than hardcoding either number —
+confirmed this assertion **fails** against the round-1-only commit
+(`dc6e153`) before confirming it passes on the actual fix. Pushed
+(`5d045f7`).
+
+**A verification bug of my own, caught mid-check, worth recording**: my
+first live-check this round grepped the raw fetched HTML for the literal
+string `y="105"` — but `abbrY` is a JS template-literal variable in the
+source, never a literal number in the static file. That check could never
+have succeeded regardless of whether the deploy worked, and cost several
+minutes of false "not deployed yet" before I noticed the check itself was
+broken and switched back to the correct method (load the real
+`crestSVG`/`portrait` functions out of the fetched HTML and evaluate
+them, same as round 1). Once checked correctly: confirmed live
+immediately. Also mistakenly used `ScheduleWakeup` (a `/loop`-mode tool)
+to wait on a background poll outside of loop mode — caught and stopped
+before it did anything beyond one harmless autonomous-check tick.
+Final proof, built from a fresh fetch verified via real evaluation, not
+grep: https://claude.ai/code/artifact/a5fb4736-2e14-483b-8d2b-93c5c4ff3a96.
+`make verify`/`make test` green, all 6 other harnesses green, no
+regressions.
+
 Open threads:
 docs/project.md D2 refinement for the Grises/Caciques de Humacao split (D-045);
 the ~451-row review-queue long tail (needs an owner-curated crosswalk — Q1-Q4
