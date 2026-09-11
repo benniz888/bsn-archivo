@@ -1302,6 +1302,7 @@ const F = {
        art:"cangrejo",
        won:[1962,1968,1998,1999,2000,2001,2003,2007],ru:[1942,1951,1952,1964,2006]},
   are:{name:"Capitanes de Arecibo",abbr:"ARE",city:"Arecibo",founded:1946,active:1,c1:"#0E7C7B",c2:"#F2F2F2",colorSrc:"approx",
+       art:"ancla",
        won:[1959,2005,2008,2010,2011,2016,2018,2021],
        ru:[1932,1946,1948,1961,1966,1992,2007,2012,2014,2015,2017]},
   que:{name:"Piratas de Quebradillas",abbr:"QUE",city:"Quebradillas",founded:1926,active:1,c1:"#B3141F",c2:"#1A1A1A",colorSrc:"wiki",
@@ -1321,6 +1322,7 @@ const F = {
   agu:{name:"Santeros de Aguada",abbr:"AGU",city:"Aguada",founded:1992,active:1,c1:"#0C4DA2",c2:"#F0A81E",colorSrc:"approx",
        won:[2019],ru:[]},
   man:{name:"Osos de Manatí",abbr:"MAN",city:"Manatí",founded:2014,active:1,c1:"#7A4A22",c2:"#E4C07A",colorSrc:"approx",
+       art:"oso",
        won:[],ru:[2024]},
 
   cap:{name:"Capitalinos de San Juan",abbr:"SJ",city:"San Juan",founded:1930,active:0,end:1998,c1:"#8E1B3C",c2:"#E2C9A0",colorSrc:"approx",
@@ -1330,6 +1332,7 @@ const F = {
   veg:{name:"Vega Baja",abbr:"VB",city:"Vega Baja",founded:1934,active:0,end:1939,c1:"#2F6E8F",c2:"#EDE3D0",colorSrc:"approx",
        won:[1934,1937],ru:[1935,1939]},
   upr:{name:"Gallitos de la UPR",abbr:"UPR",city:"Río Piedras",founded:1944,active:0,end:1951,c1:"#4B7A2B",c2:"#F1E7B8",colorSrc:"approx",
+       art:"gallo",
        won:[1944,1951],ru:[1945]},
   cno:{name:"Indios de Canóvanas",abbr:"CAN",city:"Canóvanas",founded:1980,active:0,end:1996,c1:"#B65418",c2:"#2A2A2A",colorSrc:"approx",
        won:[1983,1984],ru:[1988]},
@@ -1344,6 +1347,7 @@ const F = {
   guy:{name:"Brujos de Guayama",abbr:"GUY",city:"Guayama",founded:1971,active:0,end:2022,c1:"#1A1A1A",c2:"#D4A63C",colorSrc:"wiki",
        won:[],ru:[1991,1994],note:"Bought in 2022 and relocated as the Osos de Manatí."},
   isa:{name:"Gallitos de Isabela",abbr:"ISA",city:"Isabela",founded:1969,active:0,end:2005,c1:"#9C1F5B",c2:"#F0E0C8",colorSrc:"approx",
+       art:"gallo",
        won:[],ru:[1984]},
   coa:{name:"Maratonistas de Coamo",abbr:"COA",city:"Coamo",founded:1985,active:0,end:2015,c1:"#2A6F97",c2:"#F2C14E",colorSrc:"approx",
        won:[],ru:[2004]},
@@ -1354,7 +1358,8 @@ const F = {
   vil:{name:"Avancinos de Villalba",abbr:"VIL",city:"Villalba",founded:1996,active:0,end:1998,c1:"#6B4E9E",c2:"#EDE4F5",colorSrc:"approx",won:[],ru:[]},
   cab:{name:"Taínos de Cabo Rojo",abbr:"CR",city:"Cabo Rojo",founded:1989,active:0,end:1993,c1:"#B5651D",c2:"#F2E2C4",colorSrc:"approx",won:[],ru:[],
        note:"The Indios de Mayagüez under a different name and city."},
-  agd:{name:"Tiburones de Aguadilla",abbr:"AGD",city:"Aguadilla",founded:1990,active:0,end:1998,c1:"#1C6E8C",c2:"#DCE9EF",colorSrc:"approx",won:[],ru:[],
+  agd:{name:"Tiburones de Aguadilla",abbr:"AGD",city:"Aguadilla",founded:1990,active:0,end:1998,c1:"#1C6E8C",c2:"#DCE9EF",colorSrc:"approx",
+       art:"tiburon",won:[],ru:[],
        note:"Merged with the Capitalinos in 1998 to revive the Cangrejeros."},
   con:{name:"Conquistadores de Aguada",abbr:"CON",city:"Aguada",founded:1994,active:0,end:1998,c1:"#8C6A1F",c2:"#F0E6C8",colorSrc:"approx",won:[],ru:[]},
   cay:{name:"Toritos de Cayey",abbr:"CAY",city:"Cayey",founded:2002,active:0,end:2004,c1:"#8C2F2F",c2:"#E8D2C0",colorSrc:"approx",won:[],ru:[]},
@@ -2824,6 +2829,27 @@ const CREST_ICONS={
     <g stroke="${c1}" stroke-width="1.2" opacity=".75">
       <line x1="40" y1="52" x2="30" y2="50"/><line x1="40" y1="56" x2="30" y2="57"/>
       <line x1="72" y1="52" x2="82" y2="50"/><line x1="72" y1="56" x2="82" y2="57"/></g>`,
+  /* Phase 2, batch 1 (owner-approved mockup) */
+  oso:(c1,c2)=>`<circle cx="43" cy="29" r="9" fill="${c2}"/><circle cx="69" cy="29" r="9" fill="${c2}"/>
+    <circle cx="56" cy="48" r="20" fill="${c2}"/>
+    <ellipse cx="56" cy="58" rx="11" ry="8" fill="${c1}"/>
+    <circle cx="49" cy="42" r="2.3" fill="${c1}"/><circle cx="63" cy="42" r="2.3" fill="${c1}"/>
+    <ellipse cx="56" cy="56" rx="2.6" ry="2" fill="${c2}"/>`,
+  gallo:(c1,c2)=>`<path d="M46 30Q48 18 52 28Q54 16 58 28Q62 16 64 30Z" fill="${c2}"/>
+    <circle cx="56" cy="42" r="16" fill="${c2}"/>
+    <path d="M70 44L84 40L70 52Z" fill="${c2}"/>
+    <path d="M58 54Q58 64 64 62Q60 58 58 54Z" fill="${c2}"/>
+    <circle cx="52" cy="40" r="2.3" fill="${c1}"/>`,
+  tiburon:(c1,c2)=>`<path d="M40 20L56 48L30 44Z" fill="${c2}"/>
+    <path d="M20 56Q30 40 60 44Q84 46 88 58Q80 66 60 66Q34 66 20 56Z" fill="${c2}"/>
+    <circle cx="70" cy="54" r="2.2" fill="${c1}"/>
+    <path d="M40 62L46 58L52 62L58 58L64 62L70 58L76 62" fill="none" stroke="${c1}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>`,
+  ancla:(c1,c2)=>`<path d="M50 12l6 10 6-10Z" fill="${c2}"/>
+    <path d="M50 20a6 6 0 1 0 12 0a6 6 0 1 0 -12 0" fill="none" stroke="${c2}" stroke-width="4"/>
+    <line x1="56" y1="26" x2="56" y2="72" stroke="${c2}" stroke-width="5"/>
+    <line x1="42" y1="38" x2="70" y2="38" stroke="${c2}" stroke-width="4"/>
+    <path d="M40 60c0 12 8 18 16 18" fill="none" stroke="${c2}" stroke-width="5" stroke-linecap="round"/>
+    <path d="M72 60c0 12-8 18-16 18" fill="none" stroke="${c2}" stroke-width="5" stroke-linecap="round"/>`,
 };
 function crestSVG(k,w,h){
   const f=F[k]; if(!f) return '';
