@@ -17,11 +17,10 @@
   item 1) DONE, LIVE, owner-verified** — steps A + B shipped, C stays
   parked (owner's call); Taíno sourcing pass done, research only, nothing
   built from it; **6-item visual/feature backlog in progress — item 2
-  (illustrated player/team figures) Phase 1 BUILT, LIVE, 3 owner-reported
-  bugs fixed and independently verified against the live deploy (curl +
-  harness run against the fetched HTML, not just local code) — pending
-  owner's own visual confirmation**, Phase 2 (12 more crest icons) queued,
-  one item at a time, plan→approve→build→verify each
+  (illustrated player/team figures) Phase 1 DONE, LIVE, owner-verified**
+  (2 real correction rounds, both fixed and confirmed against the live
+  deploy) — **Phase 2 batch 1 (oso/gallo×2/tiburón/ancla) mocked up,
+  awaiting approval**, one item at a time, plan→approve→build→verify each
 **DATE:** 2026-09-11
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
@@ -425,11 +424,25 @@ green — no regressions from touching `crestSVG`/`portrait`. Real shipped
 output (extracted straight from the edited functions, not hand-recreated)
 shown before commit: https://claude.ai/code/artifact/8370e839-0ca6-4c30-9639-9f74babf304c.
 
-**Phase 2 — not started.** 13 more D-eligible franchise names are queued
-(`are`→ancla, `que`→pirata, `car`→gigante, `man`→oso, `upr`+`isa`→gallo,
+**Phase 2, batch 1 — mockups shown, awaiting approval.** Owner: "Now move
+to Phase 2... Show me the first small batch — mockups, same review
+process as the crab/lion/cowboy round — before wiring any of them in
+live." First batch, deliberately spanning a range (mammal, a bird concept
+reused across 2 real palettes, a fish with jaw/teeth, a non-creature
+object) rather than repeating "animal with a face": `man`→oso (bear),
+`upr`+`isa`→gallo (rooster, same concept/shape, two real color pairs —
+tests concept reuse across teams), `agd`→tiburón (shark), `are`→ancla
+(anchor — revives the sketch from the original B/D style-review round,
+which was never migrated into the real registry). Built with the
+corrected proportions from the very start this time — same `<g
+transform="translate(56,44) scale(.6) translate(-56,-44)">`, text at
+y=105/size 16 — so this batch can't repeat either of Phase 1's two bugs.
+Mockup (same running artifact, new "Fase 2 — primer lote" section):
+https://claude.ai/code/artifact/0a7b03f4-c716-432c-b774-a0cb4d2369d2.
+Remaining queue for a later batch: `que`→pirata, `car`→gigante,
 `nau`→timón, `aib`→pollito, `mor`→titán, `toi`→cocotero, `coa`→
-maratonista, `agd`→tiburón, `cay`→torito) — one small reviewed batch at a
-time, each shown live before it ships, same discipline as Phase 1's 3.
+maratonista, `cay`→torito. One small reviewed batch at a time, each shown
+before it ships, same discipline as Phase 1.
 
 **Phase 1 correction round — owner caught this, not me, twice.** Owner
 verified the mockup-approved fix live and reported it hadn't taken effect
