@@ -102,6 +102,29 @@ collision) was based on a stale, untracked Desktop copy of the file, not
 this repo — that copy has no bearing on this codebase and was ignored.
 Harness: `scratchpad/button_color_harness.mjs`.
 
+**Team page "time warp"** (`docs/specs/bsn_team_page_plan.md`) — extends
+`showTeam()`'s existing `.phero` masthead (8.3b) rather than a new card.
+`VENUES` extended `[name,cap]`→`[name,cap,nickname,opened]` (both nullable);
+Guaynabo corrected — was `"Coliseo Fernando «Rube» Hernández"`, 3500 (wrong);
+now `"Coliseo Mario «Quijote» Morales"`, 5,500, opened 1983, confirmed via
+web search + the file's own `HOF` note ("The Mets play at the Mario Morales
+Coliseum") that had never been reconciled with `VENUES`. New `VENUE_NOTES`
+(temporal caveats, currently just Guaynabo's 2026 Gurabo relocation during
+renovation) and `TEAM_LORE` (11 of 12 active clubs sourced — from `HOF`
+"arena named for him" tags, and the plan doc's own Wikipedia/PlateaPR
+nickname-lore column, initially under-used and corrected after owner review;
+Arecibo is a genuine sourcing gap, not a miss). `F.car` renamed to "Gigantes
+de Carolina/Canóvanas" (2025 relocation, confirmed). `showTeam()` now also
+surfaces the top rival as its own line, reusing the same `opp`/`rivalKeys`
+the existing "careo" table is built from (never a second, divergent count);
+every club gets a lore line — `TEAM_LORE[k]` or a live-derived fallback
+sentence from `F[key]`, so none is ever empty. Old "Cancha" kv row dropped
+(folded into the richer `.phero-venue` line); zero new CSS — reuses
+`.phero-note`. Noted, not fixed (out of scope, confirmed dead/unread): a
+separate unused `ARENAS` array (~line 1333) still has its own stale
+Guaynabo row. Defunct franchises (Humacao included) deferred to a follow-up
+phase, gated on D-045. Harness: `scratchpad/phero_harness.mjs` (extended).
+
 Open threads:
 docs/project.md D2 refinement for the Grises/Caciques de Humacao split (D-045);
 the ~451-row review-queue long tail (needs an owner-curated crosswalk — Q1-Q4

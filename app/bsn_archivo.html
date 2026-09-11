@@ -1281,7 +1281,7 @@ const F = {
        won:[1980,1982,1989],ru:[1978,1981,1983,1985,1990,1993,2021]},
   cag:{name:"Criollos de Caguas",abbr:"CAG",city:"Caguas",founded:1976,active:1,c1:"#6B2C8F",c2:"#EFD25C",colorSrc:"approx",
        won:[2006,2024],ru:[]},
-  car:{name:"Gigantes de Carolina",abbr:"CAR",city:"Carolina",founded:1971,active:1,c1:"#1E9B54",c2:"#F5F5F5",colorSrc:"approx",
+  car:{name:"Gigantes de Carolina/Canóvanas",abbr:"CAR",city:"Carolina/Canóvanas",founded:1971,active:1,c1:"#1E9B54",c2:"#F5F5F5",colorSrc:"approx",
        won:[2023],ru:[1979,1997,2008]},
   may:{name:"Indios de Mayagüez",abbr:"MAY",city:"Mayagüez",founded:1956,active:1,c1:"#1F5B3A",c2:"#D9342B",colorSrc:"wiki",
        coach:"Iván Vélez",
@@ -1839,19 +1839,51 @@ F.san.coach = '—';
 
 /* The league app lists these venues; they supersede the older
    English-language arena names carried from Wikipedia. */
+/* [name, capacity, nickname|null, opened year|null]. Capacities vary by
+   source/renovation — shown with a "~" and a tooltip, never as precise.
+   gua corrected (was "Coliseo Fernando «Rube» Hernández", 3500 — wrong):
+   the HOF entry for Mario «Quijote» Morales already said, in an unrelated
+   note, "The Mets play at the Mario Morales Coliseum" — confirmed against
+   El Nuevo Día + Wikipedia. bsn_team_page_plan.md has full sourcing. */
 const VENUES = {
-  sge:['Coliseo Arquelio Torres Ramírez',5000],
-  san:['Coliseo Roberto Clemente',9000],
-  are:['Coliseo Manuel «Petaca» Iguina',12000],
-  cag:['Coliseo Roger Mendoza',3000],
-  car:['Coliseo Carlos Miguel Mangual',5000],
-  may:['Palacio de Recreación y Deportes Wilkins',5500],
-  pon:['Auditorio Pachín Vicéns',11000],
-  gua:['Coliseo Fernando «Rube» Hernández',3500],
-  man:['Coliseo Juan Aubín Cruz',8000],
-  que:['Coliseo Raymond Dalmau',5500],
-  agu:['Coliseo Ismael «Chavalillo» Delgado',7500],
-  bay:['Coliseo Rubén Rodríguez',12000]
+  sge:['Coliseo Arquelio Torres Ramírez',5000,'La Cuna',1985],
+  san:['Coliseo Roberto Clemente',9000,null,null],
+  are:['Coliseo Manuel «Petaca» Iguina',12000,null,null],
+  cag:['Coliseo Roger Mendoza',3000,'La Presión',null],
+  car:['Coliseo Carlos Miguel Mangual',5500,null,null],
+  may:['Palacio de Recreación y Deportes Wilkins',5500,'Sultana del Oeste',1981],
+  pon:['Auditorio Pachín Vicéns',11000,'Coliseo de Ponce',1972],
+  gua:['Coliseo Mario «Quijote» Morales',5500,null,1983],
+  man:['Coliseo Juan Aubín Cruz',8000,null,null],
+  que:['Coliseo Raymond Dalmau',5500,'La Guarida del Pirata',2008],
+  agu:['Coliseo Ismael «Chavalillo» Delgado',7500,null,2010],
+  bay:['Coliseo Rubén Rodríguez',12000,'El Rancho Vaquero',1988]
+};
+/* Temporal venue status — separate from VENUES so a one-off caveat doesn't
+   force every entry to carry unused trailing nulls, and is a one-line
+   delete once it stops being true. */
+const VENUE_NOTES = {
+  gua:'Los Mets juegan la temporada 2026 en Gurabo mientras el Coliseo Mario «Quijote» Morales pasa por una remodelación de $17M; el regreso se espera en 2028.'
+};
+/* One sourced line of team lore per active club — HOF "arena named for
+   him" tags, the team-page plan's Wikipedia/PlateaPR-cited nickname/lore,
+   or a fact confirmed by web search. Arecibo has none of those (the
+   source table is blank for it too, not just missed here) and falls back
+   to a live-derived line in showTeam(). Caciques de Humacao intentionally
+   absent — D-045 (Grises/Humacao split) is unresolved; defunct franchises
+   are a later phase. Full sourcing: docs/specs/bsn_team_page_plan.md. */
+const TEAM_LORE = {
+  bay:'Cinco títulos seguidos, 1971–1975 — la dinastía más larga de la liga. El juego de 1969 contra Río Piedras reunió 17.621 personas, récord de asistencia del BSN.',
+  que:'Raymond Dalmau y Neftalí Rivera, el «Dynamic Duo» de 1966–69, encendieron la dinastía de los 70 (4 títulos). Dalmau tiene la cancha nombrada en su honor.',
+  man:'El único club activo sin título — el más joven de la liga, y el que todavía se lo debe a su fanaticada.',
+  gua:'Mario «Quijote» Morales, 4× MVP y campeón de anotación en 1980, tiene la cancha del club nombrada en su honor.',
+  pon:'Juan «Pachín» Vicéns, 4× MVP, tiene el auditorio del club nombrado en su honor — «el Coliseo de Ponce» para la fanaticada.',
+  sge:'Conocido como «La Cuna» — y, para su fanaticada, «el hogar del monstruo anaranjado».',
+  san:'Los Cangrejeros dejaron el histórico Coliseo José Miguel Agrelot por el Coliseo Roberto Clemente, en San Juan, en 2021.',
+  may:'Mayagüez es conocida como «la Sultana del Oeste» — el Palacio de Recreación y Deportes ha sido su cancha desde 1981.',
+  cag:'El Coliseo Roger Mendoza es, para la fanaticada criolla, «La Presión».',
+  agu:'El Coliseo Ismael «Chavalillo» Delgado se construyó para los Juegos Centroamericanos y del Caribe de 2010.',
+  car:'Los Gigantes se mudaron de Carolina a Canóvanas en 2025 tras no llegar a acuerdo con el municipio de Carolina por el uso del Coliseo Guillermo Angulo — hoy juegan como Gigantes de Carolina/Canóvanas en el Coliseo Carlos Miguel Mangual.'
 };
 
 /* Final standings, 2026 regular season. Two groups of six, 34 games.
@@ -3664,8 +3696,11 @@ function showTeam(k){
   const opp={};
   f.won.forEach(y=>{const o=ruOf[y];if(o)(opp[o]=opp[o]||[0,0])[0]++;});
   f.ru.forEach(y=>{const o=champOf[y];if(o)(opp[o]=opp[o]||[0,0])[1]++;});
-  const oppRows=Object.keys(opp).sort((a,b)=>(opp[b][0]+opp[b][1])-(opp[a][0]+opp[a][1]))
-    .map(o=>[F[o].name,opp[o][0],opp[o][1],opp[o][0]+opp[o][1]]);
+  /* rivalKeys stays the single source for both the top-rival callout below
+     and the full "careo" table, so the two can never disagree. */
+  const rivalKeys=Object.keys(opp).sort((a,b)=>(opp[b][0]+opp[b][1])-(opp[a][0]+opp[a][1]));
+  const oppRows=rivalKeys.map(o=>[F[o].name,opp[o][0],opp[o][1],opp[o][0]+opp[o][1]]);
+  const topRival=rivalKeys[0];
   const st=[].concat(STAND2026.A,STAND2026.B).find(r=>r[0]===k);
   const retired=RETIRED.find(r=>r[0]===f.name);
   const roster=POOL.filter(p=>p.c.includes(k));
@@ -3676,6 +3711,28 @@ function showTeam(k){
     ? (mostEver ? 'El club más ganador de la liga · '+f.won.length+'-'+f.ru.length+' en finales'
        : 'Último título en '+last+(drought>0?', hace '+drought+(drought===1?' año':' años'):'')+' · '+f.won.length+'-'+f.ru.length+' en finales')
     : (f.ru.length ? f.ru.length+(f.ru.length===1?' final perdida':' finales perdidas')+', aún sin título' : 'Sin finales en el archivo');
+  /* Coliseo line — name, nickname, ~capacity (tooltip explains the "~"),
+     opened year, all nullable; VENUE_NOTES adds a one-off status caveat
+     (e.g. a temporary home while the arena is renovated). */
+  let venueLine='';
+  if(v){
+    const [vn,vcap,vnick,vopened]=v;
+    venueLine=`${esc(vn)}${vnick?' — «'+esc(vnick)+'»':''} · <span title="Capacidad aproximada — varía por fuente y renovación">~${vcap.toLocaleString('es-PR')}</span>${vopened?' · desde '+vopened:''}`;
+  }
+  const venueNote=VENUE_NOTES[k];
+  /* Top rival — reuses rivalKeys/opp computed above, never a second,
+     possibly-divergent count. */
+  const rivalLine = topRival
+    ? `Mayor rival: ${crest(topRival,16,19)} ${esc(F[topRival].name)} — ${opp[topRival][0]+opp[topRival][1]} finales (${opp[topRival][0]}-${opp[topRival][1]})`
+    : '';
+  /* One line of team lore — TEAM_LORE if sourced, else a true, always-
+     available line derived live from the same F data the rest of the
+     card uses (never fabricated, never empty). */
+  const lore = TEAM_LORE[k] || (finals
+    ? (f.won.length
+        ? f.won.length+(f.won.length===1?' título':' títulos')+' en '+finals+' finales — el más reciente en '+last+'.'
+        : 'Sin título todavía, con '+f.ru.length+(f.ru.length===1?' final jugada':' finales jugadas')+' en el archivo.')
+    : 'Sin finales registradas en el archivo.');
   host.innerHTML=`<div class="card" style="margin-top:22px;border-color:${f.c1}">
     <div class="phero">
       ${crest(k,58,70)}
@@ -3686,16 +3743,19 @@ function showTeam(k){
           <span class="phero-spark" style="color:${f.c1}">${titleComb(f,{w:150,h:24,gap:1})}</span></div>
         <div class="phero-statl">${f.won.length===1?'título':'títulos'}</div>
         <div class="phero-note">${esc(heroNote)}</div>
+        ${venueLine?`<div class="phero-note">${venueLine}</div>`:''}
+        ${venueNote?`<div class="phero-note">${esc(venueNote)}</div>`:''}
         <div class="chips">
           ${st?`<span class="tag blue">2026: ${st[1]}-${st[2]} (${st[3].toFixed(3).replace('0.','.')})</span>`:''}
           <span class="tag" title="Origen del color">${f.colorSrc==='wiki'?'Colores verificados':'Colores aproximados'}</span>
         </div>
         <dl class="kv">
           ${f.coach?`<dt>Dirigente</dt><dd>${esc(f.coach)}</dd>`:''}
-          ${v?`<dt>Cancha</dt><dd>${esc(v[0])} · ${v[1].toLocaleString('es-PR')}</dd>`:''}
           ${retired?`<dt>Números retirados</dt><dd>${retired[1]} — ${esc(retired[2])}</dd>`:''}
           ${f.note?`<dt>Nota</dt><dd>${esc(f.note)}</dd>`:''}
         </dl>
+        ${rivalLine?`<div class="phero-note">${rivalLine}</div>`:''}
+        <div class="phero-note">${esc(lore)}</div>
         ${f.won.length?`<div class="note">Campeón: ${f.won.join(' · ')}</div>`:''}
         ${f.ru.length?`<div class="note">Subcampeón: ${f.ru.join(' · ')}</div>`:''}
       </div>
