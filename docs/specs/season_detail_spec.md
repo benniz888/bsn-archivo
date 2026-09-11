@@ -1,10 +1,15 @@
 # Spec: season-vs-season comparison + per-season profile view
 
-**Status: built** — data layer extended and rebuilt (250 rich season-rows,
-154 players, verified against the spec's own predicted counts), inline
-compare panel + per-season route implemented, `scratchpad/
-season_detail_harness.mjs` green alongside all existing harnesses,
-`make verify` + `make test` (174) green. Pending: owner verification live.
+**Status: DONE, owner-verified live** — data layer extended and rebuilt
+(250 rich season-rows, 154 players, verified against the spec's own
+predicted counts), inline compare panel + per-season route implemented,
+`scratchpad/season_detail_harness.mjs` green alongside all existing
+harnesses, `make verify` + `make test` (174) green. Owner verified live on
+Raymond Dalmau's page ("checkboxes, compare panel, and per-season delta
+all work exactly as spec'd") while reporting the separate Georgie Torres
+crosswalk bug — see `docs/session.md`. Known gaps for later: cross-player
+season comparison and modern-era (2024–2026) data — queued as backlog
+item 4, not this spec.
 
 For review before build. Data findings verified directly against
 `data/clean/*.csv` and the current `build_players_detail()` — see

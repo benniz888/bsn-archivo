@@ -11,12 +11,14 @@
   spark/sparkBars/dotgrid/titleComb) · LANG pass 1 (BSN/PR vernacular,
   owner-reviewed and applied) · button-color bugfix · **team page "time
   warp" DONE, LIVE, owner-verified** (coliseo data, rivalry, lore) ·
-  **season-vs-season comparison + per-season profile view BUILT, pending
-  owner verification live** (`season_detail_spec.md`) · **Georgie Torres
-  wrong-identity crosswalk bug FIXED, LIVE** · **visual-motif pass step A
-  (--tri dedupe + hero-card extension) BUILT, LIVE, polled** — step B next,
-  gated on owner review of A live; **6-item visual/feature backlog queued**,
-  one item at a time, plan→approve→build→verify each
+  **season-vs-season comparison + per-season profile view DONE, LIVE,
+  owner-verified** (`season_detail_spec.md`) · **Georgie Torres
+  wrong-identity crosswalk bug FIXED, LIVE** · **visual-motif pass (backlog
+  item 1) DONE, LIVE, owner-verified** — steps A + B shipped, C stays
+  parked (owner's call); Taíno sourcing pass done, research only, nothing
+  built from it; **6-item visual/feature backlog in progress, item 2 now
+  scoping** (illustrated player/team figures), one item at a time,
+  plan→approve→build→verify each
 **DATE:** 2026-09-11
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
@@ -256,6 +258,35 @@ Bayamón + Raymond Dalmau) — no live browser in this session, so it isn't
 a pixel capture of the deployed page: https://claude.ai/code/artifact/a14173e5-fbd2-4a1b-a9c7-d5bc40a5540f.
 Pushed, polled live, confirmed present in the deployed HTML.
 
+**Step B — BUILT, LIVE, polled, owner-verified** (`09df949`): scoped after
+A shipped, per the owner's explicit "B scoped immediately after A's seen
+live, not later." Surveyed every divider/edge/hover surface in the sheet
+first; picked two on real frequency/gap grounds, rejected the rest with
+reasons (card borders — would compete with team `f.c1`; hover/focus states
+— too transient, reads as noise; `.strip`'s 1px grid-gap lines — too dense;
+the `.tblwrap tr.cut` divider — already a distinct single-color semantic
+marker, not decorative). New `--tri-fade` token: tricolor for the first
+~60px of `h3.sec::after`'s trailing hairline (26 instances app-wide, none
+inside a team-branded card — checked all of them), fading into the
+ordinary `--line` color for the rest — px stops so it holds at any
+container width. Light-theme swaps the middle stop from `--flag-w` to
+`--line` (a 1px line has no room for `.tri`'s hairline-border trick; pure
+white would just vanish on a white card). Second surface: a 3px `--tri`
+mark on the mobile bottom bar's active tab (`.bottombar` is the *only* nav
+on a phone — `nav.tabs`, which already had this, is desktop-only) —
+additive alongside the existing red icon tint, not a replacement.
+`make verify`/`make test` green; new `scratchpad/tri_motif_b_harness.mjs`
+green; `tri_motif_harness.mjs`'s two assertions that assumed no second
+gradient token existed were updated (not an app-code regression —
+`--tri-fade` is a legitimate second token). Owner verified live on mobile
+and desktop, both themes: "the bottom-bar tab mark and the section
+hairline fade both look right." Before/after (same artifact as A, updated
+in place): https://claude.ai/code/artifact/a14173e5-fbd2-4a1b-a9c7-d5bc40a5540f.
+
+**Step C (texture layer) — stays parked.** Owner's explicit call after
+seeing A and B live; not scheduled. The Taíno sourcing pass below is
+already done and waiting if/when C is picked up.
+
 **Taíno sourcing pass — research only, run in parallel with step A, done.**
 Real, cited findings (not invented) — full writeup given to the owner in
 chat; summary for the record:
@@ -294,9 +325,12 @@ reset. One item at a time: scope + show the plan, owner approves, build,
 owner verifies live, only then move to the next. Do not skip ahead or
 bundle items.
 
-1. **BSN/PR visual motif** — in progress (A live; B next, gated on owner
-   review of A).
-2. **Illustrated player/team figures, StatMuse-style.** Sidesteps the
+1. **BSN/PR visual motif — DONE, LIVE, owner-verified.** Steps A + B
+   shipped and confirmed live (mobile + desktop, both themes). Step C
+   (texture layer) stays parked, owner's call — the Taíno sourcing pass
+   is done and waiting if it's ever picked up.
+2. **Illustrated player/team figures, StatMuse-style — now scoping.**
+   Sidesteps the
    real-photo/real-crest rights question this archive has deliberately
    deferred; unlocks #3; retroactively gives today's text-only team pages
    a visual identity. Needs an art-direction/style decision first —
