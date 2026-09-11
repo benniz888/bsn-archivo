@@ -13,7 +13,10 @@
   warp" DONE, LIVE, owner-verified** (coliseo data, rivalry, lore) ·
   **season-vs-season comparison + per-season profile view BUILT, pending
   owner verification live** (`season_detail_spec.md`) · **Georgie Torres
-  wrong-identity crosswalk bug FIXED, LIVE-pending-poll**
+  wrong-identity crosswalk bug FIXED, LIVE** · **visual-motif pass step A
+  (--tri dedupe + hero-card extension) BUILT, LIVE, polled** — step B next,
+  gated on owner review of A live; **6-item visual/feature backlog queued**,
+  one item at a time, plan→approve→build→verify each
 **DATE:** 2026-09-11
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
@@ -213,6 +216,113 @@ literally asserted the bug: `xw["georgie torres"] == 788`). `make verify`
 (329,938 checks) + `make test` (174) green; new
 `scratchpad/georgie_bug_harness.mjs` alongside `season_detail_harness.mjs`/
 `bio_harness.mjs`/`phero_harness.mjs`, all green. **Pending live poll.**
+
+Visual-motif pass — owner ask: the tricolor rule (`.tri`) is "one thin
+decorative bar," wants a real recurring rhythm, room to grow into court/
+coliseo texture and possibly Taíno pattern work. Scoped before building
+(chat, no spec file — small/reversible CSS): found `.tri` in exactly 8
+static places (7 section pheads + footer) plus a 9th, undried copy — the
+desktop nav active-tab underline hand-duplicated the same gradient as a
+literal. Zero presence on `.phero` (player/team hero cards) or mobile's
+bottom bar (the actual primary nav on a phone — `nav.tabs` is desktop-
+only, so a phone user saw the motif once per section landing and never
+again). Token system supports it cleanly (gradient only needs `--rojo`/
+`--flag-w`/`--azul`, already theme-aware); the one real constraint is team
+pages already spend `f.c1` (club brand color) as the card border — a
+second color language on the same surface would compete, so any motif
+work needs to sit alongside that, not replace it. Proposed 3 directions
+(A: dedupe + extend to hero cards, B: structural rhythm at more tiers —
+dividers, edges, hover states, C: an actual CSS-only texture layer on big
+canvas surfaces) plus flagged Taíno pattern work as needing real sourcing
+first, not invention. Owner locked the order: **A now, B scoped
+immediately after A's seen live (not "later"), C stays parked until B's
+reacted to**; Taíno sourcing run in parallel, research only, nothing built
+from it yet.
+
+**Step A — BUILT, LIVE, polled** (`d25843c`): `--tri` added to `:root` as
+the one canonical gradient; `.tri` and the nav active-tab underline both
+read it (was two copies of the same literal). New `.phero-tri` (shares
+`.phead .tri`'s 74px/margin sizing) + a `<div class="tri phero-tri">`
+added directly before `<div class="phero">` in both `showTeam()` and
+`showPlayer()` — every player/team hero card now leads with the same mark
+every section head already had. Team pages' own `f.c1` border color is
+untouched — the tricolor mark sits above it, doesn't compete with it. The
+7 pheads + footer are byte-for-byte unchanged. `make verify` (329,938) +
+`make test` (174) green; new `scratchpad/tri_motif_harness.mjs` green
+alongside `phero_harness`/`bio_harness`/`season_detail_harness`/
+`georgie_bug_harness` (no regressions from touching `showTeam`/
+`showPlayer`). Before/after shown as a static reproduction (own tokens,
+Bayamón + Raymond Dalmau) — no live browser in this session, so it isn't
+a pixel capture of the deployed page: https://claude.ai/code/artifact/a14173e5-fbd2-4a1b-a9c7-d5bc40a5540f.
+Pushed, polled live, confirmed present in the deployed HTML.
+
+**Taíno sourcing pass — research only, run in parallel with step A, done.**
+Real, cited findings (not invented) — full writeup given to the owner in
+chat; summary for the record:
+- **Best-grounded, PR-specific**: Centro Ceremonial Indígena de Caguana
+  (Utuado) — protected by Instituto de Cultura Puertorriqueña since 1955,
+  restoration led by ICP co-founder Ricardo Alegría; largest concentration
+  of petroglyphs in the Antilles, carved into the ball-court monoliths.
+- **Named academic source**: Monica Flaherty Frassetto, "A Preliminary
+  Report on Petroglyphs in Puerto Rico," *American Antiquity* 25(3), 1960
+  — documents two local petroglyph traditions ("Swaddled Infant" and
+  "Capá" types) plus "simple curvilinear and abstract designs," dated to
+  Rouse's Periods III–IV (A.D. 350–1584), from 60 surface prints at 13 PR
+  sites.
+- **Ceramic geometric decoration** (a safer category for a repeating
+  pattern than carved figures — see below): Capá/Boca Chica incised
+  traditions, cross-hatch bands filled with white or red pigment paste.
+- **Explicitly flagged off-limits for decorative reuse**: the figurative/
+  sacred petroglyphs specifically — e.g. *Atabeyra* ("la mujer de
+  Caguana," attributed to the fertility/water goddess Atabey) at Caguana,
+  and cemí imagery generally (Smithsonian NMAI describes cemís as
+  "living objects," not ornamentation). Turning a named deity's image or
+  a ceremonial object into repeating UI wallpaper is a real cultural-
+  representation problem, not just a code one — kept separate from the
+  abstract/geometric vocabulary that's the actual candidate for pattern
+  work.
+- **Named but lower-confidence**: specific symbolic readings ("spiral =
+  cosmic movement," "concentric circles = the cosmos") traced back to a
+  general web aggregator, not a named peer-reviewed citation — flagged as
+  pop-symmetry, not sourced fact; would need a better citation before
+  quoting as established meaning, separate from just using the shapes.
+Owner has this now; nothing built from it. If/when C (texture layer) is
+reached, this pass is the starting point, not a re-research.
+
+Backlog roadmap — owner-dictated order, logged so it survives a context
+reset. One item at a time: scope + show the plan, owner approves, build,
+owner verifies live, only then move to the next. Do not skip ahead or
+bundle items.
+
+1. **BSN/PR visual motif** — in progress (A live; B next, gated on owner
+   review of A).
+2. **Illustrated player/team figures, StatMuse-style.** Sidesteps the
+   real-photo/real-crest rights question this archive has deliberately
+   deferred; unlocks #3; retroactively gives today's text-only team pages
+   a visual identity. Needs an art-direction/style decision first —
+   propose options, don't guess one.
+3. **Starting-five visual, per team per season** (Sofascore-style
+   formation card — half-court/paint layout, not a pitch; PG/SG/SF/PF/C
+   positions; headshot circle from #2's illustrated figures, not real
+   photos; jersey number, name, rating/stat badge). Needs data-mining
+   *first* — most common starting five per team per season, or at minimum
+   the current season if historical isn't findable — before any visual
+   work. Possible surface: team pages, maybe the Inicio favorite-club
+   card if it looks clean once built (owner's call after seeing it).
+4. **Finish season comparison properly.** What shipped (`season_detail_spec.md`)
+   only compares one player across their own seasons, richly for
+   2001–2004 only. Still needed: (a) comparing two *different* players'
+   specific chosen seasons (e.g. Travis Trice 2024 vs Ángel Rodríguez
+   2026); (b) modern-era data (2024–2026) — confirm whether that data
+   exists in the archive at the needed granularity *before* promising the
+   feature, same discipline as every other tier in this archive.
+5. **Team pages: region/barrio identity.** Today's coliseo/rivalry/lore
+   work didn't address neighborhood/regional character — scope what's
+   realistically sourceable before proposing anything.
+6. **Per-game deep-dive + difficulty pass — 3 separate mini-projects, not
+   one.** Cuadrícula, Temporada Perfecta, and Quién soy each need their
+   own scoping pass, their own plan, their own approval. Don't try to do
+   all three at once.
 
 Open threads:
 docs/project.md D2 refinement for the Grises/Caciques de Humacao split (D-045);
