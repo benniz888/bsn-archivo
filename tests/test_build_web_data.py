@@ -130,6 +130,72 @@ class TestBuild:
         assert sample["bio"]["source"] == "wayback_bsnpr_jugador05"
         assert any(u for u in sample["sources"] if "jugador05" in u)
 
+    def test_season_stats_helper(self):
+        # season_detail_spec.md §1 — the join/dedup helper, called directly.
+        # Numbers match the spec's own overlap check (run against these same
+        # CSVs before the spec was written).
+        stats = b._season_stats()
+        pairs = [(pid, season) for pid, seasons in stats.items() for season in seasons]
+        assert len(stats) == 154
+        assert len(pairs) == 250
+        assert {season for _, season in pairs} <= {2001, 2002, 2003, 2004}
+        pid, seasons = next(iter(stats.items()))
+        fields = next(iter(seasons.values()))["fields"]
+        assert set(fields) == {"games", "pts", "minutes", "fg", "tp", "ft",
+                                "reb", "ast", "stl", "blk", "tov", "ppg"}
+        assert set(fields["fg"]) == {"m", "a", "pct"}
+
+    def test_season_stats_attached_to_career(self):
+        # every (bsnpr_id, season) the helper produces lands in that
+        # player's built career[] row, games/points/stats intact — whether
+        # attached to a pre-existing thin row or synthesized fresh (8 of the
+        # 250 pairs had no existing row at that season). player_career_
+        # seasons.csv itself sometimes carries >1 row for the same player-
+        # season (the same team written two ways across Wayback captures,
+        # e.g. "BAYAMON" and "Vaqueros, Bayamon" as separate rows) — a pre-
+        # existing source quirk, not something this build introduces or
+        # fixes; `stats` attaches to whichever row's team_raw actually
+        # matched the crosswalk key, and every pair gets exactly one match
+        # (verified: 0 misses across all 250).
+        stats = b._season_stats()
+        for pid, seasons in stats.items():
+            d = json.loads((b.WEB / "players" / f"{pid}.json").read_text())
+            for season, s in seasons.items():
+                rows = [c for c in d["career"] if c["season"] == season]
+                assert rows, f"{pid}/{season} missing from career[]"
+                matches = [r for r in rows if "stats" in r]
+                assert len(matches) == 1, f"{pid}/{season}: expected exactly 1 stats row, got {len(matches)}"
+                row = matches[0]
+                assert row["stats"] == s["fields"]
+                # the two sources can disagree (e.g. one build hit 411 vs 422
+                # points for the same player-season) — row.games/points stay
+                # whatever player_career_seasons.csv said (never overwritten);
+                # the Tier-2 numbers live inside stats.games/stats.pts instead
+                assert row["stats"]["games"] == s["games"]
+                assert row["stats"]["pts"] == s["points"]
+                assert row["team_raw"]
+
+    def test_season_stats_never_fabricated_on_thin_seasons(self):
+        # a season the helper has nothing for never gets a `stats` key —
+        # not an empty dict, not zeros (PC2: NULL != 0).
+        rich_pairs = {(pid, season) for pid, seasons in b._season_stats().items()
+                      for season in seasons}
+        checked = 0
+        ids = [p["id"] for p in json.loads((b.WEB / "index" / "players.json").read_text())]
+        for pid in ids:
+            d = json.loads((b.WEB / "players" / f"{pid}.json").read_text())
+            for c in d["career"]:
+                if (str(pid), c["season"]) not in rich_pairs:
+                    assert "stats" not in c
+                    checked += 1
+        assert checked > 0
+
+    def test_season_stats_source_digest_input(self):
+        # the new source is registered, so the manifest version actually
+        # changes if this CSV changes (source_digest's whole reason to exist)
+        import inspect
+        assert '"player_season_stats_2001_2004.csv"' in inspect.getsource(b.main)
+
     def test_assets_empty_by_default(self):
         man = json.loads((b.WEB / "manifest.json").read_text())
         assert isinstance(man["assets"], dict)

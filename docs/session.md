@@ -10,7 +10,9 @@
   rebuilt as StatMuse-style editorial** (`.ed-*`/`.phero`/`.landcard` +
   spark/sparkBars/dotgrid/titleComb) · LANG pass 1 (BSN/PR vernacular,
   owner-reviewed and applied) · button-color bugfix · **team page "time
-  warp" DONE, LIVE, owner-verified** (coliseo data, rivalry, lore)
+  warp" DONE, LIVE, owner-verified** (coliseo data, rivalry, lore) ·
+  **season-vs-season comparison + per-season profile view BUILT, pending
+  owner verification live** (`season_detail_spec.md`)
 **DATE:** 2026-09-11
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
@@ -130,12 +132,48 @@ separate unused `ARENAS` array (~line 1333) still has its own stale
 Guaynabo row. Defunct franchises (Humacao included) deferred to a follow-up
 phase, gated on D-045. Harness: `scratchpad/phero_harness.mjs` (extended).
 
+**Season-vs-season comparison + per-season profile view** (`season_detail_
+spec.md`) — data layer: new `_season_stats()` in `build_web_data.py` folds
+`player_season_stats_2001_2004.csv` (154 already-identity-resolved players,
+`player_id_map.csv`'s existing crosswalk — no new identity work) into
+`career[]` as an optional `stats` object; 250 rich season-rows built.
+Caught during the build, not assumed from the CSVs: the two sources can
+disagree on a season's point total (one build hit 411 vs 422 for the same
+player-season) — `stats.games`/`stats.pts` carry the Tier-2 numbers
+alongside, the top-level `career[]` fields stay untouched, never silently
+merged; and `player_career_seasons.csv` sometimes carries >1 row per
+player-season (same team, two capture-time spellings) — pre-existing, not
+introduced here, `stats` attaches to whichever sibling's `team_raw` matched
+(0 misses across all 250). App: checkboxes on the "Temporada por temporada"
+table (cap 3) render an inline compare panel reusing the player-vs-player
+Comparar's `cmpBarRow`/`.cmprow` as-is (season rows reshaped into the same
+flat-property object shape) — zero new comparison CSS. New route
+`#jugadores/jugador/<slug>/<season>` (`showPlayer`/`openArchivePlayer` gain
+a `season` param) renders a per-season block (`.strip` stat grid + a "vs
+prior season" delta line — one `seasonDiff()` function shared by both
+features, not two) with an optional league-leader cross-reference
+(name-matched against that season's `web/data/seasons/<year>.json`
+leaders, skipped silently when absent). `make build-web-data` + 4 new
+pytest tests + `make verify`/`make test` (174) green; new harness
+`scratchpad/season_detail_harness.mjs`; `bio_harness`/`phero_harness`
+updated for the new `loadPlayerExtra`/`showPlayer` signatures. **Pending
+owner verification live** before flipping to DONE.
+
 Open threads:
 docs/project.md D2 refinement for the Grises/Caciques de Humacao split (D-045);
 the ~451-row review-queue long tail (needs an owner-curated crosswalk — Q1-Q4
 are all closed by code); PHASE_3D id 13352 (jugador.asp career, no players_canonical
 row); PHASE_5F (per-game PBP JSON) deferred behind PBP↔bsnpr_id linking; real crest/portrait
-images (drop into `web/img/`, `make build-web-data`).
+images (drop into `web/img/`, `make build-web-data`); **the app's "antes de
+2011 no hay estadística por temporada del BSN" copy (hero, Archivo hub, the
+player-card missing-data warning) overstates the real gap** — found while
+scoping the season-detail spec. `docs/project.md` F1 traces "2011" to
+RealGM/Proballers' own scraper floor, a third-party limit, not this
+archive's holdings: `player_career_seasons.csv` has season data back to
+1956 (thin), and `player_season_stats_2001_2004.csv` has full box-score
+categories for 154 identity-resolved players back to 2001. Worth a copy
+correction — not folded into `season_detail_spec.md`, logged here as a
+follow-up.
 
 Session 002 (cont.) — all pushed to origin/main:
 - `app_data_sync_spec.md` (e5609ee) — owner-supplied PHASE_5 decision.

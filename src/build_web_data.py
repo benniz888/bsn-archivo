@@ -517,6 +517,60 @@ def diff_app_mvp() -> list[str]:
     return diffs
 
 
+def _season_stats() -> dict[str, dict[int, dict]]:
+    """bsnpr_id -> {season: {team_raw, games, points, fields}} — rich per-
+    season box-score totals (season_detail_spec.md §1). Only source right
+    now: player_season_stats_2001_2004.csv, joined to the resolved
+    (player_raw, club_raw, season) -> bsnpr_id crosswalk that
+    player_id_map.csv already carries for this source (parse_players.py's
+    OBSERVATION_FILES — no new identity work here, purely a data-shape
+    extension). Where more than one stat row resolves to the same
+    (bsnpr_id, season) — a mid-season team change, or a source duplicate —
+    keep the one with the most recorded games; never summed, never
+    duplicated."""
+    resolved: dict[tuple[str, str, str], str] = {}
+    for r in _read("player_id_map.csv"):
+        if r["obs_source"] == "player_season_stats_2001_2004.csv" and r["bsnpr_id"]:
+            resolved[(r["player_raw"], r["club_raw"], r["season"])] = r["bsnpr_id"]
+
+    best: dict[tuple[str, int], dict] = {}
+    for r in _read("player_season_stats_2001_2004.csv"):
+        pid = resolved.get((r["player_raw"], r["team_raw"], r["season"]))
+        season = _int(r["season"])
+        if not pid or season is None:
+            continue
+        key = (pid, season)
+        games = _int(r["games"]) or 0
+        if key in best and (_int(best[key]["games"]) or 0) >= games:
+            continue
+        best[key] = r
+
+    out: dict[str, dict[int, dict]] = {}
+    for (pid, season), r in best.items():
+        games, pts = _int(r["games"]), _int(r["pts"])
+        fields = {
+            # games/pts repeated here (not just at career[]'s top level):
+            # this source can disagree with player_career_seasons.csv's
+            # totals for the same season (different scrape, e.g. one row
+            # this build hit was 411 vs 422) — never silently reconciled,
+            # same "show both, labelled, don't merge" rule loadPlayerExtra
+            # already uses for the archive-vs-curated career table.
+            "games": games, "pts": pts,
+            "minutes": _int(r["minutes"]),
+            "fg": {"m": _int(r["fgm"]), "a": _int(r["fga"]), "pct": _float(r["fg_pct"], 3)},
+            "tp": {"m": _int(r["tpm"]), "a": _int(r["tpa"])},
+            "ft": {"m": _int(r["ftm"]), "a": _int(r["fta"])},
+            "reb": {"d": _int(r["dreb"]), "t": _int(r["treb"])},
+            "ast": _int(r["ast"]), "stl": _int(r["stl"]), "blk": _int(r["blk"]),
+            "tov": _int(r["tov"]), "ppg": _float(r["ppg"], 1),
+        }
+        out.setdefault(pid, {})[season] = {
+            "team_raw": r["team_raw"], "games": games,
+            "points": pts, "fields": fields,
+        }
+    return out
+
+
 def build_players_detail() -> tuple[int, int]:
     """web/data/players/<bsnpr_id>.json for every id in players_canonical. Players
     with a profile / career rows / id_map observation get a full record; the rest
@@ -537,6 +591,7 @@ def build_players_detail() -> tuple[int, int]:
         obs.setdefault(r["bsnpr_id"], []).append(r)
     bios = {r["bsnpr_id"]: r for r in _read("player_bios.csv")}
     resolve_team = _team_resolver()
+    season_stats = _season_stats()
 
     # one file per canonical id. A career/obs row for an id absent from
     # players_canonical (id 13352: a jugador.asp career with no enciclopedia
@@ -545,6 +600,28 @@ def build_players_detail() -> tuple[int, int]:
     n = n_thin = 0
     for pid in sorted(canon, key=int):
         c = canon.get(pid, {})
+        career_rows = [
+            {"season": _int(r["season"]), "team_raw": r["team_raw"],
+             "franchise_id": resolve_team(r["team_raw"].split(",")[-1]),
+             "games": _int(r["games"]), "points": _int(r["points"])}
+            for r in career.get(pid, [])
+        ]
+        # attach richer per-season stats where sourced (season_detail_spec.md
+        # §1); a season with no existing thin row gets one synthesized from
+        # the stats row itself, so no Tier-2 data is ever silently dropped.
+        have = {row["season"] for row in career_rows}
+        for season, s in season_stats.get(pid, {}).items():
+            if season in have:
+                next(row for row in career_rows if row["season"] == season)["stats"] = s["fields"]
+            else:
+                city = _DE_SPLIT.split(s["team_raw"], maxsplit=1)[-1]
+                career_rows.append({
+                    "season": season, "team_raw": s["team_raw"],
+                    "franchise_id": resolve_team(city),
+                    "games": s["games"], "points": s["points"],
+                    "stats": s["fields"],
+                })
+        career_rows.sort(key=lambda x: (x["season"] or 0, x["team_raw"]))
         rec = {
             "id": int(pid),
             "name": c.get("canonical_name") or "",
@@ -555,12 +632,7 @@ def build_players_detail() -> tuple[int, int]:
             "position": c.get("position") or None,
             "nationality": c.get("nationality") or None,
             "has_profile": c.get("has_profile") == "yes",
-            "career": sorted(
-                ({"season": _int(r["season"]), "team_raw": r["team_raw"],
-                  "franchise_id": resolve_team(r["team_raw"].split(",")[-1]),
-                  "games": _int(r["games"]), "points": _int(r["points"])}
-                 for r in career.get(pid, [])),
-                key=lambda x: (x["season"] or 0, x["team_raw"])),
+            "career": career_rows,
             "observations": sorted(
                 ({"obs_source": r["obs_source"], "season": _int(r["season"]),
                   "club_raw": r["club_raw"], "match_method": r["match_method"],
@@ -843,6 +915,7 @@ def main() -> int:
         "historic_scoring_champions.csv", "historic_awards.csv",
         "bsn_scoring_champions.csv",
         "player_season_leaders.csv", "player_season_leaders_2000_2002.csv",
+        "player_season_stats_2001_2004.csv",
         "seasons_stats_tracked.csv", "leader_coverage_gaps.csv",
         "city_franchise_map.csv", "game_results.csv", "game_box_player.csv",
         "bsn_career_leaders.csv", "bsn_records.csv",

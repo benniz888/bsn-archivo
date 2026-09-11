@@ -3947,9 +3947,9 @@ function renderArchiveIndex(q){
   ],rows,{file:'archivo_bsn',sort:0,dir:1,
     note:list.length>ARCH_CAP?`Mostrando ${ARCH_CAP} de ${list.length.toLocaleString('es-PR')} — afiná la búsqueda.`:''});
 }
-function openArchivePlayer(id,name){
-  if(XWALK_REV && XWALK_REV[id]!=null){ showPlayer(XWALK_REV[id]); return; }  /* is a curated player -> rich card */
-  showPlayer(name,id);
+function openArchivePlayer(id,name,season){
+  if(XWALK_REV && XWALK_REV[id]!=null){ showPlayer(XWALK_REV[id],null,season); return; }  /* is a curated player -> rich card */
+  showPlayer(name,id,season);
 }
 function renderArchiveCard(name,id,host){
   const r=(PALL||[]).find(x=>x.id===id)||{};
@@ -3968,11 +3968,11 @@ function renderArchiveCard(name,id,host){
   </div>`;
   revealNode(host); host.scrollIntoView({block:'start',behavior:'smooth'});
 }
-function showPlayer(name,id){
+function showPlayer(name,id,season){
   showView('jugadores','buscar',{noScroll:true,noHash:true});   /* a player card lives in the Buscar view */
-  setHash('jugadores/jugador/'+slug(name));
+  setHash('jugadores/jugador/'+slug(name)+(season!=null?'/'+season:''));
   buildPlayerIndex();
-  loadPlayerExtra(name,id);       /* 5D.3b/c — async, fills #playerExtra */
+  loadPlayerExtra(name,id,season);   /* 5D.3b/c — async, fills #playerExtra; season_detail_spec.md §4 */
   const p=PINDEX.find(x=>norm(x.name)===norm(name));
   const host=$('#playerDetail');
   if(!p){
@@ -4027,11 +4027,142 @@ function showPlayer(name,id){
    curated card. Never rewrites the card above: the archive's season totals are
    a different source (reg-season, post-2011) and are shown labelled as such,
    not merged into the curated stat strip. file:// -> PXWALK null -> no-op. */
-async function loadPlayerExtra(name,idHint){
+/* season_detail_spec.md — season-vs-season inline compare (checkboxes on
+   the table below) + the per-season route. SEASON_CMP_* is per-load state,
+   reset at the top of loadPlayerExtra so switching players clears it. */
+let SEASON_CMP_CAREER=null, SEASON_CMP_SEL=new Set(), SEASON_CMP_NAME='';
+
+/* Reshapes one career[] row into the flat-property shape cmpBarRow()
+   already expects from a player object (§2) — reused as-is for season-vs-
+   season, not player-vs-player. PPG/RPG/APG/MIN fall back to a derived
+   per-game value (total ÷ games) when the source doesn't publish the rate
+   directly, same as the rest of this app labels a calculated figure. */
+function seasonCmpObj(c){
+  const s=c.stats||null, g=c.games;
+  const per=(tot)=> (tot!=null && g) ? +(tot/g).toFixed(1) : null;
+  const ak=c.franchise_id && typeof FID2APP!=='undefined' && FID2APP && FID2APP[c.franchise_id];
+  return {
+    name:String(c.season||'—'), clubs: ak?new Set([ak]):new Set(),
+    pts:c.points, gp:g,
+    ppg: s&&s.ppg!=null ? s.ppg : per(c.points),
+    rpg: s&&s.reb ? per(s.reb.t) : null,
+    apg: s ? per(s.ast) : null,
+    min: s ? per(s.minutes) : null,
+    reb: s&&s.reb ? s.reb.t : null, ast: s?s.ast:null,
+    stl: s?s.stl:null, blk: s?s.blk:null, tov: s?s.tov:null,
+    fg: s&&s.fg ? s.fg.pct : null,
+    tp: s&&s.tp&&s.tp.a ? +(s.tp.m/s.tp.a).toFixed(3) : null,
+    ft: s&&s.ft&&s.ft.a ? +(s.ft.m/s.ft.a).toFixed(3) : null,
+  };
+}
+const SEASON_CMP_RATE=[
+  {k:'Puntos por juego',s:'ppg'},{k:'Rebotes por juego',s:'rpg'},{k:'Asistencias por juego',s:'apg'}
+];
+const SEASON_CMP_SHOT=[
+  {k:'Tiros de campo',s:'fg',cap:0.70},{k:'Triples',s:'tp',cap:0.50},{k:'Tiros libres',s:'ft',cap:1.00}
+];
+const SEASON_CMP_TOTAL=[
+  {k:'Puntos',s:'pts'},{k:'Rebotes',s:'reb'},{k:'Asistencias',s:'ast'},
+  {k:'Robos',s:'stl'},{k:'Tapones',s:'blk'},{k:'Pérdidas',s:'tov'},{k:'Juegos',s:'gp'}
+];
+function toggleSeasonCmp(cb,idx){
+  if(cb.checked){
+    if(SEASON_CMP_SEL.size>=3){ cb.checked=false; return; }
+    SEASON_CMP_SEL.add(idx);
+  } else SEASON_CMP_SEL.delete(idx);
+  renderSeasonCmp();
+}
+function renderSeasonCmp(){
+  const host=$('#seasonCmpPanel'); if(!host) return;
+  const rows=Array.from(SEASON_CMP_SEL).sort((a,b)=>a-b)
+    .map(i=>SEASON_CMP_CAREER&&SEASON_CMP_CAREER[i]).filter(Boolean);
+  if(rows.length<2){ host.innerHTML=''; return; }
+  const ps=rows.map(seasonCmpObj);
+  host.innerHTML=`<div class="card cmpcard" style="margin-top:10px">
+    <div class="cmpheads">${ps.map((p,i)=>`<div class="cmphead">
+      <span class="cmpdot" style="background:${cmpColor(p,i)}"></span>
+      <span class="cmpname">${esc(SEASON_CMP_NAME)} · ${esc(p.name)}</span></div>`).join('')}</div>
+    <div class="cmprows">
+      <div class="cmpgrouplab">Por juego</div>
+      ${SEASON_CMP_RATE.map(r=>cmpBarRow(r,ps,false)).join('')}
+      <div class="cmpgrouplab">Tiro</div>
+      ${SEASON_CMP_SHOT.map(r=>cmpBarRow(r,ps,false)).join('')}
+      <div class="cmpgrouplab">De la temporada</div>
+      ${SEASON_CMP_TOTAL.map(r=>cmpBarRow(r,ps,true)).join('')}
+    </div>
+    <div class="dim" style="font-size:11px;margin-top:8px">PPG/RPG/APG/MIN se calculan (total ÷ juegos) cuando la fuente no publica el promedio directamente. Un guion es un hueco del archivo, no un cero.</div>
+  </div>`;
+}
+
+/* One diff, shared by the inline compare panel above and the per-season
+   "vs temporada anterior" line below (§3 — not two implementations). */
+function seasonDiff(curr,prev){
+  if(!curr||!prev) return null;
+  const a=seasonCmpObj(curr), b=seasonCmpObj(prev);
+  const d=(x,y)=> (x!=null&&y!=null) ? +(x-y).toFixed(1) : null;
+  return {ppg:d(a.ppg,b.ppg), rpg:d(a.rpg,b.rpg), apg:d(a.apg,b.apg), from:prev.season};
+}
+function fmtSeasonDelta(diff){
+  if(!diff) return '';
+  const f=(v,u)=>v==null?null:(v>=0?'+':'')+v+' '+u;
+  const parts=[f(diff.ppg,'PTS'),f(diff.rpg,'REB'),f(diff.apg,'AST')].filter(Boolean);
+  return parts.length ? `vs ${diff.from}: ${parts.join(', ')}` : '';
+}
+
+/* Per-season profile (#jugadores/jugador/<slug>/<season>, §3/§4). `car` is
+   already sorted ascending by loadPlayerExtra. Renders nothing for an
+   unknown/mistyped season — never an error state for a bad deep link. */
+function renderSeasonDetail(car,season,name,id){
+  const host=$('#seasonDetail'); if(!host) return;
+  if(season==null){ host.innerHTML=''; return; }
+  const matches=car.filter(c=>c.season===season);
+  const row=matches.find(c=>c.stats)||matches[0];   /* prefer the stats-bearing sibling (§1) */
+  if(!row){ host.innerHTML=''; return; }
+  const idx=car.indexOf(row);
+  const diff=idx>0?seasonDiff(row,car[idx-1]):null;
+  const deltaLine=fmtSeasonDelta(diff);
+  const ak=row.franchise_id && FID2APP && FID2APP[row.franchise_id];
+  const team=(ak&&F[ak])?F[ak].name:(row.team_raw||'—');
+  const s=row.stats, p=seasonCmpObj(row);
+  host.innerHTML=`<div class="card" style="margin-top:12px" id="seasonDetailCard">
+    <div class="phero-sub" style="margin-bottom:6px">${esc(name)} · ${row.season} · ${esc(team)}</div>
+    ${s?`<div class="strip">
+      <div><div class="n">${p.ppg??'—'}</div><div class="l">puntos por juego</div></div>
+      <div><div class="n">${p.rpg??'—'}</div><div class="l">rebotes por juego</div></div>
+      <div><div class="n">${p.apg??'—'}</div><div class="l">asistencias por juego</div></div>
+      <div><div class="n">${p.fg!=null?pct(p.fg):'—'}</div><div class="l">tiro de campo</div></div>
+      <div><div class="n">${row.games??'—'}</div><div class="l">juegos</div></div>
+      <div><div class="n">${s.minutes??'—'}</div><div class="l">minutos</div></div>
+    </div>
+    <div class="muted" style="font-size:12.5px;margin-top:8px">3PT ${p.tp!=null?pct(p.tp):'—'}${s.tp?` (${s.tp.m}-${s.tp.a})`:''} · TL ${p.ft!=null?pct(p.ft):'—'}${s.ft?` (${s.ft.m}-${s.ft.a})`:''}</div>`
+    : `<div class="strip">
+      <div><div class="n">${row.games??'—'}</div><div class="l">juegos</div></div>
+      <div><div class="n">${row.points!=null?row.points.toLocaleString('es-PR'):'—'}</div><div class="l">puntos</div></div>
+    </div>
+    <div class="note">Sin más detalle por temporada en el archivo.</div>`}
+    ${deltaLine?`<div class="phero-note" style="margin-top:8px">${esc(deltaLine)}</div>`:''}
+    <div id="seasonLeaderNote"></div>
+  </div>`;
+  document.getElementById('seasonDetailCard').scrollIntoView({block:'start',behavior:'smooth'});
+  /* optional, low-stakes cross-reference — matched by normalized exact
+     name against that season's leaders (already-established identity, a
+     display nicety, not a new identity claim); skipped silently if absent */
+  DATA.get('seasons/'+row.season+'.json').then(sd=>{
+    const ln=document.getElementById('seasonLeaderNote'); if(!ln||!sd||!sd.leaders) return;
+    const hit=Object.keys(sd.leaders).find(cat=>(sd.leaders[cat]||[]).some(l=>norm(l.player_raw)===norm(name)));
+    if(hit) ln.innerHTML=`<div class="note" style="margin-top:6px">Entre los líderes de la liga en ${esc(_LEADER_CAT_ES[hit]||hit)} esa temporada.</div>`;
+  }).catch(()=>{});
+}
+const _LEADER_CAT_ES={scoring:'anotación',rebounds:'rebotes',assists:'asistencias',blocks:'bloqueos',
+  steals:'robos',turnovers:'pérdidas',threes:'triples',three_pct:'% de triples',
+  off_rebounds:'rebotes ofensivos',free_throws:'tiros libres',free_throw_pct:'% de tiros libres'};
+
+async function loadPlayerExtra(name,idHint,season){
   const host=$('#playerExtra'); if(!host) return;
   const id = (idHint!=null) ? idHint : (PXWALK && PXWALK[norm(name)]);
   const key = (id!=null) ? 'id:'+id : norm(name);
   host.innerHTML=''; host.dataset.key=key;
+  SEASON_CMP_CAREER=null; SEASON_CMP_SEL=new Set(); SEASON_CMP_NAME=name;
   if(id==null) return;
   const d=await DATA.get('players/'+id+'.json');
   if(!d || host.dataset.key!==key) return;
@@ -4052,12 +4183,12 @@ async function loadPlayerExtra(name,idHint){
       +`<p class="muted" style="font-size:13.5px;margin:4px 0 0;line-height:1.5">${esc(bio.notes_es)}</p>`;
   }
 
-  const car=d.career||[];
+  const car=(d.career||[]).slice().sort((a,b)=>(a.season||0)-(b.season||0));
   /* 8.3b — fill the hero sparkline with points-by-season (the guard above
      already dropped a stale load, so #playerSpark belongs to this player). */
   const sp=$('#playerSpark');
   if(sp && car.length){
-    const pv=car.slice().sort((a,b)=>(a.season||0)-(b.season||0)).map(c=>c.points==null?null:c.points);
+    const pv=car.map(c=>c.points==null?null:c.points);
     if(pv.filter(v=>v!=null).length>=2) sp.innerHTML=spark(pv,{area:true,dot:true,w:150,h:26});
   }
   if(car.length){
@@ -4065,16 +4196,21 @@ async function loadPlayerExtra(name,idHint){
     car.forEach(c=>{ if(c.points!=null)tp+=c.points; if(c.games!=null)tg+=c.games; if(c.season)sea.add(c.season); });
     const yrs=car.map(c=>c.season).filter(Boolean);
     const lo=yrs.length?Math.min(...yrs):null, hi=yrs.length?Math.max(...yrs):null;
-    h+='<div class="note" style="margin-top:10px">Temporada por temporada</div>'
-      +'<div class="tblwrap"><table><thead><tr><th>Año</th><th>Equipo</th><th class="num">JJ</th><th class="num">PTS</th></tr></thead><tbody>'
-      +car.map(c=>{
+    h+='<div class="note" style="margin-top:10px">Temporada por temporada <span class="dim" style="font-weight:400">— marca 2 o 3 para comparar</span></div>'
+      +'<div class="tblwrap"><table><thead><tr><th></th><th>Año</th><th>Equipo</th><th class="num">JJ</th><th class="num">PTS</th></tr></thead><tbody>'
+      +car.map((c,i)=>{
         const ak=FID2APP&&FID2APP[c.franchise_id];
         const team=(ak&&F[ak])
           ? `<button class="chip" style="padding:1px 7px" onclick="showTeam('${ak}')">${esc(F[ak].name)}</button>`
           : esc(c.team_raw||'—');
-        return `<tr><td>${c.season||'—'}</td><td>${team}</td><td class="num">${c.games==null?'—':c.games}</td><td class="num">${c.points==null?'—':c.points.toLocaleString('es-PR')}</td></tr>`;
+        const yr=c.season
+          ? `<button style="background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer" onclick="showPlayer(${JSON.stringify(name).replace(/"/g,'&quot;')},${id},${c.season})">${c.season}</button>`
+          : '—';
+        return `<tr><td><input type="checkbox" aria-label="Comparar ${c.season||''}" onchange="toggleSeasonCmp(this,${i})"></td>`
+          +`<td>${yr}</td><td>${team}</td><td class="num">${c.games==null?'—':c.games}</td><td class="num">${c.points==null?'—':c.points.toLocaleString('es-PR')}</td></tr>`;
       }).join('')
-      +'</tbody></table></div>';
+      +'</tbody></table></div>'
+      +'<div id="seasonCmpPanel"></div>';
     if(tp||tg)
       h+=`<div class="muted" style="font-size:12.5px;margin-top:6px">Totales del archivo: `
         +`${tp.toLocaleString('es-PR')} puntos en ${tg.toLocaleString('es-PR')} juegos · `
@@ -4084,8 +4220,11 @@ async function loadPlayerExtra(name,idHint){
     h+=`<div class="note" style="margin-top:10px">Sin estadísticas por temporada en el archivo `
       +`<span class="muted">— ${bio&&bio.notes_es?'sólo la reseña de arriba':'sin ficha detallada'}</span>.</div>`;
   }
+  h+='<div id="seasonDetail"></div>';
   host.innerHTML=`<div class="card" style="margin-top:12px">${h}`
     +`<div class="note">Ficha del archivo de bsnpr.com (jugador #${id}) vía Wayback Machine.</div></div>`;
+  SEASON_CMP_CAREER=car;
+  if(season!=null) renderSeasonDetail(car,season,name,id);
 }
 
 let LEAD_CAT='points', LEAD_MODE='total';
@@ -7273,9 +7412,13 @@ function applyHash(){
   }
   if(a==='jugadores' && b==='jugador' && c){
     showView('jugadores','buscar',{fromHash:true,noScroll:true});
+    /* season_detail_spec.md §4 — optional 4th segment: #.../<slug>/<season>.
+       An unknown/mistyped season is silently ignored (normal card, no
+       per-season block) — never an error state for a bad deep link. */
+    const season = p[3] && /^\d{4}$/.test(p[3]) ? +p[3] : null;
     const pl=PINDEX&&PINDEX.find(x=>slug(x.name)===c);
-    if(pl) showPlayer(pl.name);
-    else { const q=PALL&&PALL.find(x=>slug(x.name)===c); if(q&&typeof openArchivePlayer==='function') openArchivePlayer(q.id,q.name); }
+    if(pl) showPlayer(pl.name,null,season);
+    else { const q=PALL&&PALL.find(x=>slug(x.name)===c); if(q&&typeof openArchivePlayer==='function') openArchivePlayer(q.id,q.name,season); }
     return;
   }
   if(a==='equipos' && b==='equipo' && c && F[c]){ showTeam(c); return; }
