@@ -16,9 +16,10 @@
   wrong-identity crosswalk bug FIXED, LIVE** · **visual-motif pass (backlog
   item 1) DONE, LIVE, owner-verified** — steps A + B shipped, C stays
   parked (owner's call); Taíno sourcing pass done, research only, nothing
-  built from it; **6-item visual/feature backlog in progress, item 2 now
-  scoping** (illustrated player/team figures), one item at a time,
-  plan→approve→build→verify each
+  built from it; **6-item visual/feature backlog in progress — item 2
+  (illustrated player/team figures) Phase 1 BUILT, LIVE, pending owner
+  verification live**, Phase 2 (12 more crest icons) queued, one item at
+  a time, plan→approve→build→verify each
 **DATE:** 2026-09-11
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
@@ -329,12 +330,9 @@ bundle items.
    shipped and confirmed live (mobile + desktop, both themes). Step C
    (texture layer) stays parked, owner's call — the Taíno sourcing pass
    is done and waiting if it's ever picked up.
-2. **Illustrated player/team figures, StatMuse-style — now scoping.**
-   Sidesteps the
-   real-photo/real-crest rights question this archive has deliberately
-   deferred; unlocks #3; retroactively gives today's text-only team pages
-   a visual identity. Needs an art-direction/style decision first —
-   propose options, don't guess one.
+2. **Illustrated player/team figures, StatMuse-style — Phase 1 BUILT, LIVE,
+   pending owner verification live.** See the full record below. Phase 2
+   (12 more crest icons, one small reviewed batch at a time) not started.
 3. **Starting-five visual, per team per season** (Sofascore-style
    formation card — half-court/paint layout, not a pitch; PG/SG/SF/PF/C
    positions; headshot circle from #2's illustrated figures, not real
@@ -357,6 +355,79 @@ bundle items.
    one.** Cuadrícula, Temporada Perfecta, and Quién soy each need their
    own scoping pass, their own plan, their own approval. Don't try to do
    all three at once.
+
+Illustrated player/team figures (backlog item 2) — full record. Scoped
+before building: real photos/likeness illustration ruled out archive-wide,
+for two separate legal reasons — copyright (existing team logos, which the
+archive has deliberately deferred elsewhere too) AND right of publicity
+(a from-scratch illustration clearly recognizable as a specific real
+person raises the same identity claim as a photo; drawing it ourselves
+doesn't resolve that, it's a different question). Design review ran as
+its own pass before any code: 3 crest style directions (A monogram seal,
+B geometric emblem, C diagonal-band patch) shown on Bayamón; B chosen,
+stress-tested on Santurce/Ponce/Arecibo (crab, lion-mane-as-sunburst,
+anchor for a non-animal name); a 4th direction (D, literal illustrated
+mascot — real cowboy/crab/lion, not abstracted) added on request, same
+shield frame as B so only the icon varies, with real effort numbers (B:
+4-6 shapes/icon; D: 10-25 shapes/icon) and the honest risk read (B can't
+look "wrong" since it never claims realism; D can). Before signing off,
+read all 33 franchise names against the D question — not assumed — and
+found roughly a third don't have a safe literal-mascot concept: real
+Indigenous identity (Indios×2, Taínos, Caciques), real PR cultural/
+religious identity (Criollos, Santeros, Brujos), a colonial figure
+(Conquistadores), a name too close to an existing pro mascot (Cardenales),
+names with no figure at all (Atléticos, Mets, Capitalinos, Vega Baja), or
+names whose meaning isn't confidently known (Cariduros, Atenienses,
+Avancinos) — inventing a concept for those would be the same fabrication
+this archive refuses to do with data, applied to art. Player avatars: 4
+position-based silhouette mockups (guard/center/forward/neutral-fallback)
++ a same-pose-3-teams recolor check, shown alongside crests for one
+combined sign-off. Mockups (steps A/B→D, both systems together, all
+owner-approved): https://claude.ai/code/artifact/0a7b03f4-c716-432c-b774-a0cb4d2369d2
+
+**Owner-approved, locked, no exceptions**: B is the universal crest
+baseline for all 33 franchises; D layers on top only for the 16 confirmed-
+safe names (all logged, with the concept per team); the other 17 names get
+B forever, not just until Phase 2 gets to them. Player avatars: Direction
+1 (position-based procedural silhouette, no likeness for anyone) is final
+for all 3,343 players — no curated-legends tier.
+
+**Phase 1 — BUILT, LIVE, pending owner verification live.** Real position
+data checked before writing the mapping (not assumed): two vocabularies
+appear in the data, Spanish long-form (`Armador`/`Escolta`/`Alero`/
+`Delantero`/`Centro` + 4 slash-combo forms, from `players_canonical.csv`
+and every archive player JSON) and English short-form (`PG`/`SG`/`SF`/
+`PF`/`C`/`G`/`F`/`F-C`, from the curated `HOF` array) — `p.pos` can be
+either depending which source populated it first. **2,674 of 3,343
+players (80%) have no position on record at all** and get the neutral
+silhouette, unchanged from before this pass — the pose variety only shows
+for the other 20%. New `posPose()`: splits a combo on `/`, takes the
+primary term, maps both vocabularies to guard/forward/center; anything
+unrecognized → `null` → neutral, nothing invented. `portrait()` gained a
+`pos` param, threaded through its 3 call sites (`renderArchiveCard` →
+`r.position`, `showPlayer` → `p.pos`, `buildHOF` → `h.pos`).
+`crestSVG()` rebuilt on a refined shield (112×130 viewBox, was 40×48):
+new `CREST_ICONS` registry, exactly 3 entries this phase (`vaquero`,
+`cangrejo`, `leon` — the 3 already reviewed live), wired to `F.bay.art`/
+`F.san.art`/`F.pon.art`; every other franchise (including all 17
+permanently-flagged ones) renders shield+abbreviation only. **The safety
+call is now an enforced test, not just a judgment call**: new
+`scratchpad/illustrated_figures_harness.mjs` asserts none of the 17
+flagged keys (`sge`,`gua`,`cag`,`may`,`agu`,`cap`,`rio`,`veg`,`cno`,`guy`,
+`faj`,`hum`,`ate`,`vil`,`cab`,`con`,`cac`) ever carries an `art` value —
+so a future edit that tries to add one to, say, `may` or `cab` fails
+`make test` loudly instead of shipping quietly. `make verify` (329,938
+checks) + `make test` (174) green; all 6 existing harnesses (`phero`,
+`bio`, `season_detail`, `georgie_bug`, `tri_motif`, `tri_motif_b`) still
+green — no regressions from touching `crestSVG`/`portrait`. Real shipped
+output (extracted straight from the edited functions, not hand-recreated)
+shown before commit: https://claude.ai/code/artifact/8370e839-0ca6-4c30-9639-9f74babf304c.
+
+**Phase 2 — not started.** 13 more D-eligible franchise names are queued
+(`are`→ancla, `que`→pirata, `car`→gigante, `man`→oso, `upr`+`isa`→gallo,
+`nau`→timón, `aib`→pollito, `mor`→titán, `toi`→cocotero, `coa`→
+maratonista, `agd`→tiburón, `cay`→torito) — one small reviewed batch at a
+time, each shown live before it ships, same discipline as Phase 1's 3.
 
 Open threads:
 docs/project.md D2 refinement for the Grises/Caciques de Humacao split (D-045);

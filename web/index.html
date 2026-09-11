@@ -1286,6 +1286,7 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
 <script>
 const F = {
   bay:{name:"Vaqueros de Bayamón",abbr:"BAY",city:"Bayamón",founded:1930,active:1,c1:"#1B4F9C",c2:"#E8B23A",colorSrc:"wiki",
+       art:"vaquero",
        coach:"Christian Dalmau",
        won:[1933,1935,1967,1969,1971,1972,1973,1974,1975,1981,1988,1995,1996,2009,2020,2022,2025,2026],
        ru:[1930,1934,1970,2001,2002,2005,2010,2016,2018,2023]},
@@ -1294,9 +1295,11 @@ const F = {
        won:[1932,1938,1939,1941,1942,1947,1948,1949,1950,1985,1991,1994,1997],
        ru:[1931,1933,1936,1940,1954,1955,1956,1957,1965,1986,2022]},
   pon:{name:"Leones de Ponce",abbr:"PON",city:"Ponce",founded:1946,active:1,c1:"#C8102E",c2:"#F0C24B",colorSrc:"approx",
+       art:"leon",
        won:[1952,1954,1960,1961,1964,1965,1966,1990,1992,1993,2002,2004,2014,2015],
        ru:[1949,1958,1963,1967,1989,1995,1996,1998,2003,2013,2019,2025]},
   san:{name:"Cangrejeros de Santurce",abbr:"SAN",city:"Santurce",founded:1918,active:1,c1:"#E85D1F",c2:"#191919",colorSrc:"approx",
+       art:"cangrejo",
        won:[1962,1968,1998,1999,2000,2001,2003,2007],ru:[1942,1951,1952,1964,2006]},
   are:{name:"Capitanes de Arecibo",abbr:"ARE",city:"Arecibo",founded:1946,active:1,c1:"#0E7C7B",c2:"#F2F2F2",colorSrc:"approx",
        won:[1959,2005,2008,2010,2011,2016,2018,2021],
@@ -2770,16 +2773,71 @@ document.addEventListener('load',e=>{
   if(t && t.tagName==='IMG' && t.dataset.base && t.naturalWidth>0) t.style.display='block';
 },true);
 
+/* illustrated-figures pass (Phase 1) — crests: an original geometric emblem
+   for every franchise (shield + abbreviation, "B" from the mockup review),
+   with a more detailed original mascot illustration ("D") layered on top
+   ONLY for franchise keys that carry an `art` value below. `art` is set on
+   exactly 3 keys in this phase (bay/san/pon — the 3 icons reviewed and
+   approved live); 13 more D-eligible names are queued for Phase 2, added
+   the same way once each icon is designed and shown before it ships.
+   Never real logos — original interpretations of what each name literally
+   means, never traced from an existing crest. No `art` value is EVER a
+   fallback state, not an oversight: 17 franchise names reference real
+   Indigenous identity (Indios×2, Taínos, Caciques), real Puerto Rican
+   cultural/religious practice (Criollos, Santeros, Brujos), a colonial
+   figure (Conquistadores), a name too close to an existing pro mascot
+   (Cardenales), a name with no figure at all (Atléticos, Mets, Capitalinos,
+   Vega Baja), or a name whose meaning isn't confidently known (Cariduros,
+   Atenienses, Avancinos) — those stay on the shield+type fallback forever,
+   not just until someone gets around to it. crest_art_harness.mjs enforces
+   this: none of those 17 keys may ever carry an `art` value. */
+const CREST_ICONS={
+  vaquero:(c1,c2)=>`<g fill="${c2}">
+      <ellipse cx="56" cy="27" rx="22" ry="6"/><rect x="45" y="9" width="22" height="19" rx="9"/>
+      <circle cx="56" cy="39" r="8"/><path d="M50 46h12l-6 7Z"/></g>
+    <path d="M43 52h26l-5 26h-16Z" fill="${c2}"/>
+    <g stroke="${c2}" stroke-width="5" stroke-linecap="round" fill="none">
+      <path d="M43 55q-13 4-10 17"/><path d="M69 55q13 4 8 18"/>
+      <path d="M49 78l-4 22"/><path d="M63 78l5 22"/></g>
+    <circle cx="30" cy="70" r="7" fill="none" stroke="${c2}" stroke-width="3"/>`,
+  cangrejo:(c1,c2)=>`<path d="M30 56Q34 42 44 44Q50 38 56 38Q62 38 68 44Q78 42 82 56Q84 68 72 74Q62 78 56 78Q50 78 40 74Q28 68 30 56Z" fill="${c2}"/>
+    <g stroke="${c2}" stroke-width="2.6"><line x1="46" y1="44" x2="43" y2="34"/><line x1="66" y1="44" x2="69" y2="34"/></g>
+    <circle cx="43" cy="32" r="3" fill="${c2}"/><circle cx="69" cy="32" r="3" fill="${c2}"/>
+    <g fill="${c2}"><path d="M30 50q-10-4-12 6q8 4 14-1Z"/><path d="M22 56q-4 8 4 12q4-6 0-12Z"/>
+      <path d="M82 50q10-4 12 6q-8 4-14-1Z"/><path d="M90 56q4 8-4 12q-4-6 0-12Z"/></g>
+    <g stroke="${c2}" stroke-width="2.4" fill="none" stroke-linecap="round">
+      <path d="M32 62L22 66L17 74"/><path d="M34 70L25 76L21 84"/><path d="M40 76L33 84L30 92"/>
+      <path d="M80 62L90 66L95 74"/><path d="M78 70L87 76L91 84"/><path d="M72 76L79 84L82 92"/></g>`,
+  leon:(c1,c2)=>`<g fill="${c2}">
+      <path d="M56 44l6 -24 6 20Z"/><path d="M56 44l-6 -24 -6 20Z"/>
+      <path d="M56 44l14 -20 3 22Z"/><path d="M56 44l-14 -20 -3 22Z"/>
+      <path d="M56 44l20 -12 -1 22Z"/><path d="M56 44l-20 -12 1 22Z"/>
+      <path d="M56 44l24 -4 -6 20Z"/><path d="M56 44l-24 -4 6 20Z"/>
+      <path d="M56 48l25 4 -10 18Z"/><path d="M56 48l-25 4 10 18Z"/>
+      <path d="M56 52l22 12 -14 14Z"/><path d="M56 52l-22 12 14 14Z"/></g>
+    <circle cx="56" cy="48" r="15" fill="${c2}"/>
+    <path d="M44 40q4-6 10-3" fill="none" stroke="${c1}" stroke-width="2"/>
+    <path d="M68 40q-4-6-10-3" fill="none" stroke="${c1}" stroke-width="2"/>
+    <ellipse cx="49" cy="46" rx="2" ry="2.6" fill="${c1}"/><ellipse cx="63" cy="46" rx="2" ry="2.6" fill="${c1}"/>
+    <path d="M53 52h6l-3 4Z" fill="${c1}"/>
+    <path d="M48 58q8 5 16 0" fill="none" stroke="${c1}" stroke-width="1.8" stroke-linecap="round"/>
+    <g stroke="${c1}" stroke-width="1.2" opacity=".75">
+      <line x1="40" y1="52" x2="30" y2="50"/><line x1="40" y1="56" x2="30" y2="57"/>
+      <line x1="72" y1="52" x2="82" y2="50"/><line x1="72" y1="56" x2="82" y2="57"/></g>`,
+};
 function crestSVG(k,w,h){
   const f=F[k]; if(!f) return '';
   const id='cg'+k+w;
-  return `<svg width="${w}" height="${h}" viewBox="0 0 40 48" aria-hidden="true">
+  const icon=f.art && CREST_ICONS[f.art] ? CREST_ICONS[f.art](f.c1,f.c2) : '';
+  const abbrY=icon?116:74, abbrSize=icon?17:32;
+  return `<svg width="${w}" height="${h}" viewBox="0 0 112 130" aria-hidden="true">
     <defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="${f.c1}"/><stop offset="1" stop-color="${f.c1}" stop-opacity=".72"/>
+      <stop offset="0" stop-color="${f.c1}"/><stop offset="1" stop-color="${f.c1}" stop-opacity=".8"/>
     </linearGradient></defs>
-    <path d="M2 3h36v29c0 8-12 13-18 14C14 45 2 40 2 32Z" fill="url(#${id})" stroke="${f.c2}" stroke-width="1.6"/>
-    <text x="20" y="26" text-anchor="middle" font-family="Inter,sans-serif" font-weight="800"
-      font-size="14" fill="${f.c2}">${esc(f.abbr)}</text>
+    <path d="M8 10h96v58c0 34-32 48-48 50-16-2-48-16-48-50Z" fill="url(#${id})" stroke="${f.c2}" stroke-width="3"/>
+    ${icon}
+    <text x="56" y="${abbrY}" text-anchor="middle" font-family="Inter,sans-serif" font-weight="800"
+      letter-spacing="-.3" font-size="${abbrSize}" fill="${f.c2}">${esc(f.abbr)}</text>
   </svg>`;
 }
 function crest(k,w=34,h=41){
@@ -2787,15 +2845,48 @@ function crest(k,w=34,h=41){
   const img=USE_IMAGES?imgTry(CREST_DIR+k,CREST_EXT,'',f.name+' escudo'):'';
   return `<span class="crest" style="width:${w}px;height:${h}px">${crestSVG(k,w,h)}${img}</span>`;
 }
-function portrait(name,c1,c2,w=54,h=66){
+/* illustrated-figures pass (Phase 1) — players: a position-varied silhouette,
+   never a likeness. Two vocabularies show up in real position data: Spanish
+   long-form (players_canonical.csv / archive JSON — Armador, Escolta, Alero,
+   Delantero, Centro, plus 4 slash-combo forms) and English short-form (the
+   curated HOF array — PG/SG/SF/PF/C/G/F/F-C). posPose() takes the primary
+   term before any "/" and maps both vocabularies to one of 3 poses; anything
+   it doesn't recognize (including the ~80% of players with no position on
+   record at all) falls back to null -> the plain neutral silhouette, same
+   shape this function always used. No pose is ever invented for a player
+   the archive doesn't have position data for. */
+function posPose(pos){
+  if(!pos) return null;
+  const p=String(pos).split('/')[0].trim();
+  const M={Armador:'guard',Escolta:'guard',PG:'guard',SG:'guard',G:'guard',
+    Alero:'forward',Delantero:'forward',SF:'forward',PF:'forward',F:'forward',
+    Centro:'center',C:'center'};
+  return M[p] || null;
+}
+const POSE_ICON={
+  guard:(c1,c2)=>`<circle cx="45" cy="24" r="15" fill="${c1}" opacity=".9"/>
+    <path d="M20 118c1-24 10-34 25-34s24 10 25 34Z" fill="${c1}" opacity=".9"/>
+    <path d="M55 66c14-4 22-14 24-26" fill="none" stroke="${c2}" stroke-width="7" stroke-linecap="round"/>`,
+  center:(c1,c2)=>`<circle cx="45" cy="22" r="15" fill="${c1}" opacity=".9"/>
+    <path d="M12 118c0-28 14-40 33-40s33 12 33 40Z" fill="${c1}" opacity=".9"/>
+    <path d="M26 58c-8-10-10-20-8-30M64 58c8-10 10-20 8-30" fill="none" stroke="${c2}" stroke-width="7" stroke-linecap="round"/>`,
+  forward:(c1,c2)=>`<circle cx="45" cy="23" r="15" fill="${c1}" opacity=".9"/>
+    <path d="M17 118c1-26 12-36 28-36s27 10 28 36Z" fill="${c1}" opacity=".9"/>
+    <path d="M52 60c4-16 4-28-2-40" fill="none" stroke="${c2}" stroke-width="7" stroke-linecap="round"/>`,
+};
+function portrait(name,c1,c2,w=54,h=66,pos){
   const id='pt'+slug(name);
   const ini=name.replace(/[«»]/g,'').split(/\s+/).filter(Boolean).slice(0,2).map(s=>s[0]).join('');
-  const svg=`<svg width="${w}" height="${h}" viewBox="0 0 54 66" aria-hidden="true">
-    <rect width="54" height="66" rx="5" fill="${c1}" opacity=".22"/>
-    <circle cx="27" cy="25" r="12" fill="${c1}" opacity=".55"/>
-    <path d="M6 66c2-14 10-20 21-20s19 6 21 20Z" fill="${c1}" opacity=".55"/>
-    <text x="27" y="30" text-anchor="middle" font-family="Inter,sans-serif" font-weight="800"
-      font-size="17" fill="${c2}">${esc(ini)}</text></svg>`;
+  const pose=posPose(pos);
+  const body=pose ? POSE_ICON[pose](c1,c2)
+    : `<rect x="18" y="8" width="54" height="66" rx="5" fill="${c1}" opacity=".22"/>
+       <circle cx="45" cy="33" r="12" fill="${c1}" opacity=".55"/>
+       <path d="M24 74c2-14 10-20 21-20s19 6 21 20Z" fill="${c1}" opacity=".55"/>`;
+  const ty=pose ? 29 : 38;
+  const svg=`<svg width="${w}" height="${h}" viewBox="0 0 90 118" aria-hidden="true">
+    ${body}
+    <text x="45" y="${ty}" text-anchor="middle" font-family="Inter,sans-serif" font-weight="800"
+      font-size="15" fill="${c2}">${esc(ini)}</text></svg>`;
   const img=USE_IMAGES?imgTry(PLAYER_DIR+slug(name),PLAYER_EXT,'',name):'';
   return `<span class="crest" style="width:${w}px;height:${h}px" id="${id}">${svg}${img}</span>`;
 }
@@ -3988,7 +4079,7 @@ function renderArchiveCard(name,id,host){
   const meta=[r.position,span,(r.nationality&&r.nationality!=='Puerto Rico')?r.nationality:''].filter(Boolean).join(' · ');
   host.innerHTML=`<div class="card" style="margin-top:18px">
     <div style="display:flex;gap:16px;flex-wrap:wrap">
-      ${portrait(name,'var(--azul)','var(--blanco)',60,74)}
+      ${portrait(name,'var(--azul)','var(--blanco)',60,74,r.position)}
       <div style="flex:1;min-width:230px">
         <h3 style="font-size:24px">${esc(name)}</h3>
         <div class="muted" style="font-size:13.5px">${esc(meta||'sin datos de posición o años')}</div>
@@ -4026,7 +4117,7 @@ function showPlayer(name,id,season){
   host.innerHTML=`<div class="card" style="margin-top:18px;border-color:${c1}">
     <div class="tri phero-tri"></div>
     <div class="phero">
-      ${portrait(p.name,c1,c2,60,74)}
+      ${portrait(p.name,c1,c2,60,74,p.pos)}
       <div class="phero-body">
         <h3>${esc(p.name)}</h3>
         <div class="phero-sub">${esc([p.pos,p.years].filter(Boolean).join(' · ')||'posición y años sin registrar')}</div>
@@ -4301,7 +4392,7 @@ function buildHOF(){
   });
   $('#hofList').innerHTML='<div class="cards g2">'+list.map(h=>`
     <div class="card" style="display:flex;gap:13px">
-      ${portrait(h.n,'var(--azul)','var(--blanco)',48,58)}
+      ${portrait(h.n,'var(--azul)','var(--blanco)',48,58,h.pos)}
       <div style="min-width:0">
         <div style="font-weight:700;font-size:16px">${esc(h.n)}</div>
         <div class="dim" style="font-size:12px">${esc(h.yrs)} · ${esc(h.pos)}</div>
