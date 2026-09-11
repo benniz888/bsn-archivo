@@ -242,9 +242,16 @@ class TestBuild:
 
     def test_player_xwalk(self):
         xw = json.loads((b.WEB / "index" / "player_xwalk.json").read_text())
-        assert xw["georgie torres"] == 788           # owner spot-check
         assert xw["jose piculin ortiz"] == 1271
         assert "arnaldo toro" not in xw               # rejected -> none
+        # "Georgie Torres" -> 788 was a bad "auto" match (id 788 is a
+        # different real player, "Torres Dougherty, George"; surname
+        # mismatch, no corroboration - see player_crosswalk.csv's row and
+        # docs/session.md). Severed, not re-pointed: no bsnpr_id in this
+        # archive currently corroborates the real Georgie Torres (BSN's
+        # all-time scoring leader, 1975-2001). Must stay unlinked, not
+        # silently re-resolve to some other guess.
+        assert "georgie torres" not in xw
         idx = {x["id"] for x in json.loads((b.WEB / "index" / "players.json").read_text())}
         assert all(v in idx for v in xw.values())     # every target is a real id
         assert all(k == b._app_norm(k) for k in xw)   # keys already normalised

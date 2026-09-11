@@ -4163,7 +4163,11 @@ async function loadPlayerExtra(name,idHint,season){
   const key = (id!=null) ? 'id:'+id : norm(name);
   host.innerHTML=''; host.dataset.key=key;
   SEASON_CMP_CAREER=null; SEASON_CMP_SEL=new Set(); SEASON_CMP_NAME=name;
-  if(id==null) return;
+  if(id==null){
+    host.innerHTML=`<div class="card" style="margin-top:12px"><div class="note" style="margin-top:10px">Sin ficha vinculada en el archivo de bsnpr.com `
+      +`<span class="muted">— no se ha podido identificar con certeza a este jugador en esa base</span>.</div></div>`;
+    return;
+  }
   const d=await DATA.get('players/'+id+'.json');
   if(!d || host.dataset.key!==key) return;
 

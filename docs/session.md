@@ -12,7 +12,8 @@
   owner-reviewed and applied) · button-color bugfix · **team page "time
   warp" DONE, LIVE, owner-verified** (coliseo data, rivalry, lore) ·
   **season-vs-season comparison + per-season profile view BUILT, pending
-  owner verification live** (`season_detail_spec.md`)
+  owner verification live** (`season_detail_spec.md`) · **Georgie Torres
+  wrong-identity crosswalk bug FIXED, LIVE-pending-poll**
 **DATE:** 2026-09-11
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
@@ -158,6 +159,60 @@ pytest tests + `make verify`/`make test` (174) green; new harness
 `scratchpad/season_detail_harness.mjs`; `bio_harness`/`phero_harness`
 updated for the new `loadPlayerExtra`/`showPlayer` signatures. **Pending
 owner verification live** before flipping to DONE.
+
+Owner-reported bug, fixed same session (season-detail feature verification):
+Raymond Dalmau's page worked as spec'd; Georgie Torres's page showed
+"Sin estadísticas por temporada en el archivo — sin ficha detallada" — false,
+since the real Georgie Torres (BSN's all-time scoring leader, 15,863 pts,
+679 gp, 1975–2001) is a documented archive legend, not a blank record.
+Investigated per owner's 3-part ask:
+1. **"Separate Leyenda template" — disproven.** `buildHOF()`'s "Ficha" button
+   calls the exact same `showPlayer()` every other player link in the app
+   uses; there is exactly one `showPlayer` function. Confirmed via
+   `scratchpad/georgie_bug_harness.mjs`.
+2. **Root cause**: `showPlayer(name)` called without an id (true of most
+   call sites — team rosters, leader tables, search hits, the HOF list)
+   falls back to `PXWALK[norm(name)]`. `app/player_crosswalk.csv` had
+   `Georgie Torres -> 788 ("Torres Dougherty, George")` at `verdict:auto,
+   confidence:10` — a weak, purely name-pattern "auto" match (surname+
+   initial, swapped-initial-vs-alias) that turns out to be a **different
+   real person** (surname "Torres Dougherty" != "Torres", b.1957, single-
+   source `enciclopedia.asp` entry, 0 career rows) — a D1 violation (linked
+   on name-pattern alone, no real corroboration). The app fetched and
+   rendered that wrong, empty record under Georgie Torres's real name/bio.
+   Searched exhaustively for the correct id (every `apellidos=Torres` /
+   Torres-compound-surname row in `players_canonical.csv`, every
+   career-points total >10,000 in `player_career_seasons.csv`) — **no
+   candidate matches the real Georgie Torres's known career span/totals.
+   He is not currently linkable in this archive's data — a genuine gap,
+   not a fixable typo.**
+3. **Scanned the rest of the crosswalk** for the same failure shape
+   (low-confidence `auto` row -> a bsnpr_id with 0 career rows), cross-
+   referenced against all 18 curated `HOF` legends specifically (the class
+   of player this symptom would matter most for). Found 5 more HOF names
+   resolving to a 0-career-row id (Juan «Pachín» Vicéns, Rolando Frazer,
+   Butch Lee, Teófilo Cruz, Federico «Fico» López) — but all 5 have a
+   surname/given-name match (no mismatch like Georgie's) and plausible
+   birth years for their known eras; 2 were already `review`/owner-approved
+   rows. Read as a genuine, pre-existing Tier-1 coverage gap for
+   early-era legends, **not** the same wrong-identity bug — left untouched.
+   No case was found where a curated player's crosswalk link has *real,
+   rich data sitting hidden* behind the "no data" message — Georgie's case
+   is a wrong link, not a suppressed-but-existing dataset.
+
+Fix applied: severed the bad crosswalk row (`app/player_crosswalk.csv`:
+`Georgie Torres` -> `verdict:rejected`, blank `bsnpr_id`, evidence
+documented in the row) so `showPlayer('Georgie Torres')` no longer resolves
+to id 788; rebuilt `web/data/index/player_xwalk.json` (158 -> 157 entries,
+every other link byte-identical). Also hardened `loadPlayerExtra`'s
+`id==null` path (previously silent/blank for **every** not-yet-linked
+curated player, ~228 of them) to show an honest "Sin ficha vinculada en el
+archivo de bsnpr.com" note instead — never blank, never the wrong player's
+data. `tests/test_build_web_data.py::test_player_xwalk` updated (it had
+literally asserted the bug: `xw["georgie torres"] == 788`). `make verify`
+(329,938 checks) + `make test` (174) green; new
+`scratchpad/georgie_bug_harness.mjs` alongside `season_detail_harness.mjs`/
+`bio_harness.mjs`/`phero_harness.mjs`, all green. **Pending live poll.**
 
 Open threads:
 docs/project.md D2 refinement for the Grises/Caciques de Humacao split (D-045);
