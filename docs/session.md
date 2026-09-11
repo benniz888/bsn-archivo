@@ -17,9 +17,11 @@
   item 1) DONE, LIVE, owner-verified** — steps A + B shipped, C stays
   parked (owner's call); Taíno sourcing pass done, research only, nothing
   built from it; **6-item visual/feature backlog in progress — item 2
-  (illustrated player/team figures) Phase 1 BUILT, LIVE, pending owner
-  verification live**, Phase 2 (12 more crest icons) queued, one item at
-  a time, plan→approve→build→verify each
+  (illustrated player/team figures) Phase 1 BUILT, LIVE, 3 owner-reported
+  bugs fixed and independently verified against the live deploy (curl +
+  harness run against the fetched HTML, not just local code) — pending
+  owner's own visual confirmation**, Phase 2 (12 more crest icons) queued,
+  one item at a time, plan→approve→build→verify each
 **DATE:** 2026-09-11
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
@@ -428,6 +430,36 @@ shown before commit: https://claude.ai/code/artifact/8370e839-0ca6-4c30-9639-9f7
 `nau`→timón, `aib`→pollito, `mor`→titán, `toi`→cocotero, `coa`→
 maratonista, `agd`→tiburón, `cay`→torito) — one small reviewed batch at a
 time, each shown live before it ships, same discipline as Phase 1's 3.
+
+**Phase 1 correction round — owner caught this, not me, twice.** Owner
+verified the mockup-approved fix live and reported it hadn't taken effect
+at all — correct: I'd only updated the *mockup artifact* per their own
+"show me before touching the real build again," and never actually edited
+`app/bsn_archivo.html`. Confirmed via `git log` (still `042337f`) and by
+grepping the live page for the proposed transform (absent) before saying
+so, rather than assuming. Applied the real fix after that: `crestSVG()`
+wraps `CREST_ICONS[f.art]`'s output in `<g transform="translate(56,44)
+scale(.6) translate(-56,-44)">` — `CREST_ICONS`' path data itself
+untouched, just scaled/repositioned at render time. `portrait()`'s neutral
+(no-position) fallback: only the head circle and body path (the shapes
+text actually sits on) go from `.55` to `.92` opacity — the root cause was
+that low opacity blends visibly with the page ground, which flips per
+theme, while the initials use a fixed team hex, so a dark `c2` (San
+Germán `#141414`, Santurce, Quebradillas, Guayama, ...) went dark-on-dark
+specifically in dark mode; this predates Phase 1 (the original
+`portrait()` used the same `.22`/`.55`) but Phase 1 made it visible
+without catching it in the first mockup review — owned as a miss.
+`scratchpad/illustrated_figures_harness.mjs` extended with real geometric
+assertions tied to the actual path strings in `CREST_ICONS` (not
+hand-waved) — verified these new assertions actually **fail** against the
+unfixed `git HEAD` version before confirming they pass on the fix, so
+they're a meaningful regression test, not a tautology. Before claiming
+"fixed" this time: pushed (`dc6e153`), polled the live URL, **ran the same
+harness directly against the freshly-`curl`'d live HTML** (not local
+files) and it passed, then extracted the actual live-rendered SVG markup
+and published it as a third artifact so the owner can see the confirmed-
+deployed output directly: https://claude.ai/code/artifact/6ea21aff-c17b-423d-89d2-67ee6bf17b20.
+`make verify`/`make test` green, all 6 other harnesses green.
 
 Open threads:
 docs/project.md D2 refinement for the Grises/Caciques de Humacao split (D-045);
