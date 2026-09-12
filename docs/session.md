@@ -21,8 +21,13 @@
   player avatars (position-based, no likeness, all 3,343 players) +
   crest emblems (all 33 franchises — 16 with an original mascot icon
   across 3 approved+verified batches, 17 on the permanent shield+type
-  fallback); **backlog now moves to item 3** (starting-five visual, per
-  team per season), one item at a time, plan→approve→build→verify each
+  fallback); **item 3 (starting-five visual) DONE, LIVE, owner-verified**
+  — a real parser bug found + fixed along the way (2008-2013 minutes never
+  parsed, also caught identity resolution up 54.8%→76.8%), 56 of 58
+  qualifying team-seasons shipped on team pages at a real >=60%-resolved
+  floor, honest gaps shown not hidden; **backlog now moves to item 4**
+  (finish season comparison properly — cross-player, modern-era data),
+  one item at a time, plan→approve→build→verify each
 **DATE:** 2026-09-12
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
@@ -339,14 +344,16 @@ bundle items.
    all 3,343 players) and crest emblems (all 33 franchises — 16 with an
    original mascot icon across 3 approved batches, 17 on the permanent
    shield+type fallback, enforced by a regression test).
-3. **Starting-five visual, per team per season** (Sofascore-style
-   formation card — half-court/paint layout, not a pitch; PG/SG/SF/PF/C
-   positions; headshot circle from #2's illustrated figures, not real
-   photos; jersey number, name, rating/stat badge). Needs data-mining
-   *first* — most common starting five per team per season, or at minimum
-   the current season if historical isn't findable — before any visual
-   work. Possible surface: team pages, maybe the Inicio favorite-club
-   card if it looks clean once built (owner's call after seeing it).
+3. **Starting-five visual, per team per season — DONE, LIVE, owner-verified.**
+   See the full record below. Data-mining surfaced a real parser bug (2008-
+   2013 minutes never parsed) whose fix also caught the whole game_box_player
+   pipeline up to identity-spine fixes made since its last real rebuild
+   (54.8% -> 76.8% resolved). Shipped as a half-court SVG card on team
+   pages (`#teamStartingFive`), gated at a real, owner-chosen quality floor
+   (>=15 games, >=60% of inferred slots resolved) — 56 of 58 qualifying
+   team-seasons ship (2 excluded: D-045's Cayey/Humacao lineage question,
+   and a 2013 merged team-name gap, neither this feature's call to
+   resolve). Real per-player PPG shown, not a fabricated rating.
 4. **Finish season comparison properly.** What shipped (`season_detail_spec.md`)
    only compares one player across their own seasons, richly for
    2001–2004 only. Still needed: (a) comparing two *different* players'
@@ -587,6 +594,87 @@ before it did anything beyond one harmless autonomous-check tick.
 Final proof, built from a fresh fetch verified via real evaluation, not
 grep: https://claude.ai/code/artifact/a5fb4736-2e14-483b-8d2b-93c5c4ff3a96.
 `make verify`/`make test` green, all 6 other harnesses green, no
+regressions.
+
+Backlog item 3 (starting-five visual) — full record. Scoped before
+building: no "starter" flag exists anywhere in the source. Checked the
+inference path (top-5-minutes-per-game) and found it half-broken — 2008-
+2013's `minutes` field in `game_box_player.csv` was 100% null. Pulled the
+raw archived HTML directly and the "Min" column (`MM:SS`) is right there
+in the source; `src/parse_games.py` just hardcoded `"minutes": None` for
+that page family. Fixed (`src/parse_wayback.to_minutes()`, new `at_min()`
+wiring) and rebuilt — 2008-2013 minutes now 96-98% populated. That rebuild
+also caught `game_box_player.csv` up to identity-spine fixes accumulated
+since its last real rebuild (54.8% -> 76.8% resolved overall) — a real,
+separate improvement, not something the minutes fix itself caused.
+Deliberately did NOT republish `web/data/games/*.json`/`manifest.json` in
+that first commit (data-only pass, no visual yet, per the owner's explicit
+"don't touch the visual until you have real numbers") — reverted those
+before committing; they were republished later, once the feature that
+actually needed them shipped.
+
+Real numbers, recomputed: 58 team-seasons clear "≥15 games, ≥60% of
+inferred slots resolved" (spanning all 8 usable seasons, nearly every
+active franchise). Owner asked to see actual mocked cards at 60% and 80%
+floors before choosing — built two, real data (Arecibo 2002 at 63%
+resolved, Ponce 2002 at 90%), with the real gaps visible (2 of 5 slots
+"sin confirmar" on the 60%-floor card). Owner picked the 60% floor after
+seeing both: "honest gaps and all." Caught a real layout bug in that same
+mockup round: player dots were HTML divs positioned by container-relative
+percentage, laid over a court `<svg>` with its own separate viewBox — two
+coordinate systems that never agreed on scale, plus a hand-guessed dot
+height (~92px) that was short of the real rendered height (~74-110px
+depending on content). Rebuilt as one SVG (court + all 5 players, one
+coordinate system), positions checked against each block's actual
+measured footprint before drawing anything — owner confirmed clean.
+
+**Built, shipped, LIVE, owner-verified.** `build_starting_fives()` in
+`src/build_web_data.py`: top-5-minutes-per-game per (season, team_raw),
+aggregated to the 5 most frequent across the season, keyed by `app_key`
+(via the existing `franchise_key_map` crosswalk) so the app fetches
+`starting_five/<k>.json` the same way it fetches every other web/data
+file. 2 of the 58 qualifying team-seasons excluded because their
+`team_raw` doesn't resolve to a franchise_id at all: "2002 CAYEY" (Toritos
+de Cayey's later-franchise lineage is D-045's already-open question —
+`city_franchise_map.csv` treats it as continuous with Caciques de
+Humacao, elsewhere it's a standalone franchise_id — not this feature's
+call to arbitrate) and "2013 Humacao-Carolina" (a similar merged-name
+gap). 56 team-seasons, 16 franchises, ship. An unresolved slot within a
+qualifying card stays honest: `bsnpr_id:null`, `position:null` — never a
+guessed identity, never an invented position (PC2).
+
+App: `loadStartingFive()`/`renderStartingFive()` in `app/bsn_archivo.html`,
+called from `showTeam()`. Half-court SVG card, season picker (chips) when
+a franchise has more than one qualifying season, real per-player PPG
+(never a fabricated Sofascore-style rating, per the owner's explicit
+call). A resolved player keeps their real position's court zone; an
+unresolved slot fills whatever zone the real positions left open — the
+zone is a layout choice, not a factual claim — rendered as a neutral
+dashed circle labeled "sin confirmar," never a guessed position. New
+`--court`/`--court-line` theme tokens, both palettes. Teams with zero
+qualifying seasons render nothing here — same optional-section pattern as
+`TEAM_LORE`/`VENUE_NOTES`.
+
+**A second real bug, caught during live verification itself, not before
+shipping**: my first live-check for this feature used a single-season
+mock and asserted "2002" appears somewhere in the rendered output — it
+doesn't, because the season number was ONLY ever shown inside the picker
+pills, and those don't render at all when a franchise has just one
+qualifying season. A team in that situation had a card that never said
+which season it was showing. I initially misread the failing check as
+"not deployed yet" (matching the round-2 crest mistake's shape exactly)
+before checking the `last-modified` header, which showed the deploy WAS
+already live, and tracing the failure to the check's own wrong assumption
+instead. Fixed for real: the header names the season unconditionally now.
+New regression case in `scratchpad/starting_five_harness.mjs` (a lone-
+season franchise, no chips, header carries the season) that fails without
+the fix and passes with it. Verified live the correct way both times —
+`Monitor` polling with a check that evaluates the real functions against
+a fresh, cache-busted fetch, then the full harness run against that same
+fetch, both green, `last-modified` matching the push each time.
+
+`make verify` (338,651 checks) + `make test` (183) green throughout, all 8
+harnesses (including the new `starting_five_harness.mjs`) green, no
 regressions.
 
 Open threads:
