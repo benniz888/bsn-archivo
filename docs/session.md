@@ -699,6 +699,11 @@ way: fresh cache-busted fetch, extracted the real `.sf-court` CSS,
 computed the size again against that fetch — matches. No screenshot tool
 available in this session to confirm the pixel render directly; the
 owner's own view of the live page is the actual confirmation here.
+**Owner-verified live** (Arecibo/Ponce, desktop and mobile): "properly
+sized now, no longer dominating the page. This is done." Backlog item 3
+fully closed, all three shipping bugs (layout coordinate mismatch, the
+single-season header gap, this size ceiling) found, fixed, and confirmed
+live.
 
 Open threads:
 docs/project.md D2 refinement for the Grises/Caciques de Humacao split (D-045);
