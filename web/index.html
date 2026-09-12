@@ -1306,6 +1306,7 @@ const F = {
        won:[1959,2005,2008,2010,2011,2016,2018,2021],
        ru:[1932,1946,1948,1961,1966,1992,2007,2012,2014,2015,2017]},
   que:{name:"Piratas de Quebradillas",abbr:"QUE",city:"Quebradillas",founded:1926,active:1,c1:"#B3141F",c2:"#1A1A1A",colorSrc:"wiki",
+       art:"pirata",
        coach:"Ángel Daniel Vassallo",
        won:[1970,1977,1978,1979,2013,2017],
        ru:[1937,1972,1973,1975,1976,1980,1982,1999,2000,2009,2011,2020]},
@@ -1315,6 +1316,7 @@ const F = {
   cag:{name:"Criollos de Caguas",abbr:"CAG",city:"Caguas",founded:1976,active:1,c1:"#6B2C8F",c2:"#EFD25C",colorSrc:"approx",
        won:[2006,2024],ru:[]},
   car:{name:"Gigantes de Carolina/Canóvanas",abbr:"CAR",city:"Carolina/Canóvanas",founded:1971,active:1,c1:"#1E9B54",c2:"#F5F5F5",colorSrc:"approx",
+       art:"gigante",
        won:[2023],ru:[1979,1997,2008]},
   may:{name:"Indios de Mayagüez",abbr:"MAY",city:"Mayagüez",founded:1956,active:1,c1:"#1F5B3A",c2:"#D9342B",colorSrc:"wiki",
        coach:"Iván Vélez",
@@ -1337,6 +1339,7 @@ const F = {
   cno:{name:"Indios de Canóvanas",abbr:"CAN",city:"Canóvanas",founded:1980,active:0,end:1996,c1:"#B65418",c2:"#2A2A2A",colorSrc:"approx",
        won:[1983,1984],ru:[1988]},
   nau:{name:"Club Náutico de San Juan",abbr:"CN",city:"San Juan",founded:1936,active:0,end:1936,c1:"#1D6C8C",c2:"#F2F2F2",colorSrc:"approx",
+       art:"timon",
        won:[1936],ru:[]},
   aib:{name:"Polluelos de Aibonito",abbr:"AIB",city:"Aibonito",founded:1977,active:0,end:2001,c1:"#2F8A3E",c2:"#F2D840",colorSrc:"wiki",
        won:[1986],ru:[1987]},
@@ -1362,7 +1365,8 @@ const F = {
        art:"tiburon",won:[],ru:[],
        note:"Merged with the Capitalinos in 1998 to revive the Cangrejeros."},
   con:{name:"Conquistadores de Aguada",abbr:"CON",city:"Aguada",founded:1994,active:0,end:1998,c1:"#8C6A1F",c2:"#F0E6C8",colorSrc:"approx",won:[],ru:[]},
-  cay:{name:"Toritos de Cayey",abbr:"CAY",city:"Cayey",founded:2002,active:0,end:2004,c1:"#8C2F2F",c2:"#E8D2C0",colorSrc:"approx",won:[],ru:[]},
+  cay:{name:"Toritos de Cayey",abbr:"CAY",city:"Cayey",founded:2002,active:0,end:2004,c1:"#8C2F2F",c2:"#E8D2C0",colorSrc:"approx",
+       art:"torito",won:[],ru:[]},
   cac:{name:"Caciques de Humacao",abbr:"CAC",city:"Humacao",founded:2009,active:0,end:2018,c1:"#7A2E3B",c2:"#E0C9A6",colorSrc:"approx",won:[],ru:[],
        note:"Distintos de los Grises de Humacao. Las fechas se infieren de las temporadas en que aparece en el archivo, no de una fuente que las declare."}
 };
@@ -2850,6 +2854,34 @@ const CREST_ICONS={
     <line x1="42" y1="38" x2="70" y2="38" stroke="${c2}" stroke-width="4"/>
     <path d="M40 60c0 12 8 18 16 18" fill="none" stroke="${c2}" stroke-width="5" stroke-linecap="round"/>
     <path d="M72 60c0 12-8 18-16 18" fill="none" stroke="${c2}" stroke-width="5" stroke-linecap="round"/>`,
+  /* Phase 2, batch 2 (owner-approved mockup) */
+  pirata:(c1,c2)=>`<path d="M36 26Q56 14 76 26Q68 34 56 30Q44 34 36 26Z" fill="${c2}"/>
+    <circle cx="56" cy="40" r="10" fill="${c2}"/>
+    <rect x="49" y="37" width="9" height="4" fill="${c1}" transform="rotate(-10 53 39)"/>
+    <path d="M43 52h26l-5 26h-16Z" fill="${c2}"/>
+    <g stroke="${c2}" stroke-width="4" stroke-linecap="round">
+      <line x1="44" y1="66" x2="68" y2="78"/><line x1="68" y1="66" x2="44" y2="78"/></g>
+    <circle cx="44" cy="66" r="2.4" fill="${c2}"/><circle cx="68" cy="66" r="2.4" fill="${c2}"/>
+    <circle cx="44" cy="78" r="2.4" fill="${c2}"/><circle cx="68" cy="78" r="2.4" fill="${c2}"/>`,
+  gigante:(c1,c2)=>`<circle cx="56" cy="26" r="13" fill="${c2}"/>
+    <path d="M30 76c0-24 12-34 26-34s26 10 26 34Z" fill="${c2}"/>
+    <g stroke="${c2}" stroke-width="7" stroke-linecap="round">
+      <path d="M32 50q-14 4-16 20"/><path d="M80 50q14 4 16 20"/></g>
+    <g stroke="${c2}" stroke-width="7" stroke-linecap="round">
+      <line x1="46" y1="76" x2="40" y2="94"/><line x1="66" y1="76" x2="72" y2="94"/></g>`,
+  timon:(c1,c2)=>`<circle cx="56" cy="48" r="22" fill="none" stroke="${c2}" stroke-width="5"/>
+    <circle cx="56" cy="48" r="6" fill="${c2}"/>
+    <g stroke="${c2}" stroke-width="4" stroke-linecap="round">
+      <line x1="56" y1="20" x2="56" y2="30"/><line x1="56" y1="66" x2="56" y2="76"/>
+      <line x1="28" y1="48" x2="38" y2="48"/><line x1="74" y1="48" x2="84" y2="48"/>
+      <line x1="36" y1="28" x2="43" y2="35"/><line x1="76" y1="68" x2="69" y2="61"/>
+      <line x1="76" y1="28" x2="69" y2="35"/><line x1="36" y1="68" x2="43" y2="61"/></g>`,
+  torito:(c1,c2)=>`<path d="M30 34Q26 20 36 22Q40 30 38 38Z" fill="${c2}"/>
+    <path d="M82 34Q86 20 76 22Q72 30 74 38Z" fill="${c2}"/>
+    <circle cx="56" cy="46" r="18" fill="${c2}"/>
+    <ellipse cx="56" cy="58" rx="12" ry="9" fill="${c1}"/>
+    <circle cx="49" cy="42" r="2.3" fill="${c1}"/><circle cx="63" cy="42" r="2.3" fill="${c1}"/>
+    <ellipse cx="56" cy="58" rx="4" ry="3" fill="none" stroke="${c2}" stroke-width="1.6"/>`,
 };
 function crestSVG(k,w,h){
   const f=F[k]; if(!f) return '';
