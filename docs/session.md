@@ -27,7 +27,11 @@
   qualifying team-seasons shipped on team pages at a real >=60%-resolved
   floor, honest gaps shown not hidden; **backlog now moves to item 4**
   (finish season comparison properly — cross-player, modern-era data),
-  one item at a time, plan→approve→build→verify each
+  one item at a time, plan→approve→build→verify each ·
+  **ARCHITECTURE DECISION (2026-09-12): split `app/bsn_archivo.html` into
+  ES modules, no framework migration — DECIDED, NOT STARTED**, owner
+  sequencing it against the backlog first; full reasoning + measured
+  baseline in the boxed entry below
 **DATE:** 2026-09-12
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
@@ -704,6 +708,127 @@ sized now, no longer dominating the page. This is done." Backlog item 3
 fully closed, all three shipping bugs (layout coordinate mismatch, the
 single-season header gap, this size ceiling) found, fixed, and confirmed
 live.
+
+═══════════════════════════════════════════════════════════════════════
+ARCHITECTURE DECISION (2026-09-12) — split `app/bsn_archivo.html` into ES
+modules; do NOT migrate to a framework. **Decided, not yet started** —
+owner is sequencing it against the feature backlog (item 4 onward) first.
+═══════════════════════════════════════════════════════════════════════
+
+Owner asked for an honest technical assessment of whether the single-file
+architecture is limiting the project. Measured first, opinion second. The
+numbers below are from the real file, not estimates — re-measure before
+relying on them if much has changed.
+
+**Measured baseline (`app/bsn_archivo.html`, at commit `375c0ea`):**
+- 7,889 lines / 601 KB raw / **210 KB gzipped** over the wire
+- 6,602 lines JS (2 `<script>` blocks) · 892 CSS · 395 HTML
+- **214** top-level functions · **154** top-level globals, **31 mutable**
+- **246** distinct CSS classes in one global namespace, **102 of them
+  ≤4 chars** (`.n` `.l` `.x` `.w` `.on` `.sc` `.yr` `.big` `.row` `.card`…)
+- **1,926 lines** are baked-in data literals (`ASKERS` 225, `BIO` 179,
+  `CREST_ICONS` 104, `F` 90, `HOF` 67…), not logic
+- 12 major feature sections · **zero** modules, imports, or build tooling
+
+**Correction to a premise that must not be re-cited as evidence:** the
+`.rec`/`.result`/`--surface`/`--bone` class collision was raised again as
+proof of a pattern. It is not — per this file's own earlier entry, that
+diagnosis was made against a **stale untracked Desktop copy, not this
+repo**. There is no `.rec` class here and no collision commit in history.
+The black-button bug's real cause was different: `.card` reused as
+`<button class="card">`, and `<button>` doesn't inherit `color`.
+
+**Honest bug-pattern read — real signal, but modest.** Six app-layer bugs
+shipped this session. Only **2 of 6** are architecture-attributable, and
+both are the *same* failure mode — *no component owns its own box or
+styling; everything inherits from an unbounded global context*:
+- `5102f8e` `.card` on a `<button>`, no `color:inherit`
+- `c97b2d9` `.sf-court svg{width:100%}` with no ceiling → 915px-tall card
+Three are **not** architecture at all (the bezier-taper math error; the
+missing season label, a plain conditional omission; `b5e999c`'s Chrome
+`<details>` quirk, which would happen identically in React). One mixed.
+Stated plainly for the record: **most bugs this session were verification
+failures, not architecture failures** — a framework would not have caught
+the geometry math or the season label.
+
+**The strongest measured signal is testing friction, not bug rate:**
+
+| | Python (`src/`) | JS (`app/`) |
+|---|---|---|
+| Test lines | 1,101 | 1,474 across 20 harnesses |
+| Extraction scaffolding | 0 | **117 lines** |
+| Needing `eval`/`new Function` | 0 | **16 of 20** |
+
+The JS harnesses regex-extract function *source text* and `eval` it
+because nothing in this file can be imported. They break on signature
+changes — `phero_harness` broke twice this session alone (`showPlayer`
+gaining `season`; then `loadStartingFive`). The Python tests never broke
+that way. That is the recurring, measurable tax.
+
+**Where single-file is still genuinely fine:** read-only rendering of
+static JSON, which is what this is. The real product — the Python
+pipeline, 183 tests, provenance-complete — is unaffected. More *views*
+are cheap. 210 KB gzipped is not a crisis.
+
+**Where it genuinely breaks:**
+- **Realtime scores** — the sharp edge. 31 mutable globals + manual
+  `innerHTML` rebuilds, no reconciliation.
+- **Mobile/App Store parity** — the real forcing function, and not
+  hypothetical: `docs/project.md` L4 states App Store is the ambition. A
+  monolithic HTML file has no reusable unit for React Native/Capacitor.
+- **User accounts are a BACKEND problem, not a frontend-architecture
+  one.** Supabase is already the documented Phase-1 plan (`project.md`
+  STACK). Restructuring the frontend buys ~nothing toward accounts —
+  do not let accounts drive this decision.
+
+**Why not a framework migration now.** Scope is real: 3-6 weeks
+dedicated, not incremental (a half-migrated global-namespace app is worse
+than either endpoint). The decisive risk is specific to this repo:
+**the safety net is coupled to the thing being replaced** — all 20
+harnesses regex-extract source strings from `bsn_archivo.html`, so a
+component migration invalidates **100% of them simultaneously**, leaving
+the largest change in the project's history with zero automated app-layer
+coverage for its duration.
+
+**The decision: ES modules, no bundler.** `<script type="module">` +
+~8-12 files, keeping the zero-build-step property. Checked that it's
+actually tractable rather than assuming — the call graph is **shallow
+hub-and-spoke, not a hairball**:
+- only **12** functions have fan-in >4 (`showView` 18, `crest` 15,
+  `buildTable` 15, `showPlayer` 12, `prof` 12) — a small shared kernel
+- **51 of 214** functions are called by nothing else (leaf handlers,
+  trivially extractable)
+- max fan-out is 13 — no god-function
+Plan shape: extract the ~12-function kernel first, then peel feature
+sections off one at a time, alongside feature work. Buys: harnesses
+become real `import`s (deletes the 117 scaffolding lines, kills 16
+`eval`s, ends signature-change breakage) and module boundaries give CSS a
+natural scope — addressing both measured failure modes at roughly 5% of a
+framework migration's cost.
+
+**Known tradeoff, verified not assumed:** ES modules don't work over
+`file://` (CORS). The app does handle `file:` today, but that mode is
+*already* substantially non-functional — `DATA.base` is `null` there, so
+no player/season/game JSON loads at all. This gives up a nicety that is
+already mostly broken, not a real capability. Deliberate call, not an
+accident.
+
+**Strategic note for sequencing:** if App Store parity stays the
+ambition, the module split is **not a detour — it is the first step of
+that migration anyway.** Extracting components from modules is tractable;
+extracting them from a 7,889-line monolith with 246 global classes is the
+3-6 week project. This ordering banks the testing and CSS wins now and
+leaves the project strictly closer to a framework if realtime or mobile
+later forces one.
+
+**Status: decided, NOT started.** Owner explicitly holding it to sequence
+against backlog item 4 onward first. Nothing in `app/` has been touched
+for this. (Note: `docs/project.md`'s REPO_LAYOUT puts architecture
+decisions in `docs/specs/`, one concern per file — this lives here
+instead because `session.md` is the tier that actually loads into context
+every session, which is the stated reason for recording it. Worth
+mirroring into `docs/specs/module_split_spec.md` when the work is
+actually scheduled.)
 
 Open threads:
 docs/project.md D2 refinement for the Grises/Caciques de Humacao split (D-045);
