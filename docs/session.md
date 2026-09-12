@@ -677,6 +677,29 @@ fetch, both green, `last-modified` matching the push each time.
 harnesses (including the new `starting_five_harness.mjs`) green, no
 regressions.
 
+**A third real bug, owner-caught on the actual live page (screenshot):**
+the card rendered at "a small fraction... filling the whole viewport."
+Cause: `.sf-court svg{width:100%}` had no ceiling, so it scaled to the
+team CARD's real width — ~1056px on a desktop viewport (`--maxw` 1120px
+minus `.wrap`'s and `.card`'s own padding) — which against the 300:260
+viewBox rendered a ~915px-tall graphic for one card. The ~450px size
+actually reviewed in the mockup only held inside that mockup's 2-column
+comparison layout, which the real, single-column team page never had —
+every verification pass up to this point checked the SVG's own internal
+geometry (no overlap between players), which was never the problem; none
+of them checked the rendered size in the page's real layout context.
+Fixed: `.sf-court{max-width:380px}`. Computed the actual end-to-end
+rendered size from the real `--maxw`/`.wrap`/`.card` values rather than
+re-guessing: desktop now 380x329 (was ~1056x915), a narrow iPhone-SE-
+class viewport 311x270 (shrinks naturally below the 380px ceiling, no
+media query needed). New harness check computes this real pixel size
+from the actual CSS end to end — confirmed it fails against the pre-fix
+commit before confirming it passes on the fix. Verified live the same
+way: fresh cache-busted fetch, extracted the real `.sf-court` CSS,
+computed the size again against that fetch — matches. No screenshot tool
+available in this session to confirm the pixel render directly; the
+owner's own view of the live page is the actual confirmation here.
+
 Open threads:
 docs/project.md D2 refinement for the Grises/Caciques de Humacao split (D-045);
 the ~451-row review-queue long tail (needs an owner-curated crosswalk — Q1-Q4
