@@ -4081,7 +4081,7 @@ function renderStartingFive(k,season){
   const pills=seasons.length>1
     ? `<div class="chips">${seasons.map(s=>`<button class="chip" aria-selected="${s===season}" onclick="renderStartingFive('${k}','${s}')">${s}</button>`).join('')}</div>`
     : '';
-  host.innerHTML=`<h4 class="sub">Cinco inicial — inferido de minutos jugados</h4>
+  host.innerHTML=`<h4 class="sub">Cinco inicial ${esc(season)} — inferido de minutos jugados</h4>
     <p class="lede">No hay un registro oficial de titulares; estos son los 5 jugadores con más minutos en cancha, agregados por temporada — una inferencia declarada, no un dato verificado. El número bajo cada nombre es su promedio real de puntos, no una calificación.</p>
     ${pills}
     <div class="sf-court">${sfCourtSvg(f,rec.players)}</div>
