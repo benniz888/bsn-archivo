@@ -788,6 +788,115 @@ def _quarters(v: str):
     return nums[:last] or None
 
 
+def _primary_position(pos: str | None) -> str | None:
+    """A slash-combo position ('Escolta/Alero') -> its first (primary) term.
+    Same rule the app's JS posPose() uses for the identical reason: a real
+    combo position doesn't cleanly reduce to one slot, and this is a
+    cosmetic court-placement choice, not a stat — the actual position text
+    stored per player is always the unabridged original."""
+    if not pos:
+        return None
+    return pos.split("/")[0].strip() or None
+
+
+# Backlog item 3 (starting-five visual) data-mining pass. No "starter" flag
+# exists in any source; this infers one — top 5 minutes-played per team per
+# game — and says so everywhere it's surfaced, never claims an official
+# record. Owner-approved floor (chat, after reviewing both a 60%- and an
+# 80%-resolved mockup card side by side): >=15 games in the archive AND
+# >=60% of the inferred starter slots resolved to both a bsnpr_id and a
+# known position. Below that floor, a team-season is silently absent —
+# never a fabricated or low-confidence card.
+STARTING_FIVE_MIN_GAMES = 15
+STARTING_FIVE_MIN_RESOLVED = 0.6
+
+
+def build_starting_fives(fid_to_app: dict[str, str]) -> int:
+    resolve_team = _team_resolver()
+    position = {r["bsnpr_id"]: r["position"] for r in _read("players_canonical.csv") if r["position"]}
+    name = {r["bsnpr_id"]: r["canonical_name"] for r in _read("players_canonical.csv")}
+
+    games: dict[str, list] = {}
+    for r in _read("game_box_player.csv"):
+        if r["minutes"]:
+            games.setdefault(r["game_id"], []).append(r)
+
+    # (season, team_raw) -> list of that game's top-5-by-minutes rows
+    ts_games: dict[tuple[str, str], list[list[dict]]] = {}
+    for rows in games.values():
+        by_team: dict[str, list] = {}
+        for r in rows:
+            by_team.setdefault(r["team_raw"], []).append(r)
+        season = rows[0]["season"]
+        for team, trows in by_team.items():
+            trows.sort(key=lambda r: -(_int(r["minutes"]) or 0))
+            top5 = trows[:5]
+            if len(top5) == 5:
+                ts_games.setdefault((season, team), []).append(top5)
+
+    by_franchise: dict[str, dict] = {}
+    excluded_unresolved_team: list[str] = []
+    for (season, team_raw), glist in ts_games.items():
+        if len(glist) < STARTING_FIVE_MIN_GAMES:
+            continue
+        freq: dict[str, int] = {}
+        pts: dict[str, list[int]] = {}
+        # the qualifying floor is evaluated per game-slot (every top-5 seat in
+        # every game, not just the final 5 individuals below) — this is the
+        # exact statistic shown to and approved by the owner (the "58 team-
+        # seasons at >=60%" count came from this, not from the final list's
+        # own resolution rate; the two are close but not identical, and only
+        # this one matches what was actually reviewed).
+        slot_total = slot_resolved = 0
+        for top5 in glist:
+            for r in top5:
+                key = r["bsnpr_id"] or f"raw:{r['player_raw']}"
+                freq[key] = freq.get(key, 0) + 1
+                pts.setdefault(key, []).append(_int(r["pts"]) or 0)
+                slot_total += 1
+                if r["bsnpr_id"] and position.get(r["bsnpr_id"]):
+                    slot_resolved += 1
+        if slot_resolved / slot_total < STARTING_FIVE_MIN_RESOLVED:
+            continue
+        ranked = sorted(freq, key=lambda k: -freq[k])[:5]
+        resolved = sum(1 for k in ranked if not k.startswith("raw:") and position.get(k))
+        fid = resolve_team(team_raw)
+        app_key = fid_to_app.get(fid) if fid else None
+        if not app_key:
+            # e.g. "CAYEY" (2002) — Toritos de Cayey's later-franchise identity
+            # is D-045's open question (Toritos -> Grises -> Caciques de
+            # Humacao, one lineage per city_franchise_map.csv vs. a separate
+            # standalone franchise_id elsewhere) — not this feature's call to
+            # make. "Humacao-Carolina" (2013) is a similar merged-name gap.
+            # Both stay excluded until that's resolved on its own terms.
+            excluded_unresolved_team.append(f"{season} {team_raw}")
+            continue
+        players = []
+        for k in ranked:
+            is_raw = k.startswith("raw:")
+            bsnpr_id = None if is_raw else _int(k)
+            players.append({
+                "bsnpr_id": bsnpr_id,
+                "name": (k[4:] if is_raw else name.get(k) or k),
+                "position": None if is_raw else _primary_position(position.get(k)),
+                "games": freq[k],
+                "ppg": round(sum(pts[k]) / len(pts[k]), 1),
+            })
+        by_franchise.setdefault(app_key, {})[season] = {
+            "games": len(glist),
+            "resolved": resolved,
+            "players": players,
+        }
+
+    _reset_dir(WEB / "starting_five")
+    for app_key, seasons in by_franchise.items():
+        _jdump(seasons, WEB / "starting_five" / f"{app_key}.json")
+    if excluded_unresolved_team:
+        print(f"  [starting_five] excluded (team_raw has no franchise_id — "
+              f"D-045 or similar, not this feature's call): {', '.join(sorted(set(excluded_unresolved_team)))}")
+    return len(by_franchise)
+
+
 def build_games() -> tuple[int, int]:
     resolve_team = _team_resolver()
     results = {r["game_id"]: r for r in _read("game_results.csv")}
@@ -897,15 +1006,18 @@ def main() -> int:
     n_pdetail, n_pthin = build_players_detail()
     season_counts = build_seasons_detail()
     n_games, n_gseasons = build_games()
+    n_sf = build_starting_fives(fid_to_app)
     counts["player_files"] = n_pdetail
     counts.update(season_counts)
     counts["game_files"] = n_games
+    counts["starting_five_files"] = n_sf
     print(f"  -> web/data/players/*.json ({n_pdetail}; {n_pthin} thin / no career table)")
     print(f"  -> web/data/seasons/*.json ({season_counts['season_files']}; "
           f"leaders {season_counts['seasons_with_leaders']}, "
           f"awards {season_counts['seasons_with_awards']}, "
           f"standings {season_counts['seasons_with_standings']})")
     print(f"  -> web/data/games/<season>/*.json ({n_games} games, {n_gseasons} seasons)")
+    print(f"  -> web/data/starting_five/*.json ({n_sf} franchises)")
 
     SOURCES = [
         "franchises.csv", "champions_reconciled.csv", "franchise_events.csv",

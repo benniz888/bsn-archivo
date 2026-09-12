@@ -308,6 +308,35 @@ class TestBuild:
         idx = json.loads((b.WEB / "games" / "2001" / "index.json").read_text())
         assert len(idx) == 158 and idx == sorted(idx, key=lambda x: (x["date"] or "", x["game_id"]))
 
+    def test_starting_five(self):
+        # keyed by app_key (matching every other web/data file the app fetches
+        # directly by its own F[k] key), not the pipeline's franchise_id.
+        are = json.loads((b.WEB / "starting_five" / "are.json").read_text())
+        assert "2013" not in are            # 57% resolved — below the 60% floor
+        assert "2002" in are and are["2002"]["games"] == 47
+        players = are["2002"]["players"]
+        assert len(players) == 5
+        apodaca = next(p for p in players if p["bsnpr_id"] == 2028)
+        assert apodaca["position"] == "Escolta" and apodaca["games"] == 47
+        # PC2: an unresolved slot stays null, never a guessed id or position
+        gaps = [p for p in players if p["bsnpr_id"] is None]
+        assert len(gaps) == 2 and all(p["position"] is None and p["name"] for p in gaps)
+        assert are["2002"]["resolved"] == 3   # 3 of the 5 in the *final* list, not the per-slot floor stat
+
+    def test_starting_five_never_includes_a_thin_or_unresolvable_team_season(self):
+        for fid_path in (b.WEB / "starting_five").glob("*.json"):
+            seasons = json.loads(fid_path.read_text())
+            for season, rec in seasons.items():
+                assert rec["games"] >= b.STARTING_FIVE_MIN_GAMES
+                assert len(rec["players"]) == 5
+        # D-045 (Cayey/Humacao lineage) and the 2013 merged team-name gap
+        # are excluded at the source (no franchise_id to key a file on) —
+        # confirm neither leaked in under some other franchise's file.
+        cay = b.WEB / "starting_five" / "cay.json"
+        assert not cay.exists() or "2002" not in json.loads(cay.read_text())
+        hum = b.WEB / "starting_five" / "hum.json"
+        assert not hum.exists() or "2013" not in json.loads(hum.read_text())
+
 
 class TestHelpers:
     def test_norm(self):
