@@ -19,8 +19,10 @@
   built from it; **6-item visual/feature backlog in progress — item 2
   (illustrated player/team figures) Phase 1 DONE, LIVE, owner-verified**
   (2 real correction rounds, both fixed and confirmed against the live
-  deploy) — **Phase 2 batch 1 (oso/gallo×2/tiburón/ancla) mocked up,
-  awaiting approval**, one item at a time, plan→approve→build→verify each
+  deploy) — **Phase 2 batch 1 (oso/gallo×2/tiburón/ancla) BUILT, LIVE,
+  verified** (8/16 D-eligible franchises now have icons); **batch 2
+  (pirata/gigante/timón/torito) mocked up, awaiting approval**, one item
+  at a time, plan→approve→build→verify each
 **DATE:** 2026-09-11
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
@@ -443,6 +445,39 @@ Remaining queue for a later batch: `que`→pirata, `car`→gigante,
 `nau`→timón, `aib`→pollito, `mor`→titán, `toi`→cocotero, `coa`→
 maratonista, `cay`→torito. One small reviewed batch at a time, each shown
 before it ships, same discipline as Phase 1.
+
+**Phase 2, batch 1 — APPROVED, BUILT, LIVE, verified.** Owner: "Batch 1
+looks good... Wire these in for real." `CREST_ICONS` gained `oso`,
+`gallo`, `tiburon`, `ancla`; `F.man.art='oso'`, `F.are.art='ancla'`,
+`F.agd.art='tiburon'`, `F.upr.art='gallo'`, `F.isa.art='gallo'` (same
+concept, byte-identical, reused across both Gallitos franchises with
+their own real colors). `ancla` revives the sketch from the original B/D
+style-review round (Capitanes de Arecibo), designed then but never
+migrated into the real registry until now. 8 franchises now carry an
+`art` value (Phase 1's 3 + these 5); the 17 permanently-flagged names
+untouched, still enforced by the harness invariant.
+`illustrated_figures_harness.mjs` extended: each new icon's own known
+worst-case point verified to clear the text zone with 15px+ margin, same
+discipline as Phase 1's 3. `make verify`/`make test` green, all 6 other
+harnesses green. Pushed `df0a57d`; **verified live the correct way this
+time from the start** — fresh cache-busted fetch, full harness run
+against the actually-fetched HTML (real function evaluation, not a raw-
+text grep) — confirmed green, `last-modified` matching the push, CDN
+`age` low on recheck.
+
+**Phase 2, batch 2 — mockups shown, awaiting approval.** Next 4 of the
+remaining 8: `que`→pirata (pirate pictogram, same body style as vaquero),
+`car`→gigante (giant, monumental proportions, single-tint — no ethnic
+features, same discipline as vaquero/pirata), `nau`→timón (ship's wheel —
+kept visually distinct from Capitanes' anchor on purpose, so the two
+nautical-themed crests don't read as the same badge), `cay`→torito (bull
+face — a real animal, distinct from Vaqueros' cowboy-person concept).
+Built with the same corrected proportions from the start. Mockup (same
+running artifact, new "Fase 2 — lote 2" section, batch 1 marked shipped
+above it): https://claude.ai/code/artifact/0a7b03f4-c716-432c-b774-a0cb4d2369d2.
+Remaining after this batch: `aib`→pollito, `mor`→titán, `toi`→cocotero,
+`coa`→maratonista — the last batch of Phase 2. Nothing touched in
+`app/bsn_archivo.html` yet.
 
 **Phase 1 correction round — owner caught this, not me, twice.** Owner
 verified the mockup-approved fix live and reported it hadn't taken effect
