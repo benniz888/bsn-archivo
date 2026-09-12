@@ -19,10 +19,11 @@
   built from it; **6-item visual/feature backlog in progress — item 2
   (illustrated player/team figures) Phase 1 DONE, LIVE, owner-verified**
   (2 real correction rounds, both fixed and confirmed against the live
-  deploy) — **Phase 2 batch 1 (oso/gallo×2/tiburón/ancla) BUILT, LIVE,
-  verified** (8/16 D-eligible franchises now have icons); **batch 2
-  (pirata/gigante/timón/torito) mocked up, awaiting approval**, one item
-  at a time, plan→approve→build→verify each
+  deploy) — **Phase 2 batches 1+2 (oso/gallo×2/tiburón/ancla/pirata/
+  gigante/timón/torito) BUILT, LIVE, verified** (12/16 D-eligible
+  franchises now have icons); **batch 3, final (pollito/titán/cocotero/
+  maratonista) mocked up, awaiting approval**, one item at a time,
+  plan→approve→build→verify each
 **DATE:** 2026-09-11
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
@@ -478,6 +479,31 @@ above it): https://claude.ai/code/artifact/0a7b03f4-c716-432c-b774-a0cb4d2369d2.
 Remaining after this batch: `aib`→pollito, `mor`→titán, `toi`→cocotero,
 `coa`→maratonista — the last batch of Phase 2. Nothing touched in
 `app/bsn_archivo.html` yet.
+
+**Phase 2, batch 2 — APPROVED, BUILT, LIVE, verified.** `CREST_ICONS`
+gained `pirata`, `gigante`, `timon`, `torito`; `F.que.art='pirata'`,
+`F.car.art='gigante'`, `F.nau.art='timon'`, `F.cay.art='torito'`. 12
+franchises now carry an `art` value. `illustrated_figures_harness.mjs`
+extended with the same worst-case-point clearance checks. `make verify`/
+`make test` green, all 6 other harnesses green. Pushed `1a05072`; verified
+live the correct way from the start this time — polled with a `Monitor`
+whose check condition actually evaluates `crestSVG`/`F` from the fetched
+HTML (not a raw-text grep, the mistake from round 2), confirmed
+`DEPLOYED` on data, then ran the full harness against that same fetch —
+green, `last-modified` matching the push.
+
+**Phase 2, batch 3 (final) — mockups shown, awaiting approval.** The last
+4 of the 16 D-eligible names: `aib`→pollito (a rounder, comb-less
+variant of the gallo shape — reads "chick," not "adult"), `mor`→titán (a
+crowned bust/medallion, deliberately NOT a full standing figure like
+gigante, so the two don't read as the same silhouette with a hat),
+`toi`→cocotero (a coconut palm — the only plant concept in the whole set,
+zero representation risk), `coa`→maratonista (a leaning, mid-stride
+running pictogram, same body language as vaquero/pirata but in motion).
+Completes all 16 D-eligible franchises once approved. Mockup (same
+running artifact, new "Fase 2 — lote 3" section, batches 1+2 marked
+shipped above it): https://claude.ai/code/artifact/0a7b03f4-c716-432c-b774-a0cb4d2369d2.
+Nothing touched in `app/bsn_archivo.html` yet.
 
 **Phase 1 correction round — owner caught this, not me, twice.** Owner
 verified the mockup-approved fix live and reported it hadn't taken effect
