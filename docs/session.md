@@ -17,14 +17,13 @@
   item 1) DONE, LIVE, owner-verified** — steps A + B shipped, C stays
   parked (owner's call); Taíno sourcing pass done, research only, nothing
   built from it; **6-item visual/feature backlog in progress — item 2
-  (illustrated player/team figures) Phase 1 DONE, LIVE, owner-verified**
-  (2 real correction rounds, both fixed and confirmed against the live
-  deploy) — **Phase 2 batches 1+2 (oso/gallo×2/tiburón/ancla/pirata/
-  gigante/timón/torito) BUILT, LIVE, verified** (12/16 D-eligible
-  franchises now have icons); **batch 3, final (pollito/titán/cocotero/
-  maratonista) mocked up, awaiting approval**, one item at a time,
-  plan→approve→build→verify each
-**DATE:** 2026-09-11
+  (illustrated player/team figures) FULLY DONE, LIVE, owner-verified**:
+  player avatars (position-based, no likeness, all 3,343 players) +
+  crest emblems (all 33 franchises — 16 with an original mascot icon
+  across 3 approved+verified batches, 17 on the permanent shield+type
+  fallback); **backlog now moves to item 3** (starting-five visual, per
+  team per season), one item at a time, plan→approve→build→verify each
+**DATE:** 2026-09-12
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
 **CURRENT STATE:** Archive is live at benniz888.github.io/bsn-archivo — shell
@@ -334,9 +333,12 @@ bundle items.
    shipped and confirmed live (mobile + desktop, both themes). Step C
    (texture layer) stays parked, owner's call — the Taíno sourcing pass
    is done and waiting if it's ever picked up.
-2. **Illustrated player/team figures, StatMuse-style — Phase 1 BUILT, LIVE,
-   pending owner verification live.** See the full record below. Phase 2
-   (12 more crest icons, one small reviewed batch at a time) not started.
+2. **Illustrated player/team figures, StatMuse-style — DONE, LIVE,
+   owner-verified.** See the full record below. Both phases complete:
+   player avatars (position-based procedural silhouettes, no likeness,
+   all 3,343 players) and crest emblems (all 33 franchises — 16 with an
+   original mascot icon across 3 approved batches, 17 on the permanent
+   shield+type fallback, enforced by a regression test).
 3. **Starting-five visual, per team per season** (Sofascore-style
    formation card — half-court/paint layout, not a pitch; PG/SG/SF/PF/C
    positions; headshot circle from #2's illustrated figures, not real
@@ -492,18 +494,32 @@ HTML (not a raw-text grep, the mistake from round 2), confirmed
 `DEPLOYED` on data, then ran the full harness against that same fetch —
 green, `last-modified` matching the push.
 
-**Phase 2, batch 3 (final) — mockups shown, awaiting approval.** The last
-4 of the 16 D-eligible names: `aib`→pollito (a rounder, comb-less
-variant of the gallo shape — reads "chick," not "adult"), `mor`→titán (a
-crowned bust/medallion, deliberately NOT a full standing figure like
-gigante, so the two don't read as the same silhouette with a hat),
-`toi`→cocotero (a coconut palm — the only plant concept in the whole set,
-zero representation risk), `coa`→maratonista (a leaning, mid-stride
-running pictogram, same body language as vaquero/pirata but in motion).
-Completes all 16 D-eligible franchises once approved. Mockup (same
-running artifact, new "Fase 2 — lote 3" section, batches 1+2 marked
-shipped above it): https://claude.ai/code/artifact/0a7b03f4-c716-432c-b774-a0cb4d2369d2.
-Nothing touched in `app/bsn_archivo.html` yet.
+**Phase 2, batch 3 (final) — APPROVED, BUILT, LIVE, verified. PHASE 2
+COMPLETE.** `CREST_ICONS` gained `pollito`, `titan`, `cocotero`,
+`maratonista`; `F.aib.art='pollito'`, `F.mor.art='titan'`,
+`F.toi.art='cocotero'`, `F.coa.art='maratonista'`. `titan` is a crowned
+bust/medallion, deliberately not a full standing figure like `gigante`,
+so the two don't read as the same silhouette with a hat — same
+distinctness discipline already applied to `timon` vs. `ancla`.
+`cocotero` is a plant, the only non-animal/non-human D-icon besides
+`ancla`/`timon` — zero representation risk by construction. **All 16
+D-eligible franchises now carry an `art` value; the 17 permanently-
+flagged names remain untouched (16+17=33, matching the original scoped
+split exactly).** `illustrated_figures_harness.mjs` extended with the
+same worst-case-point clearance checks used for every icon across all 3
+batches. `make verify`/`make test` green, all 6 other harnesses green,
+no regressions. Pushed `05a2626`; verified live the correct way — polled
+with a `Monitor` whose check evaluates `crestSVG`/`F`/`CREST_ICONS` from
+the fetched HTML (not raw-text grep), confirmed `DEPLOYED`, then ran the
+full harness against that same fetch — green, `last-modified` matching
+the push to the second. Mockup record (same running artifact, all 3
+batches now marked shipped):
+https://claude.ai/code/artifact/0a7b03f4-c716-432c-b774-a0cb4d2369d2.
+
+**Illustrated player/team figures (backlog item 2) is now fully DONE**:
+player avatars (Phase 1, position-based, no likeness, all 3,343 players)
++ crest emblems (all 33 franchises — 16 with an original mascot icon, 17
+on the shield+type fallback by permanent, tested design decision).
 
 **Phase 1 correction round — owner caught this, not me, twice.** Owner
 verified the mockup-approved fix live and reported it hadn't taken effect
