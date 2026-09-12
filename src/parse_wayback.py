@@ -112,6 +112,21 @@ def to_float(v):
         return None
 
 
+def to_minutes(v):
+    """Parse a boxscore 'Min' cell. The gamestatwide.asp family (2001-2004)
+    already gives a bare integer; the boxscore.asp/pogamestat.asp family
+    (2007-2014) gives 'MM:SS' (e.g. '24:39') — floored to whole minutes,
+    matching how a scoreboard reads that same value aloud. None for
+    anything unparseable (PC2), never a fabricated 0."""
+    s = squish(v)
+    if not s or s.lower() in ("nan", "-", "none"):
+        return None
+    m = re.match(r"^(\d+):(\d{2})$", s)
+    if m:
+        return int(m.group(1))
+    return to_int(v)
+
+
 def wayback_ts_to_date(ts: str) -> str:
     return f"{ts[0:4]}-{ts[4:6]}-{ts[6:8]}"
 

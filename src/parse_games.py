@@ -30,7 +30,7 @@ from pathlib import Path
 import pandas as pd
 
 from src.wayback_cdx import REPO_ROOT
-from src.parse_wayback import squish, to_int
+from src.parse_wayback import squish, to_int, to_minutes
 from src.parse_pre2007 import _write_csv
 from src.parse_players import normalize, norm_key
 
@@ -275,6 +275,9 @@ def parse_modern_box(resolver, results: list[dict], box: list[dict]) -> tuple[in
                 def at(row, j):
                     return to_int(row[j]) if j is not None and 0 <= j < len(row) else None
 
+                def at_min(row, j):
+                    return to_minutes(row[j]) if j is not None and 0 <= j < len(row) else None
+
                 for _, r in tbl.iterrows():
                     row = list(r)
                     name = squish(str(row[1]))
@@ -285,7 +288,10 @@ def parse_modern_box(resolver, results: list[dict], box: list[dict]) -> tuple[in
                         "game_id": rid, "season": season or "", "date": gdate,
                         "team_raw": team, "jersey": re.sub(r"\.0$", "", squish(str(row[0]))),
                         "player_raw": name, "bsnpr_id": pid,
-                        "minutes": None,
+                        # was hardcoded None — the raw "Min" column ('MM:SS',
+                        # e.g. '24:39') is right there in the source and was
+                        # simply never read (backlog item 3 data-mining pass).
+                        "minutes": at_min(row, cix.get("Min")),
                         "fg2m": at(row, ma[0] if len(ma) > 0 else None),
                         "fg2a": at(row, aa[0] if len(aa) > 0 else None),
                         "fg3m": at(row, ma[1] if len(ma) > 1 else None),

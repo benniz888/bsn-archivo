@@ -19,6 +19,7 @@ from src.parse_wayback import (
     split_player_cell,
     to_float,
     to_int,
+    to_minutes,
     wayback_ts_to_date,
     _season_complete,
     _write_csv,
@@ -57,6 +58,18 @@ class TestNumbers:
         # PC2: a real 0 is data; a blank is NULL
         assert to_int("0") == 0
         assert to_int("") is None
+
+    @pytest.mark.parametrize("raw,exp", [
+        ("24:39", 24),       # boxscore.asp/pogamestat.asp family (2007-2014) — 'MM:SS', floored
+        ("0:42", 0),         # a real, near-zero appearance — not None
+        ("36:12", 36),
+        ("32", 32),          # gamestatwide.asp family (2001-2004) — already a bare int
+        ("", None),
+        ("nan", None),
+        ("-", None),
+    ])
+    def test_to_minutes(self, raw, exp):
+        assert to_minutes(raw) == exp
 
 
 class TestSeasonCell:
