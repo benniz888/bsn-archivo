@@ -668,7 +668,14 @@ select{cursor:pointer}
    two never agreed on scale, which is exactly what caused the reported
    overlap. Positions below are picked against each block's real measured
    footprint (avatar + 3 text lines ≈ 74px tall, 84-92px wide), not guessed. */
-.sf-court{background:var(--court);border-radius:10px;overflow:hidden;margin-top:8px}
+/* Owner-reported bug (live screenshot): `width:100%` on the SVG scaled it
+   to the team CARD's full width — on a desktop viewport that's ~1056px
+   (--maxw 1120px minus .wrap's and .card's own padding), which against
+   the 300:260 viewBox rendered a ~915px-tall graphic, most of one screen
+   for a single card. The 450px-ish size actually reviewed and approved
+   only held in the 2-column mockup page, which this real team-page layout
+   never had — capped for real now, not re-guessed. */
+.sf-court{background:var(--court);border-radius:10px;overflow:hidden;margin-top:8px;max-width:380px}
 .sf-court svg{display:block;width:100%;height:auto}
 .tag{display:inline-block;background:var(--raise);border:1px solid var(--line);border-radius:99px;
   padding:2px 10px;font-size:11.5px;color:var(--ink-2);margin:2px 4px 2px 0}
