@@ -31,16 +31,41 @@
   **ARCHITECTURE DECISION (2026-09-12): split `app/bsn_archivo.html` into
   ES modules, no framework migration — DECIDED, NOT STARTED**, owner
   sequencing it against the backlog first; full reasoning + measured
-  baseline in the boxed entry below
-**DATE:** 2026-09-12
+  baseline in the boxed entry below · **NEW BACKLOG ITEM (2026-09-13):
+  1930–2026 year-by-year historical deep-dive** — scoping in progress,
+  item 4 (season comparison) scoping paused for it. Calibration batch
+  (1930/1950/1970/1990) run first: found champion/runner-up data is
+  already 98/98 complete, and — bigger finding — scoring-champion +
+  MVP/Rookie/DPOY awards are already gap-free 1948–2004/1958–2004 from
+  the existing wayback pipeline, so per-year manual research value-add is
+  mostly rosters/standings, not stats, and both are thin pre-2001.
+  Roster-completeness audit: only 66/97 years have ANY player-season row,
+  median team-season roster is 5 of ~10-15 players, and **2,237 of 3,343
+  canonical players (66.9%) have zero season-level data anywhere** —
+  confirmed real undercount, not a census, traced to bsnpr.com's own
+  thin profile pages, not a pipeline gap. **New source added:** Pabellón
+  de la Fama del Deporte Puertorriqueño (86 basketball inductees,
+  1950–2019) — 3 new players added after per-name verification caught a
+  real identity collision (a HOF "Raymond Dalmau" ≠ existing canonical
+  `Dalmau Santana, Raymond`; the real legend is `Dalmau Perez, Raymond`,
+  newly added) and confirmed one existing-record oddity (`Ortiz, Jose`
+  bsnpr_id 2722 IS Piculín Ortiz, verified via birth_date+birth_city
+  triple match, but the record only captures his 2012-13 farewell cameo,
+  not his real 1980s-2000s career — flagged, not fixed, out of scope for
+  this pass). Wikipedia's "Category:BSN players" (120 names) queued next,
+  same per-name discipline, no batch auto-matching.
+**DATE:** 2026-09-13
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
 **CURRENT STATE:** Archive is live at benniz888.github.io/bsn-archivo — shell
 fetches per-entity JSON from `web/data/`, offline-capable (SW), installable.
 IA: 5 top-level sections, each a `#section/view` router (PHASE_8). Data
-pipeline: 3,343 players (40 jug05-minted, D-047; 152 w/ jugador05 bio) / 98
-seasons / 1,292 games / 68 scoring titles (all champions now linked to a
-ficha) / 47 MVP. player_id_map 800, review queue 451.
+pipeline: 3,346 players (40 jug05-minted, D-047; 3 pabellon_hof-minted,
+2026-09-13; 152 w/ jugador05 bio) / 98 seasons / 1,292 games / 68 scoring
+titles (all champions now linked to a ficha) / 47 MVP. player_id_map 800,
+review queue 451. **web/data/players/ NOT yet rebuilt for the 3 new
+players** — `players_canonical.csv` is ahead of the built site; run the
+pipeline before expecting them to appear live.
 **PHASE_7 visual redesign COMPLETE, LIVE** (`redesign_spec.md`, `73f3cfb` →
 commit 3): (1) Inter one-family + type/spacing tokens; (2) panel-enter motion,
 tab-underline grow, theme cross-fade, sticky first column + tall-table sticky-
@@ -829,6 +854,136 @@ instead because `session.md` is the tier that actually loads into context
 every session, which is the stated reason for recording it. Worth
 mirroring into `docs/specs/module_split_spec.md` when the work is
 actually scheduled.)
+
+═══════════════════════════════════════════════════════════════════════
+HISTORICAL DEEP-DIVE (2026-09-13) — new backlog item scoping, in progress.
+Calibration batch run; Pabellón de la Fama HOF source added (3 players).
+═══════════════════════════════════════════════════════════════════════
+
+Owner proposed a systematic 1930–2026 year-by-year research pass (champion,
+standings, individual stats, rosters per year), same discipline as the
+coliseo/rivalry work, and asked for a realistic scope estimate before
+committing — explicitly not an open-ended commitment.
+
+**Calibration batch (1930, 1950, 1970, 1990), full rigor, before scoping
+the full 96 years:**
+- Champion/runner-up for all 4 years matched `champions_reconciled.csv`
+  exactly against Wikipedia — that layer is already 98/98 complete.
+- **Bigger finding, not assumed going in:** `historic_scoring_champions.csv`
+  (57/57 years, 1948–2004) and `historic_awards.csv` (MVP/Rookie/DPOY,
+  47/47 years, 1958–2004) are ALSO already gap-free, from the same
+  wayback `bsnpr.com/lidereshistoricos.asp` capture. This means the
+  "individual player stats" layer for most of the 96 years is not a
+  research task — it's already at its practical ceiling. Real manual
+  yield for 1930–2004 is mostly rosters + standings, both of which stayed
+  thin in every source tried (Wikipedia, EnciclopediaPR, atleticos.org).
+- **Concrete corroboration-discipline catch, left unresolved:** WebSearch's
+  paraphrase of the Piratas de Quebradillas Wikipedia page named Neftalí
+  Rivera as the 1970 scoring leader (22.3 ppg); the archive's own
+  already-ingested primary-source record says Raymond Dalmau (22.8 ppg,
+  24g/546pts). Not reconciled — flagged as exactly the kind of conflict
+  the confidence/source columns exist to catch. Primary-source pipeline
+  data should outrank an AI-paraphrased secondary claim by default.
+- 1950 runner-up naming variant also flagged, not resolved: archive says
+  Capitalinos de San Juan, Wikipedia's phrasing says "Santos de San Juan"
+  — same San Juan franchise under a different sponsor name that season,
+  most likely (same shape as D-045), not silently merged.
+- 2014–2023 **confirmed** (not just assumed) as the standout target:
+  Wikipedia's structured "X Baloncesto Superior Nacional season" articles
+  exist only from 2016 onward and carry real standings unavailable
+  anywhere else pre-2001.
+- Revised era-effort read given to owner: light corroboration pass over
+  1930–2004 in decade batches (expect confirmation, not new data); skip
+  2001–2013 entirely (that's the existing automated pipeline's job, not
+  manual research); weight the real effort on 2014–2023.
+
+**Roster-completeness audit** (owner asked for real numbers, not a
+guess, after the calibration batch):
+- Only **66 of 97 years (1930–2026) have any player-season row at all**
+  in `player_career_seasons.csv`; 31 years have zero. This is the trustable
+  denominator finding — a franchise-founded/defunct-window proxy was also
+  built (1,322 theoretical team-seasons) but sanity-checked against actual
+  per-season team counts and found unreliable in both directions (off by
+  nearly 2x at both ends); reported to the owner as directionally-useless,
+  not cited as a real ratio.
+- Of the 1,070 team-seasons that do have data: **median roster is 5
+  players** against a real ~10-15 man roster; only 19.3% reach 10+.
+- **2,237 of 3,343 canonical players (66.9%) have zero season-level data
+  anywhere** (career_seasons + season_stats_2001_2004 + both
+  season_leaders files, unioned). 2,232 of those are tagged
+  `wayback_bsnpr_players` — the SAME source used for everyone else —
+  meaning bsnpr.com's own site had an empty/unparseable stat table for
+  most of the player IDs it assigned. **Confirmed: real undercount,
+  inherited from the original source, not a pipeline gap we're failing
+  to close.**
+
+**New source: Pabellón de la Fama del Deporte Puertorriqueño**
+(`pabellondelafamadeldeportepr.org/directorio-de-exaltados/`) — 86
+basketball inductees, 1950–2019, distinct sport category on a national
+PR sports HOF site. Owner approved pulling it in with per-name
+verification (no batch auto-matching), after a first token-match pass
+against `players_canonical.csv` showed real false-positive risk on
+common surnames.
+
+- Token-matched all 96 (Wikipedia's Fandom category duplicates a few names
+  from Pabellón too) → 41 strong (2+ token) matches, 47 weak (1-token,
+  ambiguous — e.g. 4 different "Cestero" HOF names partial-matching a
+  small set of existing `Cestero, ...` rows, left unresolved), 4 zero-match.
+- **Verified each of the 4 zero-match names individually rather than
+  batch-adding:**
+  - **Manuel "Petaca" Iguina Reyes** — confirmed real player (Lon Morris
+    University; Arecibo's coliseum is named for him). Added.
+  - **Onofre Carballeira** — documented primarily as the Vaqueros de
+    Bayamón's coach for the 1933/1935 titles; a "best player of the
+    1920s" claim was an unsourced WebSearch paraphrase. **Excluded** —
+    not solid enough to certify a playing role; belongs in a future
+    coaches/executives track, not `players_canonical.csv`.
+  - **Jacinto Nevárez** — no corroboration beyond the Pabellón listing
+    itself. Added anyway, at owner's direction, with an honest
+    `pabellon-only` confidence tag rather than upgrading it.
+  - **Victoria Juliá** — no corroboration found, and couldn't even
+    confirm this is a men's-BSN figure (vs. women's league / exec /
+    unrelated honoree). **Excluded.**
+- **Headline catch — verified a "strong" 2-token match instead of trusting
+  it, and it was wrong:** Pabellón/Wikipedia's "Raymond Dalmau" (recruited
+  to Piratas de Quebradillas 1966, 20 seasons through 1985, BSN's
+  all-time leader in pts/reb/ast at retirement) token-matched existing
+  canonical `Dalmau Santana, Raymond` (seasons 1990-2009) at high overlap.
+  Verified independently (El Nuevo Día, Wikipedia): the real legend's full
+  name is **Raymond Dalmau Pérez** — different surname, non-overlapping
+  career window. Two different people sharing a common name. The legend
+  was absent from the archive entirely. **Added as a new identity**,
+  `Dalmau Santana` left untouched.
+- **Second identity check, different outcome — same person, incomplete
+  record, not a collision:** "José 'Piculín' Ortiz" (Pabellón 2018)
+  token-matched `Ortiz, Jose` (bsnpr_id 2722, seasons 2012-13 only,
+  Brujos de Guayama). Verified via birth_date (10/23/1963 canonical vs.
+  "25 de octubre de 1963" reported) + birth_city (Aibonito, PR, exact
+  match both) — this **is** Piculín Ortiz, confirmed by a field triple
+  match, not name-token matching. But 2012-13 (age 48-49) is a late
+  farewell cameo (9 then 5 games) — his real career (Atléticos de San
+  Germán/Cangrejeros de Santurce, Utah Jazz 1987 draft, Real Madrid,
+  Barcelona, PR national team 1983-2004) is entirely uncaptured. **Not
+  a new identity** — would have been a wrong duplicate. Flagged as a
+  known-thin existing record; full career backfill is deep-dive-pass
+  work, out of scope for this batch.
+- **Committed:** `991001` Dalmau Perez, Raymond (multi-source: Pabellón +
+  Wikipedia + El Nuevo Día) · `991002` Iguina Reyes, Manuel (multi-source:
+  Pabellón + Wikipedia + discoverpuertorico.com) · `991003` Nevarez,
+  Jacinto (pabellon-only). New `bsnpr_id` band `991xxx` chosen deliberately
+  distinct from the jug05 mints (`990xxx`, D-047) so the two synthetic-ID
+  sources are never confused. Two new confidence values introduced,
+  consistent with the existing `single-source`/`jug05-only` vocabulary:
+  `multi-source` (independently corroborated beyond the HOF listing) and
+  `pabellon-only` (real induction record, zero outside corroboration).
+  **`web/data/players/` not yet regenerated** — CSV-layer commit only.
+
+**Queued next:** Wikipedia's "Category:Baloncesto Superior Nacional
+players" (120 actual names + 11 subcategory links, full list pulled via
+the raw MediaWiki API after a rendered-page fetch failed to extract it).
+Same per-name verification discipline as above — explicitly no batch
+auto-matching, given what it would have gotten wrong on this exact batch
+(Dalmau) if trusted at face value.
 
 Open threads:
 docs/project.md D2 refinement for the Grises/Caciques de Humacao split (D-045);
