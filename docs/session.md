@@ -2664,7 +2664,13 @@ commit, see above). `make build-web-data` rebuilt (`players.json`
 T9.1 fixes). `make verify`: 339,222 checks, 0 failed. `make test`: 191
 pass, 0 failed.
 
-**T9.4 DONE.** T9.5 (3 held-back thin Wikipedia names) remains queued.
+Pushed (`4b6437f`), live-verified — `bsnarchivo.com/data/players/
+991010.json` (Thordsen) 200 with correct content, `data/index/
+player_xwalk.json` count 163 with all 5 new links + the pre-existing
+Betancourt link resolving correctly, `Last-Modified` matching the push.
+
+**T9.4 DONE, LIVE.** T9.5 (3 held-back thin Wikipedia names) remains
+queued.
 
 ---
 
