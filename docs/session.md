@@ -60,12 +60,12 @@
 **CURRENT STATE:** Archive is live at benniz888.github.io/bsn-archivo — shell
 fetches per-entity JSON from `web/data/`, offline-capable (SW), installable.
 IA: 5 top-level sections, each a `#section/view` router (PHASE_8). Data
-pipeline: 3,346 players (40 jug05-minted, D-047; 3 pabellon_hof-minted,
-2026-09-13; 152 w/ jugador05 bio) / 98 seasons / 1,292 games / 68 scoring
-titles (all champions now linked to a ficha) / 47 MVP. player_id_map 800,
-review queue 451. **web/data/players/ NOT yet rebuilt for the 3 new
-players** — `players_canonical.csv` is ahead of the built site; run the
-pipeline before expecting them to appear live.
+pipeline: 3,353 players (40 jug05-minted, D-047; 9 pabellon_hof/
+wikipedia_bsn-minted, 2026-09-13; 152 w/ jugador05 bio) / 98 seasons /
+1,292 games / 68 scoring titles (all champions now linked to a ficha) /
+47 MVP. player_id_map 800, review queue 451. **web/data/players/ NOT
+yet rebuilt for the 9 new players** — `players_canonical.csv` is ahead
+of the built site; run the pipeline before expecting them to appear live.
 **PHASE_7 visual redesign COMPLETE, LIVE** (`redesign_spec.md`, `73f3cfb` →
 commit 3): (1) Inter one-family + type/spacing tokens; (2) panel-enter motion,
 tab-underline grow, theme cross-fade, sticky first column + tall-table sticky-
@@ -990,8 +990,25 @@ separate people, matching the two separate canonical rows exactly). 6
 genuinely new identities found and verified (Willie Meléndez, Willie
 Quiñones, Mike Rosario, John Meeks, George Conditt IV, Tyreke Evans —
 multi-source each) + 3 thinner ones (Leon Smith, Tyler Hines, Bonzi
-Wells — confirmed real, team/year unconfirmed). **Not yet added to
-players_canonical.csv** — batch shown to owner, awaiting go/no-go.
+Wells — confirmed real, team/year unconfirmed). **Owner approved the 6,
+held the 3 thin ones back.** Added: `991004` Melendez Velez, Wilfredo
+"Willie" (1974-1992, Santos de San Juan debut → Brujos de Guayama →
+Criollos de Caguas) · `991005` Quinones Figueroa, Jose "Willie"
+(b. 2/22/1956, 20 seasons from 1976, Criollos/Coamo/Bayamon/
+Carolina/Morovis) · `991006` Rosario, Michael "Mike" (b. 11/2/1990,
+Jersey City; Leones de Ponce; 3x champion 2014/2015/2017, 6th Man 2016)
+· `991007` Meeks, John (b. 3/16/1999, Winston-Salem; Santeros de
+Aguada 2024) · `991008` Conditt, George Iv (b. 8/22/2000, Chicago;
+Gigantes de Carolina 2022-2026 across stints, DPOY 2024, part of the
+Gigantes' 2023 first title) · `991009` Evans, Tyreke (Indios de
+Mayaguez 2022-23, 12g: 17.2/3.8/3.3). New `source_id`: `wikipedia_bsn`
+(distinct from `pabellon_hof`, same `multi-source` confidence tier —
+each of these 6 corroborated across multiple independent site families
+in search results, not a single Wikipedia paraphrase). **Held back, not
+added:** Leon Smith, Tyler Hines, Bonzi Wells — confirmed real BSN
+imports but team/year unconfirmed; queued if a real season/roster
+source ever surfaces for them. **`web/data/players/` still not
+rebuilt** — CSV-layer only, now 3,353 rows total.
 
 **Georgie Torres — reversed a prior explicit rejection, owner-approved
 2026-09-13.** The existing `app/player_crosswalk.csv` had this name
