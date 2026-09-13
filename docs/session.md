@@ -2506,6 +2506,166 @@ too, same as earlier this session), confirmed `standings.source ==
 and T9.5 (the 3 held-back thin Wikipedia names) remain queued, unstarted,
 available to pick up next.
 
+═══════════════════════════════════════════════════════════════════════
+T9.4 — the weak Pabellón matches. DONE. 6 confirmed links (1 already
+resolved pre-session, 5 new), 2 new identities, rest a disclosed gap.
+Every one of 52 checked individually.
+═══════════════════════════════════════════════════════════════════════
+
+**Real count was 52, not ~47 — recomputed from scratch, the original
+figure was never persisted to disk.** The prior session's "47 weak"
+narrative was never backed by a saved interim file, so this pass
+re-fetched the source and re-ran the match rather than trusting the
+prose number. `pabellondelafamadeldeportepr.org` uses a wpDataTables
+plugin — the directory page's raw HTML has no rows at all (client-side
+AJAX); pulled the real data via the same `admin-ajax.php?action=
+get_wdtable&table_id=1` POST the page's own JS makes (nonce read out of
+the HTML), same discipline as always finding the real data path rather
+than fabricating from a partial page fetch. 683 total inductees, 96
+"Baloncesto" category (confirmed matches T9.1's earlier count exactly).
+Token-matched against `players_canonical.csv` (excluding the 990xxx/
+991xxx band already minted this phase, to avoid circular self-matches):
+40 strong (2+ token), **52 weak (1-token)**, 4 zero-match — the
+zero-match count differs from the earlier "4" because 2 of the original
+4 (Iguiná, Nevárez) are now themselves in the canonical table from
+D-048, leaving Carballeira and Juliá as the only true zero-matches
+(both already excluded, T9.1-adjacent). `~47` was always an
+approximation; 52 is the real, reproducible number this pass worked
+from.
+
+**Refined the match signal before spending research time on it.**
+Simple token-overlap treats a shared common given name (e.g. "William"
+in both "William Font" and "McCadney, William") the same as a shared
+surname — checked this concretely and it was producing false
+"plausible" flags on given-name coincidences. Re-ran requiring the
+overlapping token to sit in *surname* position (checked against
+`apellidos`, not the full name) before treating a candidate as worth
+individual research. Real, verifiable improvement, not just intuition.
+
+**All 52 checked individually — real disposition for each, not a
+batch skip:**
+
+*Already resolved, prior session — confirmed correct, no new action:*
+- Pachín Vicéns → 1327 (`player_crosswalk.csv`, verdict `auto`)
+- Teófilo Cruz ("Teo Cruz") → 2200 (verdict `review`, birth-year
+  discrepancy already flagged/owner-approved)
+- Raúl «Tinajón» Feliciano — already curated `verdict:none` (a prior
+  session already looked and decided no link exists); this pass's own
+  research turned up nothing to override that call.
+- **Sammy Betancourt → 2147** — already curated (`verdict:auto`,
+  confidence 10), found and cited independently anyway before checking
+  the crosswalk a second time under the corrected spelling (see the
+  "own mistake, caught before commit" note below). Independent research
+  landed on the exact same `bsnpr_id` the earlier automated matcher had
+  already found — real cross-validation of that prior link, not new
+  information.
+
+*5 new links — real corroboration found and cited, added to
+`player_crosswalk.csv` (`verdict:review`, evidence documented per row):*
+Each confirmed via a fact in the existing canonical row that an
+independent biography also states — not name-token overlap alone (D1):
+- **Bill McCadney → 2315** ("McCadney, William") — birth date 2/5/1935
+  exact match to an independent bio (Brooklyn NY; Fordham; PR national
+  team 1964/1968 Olympics; d. Arecibo 2009); nickname "bill" already on
+  file.
+- **Fufi Santori → 1176** ("Santori Coll, Jose") — birth date 5/7/1932
+  exact match (Santurce; Rookie of Year 1951, MVP 1953, 1960 Olympics;
+  d. 2018); nickname "fufi" already on file.
+- **Tomás «Guabina» Gutiérrez → 2216** ("Gutierrez, Tomas") — nickname
+  "guabina" already on file, matching an independent bio (1960s Leones
+  de Ponce backcourt partner of Pachín Vicéns).
+- **Totín Cestero → 1207** ("Cestero Rodriguez, Jose") — birth date
+  1/24/1938 exact match (Río Piedras; d. 2014; 1960 Olympics); nickname
+  "totin" already on file.
+- **Armandito Torres → 215** ("Torres Ortiz, Armando") — nickname
+  "armandito" already on file; full name independently confirmed via
+  multiple El Nuevo Día/WAPA articles (12-year Atléticos de San Germán
+  career, later PR Olympic-team coach; BSN dedicated its entire 2024
+  season to him).
+
+**Own mistake, caught before commit, worth recording**: initially added
+"Sammy Betancourt" as a 6th "new" link — my pre-check against
+`player_crosswalk.csv` (exact `norm_key` match + a token-subset
+fallback) had missed the existing `verdict:auto` row because Pabellón's
+own listing spells him "Sammy **Bentacourt**" (a letter transposition
+from the real "Betancourt"), which shares no token at all with the
+correct spelling under either check. Wrote a duplicate `review` row
+pointing at the identical `bsnpr_id` (2147) an existing `auto` row
+already carried. Caught it re-deriving the `player_xwalk.json` delta
+(158→163, one short of the expected 158+6=164) rather than assuming the
+count matched what I'd written — traced the gap to the duplicate key,
+removed the row before it was committed. `player_xwalk.json`'s real,
+verified count is 163 (158 + 5 genuinely new).
+
+*2 new identities minted — real, multi-source corroboration, zero
+existing archive presence (same bar as D-048/D-050), `players_canonical.
+csv`, `confidence=multi-source`, `source_id=pabellon_hof`:*
+- **`991010` Thordsen, Jimmy** — b. 7/23/1948, Wikipedia + FIBA +
+  Wikidata + Basketball-Reference agree; PR national team 1972 + 1976
+  Olympics; BSN team Gallitos de Isabela. No specific BSN season span
+  found — left `first_season`/`last_season` blank rather than guess
+  (PC1/PC2).
+- **`991011` Ansa Ortiz, Martin** — b. 9/27/1941 Bayamón, d. 2024-10-26,
+  Wikipedia + Wikidata agree; 1964 Olympics; joined Vaqueros de Bayamón
+  1960 (recorded as `first_season`), a scoring leader with 405 points
+  that season. (Not to be confused with "Martin Ansa Jr." — his son, a
+  Wagner College Athletics Hall of Fame inductee for a different sport
+  in a different country; checked and kept separate.)
+
+*Excluded — coach, not player (same treatment as Onofre Carballeira,
+T9.1-adjacent):* Rafael «Bolote» Selosse (Indios de Mayagüez coach,
+1957), Félix Joglar (Azules de Bayamón coach), Caco Cancel (Indios de
+Canóvanas coach, late 1970s–80s). All three real, well-documented — just
+not player records, so out of `players_canonical.csv`'s scope by the
+same rule already applied once this phase.
+
+*Excluded — wrong league entirely:* Magaly Díaz Ocasio, confirmed via
+independent search to be a **women's basketball** figure (6x MVP of the
+Superior Women's Basketball League, first woman in the Pabellón for
+basketball) — this archive's `players_canonical.csv` is BSN (men's
+league) scope per `docs/project.md`'s own project identity. Not a close
+call once checked; would have been a real, silent scope violation if
+token-matched and linked without reading past the name.
+
+*Remaining ~38 — real archive gaps, individually checked, not fixable
+this pass.* Pattern that emerged and held up under repeated testing:
+most of these are 1930s–1950s Pabellón honorees (several literally
+predate BSN's own 1930 founding, one — Ubaldino Ramírez de Arellano,
+b. 1894 — predates it by decades and was one of the league's actual
+founders). They're real, independently findable as names on "best of
+the decade" retrospective lists (Primera Hora, ESPN Deportes), but with
+zero biographical specifics (no birth date, no team, no span) — which is
+exactly what's needed to pick one candidate out of a common-surname pool
+of 5-100+ modern-era players without violating D1 ("never on name
+alone"). Two borderline cases surfaced but deliberately **not** added,
+more caution than the 2 identities above:
+- **Arquelio Torres Ramírez** — a real 1930s legend with a coliseum
+  named after him at Atléticos de San Germán's home grounds, but no
+  birth date or specific span found anywhere — thinner corroboration
+  than Thordsen/Ansa, held back rather than added on a lower bar.
+- **Freddie Borrás** (Pedro Alfredo Borrás Blasco) — a genuine basketball
+  legend, but almost entirely a **Spanish** one (Real Madrid, introduced
+  the jump shot to Spanish basketball); the only BSN connection found is
+  one sentence about being "acquired" by Leones de Ponce in 1947 before
+  leaving for Spain in 1948 — not confirmed he actually played a BSN
+  game. Held back rather than asserting a playing record that isn't
+  actually confirmed.
+Full name-by-name list with search results in
+`scratchpad/pabellon_t94_final.json` (this session's scratchpad, not
+committed — the disposition above is the durable record).
+
+**Data changes**: 2 new rows in `players_canonical.csv` (991010-991011),
+5 new rows in `app/player_crosswalk.csv` (`verdict:review`, full
+evidence per row — a 6th, duplicate row was written and removed before
+commit, see above). `make build-web-data` rebuilt (`players.json`
+3352→3354, `player_xwalk.json` 158→163). 2 stale test assertions updated
+(`test_players_index`,
+`test_manifest_counts_match`, same hardcoded-count pattern as the
+T9.1 fixes). `make verify`: 339,222 checks, 0 failed. `make test`: 191
+pass, 0 failed.
+
+**T9.4 DONE.** T9.5 (3 held-back thin Wikipedia names) remains queued.
+
 ---
 
 [BLOCKERS]
