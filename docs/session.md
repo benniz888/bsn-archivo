@@ -2497,8 +2497,13 @@ future work.
 real new coverage, not a wider net over the same data). `make test`: 191
 pass (183 pre-existing + 8 new latinbasket tests), 0 failed.
 
-**PHASE_9 (T9.1-T9.3) DONE.** T9.4 (the ~47 weak Pabellón matches) and
-T9.5 (the 3 held-back thin Wikipedia names) remain queued, unstarted,
+Pushed (`d337ea9`), live-verified the correct way — direct fetch of
+`bsnarchivo.com/data/seasons/2016.json` (the `.github.io` host 301s here
+too, same as earlier this session), confirmed `standings.source ==
+"latinbasket"` with real rows, `Last-Modified` matching the push time.
+
+**PHASE_9 (T9.1-T9.3) DONE, LIVE.** T9.4 (the ~47 weak Pabellón matches)
+and T9.5 (the 3 held-back thin Wikipedia names) remain queued, unstarted,
 available to pick up next.
 
 ---
