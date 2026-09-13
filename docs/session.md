@@ -403,6 +403,22 @@ bundle items.
    one.** Cuadrícula, Temporada Perfecta, and Quién soy each need their
    own scoping pass, their own plan, their own approval. Don't try to do
    all three at once.
+7. **latinbasket.com roster ingest, 2014–2023 — logged, NOT started, owner
+   explicit: keep this out of PHASE_9.** Surfaced during PHASE_9_T9.1
+   scoping (2026-09-13): latinbasket.com carries a per-team roster link
+   alongside its standings for at least 2014/2020/2022 (spot-checked).
+   Real value — would directly attack the roster-completeness audit's
+   headline finding (66.9% of canonical players have zero season-level
+   data anywhere) — but it's a full identity-resolution project sized
+   like jug05/jugador05/Pabellón (D-047/D-048), not a sub-task: an
+   unvetted new source, potentially ~10 seasons × ~10-12 teams ×
+   ~12-15 players of new names each needing real D1 verification (never
+   on name alone), no batch imports. PHASE_9 takes only latinbasket's
+   team-level standings (no player names, no identity exposure) — this
+   item is the roster half, deliberately deferred to its own future
+   phase + spec (`docs/specs/latinbasket_roster_spec.md`, not yet
+   written) so it doesn't get lost, same treatment as the ES-module-split
+   decision above.
 
 Illustrated player/team figures (backlog item 2) — full record. Scoped
 before building: real photos/likeness illustration ruled out archive-wide,
@@ -2278,39 +2294,83 @@ requests**; crests/portraits still render as SVG shields/monograms.
 
 ---
 
-### PHASE_9_HISTORICAL_DEEP_DIVE_2014_2023 — PROPOSED, NOT STARTED (D-051)
+### PHASE_9_HISTORICAL_DEEP_DIVE_2014_2023 — SCOPING PASS DONE, real findings
+below change the shape of T9.1; awaiting a real (not rubber-stamp) owner
+decision before writing any new data file.
 
-Owner offered 3 next items (2026-09-13 resume) and left the pick to the
-model. **Recommendation: this one**, per the calibration batch's own
-finding — 2014–2023 was independently confirmed (not assumed) as the
-standout target, since Wikipedia's structured per-season articles exist
-only 2016+ and carry real standings unavailable anywhere else pre-2001;
-1930–2004 by contrast mostly re-confirms data this archive already has
-gap-free. The other two options are smaller, bounded cleanup items
-(scoped below as T9.4/T9.5) that don't need a decade of research
-discipline — folding them into this phase or running them standalone
-later is a minor sequencing choice, not an architectural one.
+Owner picked this item 2026-09-13, approved T9.1–T9.5 as drafted. Before
+writing code, ran the actual per-season availability check the draft had
+only assumed ("expect... from Wikipedia's season articles") — and the
+assumption was wrong on two counts:
 
-Scope (draft, awaiting owner go-ahead per PHASE_ENTRY/P3 before any
-research work starts):
-- T9.1 — Per-season pass, 2014–2023 (10 seasons): champion/runner-up
-  (expect agreement — 98/98 already complete, this is corroboration not
-  new data), standings, and roster where sourceable, from Wikipedia's
-  "X Baloncesto Superior Nacional season" articles. Same per-name/
-  per-fact discipline as D-048/D-049/D-050 — no batch imports.
-- T9.2 — Player identity resolution for any new names surfaced by T9.1,
-  same discipline as the Pabellón/Wikipedia passes (verify before link,
-  never on name alone — D1).
-- T9.3 — `data/clean/` + `web/data/` rebuild once T9.1/T9.2 land,
-  same pattern as `e8dad1e`.
-- T9.4 (smaller, could run standalone) — resolve the ~47 weak (1-token)
-  Pabellón matches individually (no batch).
-- T9.5 (smaller, could run standalone) — the 3 held-back thin Wikipedia
-  names (Leon Smith, Tyler Hines, Bonzi Wells): search for a real
-  season/roster source; add only if one surfaces, else leave queued.
+- **Only 3 of the 10 seasons have a dedicated Wikipedia season article at
+  all** (probed all 10 URLs directly, not just the category listing):
+  2016, 2017, 2018. 2014, 2015, 2019, 2020, 2021, 2022, 2023 all 404.
+  Matches the calibration batch's "2016 onward" read, but the window is
+  narrower than "2014–2023" implies — 2019–2023 have no season article
+  either, contra the original framing.
+- **Of those 3, none give what T9.1 assumed:** 2016's standings table is
+  explicitly captioned "May 10, 2016" — mid-season, not final (PC4 —
+  would need a `season_complete=False` flag, same D-009 pattern). 2017
+  has no standings table at all, only stat leaders/awards. 2018 has a
+  real final table but the season itself is 2-stage (Stage 1 table +
+  Stage 2 Group A/B) — structurally different from a single table, not a
+  data-quality problem, a real format difference to model correctly.
+  **None of the 3 include team rosters** — only per-category statistical
+  leaders (3–4 names/season), so T9.2's feared roster-identity-resolution
+  wave mostly doesn't materialize from Wikipedia alone.
+- **New source found, not yet vetted or approved: latinbasket.com.**
+  Spot-checked 2014, 2020, 2022 via fetch (its own bot-block returns 404
+  to a plain `curl`/no-JS request but resolves fine through the fetch
+  tool) — real final standings tables for all 3 probed years, with a
+  roster-link per team. 2022's cross-check against `champions_reconciled`
+  agrees exactly (Bayamón d. San Germán, 4-2) — a real, corroborating
+  signal, not just a plausible-looking page. This single source could
+  plausibly cover standings **and rosters** for most/all of 2014–2023 —
+  a substantially bigger opportunity than the Wikipedia-only draft
+  assumed, but it's an unvetted third-party site pulled into a product
+  with App Store ambitions (L4), and full rosters would trigger the same
+  scale of per-name D1 verification work as jug05/jugador05/Pabellón —
+  not a quick add.
 
-**Awaiting owner go-ahead to enter this phase** — either confirm T9.1–T9.3
-as scoped, reorder in T9.4/T9.5 first, or redirect entirely.
+**Three ways to take T9.1 from here — owner's call, not decided:**
+1. **Standings-only, all 10 years, latinbasket.com, team-level (no player
+   names).** New `data/clean/standings.csv` (season, franchise_id, W, L,
+   position, stage, source_id, source_url, retrieved_at, confidence).
+   Bounded, no identity-resolution exposure, real new data type the
+   archive doesn't have at all today. Recommended if the goal is closing
+   this backlog item at reasonable cost.
+2. **Same, plus rosters** — high value (would directly attack the 66.9%-
+   no-season-data finding from the roster-completeness audit) but opens
+   a full new identity-resolution project, sized like jug05/jugador05 —
+   deserves its own spec + phased approval, not a sub-task of T9.1.
+3. **Wikipedia-only, as literally drafted.** Real but thin: 2016
+   (provisional) + 2017 (champion/leaders only, no standings) + 2018
+   (2-stage, final) — 3 of 10 years, no rosters anywhere.
+- T9.3 (unchanged) — `data/clean/` + `web/data/` rebuild once T9.1/T9.2
+  land, same pattern as `e8dad1e`.
+- T9.4 / T9.5 (unchanged, still available to run standalone regardless of
+  the above call): the ~47 weak Pabellón matches; the 3 held-back thin
+  Wikipedia names.
+
+**Owner decision (2026-09-13): Option 1 — standings-only, all 10 years,
+latinbasket.com, team-level, no player names.** Bounded cost, closes this
+backlog item. Option 2 (rosters) logged as its own future phase, backlog
+item 7 above — explicitly kept out of PHASE_9 scope, not folded in.
+
+T9.1 (revised) — `data/clean/standings.csv`: season, franchise_id
+(joined via the existing `city_franchise_map`/`club_code_map`, same as
+every other team-level file — no new city-matching logic), wins, losses,
+position, stage (nullable — 2018-style multi-stage seasons get a row per
+stage/group), source_id=`latinbasket`, source_url, retrieved_at,
+confidence (`single-source` — latinbasket is not yet independently
+corroborated the way `champions_reconciled`'s two-source agreement is;
+PC3). Cross-check each season's derived champion/runner-up (top seed /
+finals result if latinbasket states it) against `champions_reconciled` —
+agreement expected (already verified for 2022), any mismatch goes to
+`reconcile_conflicts.csv` per existing D5-style handling, not silently
+dropped. T9.2 (player identity resolution) is **not triggered** by this
+revised scope — no player names in a standings-only pull.
 
 ---
 
