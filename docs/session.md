@@ -63,9 +63,15 @@ IA: 5 top-level sections, each a `#section/view` router (PHASE_8). Data
 pipeline: 3,353 players (40 jug05-minted, D-047; 9 pabellon_hof/
 wikipedia_bsn-minted, 2026-09-13; 152 w/ jugador05 bio) / 98 seasons /
 1,292 games / 68 scoring titles (all champions now linked to a ficha) /
-47 MVP. player_id_map 800, review queue 451. **web/data/players/ NOT
-yet rebuilt for the 9 new players** — `players_canonical.csv` is ahead
-of the built site; run the pipeline before expecting them to appear live.
+47 MVP. player_id_map 800, review queue 451. **web/data/players/ REBUILT
+2026-09-13 (`e8dad1e`)** — 3,352-entry index (was 3,343), 991001–991009
+live; Georgie Torres (788) now surfaces 8 observations previously hidden
+by the bad crosswalk rejection. Independently re-verified live via direct
+fetch this session (custom domain `bsnarchivo.com`, not the `.github.io`
+host — that 301-redirects): `data/players/991001.json` and
+`data/players/788.json` both 200, content matches; `data/index/players.json`
+length 3352; `Last-Modified` on both matches the commit timestamp. Pushed,
+confirmed live — this item is fully closed, no further action needed.
 **PHASE_7 visual redesign COMPLETE, LIVE** (`redesign_spec.md`, `73f3cfb` →
 commit 3): (1) Inter one-family + type/spacing tokens; (2) panel-enter motion,
 tab-underline grow, theme cross-fade, sticky first column + tall-table sticky-
@@ -976,7 +982,7 @@ common surnames.
   consistent with the existing `single-source`/`jug05-only` vocabulary:
   `multi-source` (independently corroborated beyond the HOF listing) and
   `pabellon-only` (real induction record, zero outside corroboration).
-  **`web/data/players/` not yet regenerated** — CSV-layer commit only.
+  **`web/data/players/` regenerated 2026-09-13 (`e8dad1e`) — live.**
 
 **Wikipedia's "Category:Baloncesto Superior Nacional players"** (120
 names + 11 subcategory links, pulled via the raw MediaWiki API after a
@@ -991,7 +997,8 @@ genuinely new identities found and verified (Willie Meléndez, Willie
 Quiñones, Mike Rosario, John Meeks, George Conditt IV, Tyreke Evans —
 multi-source each) + 3 thinner ones (Leon Smith, Tyler Hines, Bonzi
 Wells — confirmed real, team/year unconfirmed). **Owner approved the 6,
-held the 3 thin ones back.** Added: `991004` Melendez Velez, Wilfredo
+held the 3 thin ones back.** (Queued: Leon Smith, Tyler Hines, Bonzi
+Wells — not added, per next-actions note below.) Added: `991004` Melendez Velez, Wilfredo
 "Willie" (1974-1992, Santos de San Juan debut → Brujos de Guayama →
 Criollos de Caguas) · `991005` Quinones Figueroa, Jose "Willie"
 (b. 2/22/1956, 20 seasons from 1976, Criollos/Coamo/Bayamon/
@@ -1007,8 +1014,8 @@ each of these 6 corroborated across multiple independent site families
 in search results, not a single Wikipedia paraphrase). **Held back, not
 added:** Leon Smith, Tyler Hines, Bonzi Wells — confirmed real BSN
 imports but team/year unconfirmed; queued if a real season/roster
-source ever surfaces for them. **`web/data/players/` still not
-rebuilt** — CSV-layer only, now 3,353 rows total.
+source ever surfaces for them. **`web/data/players/` rebuilt 2026-09-13
+(`e8dad1e`) — live**, 3,352 rows in `web/data/index/players.json`.
 
 **Georgie Torres — reversed a prior explicit rejection, owner-approved
 2026-09-13.** The existing `app/player_crosswalk.csv` had this name
@@ -2271,6 +2278,42 @@ requests**; crests/portraits still render as SVG shields/monograms.
 
 ---
 
+### PHASE_9_HISTORICAL_DEEP_DIVE_2014_2023 — PROPOSED, NOT STARTED (D-051)
+
+Owner offered 3 next items (2026-09-13 resume) and left the pick to the
+model. **Recommendation: this one**, per the calibration batch's own
+finding — 2014–2023 was independently confirmed (not assumed) as the
+standout target, since Wikipedia's structured per-season articles exist
+only 2016+ and carry real standings unavailable anywhere else pre-2001;
+1930–2004 by contrast mostly re-confirms data this archive already has
+gap-free. The other two options are smaller, bounded cleanup items
+(scoped below as T9.4/T9.5) that don't need a decade of research
+discipline — folding them into this phase or running them standalone
+later is a minor sequencing choice, not an architectural one.
+
+Scope (draft, awaiting owner go-ahead per PHASE_ENTRY/P3 before any
+research work starts):
+- T9.1 — Per-season pass, 2014–2023 (10 seasons): champion/runner-up
+  (expect agreement — 98/98 already complete, this is corroboration not
+  new data), standings, and roster where sourceable, from Wikipedia's
+  "X Baloncesto Superior Nacional season" articles. Same per-name/
+  per-fact discipline as D-048/D-049/D-050 — no batch imports.
+- T9.2 — Player identity resolution for any new names surfaced by T9.1,
+  same discipline as the Pabellón/Wikipedia passes (verify before link,
+  never on name alone — D1).
+- T9.3 — `data/clean/` + `web/data/` rebuild once T9.1/T9.2 land,
+  same pattern as `e8dad1e`.
+- T9.4 (smaller, could run standalone) — resolve the ~47 weak (1-token)
+  Pabellón matches individually (no batch).
+- T9.5 (smaller, could run standalone) — the 3 held-back thin Wikipedia
+  names (Leon Smith, Tyler Hines, Bonzi Wells): search for a real
+  season/roster source; add only if one surfaces, else leave queued.
+
+**Awaiting owner go-ahead to enter this phase** — either confirm T9.1–T9.3
+as scoped, reorder in T9.4/T9.5 first, or redirect entirely.
+
+---
+
 [BLOCKERS]
 
 - B1 — **Manual, user-only — but partly answered by PHASE_3C.** The bsnpr.com
@@ -2462,6 +2505,30 @@ Decisions made session 002 (PHASE_4):
   (no Wikipedia corroboration). Santos de San Juan = distinct franchise_id,
   `relationship_unclear`, not merged. New `franchise_founded` conflict logged
   (Criollos 1969 en.wiki vs 1976 seed).
+
+Decisions made session 003 (HISTORICAL_DEEP_DIVE scoping, 2026-09-13):
+- **D-050 — Wikipedia's "Category:BSN players" (120 names) added, same
+  per-name discipline as D-048, no batch auto-matching.** 6 new identities
+  verified multi-source and added (`991004`–`991009`); 3 more confirmed
+  real but team/year-unconfirmed (Leon Smith, Tyler Hines, Bonzi Wells)
+  held back, not added. New `source_id=wikipedia_bsn`. Full record in the
+  HISTORICAL DEEP-DIVE section above.
+- **D-049 — Georgie Torres crosswalk rejection reversed (owner-approved).**
+  Prior session's `rejected` verdict on `player_crosswalk.csv` (bsnpr_id
+  788) was itself wrong — his real surname is Torres Dougherty, confirmed
+  6-source (en.wikipedia, fiba.basketball, Wikidata Q3760772, El Nuevo
+  Día, RealGM, basketball-reference). Verdict → `review`, birth_date
+  corrected 10/15/1957 → 9/21/1957. `first_season`/`last_season` left
+  alone — no per-season rows exist to back a corrected range (PC1/PC2).
+  Full record in the HISTORICAL DEEP-DIVE section above.
+- **D-048 — new source: Pabellón de la Fama del Deporte Puertorriqueño**
+  (86 basketball inductees, 1950–2019), owner-approved with per-name
+  verification, no batch auto-matching, after a token-match pass showed
+  real false-positive risk on common surnames. 3 new identities added
+  (`991001`–`991003`); new confidence values `multi-source` /
+  `pabellon-only`; new `bsnpr_id` band `991xxx` (distinct from the
+  jug05 `990xxx` mints, D-047). Full record in the HISTORICAL DEEP-DIVE
+  section above.
 
 Decisions made session 002 (PHASE_5_APP_SYNC):
 - **D-047 — a canonical id may be minted from a league source with no `?id=N`
