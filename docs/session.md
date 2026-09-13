@@ -53,7 +53,20 @@
   triple match, but the record only captures his 2012-13 farewell cameo,
   not his real 1980s-2000s career — flagged, not fixed, out of scope for
   this pass). Wikipedia's "Category:BSN players" (120 names) queued next,
-  same per-name discipline, no batch auto-matching.
+  same per-name discipline, no batch auto-matching. **PHASE_9_HISTORICAL_
+  DEEP_DIVE_2014_2023: T9.1-T9.4 ALL DONE, LIVE** — T9.1-T9.3 built
+  `data/clean/standings.csv` (first team-level standings file the archive
+  has ever had), 57 rows / 5 real seasons (2014-2018) via Wayback captures
+  of latinbasket.com (a live-site robots.txt block on Claude-identified
+  crawlers, B5, was resolved by using Wayback instead of routing around
+  it), wired into `web/data/seasons/*.json`; T9.4 individually verified
+  all 52 weak Pabellón-HOF token matches (real count, recomputed from the
+  source's own AJAX data, not the prior session's unpersisted "~47"), landing
+  6 confirmed links + 2 new identities (`991010`/`991011`) + several
+  real, disclosed gaps. **Backlog item: T9.5 (3 held-back thin Wikipedia
+  names — Leon Smith, Tyler Hines, Bonzi Wells) is the only thing left
+  queued in this thread** — pick it up next session. Full record in
+  [TASK_QUEUE] under PHASE_9.
 **DATE:** 2026-09-13
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
@@ -72,6 +85,15 @@ host — that 301-redirects): `data/players/991001.json` and
 `data/players/788.json` both 200, content matches; `data/index/players.json`
 length 3352; `Last-Modified` on both matches the commit timestamp. Pushed,
 confirmed live — this item is fully closed, no further action needed.
+**Since superseded by PHASE_9/T9.4 (same session, later): players.json
+is now 3,354** (991010 Jimmy Thordsen, 991011 Martin Ansa added) and
+`player_xwalk.json` is 163 entries (5 new Pabellón-HOF links). Also new
+this session: `data/clean/standings.csv` (57 rows, 2014-2018, the
+archive's first team-level standings file) and `data/clean/
+standings_coverage_gaps.csv` (the 5 disclosed unrecoverable seasons).
+Both live-verified independently — see PHASE_9 in [TASK_QUEUE] for the
+full record, commits `d337ea9`/`4b6437f` (+ docs-only `a859a46`/
+`503e149`).
 **PHASE_7 visual redesign COMPLETE, LIVE** (`redesign_spec.md`, `73f3cfb` →
 commit 3): (1) Inter one-family + type/spacing tokens; (2) panel-enter motion,
 tab-underline grow, theme cross-fade, sticky first column + tall-table sticky-
@@ -3176,6 +3198,17 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
 
 [NEXT_ACTIONS]
 
+0. **CURRENT, resume here (2026-09-13 session end).** PHASE_9_HISTORICAL_
+   DEEP_DIVE_2014_2023 T9.1-T9.4 are all DONE, LIVE, pushed (see the
+   boxed PHASE_9 record in [TASK_QUEUE] and the SESSION line at the top
+   of this file for the full summary). **T9.5 is the only remaining
+   queued item in this thread**: find a real season/roster source for
+   the 3 held-back Wikipedia BSN names (Leon Smith, Tyler Hines, Bonzi
+   Wells — confirmed real BSN imports, team/year unconfirmed as of
+   D-050); add only if a real source surfaces, same per-name discipline
+   as T9.4, no batch. Everything numbered below this point is older
+   history, mostly already resolved — kept for the record, not a live
+   task list.
 1. **Owner-directed queue (2026-09-08 session), in order, pause after each:**
    (a) PHASE_3E_CLEAN_STORAGE — **DONE** (`game_plays.csv.gz`, commit 72d2b52);
    (b) PHASE_3G_HISTORIC_FOLLOWUP — **DONE** (negative finding, commit 100e9c6);
