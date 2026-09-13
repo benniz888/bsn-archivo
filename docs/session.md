@@ -978,12 +978,50 @@ common surnames.
   `pabellon-only` (real induction record, zero outside corroboration).
   **`web/data/players/` not yet regenerated** — CSV-layer commit only.
 
-**Queued next:** Wikipedia's "Category:Baloncesto Superior Nacional
-players" (120 actual names + 11 subcategory links, full list pulled via
-the raw MediaWiki API after a rendered-page fetch failed to extract it).
-Same per-name verification discipline as above — explicitly no batch
-auto-matching, given what it would have gotten wrong on this exact batch
-(Dalmau) if trusted at face value.
+**Wikipedia's "Category:Baloncesto Superior Nacional players"** (120
+names + 11 subcategory links, pulled via the raw MediaWiki API after a
+rendered-page fetch failed to extract it) — run through the same
+per-name discipline, no batch auto-matching. ~15 resolved as existing
+matches via direct field checks (nickname/birth-date/birth-city, not
+token overlap) — including **Richie Dalmau → existing `Dalmau Santana,
+Raymond`**, which independently confirms the prior Dalmau collision call
+(Wikipedia itself treats "Raymond Dalmau" and "Richie Dalmau" as two
+separate people, matching the two separate canonical rows exactly). 6
+genuinely new identities found and verified (Willie Meléndez, Willie
+Quiñones, Mike Rosario, John Meeks, George Conditt IV, Tyreke Evans —
+multi-source each) + 3 thinner ones (Leon Smith, Tyler Hines, Bonzi
+Wells — confirmed real, team/year unconfirmed). **Not yet added to
+players_canonical.csv** — batch shown to owner, awaiting go/no-go.
+
+**Georgie Torres — reversed a prior explicit rejection, owner-approved
+2026-09-13.** The existing `app/player_crosswalk.csv` had this name
+`rejected` (from an earlier session) as "wrong person, surname mismatch
+(Torres Dougherty != Torres)". Wikipedia's actual lead sentence gives his
+real name as **Georgie Torres Dougherty** — the rejection's premise was
+wrong, not the link. Corroborated via 6 independent sources before
+touching anything: en.wikipedia.org (lead sentence), fiba.basketball,
+Wikidata Q3760772 (structured P1950 "second family name in Spanish
+name" = Dougherty), elnuevodia.com (independent PR journalism), and —
+after the owner asked to push past the initial 403s specifically because
+this reverses an explicit rejection — realgm.com + basketball-reference.com
+NCAA/draft records via search-indexed snippets (Southern Nazarene
+1980-81, Utah Jazz 1981 draft 4th rd/73rd pick), which also gave the
+same birth date. 4 of 6 sources independently agree on Sep 21, 1957;
+zero corroborate the archive's own `enciclopedia.asp`-sourced 10/15/1957.
+**Applied:** `player_crosswalk.csv` verdict `rejected` → `review`
+(confidence 7, full 6-source evidence trail in the row) linking to
+existing bsnpr_id **788**; `players_canonical.csv` row 788 birth_date
+corrected 10/15/1957 → 9/21/1957, nickname/birth_city/nationality filled
+in (Georgie / Camuy, Puerto Rico / Puerto Rico) — following the existing
+precedent (row 660, Fico López) of leaving `confidence`/`source_id`
+describing the row's own original provenance rather than overwriting
+them. **Not applied, deliberately:** `first_season`/`last_season`
+(1977-1987, 0 career rows) stay as-is despite being known badly wrong —
+his real career is 1975-2001, 15,863 pts, 679 games (BSN's all-time
+scoring leader at retirement) — because fabricating a corrected range
+without real per-season rows to back it would violate PC1/PC2. Flagged
+as known-incomplete in the crosswalk; real backfill is deep-dive-pass
+work, same treatment as the Piculín Ortiz finding above.
 
 Open threads:
 docs/project.md D2 refinement for the Grises/Caciques de Humacao split (D-045);
