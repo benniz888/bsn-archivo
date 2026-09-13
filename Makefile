@@ -57,6 +57,12 @@ enumerate-historic:
 fetch-historic:
 	.venv/bin/python -m src.fetch_historic_followup
 
+fetch-latinbasket:
+	.venv/bin/python -m src.fetch_latinbasket
+
+parse-latinbasket:
+	.venv/bin/python -m src.parse_latinbasket
+
 build-web-data:
 	.venv/bin/python -m src.build_web_data
 

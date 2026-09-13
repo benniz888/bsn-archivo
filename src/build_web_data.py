@@ -721,6 +721,30 @@ def _standings_from_games(resolve_team) -> dict[str, list]:
     return out
 
 
+def _standings_from_latinbasket() -> dict[str, list]:
+    """season -> [ {team_raw, franchise_id, w, l} ] from `data/clean/standings.csv`
+    (PHASE_9 T9.1, latinbasket.com via Wayback). Only the main/first-stage
+    table is surfaced here (`stage` in {"", "stage1"}) — 2018's Stage Two
+    mini-tournament rows exist in the CSV but aren't a full-league standings
+    table, so folding them in here would misrepresent them as one. No
+    overlap with `_standings_from_games`'s seasons (2001-03/2008-13 vs.
+    2014-18) as of this pass, but a future run could add one — never
+    silently overwrite an existing entry (checked by the caller)."""
+    if not (CLEAN / "standings.csv").exists():
+        return {}
+    by_season: dict[str, list] = {}
+    for r in _read("standings.csv"):
+        if r["stage"] not in ("", "stage1"):
+            continue
+        by_season.setdefault(r["season"], []).append(r)
+    out = {}
+    for s, rows in by_season.items():
+        rows.sort(key=lambda r: int(r["position"]))
+        out[s] = [{"team_raw": r["city_raw"], "franchise_id": r["franchise_id"] or None,
+                   "w": _int(r["wins"]), "l": _int(r["losses"])} for r in rows]
+    return out
+
+
 def build_seasons_detail() -> int:
     champ = {r["season"]: r for r in _read("champions_reconciled.csv")}
     tracked = {r["season"]: r for r in _read("seasons_stats_tracked.csv")}
@@ -735,6 +759,12 @@ def build_seasons_detail() -> int:
     leaders = _season_leaders()
     resolve_team = _team_resolver()
     standings = _standings_from_games(resolve_team)
+    lb_standings = _standings_from_latinbasket()
+    standings_source: dict[str, str] = {s: "games" for s in standings}
+    for s, rows in lb_standings.items():
+        if s not in standings:  # never overwrite a game-derived table (none overlap today)
+            standings[s] = rows
+            standings_source[s] = "latinbasket"
     games_per_season: dict[str, int] = {}
     for r in _read("game_results.csv"):
         games_per_season[r["season"]] = games_per_season.get(r["season"], 0) + 1
@@ -751,10 +781,16 @@ def build_seasons_detail() -> int:
             "runner_up": cr.get("runner_up_franchise_id") or None,
             "agreement": cr.get("agreement") or None,
             "confidence": cr.get("confidence") or None,
-            "standings": ({"rows": st, "games_recorded": games_per_season.get(s, 0),
-                           "complete": games_per_season.get(s, 0) >= 140,
-                           "note": "Derived from the games in the Wayback archive — "
-                                   "not a complete season unless flagged complete."}
+            "standings": ({"rows": st,
+                           "source": standings_source.get(s),
+                           **({"games_recorded": games_per_season.get(s, 0),
+                               "complete": games_per_season.get(s, 0) >= 140,
+                               "note": "Derived from the games in the Wayback archive — "
+                                       "not a complete season unless flagged complete."}
+                              if standings_source.get(s) == "games" else
+                              {"complete": True,
+                               "note": "From latinbasket.com's final regular-season "
+                                       "standings (via Wayback)."})}
                           if st else None),
             "leaders": leaders.get(s) or None,
             "awards": awards.get(s) or None,

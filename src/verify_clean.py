@@ -443,6 +443,67 @@ def verify_reconcile(c: Checker) -> None:
                 f"scoring {yr}: owner-resolved to dual_metric_d4 (D4 boundary)")
 
 
+def verify_standings(c: Checker) -> None:
+    """PHASE_9 T9.1. Skipped cleanly if not built."""
+    if not _exists("standings.csv"):
+        return
+
+    fids = {r["franchise_id"] for r in _read("franchises.csv")}
+    rows = _read("standings.csv")
+    c.check(bool(rows), "standings: non-empty")
+    c.check(all(re.fullmatch(r"\d{4}", r["season"]) for r in rows),
+            "standings: season keys are plain YYYY (no split-season rows expected here)")
+
+    for r in rows:
+        tag = f"standings {r['season']}/{r['stage'] or 'main'}: {r['city_raw']}"
+        for col in PROVENANCE_COLS:
+            c.check(bool(r[col]), f"{tag} has {col}")
+        c.check(r["confidence"] in CONFIDENCE_OK, f"{tag} confidence valid", r["confidence"])
+        c.check(bool(r["franchise_id"]) and r["franchise_id"] in fids,
+                f"{tag} resolves to a real franchise_id", r["franchise_id"])
+        if r["confidence"] == "disputed":
+            c.check(bool(r["note"]), f"{tag} disputed row explains why")
+        c.check(r["position"].isdigit() and int(r["position"]) >= 1,
+                f"{tag} position is a positive integer", r["position"])
+        c.check(r["wins"].isdigit() and r["losses"].isdigit(),
+                f"{tag} wins/losses are non-negative integers")
+
+    # one position per (season, stage) — no two teams tied on rank within a table
+    from collections import Counter
+    key_counts = Counter((r["season"], r["stage"], r["position"]) for r in rows)
+    dupes = [k for k, n in key_counts.items() if n > 1]
+    c.check(not dupes, "standings: no duplicate (season, stage, position)", str(dupes[:5]))
+
+    # cross-check against the independently-sourced champions_reconciled.csv:
+    # the champion and runner-up should both appear SOMEWHERE in that season's
+    # standings (any stage) whenever both files cover the season — a real
+    # agreement check, not just schema validity.
+    ch_by_season = {r["season"]: r for r in _read("champions_reconciled.csv")}
+    seasons_covered = {r["season"] for r in rows}
+    by_season_franchises: dict[str, set] = {}
+    for r in rows:
+        by_season_franchises.setdefault(r["season"], set()).add(r["franchise_id"])
+    for season in sorted(seasons_covered):
+        ch = ch_by_season.get(season)
+        if not ch or ch["agreement"] not in ("agree", "seed_only"):
+            continue
+        present = by_season_franchises[season]
+        for role in ("champion_franchise_id", "runner_up_franchise_id"):
+            fid = ch[role]
+            if fid:
+                c.check(fid in present,
+                        f"standings {season}: {role} ({fid}) appears in this season's standings",
+                        f"standings has: {sorted(present)}")
+
+    if _exists("standings_coverage_gaps.csv"):
+        gaps = {r["season"] for r in _read("standings_coverage_gaps.csv")}
+        c.check(gaps == {"2019", "2020", "2021", "2022", "2023"},
+                "standings: coverage gaps are exactly the 5 known-unrecoverable seasons",
+                str(sorted(gaps)))
+        c.check(not (gaps & seasons_covered),
+                "standings: no season is both covered and listed as a gap")
+
+
 def verify_web_data(c: Checker) -> None:
     """PHASE_5 / 5B. Skipped cleanly if `make build-web-data` has not run."""
     import json
@@ -585,6 +646,7 @@ def main() -> int:
     verify_pre2007(c)
     verify_players(c)
     verify_reconcile(c)
+    verify_standings(c)
     verify_games(c)
     verify_web_data(c)
     rc = c.report()

@@ -97,14 +97,16 @@ class TestBuild:
 
     def test_players_index(self):
         pl = json.loads((b.WEB / "index" / "players.json").read_text())
-        assert len(pl) == 3343                       # 3303 league ids + 40 jug05-minted (D-047)
+        # 3303 league ids + 40 jug05-minted (D-047) + 9 pabellon_hof/wikipedia_bsn-minted
+        # (D-048/D-049/D-050, 991001-991009)
+        assert len(pl) == 3352
         assert all(isinstance(p["id"], int) for p in pl)
         assert pl == sorted(pl, key=lambda p: p["id"])
-        assert sum(1 for p in pl if p["id"] > 990000) == 40
+        assert sum(1 for p in pl if p["id"] > 990000) == 49
 
     def test_manifest_counts_match(self):
         man = json.loads((b.WEB / "manifest.json").read_text())
-        assert man["counts"]["players"] == 3343
+        assert man["counts"]["players"] == 3352
         assert man["counts"]["seasons"] == 98
         assert len(man["source_digest"]) == 64      # sha256 hex
 
@@ -244,14 +246,15 @@ class TestBuild:
         xw = json.loads((b.WEB / "index" / "player_xwalk.json").read_text())
         assert xw["jose piculin ortiz"] == 1271
         assert "arnaldo toro" not in xw               # rejected -> none
-        # "Georgie Torres" -> 788 was a bad "auto" match (id 788 is a
-        # different real player, "Torres Dougherty, George"; surname
-        # mismatch, no corroboration - see player_crosswalk.csv's row and
-        # docs/session.md). Severed, not re-pointed: no bsnpr_id in this
-        # archive currently corroborates the real Georgie Torres (BSN's
-        # all-time scoring leader, 1975-2001). Must stay unlinked, not
-        # silently re-resolve to some other guess.
-        assert "georgie torres" not in xw
+        # "Georgie Torres" -> 788 (D-049, 2026-09-13): the original
+        # "auto" match's rejection premise was itself wrong -- id 788's
+        # canonical name "Torres Dougherty, George" IS the real Georgie
+        # Torres's full name (Dougherty a second Spanish-naming surname,
+        # confirmed 6-source: en.wikipedia, fiba.basketball, Wikidata
+        # Q3760772, El Nuevo Día, RealGM, basketball-reference). Verdict
+        # reversed rejected -> review; see player_crosswalk.csv's row and
+        # docs/session.md D-049 for the full evidence trail.
+        assert xw["georgie torres"] == 788
         idx = {x["id"] for x in json.loads((b.WEB / "index" / "players.json").read_text())}
         assert all(v in idx for v in xw.values())     # every target is a real id
         assert all(k == b._app_norm(k) for k in xw)   # keys already normalised

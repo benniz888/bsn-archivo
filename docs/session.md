@@ -2294,9 +2294,10 @@ requests**; crests/portraits still render as SVG shields/monograms.
 
 ---
 
-### PHASE_9_HISTORICAL_DEEP_DIVE_2014_2023 — SCOPING PASS DONE, real findings
-below change the shape of T9.1; awaiting a real (not rubber-stamp) owner
-decision before writing any new data file.
+### PHASE_9_HISTORICAL_DEEP_DIVE_2014_2023 — T9.1-T9.3 DONE, committed +
+pushed. T9.4/T9.5 queued, unstarted. First archive standings.csv ever,
+5 real seasons (2014-2018), cross-validated against Wikipedia, all
+provenance-complete. Full record below.
 
 Owner picked this item 2026-09-13, approved T9.1–T9.5 as drafted. Before
 writing code, ran the actual per-season availability check the draft had
@@ -2372,6 +2373,134 @@ agreement expected (already verified for 2022), any mismatch goes to
 dropped. T9.2 (player identity resolution) is **not triggered** by this
 revised scope — no player names in a standings-only pull.
 
+**T9.1 HALTED before any fetcher was written — real blocker, not a
+judgment call.** Checked `latinbasket.com/robots.txt` before writing
+`src/fetch_latinbasket.py` (same discipline as always checking terms
+before a new source — L1/PC6), because the site's own honest, descriptive
+`bsn-archivo/0.1 (...)` User-Agent (the one PC6 requires and every other
+fetcher in `src/` sends) got a flat `404` on every URL, while a spoofed
+Chrome UA returned real content (tested, not assumed — `2014.aspx` alone:
+descriptive UA → 404, Chrome UA → 200 w/ real standings).
+`robots.txt` explains why: **`User-agent: ClaudeBot` → `Disallow: /`**,
+alongside GPTBot/Google-Extended/CCBot/Amazonbot/Applebot-Extended/
+Bytespider/meta-externalagent, plus a site-wide `Content-Signal:
+ai-train=no`. This is an explicit, by-name block on Claude-identified
+crawlers. Spoofing a browser UA to route around a directive that names
+this exact agent is not a gray area — it's not something to do
+unilaterally, and not something PC6 ("polite network citizen") condones
+regardless of what a spoofed UA can technically fetch. **Stopped here,
+nothing fetched or written beyond the manual scoping spot-checks already
+done via the interactive WebFetch tool (2014/2020/2022, cited above) —
+no bulk/automated pull happened or will happen against this host.**
+Flagged to the owner as B5. Resolved same session via option (a): CDX-
+checked `web.archive.org/cdx/search/cdx?url=latinbasket.com/Puerto-Rico/
+basketball-League-BSN_*` (un-collapsed, raw JSON persisted to
+`data/raw/cdx/cdx_latinbasket.json`, PC5) before writing a real fetcher.
+**8 of 10 target years have a genuine Wayback capture; 2021 and 2023 have
+none under any URL casing/scheme — checked directly, not assumed.**
+Second, non-obvious finding: latinbasket redesigned its template circa
+2018 — the pre-redesign `.asp` pages are server-rendered (the standings
+table is right there in the raw HTML), but the new `.aspx` template loads
+standings client-side via `/js/standings.js`, so a Wayback capture of
+`.aspx` is a near-empty shell with **zero** `/team/Puerto-Rico/` links in
+the raw HTML (checked on 2015/2019/2020/2022's `.aspx` captures — 0
+matches each, vs. dozens on every `.asp` capture). `fetch_latinbasket.py`
+picks the latest `.asp` capture per year when one exists, `.aspx` only as
+a last resort (and even then it usually parses to nothing — confirmed for
+2019/2020/2022, all 3 landed in the gaps file, not fabricated from
+anywhere). **Net real coverage: 2014-2018 (5 seasons), all `.asp`,
+all parse cleanly. 2019-2023 (5 seasons) are a disclosed gap
+(`standings_coverage_gaps.csv`), not backfilled from the live site or any
+other source this pass.** `src/fetch_latinbasket.py` (Wayback-only, see
+its own docstring for the full B5 rationale) →
+`src/parse_latinbasket.py` (BeautifulSoup, anchored on the `<td
+class="ctrtd">` header cell per table, not a header-blind regex — an
+early draft that walked every `<tr>` at any depth double-counted the
+first row of 2018's Stage Two "Group A"/"Group B" split table, because
+the intermediate wrapper `<tr>` around the nested table false-matched
+both the group-divider check and the first team's record; fixed by
+skipping any `<tr>` that itself contains a nested `<table>`, and pinned
+with a regression test) → `data/clean/standings.csv` (57 rows, 5 seasons:
+2014/2015/2016/2017 single-table, 2018 split into `stage1` + `stage2_a`/
+`stage2_b` since the season itself ran a real 2-stage format that year).
+
+**Cross-validated against two independent sources, not just internally
+consistent:** 2016's extracted table (Bayamón 21-15, Santurce 21-15, ...)
+matches Wikipedia's own 2016 season article exactly; 2018's Stage One
+table matches Wikipedia's 2018 Stage One table exactly, position for
+position. Every season's champion and runner-up from
+`champions_reconciled.csv` (independently sourced, already `agree`/
+`verified`) appears somewhere in that season's `standings.csv` rows —
+checked programmatically in `verify_standings`, not just eyeballed once.
+
+**One real per-row judgment call, flagged not hidden:** 2017's standings
+list a 10th team as "Isabela" where every other season in this window
+lists "Humacao" — `city_franchise_map.csv` already carries a note that
+the `caciques_humacao` franchise "later relocated away from Humacao
+(Isabela, then Guayama, ~2019)", and `player_career_seasons.csv`
+independently already carries this exact season's roster under the
+hybrid label "Caciques-Gallitos, Humacao-Isabela" (a pre-existing,
+unresolved ambiguity from an earlier session). Read as `caciques_humacao`
+mid-relocation rather than the separate `gallitos_isabela` franchise —
+an inference from an existing verified note, not a fresh independent
+source, so it's written with `confidence=disputed` (PC3's enum has no
+"inferred" tier) and a full note in the row, not silently resolved either
+way.
+
+`data/clean/standings.csv` schema: `season, franchise_id, city_raw,
+stage, position, wins, losses, note, confidence, source_id, source_url,
+retrieved_at, capture_date` — full PC3 provenance on every row.
+`verify_standings()` added to `src/verify_clean.py` (schema completeness,
+franchise_id resolves, no duplicate `(season, stage, position)`, the
+champion/runner-up cross-check above, gap-file sanity) — skips cleanly if
+the file doesn't exist, same pattern as every other optional-phase check.
+8 new unit tests (`tests/test_parse_latinbasket.py`) pin the header-anchor
+extraction and the wrapper-row regression specifically, built from a
+minimal fabricated fixture (not the full raw HTML) per this repo's
+existing test-style convention.
+
+**T9.2 (player identity resolution) never triggered** — a standings-only
+pull carries no player names, exactly as scoped when the owner picked
+Option 1.
+
+**T9.3 (web/data rebuild) — done.** `build_web_data.py` gained
+`_standings_from_latinbasket()`, folded into the existing `standings`
+dict alongside the pre-existing `_standings_from_games()` source (2001-03/
+2008-13 from real game data) — the two sources don't overlap in seasons,
+and the merge explicitly never overwrites a game-derived entry even
+though no collision exists today. Each season's JSON now carries a
+`standings.source` field (`"games"` or `"latinbasket"`) with a
+source-appropriate note, instead of one hardcoded "derived from games"
+string that would have been false for the new rows. `web/data/seasons/
+2014-2018.json` gained real standings (were `null`); the 9 pre-existing
+game-derived season files changed by exactly one added key
+(`"source":"games"`) each — checked via diff, not assumed non-breaking.
+Only 2018's `stage1` rows are surfaced as the season's `standings.rows`
+(the real regular-season table); `stage2`'s 6-team mini-tournament exists
+in the CSV but isn't folded into a UI-facing "standings" concept this
+pass — no new UI was built or asked for (T9.1 was explicitly data-layer
+only).
+
+**Found and fixed in passing, not part of T9.1-T9.5's scope:** `make
+test` had 3 pre-existing failures (`test_players_index`,
+`test_manifest_counts_match`, `test_player_xwalk` in
+`test_build_web_data.py`) predating this session's PHASE_9 work —
+confirmed via `git stash` before touching anything. All three were stale
+assertions left over from the D-048/D-049/D-050 commits earlier the same
+day (2 hardcoded the pre-9-new-players count of 3343; one literally
+asserted the Georgie Torres crosswalk's *old, since-reversed* rejected
+state). Fixed to match the code's actual, intentional current behavior —
+not a functional change, just keeping the test gate honest for this and
+future work.
+
+`make verify`: 339,204 checks, 0 failed (was 329,938 at session start —
+real new coverage, not a wider net over the same data). `make test`: 191
+pass (183 pre-existing + 8 new latinbasket tests), 0 failed.
+
+**PHASE_9 (T9.1-T9.3) DONE.** T9.4 (the ~47 weak Pabellón matches) and
+T9.5 (the 3 held-back thin Wikipedia names) remain queued, unstarted,
+available to pick up next.
+
 ---
 
 [BLOCKERS]
@@ -2410,6 +2539,16 @@ revised scope — no player names in a standings-only pull.
   spec file** (`docs/specs/app_data_sync_spec.md`) before any change to the app.
   Until then, treat the CSVs as the source of truth and the app as stale.
   </details>
+- B5 — **RESOLVED (2026-09-13), same session.** `latinbasket.com/robots.txt`
+  names `ClaudeBot` explicitly under `Disallow: /` (with GPTBot/CCBot/
+  Google-Extended/Amazonbot/etc.), plus a site-wide `Content-Signal:
+  ai-train=no` — the live site was never touched to route around it.
+  Resolution: option (a) from the original list — CDX-checked
+  `web.archive.org` for the same pages and found real Wayback captures for
+  8 of the 10 target years (missing only 2021/2023, no capture exists
+  under any URL variant). Fetched via Wayback only, with the project's own
+  honest `bsn-archivo/0.1 (...)` User-Agent — no robots.txt question at
+  all on that host. Full result in the PHASE_9 entry in [TASK_QUEUE].
 
 ---
 
