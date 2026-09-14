@@ -6722,8 +6722,21 @@ const SLOT_ES={PG:'Base',SG:'Escolta',SF:'Alero',PF:'Ala-pívot',C:'Pívot'};
 const FITS={PG:['PG','G'],SG:['SG','G'],SF:['SF','F'],PF:['PF','F','F/C'],C:['C','F/C']};
 const TAGV={mvp:9,scoring:7,'10k':5,legend:5,nba:3,champion:2,native:0,import:0};
 let DR=null;
-/* Set by the calibration run in the build script, not by hand. */
-let CAL_K=110, CAL_S=18;
+/* backlog item 6, part 2 (2026-09-14) — recalibrated after simulating real
+   drafts through the actual spin()/place()/skipSpin() functions (not
+   guessed): a "greedy" bot that always takes the highest-rate() legal
+   option (exactly what the sorted candidate list already hands a player)
+   won 34-0 in 16-20% of games and >=30 wins 75% of the time under the old
+   K=110/S=18 — worse than the "median 30-4" the prior recalibration's own
+   comment names as the problem it was trying to fix. K=116 is chosen so a
+   zero-skill ("random-legal") bot's median roster is exactly a .500
+   season by construction; S=40 (vs. the old 18) is wide enough that the
+   ~50-point rating gap between random and greedy play no longer saturates
+   win probability near-certain. Matched before/after on the same 250
+   simulated rosters each: greedy median 32-2 -> 25-9, greedy 34-0 rate
+   19.6% -> 0%, random median 18-16 -> 16-18 (still close to .500,
+   slightly under). Full record: docs/session.md, 2026-09-14. */
+let CAL_K=116, CAL_S=40;
 
 function posTokens(p){ return String(p.pos||'').split('/').map(s=>s.trim()).filter(Boolean); }
 function fits(p,slot){
