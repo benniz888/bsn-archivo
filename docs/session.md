@@ -71,6 +71,16 @@
   New ids 991012-991014. **PHASE_9_HISTORICAL_DEEP_DIVE_2014_2023 is
   now fully closed (T9.1-T9.5 all DONE, LIVE)** — no queued item remains
   in this thread. Full record in [TASK_QUEUE] under PHASE_9.
+  **Backlog item 4 (season comparison) — cross-player half DONE, LIVE,
+  pending owner verification** (no browser tool this session): confirmed
+  a hard wall (zero player-level data 2022-2026, not thin — absent) and
+  a real bug (n_seasons/has_profile unreliable as a season-picker
+  eligibility signal — new `career_seasons` field fixes it). Comparar
+  mode extended with a per-side Carrera/Temporada picker over the full
+  archive index, not just curated PINDEX. Verified via real jsdom
+  execution of the built page (no live browser available). Pushed
+  `f17695c`. Full record in `docs/specs/season_detail_spec.md`'s
+  addendum and the boxed entry below.
 **DATE:** 2026-09-13
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
@@ -2762,6 +2772,106 @@ through T9.5 all DONE, LIVE.** No further queued items in this thread;
 next up is whatever the owner picks from the backlog roadmap (items
 4–7 above), starting fresh with its own scope-then-approve pass.
 
+**Backlog item 4 (finish season comparison properly) — owner picked this
+next, 2026-09-13.** Two asks: (a) compare two *different* players' own
+chosen seasons, not just one player across their own seasons (what
+`season_detail_spec.md` originally shipped); (b) confirm whether modern-
+era (2024–2026) data exists at the needed granularity before promising
+anything with it. Scoped first, plan shown, owner approved, then built —
+same discipline as every other item. Full record: `docs/specs/
+season_detail_spec.md`'s addendum (`## Addendum: backlog item 4`).
+
+**[FOUND], scoping pass:** checked every place player-season data could
+live, not assumed. **Confirmed hard wall: zero player-level data for
+2022–2026 anywhere in the archive** (not thin — absent; `player_career_
+seasons.csv` has 2–6 stray incidental rows for 2019–2021, nothing at all
+2022+; team standings themselves stop at 2018 per T9.1–T9.3's own
+`standings_coverage_gaps.csv`). Kills the illustrative example ("Trice
+2024 vs Rodríguez 2026") outright — decided the season picker simply
+never offers 2022–2026 for anyone, with an explicit note under the
+picker (owner's call between explicit-note vs. silent omission —
+explicit note won). **A real bug caught along the way, not part of the
+original ask:** `players_canonical.csv`'s `n_seasons` field (and
+`has_profile`) don't reliably indicate a player has actual `career[]`
+rows — cross-checked all 3,357 canonical players against their real
+`player_career_seasons.csv` row count: 251 mismatches, 6 of them
+declaring `n_seasons>0` with **zero** actual rows (4 are this session's
+own T9.5 additions: Evans/Wells/Smith/Hines — the `991xxx` band
+deliberately never gets a `player_career_seasons.csv` row, D-048's own
+established pattern). A season picker built on `n_seasons>0` would have
+let someone "select" a season that doesn't exist and land on a blank
+panel.
+
+**[DECISION], owner-approved 2026-09-13:** (1) picker searches the full
+3,357-player archive index, not just the curated ~230-name `PINDEX`,
+filtered to a new build-time-derived `career_seasons` count (not
+`n_seasons`) — reaches the real Tier-2 players (154, 2001–2004 full stat
+line) that `PINDEX` mostly doesn't curate; (2) no third Comparar mode —
+each added player gets a "Carrera / Temporada" `<select>`, defaulting to
+Carrera (today's exact behavior, byte-identical when left there); (3)
+2022–2026 excluded with an explicit note.
+
+**Built, same session, pushed (`f17695c`), live-verified:**
+- `src/build_web_data.py`: `build_players_detail()`'s inline `career[]`
+  construction factored out into `build_career_rows_by_pid()`, called
+  once and shared by both `build_players_detail()` (unchanged output)
+  and the new `career_seasons` field on `web/data/index/players.json` —
+  one computation, two consumers, so the count can never drift from the
+  real rows the way `n_seasons` did.
+- `app/bsn_archivo.html`: `cmpCandidateNames()` widens the picker's
+  datalist from `PINDEX` (381) to the full archive filtered to
+  `career_seasons>0` (1,484, confirmed live-tested); `cmpResolveName`/
+  `cmpEnsureData`/`cmpResolved`/`cmpSeasonSelect`/`cmpSetMode` are new;
+  `drawCompare()` branches on whether either resolved side is season-
+  mode — pure career-vs-career keeps the exact original render path
+  (radar, tags footer, `CMP_RATE/SHOT/TOTAL`); any season involved
+  switches to `SEASON_CMP_RATE/SHOT/TOTAL` (season_detail_spec.md §2's
+  existing category set), drops the radar (not on the same scale as a
+  career average — flagged, not solved, in the spec's OUT OF SCOPE),
+  drops the curated-tags footer (a season row was never curated with
+  any). `seasonCmpObj()`/`cmpBarRow()` — both already built for the
+  single-player case — reused as-is for the cross-player case; zero new
+  CSS.
+- **Verified by real execution, not just code review** — no live
+  browser tool was available this session (`claude-in-chrome` not
+  connected) and this repo deliberately has no browser test infra of
+  its own (PC7, single-file/no-dependencies). Installed `jsdom` to a
+  scratch `/tmp` dir (not added to the repo), loaded the actual built
+  `web/index.html`, and — since `PINDEX`/`CMP`/etc. are `let`/`const`
+  top-level bindings that never attach to `window` — injected a second
+  `<script>` into the same document so the test code shares the app's
+  own lexical scope, same as any other script on the page would.
+  Confirmed against real data: the widened candidate count (1,484 vs.
+  381); the existing `cmpPreset('Raymond Dalmau','Rubén Rodríguez')`
+  still renders the radar/tags/"De carrera" path with the new dropdown
+  now present; switching Dalmau to his real last fetched season (20
+  real career rows) correctly drops the radar and shows "De la
+  temporada" / "Temporada 1985"; adding an archive-only, season-only
+  player (`Rivera, A.g.`, `career_seasons:1`, not in `PINDEX`) alone
+  shows the "add another player" state with no Carrera option, then a
+  full mixed comparison once a second (career-mode) player joins; the
+  2022+ note renders. No error traced to any new function — the console
+  noise that did appear is the app's own unrelated `BOOT()` sequence
+  firing against a deliberately stripped-down test DOM, not a
+  regression (every one of those is inside the app's own pre-existing
+  per-widget try/catch). Full write-up: `docs/specs/season_detail_spec.md`
+  `## [VERIFICATION]`.
+- `make verify` (339,252 checks) + `make test` (191) green. Pushed
+  `f17695c`, live-verified on `bsnarchivo.com`: `data/index/
+  players.json` carries `career_seasons` (Wells `991012` correctly
+  shows `career_seasons:0` despite `n_seasons:1` — the exact bug this
+  pass caught, confirmed fixed live), and the live HTML contains the
+  new Comparar functions (`cmpCandidateNames`/`career_seasons`/
+  `cmpSeasonSelect` all present in the fetched page).
+
+**Backlog item 4 is now DONE for the cross-player-comparison half of the
+ask.** The modern-era half is closed as "confirmed impossible with
+current data, not built" — filling it is backlog item 7 (latinbasket
+roster ingest), still deliberately deferred to its own future phase.
+Pending owner live-verification (no browser tool this session to do it
+directly — the jsdom run above is real code execution against real
+data, not a substitute for the owner actually clicking through it).
+
 ---
 
 [BLOCKERS]
@@ -2967,6 +3077,16 @@ Decisions made session 002 (PHASE_4):
   (Criollos 1969 en.wiki vs 1976 seed).
 
 Decisions made session 003 (HISTORICAL_DEEP_DIVE scoping, 2026-09-13):
+- **D-052 — backlog item 4, cross-player season comparison: full archive
+  index for the picker (not curated PINDEX), filtered to a new
+  build-time `career_seasons` field (not `n_seasons`/`has_profile`,
+  both confirmed unreliable), no third Comparar mode, 2022-2026
+  excluded with an explicit note.** Owner-approved after a scoping pass
+  found the modern-era ask was a hard wall (zero player data 2022-2026)
+  and a real bug (6 players, including 4 of D-050/T9.5's own additions,
+  had `n_seasons>0` with zero actual `career[]` rows). Full record in
+  the HISTORICAL DEEP-DIVE section above and `docs/specs/
+  season_detail_spec.md`'s addendum.
 - **D-051 — T9.5: the 3 held-back thin Wikipedia names (D-050) added on
   re-check.** Bonzi Wells (Capitanes de Arecibo, 2010, multi-source —
   cross-checked against the archive's own `champions_reconciled.csv`),
@@ -3279,17 +3399,25 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
 
 [NEXT_ACTIONS]
 
-0. **CURRENT, resume here (2026-09-13 session end).** PHASE_9_HISTORICAL_
-   DEEP_DIVE_2014_2023 T9.1-T9.5 are all DONE, LIVE, pushed — **PHASE_9
-   is fully closed**, no queued item remains in this thread (see the
-   boxed PHASE_9 record in [TASK_QUEUE] and the SESSION line at the top
-   of this file for the full summary, commit `b5c0c01` for T9.5). Next
-   up: the owner picks the next backlog roadmap item (4. finish season
-   comparison / 5. team region-identity / 6. per-game deep-dive / 7.
-   latinbasket roster ingest, deliberately deferred, own future phase)
-   — scope + show plan before building, same discipline as every prior
-   item. Everything numbered below this point is older history, mostly
-   already resolved — kept for the record, not a live task list.
+0. **CURRENT, resume here (2026-09-13 session end).** PHASE_9 is fully
+   closed (T9.1-T9.5, commit `b5c0c01`). Owner then picked **backlog item
+   4 (finish season comparison)** — scoped (hard wall: zero player data
+   2022-2026, confirmed not assumed; a real `n_seasons`-unreliability bug
+   caught along the way), plan shown, approved, built, pushed (`f17695c`),
+   live-verified via curl + a real jsdom execution of the built page (no
+   `claude-in-chrome` connection this session, so no actual browser
+   click-through was possible). **Cross-player season comparison is DONE,
+   LIVE, pending owner verification in a real browser** — that's the one
+   thing still open from this pass: have the owner actually click through
+   Comparar (a "Carrera / Temporada" dropdown per added player; try the
+   `cmpPreset` chips, then switch one side to a season) before calling
+   backlog item 4 fully closed. Full record: `docs/specs/
+   season_detail_spec.md`'s addendum + the boxed entry in [TASK_QUEUE]
+   above. After that: items 5 (team region-identity) / 6 (per-game
+   deep-dive) / 7 (latinbasket roster ingest, deliberately deferred, own
+   future phase) remain, same scope-then-approve discipline each.
+   Everything numbered below this point is older history, mostly already
+   resolved — kept for the record, not a live task list.
 1. **Owner-directed queue (2026-09-08 session), in order, pause after each:**
    (a) PHASE_3E_CLEAN_STORAGE — **DONE** (`game_plays.csv.gz`, commit 72d2b52);
    (b) PHASE_3G_HISTORIC_FOLLOWUP — **DONE** (negative finding, commit 100e9c6);
