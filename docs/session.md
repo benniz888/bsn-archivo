@@ -3733,12 +3733,116 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
    grepping for the new code string) — `POOL.length` 376, both names
    absent, `ss` array present on the survivor. `make verify`/`make
    test` green.
+   **Item 7 (latinbasket roster ingest) scoping led to a real canonical-
+   file cleanup detour, same session — 23 confirmed duplicate identities
+   merged, plus a root-cause fix.** Checked latinbasket.com's real
+   coverage (CDX-probed, not assumed: 137 real roster-page captures,
+   2009-2020 core window, much broader than the standings-only scope)
+   and, while sampling real roster names for identity-collision risk,
+   found the Berdiel triple-"duplicate" — which turned into a systematic
+   scan of the whole canonical file. Full record in the boxed entry
+   below. **Net result: 23 of the file's 55 minted (990xxx/991xxx) ids
+   were duplicates of pre-existing players — all merged, individually
+   confirmed, none auto-matched on name alone — plus a root-cause fix
+   so this specific gap can't silently recur.** Tier-1 (57 exact-name
+   groups) and Tier-2 (136 exact-birthdate groups) elsewhere in the
+   3,333-row file are logged as their own future triage pass — not
+   urgent, not blocking, real counts on record so they don't get lost.
+   **The latinbasket phasing decision itself is still open** — owner
+   wants to sit with "how clean is the file now" before deciding; item
+   7 remains its own dedicated future session either way.
    **Next: owner verification of items 4, 5, and all of 6 in an actual
-   browser** (never available this session for any of them). Then item
-   7 (latinbasket roster ingest, the big one) — owner wants this as its
-   own dedicated session, not folded into this one. Everything numbered
-   below this point is older history, mostly already resolved — kept
-   for the record, not a live task list.
+   browser** (never available this session for any of them), plus a
+   decision on latinbasket phasing now that the canonical-file question
+   is answered. Everything numbered below this point is older history,
+   mostly already resolved — kept for the record, not a live task list.
+
+**Backlog item 7 scoping + canonical-file duplicate cleanup — full
+record (2026-09-14).**
+
+**[FOUND] — latinbasket.com real coverage**, CDX-probed directly (5,112
+raw roster-path captures site-wide, filtered to the 16 real BSN team
+names): **137 distinct (team, season) roster pages with a real 200
+capture**, core window **2009-2020** (8-13 of ~9-16 teams per year in
+nearly every one of those years), sparse 2021-2023 (consistent with
+T9.1's earlier standings finding), partial recovery 2024-2025. Broader
+and deeper than the 2014-2023 standings-only scope. Fetched and parsed
+one real page (Vaqueros de Bayamón 2016): jersey #, name, height,
+position, and a 2-digit birth year for every player — genuinely matches
+this archive's own D1 identity-matching standard. Cross-referenced 15
+real names from that page against `players_canonical.csv`: 6 matched an
+existing canonical player exactly on birth year (real gap-filling
+value, e.g. Víctor Carattini Sánchez id `13086` had nothing but a name
+and birth year before this). Estimated real scope: ~400-700 distinct
+people across the whole window, a few hundred realistically move from
+zero season-level data to having one — a real, bounded contribution,
+not a fix for the 66.9% figure on its own.
+
+**The detour**: one of those 15 names, "Berdiel Miguel Ali," matched
+*three* existing canonical rows (`1638`/`1666`/`990001`), not one —
+prompting a full identity investigation before any latinbasket work
+continued.
+
+**Berdiel investigated, same rigor as Dalmau**: `1666` and `990001`
+confirmed the same person via matching career trajectory (1999 Ponce
+24gp/75pts exact, 2001 Coamo 19gp/81pts exact, 2002 Coamo close-but-not-
+exact — the same cross-source variance already seen elsewhere in this
+archive). `1638` — a bare stub, zero distinguishing data — did **not**
+clear the bar and stays unmerged. Two of three, not three of three.
+
+**Systematic scan, methodology + real numbers**: cross-referenced all
+55 minted (`990xxx`/`991xxx`) ids against the rest of the file.
+**9 confirmed by exact birth-date match** (3 from this session's own
+D-050/T9.4 passes — the per-name check at mint time wasn't a systematic
+birth-date cross-check against the whole file, so it missed them). **19
+more (of 26 minted entries with no birth date) had a same-surname+same-
+given-name-token candidate** — the exact Berdiel shape, traced to
+`jug05.asp`'s source format only capturing the paternal surname. Each
+of those 19 was individually reviewed against real (season, city)
+career-row overlap (never name-token pattern alone) — **13 confirmed
+and merged, 5 did not clear the bar and stay unmerged**, including
+"Lopez, Jose" whose evidence split ambiguously across two different
+candidates rather than pointing at one, flagged explicitly as the
+too-generic case it looked like from the start.
+
+**23 total merges this session** (9 birthdate-confirmed + 1 Berdiel +
+13 individually-reviewed = 23 minted ids resolved, each its own real
+identity confirmation, none auto-matched on name alone), across 3
+commits (`990da5b`, `0982e40`, `33f3249`), each with real merge mechanics, not a blind
+delete: survivor picked by actually comparing richness every time
+(never assumed), duplicate career rows dropped only after checking
+season-by-season overlap first, non-duplicate rows **reassigned as
+sibling rows** rather than discarded (e.g. Fernando Casablanca Torres,
+id `688`, now correctly shows two different 2005 stints — Coamo per
+bsnpr.com's own profile, Caguas per jug05 — neither silently picked
+over the other). `make verify` caught two real gaps in the first
+merge pass before they shipped (`game_box_player.csv` and
+`player_bios.csv` weren't in the original migration plan) — both fixed
+same session. `players_canonical.csv`: 3,356 → 3,333 rows.
+
+**Root cause fixed, `3544e46`**: `merge_jug05()`'s existing name-shape
+matching (surname-prefix + given-name-token, already identity-aware)
+silently no-ops — both the match check AND the review-collision check —
+whenever `jug05.asp` has no parseable birth date, which happens often.
+Added one check: no birth date + a name-shape candidate exists now
+routes to the review queue instead of silently minting. Reproduced the
+exact bug in a standalone script against the real function first,
+confirmed it now routes to review; two regression checks (a genuinely
+new player still mints, the birth-date-confirmed enrich path is
+untouched) came back clean. **Not re-run against the live pipeline** —
+that would rebuild `players_canonical.csv` from raw sources and wipe
+the manually-appended `991xxx` band, a known risk flagged earlier this
+session. Only affects this pipeline's next real run.
+
+**Logged, not touched — future triage, own pass, not blocking anything**:
+Tier-1 (57 groups of exact `canonical_name` string duplicates — includes
+real noise, e.g. `"Notienenombre Notienenombre, Notienenombre"` × 3 is
+bsnpr.com's own placeholder for unidentified players, not 3 duplicate
+people) and Tier-2 (136 groups of exact `birth_date` duplicates — much
+noisier, real birthday-paradox coincidence mixed with real signal in
+the same buckets). Real counts on record so they don't get lost; not
+urgent, not blocking latinbasket or anything else.
+
 1. **Owner-directed queue (2026-09-08 session), in order, pause after each:**
    (a) PHASE_3E_CLEAN_STORAGE — **DONE** (`game_plays.csv.gz`, commit 72d2b52);
    (b) PHASE_3G_HISTORIC_FOLLOWUP — **DONE** (negative finding, commit 100e9c6);
