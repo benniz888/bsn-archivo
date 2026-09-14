@@ -657,6 +657,29 @@ def merge_jugador05(canon: list[dict], bios: list[dict],
                 xwalk[(k, row[dcol])] = row["bsnpr_id"]
                 xwalk_name.setdefault(k, set()).add(row["bsnpr_id"])
 
+    def _family_shape_candidates(jfam, jgiv, exclude_id=None):
+        """Same surname-prefix + given-name-first-token test as _match()'s
+        second tier, but usable standalone to check for a *different*
+        plausible candidate before the exact-name tier below auto-accepts
+        on a blank canonical birth year. This is exactly the 2722/1271
+        shape (2026-09-14): the bare exact name "Ortiz, Jose" silently
+        absorbed jugador05's real Piculín Ortiz bio because canonical id
+        2722 had no birth_year on file, even though "Ortiz Rijos, Jose
+        Rafael" (id 1271) was sitting right there as a same-surname-prefix,
+        same-given-token, date-corroborated candidate. Never used to
+        auto-match on its own (D1) -- only to withhold an auto-accept."""
+        out = []
+        for c in byfam.get(jfam[0], []):
+            if c["bsnpr_id"] == exclude_id:
+                continue
+            cfam, cgiv = normalize(c["apellidos"]).split(), normalize(c["nombre"]).split()
+            if cfam[:len(jfam)] != jfam and jfam[:len(cfam)] != cfam:
+                continue
+            if not cgiv or cgiv[0] != jgiv[0]:
+                continue
+            out.append(c)
+        return out
+
     def _match(j) -> dict | None:
         nk = norm_key(j["name"])
         forced = xwalk.get((nk, j["birth_date"]))
@@ -667,12 +690,22 @@ def merge_jugador05(canon: list[dict], bios: list[dict],
         if forced and forced in by_id:
             return by_id[forced]
         jyr = j["birth_date"][-4:] if j["birth_date"] else ""
+        jfam, jgiv = normalize(j["apellidos"]).split(), normalize(j["nombre"]).split()
         # exact full name: accept unless both sides carry a birth year and they
-        # disagree (a missing canonical year is the case we most want to fill).
+        # disagree (a missing canonical year is the case we most want to fill)
+        # -- but not when the accept would rest solely on a blank year (either
+        # side) while a different, same-surname+given-token candidate exists.
+        # That ambiguity falls through to the family-shape tier below, which
+        # requires real date corroboration before it will pick one.
         for c in exact.get(nk, []):
-            if not jyr or not c["birth_year"] or c["birth_year"] == jyr:
-                return c
-        jfam, jgiv, jd = normalize(j["apellidos"]).split(), normalize(j["nombre"]).split(), _pdate(j["birth_date"])
+            if jyr and c["birth_year"]:
+                if c["birth_year"] == jyr:
+                    return c
+                continue                       # both have a year, and it differs
+            if jfam and jgiv and _family_shape_candidates(jfam, jgiv, exclude_id=c["bsnpr_id"]):
+                continue                       # ambiguous -- let date corroboration decide
+            return c
+        jd = _pdate(j["birth_date"])
         if not (jfam and jgiv):
             return None
         for c in byfam.get(jfam[0], []):
