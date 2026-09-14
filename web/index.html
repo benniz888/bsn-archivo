@@ -7218,16 +7218,29 @@ function buildCompare(){
   drawCompare();
 }
 
+/* Every added player gets THIS SAME control, always — never a silent gap.
+   A curated (PINDEX) name can resolve to a linked bsnpr_id with zero real
+   career[] rows (Georgie Torres -> id 788, a known thin/enciclopedia-only
+   link — his curated career averages are real, but the archive never
+   captured a season for him). Without a disabled fallback that row would
+   render with no control at all while every other added player has one —
+   indistinguishable from a bug, and it hides the real fact (this player
+   can only ever be compared by career) instead of showing it (PC4). */
+function cmpSeasonSelectDisabled(label,name){
+  return `<select disabled style="font-size:12px;padding:3px 8px;width:auto;min-width:0"
+    aria-label="Temporada de ${esc(name)}"><option>${esc(label)}</option></select>`;
+}
 /* Picked once a player's career[] has landed (cmpEnsureData) — "Carrera"
    only offered when they're a PINDEX name (its own career averages exist);
    an archive-only, season-only add just gets the season list. Labelled with
    the resolved club name, same FID2APP->F lookup loadPlayerExtra's own
    season table already uses, team_raw as the honest fallback. */
 function cmpSeasonSelect(name){
-  const d=CMP_DATA[name];
-  if(!d || d==='loading') return '<span class="dim" style="font-size:11px">cargando temporadas…</span>';
-  if(d==='none' || !d.career || !d.career.length) return '';
   const canCareer=!!cmpFind(name);
+  const d=CMP_DATA[name];
+  if(!d || d==='loading') return cmpSeasonSelectDisabled('Cargando…',name);
+  if(d==='none' || !d.career || !d.career.length)
+    return cmpSeasonSelectDisabled(canCareer?'Carrera':'Sin datos vinculados',name);
   const mode=CMP_MODE[name];
   const curVal=(mode==null||mode==='career')?'career':String(mode);
   let opts='';
