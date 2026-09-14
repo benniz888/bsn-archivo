@@ -3751,11 +3751,45 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
    **The latinbasket phasing decision itself is still open** — owner
    wants to sit with "how clean is the file now" before deciding; item
    7 remains its own dedicated future session either way.
-   **Next: owner verification of items 4, 5, and all of 6 in an actual
-   browser** (never available this session for any of them), plus a
-   decision on latinbasket phasing now that the canonical-file question
-   is answered. Everything numbered below this point is older history,
-   mostly already resolved — kept for the record, not a live task list.
+   **Owner began the item 4-6 + duplicate-merge browser-verification
+   round, same session — found a real Cuadrícula bug live, playing the
+   actual daily board: 5 answers rejected that owner believed correct**
+   (Eric Dawson×Cariduros×Poste, Victor Rudd×Cariduros×20+ppg, Piculín
+   Ortiz×Atléticos×Leyenda, Hollis-Jefferson×Atléticos×20+ppg, David
+   Stockton×Mets×20+ppg). Investigated each individually per owner's
+   instruction (no shared-root-cause assumption) — found 4 distinct real
+   causes, not 1: a missing club on a hand-authored POOL entry (Dawson,
+   externally confirmed), a genuinely missing season in a curated
+   sub-pool (Rudd, 2022-23 Fajardo, externally confirmed via a primary
+   source after an initial search snippet turned out to be misleading —
+   caught only because the owner insisted on primary-source confirmation
+   before editing), a career-average-vs-best-season logic bug in the
+   `p20` category affecting 2 real players (Hollis-Jefferson, Stockton —
+   both had real 20+ ppg seasons the career-wide average was hiding),
+   and — the deep one — **a genuine cross-contamination identity bug**:
+   canonical id `2722` had silently absorbed the real Piculín Ortiz's
+   birth data and full scouting bio from a jugador05 source, onto an
+   unrelated 2012-13 Guayama player's record, because `merge_jugador05()`
+   blind-accepted an exact-name match whenever the canonical side had no
+   birth year on file — exactly Piculín's own real spine, id `1271`
+   ("Ortiz Rijos, Jose Rafael"), sitting right there unmatched the whole
+   time. Investigated with full confirm-before-merge rigor (same as
+   Dalmau/Berdiel) before touching anything; owner approved the fix.
+   Root cause patched in `merge_jugador05()` (mirrors the `merge_jug05`
+   fix from the item-7 detour above); all 3 player-identity-matching
+   functions in `parse_players.py` were then audited for the same "no
+   corroboration needed if blank" pattern — `build_id_map()` came back
+   clean, `merge_jug05()`'s own exact-tier has a narrower, bounded
+   relative of it, noted in the Tier-1 future-triage entry below rather
+   than fixed now. All 5 Cuadrícula answers verified accepting via the
+   real `submitGuess()`/`axMatch()` code path (jsdom), not just
+   eyeballed data. Full record in the boxed entry below.
+   **Next: owner continuing the item 4-6 browser-verification round**
+   (season comparison + MVP marking, team lore pages, Temporada Perfecta,
+   ¿Quién soy?, and a Berdiel/Dalmau merge spot-check still pending),
+   plus the still-open latinbasket phasing decision once that's done.
+   Everything numbered below this point is older history, mostly already
+   resolved — kept for the record, not a live task list.
 
 **Backlog item 7 scoping + canonical-file duplicate cleanup — full
 record (2026-09-14).**
@@ -3842,6 +3876,21 @@ people) and Tier-2 (136 groups of exact `birth_date` duplicates — much
 noisier, real birthday-paradox coincidence mixed with real signal in
 the same buckets). Real counts on record so they don't get lost; not
 urgent, not blocking latinbasket or anything else.
+
+**Addendum (2026-09-14, browser-verification session)**: when that Tier-1
+triage happens, also specifically check `merge_jug05()`'s own exact-name
+tier (`src/parse_players.py`, `_match()`, the `for c in exact.get(...)`
+loop) against it. It blind-accepts whenever the *incoming* jug05 record
+has no birth date at all, regardless of which (or how many) canonical
+rows share that exact name string — so any Tier-1 group where a jug05
+source record lacks a birth date is a live instance of the same "no
+corroboration needed if blank" pattern that caused the Piculín/2722 bug
+below (found while auditing all 3 identity-matching functions in this
+file for that pattern; `merge_jugador05()` was the actual bug and is
+fixed, `build_id_map()` was audited and is clean — always requires real
+corroboration). Not fixed now — narrower and bounded to this already-
+queued set, not a fresh discovery — but worth checking directly rather
+than finding a third live instance by accident.
 
 1. **Owner-directed queue (2026-09-08 session), in order, pause after each:**
    (a) PHASE_3E_CLEAN_STORAGE — **DONE** (`game_plays.csv.gz`, commit 72d2b52);
