@@ -3000,6 +3000,53 @@ survives, what happens to `991001`'s Pabellón/Wikipedia/El Nuevo Día
 sourcing vs `1962`'s archive sourcing, crosswalk/observations impact)
 and out of scope for "fix the stale-data gap."
 
+**Owner's call: fix it, before the MVP UI. DONE, LIVE, same session
+(2026-09-14, commit `7aeadef`).** Investigated first, same rigor as
+every identity decision this session — not name+span alone:
+- **Exact birth-date match**: Wikipedia's Raymond Dalmau (`991001`'s own
+  cited source) gives October 27, 1948 — byte-identical to `1962`'s
+  `birth_date`, to the day.
+- Same team (Piratas de Quebradillas), same exact 1966-1985 span, same
+  `canonical_name` string already; `1962` already carries a
+  high-confidence curated crosswalk entry independently corroborating
+  birth year 1948 + name + span + club (`app/player_crosswalk.csv`,
+  confidence 19, `auto`).
+- **The one apparent discrepancy resolved, not waved past**: archive
+  says birth_city "New York, USA," Wikipedia says birthplace "San Juan,
+  PR." A second search resolved it — born San Juan, grew up in Harlem,
+  NY — explains both, contradicts neither. Left `birth_city` as-is (not
+  overwritten on a hunch), footnoted in `source_url`.
+- `991001` itself carried zero distinguishing data (no birth date, no
+  position, no aliases, no career rows, no id_map observations) that
+  could point to a different person — checked directly, not assumed.
+- **Root cause of the original miss**: D-048's collision check correctly
+  ruled out the one candidate its token-match search surfaced
+  (`Dalmau Santana`, a genuinely different person — good catch at the
+  time) but never separately searched for an existing row under the
+  "Dalmau Perez" surname — the exact surname it then minted `991001`
+  under.
+
+**Merge**: kept `1962` (real bsnpr.com profile, 20 real season rows, 6
+aliases, 6 id_map observations, already curated) — `confidence`
+`single-source` -> `multi-source`, `source_url` extended with `991001`'s
+unique citations (Pabellón HOF, Wikipedia, El Nuevo Día) so that
+corroboration isn't lost. Deleted `991001` — grepped the whole repo
+first, confirmed zero references anywhere (no aliases/career/id_map/
+crosswalk rows, nothing in `web/data/` beyond its own generated file).
+Full rebuild + swept (per the git-hygiene discipline just added):
+`web/data/index/players.json` 3357->3356, `manifest.json`, `1962.json`
+enriched, `991001.json` deleted. **Confirmed live, byte-for-byte**:
+`991001.json` 404s, `1962.json` matches the local build exactly,
+`players.json` shows exactly one "Dalmau Perez, Raymond" now (the other
+4 archive Dalmaus — Christian, Raymond *Santana*, Ricardo, Steve — are
+real, distinct people, untouched). `tests/test_build_web_data.py`
+hardcoded counts updated. `make verify` (339,243) + `make test` (191)
+green. Pre-commit hook fired correctly and let the commit through once
+the rebuild was staged.
+
+**Dalmau duplicate closed. Next: the MVP-marking UI** (the original ask
+from earlier this session) — unblocked, nothing else queued ahead of it.
+
 **Git-hygiene fix, so this can't quietly happen again — owner-directed,
 DONE, pushed (`309337e`).** `.githooks/pre-commit`: on any commit
 touching `data/clean/`, `app/player_crosswalk.csv`,
@@ -3557,14 +3604,14 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
    rebuild swept + live-verified byte-for-byte (`2f682f7`), plus a
    **pre-commit hook** that now blocks any future commit from shipping
    this same gap again (`309337e`, tested against the real failure mode
-   before trusting it). **One more real finding surfaced and flagged,
-   not yet acted on: `991001` and `1962` both look like Raymond Dalmau
-   under two separate canonical ids** — a live duplicate in "Todo el
-   archivo" search today; full detail in the boxed entry below. Next:
-   MVP-marking UI (the original ask, now unblocked) — or the Dalmau
-   duplicate, owner's call which comes first. Everything numbered below
-   this point is older history, mostly already resolved — kept for the
-   record, not a live task list.
+   before trusting it). **The Raymond Dalmau duplicate (`991001`/`1962`)
+   is now fixed too, live (`7aeadef`)** — confirmed same person (exact
+   birth-date match, not just name+span), merged into `1962`, `991001`
+   deleted everywhere, live byte-verified. Full detail in the boxed
+   entry below. Next: the MVP-marking UI (the original ask, now
+   unblocked) — nothing else queued ahead of it. Everything numbered
+   below this point is older history, mostly already resolved — kept
+   for the record, not a live task list.
 1. **Owner-directed queue (2026-09-08 session), in order, pause after each:**
    (a) PHASE_3E_CLEAN_STORAGE — **DONE** (`game_plays.csv.gz`, commit 72d2b52);
    (b) PHASE_3G_HISTORIC_FOLLOWUP — **DONE** (negative finding, commit 100e9c6);
