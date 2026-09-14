@@ -3680,13 +3680,40 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
    last/scarcest under greedy play) logged as a held-back finding, same
    treatment as Cuadrícula's `10k`/`ones`-gate items — not fixed this
    pass. `make verify`/`make test` green.
-   **¿Quién soy? remains unscoped** — the last piece of item 6.
-   **Next: owner verification of items 4, 5, 6-part-1, and 6-part-2 in
-   an actual browser** (never available this session for any of them),
-   then ¿Quién soy?, the rest of item 6, or item 7 (latinbasket roster
-   ingest, the big one, still deliberately deferred). Everything
-   numbered below this point is older history, mostly already resolved
-   — kept for the record, not a live task list.
+   **Part 3 (¿Quién soy?) — DONE, LIVE (`1c83d80`), same session.
+   Backlog item 6 is now fully complete, all 3 pieces shipped.**
+   Checked the real candidate-pool logic before proposing anything:
+   `newQuiz()` required `p.b` (a curated bio) for clue 6, which only
+   HOF/leader-tagged players ever got — 93 of 378 POOL players (25%).
+   Verified directly (not assumed) that the excluded 285 carry zero
+   honor tags but have complete `rpg`/`apg`/`spg`/`bpg` for every one of
+   them — real data, never surfaced as a clue. Added `statClue(p)`:
+   builds clue 6 from `rpg`/`apg` (neither used by any other clue) when
+   there's no bio, falling back to `spg`/`bpg`; `p.b` still wins when
+   present, zero change for the original 93. Pool widened 93→378.
+   **Owner-required re-verification, not just ship-and-hope**: re-ran
+   the exact clue-ambiguity progression check from scoping against the
+   actually-built page and the full widened pool. Still resolves well
+   (97.9%→95.0%→89.9%→18.3%→2.1%→1.1% ambiguous across clues 1-6) — a
+   small, honest regression from the narrow pool's 0%-at-clue-6, not
+   swept under the rug. **The residual traces to a new, real finding,
+   flagged not fixed**: `"Ramses J. Melendez Vega"`/`"R.J. Melendez"`
+   and `"Maxwell Abmas"`/`"Max Abmas"` look like the same two people
+   each listed twice in `POOL` under a nickname and a formal-name
+   variant (identical stats, hence identical clues) — a `POOL`-level
+   echo of the same class of issue as the Raymond Dalmau canonical-id
+   duplicate, surfaced by asking harder questions across a wider slice
+   of the roster, not caused by this change. Needs its own confirm-
+   before-merge pass, same discipline as Dalmau — not touched here.
+   Repeat-rate finding from scoping (28% in 50 draws) improved to 10%
+   as a predicted side effect of the wider pool — no separate fix
+   needed. `make verify`/`make test` green.
+   **Next: owner verification of items 4, 5, and all of 6 in an actual
+   browser** (never available this session for any of them). Then
+   either the `POOL` duplicate-name finding just above, or item 7
+   (latinbasket roster ingest, the big one, still deliberately
+   deferred). Everything numbered below this point is older history,
+   mostly already resolved — kept for the record, not a live task list.
 1. **Owner-directed queue (2026-09-08 session), in order, pause after each:**
    (a) PHASE_3E_CLEAN_STORAGE — **DONE** (`game_plays.csv.gz`, commit 72d2b52);
    (b) PHASE_3G_HISTORIC_FOLLOWUP — **DONE** (negative finding, commit 100e9c6);
