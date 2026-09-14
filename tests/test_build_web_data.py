@@ -106,14 +106,16 @@ class TestBuild:
         # 990025/990030/990034/990038 (jug05-minted, D-047) and 991005/991006/991011
         # (D-050/T9.4) each confirmed the same person as a pre-existing regular id via
         # exact birth-date match, merged into the regular id in every case)
-        assert len(pl) == 3347
+        # - 1 (990001 Berdiel, Miguel Alí -> the pre-existing 1666, confirmed via an
+        # identical career trajectory rather than birth date, same duplicate scan)
+        assert len(pl) == 3346
         assert all(isinstance(p["id"], int) for p in pl)
         assert pl == sorted(pl, key=lambda p: p["id"])
-        assert sum(1 for p in pl if p["id"] > 990000) == 44
+        assert sum(1 for p in pl if p["id"] > 990000) == 43
 
     def test_manifest_counts_match(self):
         man = json.loads((b.WEB / "manifest.json").read_text())
-        assert man["counts"]["players"] == 3347
+        assert man["counts"]["players"] == 3346
         assert man["counts"]["seasons"] == 98
         assert len(man["source_digest"]) == 64      # sha256 hex
 

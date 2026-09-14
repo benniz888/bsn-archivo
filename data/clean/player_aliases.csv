@@ -24070,12 +24070,7 @@ bsnpr_id,alias,normalized_alias,alias_type,source
 13344,"Thomas, E.","thomas, e",initial,derived
 13344,"thomas, elijah","thomas, elijah",normalized,derived
 13344,"Thomas, Elijah","thomas, elijah",paternal_surname,derived
-990001,"Berdiel, Miguel Alí","berdiel, miguel ali",canonical,derived
-990001,Miguel Alí Berdiel,miguel ali berdiel,given_family_order,derived
-990001,"Berdiel, Miguel","berdiel, miguel",given_first_only,derived
-990001,"Berdiel, M.","berdiel, m",initial,derived
-990001,"berdiel, miguel ali","berdiel, miguel ali",normalized,derived
-990001,"Berdiel, Miguel Alí","berdiel, miguel ali",paternal_surname,derived
+1666,Miguel Alí Berdiel,miguel ali berdiel,given_family_order,derived
 990002,"Alomar, Huascar","alomar, huascar",canonical,derived
 990002,Huascar Alomar,huascar alomar,given_family_order,derived
 990002,"Alomar, H.","alomar, h",initial,derived

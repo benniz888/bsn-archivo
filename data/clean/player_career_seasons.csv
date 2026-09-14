@@ -6405,9 +6405,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 13154,2017,"Santeros, Aguada",2,17,wayback_bsnpr_players,https://web.archive.org/web/20170715123524id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=13154&e=,2026-09-08T15:01:34Z
 13313,2021,"Mets, Guaynabo",2,0,wayback_bsnpr_players,https://web.archive.org/web/20210719175124id_/https://bsnpr.com/jugadores/jugador.asp?id=13313&e=14,2026-09-08T15:01:40Z
 13352,2021,"Indios, Mayaguez",3,14,wayback_bsnpr_players,https://web.archive.org/web/20211229022947id_/https://www.bsnpr.com/jugadores/jugador.asp?id=13352&e=12&s=09,2026-09-08T15:01:42Z
-990001,1999,PONCE,24,75,wayback_bsnpr_jug05,https://web.archive.org/web/20060618110719id_/http://www.bsnpr.com:80/jug05.asp?r=00030,2026-09-10T02:04:14Z
-990001,2001,COAMO,19,81,wayback_bsnpr_jug05,https://web.archive.org/web/20060618110719id_/http://www.bsnpr.com:80/jug05.asp?r=00030,2026-09-10T02:04:14Z
-990001,2002,COAMO,26,220,wayback_bsnpr_jug05,https://web.archive.org/web/20060618110719id_/http://www.bsnpr.com:80/jug05.asp?r=00030,2026-09-10T02:04:14Z
 990002,2002,CAYEY,3,2,wayback_bsnpr_jug05,https://web.archive.org/web/20061207025708id_/http://www.bsnpr.com:80/jug05.asp?r3=+++++&r2=ZACUMASFSK&r=00561&e=,2026-09-10T01:57:02Z
 990002,2005,GUAYAMA,6,11,wayback_bsnpr_jug05,https://web.archive.org/web/20061207025708id_/http://www.bsnpr.com:80/jug05.asp?r3=+++++&r2=ZACUMASFSK&r=00561&e=,2026-09-10T01:57:02Z
 990003,2002,COAMO,2,22,wayback_bsnpr_jug05,https://web.archive.org/web/20050501125437id_/http://www.bsnpr.com:80/jug05.asp?r2=QQRXUFBMBV&r3=QSBVQ&e=COAMO,2026-09-10T01:48:21Z
