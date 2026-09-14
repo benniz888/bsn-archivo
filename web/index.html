@@ -6971,6 +6971,27 @@ function shareDraft(w){
    Six clues, three guesses, points fall as clues are revealed.
    ============================================================ */
 let QZ=null;
+/* backlog item 6, part 3 (2026-09-14) — the candidate pool was capped at
+   93 of 378 POOL players (25%) because clue 6 required p.b (a curated
+   bio), which only HOF/leader-tagged players ever got. The other 285 --
+   every one of them, checked directly, not assumed -- have complete
+   rpg/apg/spg/bpg, just never a bio sentence. This fills clue 6 from
+   those real stats instead of excluding them. Priority: rpg/apg (neither
+   is used by any other clue -- clue 4 already covers ppg) over spg/bpg;
+   the final fallback text is honest, not currently reachable (every
+   bio-less player has at least one of the four), kept for whenever that
+   stops being true. */
+function statClue(p){
+  const parts=[];
+  if(p.rpg!=null) parts.push(p.rpg+' rebotes');
+  if(p.apg!=null) parts.push(p.apg+' asistencias');
+  if(parts.length) return `Promedió ${parts.join(' y ')} por juego.`;
+  const parts2=[];
+  if(p.spg!=null) parts2.push(p.spg+' robos');
+  if(p.bpg!=null) parts2.push(p.bpg+' tapones');
+  if(parts2.length) return `Promedió ${parts2.join(' y ')} por juego.`;
+  return 'Su producción más allá de los puntos nunca se registró.';
+}
 function clueList(p){
   const cl=[];
   cl.push(p.d.length>1?`Jugó en los ${p.d[0]}s y los ${p.d[p.d.length-1]}s.`:`Jugó en los ${p.d[0]}s.`);
@@ -6979,11 +7000,11 @@ function clueList(p){
   if(p.ppg!=null) cl.push(`Promedió ${p.ppg} puntos por juego.`);
   else cl.push('Su promedio de anotación nunca se registró.');
   cl.push(p.c.length?`Vistió el uniforme de ${p.c.map(c=>F[c].name).join(', ')}.`:'Su club no está registrado en el archivo.');
-  cl.push(p.b);
+  cl.push(p.b || statClue(p));
   return cl;
 }
 function newQuiz(){
-  const cands=POOL.filter(p=>p.b&&p.d.length);
+  const cands=POOL.filter(p=>p.d.length&&(p.b||p.rpg!=null||p.apg!=null||p.spg!=null||p.bpg!=null));
   const p=pick(cands);
   QZ={p,clues:clueList(p),shown:1,guesses:3,done:false};
   drawQuiz();
