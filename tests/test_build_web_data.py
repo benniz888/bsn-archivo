@@ -102,14 +102,18 @@ class TestBuild:
         # Jimmy Thordsen, Martin Ansa) + 3 wikipedia_bsn-minted (T9.5, 991012-991014:
         # Bonzi Wells, Leon Smith, Tyler Hines) - 1 (991001 Dalmau Perez, Raymond merged
         # into the existing 1962, a duplicate D-048 missed; 2026-09-14 identity fix)
-        assert len(pl) == 3356
+        # - 9 (systematic canonical-file duplicate scan, 2026-09-14: 990017/990018/
+        # 990025/990030/990034/990038 (jug05-minted, D-047) and 991005/991006/991011
+        # (D-050/T9.4) each confirmed the same person as a pre-existing regular id via
+        # exact birth-date match, merged into the regular id in every case)
+        assert len(pl) == 3347
         assert all(isinstance(p["id"], int) for p in pl)
         assert pl == sorted(pl, key=lambda p: p["id"])
-        assert sum(1 for p in pl if p["id"] > 990000) == 53
+        assert sum(1 for p in pl if p["id"] > 990000) == 44
 
     def test_manifest_counts_match(self):
         man = json.loads((b.WEB / "manifest.json").read_text())
-        assert man["counts"]["players"] == 3356
+        assert man["counts"]["players"] == 3347
         assert man["counts"]["seasons"] == 98
         assert len(man["source_digest"]) == 64      # sha256 hex
 
@@ -138,11 +142,15 @@ class TestBuild:
     def test_season_stats_helper(self):
         # season_detail_spec.md §1 — the join/dedup helper, called directly.
         # Numbers match the spec's own overlap check (run against these same
-        # CSVs before the spec was written).
+        # CSVs before the spec was written). 154->153 distinct pids / 250->249
+        # pairs (2026-09-14): the 990017/580 merge consolidated two id_map
+        # observations ("Corales, E." and "Morales, E.", both real aliases of
+        # the same person) that were previously counted as two separate
+        # stats-linked players into one.
         stats = b._season_stats()
         pairs = [(pid, season) for pid, seasons in stats.items() for season in seasons]
-        assert len(stats) == 154
-        assert len(pairs) == 250
+        assert len(stats) == 153
+        assert len(pairs) == 249
         assert {season for _, season in pairs} <= {2001, 2002, 2003, 2004}
         pid, seasons = next(iter(stats.items()))
         fields = next(iter(seasons.values()))["fields"]

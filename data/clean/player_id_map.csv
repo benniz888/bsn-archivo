@@ -574,7 +574,7 @@ player_season_leaders_2000_2002.csv,"Pagan, Wilfredo",MOROV,2001,2290,"Pagan Roq
 player_season_leaders_2000_2002.csv,"Pagan, Wilfredo",MOROV,2002,2290,"Pagan Roque, Wilfredo",name+season_in_career,confirms,single-source
 player_season_leaders_2000_2002.csv,"Payano, Carlos",BAYAM,2001,335,"Payano Ocasio, Carlos R.",name+season_in_career,confirms,single-source
 player_season_leaders_2000_2002.csv,Quinones,ISABE,2000,1069,"Quiñones Suarez, Joel",surname+season+club,confirms,single-source
-player_season_leaders_2000_2002.csv,"Quinonez, Joel",ISABE,2002,990030,"Quinonez, Joel",name+season_in_career,confirms,single-source
+player_season_leaders_2000_2002.csv,"Quinonez, Joel",ISABE,2002,1069,"Quiñones Suarez, Joel",name+season_in_career,confirms,single-source
 player_season_leaders_2000_2002.csv,"Ricardo, Osiris",PONCE,2001,1766,"Ricardo Gonzalez, Osiris",name+season_in_career,confirms,single-source
 player_season_leaders_2000_2002.csv,"Ricardo, Osiris",PONCE,2002,1766,"Ricardo Gonzalez, Osiris",name+season_in_career,confirms,single-source
 player_season_leaders_2000_2002.csv,Rivera,ARECI,2000,1127,"Rivera Motta, Jorge Luis",surname+season+club,confirms,single-source
@@ -671,7 +671,7 @@ player_season_stats_2001_2004.csv,"Colon, G.",Leones de Ponce,2003,773,"Colon Gr
 player_season_stats_2001_2004.csv,"Colon, J.",Leones de Ponce,2001,1011,"Colon Rodriguez, Javier Antonio",name+season_in_career,confirms,single-source
 player_season_stats_2001_2004.csv,"Colon, J.",Leones de Ponce,2002,1011,"Colon Rodriguez, Javier Antonio",name+season_in_career,confirms,single-source
 player_season_stats_2001_2004.csv,"Colon, J.",Leones de Ponce,2003,1011,"Colon Rodriguez, Javier Antonio",name+season_in_career,confirms,single-source
-player_season_stats_2001_2004.csv,"Corales, E.",Titanes de Morovis,2003,990017,"Corales, Elisamuel",name+season_in_career,confirms,single-source
+player_season_stats_2001_2004.csv,"Corales, E.",Titanes de Morovis,2003,580,"Morales Hoyos, Elisamuel",name+season_in_career,confirms,single-source
 player_season_stats_2001_2004.csv,"Cortes, D.",Capitanes de Arecibo,2001,448,"Cortes Ruiz, David",name+season_in_career,confirms,single-source
 player_season_stats_2001_2004.csv,"Cortes, D.",Capitanes de Arecibo,2002,448,"Cortes Ruiz, David",name+season_in_career,confirms,single-source
 player_season_stats_2001_2004.csv,"Crispin, N.",Gallitos de Isabela,2001,1692,"Crispin Vargas, Nathanael",name+season_in_career,confirms,single-source
@@ -785,8 +785,8 @@ player_season_stats_2001_2004.csv,"Paniagua, A.",Gallitos de Isabela,2002,118,"P
 player_season_stats_2001_2004.csv,"Payano, C.",Vaqueros de Bayamon,2001,335,"Payano Ocasio, Carlos R.",name+season_in_career,confirms,single-source
 player_season_stats_2001_2004.csv,"Payano, C.",Maratonistas de Coamo,2001,335,"Payano Ocasio, Carlos R.",name+season_in_career,confirms,single-source
 player_season_stats_2001_2004.csv,"Pizarro, I.",Gigantes de Carolina,2001,942,"Pizarro Andujar, Israel",name+season_in_career,confirms,single-source
-player_season_stats_2001_2004.csv,"Quinonez, J.",Gallitos de Isabela,2001,990030,"Quinonez, Joel",name+season_in_career,confirms,single-source
-player_season_stats_2001_2004.csv,"Quinonez, J.",Gallitos de Isabela,2002,990030,"Quinonez, Joel",name+season_in_career,confirms,single-source
+player_season_stats_2001_2004.csv,"Quinonez, J.",Gallitos de Isabela,2001,1069,"Quiñones Suarez, Joel",name+season_in_career,confirms,single-source
+player_season_stats_2001_2004.csv,"Quinonez, J.",Gallitos de Isabela,2002,1069,"Quiñones Suarez, Joel",name+season_in_career,confirms,single-source
 player_season_stats_2001_2004.csv,"Ramirez, S.",Leones de Ponce,2001,2157,"Ramirez Rodriguez, Sean",name+season_in_career,confirms,single-source
 player_season_stats_2001_2004.csv,"Ramirez, S.",Indios de Mayaguez,2002,2157,"Ramirez Rodriguez, Sean",name+season_in_career,confirms,single-source
 player_season_stats_2001_2004.csv,"Ramos, P.",Criollos de Caguas,2001,1836,"Ramos Fuentes, Peter John",name+season_in_career,confirms,single-source
