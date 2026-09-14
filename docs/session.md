@@ -3044,8 +3044,28 @@ hardcoded counts updated. `make verify` (339,243) + `make test` (191)
 green. Pre-commit hook fired correctly and let the commit through once
 the rebuild was staged.
 
-**Dalmau duplicate closed. Next: the MVP-marking UI** (the original ask
-from earlier this session) — unblocked, nothing else queued ahead of it.
+**Dalmau duplicate closed. MVP-marking UI — DONE, LIVE (`6823c64`),
+same session.** No new data plumbing needed: `hydrate()` already builds
+`MVP_ID` (`season -> bsnpr_id`) from `mvp.json` for an unrelated
+existing feature; `cmpSeasonSelect()`'s option loop now checks
+`MVP_ID[c.season]===d.id` and appends `" — MVP"` — real link, never a
+name guess, and structurally can't mark one of the 14 span-only
+resolved-but-no-real-row MVP seasons (they're just not in the dropdown
+at all). Verified via jsdom against the real built page: Raymond
+Dalmau's dropdown marks exactly 1968/1969/1972, Christian Dalmau's
+marks exactly 2004, no others; re-ran the full original Comparar test
+suite, no regressions. `make verify` (339,243) + `make test` (191)
+green. Pushed, confirmed live. Full record: `docs/specs/
+season_detail_spec.md` `# Part 2: MVP-season marking`.
+
+**Backlog item 4 is now fully closed** — cross-player season
+comparison, the modern-era hard-wall finding, the Georgie Torres fix,
+the stale-web-data fix + git-hygiene hook, the Dalmau duplicate merge,
+and MVP-season marking all DONE, LIVE. Pending: owner verification in
+an actual browser (no browser tool was available this session for any
+of this work — every check above is real code execution against real
+data, not a substitute for clicking through it). Next up: whatever the
+owner picks from the backlog roadmap (items 5-7).
 
 **Git-hygiene fix, so this can't quietly happen again — owner-directed,
 DONE, pushed (`309337e`).** `.githooks/pre-commit`: on any commit
@@ -3604,14 +3624,17 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
    rebuild swept + live-verified byte-for-byte (`2f682f7`), plus a
    **pre-commit hook** that now blocks any future commit from shipping
    this same gap again (`309337e`, tested against the real failure mode
-   before trusting it). **The Raymond Dalmau duplicate (`991001`/`1962`)
-   is now fixed too, live (`7aeadef`)** — confirmed same person (exact
+   before trusting it). The Raymond Dalmau duplicate (`991001`/`1962`)
+   was fixed too, live (`7aeadef`) — confirmed same person (exact
    birth-date match, not just name+span), merged into `1962`, `991001`
-   deleted everywhere, live byte-verified. Full detail in the boxed
-   entry below. Next: the MVP-marking UI (the original ask, now
-   unblocked) — nothing else queued ahead of it. Everything numbered
-   below this point is older history, mostly already resolved — kept
-   for the record, not a live task list.
+   deleted everywhere. **MVP-season marking then shipped, live
+   (`6823c64`)** — "— MVP" on a season dropdown option, real
+   `MVP_ID`-based link, no name guessing. **Backlog item 4 is now fully
+   closed.** Full detail in the boxed entries below. Next: owner
+   verification in an actual browser (never available this session),
+   then whichever backlog item (5-7) the owner picks next. Everything
+   numbered below this point is older history, mostly already resolved
+   — kept for the record, not a live task list.
 1. **Owner-directed queue (2026-09-08 session), in order, pause after each:**
    (a) PHASE_3E_CLEAN_STORAGE — **DONE** (`game_plays.csv.gz`, commit 72d2b52);
    (b) PHASE_3G_HISTORIC_FOLLOWUP — **DONE** (negative finding, commit 100e9c6);
