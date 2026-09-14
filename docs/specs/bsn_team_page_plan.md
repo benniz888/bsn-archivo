@@ -230,3 +230,84 @@ the CSV — exact match, all 5, same order, same counts.)*
 ### 4. Page layout (top → bottom) — superseded by [LAYOUT] above
 
 ### 5. Open items — resolved by [DECISION] above
+
+---
+
+# Addendum: backlog item 5 — region/barrio identity (2026-09-14)
+
+**Status: BUILT, verified locally, pushed.** Owner: today's coliseo/
+rivalry/lore work never addressed the *town's* own identity, only the
+club's — scope what's realistically sourceable before proposing anything.
+
+**[FOUND]**: checked all 12 active clubs' home municipalities directly
+against es.wikipedia.org (official apodo/gentilicio + a cited historical
+fact), not assumed. 11 of 12 have real, sourced, mostly team-independent
+material — several genuinely strong (San Germán is the "Cuna del
+Baloncesto Puertorriqueño," where the sport was introduced to the island;
+Guaynabo is Caparra, the first Spanish settlement on the island, 1509;
+Santurce isn't its own municipality at all — a San Juan barrio, the only
+PR town founded by free Black settlers, originally named Cangrejos,
+which directly explains "Cangrejeros"). **Quebradillas is a genuine gap**
+— every nickname found for it is the team's own existing arena identity,
+not separate town character; no fabricated distinction was forced.
+Mayagüez's "Sultana del Oeste" was deliberately NOT reused here since
+`TEAM_LORE.may` already carries it — used "Cuna de Hostos" instead so
+the two lines don't repeat each other. Aguada's Columbus-landing claim is
+real but contested by neighboring Aguadilla — framed the same way the
+archive already handles the 1945 champion dispute (named, not silently
+resolved), not presented as settled fact. Carolina's "Ciudad Gigante"
+tie to an exceptionally tall resident is kept deliberately vague (no
+specific height cited) since the source itself flags that figure as
+unconfirmed.
+
+**[DECISION]**: owner-approved both judgment calls (Quebradillas ships
+as an honest gap; Aguada's claim included, marked disputed) after
+reviewing the exact draft copy for all 12 — not just the coverage table.
+
+## [DATA]
+
+New `TOWN_LORE` map (`app/bsn_archivo.html`, right after `TEAM_LORE`),
+same shape, one active-club key -> one sourced Spanish sentence or two.
+Deliberately no `que` key — `TOWN_LORE[k]` absent renders nothing extra,
+same degrade-gracefully pattern `VENUES`/`TEAM_LORE` already use for a
+key they don't have (no regression, no placeholder apology). Same
+active-12-only scope as `VENUES`/`TEAM_LORE` — defunct franchises stay
+out of scope, unchanged.
+
+## [LAYOUT]
+
+One more `.phero-note` line in `showTeam()`, directly after the existing
+`TEAM_LORE[k]` line — reuses the exact same class, zero new CSS:
+
+```
+.phero-note  heroNote (existing)
+.phero-note  venueLine (existing)
+.phero-note  venueNote (existing, when present)
+...
+.phero-note  rivalLine (existing, when present)
+.phero-note  lore — TEAM_LORE[k] (existing)
++ .phero-note  TOWN_LORE[k] — NEW, when present
+.note        campeón/subcampeón (existing)
+```
+
+## [VERIFICATION]
+
+Same jsdom-against-the-real-built-page method as backlog item 4 (no live
+browser tool this session). Confirmed `TOWN_LORE` has exactly 11 keys
+(matching the approved table); called the real `showTeam()` against the
+actual built page for a sample spanning a real entry (`san`, `bay`,
+`agu`, `man`), the deliberate gap (`que`), and a defunct franchise
+(`cno`, sanity-checking `TOWN_LORE[k]` undefined never crashes) — the
+line renders exactly the approved text when present, and renders nothing
+extra when absent, in all six cases. `make verify` (339,243 checks) +
+`make test` (191) green (unaffected — no `data/clean/` or `src/` touched
+this pass, app-layer-only change).
+
+## [OUT OF SCOPE — this pass]
+
+- Defunct franchises (21 clubs) — same boundary every other team-page
+  pass has drawn; a later phase if ever picked up.
+- Sub-neighborhood detail within a municipality (e.g. which specific
+  barrio of Bayamón the team is most associated with) — the scope here
+  is municipality-level identity (barrio-level only where the team's
+  actual home, Santurce, genuinely is a barrio, not a municipality).

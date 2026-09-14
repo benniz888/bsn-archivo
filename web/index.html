@@ -1950,6 +1950,32 @@ const TEAM_LORE = {
   agu:'El Coliseo Ismael «Chavalillo» Delgado se construyó para los Juegos Centroamericanos y del Caribe de 2010.',
   car:'Los Gigantes se mudaron de Carolina a Canóvanas en 2025 tras no llegar a acuerdo con el municipio de Carolina por el uso del Coliseo Guillermo Angulo — hoy juegan como Gigantes de Carolina/Canóvanas en el Coliseo Carlos Miguel Mangual.'
 };
+/* backlog item 5 — region/barrio identity. A different axis from TEAM_LORE
+   (that one is the club; this one is the place) — deliberately no overlap
+   with it where the two facts would otherwise repeat (Mayagüez already
+   uses "Sultana del Oeste" in TEAM_LORE.may, so this uses "Cuna de Hostos"
+   instead). Sourced from es.wikipedia.org's own municipality pages,
+   2026-09-14, one fact per active club; que has no entry — every
+   "nickname" found for Quebradillas is the team's own arena identity
+   already on the page, not separate town character, and this archive
+   doesn't force a distinction that isn't real. agu carries a contested
+   claim (Aguada vs. Aguadilla over the 1493 Columbus landing site) framed
+   the same way the 1945 champion dispute already is elsewhere in this
+   app — named, not silently resolved. Same active-12-only / defunct-later
+   scope as VENUES/TEAM_LORE. Full sourcing: docs/specs/bsn_team_page_plan.md. */
+const TOWN_LORE = {
+  bay:'Bayamón es «la Ciudad del Chicharrón» — y sede del primer trapiche hidráulico de la isla, hacia 1548.',
+  sge:'San Germán es la «Cuna del Baloncesto Puertorriqueño» — el deporte se introdujo en la isla en la Universidad Interamericana, allí mismo.',
+  pon:'Ponce es «la Perla del Sur» — cuna del autonomismo puertorriqueño y del carnaval más antiguo de la isla.',
+  san:'Santurce no es un municipio — es un barrio de San Juan, el único pueblo de Puerto Rico fundado por negros libres. Se llamó Cangrejos antes que Santurce; de ahí «Cangrejeros».',
+  are:'Arecibo es «la Villa del Capitán Correa» — en 1702, una treintena de milicianos a caballo repelió un desembarco inglés.',
+  gua:'Guaynabo es «la Ciudad de los Conquistadores» — en Caparra, aquí mismo, Juan Ponce de León fundó en 1509 el primer poblado español de la isla.',
+  cag:'Caguas es «la Ciudad Criolla» — su nombre viene del cacique taíno Caguax, cuya corona lleva el escudo del pueblo.',
+  car:'Carolina es «la Ciudad Gigante», apodo ligado a Felipe Birriel González, un carolinense de estatura excepcional — y cuna también de Roberto Clemente y Julia de Burgos. Canóvanas, su nueva sede, es el «Pueblo Valeroso».',
+  may:'Mayagüez es «la Cuna de Hostos» — Eugenio María de Hostos, uno de los grandes intelectuales puertorriqueños, nació aquí en 1839.',
+  agu:'Aguada se atribuye el desembarco de Cristóbal Colón en 1493 — una fecha que también reclama Aguadilla; la disputa sigue sin resolverse.',
+  man:'Manatí es «la Atenas de Puerto Rico» — apodo de principios del siglo XX, cuando sus Juegos Florales y tertulias literarias eclipsaban a las de pueblos más grandes.'
+};
 
 /* Final standings, 2026 regular season. Two groups of six, 34 games.
    PCT is the league's own rounding, kept as published. */
@@ -4005,6 +4031,7 @@ function showTeam(k){
         </dl>
         ${rivalLine?`<div class="phero-note">${rivalLine}</div>`:''}
         <div class="phero-note">${esc(lore)}</div>
+        ${TOWN_LORE[k]?`<div class="phero-note">${esc(TOWN_LORE[k])}</div>`:''}
         ${f.won.length?`<div class="note">Campeón: ${f.won.join(' · ')}</div>`:''}
         ${f.ru.length?`<div class="note">Subcampeón: ${f.ru.join(' · ')}</div>`:''}
       </div>
