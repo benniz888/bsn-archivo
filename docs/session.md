@@ -3631,10 +3631,35 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
    `docs/specs/bsn_team_page_plan.md`'s addendum. Verified via jsdom
    against the real built page; owner reviewed the exact draft copy
    before any code was written.
-   **Next: owner verification of items 4 and 5 in an actual browser**
-   (never available this session for either), then whichever backlog
-   item (6 or 7) the owner picks next. Everything numbered below this
-   point is older history, mostly already resolved — kept for the
+   **Backlog item 6 (per-game deep-dive + difficulty pass) — started,
+   Cuadrícula only so far, part 1 DONE, LIVE (`3f05f11`), same session.**
+   Item bundles 3 separate games (Cuadrícula, Temporada Perfecta, ¿Quién
+   soy?) each needing its own pass — picked Cuadrícula first (the
+   flagship daily feature). Ran the real board generator (300 seeds) to
+   find actual problems instead of guessing: `d2020` is 81% of the
+   player pool (roster-completeness bias showing up directly in a game
+   mechanic), `d1950`/`d1960`/`d1970` were only 4/9/13 players each —
+   too thin to reliably pair with a club, mostly landing as accidental
+   single-answer traps. Owner approved two fixes: (1) surface the
+   avg/ones/tight difficulty stats the generator already computes then
+   discards — new "Dificultad de hoy: Normal — 2 casillas..." line,
+   thresholds taken directly from the generator's own existing accept/
+   reject gate, not invented; (2) fold the three thin decades into one
+   `dpre1980` bucket (18 players by real union, not the naive 26-sum).
+   Verified via jsdom against the real built page, before/after HTML
+   captured for both states, one real example per difficulty tier
+   confirmed (Fácil/Normal/Difícil, correct singular/plural grammar),
+   post-change 300-board re-audit showed no regression (0 generation
+   failures, `dpre1980` picked 7/300 times — comparable to the old
+   3-category total but now actually solvable). Held items (3) 10k
+   category / (4) tightening the `ones` gate deliberately, owner wants
+   to see how these two feel first. Temporada Perfecta and ¿Quién soy?
+   remain unscoped.
+   **Next: owner verification of items 4, 5, and 6-part-1 in an actual
+   browser** (never available this session for any of them), then
+   either the rest of item 6 or item 7 (latinbasket roster ingest, the
+   big one, still deliberately deferred). Everything numbered below
+   this point is older history, mostly already resolved — kept for the
    record, not a live task list.
 1. **Owner-directed queue (2026-09-08 session), in order, pause after each:**
    (a) PHASE_3E_CLEAN_STORAGE — **DONE** (`game_plays.csv.gz`, commit 72d2b52);
