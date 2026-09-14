@@ -7248,7 +7248,14 @@ function cmpSeasonSelect(name){
   d.career.forEach((c,i)=>{
     const ak=FID2APP&&FID2APP[c.franchise_id];
     const club=(ak&&F[ak])?F[ak].name:(c.team_raw||'');
-    const label=(c.season||'—')+(club?' · '+club:'');
+    /* MVP_ID (hydrate(), from index/mvp.json — backlog item 4 addendum,
+       2026-09-14: historic_awards.csv now runs through identity resolution,
+       see docs/specs/season_detail_spec.md). season->bsnpr_id, one MVP per
+       year, so a straight equality check is enough — real link, never a
+       guess: only marked when this exact player's own career[] season IS
+       the archive's own recorded MVP winner for that year. */
+    const isMvp = MVP_ID && MVP_ID[c.season]===d.id;
+    const label=(c.season||'—')+(club?' · '+club:'')+(isMvp?' — MVP':'');
     opts+=`<option value="${i}"${curVal===String(i)?' selected':''}>${esc(label)}</option>`;
   });
   return `<select style="font-size:12px;padding:3px 8px;width:auto;min-width:0" aria-label="Temporada de ${esc(name)}"

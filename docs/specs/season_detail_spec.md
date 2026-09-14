@@ -431,3 +431,66 @@ failures is inside the app's own pre-existing per-widget try/catch and
 would not occur against the real page in a real browser.
 `make verify` (339,252 checks) / `make test` (191) green (Python side —
 the `career_seasons` field addition to `build_web_data.py`).
+
+---
+
+# Part 2: MVP-season marking (2026-09-14)
+
+**Status: BUILT, verified locally, pushed. Owner asked**: mark
+MVP-winning seasons in the season dropdown (e.g. "1975 — MVP") so
+they're easy to pick on purpose — but only after confirming real
+coverage, same honest-gap discipline as everything else.
+
+**[FOUND]**: MVP years were not already linked. `historic_awards.csv`
+(MVP/Rookie/DPOY, 1958-2004) had never been run through identity
+resolution at all — only `historic_scoring_champions.csv` got that
+treatment (PHASE_3I). Added it to `OBSERVATION_FILES`
+(`src/parse_players.py`), same pattern. Real coverage, using the actual
+matcher (`build_id_map`), verified against the persisted result, not a
+guess: 36 of 47 MVP rows resolve to a specific canonical player on the
+plain existing `name+season_in_career` tier (no new matching code
+needed); of those, **22 have a real `career[]` row for that exact
+season** — the number that matters for a dropdown marker. 11 land in
+the review queue (season not corroborated), 4 are unresolvable typos in
+the source itself. Full detail: `docs/session.md`'s 2026-09-14 entries.
+
+**A separate, real bug surfaced and fixed along the way**: spot-checking
+Raymond Dalmau live revealed `991001` (a Pabellón-HOF mint, D-048) and
+`1962` (the real archive profile) were the same person under two
+canonical ids — exact birth-date match (Oct 27 1948), same team, same
+span; `991001` carried zero distinguishing data. Merged into `1962`
+(confidence -> `multi-source`, `991001`'s citations folded into
+`source_url`); `991001` deleted everywhere (grepped first — zero other
+references anywhere in the repo). Also found and fixed, same pass: the
+deployed site's `web/data/players/*.json` had gone 3 identity-pipeline
+phases stale (last committed 2026-09-09, three later phases never
+propagated) — full rebuild swept, live-verified byte-for-byte, and a
+new `.githooks/pre-commit` hook now blocks a future commit from
+shipping that gap again (tested against the real failure mode before
+trusting it).
+
+## [DATA] — the marking itself
+
+No new data plumbing needed: `hydrate()` already builds `MVP_ID`
+(`season -> bsnpr_id`, one MVP per year) from `web/data/index/mvp.json`
+for an unrelated existing feature (`buildFinalsByYear`'s MVP column).
+`cmpSeasonSelect()`'s per-season `<option>` loop now checks
+`MVP_ID[c.season]===d.id` — real, direct equality against the specific
+player's own id, never a name guess — and appends `" — MVP"` to the
+label when true. Because the check only ever runs over `c` values in
+that player's own fetched `career[]`, it structurally can't mark a
+"span-only" match (one of the 14 resolved-but-no-real-row cases) —
+those seasons simply aren't in the dropdown's option list at all, so
+there's nothing to (mis)mark.
+
+## [VERIFICATION]
+
+Same jsdom-against-the-real-built-page method as Part 1 (no live
+browser tool this session). Confirmed: `MVP_ID` has 36 entries (up from
+13 before the id_map fix); Raymond Dalmau's season dropdown marks
+exactly 1968/1969/1972 as MVP and no other year; Christian Dalmau's
+marks exactly 2004. Re-ran Part 1's full original test suite (candidate
+widening, career-vs-career preset, season switching, archive-only mixed
+comparison, the 2022+ note) — no regressions, `PALL` count correctly
+reflects the Dalmau merge (3356, was 3357). `make verify` (339,243) +
+`make test` (191) green.
