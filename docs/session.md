@@ -3708,12 +3708,37 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
    Repeat-rate finding from scoping (28% in 50 draws) improved to 10%
    as a predicted side effect of the wider pool — no separate fix
    needed. `make verify`/`make test` green.
+   **`POOL` duplicate (Melendez/Abmas) — RESOLVED, LIVE (`6008c63`),
+   same session.** Confirmed before merging, same rigor as the Raymond
+   Dalmau canonical-id merge: byte-identical stat lines for both pairs
+   (club, season, games, and every per-game rate to the decimal) — two
+   real people, not four. Root cause: `mergeOfficial2026()`/
+   `mergeRGM()`'s name-key normalizer strips accents/punctuation/jr-iii-
+   iv suffixes but was never built to equate a nickname or an
+   initialism with its formal-name form. Fixed with a small, curated,
+   individually-verified `POOL_NAME_ALIAS` map consulted by both merge
+   functions — not a general fuzzy matcher (D1); only these two
+   confirmed pairs are aliased. Kept the richer `POOL_BSN26`-sourced
+   records (minutes, shooting splits, official-source flag) as
+   survivors; the RGM entries now correctly merge into them via the
+   existing fill-blanks-never-overwrite logic instead of duplicating —
+   both survivors gained the RGM `ss` (season-splits) array for free.
+   **Owner-required re-verification, done**: re-ran the exact clue-
+   ambiguity check against the actually-built page — `POOL` 378→376,
+   both duplicate names confirmed gone, and the 1.1% residual ambiguity
+   from the pool-widening pass is now **0.0%**, confirming the
+   duplicate was the entire cause. Verified twice: once against the
+   local build, once by fetching the actual deployed `bsnarchivo.com`
+   HTML and running the same check directly against it (not just
+   grepping for the new code string) — `POOL.length` 376, both names
+   absent, `ss` array present on the survivor. `make verify`/`make
+   test` green.
    **Next: owner verification of items 4, 5, and all of 6 in an actual
-   browser** (never available this session for any of them). Then
-   either the `POOL` duplicate-name finding just above, or item 7
-   (latinbasket roster ingest, the big one, still deliberately
-   deferred). Everything numbered below this point is older history,
-   mostly already resolved — kept for the record, not a live task list.
+   browser** (never available this session for any of them). Then item
+   7 (latinbasket roster ingest, the big one) — owner wants this as its
+   own dedicated session, not folded into this one. Everything numbered
+   below this point is older history, mostly already resolved — kept
+   for the record, not a live task list.
 1. **Owner-directed queue (2026-09-08 session), in order, pause after each:**
    (a) PHASE_3E_CLEAN_STORAGE — **DONE** (`game_plays.csv.gz`, commit 72d2b52);
    (b) PHASE_3G_HISTORIC_FOLLOWUP — **DONE** (negative finding, commit 100e9c6);
