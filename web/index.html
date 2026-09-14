@@ -2606,6 +2606,18 @@ PLAYERS_NEW.forEach(np=>{
     t:np.t,b:np.b});
 });
 
+/* backlog item 6 (POOL duplicate fix, 2026-09-14) — two 2026 players were
+   entering POOL twice: once from POOL_BSN26 (formal name) and once from
+   POOL_RGM (nickname/initials), because neither merge function's key()
+   normalizes a nickname or an initialism to its formal-name form — a
+   genuinely hard general problem, so this is a curated, individually-
+   verified override (byte-identical club/season/gp/ppg/rpg/apg/spg/bpg
+   confirmed for both pairs, same rigor as the Raymond Dalmau canonical-id
+   merge), not a fuzzy matcher that could cause a false merge elsewhere
+   (D1). Keys are the RAW incoming name lowercased, values are the
+   existing POOL entry's real name to match against instead. */
+const POOL_NAME_ALIAS={'r.j. melendez':'Ramses J. Melendez Vega','max abmas':'Maxwell Abmas'};
+
 /* The league's own 2026 export, and the first complete roster in this
    archive: every player who appeared, including the man who played one
    game for one minute. Every other source in this project records only
@@ -2622,7 +2634,7 @@ PLAYERS_NEW.forEach(np=>{
     .replace(/[«»"'.,]/g,'').replace(/\b(jr|iii|ll+|iv)\b/g,'').replace(/\s+/g,' ').trim();
   const index=new Map(); POOL.forEach(p=>index.set(key(p.n),p));
   POOL_BSN26.forEach(r=>{
-    const hit=index.get(key(r.n));
+    const hit=index.get(key(POOL_NAME_ALIAS[String(r.n).toLowerCase()]||r.n));
     if(hit){
       r.c.forEach(c=>{ if(!hit.c.includes(c)) hit.c.push(c); });
       if(!hit.d.includes(2020)){ hit.d.push(2020); hit.d.sort((a,b)=>a-b); }
@@ -2656,7 +2668,7 @@ PLAYERS_NEW.forEach(np=>{
     .replace(/[«»"'.,]/g,'').replace(/\bjr\b/g,'').replace(/\s+/g,' ').trim();
   const index=new Map(); POOL.forEach(p=>index.set(key(p.n),p));
   POOL_RGM.forEach(r=>{
-    const hit=index.get(key(r.n));
+    const hit=index.get(key(POOL_NAME_ALIAS[String(r.n).toLowerCase()]||r.n));
     if(hit){
       r.c.forEach(c=>{ if(!hit.c.includes(c)) hit.c.push(c); });
       r.d.forEach(d=>{ if(!hit.d.includes(d)) hit.d.push(d); });
