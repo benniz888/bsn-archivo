@@ -70,6 +70,13 @@ OBSERVATION_FILES = [
     ("player_season_leaders_2000_2002.csv", "player_raw", "club_raw", "season"),
     ("player_season_stats_2001_2004.csv", "player_raw", "team_raw", "season"),
     ("historic_scoring_champions.csv", "player_raw", "team_raw", "season"),
+    # backlog item 4 addendum (MVP-season marking, 2026-09-14) — MVP/Rookie/
+    # DPOY awards were never run through identity resolution at all before
+    # this; scoring champions got the equivalent treatment in PHASE_3I. Every
+    # resolved row this adds used the plain existing name+season_in_career
+    # tier (verified: no title-tier fallback was needed for any of the 36
+    # MVP rows that resolved), so no _TITLE_FILES change was needed either.
+    ("historic_awards.csv", "player_raw", "team_raw", "season"),
 ]
 
 

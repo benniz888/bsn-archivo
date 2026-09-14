@@ -1,4 +1,80 @@
 obs_source,player_raw,club_raw,season,bsnpr_id,canonical_name,match_method,club_check,confidence
+historic_awards.csv,ALBERTO ZAMOT,BAYAMON,1973,33,"Zamot Bula, Alberto",name+season_in_career,confirms,single-source
+historic_awards.csv,ANTHONY FARMER,PONCE,1999,172,"Farmer, Anthony",name+season_in_career,no_career_club,single-source
+historic_awards.csv,CARLOS ARROYO,FAJARDO,1996,273,"Arroyo Bermúdez, Carlos A.",name+season_in_career,confirms,single-source
+historic_awards.csv,CARLOS BERMUDEZ,CANOVANAS,1978,334,"Bermudez Torres, Carlos",name+season_in_career,confirms,single-source
+historic_awards.csv,CARLOS ESCALERA,COAMO,2003,284,"Escalera Gonzalez, Carlos",name+season_in_career,confirms,single-source
+historic_awards.csv,CHARLIE BERMUDEZ,CANOVANAS,1978,334,"Bermudez Torres, Carlos",name+season_in_career,confirms,single-source
+historic_awards.csv,CHRISTIAN DALMAU,SAN GERMAN,2004,382,"Dalmau Santana, Christian",name+season_in_career,confirms,single-source
+historic_awards.csv,EARL BROWN,RIO PIEDRAS,1975,492,"Brown, Earl",name+season_in_career,confirms,single-source
+historic_awards.csv,EARL BROWN,RIO PIEDRAS,1976,492,"Brown, Earl",name+season_in_career,confirms,single-source
+historic_awards.csv,EARL BROWN,RIO PIEDRAS,1977,492,"Brown, Earl",name+season_in_career,confirms,single-source
+historic_awards.csv,EARL BROWN,GUAYNABO,1980,492,"Brown, Earl",name+season_in_career,confirms,single-source
+historic_awards.csv,EDDIE CASIANO,SAN GERMAN,1997,498,"Casiano Ojeda, Eddie",name+season_in_career,confirms,single-source
+historic_awards.csv,EDGAR LEON,FAJARDO,1990,507,"León, Edgar",name+season_in_career,no_career_club,single-source
+historic_awards.csv,ELISAMUEL MORALES,ISABELA,2003,580,"Morales Hoyos, Elisamuel",name+season_in_career,confirms,single-source
+historic_awards.csv,FILIBERTO RIVERA,COAMO,2000,704,"Rivera Isaac, Filiberto",name+season_in_career,confirms,single-source
+historic_awards.csv,FITZROY BROW,ARECIBO,1989,705,"Brow Wilkinson, Fitzroy",name+season_in_career,confirms,single-source
+historic_awards.csv,FITZROY BROW,ARECIBO,1990,705,"Brow Wilkinson, Fitzroy",name+season_in_career,confirms,single-source
+historic_awards.csv,FITZROY BROW,ARECIBO,1992,705,"Brow Wilkinson, Fitzroy",name+season_in_career,confirms,single-source
+historic_awards.csv,GEORGIE TORRES,FAJARDO,1984,788,"Torres Dougherty, George",name+season_in_career,no_career_club,single-source
+historic_awards.csv,GEORGIE TORRES,FAJARDO,1985,788,"Torres Dougherty, George",name+season_in_career,no_career_club,single-source
+historic_awards.csv,HECTOR NUÑEZ,ISABELA,1987,874,"Nuñez Mercado, Hector e.",name+season_in_career,confirms,single-source
+historic_awards.csv,HECTOR OLIVENCIA,CAGUAS,1977,863,"Olivencia Mateo, Hector",name+season_in_career,confirms,single-source
+historic_awards.csv,IAN LOCKHART,QUEBRADILLAS,2000,914,"Lockhart Collie, Ian",name+season_in_career,confirms,single-source
+historic_awards.csv,JAIME FRONTERA,ARECIBO,1966,974,"Frontera Colley, Jaime",name+season_in_career,no_career_club,single-source
+historic_awards.csv,JAMES CARTER,GUAYAMA,1991,989,"Carter Gaudino, James",name+season_in_career,confirms,single-source
+historic_awards.csv,JAMES CARTER,GUAYAMA,1994,989,"Carter Gaudino, James",name+season_in_career,confirms,single-source
+historic_awards.csv,"JOSE ""PICULIN"" ORTIZ",SANTURCE,2002,1271,"Ortiz Rijos, Jose Rafael",name+season_in_career,confirms,single-source
+historic_awards.csv,JOSE LUIS RIVERA,QUEBRADILLA,2004,1249,"Rivera Morales, Jose Luis",name+season_in_career,no_obs_club,single-source
+historic_awards.csv,JOSEAN BAEZ,PONCE,1975,1206,"Baez Camacho, Jose Andres",name+season_in_career,confirms,single-source
+historic_awards.csv,JUAN TRINIDAD,BAYAMON,1981,1324,"Trinidad Martinez, Juan",name+season_in_career,confirms,single-source
+historic_awards.csv,JUAN TRINIDAD,SAN GERMAN,1983,1324,"Trinidad Martinez, Juan",name+season_in_career,confirms,single-source
+historic_awards.csv,JUAN ‘PACHIN’ VICENS,PONCE,1958,1327,"Vicens Sastre, Juan",name+season_in_career,no_career_club,single-source
+historic_awards.csv,JULIO TORO,SAN JUAN,1961,1377,"Toro, Julio",name+season_in_career,contradicts,single-source
+historic_awards.csv,LEROY JACKSON,BAYAMON,2000,1442,"Jackson, Leroy",name+season_in_career,confirms,single-source
+historic_awards.csv,LUIS ALLENDE,CAGUAS,1996,1462,"Allende Ruiz, Luis",name+season_in_career,confirms,single-source
+historic_awards.csv,LUIS RIVAS,CAGUAS,2001,1512,"Rivas Kuzmitsky, Luis A.",name+season_in_career,confirms,single-source
+historic_awards.csv,MANOLO CINTRON,SAN GERMAN,1981,1561,"Cintron Vega, Manuel",name+season_in_career,confirms,single-source
+historic_awards.csv,MARIO BUTLER,MOROVIS,1984,1575,"Butler Graham, Mario Alberto",name+season_in_career,confirms,single-source
+historic_awards.csv,MARIO BUTLER,MOROVIS,1985,1575,"Butler Graham, Mario Alberto",name+season_in_career,confirms,single-source
+historic_awards.csv,MARIO BUTLER,MOROVIS,1987,1575,"Butler Graham, Mario Alberto",name+season_in_career,confirms,single-source
+historic_awards.csv,MARIO BUTLER,MOROVIS,1988,1575,"Butler Graham, Mario Alberto",name+season_in_career,confirms,single-source
+historic_awards.csv,MARIO BUTLER,MOROVIS,1991,1575,"Butler Graham, Mario Alberto",name+season_in_career,confirms,single-source
+historic_awards.csv,MARIO BUTLER,MOROVIS,1993,1575,"Butler Graham, Mario Alberto",name+season_in_career,confirms,single-source
+historic_awards.csv,MARIO BUTLER,MOROVIS,1994,1575,"Butler Graham, Mario Alberto",name+season_in_career,confirms,single-source
+historic_awards.csv,MARIO ‘QUIJOTE’ MORALES,GUAYNABO,1980,1584,"Morales Micheo, Mario",name+season_in_career,no_career_club,single-source
+historic_awards.csv,MARIO ‘QUIJOTE’ MORALES,GUAYNABO,1982,1584,"Morales Micheo, Mario",name+season_in_career,no_career_club,single-source
+historic_awards.csv,MARIO ‘QUIJOTE’ MORALES,GUAYNABO,1993,1584,"Morales Micheo, Mario",name+season_in_career,no_career_club,single-source
+historic_awards.csv,MIGUEL DAVILA,BAYAMON,1993,1660,"Davila Cordero, Miguel",name+season_in_career,confirms,single-source
+historic_awards.csv,MONTY WILSON,AIBONITO,2001,1685,"Wilson Wilder, Monty",name+season_in_career,confirms,single-source
+historic_awards.csv,NEFTALI RIVERA,QUEBRADILLAS,1969,1698,"Rivera Olivera, Neftali",name+season_in_career,confirms,single-source
+historic_awards.csv,NEFTALI RIVERA,QUEBRADILLAS,1973,1698,"Rivera Olivera, Neftali",name+season_in_career,confirms,single-source
+historic_awards.csv,NICK DAVIS,MOROVIS,2001,1693,"Davis Jackson, Nathanael",name+season_in_career,confirms,single-source
+historic_awards.csv,NICK DAVIS,MOROVIS,2002,1693,"Davis Jackson, Nathanael",name+season_in_career,confirms,single-source
+historic_awards.csv,OSCAR FUENTES,FAJARDO,1977,1764,"Fuentes Figueroa, Oscar",name+season_in_career,confirms,single-source
+historic_awards.csv,PIRO CABRERA,SANTURCE,1963,1841,"Cabrera, Piro",name+season_in_career,confirms,single-source
+historic_awards.csv,RAMON RIVAS,CAROLINA,1984,1927,"Rivas Contreras, Ramón",name+season_in_career,confirms,single-source
+historic_awards.csv,RAMON RIVAS,CAROLINA,1989,1927,"Rivas Contreras, Ramón",name+season_in_career,confirms,single-source
+historic_awards.csv,RAYMOND DALMAU,QUEBRADILLAS,1968,1962,"Dalmau Perez, Raymond",name+season_in_career,confirms,single-source
+historic_awards.csv,RAYMOND DALMAU,QUEBRADILLAS,1969,1962,"Dalmau Perez, Raymond",name+season_in_career,confirms,single-source
+historic_awards.csv,RAYMOND DALMAU,QUEBRADILLAS,1972,1962,"Dalmau Perez, Raymond",name+season_in_career,confirms,single-source
+historic_awards.csv,RICARDO DALMAU,AIBONITO,1995,1992,"Dalmau Santana, Ricardo",name+season_in_career,confirms,single-source
+historic_awards.csv,RICHARD LUGO,BAYAMON,2003,2016,"Lugo, Richard",name+season_in_career,confirms,single-source
+historic_awards.csv,RICHARD LUGO,BAYAMON,2004,2016,"Lugo, Richard",name+season_in_career,confirms,single-source
+historic_awards.csv,RICHIE PIETRI,SAN GERMAN,1965,2024,"Pietri Villanueva, Richard",name+season_in_career,confirms,single-source
+historic_awards.csv,ROBERTO RIOS,PONCE,1995,2076,"Rios Osorio, Roberto",name+season_in_career,confirms,single-source
+historic_awards.csv,ROLANDO FRAZER,AIBONITO,1981,2089,"Frazer Thorne, Rolando",name+season_in_career,no_career_club,single-source
+historic_awards.csv,RUBEN MONTAÑEZ,BAYAMON,1968,2109,"Montañez Rodriguez, Ruben",name+season_in_career,confirms,single-source
+historic_awards.csv,RUBEN RODRIGUEZ,BAYAMON,1979,2113,"Rodriguez Leon, Ruben",name+season_in_career,confirms,single-source
+historic_awards.csv,TEO CRUZ,SANTURCE,1962,2200,"Cruz Downs, Teofilo",name+season_in_career,no_career_club,single-source
+historic_awards.csv,TEO CRUZ,SANTURCE,1964,2200,"Cruz Downs, Teofilo",name+season_in_career,no_career_club,single-source
+historic_awards.csv,TEO CRUZ,SANTURCE,1967,2200,"Cruz Downs, Teofilo",name+season_in_career,no_career_club,single-source
+historic_awards.csv,TEO CRUZ,SANTURCE,1969,2200,"Cruz Downs, Teofilo",name+season_in_career,no_career_club,single-source
+historic_awards.csv,TEO CRUZ,SANTURCE,1970,2200,"Cruz Downs, Teofilo",name+season_in_career,no_career_club,single-source
+historic_awards.csv,TEO CRUZ,SANTURCE,1971,2200,"Cruz Downs, Teofilo",name+season_in_career,no_career_club,single-source
+historic_awards.csv,TEO CRUZ,SANTURCE,1972,2200,"Cruz Downs, Teofilo",name+season_in_career,no_career_club,single-source
+historic_awards.csv,TITO ORTIZ,BAYAMON,1965,1574,"Ortiz Marrero, Mariano",name+season_in_career,confirms,single-source
 historic_scoring_champions.csv,ADOLFO PORRATA,SAN JUAN,1967,10,"Porrata Doria, Adolfo",name+season_in_career,no_career_club,single-source
 historic_scoring_champions.csv,ANTHONY FARMER,PONCE,1999,172,"Farmer, Anthony",name+season_in_career,no_career_club,single-source
 historic_scoring_champions.csv,CARL SIMPSON,CAROLINA,2001,270,"Simpson, Carl",name+season_in_career,no_career_club,single-source
