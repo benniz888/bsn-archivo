@@ -224,11 +224,12 @@ def build_seasons_index() -> Path:
     return WEB / "index" / "seasons.json"
 
 
-def build_players_index() -> Path:
+def build_players_index(career_rows_by_pid: dict[str, list[dict]]) -> Path:
     out = []
     for r in _read("players_canonical.csv"):
+        pid = r["bsnpr_id"]
         out.append({
-            "id": _int(r["bsnpr_id"]),
+            "id": _int(pid),
             "name": r["canonical_name"],
             "norm": r["normalized_name"],
             "first_season": _int(r["first_season"]),
@@ -238,6 +239,13 @@ def build_players_index() -> Path:
             "nationality": r["nationality"] or None,
             "n_seasons": _int(r["n_seasons"]),
             "has_profile": r["has_profile"] == "yes",
+            # derived from the SAME career[] rows web/data/players/<id>.json
+            # gets (season_detail_spec.md addendum, backlog item 4) — unlike
+            # `n_seasons` above (a free-typed players_canonical.csv field,
+            # confirmed to mismatch the real row count on 251 players, 6 of
+            # them >0 with zero actual rows), this is the one field a season
+            # picker can trust to mean "there is really something to pick".
+            "career_seasons": len(career_rows_by_pid.get(pid, [])),
         })
     out.sort(key=lambda p: p["id"])
     _jdump(out, WEB / "index" / "players.json")
@@ -571,35 +579,21 @@ def _season_stats() -> dict[str, dict[int, dict]]:
     return out
 
 
-def build_players_detail() -> tuple[int, int]:
-    """web/data/players/<bsnpr_id>.json for every id in players_canonical. Players
-    with a profile / career rows / id_map observation get a full record; the rest
-    get a thin one (name, birth, position, aliases — `has_profile: false`, empty
-    `career`) so the app's profile view always has a real card to render and can
-    show an honest "sin ficha detallada" note instead of a dead end."""
-    canon = {r["bsnpr_id"]: r for r in _read("players_canonical.csv")}
-    aliases: dict[str, list] = {}
-    for a in _read("player_aliases.csv"):
-        if a["alias_type"] not in ("canonical", "normalized"):
-            aliases.setdefault(a["bsnpr_id"], []).append(
-                {"alias": a["alias"], "type": a["alias_type"]})
+def build_career_rows_by_pid() -> dict[str, list[dict]]:
+    """bsnpr_id -> the same career[] rows web/data/players/<id>.json gets
+    (player_career_seasons.csv rows + synthesized Tier-2-only entries,
+    season_detail_spec.md §1). Factored out so `build_players_index()`'s
+    `career_seasons` count and `build_players_detail()`'s actual `career[]`
+    can never drift apart — one computation, two consumers."""
     career: dict[str, list] = {}
     for r in _read("player_career_seasons.csv"):
         career.setdefault(r["bsnpr_id"], []).append(r)
-    obs: dict[str, list] = {}
-    for r in _read("player_id_map.csv"):
-        obs.setdefault(r["bsnpr_id"], []).append(r)
-    bios = {r["bsnpr_id"]: r for r in _read("player_bios.csv")}
     resolve_team = _team_resolver()
     season_stats = _season_stats()
 
-    # one file per canonical id. A career/obs row for an id absent from
-    # players_canonical (id 13352: a jugador.asp career with no enciclopedia
-    # entry) is skipped — it would be an unnamed, unsearchable file.
-    _reset_dir(WEB / "players")
-    n = n_thin = 0
-    for pid in sorted(canon, key=int):
-        c = canon.get(pid, {})
+    out: dict[str, list[dict]] = {}
+    pids = set(career) | set(season_stats)
+    for pid in pids:
         career_rows = [
             {"season": _int(r["season"]), "team_raw": r["team_raw"],
              "franchise_id": resolve_team(r["team_raw"].split(",")[-1]),
@@ -622,6 +616,35 @@ def build_players_detail() -> tuple[int, int]:
                     "stats": s["fields"],
                 })
         career_rows.sort(key=lambda x: (x["season"] or 0, x["team_raw"]))
+        out[pid] = career_rows
+    return out
+
+
+def build_players_detail(career_rows_by_pid: dict[str, list[dict]]) -> tuple[int, int]:
+    """web/data/players/<bsnpr_id>.json for every id in players_canonical. Players
+    with a profile / career rows / id_map observation get a full record; the rest
+    get a thin one (name, birth, position, aliases — `has_profile: false`, empty
+    `career`) so the app's profile view always has a real card to render and can
+    show an honest "sin ficha detallada" note instead of a dead end."""
+    canon = {r["bsnpr_id"]: r for r in _read("players_canonical.csv")}
+    aliases: dict[str, list] = {}
+    for a in _read("player_aliases.csv"):
+        if a["alias_type"] not in ("canonical", "normalized"):
+            aliases.setdefault(a["bsnpr_id"], []).append(
+                {"alias": a["alias"], "type": a["alias_type"]})
+    obs: dict[str, list] = {}
+    for r in _read("player_id_map.csv"):
+        obs.setdefault(r["bsnpr_id"], []).append(r)
+    bios = {r["bsnpr_id"]: r for r in _read("player_bios.csv")}
+
+    # one file per canonical id. A career/obs row for an id absent from
+    # players_canonical (id 13352: a jugador.asp career with no enciclopedia
+    # entry) is skipped — it would be an unnamed, unsearchable file.
+    _reset_dir(WEB / "players")
+    n = n_thin = 0
+    for pid in sorted(canon, key=int):
+        c = canon.get(pid, {})
+        career_rows = career_rows_by_pid.get(pid, [])
         rec = {
             "id": int(pid),
             "name": c.get("canonical_name") or "",
@@ -1021,11 +1044,12 @@ def main() -> int:
         print("! data/clean missing", file=sys.stderr)
         return 1
     app_to_fid, fid_to_app = load_crosswalk()
+    career_rows_by_pid = build_career_rows_by_pid()
 
     built = {
         "franchises": build_franchises(app_to_fid, fid_to_app),
         "seasons": build_seasons_index(),
-        "players": build_players_index(),
+        "players": build_players_index(career_rows_by_pid),
         "scoring_titles": build_scoring_titles(),
         "career_leaders": build_career_leaders(),
         "records": build_records(),
@@ -1039,7 +1063,7 @@ def main() -> int:
         print(f"  -> {path.relative_to(REPO_ROOT)} ({counts[name]})")
 
     # 5C — per-entity files
-    n_pdetail, n_pthin = build_players_detail()
+    n_pdetail, n_pthin = build_players_detail(career_rows_by_pid)
     season_counts = build_seasons_detail()
     n_games, n_gseasons = build_games()
     n_sf = build_starting_fives(fid_to_app)

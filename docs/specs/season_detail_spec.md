@@ -204,3 +204,230 @@ Temporada por temporada (existing table, now with a checkbox per row)
   is more honest and more useful than an artificial restriction.
 - **A modal for the per-season view.** Rejected — decision 2 wants a real,
   shareable URL; every other detail view in this app already has one.
+
+---
+
+# Addendum: backlog item 4 — cross-player season comparison
+
+**Status: BUILT, verified locally (real jsdom execution of the actual
+built page against real data — see [VERIFICATION] at the end), pending
+push + live poll.** Owner asked for two things:
+(1) comparing two *different* players' specific chosen seasons, not just one
+player across their own seasons; (2) confirming whether modern-era
+(2024–2026) data exists at the granularity needed, before promising it.
+Findings below are checked directly against the repo, not assumed.
+
+## [FOUND] — modern-era wall (owner ask 2)
+
+Checked every place player-season data could live, not just
+`web/data/seasons/<year>.json`:
+
+| Source | 2019 | 2020 | 2021 | 2022 | 2023 | 2024 | 2025 | 2026 |
+|---|---|---|---|---|---|---|---|---|
+| `player_career_seasons.csv` (any row) | 2 stray | 2 stray | 2 stray | 0 | 0 | 0 | 0 | 0 |
+| `player_season_stats_2001_2004.csv` / `player_season_leaders.csv` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| `standings.csv` (team-level, no players) | no capture | no capture | no capture | captured, unparseable | no capture | — | — | — |
+| `web/data/seasons/<year>.json` | — | — | — | — | — | champion/runner-up only | champion/runner-up only | champion/runner-up only |
+
+**No player-level data exists for 2022–2026, and team standings stop at
+2018.** 2019–2021's handful of rows (2–6/year) are incidental captures on
+individual `jugador.asp` profile pages, not a systematic season pull — not
+"thin," genuinely absent for 2022+. **Decision: the season picker (below)
+never offers 2022–2026 for anyone** — the years simply aren't in any
+player's `career[]`, so this falls out for free, no special-case code. A
+static note near the picker explains why (owner's call, explicit-note
+option), not a silent gap someone could mistake for a bug. Closing this
+data gap is backlog item 7 (latinbasket roster ingest), explicitly deferred
+to its own phase — not pulled into this feature.
+
+Real season-vs-season comparisons are meaningful **1956–2017ish**: rich
+(full stat line) only for the 154 Tier-2 players, **2001–2004**; thin
+(PTS/GP, PPG calculado, `—` elsewhere) for the wider Tier-1 population,
+**1956–2021**, density falling off hard after 2017. This is the same
+graceful-degradation contract §2/§3 already implement — nothing new here,
+just now driven by two independently-chosen (player, season) pairs instead
+of one player's own rows.
+
+## [FOUND] — the index's `n_seasons`/`has_profile` fields are not reliable
+eligibility signals
+
+Before designing the picker, checked whether the existing
+`web/data/index/players.json` fields could drive "does this player have a
+real season to pick" without a new build-time field:
+
+- **`n_seasons` is a pass-through of `players_canonical.csv`'s free-typed
+  field, not derived from actual `career[]` rows.** Cross-checked all 3,357
+  canonical players' declared `n_seasons` against their real row count in
+  `player_career_seasons.csv`: **251 mismatches**, of which **6 declare a
+  positive `n_seasons` with zero actual career rows** — concretely, 4 of
+  T9.5's own additions this session (`991009` Evans, `991012` Wells,
+  `991013` Smith, `991014` Hines all show `n_seasons:1` with `career:[]`
+  empty — the `991xxx` band deliberately never gets a
+  `player_career_seasons.csv` row, D-048's own established pattern) plus 2
+  more elsewhere in the archive. A picker built on `n_seasons>0` would let
+  someone "select" these 6 and land on an empty panel.
+- **`has_profile` doesn't work either**: 26 players show `has_profile:yes`
+  with zero career rows, and 24 show `has_profile:no` with real career rows
+  present — a `jugador.asp` capture existing (or not) doesn't track with
+  whether it actually carried a parseable season table.
+- **Conclusion: needs one new, correctly-derived field.** `build_web_data.py`
+  already computes each player's `career[]` when writing
+  `web/data/players/<id>.json` — the fix is to also emit its real length
+  (e.g. `career_seasons`) into `web/data/index/players.json` at the same
+  time, from the same data, no new fetch/parse/identity work. `n_seasons`
+  itself is left untouched (it's shown as biographical info elsewhere and
+  sourced deliberately differently in some rows — this isn't "fixing" it,
+  it's adding the one field this feature can actually trust).
+
+## [DECISION] — owner-approved 2026-09-13
+
+1. **Player search: full archive index (3,357), not the curated ~228-name
+   `PINDEX`.** Reaches the real Tier-2 players (most of the 154 2001–2004
+   names aren't in `PINDEX`) — the feature is only worth building if it can
+   reach them. Filtered to the new `career_seasons>0` field.
+2. **No third Comparar mode.** Extends the existing Comparar mode: each
+   added player gets an optional **"Carrera / Temporada"** dropdown next to
+   their card. Left on "Carrera" (default), a player's row is byte-identical
+   to today's output — zero behavior change for existing usage. Switching
+   either side to a specific season swaps that side's comparison object from
+   the `PINDEX` career-average shape to a `seasonCmpObj()`-built season
+   shape (already exists, `season_detail_spec.md` §1/§3 — built for the
+   single-player case, generic enough to reuse as-is here).
+3. **2022–2026 never appear in any season dropdown**, with a one-line static
+   note near the picker (see [FOUND] above) — not silently omitted.
+
+## [DATA]
+
+### 1. `build_web_data.py` — one new index field
+
+`web/data/index/players.json` entries gain `career_seasons: int` = the
+length of that player's already-computed `career[]` array (0 for anyone
+without one). No new source read, no new identity work — same data
+`build_players_detail()` already produces, just also surfaced at index
+level so the picker doesn't need to fetch every candidate's full JSON to
+know if they're eligible.
+
+### 2. Player picker — reuse the archive-wide search, not `PINDEX`
+
+The app already has full-archive player search/resolution (the
+`openArchivePlayer` path, PHASE_8 5D.3c). Comparar's `cmpAdd()` today only
+searches `PINDEX` via a `<datalist>`; this feature's picker instead
+searches the full `players.json` index, filtered to `career_seasons>0`.
+Selecting a player fetches `web/data/players/<id>.json` (same fetch
+`showPlayer`/`loadPlayerExtra` already does for the single-player case) to
+populate that side's season dropdown from their real `career[]` entries —
+never from `first_season`/`last_season`/`n_seasons`.
+
+### 3. Comparison render — no new component
+
+Once both sides have a chosen (player, season) or (player, "Carrera"):
+- Career side → existing `PINDEX` lookup → existing `CMP_RATE/SHOT/TOTAL` +
+  `cmpBarRow()`, unchanged.
+- Season side → existing `seasonCmpObj(career[i])` → same `cmpBarRow()`,
+  same category groups §2 already defined (`SEASON_CMP_RATE/SHOT/TOTAL`
+  used when *either* side is season-mode, since those are the categories a
+  season actually has — career totals like "Puntos de carrera" don't apply
+  once one side is a single season).
+- Mixed mode (one side career, one side a season) is allowed — same
+  "render whichever categories either side has, `—` for the other" rule
+  §2 already states, just applied across two different players instead of
+  two seasons of one player.
+
+Zero new CSS: `.cmphead`/`.cmprow`/`.cmptrack`/`.cmpfill` already handle an
+arbitrary label string (`cmpHead`/`renderSeasonCmp` both already build
+custom label text), so `"Bonzi Wells · 2010"` renders exactly like
+`"Raymond Dalmau · 2001"` already does today for the single-player case.
+
+## [LAYOUT]
+
+```
+Comparar (existing view)
+  [ Buscar/añadir jugador ] [Añadir] [Limpiar]   (existing, now searches
+                                                   the full archive index)
+  ┌─ Bonzi Wells ──────────────┐  ┌─ Ángel Rodríguez ───────────┐
+  │ Carrera ▾ | 2010            │  │ Carrera ▾ | 2001  2002  …   │
+  │ (dropdown: only seasons      │  │ (only seasons that exist)    │
+  │  present in career[])        │  │                               │
+  └───────────────────────────┘  └───────────────────────────────┘
+  ⓘ 2022–2026 aún no tienen datos por jugador en el archivo — la
+    comparación llega hasta donde el archivo llega.
+
+  [ existing cmphead / cmpradar (career-mode only) / cmpBarRow panel,
+    unchanged rendering, fed by whichever shape each side resolved to ]
+```
+
+## [OUT OF SCOPE — this pass]
+
+- **Closing the 2022–2026 gap.** Backlog item 7 (latinbasket roster
+  ingest), its own future phase, not folded in here — same boundary T9.1
+  already drew for the team-standings half of this same source.
+- **Radar chart in mixed/season mode.** `cmpRadar()` is scaled against
+  `PINDEX`'s career-level per-game maxes app-wide; a single season's rate
+  stats aren't on the same scale (a great single season can exceed any
+  career average). Radar stays career-mode-only for now — showing it
+  against a mismatched scale would be misleading, not just incomplete.
+  Flagged, not solved here.
+- **Fixing the other 245 `n_seasons` mismatches** found in [FOUND] above
+  that aren't the 0-career-rows class (e.g. a bio claims 18 seasons, the
+  archive captured 6 of them) — real, but a separate data-quality question,
+  not this feature's job; `career_seasons` is added as a new, narrowly-
+  scoped field specifically so this feature never has to touch or trust
+  the existing `n_seasons` semantics.
+
+## [ALTERNATIVES_REJECTED]
+
+- **Fetch-and-check every archive-wide search result's full JSON to
+  determine eligibility at picker time.** Rejected — up to 3,357 fetches
+  for a live-search box. The new `career_seasons` index field makes
+  eligibility a local filter instead.
+- **Reusing `n_seasons`/`has_profile` as the eligibility signal.** Rejected
+  — both demonstrably wrong on real rows (see [FOUND]), would silently
+  promise data that doesn't exist for at least 6 known players today.
+
+## [VERIFICATION]
+
+No live browser tool was available in this session (`claude-in-chrome`
+wasn't connected) and this repo has no Playwright/jsdom test infra of its
+own (`app/bsn_archivo.html` is deliberately dependency-free, PC7). Rather
+than skip real execution, ran the *actual built page* — `web/index.html`
+post-`make site`, real `web/data/*` — inside `jsdom` (installed to a
+scratch `/tmp` dir, not added to this repo) with a second `<script>`
+injected into the same document so it shares the app's top-level `let`/
+`const` scope (those never attach to `window` — only functions/`var` do;
+this is why the test script runs *inside* the page rather than poking at
+it from outside). `PINDEX` built from the page's own baked-in arrays (no
+network); `FID2APP`/`PALL`/`PXWALK` loaded from the real on-disk
+`web/data/index/*.json` the same way `hydrate()` does over the wire.
+
+Confirmed directly against the running code, not asserted:
+1. `cmpCandidateNames()`: 1,484 names, up from `PINDEX`'s 381 — the picker
+   really is wider now.
+2. `cmpPreset('Raymond Dalmau','Rubén Rodríguez')` (today's existing
+   career-vs-career preset): renders `cmpcard`, keeps the radar, keeps the
+   "De carrera" label, and now shows a season `<select>` per side
+   (defaulted to "Carrera") — the addition is additive, the existing path
+   still renders.
+3. Switching Dalmau to his last fetched season (20 real career rows):
+   radar drops, "De la temporada" label appears, the season label reads
+   "Temporada 1985" (his actual last season) — confirms `cmpSetMode` +
+   `cmpResolved` + `seasonCmpObj` wiring end-to-end against real data, not
+   a mock.
+4. Added `Rivera, A.g.` (`career_seasons:1`, not a `PINDEX` name) alone:
+   correctly shows "Añade otro jugador" (not a crash), a season `<select>`
+   with no "Carrera" option. Added Dalmau as the second side: a full mixed
+   comparison renders with "De la temporada" — the season-only-archive-
+   player path works, including the header stub for a still-resolving
+   pending side.
+5. The picker note explicitly names 2022 as where data stops.
+
+No error traceable to any new function (`cmpResolved`, `cmpEnsureData`,
+`cmpCandidateNames`, `cmpSeasonSelect`, `cmpSetMode`, `drawCompare`'s new
+branches) appeared in the run. The console noise that did appear (`BSN:
+falló el constructor «…»`, `matchMedia is not defined`) is the app's own
+unrelated `BOOT()` sequence auto-firing against a DOM this harness
+deliberately stripped down to 4 elements — a test-harness artifact of
+running outside a real browser, not a regression; every one of those
+failures is inside the app's own pre-existing per-widget try/catch and
+would not occur against the real page in a real browser.
+`make verify` (339,252 checks) / `make test` (191) green (Python side —
+the `career_seasons` field addition to `build_web_data.py`).

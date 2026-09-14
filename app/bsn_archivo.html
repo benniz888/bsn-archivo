@@ -7057,22 +7057,84 @@ function cmpColor(p,i){
   const c=Array.from(p.clubs).find(k=>F[k]);
   return c?F[c].c1:CMP_FALLBACK[i%3];
 }
+/* backlog item 4 (season_detail_spec.md addendum) — cross-player season
+   comparison. CMP_MODE tracks each added name's chosen side: 'career'
+   (today's PINDEX-driven behavior, default whenever available) or a
+   career[] array index. CMP_DATA caches that name's fetched career[]
+   ('loading' mid-fetch, 'none' when no bsnpr_id resolves at all) so
+   switching modes after the first pick never re-fetches. */
+let CMP_MODE={}, CMP_DATA={};
+
+/* The picker searches the full 3,357-player archive index, not just the
+   ~230 curated PINDEX names Comparar has always offered — otherwise most
+   of the 154 players with real Tier-2 season stats (2001-2004) would be
+   unreachable. Filtered to `career_seasons` (a build-time count of real
+   career[] rows) rather than `n_seasons` (a free-typed players_canonical.csv
+   field confirmed to mismatch the real row count on 251 players, 6 of them
+   >0 with zero actual rows — spec addendum [FOUND]) or `has_profile`
+   (also demonstrably unreliable, same section). */
+function cmpCandidateNames(){
+  const seen=new Set(), out=[];
+  (PINDEX||[]).forEach(p=>{ const k=norm(p.name); if(!seen.has(k)){seen.add(k); out.push(p.name);} });
+  (PALL||[]).forEach(p=>{ if((p.career_seasons||0)>0){ const k=p.norm||norm(p.name); if(!seen.has(k)){seen.add(k); out.push(p.name);} } });
+  return out;
+}
+/* Called once index/players.json lands (hydrate), in case Comparar was
+   already open — same pattern as refreshPlayerIndexArchive. */
+function refreshCompareCandidates(){
+  const dl=$('#cmpList');
+  if(dl) dl.innerHTML=cmpCandidateNames().map(n=>'<option value="'+esc(n)+'">').join('');
+}
+function cmpResolveName(v){
+  const p=cmpFind(v);
+  if(p) return p.name;
+  if(!PALL) return null;
+  const hit=PALL.find(x=>norm(x.name)===norm(v)) || PALL.find(x=>norm(x.name).startsWith(norm(v)));
+  return (hit && (hit.career_seasons||0)>0) ? hit.name : null;
+}
+/* id resolution mirrors loadPlayerExtra's own priority: the archive index
+   itself (works for archive-only, season-only adds) first, PXWALK (the
+   curated-name crosswalk) second — a curated display name like "Raymond
+   Dalmau" won't literal-match the archive's "Dalmau Santana, Raymond", so
+   PXWALK is the only path that resolves those. */
+async function cmpEnsureData(name){
+  if(CMP_DATA[name] && CMP_DATA[name]!=='loading') return CMP_DATA[name];
+  const fromPall=(PALL||[]).find(x=>norm(x.name)===norm(name));
+  const id=fromPall?fromPall.id:(PXWALK && PXWALK[norm(name)]);
+  if(id==null){ CMP_DATA[name]='none'; return CMP_DATA[name]; }
+  CMP_DATA[name]='loading';
+  const d=await DATA.get('players/'+id+'.json');
+  CMP_DATA[name]={id, career:((d&&d.career)||[]).slice().sort((a,b)=>(a.season||0)-(b.season||0))};
+  return CMP_DATA[name];
+}
 function cmpAdd(name){
   const inp=$('#cmpQ');
   const v=(name||(inp?inp.value:'')||'').trim();
   if(!v) return;
-  const p=cmpFind(v);
+  const rn=cmpResolveName(v);
   const msg=$('#cmpMsg');
-  if(!p){ if(msg) msg.textContent='No aparece en el índice: '+v; return; }
-  if(CMP.includes(p.name)){ if(msg) msg.textContent='Ya está en la comparación.'; return; }
+  if(!rn){ if(msg) msg.textContent='No aparece en el índice: '+v; return; }
+  if(CMP.includes(rn)){ if(msg) msg.textContent='Ya está en la comparación.'; return; }
   if(CMP.length>=3){ if(msg) msg.textContent='Tres es el máximo. Quita a uno primero.'; return; }
-  CMP.push(p.name);
+  CMP.push(rn);
+  /* A player not in PINDEX has no career-level averages to fall back on —
+     only ever addable in season mode. Default picked once the fetch lands. */
+  CMP_MODE[rn]=cmpFind(rn)?'career':null;
   if(inp) inp.value='';
   if(msg) msg.textContent='';
+  cmpEnsureData(rn).then(d=>{
+    if(CMP_MODE[rn]==null && d && d!=='none' && d.career && d.career.length)
+      CMP_MODE[rn]=d.career.length-1;   /* most recent season, a real default */
+    drawCompare();
+  });
   drawCompare();
 }
-function cmpRemove(n){ CMP=CMP.filter(x=>x!==n); drawCompare(); }
-function cmpClear(){ CMP=[]; const m=$('#cmpMsg'); if(m) m.textContent=''; drawCompare(); }
+function cmpRemove(n){ CMP=CMP.filter(x=>x!==n); delete CMP_MODE[n]; delete CMP_DATA[n]; drawCompare(); }
+function cmpClear(){ CMP=[]; CMP_MODE={}; CMP_DATA={}; const m=$('#cmpMsg'); if(m) m.textContent=''; drawCompare(); }
+function cmpSetMode(name,val){
+  CMP_MODE[name]=(val==='career')?'career':Number(val);
+  drawCompare();
+}
 /* PHASE_6 — Comparar is a promoted mode inside Jugadores (Buscar | Comparar),
    not a buried accordion. */
 let JUGVIEW='buscar';
@@ -7096,6 +7158,7 @@ function cmpPreset(a,b){
   showView('jugadores','comparar',{noScroll:true,noHash:true});
   try{ buildCompare(); }catch(e){}
   CMP=[a,b].filter(n=>cmpFind(n));
+  CMP.forEach(n=>{ CMP_MODE[n]='career'; cmpEnsureData(n).then(drawCompare); });
   if(CMP.length===2) setHash('jugadores/comparar/'+slug(a)+'/'+slug(b));
   drawCompare();
 }
@@ -7136,7 +7199,7 @@ const CMP_TOTAL=[
 function buildCompare(){
   const host=$('#cmpPick');
   if(!host) return;
-  const names=(PINDEX||[]).map(p=>'<option value="'+esc(p.name)+'">').join('');
+  const names=cmpCandidateNames().map(n=>'<option value="'+esc(n)+'">').join('');
   host.innerHTML=`<div class="filters">
     <div class="field" style="min-width:230px"><label for="cmpQ">Añadir jugador</label>
       <input list="cmpList" id="cmpQ" type="search" placeholder="Escribe un nombre…" autocomplete="off"></div>
@@ -7146,18 +7209,46 @@ function buildCompare(){
   <datalist id="cmpList">${names}</datalist>
   <div class="chips" style="margin-top:2px">${CMP_PRESETS.map(p=>
     `<button class="chip" onclick="cmpPreset(${JSON.stringify(p[0]).replace(/"/g,'&quot;')},${JSON.stringify(p[1]).replace(/"/g,'&quot;')})">${esc(p[2])}</button>`).join('')}</div>
-  <div class="msg" id="cmpMsg" role="status" aria-live="polite"></div>`;
+  <div class="msg" id="cmpMsg" role="status" aria-live="polite"></div>
+  <div class="note" style="margin-top:8px">Cada jugador se puede fijar a su carrera o a una temporada
+    específica. El archivo no tiene datos por jugador de 2022 en adelante — esas temporadas
+    no aparecen para nadie todavía.</div>`;
   const inp=$('#cmpQ');
   if(inp) inp.onkeydown=e=>{ if(e.key==='Enter'){ e.preventDefault(); cmpAdd(); } };
   drawCompare();
 }
 
+/* Picked once a player's career[] has landed (cmpEnsureData) — "Carrera"
+   only offered when they're a PINDEX name (its own career averages exist);
+   an archive-only, season-only add just gets the season list. Labelled with
+   the resolved club name, same FID2APP->F lookup loadPlayerExtra's own
+   season table already uses, team_raw as the honest fallback. */
+function cmpSeasonSelect(name){
+  const d=CMP_DATA[name];
+  if(!d || d==='loading') return '<span class="dim" style="font-size:11px">cargando temporadas…</span>';
+  if(d==='none' || !d.career || !d.career.length) return '';
+  const canCareer=!!cmpFind(name);
+  const mode=CMP_MODE[name];
+  const curVal=(mode==null||mode==='career')?'career':String(mode);
+  let opts='';
+  if(canCareer) opts+=`<option value="career"${curVal==='career'?' selected':''}>Carrera</option>`;
+  d.career.forEach((c,i)=>{
+    const ak=FID2APP&&FID2APP[c.franchise_id];
+    const club=(ak&&F[ak])?F[ak].name:(c.team_raw||'');
+    const label=(c.season||'—')+(club?' · '+club:'');
+    opts+=`<option value="${i}"${curVal===String(i)?' selected':''}>${esc(label)}</option>`;
+  });
+  return `<select style="font-size:12px;padding:3px 8px;width:auto;min-width:0" aria-label="Temporada de ${esc(name)}"
+    onchange="cmpSetMode(${JSON.stringify(name).replace(/"/g,'&quot;')},this.value)">${opts}</select>`;
+}
 function cmpHead(p,i){
   const col=cmpColor(p,i);
+  const meta=p._mode==='season' ? '' : esc([p.pos,p.years].filter(Boolean).join(' · ')||'años sin registrar');
   return `<div class="cmphead">
     <span class="cmpdot" style="background:${col}"></span>
     <span class="cmpname">${esc(p.name)}</span>
-    <span class="dim" style="font-size:11px">${esc([p.pos,p.years].filter(Boolean).join(' · ')||'años sin registrar')}</span>
+    ${cmpSeasonSelect(p.name)}
+    ${meta?`<span class="dim" style="font-size:11px">${meta}</span>`:''}
     <button class="btn cmpx" onclick="cmpRemove(${JSON.stringify(p.name).replace(/"/g,'&quot;')})" aria-label="Quitar a ${esc(p.name)}">Quitar</button>
   </div>`;
 }
@@ -7225,22 +7316,67 @@ function cmpBarRow(row, ps, isTotal){
   </div>`;
 }
 
+/* Resolves one CMP name into the flat cmpBarRow-shaped object its current
+   CMP_MODE calls for: the PINDEX career object (unchanged), or
+   seasonCmpObj() over the chosen career[] row (season_detail_spec.md §1 —
+   already generic, built for the single-player case, reused as-is here).
+   null while the fetch is still in flight or nothing ever resolves. */
+function cmpResolved(name){
+  const mode=CMP_MODE[name];
+  if(mode==null || mode==='career'){
+    const p=cmpFind(name);
+    if(p){ const o=Object.assign({},p); o._mode='career'; return o; }
+  }
+  const d=CMP_DATA[name];
+  if(d && d!=='loading' && d!=='none' && d.career && d.career.length){
+    const idx=(mode==null||mode==='career')?d.career.length-1:mode;
+    const row=d.career[idx];
+    if(row){
+      const o=seasonCmpObj(row);
+      o._season=o.name; o.name=name; o._mode='season';
+      return o;
+    }
+  }
+  return null;
+}
 function drawCompare(){
   const out=$('#cmpOut'); if(!out) return;
-  const ps=CMP.map(cmpFind).filter(Boolean);
-  if(!ps.length){
+  if(!CMP.length){
     out.innerHTML=`<div class="card cmpempty">
       <div style="font-weight:700;font-size:15px">Nadie en la comparación todavía</div>
       <p class="muted" style="font-size:13.5px;margin:6px 0 0">Escribe un nombre arriba o toca uno de los duelos.
       Con dos jugadores aparece el veredicto, las barras a escala y el radar de perfil.</p></div>`;
     return;
   }
+  const resolved=CMP.map(n=>({name:n,p:cmpResolved(n)}));
+  const ps=resolved.map(r=>r.p).filter(Boolean);
+  const pending=resolved.filter(r=>!r.p).map(r=>r.name);
+  /* Season involved on either side -> the category set a season actually
+     has (SEASON_CMP_* — §2/§3 above), no radar (a single season's rate
+     stats aren't on cmpRadar's PINDEX-wide career-average scale — spec
+     addendum [OUT OF SCOPE]), no curated-tags footer (a season row was
+     never curated with any tag). Pure career-vs-career (today's exact
+     behavior) keeps the original CMP_RATE/SHOT/TOTAL + radar + tags path. */
+  const anySeason=ps.some(p=>p._mode==='season');
+  const heads=`<div class="cmpheads">${CMP.map((n,i)=>
+    cmpHead(resolved[i].p||{name:n,clubs:new Set(),pos:null,years:null,_mode:'pending'},i)).join('')}</div>`;
+
+  if(ps.length<2){
+    out.innerHTML=`<div class="card cmpcard">${heads}
+      <p class="muted" style="font-size:13.5px;margin-top:10px">${
+        pending.length ? 'Cargando datos de temporada para '+esc(pending.join(', '))+'…'
+                        : 'Añade otro jugador para comparar.'}</p></div>`;
+    return;
+  }
+
+  const RATE=anySeason?SEASON_CMP_RATE:CMP_RATE, SHOT=anySeason?SEASON_CMP_SHOT:CMP_SHOT,
+        TOTAL=anySeason?SEASON_CMP_TOTAL:CMP_TOTAL;
+  const rows=RATE.concat(SHOT,TOTAL);
 
   /* The verdict is counted only over categories both players have on
      record. Winning a row your rival never had measured is not a win. */
   let verdict='';
   if(ps.length===2){
-    const rows=CMP_RATE.concat(CMP_SHOT,CMP_TOTAL);
     let a=0,b=0,shared=0;
     rows.forEach(r=>{
       const x=ps[0][r.s], y=ps[1][r.s];
@@ -7260,37 +7396,40 @@ function drawCompare(){
   }
 
   let h=`<div class="card cmpcard">
-    <div class="cmpheads">${ps.map(cmpHead).join('')}</div>
+    ${heads}
     ${verdict}
     <div class="cmpsplit">
-      <div class="cmpradar">${cmpRadar(ps)}
+      ${anySeason?'':`<div class="cmpradar">${cmpRadar(ps)}
         <div class="dim" style="font-size:11px;text-align:center;margin-top:2px">Cada eje va contra el mejor del índice</div>
-      </div>
+      </div>`}
       <div class="cmprows">
         <div class="cmpgrouplab">Por juego</div>
-        ${CMP_RATE.map(r=>cmpBarRow(r,ps,false)).join('')}
-        <div class="cmpgrouplab">Tiro y carga</div>
-        ${CMP_SHOT.map(r=>cmpBarRow(r,ps,false)).join('')}
-        <div class="cmpgrouplab">De carrera</div>
-        ${CMP_TOTAL.map(r=>cmpBarRow(r,ps,true)).join('')}
+        ${RATE.map(r=>cmpBarRow(r,ps,false)).join('')}
+        <div class="cmpgrouplab">${anySeason?'Tiro':'Tiro y carga'}</div>
+        ${SHOT.map(r=>cmpBarRow(r,ps,false)).join('')}
+        <div class="cmpgrouplab">${anySeason?'De la temporada':'De carrera'}</div>
+        ${TOTAL.map(r=>cmpBarRow(r,ps,true)).join('')}
       </div>
     </div>
     <div class="cmpfoot">
       ${ps.map((p,i)=>`<div class="cmpfootcol">
         <div class="dim" style="font-size:11px;letter-spacing:.07em;font-weight:700">${esc(p.name.split(' ')[0].toUpperCase())}</div>
-        <div style="font-size:12px;margin-top:3px">${Array.from(p.clubs).map(c=>F[c]?F[c].abbr:c).join(' ')||'—'}</div>
-        <div class="chips" style="margin-top:5px">${Array.from(p.tags).slice(0,6).map(t=>
+        <div style="font-size:12px;margin-top:3px">${anySeason
+          ? (p._mode==='season'?'Temporada '+esc(String(p._season||'—')):'Carrera')+' · '+(Array.from(p.clubs).map(c=>F[c]?F[c].abbr:c).join(' ')||'—')
+          : (Array.from(p.clubs).map(c=>F[c]?F[c].abbr:c).join(' ')||'—')}</div>
+        ${anySeason?'':`<div class="chips" style="margin-top:5px">${Array.from(p.tags).slice(0,6).map(t=>
           `<span class="tag ${/MVP|Leyenda|10\.000/.test(t)?'gold':''}" style="font-size:10.5px">${esc(t)}</span>`).join('')||'<span class="dim" style="font-size:12px">—</span>'}</div>
-        ${p.hi?`<div class="muted" style="font-size:11.5px;margin-top:5px">Mejor: ${p.hi[1].toFixed(1)} pts en ${p.hi[0]}</div>`:''}
+        ${p.hi?`<div class="muted" style="font-size:11.5px;margin-top:5px">Mejor: ${p.hi[1].toFixed(1)} pts en ${p.hi[0]}</div>`:''}`}
       </div>`).join('')}
     </div>`;
 
   const holes=[];
   ps.forEach(p=>{
-    const n=CMP_RATE.concat(CMP_SHOT,CMP_TOTAL).filter(r=>typeof p[r.s]!=='number').length;
+    const n=rows.filter(r=>typeof p[r.s]!=='number').length;
     if(n) holes.push(p.name.split(' ')[0]+': '+n);
   });
-  if(holes.length) h+=`<div class="warn">Casillas sin registrar — ${esc(holes.join(' · '))}. Un guion es un hueco del archivo, no un cero, y por eso no dibuja barra. Antes de 2012 no existe una base pública de estadísticas por temporada del BSN.</div>`;
+  if(holes.length) h+=`<div class="warn">Casillas sin registrar — ${esc(holes.join(' · '))}. Un guion es un hueco del archivo, no un cero, y por eso no dibuja barra.${anySeason?'':' Antes de 2012 no existe una base pública de estadísticas por temporada del BSN.'}</div>`;
+  if(pending.length) h+=`<div class="note">Cargando temporadas de ${esc(pending.join(', '))}…</div>`;
   h+='</div>';
   out.innerHTML=h;
 }
@@ -7830,7 +7969,8 @@ async function hydrate(){
 
   /* 5D.3c — the whole 3.303-row archive index, for "Todo el archivo" search. */
   const pa=await DATA.get('index/players.json');
-  if(pa){ PALL=pa; if(typeof refreshPlayerIndexArchive==='function') refreshPlayerIndexArchive(); }
+  if(pa){ PALL=pa; if(typeof refreshPlayerIndexArchive==='function') refreshPlayerIndexArchive();
+    if(typeof refreshCompareCandidates==='function') refreshCompareCandidates(); }
 
   /* 5D.2b — fill MVP_YEARS gaps (1959-2003) from historic_awards. Union: a
      baked year is never overwritten (it carries the accented name); a genuine
