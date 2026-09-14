@@ -63,10 +63,14 @@
   all 52 weak Pabellón-HOF token matches (real count, recomputed from the
   source's own AJAX data, not the prior session's unpersisted "~47"), landing
   6 confirmed links + 2 new identities (`991010`/`991011`) + several
-  real, disclosed gaps. **Backlog item: T9.5 (3 held-back thin Wikipedia
-  names — Leon Smith, Tyler Hines, Bonzi Wells) is the only thing left
-  queued in this thread** — pick it up next session. Full record in
-  [TASK_QUEUE] under PHASE_9.
+  real, disclosed gaps. **T9.5 (3 held-back thin Wikipedia names) DONE,
+  LIVE** — Bonzi Wells (Capitanes de Arecibo, 2010, multi-source), Leon
+  Smith (Criollos de Caguas, 2003, single-source), Tyler Hines (Caciques
+  de Humacao, 2014, single-source), all real team/year surfaced on
+  re-check, none had a collision with an existing canonical player.
+  New ids 991012-991014. **PHASE_9_HISTORICAL_DEEP_DIVE_2014_2023 is
+  now fully closed (T9.1-T9.5 all DONE, LIVE)** — no queued item remains
+  in this thread. Full record in [TASK_QUEUE] under PHASE_9.
 **DATE:** 2026-09-13
 **MODEL:** Claude Sonnet 5 (claude-sonnet-5) via Claude Code
 
@@ -2694,6 +2698,70 @@ Betancourt link resolving correctly, `Last-Modified` matching the push.
 **T9.4 DONE, LIVE.** T9.5 (3 held-back thin Wikipedia names) remains
 queued.
 
+**T9.5 DONE, LIVE (2026-09-13, same session as T9.4/handoff, new session
+pickup).** Leon Smith, Tyler Hines, Bonzi Wells (D-050) — confirmed real
+BSN imports, team/year unconfirmed as of the prior handoff. Re-checked
+each individually, same discipline as T9.4:
+- **Bonzi Wells** — Capitanes de Arecibo, 2010 season. Multi-source:
+  en.wikipedia.org/wiki/Bonzi_Wells, wikidata.org/wiki/Q892931,
+  solobasket.com, interbasket.net (search-snippet corroborated; direct
+  fetch 403'd). Full birth name Gawen DeAngelo "Bonzi" Wells, b.
+  9/28/1976 Muncie, IN. Cross-checked the "won the 2010 BSN title with
+  Arecibo" claim against the archive's own `champions_reconciled.csv`
+  (2010: Capitanes de Arecibo d. Vaqueros de Bayamón, `verified`
+  confidence) — agrees exactly, a real independent corroboration, not
+  just a plausible-looking claim. Note: Capitanes de Arecibo's own
+  Wikipedia article also describes a separate, short-lived 2010 Premier
+  Basketball League ("Capitanes de Puerto Rico") stint that also lists
+  Wells among its imports — read as the same underlying signing
+  described inconsistently across two articles, not evidence of a
+  different team; the BSN team/season is the one independently
+  corroborated by the archive's own champion data. Added at
+  `multi-source` confidence.
+- **Leon Smith** — Criollos de Caguas ("Caguas Creoles" in the English
+  infobox), 2003 season. Single-source: only en.wikipedia.org/wiki/
+  Leon_Smith_(basketball)'s career-history infobox states this;
+  actively checked for a second source and found none — his FIBA
+  player profile (fiba.basketball/en/players/167019-leon-smith) exists
+  but lists only a 2009 Deportes Castro stint, no Puerto Rico entry at
+  all, and the Criollos de Caguas Wikipedia article's own roster/history
+  doesn't mention him either. Added anyway at `single-source` confidence
+  — same tier already established for `pabellon-only` additions
+  (991003 Nevarez, D-048): a real, citable, single institutional/
+  reference source with no internal contradiction, not a guess.
+- **Tyler Hines** — Caciques de Humacao, 2014 season. Single-source:
+  only en.wikipedia.org/wiki/Tyler_Hines's infobox. RealGM ("2014-2015
+  Caciques de Humacao Roster"), Proballers, and Eurobasket profile pages
+  for him were found via search but every direct fetch attempt (WebFetch
+  and a browser-UA `curl`) returned 403 — their content could not be
+  independently read, so it is not claimed as corroboration. Added at
+  `single-source` confidence, same basis as Leon Smith.
+- **Identity-collision check (D1):** grepped `players_canonical.csv` for
+  every existing `Smith`/`Hines`/`Wells` row before adding — no name,
+  birth-year, or club overlap with any of the 3 new entries. Clean adds,
+  not exposure to the Georgie-Torres-style wrong-link failure mode.
+- **New ids `991012`–`991014`** (continuing the `991xxx` band from
+  D-048/D-050/T9.4), `source_id=wikipedia_bsn` (existing vocabulary, no
+  new source type). No `player_career_seasons.csv` row added for any of
+  the 3 — same pattern as every other `991xxx` mint (991001–991011):
+  team/season context lives in the free-text `source_url` field on the
+  canonical row, not a formal season-stats row.
+- `tests/test_build_web_data.py::test_players_index` /
+  `test_manifest_counts_match` hardcoded-count assertions updated
+  3354→3357 (same pattern as every prior `991xxx` batch). `make verify`:
+  339,252 checks, 0 failed. `make test`: 191 pass, 0 failed.
+- Pushed (`b5c0c01`), live-verified against the custom domain
+  (`bsnarchivo.com`, not `.github.io` — that 301-redirects): polled
+  until deploy landed (~2 min), then confirmed `data/players/991012.json`
+  /`991013.json`/`991014.json` all 200 with byte-identical content to
+  the local build, `data/index/players.json` length 3357, `Last-Modified`
+  matching the push timestamp.
+
+**PHASE_9_HISTORICAL_DEEP_DIVE_2014_2023 is now fully closed — T9.1
+through T9.5 all DONE, LIVE.** No further queued items in this thread;
+next up is whatever the owner picks from the backlog roadmap (items
+4–7 above), starting fresh with its own scope-then-approve pass.
+
 ---
 
 [BLOCKERS]
@@ -2899,6 +2967,19 @@ Decisions made session 002 (PHASE_4):
   (Criollos 1969 en.wiki vs 1976 seed).
 
 Decisions made session 003 (HISTORICAL_DEEP_DIVE scoping, 2026-09-13):
+- **D-051 — T9.5: the 3 held-back thin Wikipedia names (D-050) added on
+  re-check.** Bonzi Wells (Capitanes de Arecibo, 2010, multi-source —
+  cross-checked against the archive's own `champions_reconciled.csv`),
+  Leon Smith (Criollos de Caguas, 2003, single-source Wikipedia infobox,
+  actively searched for a second source and found none), Tyler Hines
+  (Caciques de Humacao, 2014, single-source Wikipedia infobox, 3 other
+  profile pages found but all 403'd on fetch so not claimed as
+  corroboration). `single-source` used deliberately here at the same
+  tier already established for `pabellon-only` (D-048) — a real,
+  citable, internally-consistent single source, not a guess. New ids
+  991012-991014, `source_id=wikipedia_bsn`. No D1 collision (checked).
+  PHASE_9 now fully closed. Full record in the HISTORICAL DEEP-DIVE
+  section above.
 - **D-050 — Wikipedia's "Category:BSN players" (120 names) added, same
   per-name discipline as D-048, no batch auto-matching.** 6 new identities
   verified multi-source and added (`991004`–`991009`); 3 more confirmed
@@ -3199,16 +3280,16 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
 [NEXT_ACTIONS]
 
 0. **CURRENT, resume here (2026-09-13 session end).** PHASE_9_HISTORICAL_
-   DEEP_DIVE_2014_2023 T9.1-T9.4 are all DONE, LIVE, pushed (see the
+   DEEP_DIVE_2014_2023 T9.1-T9.5 are all DONE, LIVE, pushed — **PHASE_9
+   is fully closed**, no queued item remains in this thread (see the
    boxed PHASE_9 record in [TASK_QUEUE] and the SESSION line at the top
-   of this file for the full summary). **T9.5 is the only remaining
-   queued item in this thread**: find a real season/roster source for
-   the 3 held-back Wikipedia BSN names (Leon Smith, Tyler Hines, Bonzi
-   Wells — confirmed real BSN imports, team/year unconfirmed as of
-   D-050); add only if a real source surfaces, same per-name discipline
-   as T9.4, no batch. Everything numbered below this point is older
-   history, mostly already resolved — kept for the record, not a live
-   task list.
+   of this file for the full summary, commit `b5c0c01` for T9.5). Next
+   up: the owner picks the next backlog roadmap item (4. finish season
+   comparison / 5. team region-identity / 6. per-game deep-dive / 7.
+   latinbasket roster ingest, deliberately deferred, own future phase)
+   — scope + show plan before building, same discipline as every prior
+   item. Everything numbered below this point is older history, mostly
+   already resolved — kept for the record, not a live task list.
 1. **Owner-directed queue (2026-09-08 session), in order, pause after each:**
    (a) PHASE_3E_CLEAN_STORAGE — **DONE** (`game_plays.csv.gz`, commit 72d2b52);
    (b) PHASE_3G_HISTORIC_FOLLOWUP — **DONE** (negative finding, commit 100e9c6);
