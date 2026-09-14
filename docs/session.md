@@ -2868,9 +2868,33 @@ Carrera (today's exact behavior, byte-identical when left there); (3)
 ask.** The modern-era half is closed as "confirmed impossible with
 current data, not built" — filling it is backlog item 7 (latinbasket
 roster ingest), still deliberately deferred to its own future phase.
-Pending owner live-verification (no browser tool this session to do it
-directly — the jsdom run above is real code execution against real
-data, not a substitute for the owner actually clicking through it).
+
+**Owner-reported bug, fixed same session (2026-09-14):** comparing
+Georgie Torres alongside Dalmau, Georgie's row had no "Carrera /
+Temporada" control at all — Dalmau's did. Confirmed real via direct data
+inspection, not assumed: `player_xwalk.json` resolves "Georgie Torres" ->
+`788` (the known thin `Torres Dougherty, George` enciclopedia-only link
+from the earlier Georgie Torres identity investigation), and
+`web/data/players/788.json` has `career: []` — zero rows. `cmpSeasonSelect`
+returned `''` whenever `career.length` was 0, silently dropping the
+control instead of showing an honest "nothing to pick" state — the exact
+class of gap PC4 exists to catch. Fix: every added player now always
+renders the same `<select>`, disabled with a single "Carrera" option when
+their linked id has zero season rows (or "Sin datos vinculados" if no id
+resolves at all) — every comparison slot carries the same control,
+consistently, whether or not there's anything behind it to switch.
+Re-verified the full original test suite (candidate widening, career-vs-
+career preset, season switching, mixed archive-only comparison, the
+2022+ note) with no regressions, plus a new targeted check confirming
+Georgie's row now renders `<select disabled><option>Carrera</option>`.
+`make verify`/`make test` green. Pushed `eac7097`, live-verified
+(`cmpSeasonSelectDisabled` present in the fetched HTML, `Last-Modified`
+matching the push).
+
+Pending owner live-verification in an actual browser (no browser tool
+this session to do it directly — the jsdom runs above are real code
+execution against real data, not a substitute for the owner actually
+clicking through it).
 
 ---
 
