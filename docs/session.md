@@ -3653,14 +3653,40 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
    failures, `dpre1980` picked 7/300 times — comparable to the old
    3-category total but now actually solvable). Held items (3) 10k
    category / (4) tightening the `ones` gate deliberately, owner wants
-   to see how these two feel first. Temporada Perfecta and ¿Quién soy?
-   remain unscoped.
-   **Next: owner verification of items 4, 5, and 6-part-1 in an actual
-   browser** (never available this session for any of them), then
-   either the rest of item 6 or item 7 (latinbasket roster ingest, the
-   big one, still deliberately deferred). Everything numbered below
-   this point is older history, mostly already resolved — kept for the
-   record, not a live task list.
+   to see how these two feel first.
+   **Part 2 (Temporada Perfecta) — DONE, LIVE (`318bd18`), same session.**
+   Simulated real drafts through the actual `spin()`/`place()`/
+   `skipSpin()` functions with two bot strategies (greedy = always the
+   top-`rate()` legal pick, i.e. exactly what the sorted candidate list
+   already hands a player; random-legal = no strategy) instead of
+   guessing at difficulty. Found the game was trivially beatable: greedy
+   play hit 34-0 in ~20% of 250 simulated drafts, >=30 wins 75% of the
+   time, under the old `CAL_K=110/CAL_S=18` — worse than the "median
+   30-4" the prior recalibration's own comment names as the problem it
+   was trying to fix. Root cause: the greedy bot's *worst* simulated
+   roster rating (107) already scored almost as high as the random
+   bot's *median* (116) — a ~50-point gap `S=18` was too narrow to
+   absorb without win probability saturating near-certain. Owner-
+   approved recalibration: `K=116` (a zero-skill bot's median roster is
+   exactly a .500 season, by construction), `S=40`. Matched before/
+   after on the *same* 250 simulated rosters, both K/S applied to
+   identical drafts: greedy median 32-2→25-9 (34-0 rate 19.6%→0%,
+   ≥29-wins 79%→22%), random median 18-16→16-18 (34-0 1.2%→0%, ≤5-wins
+   9%→0%). Verified against the actually-shipped page, not just the
+   math: confirmed `CAL_K`/`CAL_S` load as 116/40, then read 5 real
+   greedy + 5 real random games' rendered `#dResult` score straight
+   from the DOM (`finishDraft()`'s own output) — clustered exactly
+   where predicted. Positional scarcity (SF consistently resolves
+   last/scarcest under greedy play) logged as a held-back finding, same
+   treatment as Cuadrícula's `10k`/`ones`-gate items — not fixed this
+   pass. `make verify`/`make test` green.
+   **¿Quién soy? remains unscoped** — the last piece of item 6.
+   **Next: owner verification of items 4, 5, 6-part-1, and 6-part-2 in
+   an actual browser** (never available this session for any of them),
+   then ¿Quién soy?, the rest of item 6, or item 7 (latinbasket roster
+   ingest, the big one, still deliberately deferred). Everything
+   numbered below this point is older history, mostly already resolved
+   — kept for the record, not a live task list.
 1. **Owner-directed queue (2026-09-08 session), in order, pause after each:**
    (a) PHASE_3E_CLEAN_STORAGE — **DONE** (`game_plays.csv.gz`, commit 72d2b52);
    (b) PHASE_3G_HISTORIC_FOLLOWUP — **DONE** (negative finding, commit 100e9c6);
