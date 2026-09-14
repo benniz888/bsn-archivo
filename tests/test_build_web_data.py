@@ -100,15 +100,16 @@ class TestBuild:
         # 3303 league ids + 40 jug05-minted (D-047) + 9 pabellon_hof/wikipedia_bsn-minted
         # (D-048/D-049/D-050, 991001-991009) + 2 pabellon_hof-minted (T9.4, 991010-991011:
         # Jimmy Thordsen, Martin Ansa) + 3 wikipedia_bsn-minted (T9.5, 991012-991014:
-        # Bonzi Wells, Leon Smith, Tyler Hines)
-        assert len(pl) == 3357
+        # Bonzi Wells, Leon Smith, Tyler Hines) - 1 (991001 Dalmau Perez, Raymond merged
+        # into the existing 1962, a duplicate D-048 missed; 2026-09-14 identity fix)
+        assert len(pl) == 3356
         assert all(isinstance(p["id"], int) for p in pl)
         assert pl == sorted(pl, key=lambda p: p["id"])
-        assert sum(1 for p in pl if p["id"] > 990000) == 54
+        assert sum(1 for p in pl if p["id"] > 990000) == 53
 
     def test_manifest_counts_match(self):
         man = json.loads((b.WEB / "manifest.json").read_text())
-        assert man["counts"]["players"] == 3357
+        assert man["counts"]["players"] == 3356
         assert man["counts"]["seasons"] == 98
         assert len(man["source_digest"]) == 64      # sha256 hex
 
