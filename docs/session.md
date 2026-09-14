@@ -2962,6 +2962,60 @@ before or alongside the MVP-marking UI work, since that UI needs a
 fresh `web/data/players/*.json` rebuild anyway (to pick up the new
 `historic_awards.csv`-sourced observations this pass just added).
 
+**Owner's call: fix the stale-data gap FIRST, not later, not alongside
+— real visitors take priority over any new feature.** DONE, LIVE, same
+session (2026-09-14).
+
+- Full `make build-web-data` + `make site` run. True diff (not a guess
+  this time): **47 player files + `mvp.json` + `manifest.json`** —
+  smaller than "3 phases behind" implied, because most players' content
+  happened to be identical between the stale 2026-09-09 snapshot and
+  today's rebuild; these 47 are the ones PHASE_3I/3I-fix/3J (all
+  2026-09-10) + today's `historic_awards.csv` addition actually changed.
+  Nothing outside `web/` touched.
+- **Spot-verified the players this session specifically touched**, live
+  and byte-compared against the local build (not just "it deployed"):
+  Georgie Torres (`788`) — D-049's birth-date correction
+  (9/21/1957) + honest 0 career rows + today's new MVP observations, all
+  present, live == local exactly. Raymond Dalmau (`1962`) — 20-season
+  career + MVP observations, live == local exactly. All of
+  `991001`-`991014` (Pabellón HOF / Wikipedia BSN / T9.4 / T9.5) present
+  with correct names/birth dates/honest `career_rows:0`.
+- `make verify` (339,252) + `make test` (191) green. Pushed `2f682f7`,
+  polled until deployed (~2 min), confirmed live.
+
+**A real, separate finding surfaced while spot-checking Dalmau, NOT
+acted on — flagged for the owner:** `991001` ("Dalmau Perez, Raymond",
+Pabellón HOF-minted, D-048, multi-source: Pabellón + Wikipedia + El
+Nuevo Día, span 1966-1985) and `1962` ("Dalmau Perez, Raymond", the
+real archive-linked profile, same exact 1966-1985 span, 20 real career
+rows) look like **the same person under two separate canonical ids** —
+a live, visible duplicate in "Todo el archivo" search today. D-048's
+session record explains the mint as distinguishing this HOF entry from
+the *different* existing `Dalmau Santana, Raymond` — but appears to have
+missed that `Dalmau Perez, Raymond` (`1962`) already existed too, name
+and span both matching exactly. Not touched this pass — merging/
+resolving a canonical-id collision is its own decision (which id
+survives, what happens to `991001`'s Pabellón/Wikipedia/El Nuevo Día
+sourcing vs `1962`'s archive sourcing, crosswalk/observations impact)
+and out of scope for "fix the stale-data gap."
+
+**Git-hygiene fix, so this can't quietly happen again — owner-directed,
+DONE, pushed (`309337e`).** `.githooks/pre-commit`: on any commit
+touching `data/clean/`, `app/player_crosswalk.csv`,
+`app/bsn_archivo.html`, or `src/build_web_data.py`, rebuilds
+`web/data/` and **blocks the commit** if that produces any unstaged
+diff — i.e. refuses to let source-data changes ship without a matching
+`web/data/` rebuild landing in the same commit. **Tested against the
+exact failure mode** before trusting it: staged a `data/clean/` change
+with no rebuild — correctly blocked; reverted the test change cleanly,
+confirmed the repo was clean again, then a normal commit (that doesn't
+touch those paths) passed through untouched. `make setup` now also runs
+`git config core.hooksPath .githooks` so it activates automatically on
+a fresh clone; activated immediately in this working copy too. New
+`make sync-web-data` target — rebuild + stage the whole `web/data/`
+tree in one step, the fast path once the hook flags a gap.
+
 ---
 
 [BLOCKERS]
@@ -3489,25 +3543,28 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
 
 [NEXT_ACTIONS]
 
-0. **CURRENT, resume here (2026-09-13 session end).** PHASE_9 is fully
-   closed (T9.1-T9.5, commit `b5c0c01`). Owner then picked **backlog item
-   4 (finish season comparison)** — scoped (hard wall: zero player data
-   2022-2026, confirmed not assumed; a real `n_seasons`-unreliability bug
-   caught along the way), plan shown, approved, built, pushed (`f17695c`),
-   live-verified via curl + a real jsdom execution of the built page (no
-   `claude-in-chrome` connection this session, so no actual browser
-   click-through was possible). **Cross-player season comparison is DONE,
-   LIVE, pending owner verification in a real browser** — that's the one
-   thing still open from this pass: have the owner actually click through
-   Comparar (a "Carrera / Temporada" dropdown per added player; try the
-   `cmpPreset` chips, then switch one side to a season) before calling
-   backlog item 4 fully closed. Full record: `docs/specs/
-   season_detail_spec.md`'s addendum + the boxed entry in [TASK_QUEUE]
-   above. After that: items 5 (team region-identity) / 6 (per-game
-   deep-dive) / 7 (latinbasket roster ingest, deliberately deferred, own
-   future phase) remain, same scope-then-approve discipline each.
-   Everything numbered below this point is older history, mostly already
-   resolved — kept for the record, not a live task list.
+0. **CURRENT, resume here (2026-09-14 session).** PHASE_9 closed
+   (T9.1-T9.5, `b5c0c01`). Backlog item 4 (cross-player season
+   comparison) built + pushed (`f17695c`), owner caught a real bug live
+   (Georgie Torres missing the season control — fixed, `eac7097`).
+   Owner then asked for MVP-season marking; scoping found MVP awards
+   were never identity-linked at all, real matcher run + persisted
+   (`26117fd`, 36/47 resolved, 22/47 with a real season row) — which
+   surfaced a **separate, real finding: `web/data/players/*.json` had
+   gone 3 identity-pipeline phases stale on the deployed site** (last
+   committed 2026-09-09, PHASE_3I/3I-fix/3J from 2026-09-10 never
+   propagated). **Owner: fix that first, not later.** Done — full
+   rebuild swept + live-verified byte-for-byte (`2f682f7`), plus a
+   **pre-commit hook** that now blocks any future commit from shipping
+   this same gap again (`309337e`, tested against the real failure mode
+   before trusting it). **One more real finding surfaced and flagged,
+   not yet acted on: `991001` and `1962` both look like Raymond Dalmau
+   under two separate canonical ids** — a live duplicate in "Todo el
+   archivo" search today; full detail in the boxed entry below. Next:
+   MVP-marking UI (the original ask, now unblocked) — or the Dalmau
+   duplicate, owner's call which comes first. Everything numbered below
+   this point is older history, mostly already resolved — kept for the
+   record, not a live task list.
 1. **Owner-directed queue (2026-09-08 session), in order, pause after each:**
    (a) PHASE_3E_CLEAN_STORAGE — **DONE** (`game_plays.csv.gz`, commit 72d2b52);
    (b) PHASE_3G_HISTORIC_FOLLOWUP — **DONE** (negative finding, commit 100e9c6);
