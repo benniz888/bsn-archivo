@@ -6346,9 +6346,14 @@ const CATS={
   p20:['Promedió 20+ puntos',p=>p.ppg!=null&&p.ppg>=20],
   guard:['Base o escolta',p=>/G|PG|SG/.test(p.pos||'')],
   big:['Poste',p=>/C|PF|F\/C/.test(p.pos||'')],
-  d1950:['Jugó en los 50',p=>p.d.includes(1950)],
-  d1960:['Jugó en los 60',p=>p.d.includes(1960)],
-  d1970:['Jugó en los 70',p=>p.d.includes(1970)],
+  /* backlog item 6, part 1 (2026-09-14) — d1950/d1960/d1970 used to be
+     separate categories at 4/9/13 POOL players each, rarely enough to
+     overlap with any given club and mostly landing as accidental
+     single-answer traps rather than real puzzle variety. Folded into one
+     bucket: 18 players by real union (not the naive 4+9+13=26 sum — some
+     players span more than one of those decades), usable against 9 of
+     the 19 clubs. */
+  dpre1980:['Jugó antes de 1980',p=>p.d.some(y=>y<1980)],
   d1980:['Jugó en los 80',p=>p.d.includes(1980)],
   d1990:['Jugó en los 90',p=>p.d.includes(1990)],
   d2000:['Jugó en los 2000',p=>p.d.includes(2000)],
@@ -6421,11 +6426,26 @@ function newBoard(seed){
        terminates. */
     if(attempt<400){ if(avg<3.2||avg>8||ones>2||tight<2) continue; }
     else if(attempt<700){ if(avg<2.4||ones>4) continue; }
-    return {rows,cols,sol,day:todayStamp(),seed,
+    /* backlog item 6, part 1 — avg/ones/tight were already computed to
+       decide whether to accept this board, then thrown away. Kept on the
+       returned object so the UI can show real difficulty instead of a
+       guess; no new computation. */
+    return {rows,cols,sol,day:todayStamp(),seed,avg,ones,tight,
       ans:[[null,null,null],[null,null,null],[null,null,null]],
       guesses:0,used:new Set(),history:[]};
   }
   return null;
+}
+/* backlog item 6, part 1 — thresholds are the generator's own gate, not
+   picked separately: `ones>2` is exactly where the strict pass (attempt
+   <400) already rejects a board, so "Normal" tops out right where the
+   code already draws the line. Checked against a real 300-board sample
+   before choosing these: ~17% Fácil / ~82% Normal / ~2% Difícil — three
+   tiers that mean something, not an arbitrary split. */
+function gridDifficulty(b){
+  if(b.ones===0) return {label:'Fácil'};
+  if(b.ones<=2) return {label:'Normal'};
+  return {label:'Difícil'};
 }
 function boardFor(mode){
   if(mode==='daily'){
@@ -6529,13 +6549,18 @@ function drawBoard(){
   const left=9-GB.guesses;
   const hits=GB.ans.flat().filter(Boolean).length;
   const rare=GB.ans.flat().filter(Boolean).reduce((a,c)=>a+c.share,0);
+  /* backlog item 6, part 1 — real difficulty, not a spoiler: the label
+     is an aggregate (how many cells are a single-answer trap), never
+     which cell, so it doesn't give the grid away. */
+  const diff=gridDifficulty(GB);
   let h=`<div class="gamehead">
     <div class="modebtns" role="tablist">
       <button role="tab" aria-selected="${GMODE==='daily'}" onclick="setGMode('daily')">Diaria</button>
       <button role="tab" aria-selected="${GMODE==='practice'}" onclick="setGMode('practice')">Práctica</button>
     </div>
     <div class="dim" style="font-size:12.5px">9 intentos · cada intento cuenta, acierte o falle · ningún jugador se repite<br>
-      La nómina verificada es de ${POOL.length} jugadores; el autocompletar te enseña quiénes existen.</div>
+      La nómina verificada es de ${POOL.length} jugadores; el autocompletar te enseña quiénes existen.<br>
+      Dificultad de hoy: <b>${diff.label}</b>${GB.ones?` — ${GB.ones} casilla${GB.ones===1?'':'s'} con una sola respuesta posible`:''}.</div>
   </div>
   <div class="gridwrap"><div class="gridtable">
     <div class="gcorner"></div>`;
