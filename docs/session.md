@@ -2896,6 +2896,72 @@ this session to do it directly — the jsdom runs above are real code
 execution against real data, not a substitute for the owner actually
 clicking through it).
 
+**Add-on ask (2026-09-14): mark MVP-winning seasons in the Comparar
+season dropdown** — e.g. "1975 — MVP", easy to select on purpose.
+Owner's discipline, explicit: check what's already linked before
+building anything, same honest-gap treatment as everywhere else.
+
+**[FOUND]: MVP years were NOT already linked.** `web/data/index/
+mvp.json`'s `bsnpr_id` field (13/47) is a weak, coincidental join —
+`build_mvp()` only resolves a name+season pair when it ALSO happens to
+appear in one of the other 4 observation sources; `historic_awards.csv`
+(MVP/Rookie/DPOY, 1958-2004) was never itself run through identity
+resolution at all. Concretely wrong for Raymond Dalmau: 3 real MVP
+years (1968/69/72), only 1 coincidentally linked.
+
+**Ran the real matcher (`parse_players.build_id_map`) read-only first**
+(no writes) to get an honest number before touching anything: of 47 MVP
+rows, 36 resolve to a specific canonical player on the plain existing
+`name+season_in_career` tier alone (no new matching code needed); of
+those, **22 have a real career[] row for that exact season** — the
+number that actually matters for a season-dropdown marker. 11 land in
+the review queue (season not corroborated — same honest treatment every
+other source already gets). 4 are unresolvable: apparent typos in the
+source itself (`GOERGIE TORRES`, a missing space in `MARIO
+'QUIJOTE'MORALES`, etc.) — flagged, not silently fixed. Both of the
+owner's own examples check out: Raymond Dalmau's 1968/69/72 and
+Christian Dalmau's 2004 all resolve with real rows.
+
+**Owner's call: persist the data only, hold the UI as a separate step.**
+Committed (`26117fd`): `historic_awards.csv` added to `OBSERVATION_FILES`
+in `src/parse_players.py` (same pattern as PHASE_3I's scoring-champions
+addition); `player_id_map.csv` + `data/interim/player_review_queue.csv`
+regenerated **surgically** — `build_id_map()` called directly against
+the currently-committed `players_canonical.csv`/`player_aliases.csv`/
+`player_career_seasons.csv`, NOT the full `parse_players.py main()`
+pipeline, which rebuilds `players_canonical.csv` from raw sources and
+would have wiped the manually-appended `991xxx` band (Pabellón HOF /
+Wikipedia BSN, D-048/D-050/D-051/D-052 — not raw-derivable at all).
+**Verified, per the owner's explicit ask:** `players_canonical.csv`
+shows zero diff; all 14 of this session's `991001`-`991014` rows
+confirmed intact; the 22/47 number independently recomputed from the
+actually-persisted `player_id_map.csv` (not just the dry run) —
+matches exactly. `make verify`/`make test` green. Pushed.
+
+**Found and deliberately NOT fixed here — flagged for the owner:**
+`web/data/players/*.json` (and `mvp.json`/`manifest.json`) are stale
+relative to `player_id_map.csv` — last committed 2026-09-09 (`8891d78`),
+**three identity-pipeline phases behind** (PHASE_3I's two commits +
+PHASE_3J all postdate that). Root cause: `make build-web-data` has been
+re-run locally many times since, but each commit only `git add`ed the
+specific files relevant to whatever was being worked on, not the full
+regenerated `web/data/players/` directory — so the *local* build has
+been current all along, but **the deployed site has been serving stale
+per-player `observations` arrays since at least 2026-09-09**, missing
+PHASE_3F/3H/3I/3J's identity-resolution improvements for an unknown
+number of players (at minimum the ~50 that happened to differ when
+`build_web_data.py` was run this session — the true count of affected
+files is unverified, since files whose content happens to be
+byte-identical between the stale and current state wouldn't show up in
+a diff). **Not touched in this pass** — reverted the incidental
+regenerated copies before committing, to keep the id_map commit scoped
+exactly to what was asked. A full `make build-web-data && make site`
++ a real `git status` sweep (not a narrow `git add` of just the
+touched-this-session files) is needed to close this gap — worth doing
+before or alongside the MVP-marking UI work, since that UI needs a
+fresh `web/data/players/*.json` rebuild anyway (to pick up the new
+`historic_awards.csv`-sourced observations this pass just added).
+
 ---
 
 [BLOCKERS]
