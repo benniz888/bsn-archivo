@@ -3611,30 +3611,31 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
 [NEXT_ACTIONS]
 
 0. **CURRENT, resume here (2026-09-14 session).** PHASE_9 closed
-   (T9.1-T9.5, `b5c0c01`). Backlog item 4 (cross-player season
-   comparison) built + pushed (`f17695c`), owner caught a real bug live
-   (Georgie Torres missing the season control — fixed, `eac7097`).
-   Owner then asked for MVP-season marking; scoping found MVP awards
-   were never identity-linked at all, real matcher run + persisted
-   (`26117fd`, 36/47 resolved, 22/47 with a real season row) — which
-   surfaced a **separate, real finding: `web/data/players/*.json` had
-   gone 3 identity-pipeline phases stale on the deployed site** (last
-   committed 2026-09-09, PHASE_3I/3I-fix/3J from 2026-09-10 never
-   propagated). **Owner: fix that first, not later.** Done — full
-   rebuild swept + live-verified byte-for-byte (`2f682f7`), plus a
-   **pre-commit hook** that now blocks any future commit from shipping
-   this same gap again (`309337e`, tested against the real failure mode
-   before trusting it). The Raymond Dalmau duplicate (`991001`/`1962`)
-   was fixed too, live (`7aeadef`) — confirmed same person (exact
-   birth-date match, not just name+span), merged into `1962`, `991001`
-   deleted everywhere. **MVP-season marking then shipped, live
-   (`6823c64`)** — "— MVP" on a season dropdown option, real
-   `MVP_ID`-based link, no name guessing. **Backlog item 4 is now fully
-   closed.** Full detail in the boxed entries below. Next: owner
-   verification in an actual browser (never available this session),
-   then whichever backlog item (5-7) the owner picks next. Everything
-   numbered below this point is older history, mostly already resolved
-   — kept for the record, not a live task list.
+   (T9.1-T9.5, `b5c0c01`). **Backlog item 4 (cross-player season
+   comparison) — fully closed, owner-verified live.** Built (`f17695c`),
+   a real bug caught live and fixed (Georgie Torres missing the season
+   control, `eac7097`), MVP-season marking added which surfaced two
+   separate real findings along the way — `web/data/players/*.json` had
+   gone 3 identity-pipeline phases stale on the deployed site (fixed +
+   swept, `2f682f7`; a pre-commit hook now blocks this from recurring,
+   `309337e`) and a genuine Raymond Dalmau duplicate identity
+   (`991001`/`1962`, merged, `7aeadef`) — then MVP marking itself shipped
+   (`6823c64`). Full detail in the boxed entries below.
+   **Backlog item 5 (team region/barrio identity) — DONE, LIVE
+   (`0cb3c01`), same session.** New `TOWN_LORE` map, one sourced line per
+   active club about the *town* (not the club) — checked all 12 against
+   es.wikipedia.org directly; 11 of 12 real and mostly team-independent,
+   Quebradillas ships as an honest gap (owner-approved), Aguada's
+   contested Columbus claim included and marked disputed (owner-
+   approved, same treatment as the 1945-champion case). Full record:
+   `docs/specs/bsn_team_page_plan.md`'s addendum. Verified via jsdom
+   against the real built page; owner reviewed the exact draft copy
+   before any code was written.
+   **Next: owner verification of items 4 and 5 in an actual browser**
+   (never available this session for either), then whichever backlog
+   item (6 or 7) the owner picks next. Everything numbered below this
+   point is older history, mostly already resolved — kept for the
+   record, not a live task list.
 1. **Owner-directed queue (2026-09-08 session), in order, pause after each:**
    (a) PHASE_3E_CLEAN_STORAGE — **DONE** (`game_plays.csv.gz`, commit 72d2b52);
    (b) PHASE_3G_HISTORIC_FOLLOWUP — **DONE** (negative finding, commit 100e9c6);
