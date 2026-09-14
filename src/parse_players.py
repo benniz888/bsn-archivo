@@ -415,6 +415,23 @@ def merge_jug05(canon: list[dict], career: list[dict],
             for row in csv.DictReader(fh):
                 xwalk[(norm_key(row["jug05_name"]), row["jug05_birth_date"])] = row["bsnpr_id"]
 
+    def _family_name_candidates(jfam, jgiv):
+        """Same surname-prefix + given-name-first-token test as _match()'s
+        second tier, but with no birth-date requirement at all -- the pure
+        name-shape signal, before any date corroboration is asked of it.
+        Used only to decide mint-vs-review when jug05 has no birth date to
+        confirm or reject a candidate with (see the call site below); never
+        used to auto-match on its own (D1)."""
+        out = []
+        for c in byfam.get(jfam[0], []):
+            cfam, cgiv = normalize(c["apellidos"]).split(), normalize(c["nombre"]).split()
+            if cfam[:len(jfam)] != jfam and jfam[:len(cfam)] != cfam:
+                continue
+            if not cgiv or cgiv[0] != jgiv[0]:
+                continue
+            out.append(c)
+        return out
+
     def _match(j) -> dict | None:
         jyr = j["birth_date"][-4:] if j["birth_date"] else ""
         for c in exact.get(norm_key(j["name"]), []):
@@ -423,12 +440,7 @@ def merge_jug05(canon: list[dict], career: list[dict],
         jfam, jgiv, jd = normalize(j["apellidos"]).split(), normalize(j["nombre"]).split(), _pdate(j["birth_date"])
         if not (jfam and jgiv):
             return None
-        for c in byfam.get(jfam[0], []):
-            cfam, cgiv = normalize(c["apellidos"]).split(), normalize(c["nombre"]).split()
-            if cfam[:len(jfam)] != jfam and jfam[:len(cfam)] != cfam:
-                continue
-            if not cgiv or cgiv[0] != jgiv[0]:
-                continue
+        for c in _family_name_candidates(jfam, jgiv):
             cd = _pdate(c["birth_date"])
             if jd and cd and abs((jd - cd).days) <= 7:
                 return c
@@ -470,14 +482,31 @@ def merge_jug05(canon: list[dict], career: list[dict],
             added += _union_career(c["bsnpr_id"], j)
             continue
         jfam = normalize(j["apellidos"]).split()
+        jgiv = normalize(j["nombre"]).split()
         jyr = j["birth_date"][-4:] if j["birth_date"] else ""
         collide = [x for x in byfam.get(jfam[0], []) if jyr and x["birth_year"] == jyr] if jfam else []
+        collide_reason = "birth_year"
+        if not collide and not jyr and jfam and jgiv:
+            # backlog item 7 addendum (2026-09-14) — the gap a systematic
+            # canonical-file duplicate scan found: jug05.asp often has no
+            # parseable birth date at all, and the birth-year collision check
+            # above silently no-ops when jyr is empty — every one of the 22
+            # duplicates found (990001-990040 band) minted a fresh id this way
+            # despite a same-surname+same-given-name candidate already sitting
+            # in the canonical set, because there was no date to confirm OR
+            # reject it against. This doesn't try to resolve that candidate
+            # (still D1: never match on name alone) — it only makes sure a
+            # human sees it in the review queue instead of a silent mint.
+            collide = _family_name_candidates(jfam, jgiv)
+            collide_reason = "no_birth_date_name_shape_only"
         (review if collide else to_mint).append(j)
         if collide:
             review[-1] = {"name": j["name"], "birth_date": j["birth_date"],
                           "position": j["position"],
                           "seasons": ";".join(str(s) for s, *_ in j["career"]),
-                          "collides_with": " | ".join(f'{x["bsnpr_id"]} {x["canonical_name"]}' for x in collide)}
+                          "collides_with": " | ".join(f'{x["bsnpr_id"]} {x["canonical_name"]}' for x in collide)
+                              + (" [no birth date — name-shape match only, unconfirmed]"
+                                 if collide_reason == "no_birth_date_name_shape_only" else "")}
 
     to_mint.sort(key=lambda j: (norm_key(j["name"]), j["birth_date"]))
     minted = 0
