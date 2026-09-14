@@ -1,0 +1,52 @@
+#!/bin/sh
+# Blocks a commit from landing identity/source data changes without a fresh,
+# fully-staged web/data/ rebuild alongside it.
+#
+# Why this exists (2026-09-14): web/data/players/*.json (the deployed site's
+# per-player pages) went 3 identity-pipeline phases stale — PHASE_3I (x2) and
+# PHASE_3J all updated data/clean/player_id_map.csv on 2026-09-10, but nobody
+# re-ran `make build-web-data` and committed the WHOLE web/data/ tree
+# afterward; each commit only `git add`ed the specific files relevant to
+# whatever it was about. `make build-web-data` was re-run locally many times
+# since (so the working tree was always current), but the deployed site kept
+# serving the 2026-09-09 snapshot for every file nobody happened to re-add.
+# See docs/session.md's 2026-09-14 entries for the full incident + fix.
+#
+# Enabled via `git config core.hooksPath .githooks` (done once by `make
+# setup`, or run it yourself). Bypass with `git commit --no-verify` if you
+# genuinely need to (e.g. a doc-only commit this hook misclassifies) — but
+# that's the same discipline as skipping any other check, not a default.
+
+set -e
+
+staged=$(git diff --cached --name-only)
+
+touches_source() {
+    echo "$staged" | grep -qE '^(data/clean/|app/player_crosswalk\.csv|app/bsn_archivo\.html|src/build_web_data\.py)'
+}
+
+if ! touches_source; then
+    exit 0
+fi
+
+echo "pre-commit: source data changed — rebuilding web/data/ to check it's fresh…"
+if ! .venv/bin/python -m src.build_web_data > /tmp/bsn_precommit_build.log 2>&1; then
+    echo "pre-commit BLOCKED: build_web_data.py failed:"
+    cat /tmp/bsn_precommit_build.log
+    exit 1
+fi
+cp app/bsn_archivo.html web/index.html
+
+if ! git diff --quiet -- web/data/ web/index.html; then
+    echo
+    echo "pre-commit BLOCKED: rebuilding web/data/ from the data you're about to"
+    echo "commit produced changes that aren't staged. The deployed site would go"
+    echo "stale the same way it did on 2026-09-09 if this commit landed as-is."
+    echo
+    echo "Fix: stage the fresh rebuild too, then commit again —"
+    echo "    git add web/data/ web/index.html"
+    echo
+    exit 1
+fi
+
+exit 0

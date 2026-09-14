@@ -2,6 +2,20 @@ SETUP=python3 -m venv .venv
 
 setup:
 	python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+	git config core.hooksPath .githooks
+	@echo "pre-commit hook enabled (.githooks/pre-commit) — blocks a commit that"
+	@echo "changes data/clean/ or the app's data-facing files without a fresh,"
+	@echo "fully-staged web/data/ rebuild alongside it."
+
+# Rebuild web/data/ + web/index.html and stage the whole tree in one step —
+# the safe way to close out an identity-pipeline change (see .githooks/
+# pre-commit's own header for why "just re-add the files I touched" isn't).
+sync-web-data:
+	.venv/bin/python -m src.build_web_data
+	cp app/bsn_archivo.html web/index.html
+	touch web/.nojekyll
+	git add web/data/ web/index.html
+	@echo "web/data/ + web/index.html rebuilt and staged — review with 'git status' before committing."
 
 enumerate:
 	.venv/bin/python -m src.wayback_cdx
@@ -76,4 +90,4 @@ site:
 test:
 	.venv/bin/pytest -q
 
-.PHONY: setup enumerate samples fetch parse verify enumerate-root fetch-pre2007 parse-pre2007 fetch-players fetch-jug05 fetch-jugador05 parse-players reconcile enumerate-games fetch-games parse-games enumerate-historic fetch-historic build-web-data site test
+.PHONY: setup enumerate samples fetch parse verify enumerate-root fetch-pre2007 parse-pre2007 fetch-players fetch-jug05 fetch-jugador05 parse-players reconcile enumerate-games fetch-games parse-games enumerate-historic fetch-historic build-web-data sync-web-data site test
