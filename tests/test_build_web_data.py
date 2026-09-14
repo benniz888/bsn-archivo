@@ -108,14 +108,20 @@ class TestBuild:
         # exact birth-date match, merged into the regular id in every case)
         # - 1 (990001 Berdiel, Miguel Alí -> the pre-existing 1666, confirmed via an
         # identical career trajectory rather than birth date, same duplicate scan)
-        assert len(pl) == 3346
+        # - 13 (individually reviewed weaker candidates, 2026-09-14: each confirmed via
+        # a real (season, city) career-row overlap -- or, for 991004, an exact
+        # canonical_name match plus a matching career span -- never on name-token
+        # pattern alone. 5 more candidates from the same review (990005/990022/990032/
+        # 990033/990035) did NOT clear the bar and stay unmerged, incl. "Lopez, Jose"
+        # whose evidence split ambiguously across two different candidates)
+        assert len(pl) == 3333
         assert all(isinstance(p["id"], int) for p in pl)
         assert pl == sorted(pl, key=lambda p: p["id"])
-        assert sum(1 for p in pl if p["id"] > 990000) == 43
+        assert sum(1 for p in pl if p["id"] > 990000) == 30
 
     def test_manifest_counts_match(self):
         man = json.loads((b.WEB / "manifest.json").read_text())
-        assert man["counts"]["players"] == 3346
+        assert man["counts"]["players"] == 3333
         assert man["counts"]["seasons"] == 98
         assert len(man["source_digest"]) == 64      # sha256 hex
 
