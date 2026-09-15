@@ -4616,13 +4616,36 @@ evidence; 10 real leads fed into the Tier-1 duplicate-triage queue and
 future new-player-review pass; zero forced merges anywhere in the chain.
 ═══════════════════════════════════════════════════════════════════════
 
+**TRACKED BUG, not fixed — `merge_jug05()`'s career dedup, found 2026-09-15
+during live Phase D spot-checking, same treatment as the `_team_resolver()`
+Manatí issue.** `_union_career`'s dedup key is `(pid, season,
+normalize(team_raw))` — it never resolves either side to a franchise_id
+before comparing, so the same real season recorded under two different
+team-name strings across Wayback sources (`wayback_bsnpr_players` vs
+`wayback_bsnpr_jug05`) can silently create a duplicate career row.
+**Confirmed case**: player `158` (Ansel Guzmán), 2003 — `"Indios,
+Mayaguez"` and `"MAYAGUEZ"` both recorded as separate rows (11 games/9
+points each, identical), same shape as the already-documented "BAYAMON"
+vs "Vaqueros, Bayamon" quirk noted in `test_season_stats_attached_to_
+career`'s own comment, just not previously surfaced for this player.
+Verified directly against `data/clean/player_career_seasons.csv` and the
+built `web/data/players/158.json` — confirmed unrelated to item 7 (neither
+duplicate row carries a `roster` key, and player `158` has no latinbasket
+row for 2003 at all). **Unknown blast radius, needs its own audit pass
+before fixing** — not resolved here. One theory noted but explicitly
+**unverified**: the 2005 row's different table styling the owner spotted
+live is *likely* just a downstream row-parity/zebra-stripe shift caused by
+the extra 2003 row, not a separate bug — not confirmed by rendering the
+page, flagged as a guess, not a finding.
+
 **Next: open — no live task.** Remaining queued, not started this
 session: Tier-1 (57 exact-name groups, now 6 confirmed leads from item 7)
 + Tier-2 (136 birth-date groups) canonical-file triage; the open repeat-
 name clusters (Ricardo Sanchez, Christian Dalmau, Falcon Alexander, Alex
 Franklin, Alexander Galindo, Owens Perez) as candidates for a future new-
 player-import pass; the `_team_resolver()` era-blind Manatí bug (own
-scoping pass needed, blast radius unknown).
+scoping pass needed, blast radius unknown); the `merge_jug05()` career-
+dedup bug above (same treatment, own scoping pass needed).
 
 **Addendum (2026-09-14, browser-verification session)**: when that Tier-1
 triage happens, also specifically check `merge_jug05()`'s own exact-name
