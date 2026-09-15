@@ -5066,7 +5066,7 @@ function answerCard(o){
     b.querySelector('.tblwrap').style.border='0';
     b.querySelector('.tblwrap').style.borderRadius='0';
     b.querySelector('.tblwrap').style.marginTop='0';
-    b.querySelector('.tbl-meta').style.padding='8px 18px 12px';
+    b.querySelector('.tbl-meta').style.padding='var(--sp-2) 18px var(--sp-3)';
     b.querySelector('.tbl-meta').style.marginTop='0';
   }
   if(o.chips){
@@ -5700,7 +5700,7 @@ const DATASETS={
     get label(){ return 'Campeones de anotación ('+(SCORING.length?SCORING[0][0]+'–'+SCORING[SCORING.length-1][0]:'')+')'; },
     cols:[{label:'Año',num:true},
       {label:'Jugador',wide:true,render:(v,r)=>r[5]!=null
-        ? `<button class="btn" style="padding:2px 8px;font-size:12px" onclick="showPlayer(${JSON.stringify(v).replace(/"/g,'&quot;')},${r[5]})">${esc(v)}</button>`
+        ? `<button class="btn" style="padding:2px var(--sp-2);font-size:var(--fs-2xs)" onclick="showPlayer(${JSON.stringify(v).replace(/"/g,'&quot;')},${r[5]})">${esc(v)}</button>`
         : esc(v)},
       {label:'Club',wide:true},{label:'Métrica'},{label:'Valor',num:true}],
     rows:()=>SCORING.map(s=>[s[0],s[1],s[2],s[3]==='ppg'?'promedio':'total',s[4],s[5]!=null?s[5]:null]),
