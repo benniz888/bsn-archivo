@@ -3888,6 +3888,722 @@ noisier, real birthday-paradox coincidence mixed with real signal in
 the same buckets). Real counts on record so they don't get lost; not
 urgent, not blocking latinbasket or anything else.
 
+**TRACKED BUG, not fixed yet — `osos_manati`/`atenienses_manati` mislabel
+in `web/data/seasons/2015.json` and `2016.json` (found 2026-09-14, during
+item 7 Phase A roster-franchise-anchor scoping).** Atenienses de Manatí
+(2014-2017, its own real defunct franchise per `franchises.csv`) is
+currently tagged `franchise_id=osos_manati` in those two season files'
+`standings` block — `osos_manati` is a real but *different* franchise
+(2023+, the Brujos de Guayama relocation). Root cause is
+`city_franchise_map.csv`'s city-level `MANATI -> osos_manati` mapping,
+which the file's own note already flags as era-unaware ("Atenienses
+2014-17 then Osos 2022+ — verify per season"). Owner decision: **defer
+the fix to item 7 Phase D** (when roster data for this franchise gets
+wired into `web/data/` anyway, era-correct franchise resolution needs
+solving for both at once) — logged here now, per owner instruction, so it
+is not forgotten between now and then. Not blocking anything else.
+
+**Item 7 (latinbasket roster ingest) — Phase A (revised) + Phase B done,
+owner-verified through Phase A, same session (2026-09-14).** Plan
+approved: fetch -> parse -> identity resolution in small franchise-
+anchored batches -> wire into `web/data/`, one phase at a time, owner
+verifies before the next starts.
+
+**Phase A.** `src/fetch_latinbasket_roster.py` — Wayback-only (B5
+discipline), CDX persisted this time (`data/raw/cdx/
+cdx_latinbasket_roster.json`, was a gap in the original scoping pass).
+Real count is **103 (franchise, season) targets, not the scoping estimate
+of 137** — the 137 figure was a rougher, less-filtered site-wide count;
+103 is precise after excluding women's/youth pages (`Women=1`/`junior=1`
+query flags, feminine-form slugs) and discovering **latinbasket reuses its
+own numeric team ids across two unrelated real franchises once one folds**
+(id `1976`: Maratonistas de Coamo 2013-15 -> Santeros de Aguada 2016+,
+after Coamo's real 2015 folding; id `1963`: a typo'd "Pirates de
+Quebradillas" 2013-15 -> Atenienses de Manatí 2015+) — filtered by real
+franchise **name**, never by latinbasket's own id, to avoid silently
+merging them. **Franchise-anchor check (owner's ask, before finalizing the
+batch list): only one of the 16 real franchises has an in-window identity
+thread** — Caciques de Humacao, whose latinbasket team id (`1901`) is
+independently shared with "Gallitos de Isabela" captures (2017, 2021),
+corroborating this archive's own pre-existing "Caciques-Gallitos,
+Humacao-Isabela" hybrid note from a fully separate source. Every other
+franchise's real rename (Guayama -> Osos de Manatí, 2022+; the unrelated
+2021 Grises de Humacao -> Criollos de Caguas, 2024) falls outside the
+2009-2020 window.
+
+**Real mid-Phase-A finding, fixed before parsing**: the bare team URL is
+often a "team home" teaser (a handful of named players, not the roster);
+the actual full roster lives at `?Page=1` ("Roster"/"Full Roster",
+explicitly linked from the teaser itself). Target selection revised to
+prefer `Page=1` within each season-precision tier. Second finding on top
+of that: **7 of the resulting `Page=1` candidates turned out to be a
+Wayback-archived anti-bot CAPTCHA wall (HTTP 200, ~2.7KB captcha form),
+not real content** — `candidates()`/`main()` now rank *all* real
+candidates per (franchise, season) and fall back through the list on a
+detected CAPTCHA wall (`_looks_like_captcha_wall`) rather than silently
+accepting one; all 7 fell back cleanly to their original (pre-revision)
+capture. Final: 103/103 fetched, 0 unrecoverable.
+
+**Phase B.** `src/parse_latinbasket_roster.py` -> `data/interim/
+latinbasket_roster_raw.csv` (948 rows, unresolved to canonical ids, PC5
+raw untouched). **Real finding: the source isn't one template, it's (at
+least) four**, each handled on its own structural anchor, never a blind
+regex: `flat_bo` (29 pages, ~2009-13, header `# Name CM Pos Bo NAT` — `Bo`
+= exact 2-digit birth year, matches original scoping); `flat_age` (8
+pages, ~2017+, header adds `Age`/`FR`/`TO`/Former-Team/Agent, swaps exact
+birth year for age); `widget` (43 pages, a half-court position widget,
+age not birth year, primary 10 slots + deep-bench names nested in a
+popup with no jersey/position/link — deduped per player, `full` vs
+`partial` kept honestly distinct); `photo_strip` (12 pages classified
+`neither` above are genuinely empty — zero player links at all, a real
+disclosed gap, not a bug; the rest of the `neither` set has a small named
+photo strip, extracted at `partial` completeness). **Season-source
+confidence (`year_param` vs `capture_year`, from Phase A) is carried
+through as its own `season_source` column in the interim CSV, not folded
+into `confidence`** — owner-required, so Phase C can see season-precision
+and birth-precision (`birth_year_2digit` exact vs `age`-derived
+`approx_birth_year`, ±1) as two separate, non-conflated signals per row,
+same discipline as every other confidence field in this archive (PC3).
+`name_raw` is kept exactly as the source renders it, `name_order` recorded
+per template (`flat_*` = surname-first, `widget`/`photo_strip` =
+given-first) — no silent reordering (D1).
+
+**Phase C started.** `src/match_latinbasket_roster.py` — franchise-
+anchored batch review, never auto-merges (D1 + the `merge_jugador05`
+lesson). Five tiers, weakest evidence always loses even at the same
+candidate-count shape: `1_exact_birth_confirmed` > `2_approx_birth_confirmed`
+(explicitly a separate, weaker tier — owner-required, visible as its own
+`tier` column, not folded into `confidence`) > `3_no_birth_data_name_shape`
+(forced review regardless of name quality — the exact bug class that hit
+Piculin Ortiz) > `4_ambiguous_multi_candidate` > `5_no_canonical_match`
+(new-player mint proposal). Name matching reuses `src.parse_players`'s own
+`norm_key` (order/hyphen-insensitive) + family-surname-prefix/given-first-
+token fallback, not reinvented. Output: `data/interim/
+latinbasket_match_<franchise_id>.csv`, with a `disposition`/
+`disposition_note` pair the owner fills in per row (`set_disposition()`/
+`--set` CLI) that survives a rerun of the matcher (carried forward by
+season+name_raw) so a logic change never silently erases an adjudication.
+`no_data` (page fetched, zero player content) seasons are read from the
+fetch manifest vs the parsed CSV and reported separately from real
+0-candidate results, per owner requirement — never blended into "0
+players resolved."
+
+**Calibration batch 1 — `criollos_caguas` (5 rows, 1 season) — DONE,
+owner-adjudicated.** 3 landed in tier 3 (name-shape only, canonical
+record has no birth year — e.g. "Arnaldo Lopez" -> `221 Lopez Rivera,
+Arnaldo`, dropped maternal surname), 2 in tier 4 (genuine multi-candidate
+ties, same shape as this session's own Berdiel case — e.g. "Roberto Carlos
+Herrera" -> a bare `2056 Herrera, Roberto` stub vs `2057 Herrera Garcia,
+Roberto`). **Owner adjudication: all 5 marked `disposition=
+insufficient_evidence`, left unresolved rather than forced** — no
+independent corroboration for any candidate. Recorded in the CSV itself,
+not just this note.
+
+**Real finding, caught only because Phase C's own sanity check flagged
+it — `gigantes_carolina`'s two fetched pages (2014, 2017) are WOMEN'S
+team content, not the men's BSN team, despite matching the franchise-name
+filter cleanly.** All 14 rows came back `5_no_canonical_match` with zero
+name-shape candidates each — an all-zero result across an entire
+franchise-season being suspicious enough on its own to check before
+reporting anything to the owner, and the player names themselves were
+unambiguously feminine (Yolanda Jones, Carla Cortijo, Chelsea Poppens,
+etc.). Confirmed from real page content, not inferred from names alone:
+every per-player profile link inside both pages carries `?Women=1`
+(`/player/.../<id>?Women=1`, 11 and 9 occurrences respectively — one per
+extracted player), even though the **team page's own URL never carries
+any `Women=1` marker at all** — Phase A's exclusion check only looks at
+the page URL, so this specific team id (`9342`) slipped through
+completely undetected at fetch time. Checked the CDX data for a separate
+men's-team id under any "Gigantes de Carolina" slug variant — none exists
+with a real 200 capture in this window; **the men's franchise's roster
+simply was never archived under this URL pattern, a real disclosed gap,
+not backfilled from the wrong team.** Scanned the full 103-page corpus
+for the same `/player/...Women=1` content-level signal (not just the
+2-occurrence nav-menu noise every other page has, which is a generic
+"Women" site tab link, unrelated) — **confirmed isolated to these two
+pages only**, nothing else in the corpus is contaminated this way.
+Root-cause fixed going forward, not just patched around this one case:
+`parse_latinbasket_roster.py` gained `_is_womens_content()` (>=2
+`/player/...Women=1` links -> exclude the whole page, reported separately
+from a genuinely-empty page, never silently absorbed into either bucket)
+— `gigantes_carolina` now correctly produces 0 rows for both seasons,
+flagged as excluded, not as a data gap and not as 14 real mint
+candidates. Corpus total: 948 -> 934 rows, 103 -> 101 real pages.
+`gigantes_carolina` is out of scope for item 7 entirely (no valid
+franchise-level data survives) — the franchise-anchor batch list drops
+from 16 to 15 real remaining candidates.
+
+**Batches 2-4 done, owner-adjudicated, same session — the tier system
+holding up in practice, not just in the calibration run.**
+
+- **`atenienses_manati`** (23 rows): 13 `2_approx_birth_confirmed`, all
+  owner-confirmed (9 genuine gap-fills, 4 corroborating an existing row).
+  7 `3_no_birth_data_name_shape` + 2 `5_no_canonical_match` -> owner:
+  `insufficient_evidence`, review queue. **1 row given its own disposition
+  rather than folded into the ambiguous tier**: "Raymond Dalmau" (2017)
+  name-matches both existing Dalmau records (`1962` legend, career
+  1966-85; `1970`, career 1990-2009) but neither span comes anywhere near
+  2017 — evidence against both, not a tie between them. Owner: `disposition=
+  likely_distinct_not_in_canonical`, held for research, not merged with
+  either.
+- **`maratonistas_coamo`** (15 rows): 9 `2_approx_birth_confirmed`, all
+  owner-confirmed. 4 `3_no_birth_data_name_shape` + 1 `5_no_canonical_match`
+  -> `insufficient_evidence`. 1 genuine `4_ambiguous_multi_candidate`
+  (Jeffrey Burgos, two candidates, no birth data either side, no
+  red-flag asymmetry like Dalmau) -> owner: leave unresolved, same tier,
+  logged `insufficient_evidence` for the durable record.
+- **`mets_guaynabo`** (28 rows): 20 `2_approx_birth_confirmed`, all
+  owner-confirmed. 3 `3_no_birth_data_name_shape` + 4 `5_no_canonical_match`
+  -> `insufficient_evidence`. 1 genuine tie (Ferdinand Morales) ->
+  unresolved, same treatment as Burgos. **Independent cross-validation,
+  not just a plausible match**: this page's "Miguel Ali Berdiel" ->
+  `1666 Berdiel Aponte, Miguel Ali` is the exact identity this session
+  already confirmed via the canonical-file duplicate-cleanup detour
+  (`990001`/`1666` merge) — a completely different latinbasket page
+  landing on the same real person, real corroboration of that earlier
+  fix from an independent source, not circular.
+
+**Running total across all 4 batches: 42 rows confirmed, 26 held as
+insufficient evidence (16 name-shape-only, 8 no-canonical-match, 2 genuine
+ties), 1 given its own "likely distinct, not in canonical file" disposition.
+Zero merges into `data/clean/` so far** — Phase C's own output
+(`data/interim/latinbasket_match_*.csv`) is the durable record;
+folding confirmed rows into the clean spine is Phase D's job.
+
+**Next: pick the next franchise batch** (remaining, smallest first:
+`cariduros_fajardo` 44, `indios_mayaguez` 53,
+`piratas_quebradillas` 57, `brujos_guayama` 58, `vaqueros_bayamon` 64,
+`cangrejeros_santurce` 85, `caciques_humacao` 89 — the franchise-anchor
+case, `leones_ponce` 96, `atleticos_san_german` 138, `capitanes_arecibo`
+139) — same check-in cadence, owner adjudicates each.
+
+**Batch 5 — `santeros_aguada` (40 rows) — DONE, owner-adjudicated, real
+bug caught and fixed mid-batch.** `flat_age`-era pages (the `Age`-column
+template layered on top of the older `Bo`-column one, see Phase B record
+above) render names **given-first** ("Jorge Matos"), the opposite of
+`flat_bo`'s surname-first ("Matos Jorge") — `_parse_flat_table` hardcoded
+surname-first for both. Exact-name matches were unaffected (`norm_key` is
+order-agnostic, which is exactly why this went unnoticed until a row
+needed the family-prefix fallback tier); confirmed 2 real matches this
+silently cost (Jorge Matos, Tjader Fernandez — both later confirmed
+against the same candidates as their own 2016 exact-birth-year rows,
+strong corroboration the fix is right, not just plausible). Fixed in
+`parse_latinbasket_roster.py` (era-conditional `name_order`), Phase B
+re-run (934 rows, unchanged shape), **checked the 4 already-adjudicated
+batches for any `flat_age` rows before trusting they were unaffected —
+none had any**, so no prior owner adjudication needed revisiting.
+Re-ran `santeros_aguada` clean: 14 `1_exact_birth_confirmed` + 18
+`2_approx_birth_confirmed`, all owner-confirmed (32 total, `disposition=
+confirmed_match`) — several with real internal cross-validation (Gilberto
+Clavell, Matt Lopez, Rigoberto Mendoza, Kevin Maura each recur across
+2+ seasons/templates landing on the same candidate id, ages incrementing
+correctly year over year). 1 `3_no_birth_data_name_shape` (Gabriel Ruiz)
++ 6 `5_no_canonical_match` -> `insufficient_evidence`. **1 row logged as
+a lead, not resolved**: "Figueroa Carlos Manual" (2016, exact birth 1981)
+is a genuine 3-way collision (`286 Figueroa, Carlos`; `333 Figueroa Laboy,
+Carlos manuel`; `2631 Figueroa, Carlos`, all born 1981) — owner declined
+to pick one from this batch, `disposition=lead_for_tier1_triage`, logged
+against the existing Tier-1 exact-name-duplicate queue instead. **Cross-
+franchise link flagged, not merged**: "Ricardo Sanchez" (~1987) is a
+no-canonical-match here (2019) *and* in `atenienses_manati` (2015, also
+~1987) — same name, same approx birth year, still not enough on its own
+per D1, but both rows now cross-reference each other in their
+`disposition_note` so the link isn't lost if either gets more evidence
+later.
+
+**Batch 6 — `cariduros_fajardo` (44 rows) — DONE, owner-adjudicated.** 37
+`2_approx_birth_confirmed`, all owner-confirmed — heavy real cross-
+franchise consistency this batch: Ricardo Melendez -> `1995` now confirmed
+in 3 separate franchises (Atenienses de Manatí, this one x2), Jorge Matos
+-> `13082` and Tjader Fernandez -> `13079` both match their
+`santeros_aguada` confirmations, Miguel Ali Berdiel -> `1666` confirmed
+again. 3 `3_no_birth_data_name_shape` + 3 `5_no_canonical_match` ->
+`insufficient_evidence`, including two more same-name-same-tier cross-
+franchise repeats logged for visibility (Alexis Colon -> `2682`, same as
+`atenienses_manati`; Reginald Buckner, no match here or in
+`maratonistas_coamo`). 1 genuine tie (Mario Sanchez, `1581`/`1582`) ->
+unresolved, same treatment as prior ties.
+
+**Weight-of-evidence update to the still-open `maratonistas_coamo`
+Jeffrey Burgos tie (`1021` vs `2901`), not a resolution**: this batch's
+Jeffrey Burgos rows (2018, 2019) carry real approx-birth data (~1994) and
+land cleanly, repeatedly on `2901 Burgos Cartagena, Jeffrey Daniel`. The
+Coamo row itself still has zero birth signal of its own, so this proves
+nothing on its own — but per owner instruction, the Coamo row's
+`disposition_note` now records this context explicitly (2901 has
+independent corroboration from a confirmed match elsewhere) so a future
+reviewer sees it instead of a cold, evidence-free tie.
+
+**Batch 7 — `indios_mayaguez` (53 rows, 6 seasons with data, 2018 =
+NO DATA) — DONE, owner-adjudicated.** 43 `2_approx_birth_confirmed`, all
+owner-confirmed — more cross-batch consistency (Filiberto Rivera `704`
+and Kevin Young `2850` both match `cariduros_fajardo`; Rasham Suarez
+`12961` matches `mets_guaynabo`). 3 `3_no_birth_data_name_shape` + 6
+`5_no_canonical_match` -> `insufficient_evidence`. **1 tie kept
+unresolved but with real context attached, not a cold tie**: "Carlos
+Arroyo" (2017, no birth data on this row) matches both `273 Arroyo
+Bermúdez` (the confirmed ~1979 veteran, matches the real NBA/BSN Carlos
+Arroyo, seen twice in `cariduros_fajardo`) and `13124 Arroyo Gonzalez`
+(confirmed ~1996 in this same batch's 2019 row) — a real generational
+name collision between two already-distinguished people. Owner: both
+ages are plausible for a 2017 roster, nothing favors either, stays
+unresolved — but the identification of who each candidate is now lives
+in the row's `disposition_note` so it isn't re-derived from scratch if
+this comes up again.
+
+**Real messaging bug found and fixed, `classify_row()` — caught during
+`piratas_quebradillas` scoping, checked back against `players_canonical.csv`
+directly, not assumed.** Every tier-3 note said "canonical record has no
+birth_year to confirm or reject with," but that was only true some of the
+time — checked `players_canonical.csv` for the actual candidates behind
+several already-reported tier-3 rows and found real birth years on file
+(e.g. `2560 Ramirez Rivera, Luis S.`, birth_year=1986; the 3 `criollos_caguas`
+candidates `221`/`1570`/`1791` all have real birth years too). The true
+reason in those cases was the **source row** having no age/birth signal at
+all (`photo_strip`/bench-only entries) — a property of the row, not a gap
+in the canonical file. Doesn't change any outcome (both cases still force
+review, never auto-accept — no prior owner adjudication was wrong), but
+the owner was being told the wrong reason. Fixed: `classify_row()` now
+checks source-side signal presence first, and the note names which side
+actually lacks data. **Re-ran all 7 already-completed batches to verify
+the fix changed no disposition** — every batch's `Counter(disposition)`
+came back byte-identical before/after (`criollos_caguas` 5 insufficient;
+`atenienses_manati` 13/9/1; `maratonistas_coamo` 9/6; `mets_guaynabo`
+20/8; `santeros_aguada` 32/7/1; `cariduros_fajardo` 37/7;
+`indios_mayaguez` 43/10) — confirmed via the `--set` carry-forward
+mechanism, not re-adjudicated. `make test` green.
+
+**Batch 8 — `piratas_quebradillas` (57 rows, 6 seasons with data, 2013 =
+NO DATA).** 41 `2_approx_birth_confirmed`. 9 `3_no_birth_data_name_shape`
+(now with the corrected note text). 7 `5_no_canonical_match`, no
+`4_ambiguous_multi_candidate` this batch. **Two more cross-franchise
+name repeats worth flagging, same pattern as Ricardo Sanchez/Reginald
+Buckner**: "Ricardo Sanchez" (2014, no match) is now a *third* independent
+occurrence (`atenienses_manati` 2015, `santeros_aguada` 2019, both also
+no-match, ~1987 approx where available); "Christian Dalmau" (2016, no
+match) repeats `mets_guaynabo`'s 2013 no-match of the same name. Neither
+merged on name alone — logged for cross-reference only. **Owner-adjudicated
+same session**: all 41 tier-2 rows confirmed; the 16 remaining ->
+`insufficient_evidence`, both repeat-name leads (Ricardo Sanchez 3-way:
+`atenienses_manati`/`santeros_aguada`/here; Christian Dalmau 2-way:
+`mets_guaynabo`/here) cross-referenced in every affected row's
+`disposition_note` — none merged, tracked as leads only.
+
+**Running total, 8 batches, 265 rows: 195 confirmed, 68 insufficient
+evidence, 1 lead (Tier-1 triage), 1 distinct-person-not-in-canonical.
+Zero merges into `data/clean/`** — still all in Phase C's own review
+CSVs, Phase D not started.
+
+**Batch 9 — `brujos_guayama` (58 rows, 6 seasons with data, 2018 =
+NO DATA) — DONE, owner-adjudicated.** 43 `2_approx_birth_confirmed`, all
+confirmed — Miguel Ali Berdiel `1666` now independently confirmed across
+**4 franchises**; Enrique Ramos `13056` and Luis Diaz `13069` both match
+`cariduros_fajardo`. 12 `3_no_birth_data_name_shape` + 3
+`5_no_canonical_match` -> `insufficient_evidence`. **Two repeat-name
+leads updated with owner's explicit weighting, not treated as equally
+strong**: "Ricardo Sanchez" is now a **4-way** repeat no-match (Manatí,
+Aguada, Quebradillas, Guayama) with *no* birth-year corroboration tying
+the sightings together — owner: flag as a priority "likely real but
+unimported player" candidate for a future new-player import pass, but
+explicitly do not collapse the 4 sightings into one entity without real
+evidence (could be more than one person). "Lorrenzo Wade" is only a
+2-way repeat (Manatí ~1985, Guayama ~1986) but the close approx-birth
+agreement makes it real corroborating evidence of the same person —
+owner: stronger footing than the Sanchez cluster. Both cross-referenced
+in every affected row's `disposition_note`.
+
+**Batch 10 — `vaqueros_bayamon` (64 rows, all 7 seasons with data) — DONE,
+owner-adjudicated.** 9 `1_exact_birth_confirmed` (flat_bo, 2015) + 39
+`2_approx_birth_confirmed`, all confirmed. 6 `3_no_birth_data_name_shape`
++ 10 `5_no_canonical_match` -> `insufficient_evidence`, including **"Tucker
+Dar"** (2015, real exact birth year 1988, zero name-shape candidates) —
+owner flagged this as a clean, high-priority new-player import candidate
+for whenever that pass happens, alongside the repeat-name leads. **Christian
+Dalmau upgraded from a plain 2-way repeat to the same corroborating-
+evidence tier as Lorrenzo Wade** after checking the actual numbers instead
+of just counting occurrences: 3 independent sightings (`mets_guaynabo`
+2013 ~1977, `piratas_quebradillas` 2016 ~1978, here 2017 ~1977) cluster
+within +/-1 year — real evidence, not just a name match. All 3 rows'
+`disposition_note`s updated to match.
+
+**Running total, 10 batches, 387 rows: 286 confirmed, 99 insufficient
+evidence/leads, 1 Tier-1-triage lead, 1 distinct-person-not-in-canonical.
+Zero merges into `data/clean/`** — Phase C output only, Phase D not
+started.
+
+**Batch 11 — `cangrejeros_santurce` (85 rows, largest yet, 7 seasons with
+data, 2017 = NO DATA) — DONE, owner-adjudicated.** 37
+`1_exact_birth_confirmed` + 24 `2_approx_birth_confirmed`, all confirmed
+(61 total). 9 `3_no_birth_data_name_shape` + 12 `5_no_canonical_match` ->
+`insufficient_evidence` (21 total). **Two new leads, correctly kept
+distinct from each other and from prior patterns**:
+- **"Acevedo Angel" (2013)** — a 3-way exact-name collision (`12944`,
+  `12945`, `12946`, all "Acevedo, Angel," two sharing the nickname
+  "Mutombo" and the identical enciclopedia source capture) reads like a
+  real pre-existing canonical-file duplicate, not three people.
+  `disposition=lead_for_tier1_triage`, a second lead alongside the
+  Figueroa case from `santeros_aguada`, not resolved here.
+- **"Javier Gonzalez" (2014, 2015)** — caught and self-corrected before
+  reporting: the tier name said "ambiguous," but the actual stored `note`
+  said "mixed signal" (one candidate has no birth data, the other — the
+  `2513`/~1989 player already confirmed twice elsewhere — actively
+  disagrees by 17 years with this row's real age-42/43 signal, verified
+  against the raw HTML, not a parsing error). Owner: reframe as
+  `likely_distinct_not_in_canonical`, the same disposition and reasoning
+  shape as the Raymond Dalmau case but the opposite direction — evidence
+  *against* both existing candidates, not evidence *for* a repeat.
+- **Christian Dalmau upgraded again**: this batch's 2014 sighting (~1977)
+  makes it a **4-way** consistent cluster (1977/1978/1977/1977 across
+  Guaynabo/Quebradillas/Bayamón/Santurce) — all 4 rows' `disposition_note`
+  updated.
+
+**Running total, 11 batches, 472 rows: 347 confirmed, 120 insufficient
+evidence/leads, 2 Tier-1-triage leads, 3 distinct-person-not-in-canonical.
+Zero merges into `data/clean/`.**
+
+**Batch 12 — `caciques_humacao` (89 rows, 9 seasons with data, 2018 = NO
+DATA) — the franchise-anchor case, confirmed working in practice, not just
+on paper.** The 2017 capture is genuinely the "Gallitos-de-Isabela" slug
+(team id `1901`), and it flowed through as `caciques_humacao` with real
+matched players exactly as designed. 41 `1_exact_birth_confirmed` + 24
+`2_approx_birth_confirmed`, all owner-confirmed (65 total). 17
+`3_no_birth_data_name_shape` + 7 `5_no_canonical_match` ->
+`insufficient_evidence` (24 total). **Two findings worth carrying
+forward**:
+- **"Lopez Jose" (990033, no birth year on file) — 3 independent exact-
+  birth-1988 sightings (2010/2012/2013), all agreeing.** Flagged
+  specially: this is the exact name this session's own canonical-
+  duplicate investigation left unresolved ("evidence split ambiguously
+  across two different candidates"). Doesn't resolve it here, but is real
+  new evidence for whoever revisits that.
+- **Ferdinand Morales tie (`mets_guaynabo`, still unresolved) gets real
+  context, not a resolution**: both candidates now independently
+  confirmed as real, distinct people from a totally different franchise —
+  `685 Morales Martinez`'s exact birth-date (6/26/1966) matches this
+  batch's 2016 sighting exactly, `2726 Morales Soto`'s (6/25/1988)
+  matches 2017 exactly. Rules out "one of these is a duplicate/fake" but
+  doesn't say which real person the 2013 Guaynabo sighting was — the
+  Guaynabo row's `disposition_note` updated to reflect this.
+
+**Running total, 12 batches, 561 rows: 412 confirmed, 144 insufficient
+evidence/leads, 2 Tier-1-triage leads, 3 distinct-person-not-in-canonical.
+Zero merges into `data/clean/`.**
+
+**Real bug found and fixed, `_parse_flat_table` — caught during
+`leones_ponce` scoping.** A placeholder/data-entry-gap row ("Vicens
+Juan," 2017: jersey/height/position blank or "0," `Bo` field literally
+"0") was fabricating a real-looking exact birth year (2000) out of that
+"0" — checked the raw HTML directly to confirm it's a gap, not a real
+value ("0 (0'0'')" for height confirms the whole row is a template
+placeholder, not real data). Fixed: "0" in `Age`/`Bo` is now treated as
+absent, not a real value. **Re-ran all 12 already-adjudicated batches to
+verify — every disposition and tier count came back identical**, so this
+bug never actually produced a false confirmation anywhere; it only
+mattered for this one still-ambiguous row, which stays ambiguous for the
+right reason now instead of the wrong one. `make test` green.
+
+**Batch 13 — `leones_ponce` (96 rows, 9 seasons with data, 2015 = NO
+DATA) — DONE, owner-adjudicated.** 43 `1_exact_birth_confirmed` + 28
+`2_approx_birth_confirmed`, all confirmed (71 total). 12
+`3_no_birth_data_name_shape` + 7 `5_no_canonical_match` ->
+`insufficient_evidence` (19 total). **Three ties left unresolved, one
+of them a new lead**:
+- **"Vicens Juan"** — a 4-way persistent tie across this franchise's
+  whole archived history (2009/2010/2013/2017), always the same two
+  candidates, never any birth data.
+- **"Carlos Rivera" (2020)** — 3-way tie, but one candidate (`338`) is
+  already confirmed 3 times elsewhere in this same batch; doesn't resolve
+  this row, kept for visibility.
+- **"Tony Mitchell" (2020)** — two candidates, both literally "Mitchell,
+  Tony." `disposition=lead_for_tier1_triage`, a **3rd** lead for that
+  queue alongside Figueroa and Acevedo Angel.
+- **"Falcon Alexander" (2010) is now the strongest repeat-name lead of
+  the whole ingest**: 3 sightings (here, `cangrejeros_santurce` 2011 and
+  2013), and unlike Sanchez/Wade/Dalmau, all 3 have an **exact**, not
+  approximate, birth year — all agreeing at 1974. All 3 rows'
+  `disposition_note`s updated.
+
+**Running total, 13 batches, 657 rows: 483 confirmed, 168 insufficient
+evidence/leads, 3 Tier-1-triage leads, 3 distinct-person-not-in-canonical.
+Zero merges into `data/clean/`.**
+
+**Real matching-algorithm gap found and fixed — `atleticos_san_german`
+scoping.** `_family_candidates()` only ever checked the source's given-
+name token against the canonical record's *first* given-name token
+(`cgiv[0]`). Real Spanish naming often has two given names, and a source
+can render only the second one as if it were the whole given name (e.g.
+"Berdiel Ali" for the real "Berdiel Aponte, Miguel **Ali**" — confirmed
+via an exact birth-year match, 1983 both sides). Generalized to check
+whether the source's token appears *anywhere* in the candidate's given-
+name tokens, not just first position. **Re-ran all 14 batches (13
+adjudicated + this one) and diffed every row's tier/candidate set before
+vs after — only 7 of 795 rows changed, none of them a previously owner-
+confirmed match** (verified directly, not assumed): `atleticos_san_german`
+gained one new exact-birth confirmation (`Lloreda Jaime` -> `2690`, exact
+birth-year agreement, real spine name "José **Jaime**" — same class of
+fix). **Two already-adjudicated rows now qualify for a stronger tier and
+need a fresh owner look, not silently upgraded**: "Berdiel Ali" in both
+`caciques_humacao` (2010) and `cangrejeros_santurce` (2009) now resolve
+to `1666 Berdiel Aponte, Miguel Ali` at `1_exact_birth_confirmed` (exact
+1983 agreement both times) — currently still sitting at
+`disposition=insufficient_evidence` from before the fix. Three more rows
+changed without changing their disposition (informational only): "Miguel
+Rodriguez" (`cariduros_fajardo` 2013) gained a second name-shape candidate
+(`1255`, no material change — still insufficient); "Gonzalez Angel"
+(`cangrejeros_santurce` 2013) moved from zero candidates to one
+no-birth-data candidate (`1667`, still insufficient); the two "Javier
+Gonzalez" `likely_distinct_not_in_canonical` rows gained 2 more
+candidates (`216`/`1122`) that also don't cleanly agree, same conclusion
+holds. `make test` green.
+
+**Systematic repeat-name scan across all 14 batches so far — several
+leads were being flagged one at a time, opportunistically, and missed
+some real patterns until this pass.** Normalized every `5_no_canonical_match`
+name across every batch and grouped by exact name match: found 3 new
+multi-sighting clusters beyond the ones already tracked (Sanchez/Dalmau/
+Wade/Falcon), the largest being a real standout:
+- **"Alex Franklin" — 5 sightings, 4 franchises** (`indios_mayaguez` 2014,
+  `vaqueros_bayamon` 2016, `piratas_quebradillas` 2019,
+  `atleticos_san_german` 2017 and 2018), clustering 1988-1989 throughout.
+  The largest cluster found in this ingest.
+- **"Alexander Galindo" — 3 sightings** (`indios_mayaguez` 2016,
+  `vaqueros_bayamon` 2018, `cangrejeros_santurce` 2014), all exactly 1985.
+- **"Owens Perez" — 3 sightings** (`atleticos_san_german` 2013,
+  `santeros_aguada` 2017 and 2018), all ~1992.
+- **"Larry Ayuso"/"Ayuso Larry" — 3 sightings** (`mets_guaynabo` 2013,
+  `vaqueros_bayamon` 2014, `cangrejeros_santurce` 2009), 1977 where
+  available.
+- **"Orin O'Bryant" — 3 sightings** (`vaqueros_bayamon` 2016 and 2017,
+  `piratas_quebradillas` 2015), 1987-1988.
+- **"Nate Butler Lind" — 2 sightings** (`indios_mayaguez` 2017,
+  `atleticos_san_german` 2019), both 1989.
+- **"Reginald Buckner" — 2 sightings** (`cariduros_fajardo` 2018,
+  `maratonistas_coamo` 2015), both 1991 — noted narratively when it came
+  up but never given a formal cross-referenced disposition note like
+  Sanchez/Dalmau; fixed now.
+All cross-referenced in every affected row's `disposition_note`, none
+merged into a new canonical entity.
+
+**Batch 14 — `atleticos_san_german` (138 rows, 11 seasons with data) —
+awaiting owner review, includes the fresh Berdiel Ali re-look above.**
+73 `1_exact_birth_confirmed` + 34 `2_approx_birth_confirmed` + 19
+`3_no_birth_data_name_shape` + 12 `5_no_canonical_match`, no ambiguous
+rows this batch. One more worth flagging: "Portalatin Wayne" (2012, exact
+birth 1988) landed as `5_no_canonical_match` even though the exact same
+name matches `2735 Portalatin, Wayne` (real birth year 1987) cleanly in
+2013/2014/2017/2018 — the classifier correctly refused to merge a 1-year
+birth-year contradiction rather than assume it's the same person, but a
+1-year gap on an otherwise-identical name is far more likely a source-
+side transcription slip than a coincidental second real person with the
+identical name. Flagged for owner judgment, not resolved either way.
+
+**Owner-adjudicated, same session.** All 5 points from the detour above
+confirmed: (2) both Berdiel Ali rows upgraded to `confirmed_match`
+(exact 1983 agreement against `1666`, already confirmed elsewhere many
+times); (4) the pre-filled repeat-cluster dispositions on
+`atleticos_san_german` stand as correct, but **owner: hold new-batch
+adjudications for explicit review going forward, even when the outcome
+looks obvious** — noted as a process correction, not an error to undo;
+(5) all 73 `1_exact_birth_confirmed` + 34 `2_approx_birth_confirmed`
+rows confirmed; 19 `3_no_birth_data_name_shape` + 11 remaining
+`5_no_canonical_match` rows -> `insufficient_evidence`. **"Portalatin
+Wayne" (2012) given its own new disposition,
+`likely_same_person_source_discrepancy`** — deliberately distinct from
+both `confirmed_match` and `insufficient_evidence`, reads as a probable
+identity with a flagged data-quality gap rather than a clean
+confirmation or a cold unknown. **Owner: apply this same disposition
+if the exact pattern recurs** (identical name+team, one outlier year on
+an otherwise-consistent birth year) in remaining batches — a new,
+permanent third outcome alongside confirm/insufficient for this specific
+shape of evidence.
+
+**Running total, 14 batches, 795 rows: 592 confirmed, 196 insufficient
+evidence/leads, 3 Tier-1-triage leads, 3 distinct-person-not-in-canonical,
+1 likely-same-person-source-discrepancy. Zero merges into `data/clean/`.**
+
+**Real gap found and fixed, capitanes_arecibo scoping — the matcher never
+consulted `data/clean/player_aliases.csv` (24,209 rows, this archive's
+own curated nickname/spelling-variant/dropped-maternal-surname table)
+at all, only `canonical_name`.** Confirmed via "Cortez, David" — a known
+alias of `448 Cortes Ruiz, David` from an earlier-session jug05 merge —
+landing as a false no-match purely because the alias table was never
+checked. Fixed: `_build_indexes()` now folds every alias into the same
+exact-match index (aliases only ever add recall, never a new false
+candidate, since they're already-vetted strings for a real id). **Re-ran
+all 15 batches and diffed every row — 61 of 934 changed.** Owner bulk-
+approved 32 of them as verified alias-driven upgrades (real nickname/
+alias checked individually for each, not assumed) without row-by-row
+re-litigation. **Real, substantive closures this fix produced:**
+- **5 long-tracked "unresolved repeat-name" leads fully resolved, not
+  just corroborated** — "Larry Ayuso" (6 sightings) = Elias "Larry" Ayuso
+  (`574`, his own canon nickname field says "larry"); "Tucker Dar" =
+  Darquavis "Dar" Tucker (`12948`) — **retracts the earlier "definitely
+  new, definitely real" import flag from `vaqueros_bayamon`**; "Orin
+  O'Bryant" (4 sightings) = `2913` (alias "Bryant, Orin"); "Melo Trimble"
+  = Romelo "Melo" Trimble (`13201`); "Tu Holloway" = Terrell "Tu" Holloway
+  (`2905`).
+- **"Lopez Jose" (`caciques_humacao`, 3 sightings) — the lead flagged for
+  the stalled canonical-duplicate investigation on this exact name —
+  closes for real**: a genuine full record (`2486 Lopez Estrella, Jose`)
+  supersedes the minted no-birth-data stub (`990033`) that was the whole
+  reason it looked unresolvable.
+- **Two already-confirmed rows (`leones_ponce`: "Cruz Alvin" id `73`,
+  "Lopez Ivan" id `951`) turned out to sit on a second candidate sharing
+  the exact same birthdate** (`73`/`74`: 4/24/1982; `951`/`952`:
+  5/16/1985) — read as pre-existing canonical-file duplicates, not real
+  ambiguity. Owner: keep both confirmations as-is, log both pairs as new
+  Tier-1-triage leads (now 5 total with Figueroa and Acevedo Angel and
+  Tony Mitchell).
+`make test` green throughout.
+
+**Batch 15 — `capitanes_arecibo` (139 rows, 10 seasons with data, 2015 =
+NO DATA) — the last franchise batch. DONE, owner-adjudicated.** 81
+`1_exact_birth_confirmed` + 33 `2_approx_birth_confirmed`, all confirmed
+(114). 5 `3_no_birth_data_name_shape` + 13 `5_no_canonical_match` ->
+`insufficient_evidence` (18). Of 7 ambiguous rows: 4 were the same `73`/
+`74` Cruz Alvin duplicate pair recurring (kept confirmed, same lead, not
+a new one); 2 were a *new* duplicate pair, "Rivera Raul" (`1947`/`1948`,
+also an exact birthdate match, 8/31/1982) — kept confirmed, logged as a
+6th Tier-1-triage lead; 1 ("Rodriguez Carlos," `2644` a real record vs
+`308` a bare stub) is a genuine weak ambiguity, no duplicate-birthdate
+signal, left unresolved.
+
+═══════════════════════════════════════════════════════════════════════
+**PHASE C COMPLETE — all 15 franchise batches done, owner-adjudicated,
+same session (2026-09-14/15).**
+═══════════════════════════════════════════════════════════════════════
+
+**Final tally, 934 rows across 15 franchises (2009-2020 core window,
+`gigantes_carolina` excluded as women's-team contamination):**
+- **744 `confirmed_match`** — real new identity-resolved player-season
+  data, ready for Phase D to wire into `data/clean/`/`web/data/`.
+- **183 `insufficient_evidence`** — held in the review queue, not
+  discarded, not guessed. Includes several tracked repeat-name clusters
+  still genuinely unresolved: "Ricardo Sanchez" (4-way, no birth-year
+  corroboration — flagged as a priority likely-real-but-unimported
+  candidate), "Christian Dalmau" (4-way, tight ±1 birth-year clustering —
+  stronger footing), "Falcon Alexander" (3-way, **exact**, not
+  approximate, birth-year agreement every time — the strongest lead of
+  this kind), "Alex Franklin" (5-way, the largest cluster), "Alexander
+  Galindo" (3-way, exact-consistent), "Owens Perez" (3-way).
+- **6 `lead_for_tier1_triage`** — real, individually-confirmed leads for
+  the still-queued Tier-1 exact-name-duplicate triage pass: Figueroa
+  Carlos (3-way, `286`/`333`/`2631`), Acevedo Angel (3-way, `12944`/
+  `12945`/`12946`), Tony Mitchell (2-way, `12976`/`13157`), Cruz Alvin
+  (`73`/`74`), Lopez Ivan (`951`/`952`), Rivera Raul (`1947`/`1948`) —
+  the last 3 all confirmed via an exact shared birthdate, a stronger
+  signal than the first 3's name-only collision.
+- **3 `likely_distinct_not_in_canonical`** — Raymond Dalmau (`atenienses_
+  manati` 2017, evidence against both existing Dalmau records) and Javier
+  Gonzalez (`cangrejeros_santurce` 2014/2015, real age-42/43 signal
+  contradicts all 4 name-shape candidates).
+- **1 `likely_same_person_source_discrepancy`** — a new, permanent third
+  disposition category alongside confirm/insufficient, for "identical
+  name+team, one outlier year on an otherwise-consistent birth year":
+  Portalatin Wayne (`atleticos_san_german` 2012).
+
+**Zero merges into `data/clean/` — every row of this entire phase lives
+only in `data/interim/latinbasket_match_*.csv`.** Phase D (wire the 744
+confirmed rows into `data/clean/`/`web/data/`) has not started.
+
+**Also still queued, not part of item 7's own scope, logged so they
+don't get lost:** Tier-1 (57 exact-name-string groups) and Tier-2 (136
+exact-birthdate groups) canonical-file triage, now with 6 real confirmed
+leads pointing into it from this phase.
+
+═══════════════════════════════════════════════════════════════════════
+**PHASE D — wire the 744 confirmed rows into `data/clean/`/`web/data/`.**
+Plan approved 2026-09-15: D1 new clean file -> D2 Manatí fix (checkpoint)
+-> D3 wire into build_web_data -> D4 verify+tests -> D5 rebuild+spot-check
+-> D6 commit. The 183 `insufficient_evidence` rows + all leads stay in
+`data/interim/`, untouched — Phase D reads only `disposition=
+confirmed_match`.
+═══════════════════════════════════════════════════════════════════════
+
+**D1 DONE.** `src/build_latinbasket_roster_clean.py` -> `data/clean/
+player_roster_latinbasket.csv`, 744 rows. Cross-references each confirmed
+match row back to `data/interim/latinbasket_roster_raw.csv` (by
+franchise_id+season+name_raw) for jersey/height/position/source fields
+the match CSVs don't carry. The 8 rows sitting on a known duplicate
+candidate pair (Cruz Alvin, Lopez Ivan, Rivera Raul) are written under
+the lower-numbered id, deterministically, disclosed not silently picked —
+the real merge is the Tier-1 triage pass's job, not this one's.
+
+**D2 DONE, confirmed via diff before touching anything downstream** (owner
+requirement). `src/parse_latinbasket.py`'s `CITY_OVERRIDES` (the exact
+mechanism already used for the 2017 Isabela case) gained 2 season-scoped
+entries: `("2015","MANATI")`/`("2016","MANATI")` -> `atenienses_manati`.
+Re-ran `python -m src.parse_latinbasket` against already-cached raw HTML
+(no new fetch) — diff on `standings.csv` was exactly the 2 expected rows,
+nothing else. `make test`/`make verify` clean. **This closes the Manatí/
+`osos_manati` mislabel in `web/data/seasons/2015-2016.json` first logged
+in Phase B.**
+
+**D3 DONE.** `build_web_data.py` gained `_latinbasket_roster()` +
+wiring into `build_career_rows_by_pid()`: matches on (season,
+franchise_id), not season alone, so a real mid-season trade produces two
+rows rather than one clobbering the other; attaches a `roster` sub-object
+to an existing career row where one already covers that (season,
+franchise), else synthesizes a new row with `games`/`points` left `None`
+(PC2). `make build-web-data` ran clean; `career_seasons` in `players.json`
+picks up the new rows automatically (same field `build_players_index()`
+already derives from `career_rows_by_pid`, no separate change needed).
+
+**D5 spot-check (partial, done early on id 37 while D3 was fresh) —
+owner-required literal-null check passed**: confirmed directly against
+the raw JSON text (not inferred from Python) that a synthesized row reads
+`"games":null,"points":null"` with a real populated `roster` object next
+to it, and a separate season on the same player shows the enrichment
+case (`roster` attached to a row with real `games`/`points` already on
+it). Both cases verified on one real player, not assumed from the code.
+
+**Real bug found during that same spot-check, NOT part of D2, NOT fixed —
+logged as its own tracked item, own future scope:** `_team_resolver()`
+in `build_web_data.py` (used broadly for `player_career_seasons.csv`/
+`player_season_stats_2001_2004.csv` club resolution — far more surface
+than the 2-row standings.csv case D2 scoped) has the same era-blind
+`city_franchise_map.csv` MANATI->osos_manati mapping problem. Confirmed
+directly: player id `37`'s own *existing* 2016 career row (unrelated to
+the new latinbasket roster wiring) is labeled `osos_manati` for a season
+at "Atenienses, Manati." **Owner decision: do not fix as part of Phase D
+— different code path, unknown and possibly much wider blast radius than
+the standings case. Needs its own scoping pass (how many rows/players
+affected across which files) before any fix.** `_team_resolver()` itself
+was not touched.
+
+**D4 DONE.** `_team_resolver()`'s wider Manatí problem logged above as its
+own tracked bug, NOT fixed here, per owner instruction (different code
+path, unknown blast radius — needs its own scoping pass). `verify_clean.py`
+gained `verify_player_roster_latinbasket()` (schema/provenance, franchise_id
+and bsnpr_id both resolve, confidence/source_id pinned to single-source/
+latinbasket, jersey_number/height_cm are digits-or-blank never fabricated,
+no duplicate `(bsnpr_id, season, franchise_id)`) — registered in `main()`
+right after `verify_standings`. `build_latinbasket_roster_clean.py`
+refactored to split file I/O (`build()`) from pure selection logic
+(`promote()`), enabling 6 new fixture-based unit tests (confirmed-row
+promotion, insufficient/lead/distinct dispositions never promoted, the
+duplicate-pair lower-id rule, a missing raw-row cross-reference failing
+loud not silent, a real blank jersey never fabricated). 3 more tests
+added to `test_build_web_data.py` mirroring the existing `_season_stats()`
+coverage exactly: the new `_latinbasket_roster()` helper's shape/count,
+every one of its 744 rows landing in the real built `career[]` with a
+`roster` object (attached or synthesized), and a synthesized row's
+`games`/`points` reading real JSON `null` in the actual built file, not
+inferred from code. `make test`: **200 passed** (was 191). `make verify`:
+**346,472 checks, 0 failed** (up from 339,029 — the new file's own checks).
+
+**D5 DONE.** `make build-web-data` already run during D3; both required
+spot-checks now confirmed directly against real output, not assumed:
+(1) player id `37`'s built JSON shows both the enrichment case (`roster`
+attached to an existing games/points-bearing row) and the synthesis case
+(`"games":null,"points":null"` + real `roster` data, verified against the
+literal raw JSON text); (2) `web/data/seasons/2015.json` and `2016.json`
+now show `franchise_id: "atenienses_manati"` for the Manatí standings row,
+confirming D2's fix reached the rebuilt site data.
+
+**Next: D6 — present the full change summary and await approval before
+any commit.**
+
 **Addendum (2026-09-14, browser-verification session)**: when that Tier-1
 triage happens, also specifically check `merge_jug05()`'s own exact-name
 tier (`src/parse_players.py`, `_match()`, the `for c in exact.get(...)`

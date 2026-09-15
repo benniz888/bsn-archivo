@@ -77,6 +77,20 @@ CITY_OVERRIDES = {
         "separate gallitos_isabela franchise -- inferred from an existing verified note, not "
         "independently sourced this pass. Matches the pre-existing 'Caciques-Gallitos, "
         "Humacao-Isabela' hybrid label already in player_career_seasons.csv for this season."),
+    # city_franchise_map.csv's MANATI -> osos_manati mapping is era-blind (its
+    # own note already flags this: "Atenienses 2014-17 then Osos 2022+ --
+    # verify per season"). osos_manati is the real but *different* 2023+
+    # Guayama relocation; the 2015/2016 latinbasket captures are Atenienses
+    # de Manati, a separate, real, defunct-2017 franchise (franchises.csv).
+    # Found + logged 2026-09-14 during backlog item 7 Phase A scoping,
+    # fixed here in Phase D since this pass already touches this exact
+    # franchise's data.
+    ("2015", "MANATI"): ("atenienses_manati", "single-source",
+        "city_franchise_map.csv's MANATI->osos_manati mapping is era-blind; this capture is "
+        "Atenienses de Manati (2014-2017), not the unrelated 2023+ Osos de Manati relocation."),
+    ("2016", "MANATI"): ("atenienses_manati", "single-source",
+        "city_franchise_map.csv's MANATI->osos_manati mapping is era-blind; this capture is "
+        "Atenienses de Manati (2014-2017), not the unrelated 2023+ Osos de Manati relocation."),
 }
 
 

@@ -504,6 +504,43 @@ def verify_standings(c: Checker) -> None:
                 "standings: no season is both covered and listed as a gap")
 
 
+def verify_player_roster_latinbasket(c: Checker) -> None:
+    """Backlog item 7, Phase D. Skipped cleanly if not built."""
+    if not _exists("player_roster_latinbasket.csv"):
+        return
+
+    fids = {r["franchise_id"] for r in _read("franchises.csv")}
+    pids = {r["bsnpr_id"] for r in _read("players_canonical.csv")}
+    rows = _read("player_roster_latinbasket.csv")
+    c.check(bool(rows), "player_roster_latinbasket: non-empty")
+    c.check(all(re.fullmatch(r"\d{4}", r["season"]) for r in rows),
+            "player_roster_latinbasket: season keys are plain YYYY")
+
+    for r in rows:
+        tag = f"player_roster_latinbasket {r['bsnpr_id']}/{r['season']}/{r['franchise_id']}"
+        for col in PROVENANCE_COLS:
+            c.check(bool(r[col]), f"{tag} has {col}")
+        c.check(r["confidence"] == "single-source",
+                f"{tag} confidence is single-source (latinbasket is not independently corroborated)",
+                r["confidence"])
+        c.check(r["source_id"] == "latinbasket", f"{tag} source_id is latinbasket", r["source_id"])
+        c.check(r["bsnpr_id"] in pids, f"{tag} bsnpr_id resolves to a real canonical player")
+        c.check(r["franchise_id"] in fids, f"{tag} franchise_id resolves to a real franchise")
+        c.check(not r["jersey_number"] or r["jersey_number"].isdigit(),
+                f"{tag} jersey_number is a non-negative integer or blank (never fabricated)",
+                r["jersey_number"])
+        c.check(not r["height_cm"] or r["height_cm"].isdigit(),
+                f"{tag} height_cm is a positive integer or blank (never fabricated)", r["height_cm"])
+
+    # a mid-season trade is a real, different (bsnpr_id, season, franchise_id)
+    # key; a true duplicate is the identical key appearing twice.
+    from collections import Counter
+    key_counts = Counter((r["bsnpr_id"], r["season"], r["franchise_id"]) for r in rows)
+    dupes = [k for k, n in key_counts.items() if n > 1]
+    c.check(not dupes, "player_roster_latinbasket: no duplicate (bsnpr_id, season, franchise_id)",
+            str(dupes[:5]))
+
+
 def verify_web_data(c: Checker) -> None:
     """PHASE_5 / 5B. Skipped cleanly if `make build-web-data` has not run."""
     import json
@@ -647,6 +684,7 @@ def main() -> int:
     verify_players(c)
     verify_reconcile(c)
     verify_standings(c)
+    verify_player_roster_latinbasket(c)
     verify_games(c)
     verify_web_data(c)
     rc = c.report()

@@ -579,6 +579,23 @@ def _season_stats() -> dict[str, dict[int, dict]]:
     return out
 
 
+def _latinbasket_roster() -> dict[str, list[dict]]:
+    """bsnpr_id -> latinbasket roster sightings (backlog item 7, Phase D).
+    Presence-only facts (jersey/height/position) from a source that never
+    carries games/points — kept structurally separate from `stats` so
+    `build_career_rows_by_pid()` can attach or synthesize without ever
+    implying a stat line that doesn't exist."""
+    out: dict[str, list[dict]] = {}
+    for r in _read("player_roster_latinbasket.csv"):
+        out.setdefault(r["bsnpr_id"], []).append({
+            "season": _int(r["season"]), "franchise_id": r["franchise_id"],
+            "jersey_number": _int(r["jersey_number"]),
+            "height_cm": _int(r["height_cm"]),
+            "position_raw": r["position_raw"] or None,
+        })
+    return out
+
+
 def build_career_rows_by_pid() -> dict[str, list[dict]]:
     """bsnpr_id -> the same career[] rows web/data/players/<id>.json gets
     (player_career_seasons.csv rows + synthesized Tier-2-only entries,
@@ -590,9 +607,10 @@ def build_career_rows_by_pid() -> dict[str, list[dict]]:
         career.setdefault(r["bsnpr_id"], []).append(r)
     resolve_team = _team_resolver()
     season_stats = _season_stats()
+    latinbasket_roster = _latinbasket_roster()
 
     out: dict[str, list[dict]] = {}
-    pids = set(career) | set(season_stats)
+    pids = set(career) | set(season_stats) | set(latinbasket_roster)
     for pid in pids:
         career_rows = [
             {"season": _int(r["season"]), "team_raw": r["team_raw"],
@@ -615,7 +633,26 @@ def build_career_rows_by_pid() -> dict[str, list[dict]]:
                     "games": s["games"], "points": s["points"],
                     "stats": s["fields"],
                 })
-        career_rows.sort(key=lambda x: (x["season"] or 0, x["team_raw"]))
+
+        # attach/synthesize latinbasket roster facts (item 7, Phase D) --
+        # matched on (season, franchise_id), not season alone, so a real
+        # mid-season trade produces two rows rather than one overwriting
+        # the other. A synthesized row's games/points stay None (PC2 --
+        # a roster sighting is not a stat line, never coalesced to zero).
+        for rr in latinbasket_roster.get(pid, []):
+            existing = next((row for row in career_rows if row["season"] == rr["season"]
+                              and row["franchise_id"] == rr["franchise_id"]), None)
+            roster_fields = {"jersey_number": rr["jersey_number"], "height_cm": rr["height_cm"],
+                              "position_raw": rr["position_raw"]}
+            if existing:
+                existing["roster"] = roster_fields
+            else:
+                career_rows.append({
+                    "season": rr["season"], "team_raw": None, "franchise_id": rr["franchise_id"],
+                    "games": None, "points": None, "roster": roster_fields,
+                })
+
+        career_rows.sort(key=lambda x: (x["season"] or 0, x["team_raw"] or ""))
         out[pid] = career_rows
     return out
 

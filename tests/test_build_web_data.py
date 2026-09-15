@@ -211,6 +211,55 @@ class TestBuild:
                     checked += 1
         assert checked > 0
 
+    def test_latinbasket_roster_helper(self):
+        # backlog item 7, Phase D — 744 confirmed rows, same shape as the
+        # (bsnpr_id -> [rows]) season_stats helper above.
+        roster = b._latinbasket_roster()
+        rows = [row for rows in roster.values() for row in rows]
+        assert len(rows) == 744
+        assert set(rows[0]) == {"season", "franchise_id", "jersey_number",
+                                 "height_cm", "position_raw"}
+        clean_rows = b._read("player_roster_latinbasket.csv")
+        assert {r["bsnpr_id"] for r in clean_rows} == set(roster)
+
+    def test_latinbasket_roster_attached_or_synthesized_in_career(self):
+        # every (bsnpr_id, season, franchise_id) the helper produces lands
+        # in that player's built career[] with a real `roster` object —
+        # whether attached to a pre-existing row or synthesized fresh.
+        roster = b._latinbasket_roster()
+        checked = 0
+        for pid, rows in roster.items():
+            d = json.loads((b.WEB / "players" / f"{pid}.json").read_text())
+            for rr in rows:
+                matches = [c for c in d["career"]
+                           if c["season"] == rr["season"] and c["franchise_id"] == rr["franchise_id"]
+                           and "roster" in c]
+                assert len(matches) == 1, f"{pid}/{rr['season']}/{rr['franchise_id']}: expected 1 roster row"
+                assert matches[0]["roster"] == {
+                    "jersey_number": rr["jersey_number"], "height_cm": rr["height_cm"],
+                    "position_raw": rr["position_raw"],
+                }
+                checked += 1
+        assert checked == 744
+
+    def test_latinbasket_roster_synthesized_row_has_null_games_points(self):
+        # a season with no other source is a real, disclosed "no stats"
+        # gap, not a fabricated 0 (PC2) — checked directly against the
+        # built JSON, not inferred from the code.
+        roster = b._latinbasket_roster()
+        career_by_pid = {r["bsnpr_id"]: r["season"] for r in b._read("player_career_seasons.csv")}
+        found_synthesized = False
+        for pid, rows in roster.items():
+            d = json.loads((b.WEB / "players" / f"{pid}.json").read_text())
+            for rr in rows:
+                row = next(c for c in d["career"]
+                           if c["season"] == rr["season"] and c["franchise_id"] == rr["franchise_id"])
+                if row["team_raw"] is None:  # synthesized, not an enrichment of an existing row
+                    assert row["games"] is None
+                    assert row["points"] is None
+                    found_synthesized = True
+        assert found_synthesized
+
     def test_season_stats_source_digest_input(self):
         # the new source is registered, so the manifest version actually
         # changes if this CSV changes (source_digest's whole reason to exist)
