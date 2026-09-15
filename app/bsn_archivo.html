@@ -74,6 +74,9 @@
   --rojo-deep:#8E1119;
   --blanco:#EEF3FB;
   --fuego:#FF6A1A;      /* live / in-progress only */
+  --focus:var(--fuego); /* keyboard-focus ring — its own token so it can
+                            diverge from --fuego's "live game" meaning
+                            later without a silent side effect */
   /* the tricolor rule's gradient, as one token — .tri and the nav active-tab
      underline both read this instead of each carrying their own copy of the
      same three stops (visual-motif pass, step A). */
@@ -88,7 +91,8 @@
   /* text */
   --ink:#EEF3FB;
   --ink-2:#A9BCDA;
-  --ink-3:#6F84A8;
+  --ink-3:#7C90B2;      /* was #6F84A8: failed AA (4.36:1) against --raise
+                            at the 10.5-12.5px sizes this token is used at */
 
   --ok:#25C26E;
 
@@ -250,7 +254,7 @@ a:hover{color:var(--blanco)}
 button{font:inherit;color:inherit}
 .wrap{max-width:var(--maxw);margin:0 auto;
   padding:0 calc(16px + env(safe-area-inset-right)) 0 calc(16px + env(safe-area-inset-left))}
-:focus-visible{outline:2px solid var(--azul-hi);outline-offset:2px;border-radius:3px}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:3px}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
 /* one-shot: cross-fade the ground + chrome on a manual theme switch (never on
    first paint). Deliberately a short list — a `* !important` sweep re-composites
@@ -395,7 +399,7 @@ nav.tabs{border-top:1px solid var(--line-soft);position:relative}
   border:1px solid var(--line);border-radius:16px;background:var(--card);cursor:pointer;
   transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}
 .tile:hover{transform:translateY(-2px);border-color:var(--ink-3);box-shadow:0 6px 18px var(--shadow)}
-.tile:focus-visible{outline:2px solid var(--fuego);outline-offset:2px}
+.tile:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
 .tile:active{transform:translateY(0)}
 .tileart{display:block;width:100%;height:104px}
 .tilebody{padding:11px 13px 13px}
@@ -453,7 +457,7 @@ nav.tabs{border-top:1px solid var(--line-soft);position:relative}
    rather than a preference: without it the app cannot be operated
    without a mouse. One rule, every interactive element. */
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,
-[tabindex]:focus-visible{outline:2px solid var(--fuego);outline-offset:2px;border-radius:6px}
+[tabindex]:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:6px}
 .tabscroll{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;max-width:var(--maxw);margin:0 auto;
   padding:0 calc(10px + env(safe-area-inset-right)) 0 calc(10px + env(safe-area-inset-left))}
 .tabscroll::-webkit-scrollbar{display:none}
@@ -569,7 +573,7 @@ h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
   transform:rotate(-45deg);transition:transform var(--dur-fast) var(--ease)}
 .liga[open]>summary::before{transform:rotate(45deg)}
 .liga>summary:hover::before{border-color:var(--ink)}
-.liga>summary:focus-visible{outline:2px solid var(--fuego);outline-offset:2px;border-radius:6px}
+.liga>summary:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:6px}
 .liga>:not(summary){margin-bottom:var(--sp-4)}
 @media(min-width:860px){
   .liga>summary{font-size:var(--fs-lg);padding:var(--sp-6) 0 var(--sp-2)}
@@ -686,7 +690,7 @@ select{cursor:pointer}
 .ask{position:relative}
 .ask input{padding:14px 15px;font-size:16px;border-radius:var(--r);border-color:var(--azul-deep);
   background:var(--deep)}
-.ask input:focus{border-color:var(--azul-hi);outline:none}
+.ask input:focus{border-color:var(--azul-hi);outline:2px solid var(--focus);outline-offset:2px}
 .answer{margin-top:14px;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--deep)}
 .answer .ahead{padding:16px 18px;background:var(--ahead-a)}
 .answer .aq{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--aq-ink);font-weight:600}
@@ -902,7 +906,7 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 .hubsearch{margin:16px 0 4px;position:relative}
 .hubsearch input{padding:13px 15px;font-size:16px;border-radius:var(--r);
   border-color:var(--azul-deep);background:var(--deep)}
-.hubsearch input:focus{border-color:var(--azul-hi);outline:none}
+.hubsearch input:focus{border-color:var(--azul-hi);outline:2px solid var(--focus);outline-offset:2px}
 /* ── Editorial blocks (PHASE_8.3) — a headline stat + a phrase + one line
    of context + a supporting visual, not a number in a box. Inicio hub,
    the player/team heros, the mega-menu featured blocks. */
