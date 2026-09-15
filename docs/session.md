@@ -3784,12 +3784,23 @@ Decision made session 002 (PHASE_3E_CLEAN_STORAGE):
    than fixed now. All 5 Cuadrícula answers verified accepting via the
    real `submitGuess()`/`axMatch()` code path (jsdom), not just
    eyeballed data. Full record in the boxed entry below.
-   **Next: owner continuing the item 4-6 browser-verification round**
-   (season comparison + MVP marking, team lore pages, Temporada Perfecta,
-   ¿Quién soy?, and a Berdiel/Dalmau merge spot-check still pending),
-   plus the still-open latinbasket phasing decision once that's done.
-   Everything numbered below this point is older history, mostly already
-   resolved — kept for the record, not a live task list.
+   **Owner-verified live, full round: everything passed.** Season
+   comparison + MVP marking, team lore pages, all three games
+   (Cuadrícula's difficulty pass, Temporada Perfecta's recalibration,
+   ¿Quién soy?'s wider pool), the Piculín Ortiz identity fix (profile
+   shows correct data now), and all 5 previously-rejected Cuadrícula
+   answers (now accepted). **This closes backlog items 4, 5, and 6 in
+   full, plus the Piculín identity fix and the 3-function identity-
+   matching audit — nothing left pending from this session's work.**
+   **Next: open — no live task.** Item 7 (latinbasket roster ingest)
+   remains queued as its own dedicated future session (phases 1-2 fetch/
+   parse make sense regardless of the phasing decision; phase 3 identity
+   resolution should wait for a fresh session with room to think about
+   it properly, per owner's own framing). Tier-1 (57 exact-name groups)
+   and Tier-2 (136 birth-date groups) canonical-file triage also remain
+   queued, not urgent. Everything numbered below this point is older
+   history, mostly already resolved — kept for the record, not a live
+   task list.
 
 **Backlog item 7 scoping + canonical-file duplicate cleanup — full
 record (2026-09-14).**
