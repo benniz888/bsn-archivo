@@ -705,9 +705,9 @@ select{cursor:pointer}
 .answer .afoot{padding:10px 18px;border-top:1px solid var(--line);color:var(--ink-3);font-size:var(--fs-2xs)}
 
 /* ---------- ribbon ---------- */
-.ribbon{margin-top:16px}
+.ribbon{margin-top:var(--sp-4)}
 .decade{display:grid;grid-template-columns:46px 1fr;gap:9px;align-items:start;margin-bottom:6px}
-.decade-label{color:var(--ink-3);font-size:12px;font-weight:600;padding-top:8px}
+.decade-label{color:var(--ink-3);font-size:var(--fs-2xs);font-weight:600;padding-top:var(--sp-2)}
 .cells{display:grid;grid-template-columns:repeat(10,1fr);gap:3px}
 .cell{aspect-ratio:1/1.45;border:0;border-radius:3px;cursor:pointer;padding:0;min-height:24px;
   transition:transform .12s ease}
@@ -716,15 +716,15 @@ select{cursor:pointer}
 .cell.empty:hover{transform:none;box-shadow:none}
 .cell.sel{box-shadow:0 0 0 2px var(--rojo)}
 .readout{border:1px solid var(--line);border-radius:var(--r);background:var(--deep);margin-top:14px;
-  padding:16px;min-height:96px;display:flex;gap:14px;align-items:center}
+  padding:var(--sp-4);min-height:96px;display:flex;gap:14px;align-items:center}
 .readout .yr{font-size:var(--fs-2xl);line-height:1;color:var(--ink-3);flex:none;font-weight:800;letter-spacing:-.03em}
 .readout .win{font-weight:700;font-size:17px}
 .readout .lose{color:var(--ink-2);font-size:13.5px;margin-top:2px}
-.readout .meta{color:var(--ink-3);font-size:12px;margin-top:7px;white-space:normal}
+.readout .meta{color:var(--ink-3);font-size:var(--fs-2xs);margin-top:7px;white-space:normal}
 
 /* ---------- bars ---------- */
-.bars{margin-top:12px;display:grid;gap:5px}
-.barrow{display:grid;grid-template-columns:132px 1fr 42px;gap:10px;align-items:center;font-size:13px}
+.bars{margin-top:var(--sp-3);display:grid;gap:5px}
+.barrow{display:grid;grid-template-columns:132px 1fr 42px;gap:10px;align-items:center;font-size:var(--fs-xs)}
 .barrow .bl{color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bartrack{background:var(--line-soft);border-radius:3px;height:15px;overflow:hidden}
 .barfill{display:block;height:100%;border-radius:3px}
@@ -958,9 +958,9 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 .timeline .td{font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
 .timeline .tt2{font-weight:700;margin-top:2px}
 .timeline .tb{color:var(--ink-2);font-size:13.5px;margin-top:3px}
-.matrix{overflow-x:auto;margin-top:12px}
+.matrix{overflow-x:auto;margin-top:var(--sp-3)}
 .matrix table{min-width:520px;font-size:12px}
-.matrix td{text-align:center;padding:6px 4px}
+.matrix td{text-align:center;padding:6px var(--sp-1)}
 .matrix td.lbl{text-align:left;font-weight:600;position:sticky;left:0;background:var(--deep)}
 .pill{display:inline-block;padding:1px 7px;border-radius:99px;font-size:11px;font-weight:600}
 .pill.w{background:var(--tint-ok);color:var(--on-ok)}
@@ -3862,7 +3862,7 @@ function showSeason(y,btn){
         <div class="win">${esc(f.name)}</div>
         <div class="lose">${r?'venció a '+esc(F[r].name):'subcampeón no registrado'}</div>
         <div class="meta">Título ${f.won.indexOf(y)+1} de ${f.won.length} para el club${NOTES[y]?' · '+esc(NOTES[y]):''}</div>
-        <div class="btnrow"><button class="btn" onclick="showTeam('${k}')" style="padding:5px 11px;font-size:12px">Ver ${esc(f.name.split(' de ')[0])}</button></div>
+        <div class="btnrow"><button class="btn" onclick="showTeam('${k}')" style="padding:5px 11px;font-size:var(--fs-2xs)">Ver ${esc(f.name.split(' de ')[0])}</button></div>
       </div>`;
   }
   loadSeasonExtra(y);
@@ -3896,13 +3896,13 @@ async function loadSeasonExtra(y){
   }
   if(d.standings){
     const st=d.standings;
-    h+=`<div class="note" style="margin-top:12px">Posiciones${st.complete?'':` <span class="muted">— parcial, ${st.games_recorded} juegos en el archivo</span>`}</div>`
+    h+=`<div class="note" style="margin-top:var(--sp-3)">Posiciones${st.complete?'':` <span class="muted">— parcial, ${st.games_recorded} juegos en el archivo</span>`}</div>`
       +'<div class="tblwrap"><table><thead><tr><th>Equipo</th><th class="num">G</th><th class="num">P</th></tr></thead><tbody>'
       +st.rows.map(row=>`<tr><td>${esc(row.team_raw)}</td><td class="num">${row.w}</td><td class="num">${row.l}</td></tr>`).join('')
       +'</tbody></table></div>';
   }
   if(d.leaders){
-    h+='<div class="note" style="margin-top:12px">Líderes de la temporada</div><dl class="kv">';
+    h+='<div class="note" style="margin-top:var(--sp-3)">Líderes de la temporada</div><dl class="kv">';
     for(const cat of Object.keys(d.leaders)){
       const top=d.leaders[cat][0]; if(!top) continue;
       h+=`<dt>${esc(SEASON_LC[cat]||cat)}</dt><dd>${esc(top.player_raw)}<span class="muted"> · ${top.value!=null?top.value:'—'}${top.club_raw?' · '+esc(top.club_raw):''}</span></dd>`;
@@ -3910,7 +3910,7 @@ async function loadSeasonExtra(y){
     h+='</dl>';
   }
   host.innerHTML = h
-    ? `<div class="card" style="margin-top:12px">${h}<div class="note">Del archivo de bsnpr.com vía Wayback Machine.</div></div>`
+    ? `<div class="card" style="margin-top:var(--sp-3)">${h}<div class="note">Del archivo de bsnpr.com vía Wayback Machine.</div></div>`
     : '';
 }
 function buildTitleStats(){
@@ -3944,11 +3944,11 @@ function buildDynasties(){
   runs.sort((a,b)=>b.n-a.n||a.start-b.start);
   const host=$('#dynasties');
   host.innerHTML='<div class="cards g3">'+runs.slice(0,9).map(r=>`
-    <div class="card" style="display:flex;gap:12px;align-items:center">
+    <div class="card" style="display:flex;gap:var(--sp-3);align-items:center">
       ${crest(r.k,32,38)}
       <div><div style="font-family:inherit;font-weight:800;font-size:26px;line-height:1">${r.n} seguidos</div>
       <div style="font-weight:600;font-size:13.5px">${esc(F[r.k].name.split(' de ')[0])}</div>
-      <div class="dim" style="font-size:12px">${r.start}–${r.end}</div></div></div>`).join('')+'</div>'+
+      <div class="dim" style="font-size:var(--fs-2xs)">${r.start}–${r.end}</div></div></div>`).join('')+'</div>'+
     `<p class="note">${runs.length} rachas de dos o más títulos consecutivos en 97 temporadas. Bayamón 2025–26 es la primera desde Ponce en 2014–15.</p>`;
 }
 function buildMatrix(){
