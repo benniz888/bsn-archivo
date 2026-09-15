@@ -959,7 +959,7 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 .timeline .tt2{font-weight:700;margin-top:2px}
 .timeline .tb{color:var(--ink-2);font-size:13.5px;margin-top:3px}
 .matrix{overflow-x:auto;margin-top:var(--sp-3)}
-.matrix table{min-width:520px;font-size:12px}
+.matrix table{min-width:520px;font-size:var(--fs-2xs)}
 .matrix td{text-align:center;padding:6px var(--sp-1)}
 .matrix td.lbl{text-align:left;font-weight:600;position:sticky;left:0;background:var(--deep)}
 .pill{display:inline-block;padding:1px 7px;border-radius:99px;font-size:11px;font-weight:600}
@@ -4000,7 +4000,7 @@ function buildSeasonTable(){
     {label:'Campeón',wide:true,render:(v,r)=>{
       if(!v) return '<span class="dim">sin registrar</span>';
       const k=champOf[r[0]];
-      return `<button class="btn" style="padding:2px 8px;font-size:12px" onclick="showTeam('${k}')">${esc(v)}</button>`;
+      return `<button class="btn" style="padding:2px var(--sp-2);font-size:var(--fs-2xs)" onclick="showTeam('${k}')">${esc(v)}</button>`;
     }},
     {label:'Subcampeón',wide:true},
     {label:'Nota',wide:true}
@@ -4743,7 +4743,7 @@ function buildScoringChart(){
 function buildScoringTable(){
   buildTable($('#scoringTable'),[
     {label:'Año',num:true},{label:'Jugador',wide:true,
-      render:v=>`<button class="btn" style="padding:2px 8px;font-size:12px" onclick="showPlayer(${JSON.stringify(v).replace(/"/g,'&quot;')})">${esc(v)}</button>`},
+      render:v=>`<button class="btn" style="padding:2px var(--sp-2);font-size:var(--fs-2xs)" onclick="showPlayer(${JSON.stringify(v).replace(/"/g,'&quot;')})">${esc(v)}</button>`},
     {label:'Club',wide:true},{label:'Métrica'},{label:'Valor',num:true}
   ],SCORING.map(s=>[s[0],s[1],s[2],s[3]==='ppg'?'promedio':'total',s[4]]),{file:'campeones_anotacion',sort:0,dir:-1});
 }
@@ -4926,7 +4926,7 @@ function buildMVPYears(){
     {label:'Año',num:true},
     {label:'Jugador',wide:true,render:(v,r)=>{
       const id=MVP_ID&&MVP_ID[r[0]], also=MVP_ALSO&&MVP_ALSO[r[0]];
-      const b=`<button class="btn" style="padding:2px 8px;font-size:12px" onclick="showPlayer(${JSON.stringify(v).replace(/"/g,'&quot;')}${id!=null?','+id:''})">${esc(v)}</button>`;
+      const b=`<button class="btn" style="padding:2px var(--sp-2);font-size:var(--fs-2xs)" onclick="showPlayer(${JSON.stringify(v).replace(/"/g,'&quot;')}${id!=null?','+id:''})">${esc(v)}</button>`;
       return also ? b+` <span class="muted" style="cursor:help" title="El archivo también registra a ${esc(also)} para este año">†</span>` : b;
     }},
     {label:'Club',wide:true},{label:'Década',num:true}
@@ -4953,7 +4953,7 @@ function buildSeasonAwards(){
       .map(r=>[r[0],r[1],r[2],r[3],r[4]]);
     buildTable($('#awTable'),[
       {label:'Año',num:true},{label:'Premio'},
-      {label:'Jugador',wide:true,render:v=>`<button class="btn" style="padding:2px 8px;font-size:12px" onclick="showPlayer(${JSON.stringify(v).replace(/"/g,'&quot;')})">${esc(v)}</button>`},
+      {label:'Jugador',wide:true,render:v=>`<button class="btn" style="padding:2px var(--sp-2);font-size:var(--fs-2xs)" onclick="showPlayer(${JSON.stringify(v).replace(/"/g,'&quot;')})">${esc(v)}</button>`},
       {label:'Club',wide:true},{label:'Línea',wide:true}
     ],rows,{file:'premios_bsn',sort:0,dir:-1});
   };
