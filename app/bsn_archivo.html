@@ -421,21 +421,21 @@ nav.tabs{border-top:1px solid var(--line-soft);position:relative}
    gap rather than dropped on a finished picture; 420ms is long
    enough to read as motion and short enough not to be a wait. */
 .cmpcard{margin-top:14px}
-.cmpheads{display:flex;flex-wrap:wrap;gap:8px 18px;padding-bottom:12px;border-bottom:1px solid var(--line)}
-.cmphead{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cmpheads{display:flex;flex-wrap:wrap;gap:var(--sp-2) 18px;padding-bottom:var(--sp-3);border-bottom:1px solid var(--line)}
+.cmphead{display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap}
 .cmpdot{width:11px;height:11px;border-radius:3px;flex:0 0 auto}
 .cmpname{font-weight:700;font-size:14.5px}
-.cmpx{padding:1px 8px;font-size:11px}
-.cmpverdict{margin:12px 0 4px;font-size:14.5px;color:var(--ink-2)}
+.cmpx{padding:1px var(--sp-2);font-size:var(--fs-3xs)}
+.cmpverdict{margin:var(--sp-3) 0 var(--sp-1);font-size:14.5px;color:var(--ink-2)}
 .cmpsplit{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start;margin-top:10px}
 .cmpradar{flex:0 0 auto;margin:0 auto}
 .cmprows{flex:1 1 260px;min-width:240px}
 .cmpgrouplab{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;
-  color:var(--ink-3);margin:12px 0 6px}
+  color:var(--ink-3);margin:var(--sp-3) 0 6px}
 .cmpgrouplab:first-child{margin-top:0}
 .cmprow{margin-bottom:9px}
-.cmplab{font-size:12px;color:var(--ink-2);margin-bottom:3px}
-.cmpbarline{display:flex;align-items:center;gap:8px;margin-bottom:3px}
+.cmplab{font-size:var(--fs-2xs);color:var(--ink-2);margin-bottom:3px}
+.cmpbarline{display:flex;align-items:center;gap:var(--sp-2);margin-bottom:3px}
 .cmptrack{flex:1;height:9px;border-radius:999px;background:var(--line-soft);overflow:hidden}
 .cmpfill{height:100%;border-radius:999px;width:0;animation:cmpgrow .42s cubic-bezier(.22,.8,.3,1) forwards}
 @keyframes cmpgrow{to{width:var(--w)}}
@@ -444,7 +444,7 @@ nav.tabs{border-top:1px solid var(--line-soft);position:relative}
 .cmpval.hole{color:var(--ink-3)}
 .cmpspoke{animation:cmppop .45s cubic-bezier(.22,.8,.3,1) both}
 @keyframes cmppop{from{opacity:0;transform:scale(.86);transform-origin:88px 80px}to{opacity:1;transform:none}}
-.cmpfoot{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.cmpfoot{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;padding-top:var(--sp-3);border-top:1px solid var(--line)}
 .cmpfootcol{flex:1 1 140px;min-width:130px}
 .cmpempty{margin-top:14px;border-style:dashed}
 @media (prefers-reduced-motion:reduce){
@@ -4334,7 +4334,7 @@ function renderPlayerIndex(){
     Array.from(p.src).length
   ]);
   buildTable($('#playerIndex'),[
-    {label:'Jugador',wide:true,render:v=>`<button class="btn" style="padding:2px 8px;font-size:12px" onclick="showPlayer(${JSON.stringify(v).replace(/"/g,'&quot;')})">${esc(v)}</button>`},
+    {label:'Jugador',wide:true,render:v=>`<button class="btn" style="padding:2px var(--sp-2);font-size:var(--fs-2xs)" onclick="showPlayer(${JSON.stringify(v).replace(/"/g,'&quot;')})">${esc(v)}</button>`},
     {label:'Pos'},{label:'Años'},{label:'Clubes'},
     {label:'Pts',num:true},{label:'Reb',num:true},{label:'Ast',num:true},{label:'PJ',num:true},
     {label:'Fuentes',num:true}
@@ -4360,7 +4360,7 @@ function renderArchiveIndex(q){
     ? (p.first_season===p.last_season?''+p.first_season:p.first_season+'–'+p.last_season) : '';
   const rows=shown.map(p=>[p.name, p.position||'', span(p), p.n_seasons, p.id]);
   buildTable(host,[
-    {label:'Jugador',wide:true,render:(v,r)=>`<button class="btn" style="padding:2px 8px;font-size:12px" onclick="openArchivePlayer(${r[4]},${JSON.stringify(v).replace(/"/g,'&quot;')})">${esc(v)}</button>`},
+    {label:'Jugador',wide:true,render:(v,r)=>`<button class="btn" style="padding:2px var(--sp-2);font-size:var(--fs-2xs)" onclick="openArchivePlayer(${r[4]},${JSON.stringify(v).replace(/"/g,'&quot;')})">${esc(v)}</button>`},
     {label:'Pos'},{label:'Años'},{label:'Temp.',num:true}
   ],rows,{file:'archivo_bsn',sort:0,dir:1,
     note:list.length>ARCH_CAP?`Mostrando ${ARCH_CAP} de ${list.length.toLocaleString('es-PR')} — afiná la búsqueda.`:''});
@@ -4583,7 +4583,7 @@ async function loadPlayerExtra(name,idHint,season){
   host.innerHTML=''; host.dataset.key=key;
   SEASON_CMP_CAREER=null; SEASON_CMP_SEL=new Set(); SEASON_CMP_NAME=name;
   if(id==null){
-    host.innerHTML=`<div class="card" style="margin-top:12px"><div class="note" style="margin-top:10px">Sin ficha vinculada en el archivo de bsnpr.com `
+    host.innerHTML=`<div class="card" style="margin-top:var(--sp-3)"><div class="note" style="margin-top:10px">Sin ficha vinculada en el archivo de bsnpr.com `
       +`<span class="muted">— no se ha podido identificar con certeza a este jugador en esa base</span>.</div></div>`;
     return;
   }
@@ -4595,7 +4595,7 @@ async function loadPlayerExtra(name,idHint,season){
   if(b.date) top.push('n. '+esc(b.date)+(b.city?' · '+esc(b.city):''));
   if(d.position) top.push(esc(d.position));
   if(d.nationality && d.nationality!=='Puerto Rico') top.push(esc(d.nationality));
-  if(top.length) h+=`<div class="muted" style="font-size:13px">${top.join(' · ')}</div>`;
+  if(top.length) h+=`<div class="muted" style="font-size:var(--fs-xs)">${top.join(' · ')}</div>`;
 
   /* jugador05.asp scouting note (2005–06), where the archive has one */
   const bio=d.bio||null;
@@ -4603,7 +4603,7 @@ async function loadPlayerExtra(name,idHint,season){
     const yr=bio.roster && bio.roster.year;
     h+=`<div class="note" style="margin-top:10px">Reseña de bsnpr.com`
       +`<span class="muted">${yr?' · '+yr:''}</span></div>`
-      +`<p class="muted" style="font-size:13.5px;margin:4px 0 0;line-height:1.5">${esc(bio.notes_es)}</p>`;
+      +`<p class="muted" style="font-size:13.5px;margin:var(--sp-1) 0 0;line-height:1.5">${esc(bio.notes_es)}</p>`;
   }
 
   const car=(d.career||[]).slice().sort((a,b)=>(a.season||0)-(b.season||0));
@@ -4644,7 +4644,7 @@ async function loadPlayerExtra(name,idHint,season){
       +`<span class="muted">— ${bio&&bio.notes_es?'sólo la reseña de arriba':'sin ficha detallada'}</span>.</div>`;
   }
   h+='<div id="seasonDetail"></div>';
-  host.innerHTML=`<div class="card" style="margin-top:12px">${h}`
+  host.innerHTML=`<div class="card" style="margin-top:var(--sp-3)">${h}`
     +`<div class="note">Ficha del archivo de bsnpr.com (jugador #${id}) vía Wayback Machine.</div></div>`;
   SEASON_CMP_CAREER=car;
   if(season!=null) renderSeasonDetail(car,season,name,id);
@@ -4669,7 +4669,7 @@ function buildLeaders(){
     v=>LEAD_MODE==='total'?v.toLocaleString('es-PR'):v.toFixed(1));
   buildTable($('#leadTable'),[
     {label:'#',num:true},
-    {label:'Jugador',wide:true,render:v=>`<button class="btn" style="padding:2px 8px;font-size:12px" onclick="showPlayer(${JSON.stringify(v).replace(/"/g,'&quot;')})">${esc(v)}</button>`},
+    {label:'Jugador',wide:true,render:v=>`<button class="btn" style="padding:2px var(--sp-2);font-size:var(--fs-2xs)" onclick="showPlayer(${JSON.stringify(v).replace(/"/g,'&quot;')})">${esc(v)}</button>`},
     {label:'Pos'},{label:'Años'},{label:'Total',num:true},{label:'PJ',num:true},{label:'Por juego',num:true}
   ],rows.map((r,i)=>[i+1,r[1],r[2],r[3],r[4],r[5],r[6]]),
     {file:'lideres_'+LEAD_CAT,sort:null,
@@ -4716,7 +4716,7 @@ function buildRecords(){
       <div style="display:flex;align-items:baseline;gap:10px">
         <span style="font-family:inherit;font-weight:800;font-size:32px;line-height:1;color:var(--rojo)">${esc(r[1])}</span>
         <span style="font-weight:700">${esc(r[0])}</span></div>
-      <div class="muted" style="font-size:13.5px;margin-top:4px">${esc(r[2])} · ${r[3]}</div>
+      <div class="muted" style="font-size:13.5px;margin-top:var(--sp-1)">${esc(r[2])} · ${r[3]}</div>
       ${r[4]?`<div class="note">${esc(r[4])}</div>`:''}</div>`).join('')+'</div>';
 }
 function buildScoringChart(){
@@ -4750,7 +4750,7 @@ function buildScoringTable(){
 function buildCoaches(){
   $('#coachList').innerHTML='<div class="cards g2">'+COACHES.map(c=>`
     <div class="card"><div style="font-weight:700">${esc(c[0])}</div>
-    <div class="muted" style="font-size:13px">${esc(c[1])}</div>
+    <div class="muted" style="font-size:var(--fs-xs)">${esc(c[1])}</div>
     ${c[2]?`<div class="note">${esc(c[2])}</div>`:''}</div>`).join('')+'</div>';
 }
 function buildNBA(){
@@ -7366,7 +7366,7 @@ function buildCompare(){
   <div class="chips" style="margin-top:2px">${CMP_PRESETS.map(p=>
     `<button class="chip" onclick="cmpPreset(${JSON.stringify(p[0]).replace(/"/g,'&quot;')},${JSON.stringify(p[1]).replace(/"/g,'&quot;')})">${esc(p[2])}</button>`).join('')}</div>
   <div class="msg" id="cmpMsg" role="status" aria-live="polite"></div>
-  <div class="note" style="margin-top:8px">Cada jugador se puede fijar a su carrera o a una temporada
+  <div class="note" style="margin-top:var(--sp-2)">Cada jugador se puede fijar a su carrera o a una temporada
     específica. El archivo no tiene datos por jugador de 2022 en adelante — esas temporadas
     no aparecen para nadie todavía.</div>`;
   const inp=$('#cmpQ');
@@ -7519,7 +7519,7 @@ function drawCompare(){
   const out=$('#cmpOut'); if(!out) return;
   if(!CMP.length){
     out.innerHTML=`<div class="card cmpempty">
-      <div style="font-weight:700;font-size:15px">Nadie en la comparación todavía</div>
+      <div style="font-weight:700;font-size:var(--fs-base)">Nadie en la comparación todavía</div>
       <p class="muted" style="font-size:13.5px;margin:6px 0 0">Escribe un nombre arriba o toca uno de los duelos.
       Con dos jugadores aparece el veredicto, las barras a escala y el radar de perfil.</p></div>`;
     return;
@@ -7576,7 +7576,7 @@ function drawCompare(){
     ${verdict}
     <div class="cmpsplit">
       ${anySeason?'':`<div class="cmpradar">${cmpRadar(ps)}
-        <div class="dim" style="font-size:11px;text-align:center;margin-top:2px">Cada eje va contra el mejor del índice</div>
+        <div class="dim" style="font-size:var(--fs-3xs);text-align:center;margin-top:2px">Cada eje va contra el mejor del índice</div>
       </div>`}
       <div class="cmprows">
         <div class="cmpgrouplab">Por juego</div>
@@ -7589,12 +7589,12 @@ function drawCompare(){
     </div>
     <div class="cmpfoot">
       ${ps.map((p,i)=>`<div class="cmpfootcol">
-        <div class="dim" style="font-size:11px;letter-spacing:.07em;font-weight:700">${esc(p.name.split(' ')[0].toUpperCase())}</div>
-        <div style="font-size:12px;margin-top:3px">${anySeason
+        <div class="dim" style="font-size:var(--fs-3xs);letter-spacing:.07em;font-weight:700">${esc(p.name.split(' ')[0].toUpperCase())}</div>
+        <div style="font-size:var(--fs-2xs);margin-top:3px">${anySeason
           ? (p._mode==='season'?'Temporada '+esc(String(p._season||'—')):'Carrera')+' · '+(Array.from(p.clubs).map(c=>F[c]?F[c].abbr:c).join(' ')||'—')
           : (Array.from(p.clubs).map(c=>F[c]?F[c].abbr:c).join(' ')||'—')}</div>
         ${anySeason?'':`<div class="chips" style="margin-top:5px">${Array.from(p.tags).slice(0,6).map(t=>
-          `<span class="tag ${/MVP|Leyenda|10\.000/.test(t)?'gold':''}" style="font-size:10.5px">${esc(t)}</span>`).join('')||'<span class="dim" style="font-size:12px">—</span>'}</div>
+          `<span class="tag ${/MVP|Leyenda|10\.000/.test(t)?'gold':''}" style="font-size:10.5px">${esc(t)}</span>`).join('')||'<span class="dim" style="font-size:var(--fs-2xs)">—</span>'}</div>
         ${p.hi?`<div class="muted" style="font-size:11.5px;margin-top:5px">Mejor: ${p.hi[1].toFixed(1)} pts en ${p.hi[0]}</div>`:''}`}
       </div>`).join('')}
     </div>`;
