@@ -4601,8 +4601,28 @@ literal raw JSON text); (2) `web/data/seasons/2015.json` and `2016.json`
 now show `franchise_id: "atenienses_manati"` for the Manatí standings row,
 confirming D2's fix reached the rebuilt site data.
 
-**Next: D6 — present the full change summary and await approval before
-any commit.**
+**D6 DONE — committed `f7f6044`** (374 files: 5 new source scripts + 3
+modified, 1 new clean file (744 rows) + 1 corrected (2 rows), 17 new
+interim audit-trail files, ~350 regenerated `web/data/` files). Pre-commit
+hook's own `web/data/` freshness rebuild passed clean.
+
+═══════════════════════════════════════════════════════════════════════
+**BACKLOG ITEM 7 (latinbasket.com roster ingest) — COMPLETE, LIVE.**
+Fetch (Phase A) -> Parse (Phase B) -> Identity resolution (Phase C) ->
+Wire into data/clean/+web/data/ (Phase D), all owner-approved at every
+phase boundary, same discipline as every other feature this session.
+744 real player-seasons added; 183 held honestly as insufficient
+evidence; 10 real leads fed into the Tier-1 duplicate-triage queue and
+future new-player-review pass; zero forced merges anywhere in the chain.
+═══════════════════════════════════════════════════════════════════════
+
+**Next: open — no live task.** Remaining queued, not started this
+session: Tier-1 (57 exact-name groups, now 6 confirmed leads from item 7)
++ Tier-2 (136 birth-date groups) canonical-file triage; the open repeat-
+name clusters (Ricardo Sanchez, Christian Dalmau, Falcon Alexander, Alex
+Franklin, Alexander Galindo, Owens Perez) as candidates for a future new-
+player-import pass; the `_team_resolver()` era-blind Manatí bug (own
+scoping pass needed, blast radius unknown).
 
 **Addendum (2026-09-14, browser-verification session)**: when that Tier-1
 triage happens, also specifically check `merge_jug05()`'s own exact-name
