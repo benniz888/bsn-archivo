@@ -410,11 +410,11 @@ nav.tabs{border-top:1px solid var(--line-soft);position:relative}
 .tileart{display:block;width:100%;height:104px}
 .tilebody{padding:11px 13px 13px}
 .tiletitle{font-family:inherit;font-weight:800;font-size:19px;line-height:1.1}
-.tiledesc{color:var(--ink-2);font-size:12.5px;line-height:1.45;margin-top:4px}
-.tilemeta{display:flex;align-items:center;gap:8px;margin-top:9px;font-size:11px;
+.tiledesc{color:var(--ink-2);font-size:var(--fs-2xs);line-height:1.45;margin-top:4px}
+.tilemeta{display:flex;align-items:center;gap:8px;margin-top:9px;font-size:var(--fs-3xs);
   color:var(--ink-3);letter-spacing:.06em;font-weight:700;text-transform:uppercase}
 .tileplay{margin-left:auto;color:var(--night);background:var(--ink);border-radius:999px;
-  padding:4px 12px;font-size:11.5px;letter-spacing:.04em}
+  padding:4px 12px;font-size:var(--fs-3xs);letter-spacing:.04em}
 .tile:hover .tileplay{background:var(--fuego);color:#fff}
 .stage{animation:stagein .22s ease both}
 @keyframes stagein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
@@ -740,7 +740,7 @@ select{cursor:pointer}
 .crest img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;border-radius:4px}
 
 /* ---------- club tiles (league app "Equipos") ---------- */
-.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-2_5);margin-top:var(--sp-3_5)}
 @media(min-width:720px){.tiles{grid-template-columns:repeat(4,1fr)}}
 @media(min-width:980px){.tiles{grid-template-columns:repeat(6,1fr)}}
 .teamtile{background:var(--deep);border:1px solid var(--line);border-radius:var(--r);padding:12px 6px 10px;
