@@ -103,16 +103,94 @@ One-off (12 values, single chunk each): font `14.5/26/30/32/46px`; spacing
 pill" idiom with two different magic numbers in different chunks, a naming
 cleanup, not a scale gap.
 
-**QUEUE, in order, next session:**
-1. **Propose scale-step additions** (new `--sp-*`/`--fs-*` steps) based on
-   the tally above, showing which flagged instances would convert under each
-   candidate. Analysis only, no code yet — owner reviews before anything is
-   implemented.
-2. **Once approved: implement the new tokens across all 7 chunks**, then run
-   the deferred cross-cutting shared-components pass (`.card`, `.tag`,
-   `.tile`/`.teamtile`, `.chips`, `.btn`, and the rest of the deferred list
-   above) — verify each shared class across every tab that consumes it at
-   once, not per-tab.
+**New-steps implementation — DONE, pushed.** Owner approved a high-confidence
+subset of the tally: 3 new spacing tokens `--sp-2_5`(10px)/`--sp-3_5`(14px)/
+`--sp-4_5`(18px) — underscore, not a literal dot, since `.` is not a valid
+character in a CSS custom-property identifier (confirmed empirically before
+using it; Tailwind's `2.5`-style naming is a compiled class name, not a raw
+`--custom-property` name) — plus a font-size rounding extension onto existing
+steps: `10.5/11.5px→--fs-3xs`, `12.5px→--fs-2xs`, `13.5px→--fs-xs`. Declined:
+`--sp-1.5`(6px), `--r-xs`(3px), and the weak `17px`/`20px` font gaps — left as
+literals for a possible future pass. Implemented across all 7 chunks, one
+commit each (`99b5662` Perfil, `b86a9d9` Equipos, `b2462f4` Archivo, `8892961`
+Historia, `54b7132` Jugadores, `885f02c` Inicio, `a2a0052` Juega), same
+per-chunk Chromium+WebKit+jsdom verification as Step 2. Two correction
+commits found mid-pass: `1abf889` — `drawCompare()`'s "mejor" line had a
+stray `11.5px` that belonged to Jugadores' original tally but was missed when
+Jugadores' new-steps commit landed; `8448478` — `.ask input` (Archivo's
+"Pregúntale al archivo" search box) was never scanned by the original Archivo
+chunk (that chunk's scope was explicitly `.answer`/`.glos` family/
+`.covergrid` only) — converted its `14px` (exact match), flagged its `15px`
+and `16px` as new one-off values (no exact match, not previously seen in any
+chunk).
+
+**Shared-components discovery pass — DONE, pushed (2026-09-16), 3 commits.**
+Before implementing, ran a scoping pass (analysis only) tracing `.card`,
+`.tag`, `.tile`, `.chips`, `.btn` end-to-end: every CSS rule, every consuming
+call site by tab, and a duplicate-selector check same as the Step 2 standing
+practice. Key finding: **the real shared design-system block — `.field`,
+`.btn`, `.btnrow`, `.chip`, `.chips`, `.tag`, lines 659–693 — was never in
+scope for any Step 2 chunk**, because Step 2 chunked strictly by tab and this
+block lives in the global CSS region outside every tab's line range. Not "a
+few leftover instances" — structurally never scanned, and it renders on
+every tab.
+- `8a5f3ee` — global block: converted `.field label`(10.5px→`--fs-3xs`),
+  `.btn`(14px→`--sp-3_5`, 13.5px→`--fs-xs`), `.btnrow`(8px→`--sp-2`,
+  12px→`--sp-3`), `.chip`(12px→`--sp-3`, 12.5px→`--fs-2xs`),
+  `.chips`(10px→`--sp-2_5`; its `gap:7px` has no exact match, left as-is),
+  `.tag`(10px→`--sp-2_5`, 11.5px→`--fs-3xs`). Also removed `.btn.red` +
+  `.btn.red:hover` — confirmed zero consumers file-wide, same category as the
+  already-known `.dangerzone`/`.cmpx` dead code.
+- `6ed91a8` — `.tile`/`.tiles` literals: `.tiledesc`(12.5px→`--fs-2xs`),
+  `.tilemeta`(11px→`--fs-3xs`, an exact match), `.tileplay`(11.5px→
+  `--fs-3xs`), `.tiles`(gap 10px→`--sp-2_5`, margin-top 14px→`--sp-3_5`).
+  Confirmed the `.tile`/`.teamtile` collision from earlier stayed fixed — only
+  one `.tile{` definition file-wide, single consumer (Juega's shelf).
+- `ae4e4a0` — 7 flagged `.card`-consumer render functions across 4 tabs, a
+  third category of scan blind spot distinct from both the buildTable
+  render-callback gap and the `.style.property=` JS-assignment gap: plain
+  `style="..."` attributes inside render functions that the original per-tab
+  literal scans simply didn't catch. 9 literals converted: `renderArchiveCard`
+  (Jugadores, 18px→`--sp-4_5` + 13.5px→`--fs-xs`), `renderSeasonDetail`
+  (Jugadores, 12px→`--sp-3`), `buildRefRules` (**Historia** — its host
+  `#refRules` sits inside Historia's markup despite the function being
+  defined near Jugadores' functions in the file — 11px→`--fs-3xs` +
+  13.5px→`--fs-xs`), `buildSources` (Archivo, 13.5px→`--fs-xs` +
+  12px→`--sp-3`), `buildOwners` (Equipos, 12px→`--sp-3` + 13.5px→`--fs-xs`).
+
+Also found, not fixed (naming residue, not functional bugs):
+- `function tile(k)` (Equipos, line 4019) emits `class="teamtile"` — the CSS
+  class was renamed during the original `.tile`/`.teamtile` collision fix but
+  the JS helper's own name wasn't. Confusing to read, harmless to run.
+- `.teamtile`'s CSS rule is physically filed inside the Juega CSS block even
+  though it's Perfil/Equipos-only — a filing oddity, not a bug; it's *why*
+  `.teamtile` needed its own correction commit (`3ba1a29`) rather than being
+  caught by either Equipos' or Juega's Step 2 chunk.
+
+**Still flagged-only after this pass — no exact token match, left as
+literals, candidates for a future manual pass (not urgent, small blast
+radius):**
+- `showTeam` (Equipos): `margin-top:22px` — between `--sp-4`(16) and
+  `--sp-4_5`(18)/`--sp-5`(24), not close to either.
+- `buildHOF` (Jugadores): `gap:13px` — between `--sp-3`(12) and `--sp-3_5`
+  (14), a near-miss either direction.
+- `buildRefRules` (Historia): `font-size:16px` — between `--fs-base`(15) and
+  `--fs-md`(18).
+- `.tiletitle` (Juega's game-shelf card title): `font-size:19px` — between
+  `--fs-md`(18) and the next step up.
+- Carried over from the `.ask input` correction: `padding`'s second value
+  `15px` (between `--sp-3`(12)/`--sp-4`(16)) and `font-size:16px` (same gap
+  as `buildRefRules`'s, above — a second independent occurrence of the same
+  16px value).
+
+**QUEUE, next session:** nothing blocking. The token-enforcement sweep, the
+new-steps implementation, and the shared-components pass are all complete
+and pushed. Open items are the 5 flagged-only literals above (owner call on
+whether they're worth a manual one-off pass) and, longer-term, whether the
+`22px`/`13px`/`16px`(×2)/`19px`/`15px` cluster is itself evidence for yet
+another scale step, or genuinely one-off noise — too small a sample (5-6
+values, mostly single occurrences) to tally the way the original 175-instance
+sweep did.
 
 Process rules established this track, apply going forward: flag any
 literal-to-token conversion that isn't an exact match individually, don't
