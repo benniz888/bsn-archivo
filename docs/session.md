@@ -1,6 +1,129 @@
 # SESSION STATE — TIER 3
 <!-- Authoritative for current state and task priority. Update at every phase exit. -->
 
+═══════════════════════════════════════════════════════════════════════
+**SEPARATE TRACK — UI/DESIGN AUDIT + TOKEN SWEEP (2026-09-15/16 sessions).**
+Not part of the data-pipeline work below (identity spine, wayback ingestion,
+etc.) — a distinct workstream on `app/bsn_archivo.html`'s CSS/design-system
+quality, owner-directed, chunk-by-chunk with real-browser verification at
+every step. **Resume here if picking up this track; the rest of this file is
+the data-pipeline track's own state.**
+
+**Phase 1 (critical visual/UX audit, no code)**: owner asked for a critical
+design audit rather than the originally-invoked skill's benchmarking format.
+Found: type scale (`--fs-*`) and spacing scale (`--sp-*`) both well-designed
+but only ~20% adopted (207 hardcoded font-sizes, 151 literal spacing values,
+9 stray border-radius values found live in the file); two severity-7
+accessibility defects; several component-consistency issues. Full findings
+were presented in-conversation, not written to a file — re-run only if asked,
+don't re-audit from scratch.
+
+**Step 1 (accessibility fixes) — DONE, pushed (`a2922d9`).** Dark-theme
+`--ink-3` failed AA (4.36:1) against `--raise`; fixed to `#7C90B2` (5.11:1
+worst case). Focus rings were split between `--azul-hi` and `--fuego`, and
+two search inputs had `outline:none` with only a border-color change; unified
+under one new `--focus` token (aliased to `--fuego`, kept separate so the two
+concerns can diverge later), restored a real outline on both inputs.
+
+**Grid-game + Safari fixes — DONE, pushed (`7844883`).** Found live by the
+owner while checking Step 1: Cuadrícula row-header truncation
+(`overflow-wrap:anywhere` on `.ghead` — NOT `break-word`, which is excluded
+from a flex/grid item's automatic-minimum-size calculation, a real jsdom
+blind spot caught by real-browser verification); an instructional-text
+dead-zone (`.gamehead` given the same `max-width:540px` as `.gridtable`); a
+pre-existing (not a regression) missing `-webkit-backdrop-filter` prefix
+causing sharp, readable text bleed-through under the sticky header in
+Safari/WebKit specifically (Chromium supports the unprefixed property, this
+WebKit build doesn't — confirmed via before/after screenshots at an
+identical scroll position on the pre-edit committed file).
+
+**`.tile`/`.teamtile` collision fix — DONE, pushed (`aae2f1b`).** Two
+unrelated components shared the bare `.tile` class: Juega's game-shelf cards
+(`display:block`, full-bleed art) and a small icon-button used by Equipos'
+team grids + Perfil's club-picker (`display:flex` column). Same specificity,
+later rule always won, so Juega's shelf tiles were silently rendering with
+Equipos' padding/radius/display — confirmed via real Chromium computed
+styles, not just reading the cascade. Renamed the icon-button variant to
+`.teamtile` (3 markup sites + 5 CSS rules); Juega's shelf keeps `.tile`.
+
+**Step 2 (token-enforcement sweep) — COMPLETE, all 7 chunks + 3 correction
+commits pushed.** Chunked by tab, real Chromium+WebKit verification (via
+Playwright 1.45, installed in a local scratch dir, not the repo — 1.63's
+bundled browsers refused this host's macOS 13) plus jsdom for structural
+checks every time, since jsdom alone had already missed two real rendering
+bugs above. A standing duplicate-top-level-CSS-selector check runs before
+every chunk (caught the `.tile` collision). Order: Perfil → Equipos → Archivo
+→ Historia → Jugadores → Inicio → Juega (Juega deliberately last, confirmed
+largest going in).
+- Perfil (commit `8842b00`): 9/11 literals converted.
+- Equipos: no token-conversion commit — both of Equipos' own literals had no
+  exact token match, left as literals (0 converted). The real code change
+  under this chunk was the `.tile`/`.teamtile` collision fix (`aae2f1b`,
+  described above) plus the later `.sf-court` correction (`3ba1a29`, below).
+- Archivo (commit `4b99871`): 9/21 converted.
+- Historia (commit `157333e`): 16/36 converted.
+- Jugadores (commit `2dac1c4`): 28/77 converted. Bonus finding: `.cmpx` is
+  dead-via-cascade (`class="btn cmpx"`, `.btn`'s later rule always wins) —
+  harmless, logged, not fixed, different in kind from `.tile`'s real bug.
+- Inicio (commit `9813760`): 26/51 converted. First chunk where every
+  flagged value had already recurred from an earlier chunk — zero new
+  one-offs, sign the flagged set was stabilizing.
+- Juega (commit `4a3d145`): 30/87 converted — the largest chunk. Quiz/HL
+  needed zero conversions (no exact matches existed).
+- **3 methodology-gap correction commits** (not new chunks, found mid-sweep
+  and back-filled): `deb380c` (Historia) + `35cc23f` (Archivo) — `buildTable()`
+  was treated as an opaque shared utility, but its `cols` array's `render:`
+  callbacks are defined locally in the calling function and carry their own
+  literals; also JS `.style.property='...'` assignments (different syntax
+  than `style="..."` HTML attributes) were never grepped for. `3ba1a29`
+  (Equipos) — `.sf-court` (`renderStartingFive`/`sfCourtSvg`, the "cinco
+  inicial" court) was never traced during the original Equipos chunk; found
+  while doing the same call-chain-tracing discipline for Juega.
+- Deferred throughout, deliberately: shared classes used by 3+ tabs
+  (`.card`, `.tag`, `.chip`, `.btn`, `.chips`, `.cards`, `.filters`,
+  `buildTable()`, `bars()`, `.ed-*`, `.timeline`) — never swept per-tab,
+  queued as one cross-cutting pass (see queue below).
+- Also logged, not fixed: `.dangerzone` (Perfil) is dead CSS, zero markup
+  uses `class="dangerzone"`.
+
+**END-OF-SWEEP TALLY — 175 flagged literal instances, 30 distinct values, no
+exact `--fs-*`/`--sp-*` token match, across all 7 chunks. 18 of the 30 values
+recurred in 2+ chunks — this is the real evidence base for a scale-step
+decision, not noise from 1-2 data points.**
+
+Recurring spacing (11 values): `10px` **every chunk, 28 instances** (the
+single strongest signal) · `18px` 4 chunks/15 · `2px` 4/13 · `14px` 5/12 ·
+`3px` 4/12 · `6px` 5/10 · `5px` 3/7 · `7px` 4/4 · `9px` 4/4 · `1px` 2/3 ·
+`13px` 2/2.
+Recurring font-size (6 values): `12.5px` 4 chunks/15 · `13.5px` 5/12 ·
+`11.5px` 2/8 · `10.5px` 3/4 · `17px` 3/3 · `20px` 2/2.
+Recurring border-radius (1 value): `3px` 3 chunks/5.
+One-off (12 values, single chunk each): font `14.5/26/30/32/46px`; spacing
+`11/15/20px`; radius `12/14px`; and `99px`/`999px` — the same "force a full
+pill" idiom with two different magic numbers in different chunks, a naming
+cleanup, not a scale gap.
+
+**QUEUE, in order, next session:**
+1. **Propose scale-step additions** (new `--sp-*`/`--fs-*` steps) based on
+   the tally above, showing which flagged instances would convert under each
+   candidate. Analysis only, no code yet — owner reviews before anything is
+   implemented.
+2. **Once approved: implement the new tokens across all 7 chunks**, then run
+   the deferred cross-cutting shared-components pass (`.card`, `.tag`,
+   `.tile`/`.teamtile`, `.chips`, `.btn`, and the rest of the deferred list
+   above) — verify each shared class across every tab that consumes it at
+   once, not per-tab.
+
+Process rules established this track, apply going forward: flag any
+literal-to-token conversion that isn't an exact match individually, don't
+round or invent new tokens unilaterally (owner decides, informed by the
+tally above); verify any layout/visual change in real Chromium+WebKit, not
+jsdom alone; run the duplicate-selector sweep before every chunk; when a
+`buildTable()`/similar shared-renderer call appears in a chunk, check its
+locally-defined column/config literals too, not just skip the whole call as
+"shared."
+═══════════════════════════════════════════════════════════════════════
+
 **SESSION:** 003 — PHASE_5_APP_SYNC + PHASE_6_APP_IA + PHASE_3H/3I/3J (identity
   spine Q1–Q4, all LIVE) · PHASE_7 visual redesign (done, LIVE) ·
   **PHASE_8_NAV_REDESIGN COMPLETE, LIVE** (8.1 8.2 8.2b 8.3a 8.3b 8.3c):
