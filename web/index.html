@@ -547,20 +547,20 @@ h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
 /* ---------- hero: the offseason clock ---------- */
 .hero{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
   background:radial-gradient(130% 130% at 10% -8%,var(--hero-a),var(--hero-c) 78%)}
-.hero .ed-eye{padding:var(--sp-4) 18px 0}
-.herotop{padding:var(--sp-2) 18px var(--sp-4);display:flex;gap:18px;flex-wrap:wrap;align-items:flex-end}
+.hero .ed-eye{padding:var(--sp-4) var(--sp-4_5) 0}
+.herotop{padding:var(--sp-2) var(--sp-4_5) var(--sp-4);display:flex;gap:var(--sp-4_5);flex-wrap:wrap;align-items:flex-end}
 .clock{flex:none}
 .clock .n{font-family:inherit;font-weight:800;font-size:var(--fs-hero);
   line-height:.86;letter-spacing:-.025em}
-.clock .u{font-size:12.5px;color:var(--ink-2);letter-spacing:.1em;text-transform:uppercase;margin-top:6px}
+.clock .u{font-size:var(--fs-2xs);color:var(--ink-2);letter-spacing:.1em;text-transform:uppercase;margin-top:6px}
 .herotext{flex:1;min-width:230px}
 .herotext h1{font-size:clamp(22px,4.6vw,30px);text-transform:uppercase}
 .herotext p{margin:var(--sp-2) 0 0;color:var(--ink-2);font-size:var(--fs-sm);max-width:52ch}
-.herofoot{border-top:1px solid var(--line);padding:var(--sp-3) 18px;display:flex;gap:14px;flex-wrap:wrap;
+.herofoot{border-top:1px solid var(--line);padding:var(--sp-3) var(--sp-4_5);display:flex;gap:var(--sp-3_5);flex-wrap:wrap;
   align-items:center;background:var(--wash)}
-.trophy{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.trophy{display:flex;align-items:center;gap:var(--sp-2_5);flex-wrap:wrap}
 .trophy .t1{font-weight:700;font-size:var(--fs-base)}
-.trophy .t2{color:var(--ink-2);font-size:12.5px}
+.trophy .t2{color:var(--ink-2);font-size:var(--fs-2xs)}
 .herospark{display:inline-flex;align-items:flex-end;flex:0 0 auto}
 .herospark svg{display:block;width:150px;height:20px}
 
@@ -870,13 +870,13 @@ tr.cut td{border-bottom:1px solid var(--azul)}
    Shown once, above everything, to anyone who has not dismissed it.
    The archive assumes a lot of context — refuerzos, La Más Dura, the
    1930 start — and a reader without it bounces off the numbers. */
-.primer{border:1px solid var(--azul);border-radius:var(--r);padding:var(--sp-4) var(--sp-4) 14px;
+.primer{border:1px solid var(--azul);border-radius:var(--r);padding:var(--sp-4) var(--sp-4) var(--sp-3_5);
   margin:var(--sp-4) 0 var(--sp-1);background:var(--tint-azul)}
-.primerhead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.primerhead{display:flex;align-items:baseline;gap:var(--sp-2_5);flex-wrap:wrap}
 .primerhead h3{font-family:inherit;font-weight:800;font-size:20px;
   text-transform:uppercase;letter-spacing:.02em;flex:1}
 .primer p{margin:9px 0 0;font-size:var(--fs-sm);line-height:1.55;color:var(--ink-2);max-width:68ch}
-.primer .x{background:none;border:0;color:var(--ink-3);font:inherit;font-size:12.5px;
+.primer .x{background:none;border:0;color:var(--ink-3);font:inherit;font-size:var(--fs-2xs);
   cursor:pointer;padding:2px var(--sp-1);text-decoration:underline}
 .primer .x:hover{color:var(--ink)}
 
@@ -3643,7 +3643,7 @@ function buildStandings2026(){
   n.innerHTML='La línea azul marca el corte de cuartos de final. DIF es juegos detrás del primero, calculado aquí — la app oficial no lo publica. '+
     'Bayamón y Caguas terminaron 22-12 empatados; Bayamón se quedó el primer lugar del Grupo A.';
   host.appendChild(n);
-  const dl=el('button','btn'); dl.style.marginTop='10px'; dl.textContent='Descargar posiciones 2026 (CSV)';
+  const dl=el('button','btn'); dl.style.marginTop='var(--sp-2_5)'; dl.textContent='Descargar posiciones 2026 (CSV)';
   dl.onclick=()=>{
     const rows=[];
     ['A','B'].forEach(g=>STAND2026[g].forEach((r,i)=>rows.push([g,i+1,F[r[0]].name,r[1],r[2],r[3],r[4],r[5]])));
@@ -3728,7 +3728,7 @@ function buildOnThisDay(){
     h+=exact.map(e=>`<div class="card" style="border-color:var(--rojo)">
       <div class="dim" style="font-size:var(--fs-3xs);letter-spacing:.07em;font-weight:600">HOY · ${e[1]} DE ${MONTHS[e[0]-1].toUpperCase()} DE ${e[2]}</div>
       <div style="font-weight:700;font-size:17px;margin-top:var(--sp-1)">${esc(e[3])}</div>
-      <div class="muted" style="font-size:13.5px;margin-top:var(--sp-1)">${esc(e[4])}</div></div>`).join('');
+      <div class="muted" style="font-size:var(--fs-xs);margin-top:var(--sp-1)">${esc(e[4])}</div></div>`).join('');
   }
   const rest = near.length ? near : ON_THIS_DAY.slice().sort((a,b)=>a[0]-b[0]||a[1]-b[1]).slice(0,5);
   const label = near.length
@@ -3817,7 +3817,7 @@ function buildChannels(){
     `<a class="card" href="${esc(c[2])}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:block">
       <div class="dim" style="font-size:var(--fs-3xs);letter-spacing:.07em;font-weight:600">${esc(c[0]).toUpperCase()}</div>
       <div style="font-weight:700;margin-top:3px;color:var(--azul-hi)">${esc(c[1])}</div>
-      <div class="muted" style="font-size:12.5px;margin-top:3px">${esc(c[3])}</div></a>`).join('')+'</div>';
+      <div class="muted" style="font-size:var(--fs-2xs);margin-top:3px">${esc(c[3])}</div></a>`).join('')+'</div>';
 }
 /* ============================================================
    HISTORIA
@@ -5970,7 +5970,7 @@ function buildHub(){
               : cn+' nunca ha ganado. Está en el archivo igual.')
           : 'Noventa y siete temporadas, 1930 a 2026. Escoge por dónde entrar, o pregunta directamente.'}</p>
       </div>
-      ${f?`<div style="display:flex;align-items:center;gap:10px">${crest(club,40,48)}</div>`:''}
+      ${f?`<div style="display:flex;align-items:center;gap:var(--sp-2_5)">${crest(club,40,48)}</div>`:''}
     </div>`;
 
   /* LEAD — the user's club title comb, or Bayamón (the all-time leader) */
