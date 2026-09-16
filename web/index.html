@@ -657,21 +657,19 @@ select{cursor:pointer}
 .filters{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .filters>*{flex:0 1 auto;width:auto;min-width:120px}
 .field{display:flex;flex-direction:column;gap:4px}
-.field label{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
-.btn{background:var(--raise);border:1px solid var(--line);color:var(--ink);padding:9px 14px;
-  border-radius:var(--r-sm);font-size:13.5px;font-weight:600;cursor:pointer;white-space:nowrap}
+.field label{font-size:var(--fs-3xs);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.btn{background:var(--raise);border:1px solid var(--line);color:var(--ink);padding:9px var(--sp-3_5);
+  border-radius:var(--r-sm);font-size:var(--fs-xs);font-weight:600;cursor:pointer;white-space:nowrap}
 .btn:hover{border-color:var(--azul);color:var(--blanco)}
 .btn.primary{background:var(--azul);border-color:var(--azul);color:#fff}
 .btn.primary:hover{background:var(--azul-hi);border-color:var(--azul-hi)}
-.btn.red{background:var(--rojo);border-color:var(--rojo);color:#fff}
-.btn.red:hover{filter:brightness(1.12)}
 .btn:disabled{opacity:.45;cursor:not-allowed}
-.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btnrow{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin-top:var(--sp-3)}
 .chip{background:var(--raise);border:1px solid var(--line);color:var(--ink-2);border-radius:99px;
-  padding:5px 12px;font-size:12.5px;cursor:pointer;font-weight:500}
+  padding:5px var(--sp-3);font-size:var(--fs-2xs);cursor:pointer;font-weight:500}
 .chip:hover{border-color:var(--azul);color:var(--blanco)}
 .chip[aria-selected="true"]{background:var(--azul);border-color:var(--azul);color:#fff}
-.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:var(--sp-2_5)}
 /* backlog item 3 — cinco inicial: half-court card. One SVG (court lines +
    all 5 players) in one coordinate system — an earlier version overlaid
    HTML-positioned player divs on a separately-viewBox'd court image and the
@@ -688,7 +686,7 @@ select{cursor:pointer}
 .sf-court{background:var(--court);border-radius:var(--r);overflow:hidden;margin-top:var(--sp-2);max-width:380px}
 .sf-court svg{display:block;width:100%;height:auto}
 .tag{display:inline-block;background:var(--raise);border:1px solid var(--line);border-radius:99px;
-  padding:2px 10px;font-size:11.5px;color:var(--ink-2);margin:2px 4px 2px 0}
+  padding:2px var(--sp-2_5);font-size:var(--fs-3xs);color:var(--ink-2);margin:2px 4px 2px 0}
 .tag.gold{border-color:var(--rojo);color:var(--on-rojo);background:var(--tint-rojo)}
 .tag.blue{border-color:var(--azul);color:var(--on-azul);background:var(--tint-azul)}
 
