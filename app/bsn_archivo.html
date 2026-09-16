@@ -541,19 +541,19 @@ h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
 /* ---------- hero: the offseason clock ---------- */
 .hero{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
   background:radial-gradient(130% 130% at 10% -8%,var(--hero-a),var(--hero-c) 78%)}
-.hero .ed-eye{padding:16px 18px 0}
-.herotop{padding:8px 18px 16px;display:flex;gap:18px;flex-wrap:wrap;align-items:flex-end}
+.hero .ed-eye{padding:var(--sp-4) 18px 0}
+.herotop{padding:var(--sp-2) 18px var(--sp-4);display:flex;gap:18px;flex-wrap:wrap;align-items:flex-end}
 .clock{flex:none}
 .clock .n{font-family:inherit;font-weight:800;font-size:var(--fs-hero);
   line-height:.86;letter-spacing:-.025em}
 .clock .u{font-size:12.5px;color:var(--ink-2);letter-spacing:.1em;text-transform:uppercase;margin-top:6px}
 .herotext{flex:1;min-width:230px}
 .herotext h1{font-size:clamp(22px,4.6vw,30px);text-transform:uppercase}
-.herotext p{margin:8px 0 0;color:var(--ink-2);font-size:14px;max-width:52ch}
-.herofoot{border-top:1px solid var(--line);padding:12px 18px;display:flex;gap:14px;flex-wrap:wrap;
+.herotext p{margin:var(--sp-2) 0 0;color:var(--ink-2);font-size:var(--fs-sm);max-width:52ch}
+.herofoot{border-top:1px solid var(--line);padding:var(--sp-3) 18px;display:flex;gap:14px;flex-wrap:wrap;
   align-items:center;background:var(--wash)}
 .trophy{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.trophy .t1{font-weight:700;font-size:15px}
+.trophy .t1{font-weight:700;font-size:var(--fs-base)}
 .trophy .t2{color:var(--ink-2);font-size:12.5px}
 .herospark{display:inline-flex;align-items:flex-end;flex:0 0 auto}
 .herospark svg{display:block;width:150px;height:20px}
@@ -864,14 +864,14 @@ tr.cut td{border-bottom:1px solid var(--azul)}
    Shown once, above everything, to anyone who has not dismissed it.
    The archive assumes a lot of context — refuerzos, La Más Dura, the
    1930 start — and a reader without it bounces off the numbers. */
-.primer{border:1px solid var(--azul);border-radius:var(--r);padding:16px 16px 14px;
-  margin:16px 0 4px;background:var(--tint-azul)}
+.primer{border:1px solid var(--azul);border-radius:var(--r);padding:var(--sp-4) var(--sp-4) 14px;
+  margin:var(--sp-4) 0 var(--sp-1);background:var(--tint-azul)}
 .primerhead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 .primerhead h3{font-family:inherit;font-weight:800;font-size:20px;
   text-transform:uppercase;letter-spacing:.02em;flex:1}
-.primer p{margin:9px 0 0;font-size:14px;line-height:1.55;color:var(--ink-2);max-width:68ch}
+.primer p{margin:9px 0 0;font-size:var(--fs-sm);line-height:1.55;color:var(--ink-2);max-width:68ch}
 .primer .x{background:none;border:0;color:var(--ink-3);font:inherit;font-size:12.5px;
-  cursor:pointer;padding:2px 4px;text-decoration:underline}
+  cursor:pointer;padding:2px var(--sp-1);text-decoration:underline}
 .primer .x:hover{color:var(--ink)}
 
 /* ---------- glosario ---------- */
@@ -900,11 +900,11 @@ tr.cut td{border-bottom:1px solid var(--azul)}
    rather than a scroll. Every card carries a real number pulled from
    the data: a hub of live counts is worth looking at, a hub of nine
    labels is a menu. */
-.hubtop{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;padding:var(--sp-6) 0 0}
+.hubtop{display:flex;flex-wrap:wrap;gap:var(--sp-3);align-items:flex-end;padding:var(--sp-6) 0 0}
 .hubhead{font-family:inherit;font-weight:800;
   font-size:clamp(24px,5.4vw,36px);text-transform:uppercase;line-height:1.05}
-.hublede{color:var(--ink-2);font-size:14px;max-width:46ch;margin:7px 0 0}
-.hubsearch{margin:16px 0 4px;position:relative}
+.hublede{color:var(--ink-2);font-size:var(--fs-sm);max-width:46ch;margin:7px 0 0}
+.hubsearch{margin:var(--sp-4) 0 var(--sp-1);position:relative}
 .hubsearch input{padding:13px 15px;font-size:16px;border-radius:var(--r);
   border-color:var(--azul-deep);background:var(--deep)}
 .hubsearch input:focus{border-color:var(--azul-hi);outline:2px solid var(--focus);outline-offset:2px}
@@ -3545,7 +3545,7 @@ function buildHero(){
       <div class="herotext">
         <h1>${esc(h)}</h1>
         <p>${esc(p)}</p>
-        <p class="dim" style="font-size:12px;margin-top:8px">Apertura estimada: 21 de marzo de 2027 · ${esc(SEASON_STATE.nextLabel)}</p>
+        <p class="dim" style="font-size:var(--fs-2xs);margin-top:var(--sp-2)">Apertura estimada: 21 de marzo de 2027 · ${esc(SEASON_STATE.nextLabel)}</p>
       </div>
     </div>
     <div class="herofoot">
@@ -3615,7 +3615,7 @@ function buildStandings2026(){
   const mine=ST.get('club');
   ['A','B'].forEach(g=>{
     const hd=el('div','standhead');
-    hd.innerHTML=`<h4>Grupo ${g}</h4><span class="dim" style="font-size:12px">34 juegos · los cuatro primeros a cuartos</span>`;
+    hd.innerHTML=`<h4>Grupo ${g}</h4><span class="dim" style="font-size:var(--fs-2xs)">34 juegos · los cuatro primeros a cuartos</span>`;
     host.appendChild(hd);
     const w=el('div','tblwrap'); host.appendChild(w);
     let h='<table><thead><tr><th>#</th><th>Equipo</th><th class="num">PG</th><th class="num">PP</th>'+
@@ -3720,18 +3720,18 @@ function buildOnThisDay(){
   let h='';
   if(exact.length){
     h+=exact.map(e=>`<div class="card" style="border-color:var(--rojo)">
-      <div class="dim" style="font-size:11px;letter-spacing:.07em;font-weight:600">HOY · ${e[1]} DE ${MONTHS[e[0]-1].toUpperCase()} DE ${e[2]}</div>
-      <div style="font-weight:700;font-size:17px;margin-top:4px">${esc(e[3])}</div>
-      <div class="muted" style="font-size:13.5px;margin-top:4px">${esc(e[4])}</div></div>`).join('');
+      <div class="dim" style="font-size:var(--fs-3xs);letter-spacing:.07em;font-weight:600">HOY · ${e[1]} DE ${MONTHS[e[0]-1].toUpperCase()} DE ${e[2]}</div>
+      <div style="font-weight:700;font-size:17px;margin-top:var(--sp-1)">${esc(e[3])}</div>
+      <div class="muted" style="font-size:13.5px;margin-top:var(--sp-1)">${esc(e[4])}</div></div>`).join('');
   }
   const rest = near.length ? near : ON_THIS_DAY.slice().sort((a,b)=>a[0]-b[0]||a[1]-b[1]).slice(0,5);
   const label = near.length
     ? `Lo demás de ${MONTHS[m-1]}`
     : `Nada del archivo está fechado en ${MONTHS[m-1]}. Los eventos más tempranos que sí lo están:`;
   h+=`<h4 class="sub">${esc(label)}</h4><div class="cards g2">`+
-    rest.map(e=>`<div class="card"><div class="dim" style="font-size:11px;letter-spacing:.07em;font-weight:600">${e[1]} ${MONTHS[e[0]-1]} ${e[2]}</div>
+    rest.map(e=>`<div class="card"><div class="dim" style="font-size:var(--fs-3xs);letter-spacing:.07em;font-weight:600">${e[1]} ${MONTHS[e[0]-1]} ${e[2]}</div>
       <div style="font-weight:700;margin-top:3px">${esc(e[3])}</div>
-      <div class="muted" style="font-size:13px;margin-top:3px">${esc(e[4])}</div></div>`).join('')+'</div>';
+      <div class="muted" style="font-size:var(--fs-xs);margin-top:3px">${esc(e[4])}</div></div>`).join('')+'</div>';
   host.innerHTML=h;
 }
 
@@ -3809,7 +3809,7 @@ function buildChannels(){
   const host=$('#channels');
   host.innerHTML='<div class="cards g3">'+CHANNELS.map(c=>
     `<a class="card" href="${esc(c[2])}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:block">
-      <div class="dim" style="font-size:11px;letter-spacing:.07em;font-weight:600">${esc(c[0]).toUpperCase()}</div>
+      <div class="dim" style="font-size:var(--fs-3xs);letter-spacing:.07em;font-weight:600">${esc(c[0]).toUpperCase()}</div>
       <div style="font-weight:700;margin-top:3px;color:var(--azul-hi)">${esc(c[1])}</div>
       <div class="muted" style="font-size:12.5px;margin-top:3px">${esc(c[3])}</div></a>`).join('')+'</div>';
 }
