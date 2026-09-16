@@ -144,7 +144,7 @@
   --fs-md:18px;    /* lede, h4 */
   --fs-lg:22px;    /* h3 */
   --fs-xl:27px;    /* h2 */
-  --fs-2xl:clamp(30px,5vw,40px);   /* h2.big, hub head */
+  --fs-2xl:clamp(30px,5vw,40px);   /* .big, hub head */
   --fs-num:31px;                   /* big stat numerals */
   --fs-hero:clamp(52px,14vw,86px); /* the offseason clock */
   --lh-body:1.5;
@@ -513,7 +513,7 @@ section[hidden]{display:none}
    previously appeared only once per section landing, never on the cards
    themselves). */
 .phead .tri,.phero-tri{width:74px;margin-bottom:var(--sp-3)}
-h2.big{font-size:var(--fs-2xl);text-transform:uppercase;letter-spacing:.005em}
+.big{font-size:var(--fs-2xl);text-transform:uppercase;letter-spacing:.005em}
 .lede{color:var(--ink-2);max-width:70ch;font-size:var(--fs-sm);margin:var(--sp-2) 0 0}
 h3.sec{font-size:var(--fs-lg);margin:var(--sp-6) 0 var(--sp-3);text-transform:uppercase;letter-spacing:.015em;
   display:flex;align-items:center;gap:var(--sp-3)}
@@ -554,7 +554,7 @@ h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
   line-height:.86;letter-spacing:-.025em}
 .clock .u{font-size:var(--fs-2xs);color:var(--ink-2);letter-spacing:.1em;text-transform:uppercase;margin-top:6px}
 .herotext{flex:1;min-width:230px}
-.herotext h1{font-size:clamp(22px,4.6vw,30px);text-transform:uppercase}
+.herotext h2{font-size:clamp(22px,4.6vw,30px);text-transform:uppercase;letter-spacing:.005em}
 .herotext p{margin:var(--sp-2) 0 0;color:var(--ink-2);font-size:var(--fs-sm);max-width:52ch}
 .herofoot{border-top:1px solid var(--line);padding:var(--sp-3) var(--sp-4_5);display:flex;gap:var(--sp-3_5);flex-wrap:wrap;
   align-items:center;background:var(--wash)}
@@ -1118,7 +1118,7 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
   <div class="panel">
     <div class="phead">
       <div class="tri"></div>
-      <h2 class="big">97 temporadas</h2>
+      <h1 class="big">97 temporadas</h1>
       <p class="lede">Cada bloque es una temporada, pintado con el color del campeón. Las dinastías se leen como franjas sólidas. Toca cualquiera.</p>
     </div>
     <div class="ribbon" id="ribbon"></div>
@@ -1173,7 +1173,7 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
   <div class="panel">
     <div class="phead">
       <div class="tri"></div>
-      <h2 class="big">Equipos</h2>
+      <h1 class="big">Equipos</h1>
       <p class="lede">Doce clubes activos y veinte que ya no existen. Cada uno con su historial completo de finales.</p>
     </div>
     <h4 class="sub">Activos</h4>
@@ -1194,7 +1194,7 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
   <div class="panel">
     <div class="phead">
       <div class="tri"></div>
-      <h2 class="big">Jugadores</h2>
+      <h1 class="big">Jugadores</h1>
       <p class="lede">El índice reúne a todos los jugadores que este archivo puede nombrar con fuente. Cada ficha dice también qué no se sabe de él.</p>
     </div>
     <!-- PHASE_8.2b — Buscar / Comparar are router views now (subnav pills), not an in-panel toggle. -->
@@ -1246,7 +1246,7 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
   <div class="panel">
     <div class="phead">
       <div class="tri"></div>
-      <h2 class="big">Juega</h2>
+      <h1 class="big">Juega</h1>
       <p class="lede">Cuatro juegos sobre el archivo. Todos usan la misma nómina verificada de jugadores, así que ninguno inventa una respuesta.</p>
     </div>
 
@@ -1287,7 +1287,7 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
   <div class="panel">
     <div class="phead">
       <div class="tri"></div>
-      <h2 class="big">Perfil</h2>
+      <h1 class="big">Perfil</h1>
       <p class="lede">Todo se guarda en este navegador y en ningún otro sitio. No hay cuenta, no
         hay servidor, no sale nada de aquí.</p>
     </div>
@@ -1305,7 +1305,7 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
   <div class="panel">
     <div class="phead">
       <div class="tri"></div>
-      <h2 class="big">El archivo</h2>
+      <h1 class="big">El archivo</h1>
       <p class="lede">Pregúntale directamente, o mira qué tiene, qué le falta y de dónde sale cada dato. Un archivo que esconde sus huecos vale menos que uno que los enseña.</p>
     </div>
 
@@ -3547,7 +3547,7 @@ function buildHero(){
     <div class="herotop">
       <div class="clock"><div class="n">${n}</div><div class="u">${esc(u)}</div></div>
       <div class="herotext">
-        <h1>${esc(h)}</h1>
+        <h2>${esc(h)}</h2>
         <p>${esc(p)}</p>
         <p class="dim" style="font-size:var(--fs-2xs);margin-top:var(--sp-2)">Apertura estimada: 21 de marzo de 2027 · ${esc(SEASON_STATE.nextLabel)}</p>
       </div>
@@ -5960,8 +5960,8 @@ function buildHub(){
   $('#hubTop').innerHTML=`
     <div class="hubtop">
       <div style="flex:1;min-width:240px">
-        <div class="hubhead">${pr.name ? 'Hola, '+esc(pr.name)
-          : (f?'El archivo, desde '+esc(cn):'El archivo del BSN')}</div>
+        <h1 class="hubhead">${pr.name ? 'Hola, '+esc(pr.name)
+          : (f?'El archivo, desde '+esc(cn):'El archivo del BSN')}</h1>
         <p class="hublede">${f
           ? esc(f.won.length?cn+' tiene '+f.won.length+(f.won.length===1?' título':' títulos')+
                 ' en las 97 temporadas que cubre este archivo.'
