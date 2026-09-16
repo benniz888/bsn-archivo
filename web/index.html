@@ -758,10 +758,10 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 .gridtable{display:grid;grid-template-columns:92px repeat(3,minmax(90px,1fr));gap:5px;
   min-width:410px;max-width:540px}
 .gcorner{background:transparent}
-.ghead{background:var(--raise);border:1px solid var(--line);border-radius:var(--r-sm);padding:8px 6px;
+.ghead{background:var(--raise);border:1px solid var(--line);border-radius:var(--r-sm);padding:var(--sp-2) 6px;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;text-align:center;
   font-size:11.5px;font-weight:600;line-height:1.2;min-height:66px;overflow-wrap:anywhere}
-.ghead.row{flex-direction:row;justify-content:flex-start;text-align:left;padding:8px}
+.ghead.row{flex-direction:row;justify-content:flex-start;text-align:left;padding:var(--sp-2)}
 .gcell{background:var(--deep);border:1px solid var(--line);border-radius:var(--r-sm);aspect-ratio:1;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:6px;
   cursor:pointer;color:inherit;font-size:11.5px;text-align:center;line-height:1.2;position:relative}
@@ -771,33 +771,33 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 .gcell.bad{background:var(--tint-rojo);border-color:var(--rojo-deep)}
 .gcell .pn{font-weight:600}
 .gcell .pr{font-size:10.5px;color:var(--ink-2)}
-.gcell .plus{font-size:22px;color:var(--ink-3);font-weight:300}
-.guessbar{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.gcell .plus{font-size:var(--fs-lg);color:var(--ink-3);font-weight:300}
+.guessbar{display:flex;gap:var(--sp-2);margin-top:var(--sp-3);flex-wrap:wrap}
 .guessbar input{flex:1;min-width:180px}
-.pips{display:flex;gap:4px;margin-top:10px;align-items:center}
+.pips{display:flex;gap:var(--sp-1);margin-top:10px;align-items:center}
 .pip{width:16px;height:6px;border-radius:3px;background:var(--line)}
 .pip.used{background:var(--ink-3)}
 .pip.hit{background:var(--ok)}
 .pip.miss{background:var(--rojo)}
 .sugg{position:absolute;z-index:20;left:0;right:0;top:100%;background:var(--deep);border:1px solid var(--azul);
-  border-radius:var(--r-sm);max-height:220px;overflow-y:auto;margin-top:4px}
+  border-radius:var(--r-sm);max-height:220px;overflow-y:auto;margin-top:var(--sp-1)}
 .sugg button{display:block;width:100%;text-align:left;background:none;border:0;color:var(--ink);
-  padding:9px 12px;font-size:13.5px;cursor:pointer}
+  padding:9px var(--sp-3);font-size:13.5px;cursor:pointer}
 .sugg button:hover,.sugg button.on{background:var(--raise)}
 .sugg .sm{color:var(--ink-3);font-size:11.5px}
 
 /* ---------- game shell ---------- */
 .gamehead{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;
   margin-bottom:6px;max-width:540px}
-.modebtns{display:flex;gap:4px;background:var(--raise);border:1px solid var(--line);border-radius:99px;padding:3px}
+.modebtns{display:flex;gap:var(--sp-1);background:var(--raise);border:1px solid var(--line);border-radius:99px;padding:3px}
 .modebtns button{background:none;border:0;color:var(--ink-3);padding:5px 13px;border-radius:99px;
   font-size:12.5px;font-weight:600;cursor:pointer}
 .modebtns button[aria-selected="true"]{background:var(--azul);color:#fff}
 .msg{margin-top:10px;font-size:13.5px;min-height:22px}
 .msg.good{color:var(--ok)}
 .msg.bad{color:var(--bad-ink)}
-.scoreline{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--ink-2);margin-top:10px}
-.scoreline b{color:var(--ink);font-size:15px}
+.scoreline{display:flex;gap:var(--sp-4);flex-wrap:wrap;font-size:var(--fs-xs);color:var(--ink-2);margin-top:10px}
+.scoreline b{color:var(--ink);font-size:var(--fs-base)}
 
 /* ---------- splash ----------
    The bar tracks real builder progress, not a timer. Forty-nine
@@ -6656,7 +6656,7 @@ function drawBoard(){
     const ev=GB.history[i];
     h+=`<span class="pip ${ev?(ev.ok?'hit':'miss'):''}"></span>`;
   }
-  h+=`<span class="dim" style="font-size:12px;margin-left:8px">${left} intento${left===1?'':'s'}</span></div>`;
+  h+=`<span class="dim" style="font-size:var(--fs-2xs);margin-left:var(--sp-2)">${left} intento${left===1?'':'s'}</span></div>`;
 
   if(left>0){
     h+=`<div class="guessbar" style="position:relative">
@@ -6902,11 +6902,11 @@ function courtHTML(){
     const dead=open&&!DR.done&&!avail(s);
     const border = on?'var(--fuego)':(dead?'var(--line-soft)':(open?'var(--line)':'var(--ok)'));
     return `<button onclick="selectSlot('${s}')" style="all:unset;cursor:${DR.done?'default':'pointer'};
-      display:block;border:2px ${open?'dashed':'solid'} ${border};border-radius:12px;padding:10px 8px;
+      display:block;border:2px ${open?'dashed':'solid'} ${border};border-radius:12px;padding:10px var(--sp-2);
       text-align:center;background:${on?'var(--tint-fuego)':'var(--hair-2)'};min-height:58px">
-      <div style="font-size:11px;letter-spacing:.08em;font-weight:700;color:${open?'var(--ink-3)':'var(--ink-2)'}">${s}</div>
-      ${p?`<div style="font-weight:700;font-size:13px;margin-top:3px;line-height:1.2">${esc(p.n)}</div>
-           <div class="dim" style="font-size:11px">${p.c.map(c=>F[c]?F[c].abbr:c).join(' ')}</div>`
+      <div style="font-size:var(--fs-3xs);letter-spacing:.08em;font-weight:700;color:${open?'var(--ink-3)':'var(--ink-2)'}">${s}</div>
+      ${p?`<div style="font-weight:700;font-size:var(--fs-xs);margin-top:3px;line-height:1.2">${esc(p.n)}</div>
+           <div class="dim" style="font-size:var(--fs-3xs)">${p.c.map(c=>F[c]?F[c].abbr:c).join(' ')}</div>`
         :`<div class="dim" style="font-size:11.5px;margin-top:3px${dead?';opacity:.45':''}">${SLOT_ES[s]}${dead?' · vacío':''}</div>`}
     </button>`;
   };
@@ -6933,17 +6933,17 @@ function drawPicks(){
   </div>`;
 
   if(!DR.done){
-    h+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0">
+    h+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:var(--sp-3) 0">
       <div class="card" style="text-align:center;border-color:#E8B23A;padding:10px">
-        <div style="font-size:11px;letter-spacing:.1em;font-weight:700;color:#E8B23A">EQUIPO</div>
+        <div style="font-size:var(--fs-3xs);letter-spacing:.1em;font-weight:700;color:#E8B23A">EQUIPO</div>
         <div style="font-family:inherit;font-weight:800;font-size:30px;line-height:1.1">${esc(F[DR.club].abbr)}</div>
         <div class="dim" style="font-size:11.5px">${esc(F[DR.club].name)}</div></div>
       <div class="card" style="text-align:center;border-color:#9B6BE0;padding:10px">
-        <div style="font-size:11px;letter-spacing:.1em;font-weight:700;color:#9B6BE0">DÉCADA</div>
+        <div style="font-size:var(--fs-3xs);letter-spacing:.1em;font-weight:700;color:#9B6BE0">DÉCADA</div>
         <div style="font-family:inherit;font-weight:800;font-size:30px;line-height:1.1">${DR.dec}s</div>
         <div class="dim" style="font-size:11.5px">${poolFor(DR.club,DR.dec).length} disponibles</div></div>
     </div>
-    <div class="btnrow" style="margin-bottom:12px">
+    <div class="btnrow" style="margin-bottom:var(--sp-3)">
       <button class="btn primary" onclick="skipSpin()" ${DR.skips?'':'disabled'}>Girar de nuevo (${DR.skips})</button>
       <button class="btn" onclick="resetDraft()">Empezar de nuevo</button></div>`;
   }
@@ -6953,7 +6953,7 @@ function drawPicks(){
   if(!DR.done){
     const open=openSlots();
     if(!DR.sel){
-      h+=`<p class="note" style="margin-top:12px">Toca una posición en la cancha para colocar a alguien de ${esc(F[DR.club].name)} en los ${DR.dec}s.</p>`;
+      h+=`<p class="note" style="margin-top:var(--sp-3)">Toca una posición en la cancha para colocar a alguien de ${esc(F[DR.club].name)} en los ${DR.dec}s.</p>`;
     } else {
       const cand=poolFor(DR.club,DR.dec).filter(p=>fits(p,DR.sel));
       h+=`<h4 class="sub">${SLOT_ES[DR.sel]} · ${esc(F[DR.club].name)} · ${DR.dec}s</h4>`;
@@ -6968,9 +6968,9 @@ function drawPicks(){
           h+=`<button class="card" style="text-align:left;cursor:pointer;${bad?'opacity:.55':''}"
             onclick="place(${JSON.stringify(p.n).replace(/"/g,'&quot;')})">
             <div style="font-weight:700">${esc(p.n)}</div>
-            <div class="dim" style="font-size:12px">${posLabel(p)} · ${p.c.map(c=>F[c]?F[c].abbr:c).join(' ')}</div>
-            ${line?`<div class="muted" style="font-size:12.5px;margin-top:4px">${line}</div>`
-                 :`<div class="muted" style="font-size:12.5px;margin-top:4px">Sin promedios registrados.</div>`}
+            <div class="dim" style="font-size:var(--fs-2xs)">${posLabel(p)} · ${p.c.map(c=>F[c]?F[c].abbr:c).join(' ')}</div>
+            ${line?`<div class="muted" style="font-size:12.5px;margin-top:var(--sp-1)">${line}</div>`
+                 :`<div class="muted" style="font-size:12.5px;margin-top:var(--sp-1)">Sin promedios registrados.</div>`}
             <div class="chips">${(p.t||[]).map(t=>`<span class="tag">${esc({mvp:'MVP',scoring:'Anotación',champion:'Campeón',import:'Refuerzo',native:'Nativo',nba:'NBA','10k':'10k',legend:'Leyenda',figura:'Figura del BSN'}[t]||t)}</span>`).join('')}</div>
             ${bad?`<div class="note" style="color:#FF8A93">${esc(bad)}</div>`:''}
           </button>`;
@@ -7020,10 +7020,10 @@ function finishDraft(){
   drawPicks();
   $('#dResult').innerHTML=`<div class="card" style="margin-top:14px;border-color:${wins>=25?'var(--ok)':'var(--line)'}">
     <div style="font-family:inherit;font-weight:800;font-size:46px;line-height:1">${wins}-${34-wins}</div>
-    <div class="muted" style="font-size:15px;margin-top:4px">${esc(verdict)}</div>
+    <div class="muted" style="font-size:var(--fs-base);margin-top:var(--sp-1)">${esc(verdict)}</div>
     <div class="scoreline"><span>Base <b>${base.toFixed(0)}</b></span><span>Bonos <b>+${bonus}</b></span>
       <span>Total <b>${total.toFixed(0)}</b></span></div>
-    ${notes.length?`<ul class="muted" style="font-size:13px;padding-left:18px;margin-top:8px">${notes.map(n=>'<li>'+esc(n)+'</li>').join('')}</ul>`:''}
+    ${notes.length?`<ul class="muted" style="font-size:var(--fs-xs);padding-left:18px;margin-top:var(--sp-2)">${notes.map(n=>'<li>'+esc(n)+'</li>').join('')}</ul>`:''}
     <div class="warn">${missing} de ${roster.length*3} casillas estadísticas de esta plantilla nunca se registraron.${guessed?` ${guessed} ${guessed===1?'jugador tiene':'jugadores tienen'} la posición calculada a partir de sus promedios porque la fuente no la publica.`:''}
       Ese hueco es el proyecto de archivo, no un defecto del juego.</div>
     <div class="btnrow"><button class="btn" onclick="shareDraft(${wins})">Copiar resultado</button>
