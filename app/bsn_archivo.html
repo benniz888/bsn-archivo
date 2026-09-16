@@ -760,27 +760,27 @@ tr.me td{background:var(--tint-rojo-soft)}
 tr.cut td{border-bottom:1px solid var(--azul)}
 
 /* ---------- grid game ---------- */
-.gridwrap{overflow-x:auto;margin-top:14px}
+.gridwrap{overflow-x:auto;margin-top:var(--sp-3_5)}
 .gridtable{display:grid;grid-template-columns:92px repeat(3,minmax(90px,1fr));gap:5px;
   min-width:410px;max-width:540px}
 .gcorner{background:transparent}
 .ghead{background:var(--raise);border:1px solid var(--line);border-radius:var(--r-sm);padding:var(--sp-2) 6px;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;text-align:center;
-  font-size:11.5px;font-weight:600;line-height:1.2;min-height:66px;overflow-wrap:anywhere}
+  font-size:var(--fs-3xs);font-weight:600;line-height:1.2;min-height:66px;overflow-wrap:anywhere}
 .ghead.row{flex-direction:row;justify-content:flex-start;text-align:left;padding:var(--sp-2)}
 .gcell{background:var(--deep);border:1px solid var(--line);border-radius:var(--r-sm);aspect-ratio:1;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:6px;
-  cursor:pointer;color:inherit;font-size:11.5px;text-align:center;line-height:1.2;position:relative}
+  cursor:pointer;color:inherit;font-size:var(--fs-3xs);text-align:center;line-height:1.2;position:relative}
 .gcell:hover:not(:disabled){border-color:var(--azul)}
 .gcell[aria-pressed="true"]{border-color:var(--rojo);box-shadow:0 0 0 1px var(--rojo) inset}
 .gcell.ok{background:var(--tint-ok);border-color:var(--ok-line)}
 .gcell.bad{background:var(--tint-rojo);border-color:var(--rojo-deep)}
 .gcell .pn{font-weight:600}
-.gcell .pr{font-size:10.5px;color:var(--ink-2)}
+.gcell .pr{font-size:var(--fs-3xs);color:var(--ink-2)}
 .gcell .plus{font-size:var(--fs-lg);color:var(--ink-3);font-weight:300}
 .guessbar{display:flex;gap:var(--sp-2);margin-top:var(--sp-3);flex-wrap:wrap}
 .guessbar input{flex:1;min-width:180px}
-.pips{display:flex;gap:var(--sp-1);margin-top:10px;align-items:center}
+.pips{display:flex;gap:var(--sp-1);margin-top:var(--sp-2_5);align-items:center}
 .pip{width:16px;height:6px;border-radius:3px;background:var(--line)}
 .pip.used{background:var(--ink-3)}
 .pip.hit{background:var(--ok)}
@@ -788,21 +788,21 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 .sugg{position:absolute;z-index:20;left:0;right:0;top:100%;background:var(--deep);border:1px solid var(--azul);
   border-radius:var(--r-sm);max-height:220px;overflow-y:auto;margin-top:var(--sp-1)}
 .sugg button{display:block;width:100%;text-align:left;background:none;border:0;color:var(--ink);
-  padding:9px var(--sp-3);font-size:13.5px;cursor:pointer}
+  padding:9px var(--sp-3);font-size:var(--fs-xs);cursor:pointer}
 .sugg button:hover,.sugg button.on{background:var(--raise)}
-.sugg .sm{color:var(--ink-3);font-size:11.5px}
+.sugg .sm{color:var(--ink-3);font-size:var(--fs-3xs)}
 
 /* ---------- game shell ---------- */
-.gamehead{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;
+.gamehead{display:flex;gap:var(--sp-2_5);flex-wrap:wrap;align-items:center;justify-content:space-between;
   margin-bottom:6px;max-width:540px}
 .modebtns{display:flex;gap:var(--sp-1);background:var(--raise);border:1px solid var(--line);border-radius:99px;padding:3px}
 .modebtns button{background:none;border:0;color:var(--ink-3);padding:5px 13px;border-radius:99px;
-  font-size:12.5px;font-weight:600;cursor:pointer}
+  font-size:var(--fs-2xs);font-weight:600;cursor:pointer}
 .modebtns button[aria-selected="true"]{background:var(--azul);color:#fff}
-.msg{margin-top:10px;font-size:13.5px;min-height:22px}
+.msg{margin-top:var(--sp-2_5);font-size:var(--fs-xs);min-height:22px}
 .msg.good{color:var(--ok)}
 .msg.bad{color:var(--bad-ink)}
-.scoreline{display:flex;gap:var(--sp-4);flex-wrap:wrap;font-size:var(--fs-xs);color:var(--ink-2);margin-top:10px}
+.scoreline{display:flex;gap:var(--sp-4);flex-wrap:wrap;font-size:var(--fs-xs);color:var(--ink-2);margin-top:var(--sp-2_5)}
 .scoreline b{color:var(--ink);font-size:var(--fs-base)}
 
 /* ---------- splash ----------
@@ -815,15 +815,15 @@ tr.cut td{border-bottom:1px solid var(--azul)}
   padding:calc(24px + env(safe-area-inset-top)) calc(24px + env(safe-area-inset-right))
           calc(24px + env(safe-area-inset-bottom)) calc(24px + env(safe-area-inset-left))}
 .splash.gone{opacity:0;pointer-events:none}
-.splashinner{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;max-width:260px}
+.splashinner{display:flex;flex-direction:column;align-items:center;gap:var(--sp-3_5);width:100%;max-width:260px}
 .splashname{font-family:inherit;font-weight:800;font-size:27px;
   letter-spacing:.03em;line-height:1}
-.splashsub{font-size:10.5px;color:var(--ink-3);letter-spacing:.14em;text-transform:uppercase;
+.splashsub{font-size:var(--fs-3xs);color:var(--ink-3);letter-spacing:.14em;text-transform:uppercase;
   margin-top:-3px}
 .splashbar{width:100%;height:4px;border-radius:99px;background:var(--line-soft);overflow:hidden;margin-top:4px}
 .splashfill{height:100%;width:0;border-radius:99px;background:var(--tri);
   transition:width .12s linear}
-.splashstep{font-size:11.5px;color:var(--ink-3);min-height:16px;text-align:center;
+.splashstep{font-size:var(--fs-3xs);color:var(--ink-3);min-height:16px;text-align:center;
   font-variant-numeric:tabular-nums}
 /* transform:translateY doesn't grow the box it's applied to — the ball's
    26px peak rise was overshooting a 40px-tall, top-anchored box straight
@@ -6634,7 +6634,7 @@ function drawBoard(){
       <button role="tab" aria-selected="${GMODE==='daily'}" onclick="setGMode('daily')">Diaria</button>
       <button role="tab" aria-selected="${GMODE==='practice'}" onclick="setGMode('practice')">Práctica</button>
     </div>
-    <div class="dim" style="font-size:12.5px">9 intentos · cada intento cuenta, acierte o falle · ningún jugador se repite<br>
+    <div class="dim" style="font-size:var(--fs-2xs)">9 intentos · cada intento cuenta, acierte o falle · ningún jugador se repite<br>
       La nómina verificada es de ${POOL.length} jugadores; el autocompletar te enseña quiénes existen.<br>
       Dificultad de hoy: <b>${diff.label}</b>${GB.ones?` — ${GB.ones} casilla${GB.ones===1?'':'s'} con una sola respuesta posible`:''}.</div>
   </div>
@@ -6745,7 +6745,7 @@ function revealGrid(){
   let h='<h4 class="sub">Quién servía en cada casilla</h4><div class="cards g3">';
   for(let i=0;i<3;i++)for(let j=0;j<3;j++){
     const s=GB.sol[i][j].slice().sort((a,b)=>fame(b)-fame(a));
-    h+=`<div class="card"><div class="dim" style="font-size:11.5px">${esc(axLabel(GB.rows[i]))} + ${esc(axLabel(GB.cols[j]))}</div>
+    h+=`<div class="card"><div class="dim" style="font-size:var(--fs-3xs)">${esc(axLabel(GB.rows[i]))} + ${esc(axLabel(GB.cols[j]))}</div>
       <div class="chips">${s.map(p=>`<span class="tag ${GB.ans[i][j]&&GB.ans[i][j].name===p.n?'gold':''}">${esc(p.n)} · ${cellShare(p,GB.sol[i][j]).toFixed(0)}%</span>`).join('')}</div></div>`;
   }
   h+='</div><p class="note">El porcentaje es cuánta gente escogería a ese jugador ahí, estimado a partir de qué tan conocido es. En el juego original ese número sale de millones de partidas; aquí sale de un modelo, y se dice.</p>';
@@ -6908,19 +6908,19 @@ function courtHTML(){
     const dead=open&&!DR.done&&!avail(s);
     const border = on?'var(--fuego)':(dead?'var(--line-soft)':(open?'var(--line)':'var(--ok)'));
     return `<button onclick="selectSlot('${s}')" style="all:unset;cursor:${DR.done?'default':'pointer'};
-      display:block;border:2px ${open?'dashed':'solid'} ${border};border-radius:12px;padding:10px var(--sp-2);
+      display:block;border:2px ${open?'dashed':'solid'} ${border};border-radius:12px;padding:var(--sp-2_5) var(--sp-2);
       text-align:center;background:${on?'var(--tint-fuego)':'var(--hair-2)'};min-height:58px">
       <div style="font-size:var(--fs-3xs);letter-spacing:.08em;font-weight:700;color:${open?'var(--ink-3)':'var(--ink-2)'}">${s}</div>
       ${p?`<div style="font-weight:700;font-size:var(--fs-xs);margin-top:3px;line-height:1.2">${esc(p.n)}</div>
            <div class="dim" style="font-size:var(--fs-3xs)">${p.c.map(c=>F[c]?F[c].abbr:c).join(' ')}</div>`
-        :`<div class="dim" style="font-size:11.5px;margin-top:3px${dead?';opacity:.45':''}">${SLOT_ES[s]}${dead?' · vacío':''}</div>`}
+        :`<div class="dim" style="font-size:var(--fs-3xs);margin-top:3px${dead?';opacity:.45':''}">${SLOT_ES[s]}${dead?' · vacío':''}</div>`}
     </button>`;
   };
-  return `<div style="border:1px solid var(--line);border-radius:14px;padding:14px;
+  return `<div style="border:1px solid var(--line);border-radius:14px;padding:var(--sp-3_5);
     background:linear-gradient(180deg,var(--hair),transparent)">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:340px;margin:0 auto 10px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2_5);max-width:340px;margin:0 auto var(--sp-2_5)">
       ${cell('C')}${cell('PF')}</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;max-width:460px;margin:0 auto">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--sp-2_5);max-width:460px;margin:0 auto">
       ${cell('SF')}${cell('PG')}${cell('SG')}</div>
   </div>`;
 }
@@ -6931,7 +6931,7 @@ function drawPicks(){
   const roster=rosterOf(), imp=importsIn(roster);
   const nat=roster.filter(p=>(p.t||[]).includes('native')).length;
   let h=`<div class="gamehead">
-    <div class="dim" style="font-size:12.5px">Gira equipo y década · coloca cinco posiciones · ${DR.skips} pases</div>
+    <div class="dim" style="font-size:var(--fs-2xs)">Gira equipo y década · coloca cinco posiciones · ${DR.skips} pases</div>
     <div class="chips" style="margin:0">
       <span class="tag ${imp>=3?'gold':''}">Refuerzos ${imp}/3</span>
       <span class="tag">Nativos ${nat}</span>
@@ -6939,15 +6939,15 @@ function drawPicks(){
   </div>`;
 
   if(!DR.done){
-    h+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:var(--sp-3) 0">
-      <div class="card" style="text-align:center;border-color:#E8B23A;padding:10px">
+    h+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2_5);margin:var(--sp-3) 0">
+      <div class="card" style="text-align:center;border-color:#E8B23A;padding:var(--sp-2_5)">
         <div style="font-size:var(--fs-3xs);letter-spacing:.1em;font-weight:700;color:#E8B23A">EQUIPO</div>
         <div style="font-family:inherit;font-weight:800;font-size:30px;line-height:1.1">${esc(F[DR.club].abbr)}</div>
-        <div class="dim" style="font-size:11.5px">${esc(F[DR.club].name)}</div></div>
-      <div class="card" style="text-align:center;border-color:#9B6BE0;padding:10px">
+        <div class="dim" style="font-size:var(--fs-3xs)">${esc(F[DR.club].name)}</div></div>
+      <div class="card" style="text-align:center;border-color:#9B6BE0;padding:var(--sp-2_5)">
         <div style="font-size:var(--fs-3xs);letter-spacing:.1em;font-weight:700;color:#9B6BE0">DÉCADA</div>
         <div style="font-family:inherit;font-weight:800;font-size:30px;line-height:1.1">${DR.dec}s</div>
-        <div class="dim" style="font-size:11.5px">${poolFor(DR.club,DR.dec).length} disponibles</div></div>
+        <div class="dim" style="font-size:var(--fs-3xs)">${poolFor(DR.club,DR.dec).length} disponibles</div></div>
     </div>
     <div class="btnrow" style="margin-bottom:var(--sp-3)">
       <button class="btn primary" onclick="skipSpin()" ${DR.skips?'':'disabled'}>Girar de nuevo (${DR.skips})</button>
@@ -6975,8 +6975,8 @@ function drawPicks(){
             onclick="place(${JSON.stringify(p.n).replace(/"/g,'&quot;')})">
             <div style="font-weight:700">${esc(p.n)}</div>
             <div class="dim" style="font-size:var(--fs-2xs)">${posLabel(p)} · ${p.c.map(c=>F[c]?F[c].abbr:c).join(' ')}</div>
-            ${line?`<div class="muted" style="font-size:12.5px;margin-top:var(--sp-1)">${line}</div>`
-                 :`<div class="muted" style="font-size:12.5px;margin-top:var(--sp-1)">Sin promedios registrados.</div>`}
+            ${line?`<div class="muted" style="font-size:var(--fs-2xs);margin-top:var(--sp-1)">${line}</div>`
+                 :`<div class="muted" style="font-size:var(--fs-2xs);margin-top:var(--sp-1)">Sin promedios registrados.</div>`}
             <div class="chips">${(p.t||[]).map(t=>`<span class="tag">${esc({mvp:'MVP',scoring:'Anotación',champion:'Campeón',import:'Refuerzo',native:'Nativo',nba:'NBA','10k':'10k',legend:'Leyenda',figura:'Figura del BSN'}[t]||t)}</span>`).join('')}</div>
             ${bad?`<div class="note" style="color:#FF8A93">${esc(bad)}</div>`:''}
           </button>`;
@@ -7024,12 +7024,12 @@ function finishDraft(){
     : wins>=15?'Pelea por el último boleto.'
     : 'Se queda fuera.';
   drawPicks();
-  $('#dResult').innerHTML=`<div class="card" style="margin-top:14px;border-color:${wins>=25?'var(--ok)':'var(--line)'}">
+  $('#dResult').innerHTML=`<div class="card" style="margin-top:var(--sp-3_5);border-color:${wins>=25?'var(--ok)':'var(--line)'}">
     <div style="font-family:inherit;font-weight:800;font-size:46px;line-height:1">${wins}-${34-wins}</div>
     <div class="muted" style="font-size:var(--fs-base);margin-top:var(--sp-1)">${esc(verdict)}</div>
     <div class="scoreline"><span>Base <b>${base.toFixed(0)}</b></span><span>Bonos <b>+${bonus}</b></span>
       <span>Total <b>${total.toFixed(0)}</b></span></div>
-    ${notes.length?`<ul class="muted" style="font-size:var(--fs-xs);padding-left:18px;margin-top:var(--sp-2)">${notes.map(n=>'<li>'+esc(n)+'</li>').join('')}</ul>`:''}
+    ${notes.length?`<ul class="muted" style="font-size:var(--fs-xs);padding-left:var(--sp-4_5);margin-top:var(--sp-2)">${notes.map(n=>'<li>'+esc(n)+'</li>').join('')}</ul>`:''}
     <div class="warn">${missing} de ${roster.length*3} casillas estadísticas de esta plantilla nunca se registraron.${guessed?` ${guessed} ${guessed===1?'jugador tiene':'jugadores tienen'} la posición calculada a partir de sus promedios porque la fuente no la publica.`:''}
       Ese hueco es el proyecto de archivo, no un defecto del juego.</div>
     <div class="btnrow"><button class="btn" onclick="shareDraft(${wins})">Copiar resultado</button>
@@ -7089,10 +7089,10 @@ function drawQuiz(){
   const host=$('#quizGame');
   if(!QZ){ host.innerHTML=''; return; }
   const pts=[60,40,25,15,10,5][QZ.shown-1];
-  let h=`<div class="gamehead"><div class="dim" style="font-size:12.5px">Tres intentos · cada pista revelada baja los puntos</div>
+  let h=`<div class="gamehead"><div class="dim" style="font-size:var(--fs-2xs)">Tres intentos · cada pista revelada baja los puntos</div>
     <div class="chips" style="margin:0"><span class="tag gold">${QZ.done?'—':pts+' puntos'}</span>
       <span class="tag">Intentos ${QZ.guesses}</span></div></div>`;
-  h+='<div class="card" style="margin-top:10px"><ol style="margin:0;padding-left:20px;line-height:1.8">'+
+  h+='<div class="card" style="margin-top:var(--sp-2_5)"><ol style="margin:0;padding-left:20px;line-height:1.8">'+
     QZ.clues.slice(0,QZ.shown).map(c=>'<li>'+esc(c)+'</li>').join('')+'</ol></div>';
   if(!QZ.done){
     h+=`<div class="guessbar"><input type="text" id="qGuess" placeholder="¿Quién es?" autocomplete="off" list="poolNames">
@@ -7151,13 +7151,13 @@ function newHL(keep){
 function drawHL(){
   const host=$('#hlGame');
   const best=parseInt(ST.get('hlbest')||'0',10)||0;
-  let h=`<div class="gamehead"><div class="dim" style="font-size:12.5px">¿Quién tiene más ${esc(HL.set.label)}?</div>
+  let h=`<div class="gamehead"><div class="dim" style="font-size:var(--fs-2xs)">¿Quién tiene más ${esc(HL.set.label)}?</div>
     <div class="chips" style="margin:0"><span class="tag">Racha ${HL.streak}</span><span class="tag gold">Mejor ${best}</span></div></div>`;
-  h+='<div class="cards g2" style="margin-top:10px">';
+  h+='<div class="cards g2" style="margin-top:var(--sp-2_5)">';
   [HL.a,HL.b].forEach((x,i)=>{
     h+=`<button class="card" style="cursor:pointer;text-align:left" ${HL.done?'disabled':''} onclick="answerHL(${i})">
       <div style="font-weight:700;font-size:17px">${esc(x[0])}</div>
-      <div class="dim" style="font-size:12.5px">${HL.done?x[1].toLocaleString('es-PR')+' '+esc(HL.set.unit):'?'}</div></button>`;
+      <div class="dim" style="font-size:var(--fs-2xs)">${HL.done?x[1].toLocaleString('es-PR')+' '+esc(HL.set.unit):'?'}</div></button>`;
   });
   h+='</div><div class="msg" id="hMsg" role="status" aria-live="polite"></div>';
   if(HL.done) h+='<div class="btnrow"><button class="btn primary" onclick="newHL(true)">Siguiente</button></div>';
