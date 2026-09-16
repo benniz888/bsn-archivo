@@ -4378,12 +4378,12 @@ function renderArchiveCard(name,id,host){
   const span=(r.first_season&&r.last_season)
     ? (r.first_season===r.last_season?''+r.first_season:r.first_season+'–'+r.last_season) : '';
   const meta=[r.position,span,(r.nationality&&r.nationality!=='Puerto Rico')?r.nationality:''].filter(Boolean).join(' · ');
-  host.innerHTML=`<div class="card" style="margin-top:18px">
+  host.innerHTML=`<div class="card" style="margin-top:var(--sp-4_5)">
     <div style="display:flex;gap:16px;flex-wrap:wrap">
       ${portrait(name,'var(--azul)','var(--blanco)',60,74,r.position)}
       <div style="flex:1;min-width:230px">
         <h3 style="font-size:24px">${esc(name)}</h3>
-        <div class="muted" style="font-size:13.5px">${esc(meta||'sin datos de posición o años')}</div>
+        <div class="muted" style="font-size:var(--fs-xs)">${esc(meta||'sin datos de posición o años')}</div>
       </div>
     </div>
     <div class="note">Del índice del archivo — no es uno de los jugadores destacados con ficha curada. Lo que sigue es solo lo que registra el archivo de bsnpr.com.</div>
@@ -4547,7 +4547,7 @@ function renderSeasonDetail(car,season,name,id){
   const ak=row.franchise_id && FID2APP && FID2APP[row.franchise_id];
   const team=(ak&&F[ak])?F[ak].name:(row.team_raw||'—');
   const s=row.stats, p=seasonCmpObj(row);
-  host.innerHTML=`<div class="card" style="margin-top:12px" id="seasonDetailCard">
+  host.innerHTML=`<div class="card" style="margin-top:var(--sp-3)" id="seasonDetailCard">
     <div class="phero-sub" style="margin-bottom:6px">${esc(name)} · ${row.season} · ${esc(team)}</div>
     ${s?`<div class="strip">
       <div><div class="n">${p.ppg??'—'}</div><div class="l">puntos por juego</div></div>
@@ -4774,9 +4774,9 @@ function buildRetiredNums(){
    ============================================================ */
 function buildRefRules(){
   $('#refRules').innerHTML='<div class="cards g2">'+REF_RULES.map(r=>`
-    <div class="card"><div class="dim" style="font-size:11px;letter-spacing:.07em;font-weight:600">${esc(r[0]).toUpperCase()}</div>
+    <div class="card"><div class="dim" style="font-size:var(--fs-3xs);letter-spacing:.07em;font-weight:600">${esc(r[0]).toUpperCase()}</div>
     <div style="font-weight:700;margin-top:3px;font-size:16px">${esc(r[1])}</div>
-    <div class="muted" style="font-size:13.5px;margin-top:4px">${esc(r[2])}</div></div>`).join('')+'</div>';
+    <div class="muted" style="font-size:var(--fs-xs);margin-top:4px">${esc(r[2])}</div></div>`).join('')+'</div>';
 }
 function buildRefTimeline(){
   $('#refTimeline').innerHTML='<div class="timeline">'+REF_TIMELINE.map(t=>`
@@ -4870,13 +4870,13 @@ function buildSources(){
       <code>bsnpr.com/jugadores/jugador?id=NNN</code>. La de Carlos Arroyo es la 273 y trae una tabla temporada por temporada
       con columnas de caja completas: juegos, minutos, tiros de dos y de tres intentados y anotados, tiros libres,
       asistencias, rebotes y puntos.</p>
-      <p class="muted" style="font-size:13.5px;margin:0">La sesión anterior concluyó que el motor de estadísticas del BSN
+      <p class="muted" style="font-size:var(--fs-xs);margin:0">La sesión anterior concluyó que el motor de estadísticas del BSN
       estaba muerto y solo era recuperable por el Wayback Machine. Eso era falso: la ruta vieja murió, pero existe un
       endpoint de jugador vivo e indexado. Si <code>id</code> es un rango denso de enteros, ese endpoint <b>es</b> la base
       de datos de jugadores del BSN. Devuelve 500 a un fetcher automático, así que hay que recorrerlo desde un navegador
       o un script con cabeceras normales. Está incluido: <code>bsnpr_scraper.py</code>.</p>
     </div>
-    <div class="card" style="margin-top:12px">
+    <div class="card" style="margin-top:var(--sp-3)">
       <p style="margin:0 0 8px">El motor de estadísticas del viejo <b>bsnpr.com</b> publicaba líderes por temporada en
       <code>estadisticas/lideres.asp?anio=YYYY</code>, con años de <b>1957 a 2004</b>. Las páginas ya no existen, pero
       las URLs aparecen citadas una por una en las referencias de Wikipedia — es decir, existieron, y es muy probable
@@ -4999,10 +4999,10 @@ function drawFinal(){
 
 function buildOwners(){
   $('#owners').innerHTML='<div class="cards g2">'+OWNERS.map(o=>`
-    <div class="card" style="display:flex;gap:12px">
+    <div class="card" style="display:flex;gap:var(--sp-3)">
       ${crest(o[0],32,38)}
       <div><div style="font-weight:700">${esc(F[o[0]].name)}</div>
-      <div class="muted" style="font-size:13.5px">${esc(o[1])}</div>
+      <div class="muted" style="font-size:var(--fs-xs)">${esc(o[1])}</div>
       ${o[2]?`<div class="note">${esc(o[2])}</div>`:''}</div></div>`).join('')+'</div>';
 }
 /* ============================================================
