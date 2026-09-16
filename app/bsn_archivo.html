@@ -153,6 +153,12 @@
   /* ---- spacing — 4px base ---- */
   --sp-1:4px;  --sp-2:8px;  --sp-3:12px;  --sp-4:16px;  --sp-5:24px;
   --sp-6:32px; --sp-7:48px; --sp-8:64px;  --sp-9:96px;
+  /* fractional in-between steps, added after the Step 2 token sweep
+     found 10px/14px/18px recurring across most of the app (10px in
+     every chunk swept) with no exact --sp-* match. Underscore, not a
+     literal dot -- a "." is not a valid character in a CSS custom
+     property identifier; confirmed empirically before using this. */
+  --sp-2_5:10px; --sp-3_5:14px; --sp-4_5:18px;
 
   /* ---- motion (used from commit 2) ---- */
   --ease:cubic-bezier(.22,.8,.3,1);
@@ -3698,7 +3704,7 @@ function buildClubCard(){
     <div style="flex:1;min-width:220px">
       <h4 style="font-size:20px">${esc(f.name)}</h4>
       <div class="muted" style="font-size:var(--fs-xs)">${esc(f.city)} · desde ${f.founded}${v?' · '+esc(v[0]):''}</div>
-      <div class="chips" style="margin-top:10px">
+      <div class="chips" style="margin-top:var(--sp-2_5)">
         <span class="tag gold">${f.won.length} título${f.won.length===1?'':'s'}</span>
         <span class="tag">${f.ru.length} finales perdidas</span>
         ${last?`<span class="tag">Último: ${last}</span>`:'<span class="tag">Sin títulos</span>'}
