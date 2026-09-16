@@ -721,16 +721,16 @@ select{cursor:pointer}
 .cell.empty{background:repeating-linear-gradient(45deg,var(--empty-a),var(--empty-a) 3px,var(--empty-b) 3px,var(--empty-b) 6px);cursor:default}
 .cell.empty:hover{transform:none;box-shadow:none}
 .cell.sel{box-shadow:0 0 0 2px var(--rojo)}
-.readout{border:1px solid var(--line);border-radius:var(--r);background:var(--deep);margin-top:14px;
-  padding:var(--sp-4);min-height:96px;display:flex;gap:14px;align-items:center}
+.readout{border:1px solid var(--line);border-radius:var(--r);background:var(--deep);margin-top:var(--sp-3_5);
+  padding:var(--sp-4);min-height:96px;display:flex;gap:var(--sp-3_5);align-items:center}
 .readout .yr{font-size:var(--fs-2xl);line-height:1;color:var(--ink-3);flex:none;font-weight:800;letter-spacing:-.03em}
 .readout .win{font-weight:700;font-size:17px}
-.readout .lose{color:var(--ink-2);font-size:13.5px;margin-top:2px}
+.readout .lose{color:var(--ink-2);font-size:var(--fs-xs);margin-top:2px}
 .readout .meta{color:var(--ink-3);font-size:var(--fs-2xs);margin-top:7px;white-space:normal}
 
 /* ---------- bars ---------- */
 .bars{margin-top:var(--sp-3);display:grid;gap:5px}
-.barrow{display:grid;grid-template-columns:132px 1fr 42px;gap:10px;align-items:center;font-size:var(--fs-xs)}
+.barrow{display:grid;grid-template-columns:132px 1fr 42px;gap:var(--sp-2_5);align-items:center;font-size:var(--fs-xs)}
 .barrow .bl{color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bartrack{background:var(--line-soft);border-radius:3px;height:15px;overflow:hidden}
 .barfill{display:block;height:100%;border-radius:3px}
@@ -3953,7 +3953,7 @@ function buildDynasties(){
     <div class="card" style="display:flex;gap:var(--sp-3);align-items:center">
       ${crest(r.k,32,38)}
       <div><div style="font-family:inherit;font-weight:800;font-size:26px;line-height:1">${r.n} seguidos</div>
-      <div style="font-weight:600;font-size:13.5px">${esc(F[r.k].name.split(' de ')[0])}</div>
+      <div style="font-weight:600;font-size:var(--fs-xs)">${esc(F[r.k].name.split(' de ')[0])}</div>
       <div class="dim" style="font-size:var(--fs-2xs)">${r.start}–${r.end}</div></div></div>`).join('')+'</div>'+
     `<p class="note">${runs.length} rachas de dos o más títulos consecutivos en 97 temporadas. Bayamón 2025–26 es la primera desde Ponce en 2014–15.</p>`;
 }
@@ -4741,7 +4741,7 @@ function buildScoringChart(){
     <title>${p[0]} — ${esc(p[1])}, ${p[4]}</title></circle>`).join('');
   const tvals=[]; for(let v=Math.ceil(x0/5)*5; v<=x1; v+=(x1-x0>28?10:5)) tvals.push(v);
   const ticks=tvals.map(v=>`<text x="${X(v)}" y="${H-10}" fill="var(--ink-3)" font-size="10" text-anchor="middle">${v}</text>`).join('');
-  $('#scoringChart').innerHTML=`<div class="card" style="padding:10px"><svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto" role="img"
+  $('#scoringChart').innerHTML=`<div class="card" style="padding:var(--sp-2_5)"><svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto" role="img"
     aria-label="Promedio del campeón de anotación por temporada, ${x0} a ${x1}">
     ${g}<path d="${path}" fill="none" stroke="var(--rojo)" stroke-width="2"/>${dots}${ticks}</svg></div>
     <p class="note">Hasta 1970 la liga premiaba puntos totales; desde 1971, promedio. Las dos series no son comparables, así que solo se grafica la segunda.</p>`;
