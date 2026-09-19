@@ -483,17 +483,17 @@ nav.tabs button[aria-selected="true"]::after,nav.tabs a[aria-selected="true"]::a
 .bottombar{position:fixed;left:0;right:0;bottom:0;z-index:70;display:flex;
   background:var(--scrim-bar);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line);
   padding-bottom:env(safe-area-inset-bottom)}
-.bottombar button{position:relative;flex:1;background:none;border:0;color:var(--ink-3);display:flex;flex-direction:column;
-  align-items:center;gap:3px;padding:9px 2px 8px;cursor:pointer;font-size:10.5px;font-weight:600}
-.bottombar button svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.7}
-.bottombar button[aria-selected="true"]{color:var(--blanco)}
-.bottombar button[aria-selected="true"] svg{stroke:var(--rojo)}
+.bottombar button,.bottombar a{position:relative;flex:1;background:none;border:0;color:var(--ink-3);display:flex;flex-direction:column;
+  align-items:center;gap:3px;padding:9px 2px 8px;cursor:pointer;font-size:10.5px;font-weight:600;text-decoration:none}
+.bottombar button svg,.bottombar a svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.7}
+.bottombar button[aria-selected="true"],.bottombar a[aria-selected="true"]{color:var(--blanco)}
+.bottombar button[aria-selected="true"] svg,.bottombar a[aria-selected="true"] svg{stroke:var(--rojo)}
 /* step B — the bottom bar is a phone's *only* nav (nav.tabs, which already
    carries this mark, is desktop-only), so the active tab gets the same
    device the desktop underline uses, just relocated to the bar's top edge
    instead of the button's own bottom. Icon tint stays — this sits alongside
    it, not instead of it. */
-.bottombar button[aria-selected="true"]::before{content:"";position:absolute;top:0;left:8px;right:8px;
+.bottombar button[aria-selected="true"]::before,.bottombar a[aria-selected="true"]::before{content:"";position:absolute;top:0;left:8px;right:8px;
   height:3px;border-radius:0 0 2px 2px;background:var(--tri)}
 @media(min-width:860px){.bottombar{display:none}}
 /* PHASE_8.2 — on a phone the bottom bar is the nav; the top tab row goes.
@@ -3199,10 +3199,15 @@ function buildNav(){
   const bb=$('#bottombar'); bb.innerHTML='';
   BOTTOM.forEach(id=>{
     const t=TABS.find(x=>x[0]===id);
-    const b=el('button');
+    const b=el('a');
+    b.href='#'+id;
     b.setAttribute('role','tab'); b.setAttribute('aria-selected',id===CURRENT?'true':'false');
     b.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${t[2]}" stroke-linecap="round" stroke-linejoin="round"/></svg><span>${esc(t[1])}</span>`;
-    b.onclick=()=>showTab(id);
+    b.onclick=(e)=>{
+      if(e.ctrlKey||e.metaKey||e.shiftKey||e.button!==0) return;   /* let the browser open a new tab/window natively */
+      e.preventDefault(); showTab(id);
+    };
+    b.onkeydown=(e)=>{ if(e.key===' '){ e.preventDefault(); showTab(id); } };
     bb.appendChild(b);
   });
 }
