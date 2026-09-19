@@ -6990,7 +6990,7 @@ function drawPicks(){
             ${line?`<div class="muted" style="font-size:var(--fs-2xs);margin-top:var(--sp-1)">${line}</div>`
                  :`<div class="muted" style="font-size:var(--fs-2xs);margin-top:var(--sp-1)">Sin promedios registrados.</div>`}
             <div class="chips">${(p.t||[]).map(t=>`<span class="tag">${esc({mvp:'MVP',scoring:'Anotación',champion:'Campeón',import:'Refuerzo',native:'Nativo',nba:'NBA','10k':'10k',legend:'Leyenda',figura:'Figura del BSN'}[t]||t)}</span>`).join('')}</div>
-            ${bad?`<div class="note" style="color:#FF8A93">${esc(bad)}</div>`:''}
+            ${bad?`<div class="note" style="color:var(--bad-ink)">${esc(bad)}</div>`:''}
           </button>`;
         });
         h+='</div>';
