@@ -365,12 +365,12 @@ nav.tabs{border-top:1px solid var(--line-soft);position:relative}
 .subnav{display:flex;gap:var(--sp-2);overflow-x:auto;scrollbar-width:none;
   -webkit-overflow-scrolling:touch;margin:0 0 var(--sp-5);padding-bottom:2px}
 .subnav::-webkit-scrollbar{display:none}
-.subnav button{flex:0 0 auto;background:transparent;border:1px solid var(--line);
+.subnav button,.subnav a{flex:0 0 auto;background:transparent;border:1px solid var(--line);
   color:var(--ink-3);border-radius:999px;padding:7px 14px;font:inherit;
-  font-size:var(--fs-sm);font-weight:600;cursor:pointer;white-space:nowrap;
+  font-size:var(--fs-sm);font-weight:600;cursor:pointer;white-space:nowrap;text-decoration:none;
   transition:color var(--dur-fast),border-color var(--dur-fast),background var(--dur-fast)}
-.subnav button:hover{color:var(--ink);border-color:var(--ink-3)}
-.subnav button[aria-current="true"]{color:var(--night);background:var(--ink);border-color:var(--ink)}
+.subnav button:hover,.subnav a:hover{color:var(--ink);border-color:var(--ink-3)}
+.subnav button[aria-current="true"],.subnav a[aria-current="true"]{color:var(--night);background:var(--ink);border-color:var(--ink)}
 .view[hidden]{display:none}
 .view.view-enter{animation:panelin var(--dur) var(--ease) both}
 @media(prefers-reduced-motion:reduce){.view.view-enter{animation:none}}
@@ -7901,9 +7901,13 @@ function _subnavEl(sec,order,landLabel){
   const nav=el('div','subnav'); nav.setAttribute('role','tablist');
   nav.setAttribute('aria-label','Vistas de '+sec);
   [['__landing',landLabel||'Resumen']].concat(order).forEach(([slug,label])=>{
-    const b=el('button'); b.type='button'; b.dataset.view=slug; b.textContent=label;
+    const b=el('a'); b.href='#'+sec+(slug==='__landing'?'':'/'+slug); b.dataset.view=slug; b.textContent=label;
     b.setAttribute('role','tab');
-    b.onclick=()=>showView(sec,slug);
+    b.onclick=(e)=>{
+      if(e.ctrlKey||e.metaKey||e.shiftKey||e.button!==0) return;   /* let the browser open a new tab/window natively */
+      e.preventDefault(); showView(sec,slug);
+    };
+    b.onkeydown=(e)=>{ if(e.key===' '){ e.preventDefault(); showView(sec,slug); } };
     nav.appendChild(b);
   });
   return nav;
