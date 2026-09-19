@@ -3336,8 +3336,11 @@ function openMega(id){
   if(matchMedia('(max-width:859px)').matches) return;
   MEGA_TAB=id;
   const cols=menu.cols.map(([h,items])=>
-    `<div class="mega-col"><h4>${esc(h)}</h4>${items.map(([l,tg])=>
-      `<button type="button" onclick="megaGo(${JSON.stringify(tg).replace(/"/g,'&quot;')})">${esc(l)}</button>`).join('')}</div>`).join('');
+    `<div class="mega-col"><h4>${esc(h)}</h4>${items.map(([l,tg])=>{
+      const href='#'+(tg.indexOf('/')>-1?tg:id+'/'+tg);
+      const call=`megaGo(${JSON.stringify(tg).replace(/"/g,'&quot;')})`;
+      return `<a href="${href}" onclick="if(event.ctrlKey||event.metaKey||event.shiftKey||event.button!==0)return;event.preventDefault();${call}" onkeydown="if(event.key===' '){event.preventDefault();${call}}">${esc(l)}</a>`;
+    }).join('')}</div>`).join('');
   p.innerHTML=`<div class="mega-inner">
     <div class="mega-cols">${cols}</div>
     <div class="mega-feat">${megaFeat(menu.feat)}</div>
