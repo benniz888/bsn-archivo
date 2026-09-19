@@ -529,7 +529,7 @@ h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
    number + a sparkline; the strip / kv-list / roster below stay as they were. */
 .phero{display:flex;gap:var(--sp-4);flex-wrap:wrap;align-items:flex-start}
 .phero-body{flex:1;min-width:230px;display:flex;flex-direction:column;gap:var(--sp-2)}
-.phero-body h3{font-size:var(--fs-xl);text-transform:uppercase;letter-spacing:-.01em}
+.phero-body h2{font-size:var(--fs-xl);text-transform:uppercase;letter-spacing:-.01em}
 .phero-sub{color:var(--ink-3);font-size:var(--fs-xs)}
 .phero-stat{display:flex;align-items:flex-end;gap:var(--sp-3);flex-wrap:wrap;margin-top:var(--sp-1);min-height:1px}
 .phero-stat .ed-stat{font-size:clamp(38px,9vw,56px);line-height:.82}
@@ -871,7 +871,7 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 .primer{border:1px solid var(--azul);border-radius:var(--r);padding:var(--sp-4) var(--sp-4) var(--sp-3_5);
   margin:var(--sp-4) 0 var(--sp-1);background:var(--tint-azul)}
 .primerhead{display:flex;align-items:baseline;gap:var(--sp-2_5);flex-wrap:wrap}
-.primerhead h3{font-family:inherit;font-weight:800;font-size:20px;
+.primerhead h4{font-family:inherit;font-weight:800;font-size:20px;
   text-transform:uppercase;letter-spacing:.02em;flex:1}
 .primer p{margin:9px 0 0;font-size:var(--fs-sm);line-height:1.55;color:var(--ink-2);max-width:68ch}
 .primer .x{background:none;border:0;color:var(--ink-3);font:inherit;font-size:var(--fs-2xs);
@@ -4077,7 +4077,7 @@ function showTeam(k){
     <div class="phero">
       ${crest(k,58,70)}
       <div class="phero-body">
-        <h3>${esc(f.name)}</h3>
+        <h2>${esc(f.name)}</h2>
         <div class="phero-sub">${esc(f.city)} · fundado ${f.founded}${f.active?'':' · desaparecido'+(f.end?' en '+f.end:'')}</div>
         <div class="phero-stat"><span class="ed-stat">${f.won.length}</span>
           <span class="phero-spark" style="color:${f.c1}">${titleComb(f,{w:150,h:24,gap:1})}</span></div>
@@ -4382,7 +4382,7 @@ function renderArchiveCard(name,id,host){
     <div style="display:flex;gap:16px;flex-wrap:wrap">
       ${portrait(name,'var(--azul)','var(--blanco)',60,74,r.position)}
       <div style="flex:1;min-width:230px">
-        <h3 style="font-size:24px">${esc(name)}</h3>
+        <h2 style="font-size:24px">${esc(name)}</h2>
         <div class="muted" style="font-size:var(--fs-xs)">${esc(meta||'sin datos de posición o años')}</div>
       </div>
     </div>
@@ -4420,7 +4420,7 @@ function showPlayer(name,id,season){
     <div class="phero">
       ${portrait(p.name,c1,c2,60,74,p.pos)}
       <div class="phero-body">
-        <h3>${esc(p.name)}</h3>
+        <h2>${esc(p.name)}</h2>
         <div class="phero-sub">${esc([p.pos,p.years].filter(Boolean).join(' · ')||'posición y años sin registrar')}</div>
         ${bigN!=null?`<div class="phero-stat"><span class="ed-stat">${bigN}</span>
           <span class="phero-spark" id="playerSpark" style="color:${c1}"></span></div>
@@ -6248,7 +6248,7 @@ function buildPrimer(){
   host.innerHTML=`
     <div class="primer">
       <div class="primerhead">
-        <h3>¿Qué es el BSN?</h3>
+        <h4>¿Qué es el BSN?</h4>
         <button class="x" onclick="dismissPrimer()">Ya lo sé, ocúltalo</button>
       </div>
       <p>El Baloncesto Superior Nacional es la liga profesional de baloncesto de Puerto Rico.
