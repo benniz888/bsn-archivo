@@ -467,12 +467,12 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,
 .tabscroll{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;max-width:var(--maxw);margin:0 auto;
   padding:0 calc(10px + env(safe-area-inset-right)) 0 calc(10px + env(safe-area-inset-left))}
 .tabscroll::-webkit-scrollbar{display:none}
-nav.tabs button{background:none;border:0;color:var(--ink-3);font-weight:700;
+nav.tabs button,nav.tabs a{background:none;border:0;color:var(--ink-3);font-weight:700;
   padding:13px 4px 12px;margin:0 9px;white-space:nowrap;cursor:pointer;position:relative;
-  font-size:var(--fs-sm);letter-spacing:-.01em}
-nav.tabs button:hover{color:var(--ink)}
-nav.tabs button[aria-selected="true"]{color:var(--blanco);font-weight:800}
-nav.tabs button[aria-selected="true"]::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
+  font-size:var(--fs-sm);letter-spacing:-.01em;text-decoration:none}
+nav.tabs button:hover,nav.tabs a:hover{color:var(--ink)}
+nav.tabs button[aria-selected="true"],nav.tabs a[aria-selected="true"]{color:var(--blanco);font-weight:800}
+nav.tabs button[aria-selected="true"]::after,nav.tabs a[aria-selected="true"]::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
   border-radius:2px 2px 0 0;transform-origin:center;
   animation:tabink var(--dur) var(--ease) both;
   background:var(--tri)}
@@ -3180,12 +3180,17 @@ let CURRENT='inicio';
 function buildNav(){
   const s=$('#tabscroll'); s.innerHTML='';
   NAV.forEach(([id,label])=>{
-    const b=el('button');
+    const b=el('a');
+    b.href='#'+id;
     b.id='tab-'+id; b.textContent=label; b.setAttribute('role','tab');
     b.setAttribute('aria-selected',id===CURRENT?'true':'false');
     b.setAttribute('aria-controls',id);
     b.setAttribute('aria-haspopup','true'); b.setAttribute('aria-expanded','false');
-    b.onclick=()=>{ closeMega(); showTab(id); };
+    b.onclick=(e)=>{
+      if(e.ctrlKey||e.metaKey||e.shiftKey||e.button!==0) return;   /* let the browser open a new tab/window natively */
+      e.preventDefault(); closeMega(); showTab(id);
+    };
+    b.onkeydown=(e)=>{ if(e.key===' '){ e.preventDefault(); closeMega(); showTab(id); } };
     b.onmouseenter=()=>openMega(id);
     b.onmouseleave=scheduleClose;
     b.onfocus=()=>openMega(id);
