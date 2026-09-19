@@ -314,12 +314,36 @@ checkpoint).
   pale pink to the properly-contrasted dark red.
 
 **QUEUE, next session:** nothing blocking either fix pass — both complete
-and pushed. Open items, all deliberately deferred, no urgency:
-- Item 7 (`.dangerzone`, lines 899–900) — trivial 2-line deletion, fold into
-  whichever commit is convenient.
-- Items 4, 5, 8 (letter-spacing mismatch, breakpoint inconsistency,
-  99px/999px pill-radius) — batch as one small future cleanup pass whenever
-  convenient; none are urgent, none carry accessibility risk.
+and pushed.
+
+**Item 7 — DONE, pushed (`21c734a`).** `.dangerzone` reconfirmed still dead
+(zero consumers), deleted (lines 899–900 at the time).
+
+**Items 4 + 8 — DONE, pushed (`95b84fd`), one commit.** Item 8: the smaller
+group converted to match the larger — `999px`→`99px` at 6 lines (`.subnav
+button/a`, `.tileplay`, `.cmptrack`, `.cmpfill`, `.ed-cmp i`, `.ed-cmp i>b`);
+15 total `99px` instances now, zero `999px` remaining, confirmed
+zero-visual-difference (rendered pill height byte-identical). Item 4: `h3.sec`
+(`.015em`), `.phero-body h2` (`-.01em`), and `.primerhead h4` (`.02em`)
+converged onto `.005em` — the plurality value already carried by `.big` and
+`.herotext h2`. Unlike every other conversion this whole track, this one had
+no existing token/scale to match against — a judgment call on convergence
+target, not a fact being confirmed; verified via computed-style math plus
+before/after screenshots of all 3 affected elements (a real but subtle
+change, most visible on `.phero-body h2`). `.hubhead`'s separate `-.03em`
+numeral-tracking rule and `.big`'s existing `.005em` left untouched.
+
+**Item 5 — evaluated, deliberately skipped, no code change.** Re-verified
+still exactly 8 distinct `@media` breakpoint values, `860`/`859` confirmed
+load-bearing and untouchable (mirrored in JS `matchMedia` calls, gates
+mobile/desktop nav). The other 7 (`560`/`620`/`640`/`720`/`960`/`980`/`1000`)
+each govern a *different* component's own column-count breakpoint.
+Unlike items 4 and 8, there's no way to consolidate these without an actual
+(small) viewport-behavior change — moving any one of them shifts the exact
+width where that component's layout changes, for real users, with no bug
+currently present to justify it. Documented as an observation (no shared
+scale for *future* breakpoints to follow), not a defect — left as literals.
+
 - Item 3's remaining 3 findings (brand-mark SVG hex, literal `#fff` on
   accent backgrounds, `THEME_BAR` triplication) — owner call, no urgency.
 - Item 6 (Inicio information density) — a product/design decision, not a
