@@ -573,6 +573,7 @@ h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
 .liga:first-of-type{border-top:0}
 .liga>summary{font-family:inherit;font-weight:800;font-size:var(--fs-md);line-height:var(--lh-head);
   padding:var(--sp-4) 0;cursor:pointer;list-style:none;display:flex;align-items:center;gap:var(--sp-3)}
+.liga>summary h4{letter-spacing:normal}
 .liga>summary::-webkit-details-marker{display:none}
 .liga>summary::before{content:"";flex:0 0 auto;width:7px;height:7px;
   border-right:2px solid var(--ink-3);border-bottom:2px solid var(--ink-3);
@@ -1068,44 +1069,44 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
     </div>
 
     <details class="liga" open>
-      <summary>Lo próximo</summary>
+      <summary><h4>Lo próximo</h4></summary>
       <p class="lede">Cuándo se espera que arranque la temporada y qué fechas vienen. Lo confirmado y lo estimado van marcados aparte.</p>
       <div id="calCount"></div>
       <div id="calNext"></div>
     </details>
 
     <details class="liga">
-      <summary>La Final Brava 2026</summary>
+      <summary><h4>La Final Brava 2026</h4></summary>
       <p class="lede">La serie final de 2026, juego por juego. «Final Brava» es como la liga le llama a su final.</p>
       <div id="finalBrava"></div>
     </details>
 
     <details class="liga">
-      <summary>Finales anteriores, juego a juego</summary>
+      <summary><h4>Finales anteriores, juego a juego</h4></summary>
       <p class="lede">Las tres finales que se pudieron reconstruir partido por partido (2024–2026). Las demás existen como resultado, no como serie — ver Historia.</p>
       <div id="finalsByYear"></div>
     </details>
 
     <details class="liga">
-      <summary>Posiciones BSN 2026</summary>
+      <summary><h4>Posiciones BSN 2026</h4></summary>
       <p class="lede">Cómo terminó la fase regular: doce equipos, 34 juegos cada uno, ordenados por victorias.</p>
       <div id="standings2026"></div>
     </details>
 
     <details class="liga">
-      <summary>Líderes 2026</summary>
+      <summary><h4>Líderes 2026</h4></summary>
       <p class="lede">Los que más anotaron, rebotearon y asistieron en la última temporada.</p>
       <div id="leaders2026"></div>
     </details>
 
     <details class="liga">
-      <summary>En esta fecha</summary>
+      <summary><h4>En esta fecha</h4></summary>
       <p class="lede">Lo que pasó un día como hoy en la historia de la liga. Cambia todos los días.</p>
       <div id="onThisDay"></div>
     </details>
 
     <details class="liga">
-      <summary>Canales oficiales</summary>
+      <summary><h4>Canales oficiales</h4></summary>
       <p class="lede">Este archivo no compite con la liga: cubre lo que la app oficial no guarda. Para hoy, ve directo a la fuente.</p>
       <div id="channels"></div>
     </details>
