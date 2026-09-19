@@ -183,14 +183,161 @@ radius):**
   as `buildRefRules`'s, above — a second independent occurrence of the same
   16px value).
 
-**QUEUE, next session:** nothing blocking. The token-enforcement sweep, the
-new-steps implementation, and the shared-components pass are all complete
-and pushed. Open items are the 5 flagged-only literals above (owner call on
-whether they're worth a manual one-off pass) and, longer-term, whether the
-`22px`/`13px`/`16px`(×2)/`19px`/`15px` cluster is itself evidence for yet
-another scale step, or genuinely one-off noise — too small a sample (5-6
-values, mostly single occurrences) to tally the way the original 175-instance
-sweep did.
+**8 Phase-1 findings, scoped (2026-09-16/19) — analysis only, first time these
+are written down anywhere** (the original Phase 1 audit itself was never
+saved to a file, per the note at the top of this track). Each verified
+directly against the file, real accessibility/usability defect vs. visual
+polish called out explicitly per owner's request:
+1. Missing heading hierarchy (only one real `<h1>` in the whole app) — REAL
+   A11Y ISSUE. **Fixed, see below.**
+2. Button-only nav (no `<a href>` on primary/sub nav — breaks middle-click/
+   ctrl-click "open in new tab") — REAL A11Y/USABILITY ISSUE. **Fixed, see
+   below.**
+3. Color-token duplication (raw hex alongside defined tokens) — MIXED. Most
+   of ~77 hex instances are legitimately out of scope (team colors, self-
+   contained game-shelf SVGs). 4 findings worth a decision: header brand-mark
+   SVG hex fixed to dark-theme tokens always (`#EF2B39`/`#1663D8`, lines
+   989/991/1015/1017); literal `#fff` on 4 accent-background text spots
+   (418/664/671/799, likely correct as-is since `--blanco` means "max
+   contrast," not literally white); `THEME_BAR` (line 6323) triplicates the
+   `--night` dark/light pair a third time, could read the computed CSS
+   variable instead; and the `#FF8A93` light-mode contrast bug (line 6980 at
+   the time, since renumbered) — genuinely a legibility bug wearing a
+   "duplication" costume. **The `#FF8A93` bug is fixed, see below — the
+   other 3 findings are untouched, no urgency.**
+4. Uppercase letter-spacing mismatch on large headline styles (7 treatments,
+   5 different letter-spacing values, `.005em` to `-.02em` to unset) —
+   VISUAL POLISH, LOW STAKES. Untouched.
+5. Breakpoint inconsistency — exactly 8 distinct `@media` values (560, 620,
+   640, 720, 859/860, 960, 980, 1000), no shared ratio, no usability
+   breakage found at any width — VISUAL/MAINTAINABILITY POLISH, LOW STAKES.
+   Untouched.
+6. Inicio information density — 13+ heterogeneous content blocks stack
+   before any interaction (hero, greeting, search, 5 stat cards, primer,
+   second section header, 7 collapsibles). Nothing broken or inaccessible —
+   a pacing/product judgment call, not a defect. Not scoped, no timeline.
+7. `.dangerzone` — reconfirmed still dead CSS, zero consumers anywhere in
+   the file. Exact lines to delete: 899–900. Trivial, untouched — fold into
+   whichever future commit is convenient.
+8. Pill-radius magic-number inconsistency, `99px` (9 instances) vs `999px`
+   (6 instances) for the identical "make it a pill" intent — VISUAL/
+   MAINTAINABILITY POLISH, LOW STAKES, no functional difference either way.
+   *Provenance: this item did not come from the original Phase-1 audit
+   transcript (which no longer exists in any file) — it surfaced from
+   `project_flagged_token_tally.md` line 144, a memory file from the token
+   sweep, which itself attributed the observation to "the original Phase 1
+   audit's finding."* Untouched.
+
+**Heading hierarchy fix pass — DONE, pushed, 3 checkpoints.** Items 1 above.
+- `fce2e99` — checkpoint 1: promoted each of the 6 non-Inicio tabs' `h2.big`
+  to `h1.big` (generalized the `.big` CSS selector off the `h2` tag
+  coupling). Inicio handled as a 3-way split, since it has no equivalent
+  single title element: `.hubhead` (the personalized greeting div) promoted
+  to a real `<h1>`; the existing dynamic hero heading demoted to a bare
+  `<h2>` (deliberately *not* given the `.big` class, since `.big`'s larger
+  clamp would have crowded the hero's cramped flex row next to the
+  countdown numeral — its own `.herotext h2` selector kept instead, with
+  `letter-spacing:.005em` added to fix an unrelated anomaly it used to
+  inherit); "La liga ahora" (a second, later Inicio section) left untouched,
+  already correctly leveled. Verified exactly one visible `<h1>` at a time
+  on every tab via an ancestor-`hidden` walk; the hero `<h2>`'s responsive
+  clamp sizing checked across its full range (360px floor to 900px
+  ceiling), byte-identical pre/post at every width in both engines.
+- `88ca7cd` — checkpoint 2: the 3 bare, unclassed `<h3>` tags that rendered
+  larger (27px) than every classed `h3.sec` (22px). `showTeam`/`showPlayer`
+  (team/player detail views, the primary content of their nested view)
+  promoted to `<h2>` via a shared `.phero-body h3`→`h2` rename — zero visual
+  change, since 27px stays correctly smaller than the new h1.big at every
+  viewport. `buildPrimer`'s "¿Qué es el BSN?" (a dismissible callout, not a
+  view's primary content) demoted to `<h4>` instead. Also folded in
+  `renderArchiveCard`'s inline `<h3 style="font-size:24px">` (the same
+  "player name" role via a different, lighter-weight code path for
+  archive-only players) — promoted to `<h2>`, inline 24px left untouched
+  (a separately-tracked token gap, not a heading-hierarchy problem).
+- `159fa67` — checkpoint 3: Inicio's 7 `<details>/<summary>` blocks
+  contributed nothing to the heading outline (`<summary>` isn't a heading),
+  so heading-key navigation skipped all 7 real content sections. Wrapped
+  each summary's text in `<h4>` (spec-sanctioned — `<summary>` explicitly
+  permits one heading-content child) plus a `.liga>summary h4{letter-
+  spacing:normal}` override, verified against the actual pre-edit computed
+  value rather than assumed. An earlier plan to add `display:contents` was
+  dropped after checking the real CSS: `.liga>summary` is already a custom
+  `display:flex` row (native marker hidden, replaced by a rotating
+  `::before` chevron), so children blockify automatically regardless of tag
+  — no override needed, and `display:contents` has a documented history of
+  sometimes stripping elements from the accessibility tree, which would
+  have silently defeated the fix. Verified via
+  `page.accessibility.snapshot()` in both engines (not just computed
+  styles) — pre-edit, zero heading roles on any of the 7 labels; post-edit,
+  all 7 correctly expose `role:heading,level:4` with the outer toggle's own
+  role/name/expanded-state unchanged.
+
+**Button-only nav + contrast fix pass — DONE, pushed, 5 checkpoints.** Item
+2 (all 4 nav checkpoints) + the item-3 `#FF8A93` sub-finding (final
+checkpoint).
+- `28a457c` — checkpoint 1, top nav (`buildNav()`, 5 links): `<button>` →
+  `<a href="#historia">` etc. Kept all existing `onclick`/hover/focus logic
+  unchanged rather than relying on native href navigation — verified via
+  real-browser testing that `setHash()`'s own idempotency guard already
+  makes the native href-driven path a harmless no-op for a normal click.
+  Added a modifier-click guard (return before `preventDefault()` on ctrl/
+  cmd/shift-click or a non-primary button, so native new-tab handling stays
+  untouched) and a `keydown` handler restoring Space-key activation (a real
+  `<a href>` only activates on Enter by default, confirmed via direct
+  keyboard testing; these are ARIA `role="tab"` elements, expected to
+  support both keys). Widened `nav.tabs button` and its `:hover`/
+  `[aria-selected]`/`::after` variants to include `a`, adding
+  `text-decoration:none`. Guard logic verified via directly dispatched
+  synthetic `MouseEvent`, since Playwright's modifier-click simulation is
+  itself intercepted by Chromium before reaching page JS.
+- `32385b1` — checkpoint 2, bottom nav (mobile-only bar, 6 links): same
+  fix, same verification, at 375px viewport (the bar is hidden ≥860px).
+- `ae73911` — checkpoint 3, sub-tab pills (`_subnavEl()`, used across
+  Historia/Jugadores/Equipos/Juega/Archivo): same fix; href computed as
+  `#sec` for the `__landing` sentinel or `#sec/slug` otherwise. Uses
+  `aria-current`, not `aria-selected`, for active-state styling — a
+  different attribute than top/bottom nav, correctly left as-is.
+- `e4aeb0b` — checkpoint 4, mega-menu items (`openMega()`, inline-HTML-
+  string-built, not DOM-API like the prior 3 sites): guard/keydown embedded
+  as inline `onclick`/`onkeydown` attribute strings instead. `megaGo`'s
+  targets come as either a bare slug or an explicit `"sec/view"` pair (used
+  once, for Equipos' menu linking cross-section into Historia); href
+  computed as `'#'+(tg.indexOf('/')>-1?tg:id+'/'+tg)`, verified directly
+  that the cross-section case resolves to `#historia/titulos`, not the
+  wrong `#equipos/historia/titulos`. `megaFeat()`'s CTA buttons ("Ver
+  todos" etc.) deliberately left untouched — in-card actions, never part
+  of the nav scope.
+- `23da053` — final checkpoint, the `#FF8A93` fix (item 3's sub-finding,
+  `drawPicks()` line 6993 by the time of the fix): `style="color:#FF8A93"`
+  → `style="color:var(--bad-ink)"`. Verified via `data-theme` switching:
+  dark mode byte-identical, light mode correctly changes from the buggy
+  pale pink to the properly-contrasted dark red.
+
+**QUEUE, next session:** nothing blocking either fix pass — both complete
+and pushed. Open items, all deliberately deferred, no urgency:
+- Item 7 (`.dangerzone`, lines 899–900) — trivial 2-line deletion, fold into
+  whichever commit is convenient.
+- Items 4, 5, 8 (letter-spacing mismatch, breakpoint inconsistency,
+  99px/999px pill-radius) — batch as one small future cleanup pass whenever
+  convenient; none are urgent, none carry accessibility risk.
+- Item 3's remaining 3 findings (brand-mark SVG hex, literal `#fff` on
+  accent backgrounds, `THEME_BAR` triplication) — owner call, no urgency.
+- Item 6 (Inicio information density) — a product/design decision, not a
+  defect; needs the owner's own scoping if it's ever picked up, not a code
+  fix.
+- The 5 flagged-only literals from the earlier new-steps pass (`22px`,
+  `13px`, `16px`×2, `19px`, `15px`) — owner call on a manual one-off pass,
+  or leave as evidence for a future scale-step decision.
+- **Not part of this track, flagging for completeness only**: the
+  data-pipeline track (rest of this file) carries its own separate open
+  items — 2 tracked bugs not yet fixed (`osos_manati`/`atenienses_manati`
+  franchise mislabel in 2015/2016 season JSON, deferred to item 7 Phase D;
+  `merge_jug05()`'s career-dedup key not resolving team names to
+  franchise_id before comparing, confirmed case: player 158/Ansel Guzmán
+  2003) and the Tier-1/Tier-2 identity-triage backlog (57 + 136 groups of
+  exact-string/birth-date duplicates, logged not touched, own future pass).
+  These are unrelated to the UI/design-audit track and not this session's
+  work — noted here only so nothing gets lost across a context switch.
 
 Process rules established this track, apply going forward: flag any
 literal-to-token conversion that isn't an exact match individually, don't
