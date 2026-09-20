@@ -473,3 +473,64 @@ class TestManatiCareerRows:
             assert len(rows) == 1, (pid, season)
             assert rows[0]["games"] is not None and rows[0]["points"] is not None, (pid, season)
             assert "roster" in rows[0], (pid, season)
+
+
+class TestStatsAttach:
+    """A Tier-2 stats record is one team's stat line, so it belongs on that team's career row,
+    not on whichever row sorts first. Calls the pure builders, not the built files."""
+
+    @staticmethod
+    def _row(team, season=2003):
+        r = b._team_resolver()
+        return {"season": season, "team_raw": team, "franchise_id": r(team.split(",")[-1], season),
+                "games": 1, "points": 1}
+
+    def _pick(self, teams, record_team, season=2003):
+        rows = [self._row(t, season) for t in teams]
+        return b._row_for_stats(rows, record_team, b._team_resolver(), season)["team_raw"]
+
+    def test_a_trade_year_goes_on_the_recorded_team_not_the_first_row(self):
+        assert self._pick(["BAYAMON", "MOROVIS"], "Titanes de Morovis") == "MOROVIS"
+        assert self._pick(["Maratonistas, Coamo", "Vaqueros, Bayamon"], "Vaqueros de Bayamon") == "Vaqueros, Bayamon"
+
+    def test_the_first_row_still_wins_when_it_is_the_recorded_team(self):
+        assert self._pick(["BAYAMON", "MOROVIS"], "Vaqueros de Bayamon") == "BAYAMON"
+
+    def test_one_season_written_two_ways_resolves_to_the_first_spelling(self):
+        assert self._pick(["BAYAMON", "COAMO", "Vaqueros, Bayamon"], "Vaqueros de Bayamon") == "BAYAMON"
+
+    def test_a_franchise_the_city_map_lacks_matches_on_the_city(self):
+        assert self._pick(["Piratas, Quebradillas", "Toritos, Cayey"], "Toritos de Cayey", 2002) == "Toritos, Cayey"
+        assert self._pick(["CAYEY", "Piratas, Quebradillas"], "Toritos de Cayey", 2002) == "CAYEY"
+
+    def test_falls_back_to_the_first_row_with_no_match_or_no_team(self):
+        assert self._pick(["BAYAMON", "MOROVIS"], "Cangrejeros de Santurce") == "BAYAMON"
+        assert self._pick(["BAYAMON", "MOROVIS"], "") == "BAYAMON"
+        assert self._pick(["BAYAMON", "MOROVIS"], None) == "BAYAMON"
+
+    def test_a_single_team_season_is_unchanged(self):
+        assert self._pick(["Vaqueros, Bayamon"], "Vaqueros de Bayamon") == "Vaqueros, Bayamon"
+
+    def test_every_stats_record_sits_on_a_row_for_its_own_team_when_one_exists(self):
+        career, stats = b.build_career_rows_by_pid(), b._season_stats()
+        wrong, checked = [], 0
+        for pid, seasons in stats.items():
+            for season, rec in seasons.items():
+                city = b._norm(b._DE_SPLIT.split(rec["team_raw"], maxsplit=1)[-1])
+                rows = [r for r in career[pid] if r["season"] == season and r["team_raw"]]
+                carriers = [r for r in rows if "stats" in r]
+                if not rows or not any(b._norm(r["team_raw"].split(",")[-1]) == city for r in rows):
+                    continue                                   # no row for that team: nothing to match
+                checked += 1
+                if len(carriers) != 1 or b._norm(carriers[0]["team_raw"].split(",")[-1]) != city:
+                    wrong.append((pid, season))
+        assert checked > 200 and wrong == []
+
+    @pytest.mark.parametrize("pid, season, city", [
+        ("143", 2003, "morovis"), ("1562", 2003, "morovis"), ("217", 2003, "morovis"),
+        ("193", 2001, "bayamon"), ("808", 2002, "cayey")])
+    def test_the_five_seasons_that_started_this(self, pid, season, city):
+        rows = [r for r in b.build_career_rows_by_pid()[pid] if r["season"] == season]
+        carriers = [r for r in rows if "stats" in r]
+        assert len(rows) > 1 and len(carriers) == 1
+        assert b._norm(carriers[0]["team_raw"].split(",")[-1]) == city

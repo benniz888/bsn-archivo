@@ -605,6 +605,29 @@ def _latinbasket_roster() -> dict[str, list[dict]]:
     return out
 
 
+def _row_for_stats(rows: list[dict], team_raw: str | None, resolve_team, season: int) -> dict:
+    """The career row a Tier-2 stats record belongs to. The record is ONE team's stat line
+    (_season_stats keeps the team with the most games), so in a mid-season-trade year it goes
+    on the row for that team; the first row of the season is only the fallback, when the
+    record names no team or no row matches it. Matches on franchise_id where the city
+    resolves, else on the city itself (franchises the city map lacks: Cayey, Aguadilla...).
+    Several rows for the same team (one season written two ways) resolve to the first, as
+    they always did. Before this, the stats went on the first row in CSV order, which is the
+    wrong team whenever another team's row sorts ahead of it (13 seasons at HEAD)."""
+    if team_raw:
+        city = _DE_SPLIT.split(team_raw, maxsplit=1)[-1]
+        fid = resolve_team(city, season)
+        if fid:
+            for row in rows:
+                if row["franchise_id"] == fid:
+                    return row
+        key = _norm(city)
+        for row in rows:
+            if row["team_raw"] and _norm(row["team_raw"].split(",")[-1]) == key:
+                return row
+    return rows[0]
+
+
 def build_career_rows_by_pid() -> dict[str, list[dict]]:
     """bsnpr_id -> the same career[] rows web/data/players/<id>.json gets
     (player_career_seasons.csv rows + synthesized Tier-2-only entries,
@@ -633,7 +656,8 @@ def build_career_rows_by_pid() -> dict[str, list[dict]]:
         have = {row["season"] for row in career_rows}
         for season, s in season_stats.get(pid, {}).items():
             if season in have:
-                next(row for row in career_rows if row["season"] == season)["stats"] = s["fields"]
+                _row_for_stats([row for row in career_rows if row["season"] == season],
+                               s["team_raw"], resolve_team, season)["stats"] = s["fields"]
             else:
                 city = _DE_SPLIT.split(s["team_raw"], maxsplit=1)[-1]
                 career_rows.append({
