@@ -5643,3 +5643,160 @@ checked in a browser: UNVERIFIED).
    commit touching them deploys and purges visitors' cached data once.
 4. Provenance labels record when URLs were only read from search results ("not
    independently fetched"); keep that wording until someone reads the page.
+
+═══════════════════════════════════════════════════════════════════════
+**PHASE_2C_SESSION_LOG (2026-09-20) — STATS-ATTACH FIX, merge_jug05 DEDUP, PUSH, DEPLOY, N7.**
+Append-only. Where this block and older text disagree, this block wins for current state.
+Superseded, left in place as history:
+- `:4991` (the tracked `merge_jug05()` career-dedup bug, "unknown blast radius") and `:5289` (N3): audited in
+  `docs/specs/merge_jug05_audit_spec.md` and fixed by `e82c034`.
+- `:5457` (item 4) and `:5617`-`:5645` (the PHASE_5D NEXT_ACTIONS, whose item 1 was the `merge_jug05()` audit):
+  reordered below; the audit and the fix are done.
+- In the audit spec, the prediction that regenerating leaves identity outputs unchanged (Q4 and the regeneration
+  step in [INTERFACES]) is superseded. It is false: see N7.
+═══════════════════════════════════════════════════════════════════════
+
+**Repo state (re-read from git, 2026-09-20).** `HEAD` = `origin/main` = `e82c034`
+(`e82c034c6f2cf329ec9b6cbc00d7fc79b10b2b30`), confirmed with `git ls-remote origin refs/heads/main`. Tree clean
+before this docs edit. `git stash list` is empty: `stash@{0}` (the parked first version of the dedup) was dropped
+at the owner's instruction, dropped hash `05466893f1329970ef71242ba03dc7faf4a0a899` (recoverable only until git
+garbage-collects, with `git stash store`); the scratchpad backup tarball is ephemeral. `make verify` PASS
+(346,472 checks, 0 failed), re-run this phase. Collected tests by revision (`pytest --collect-only` on a
+`git archive` of each): 290 at `8ed5f74` -> 302 at `a8aa002` (+12) -> 334 at `e82c034` (+32).
+
+**Commit `a8aa002`, "fix: attach Tier-2 stats to the career row of the recorded team"** (16 files, +100/-15; pre-commit
+hook ran and passed). Found while checking the dedup: the site build put a season's Tier-2 stats on the FIRST
+career row of the season in CSV order, whatever the team. A Tier-2 record is one team's stat line (scraped from
+that team's own `equiposstat.asp?t=<code>` page), so in a trade year the stats sat on the wrong row whenever
+another team's spelling sorted first, and the per-season card named the wrong team and divided by the wrong
+team's games.
+- `_row_for_stats` (`src/build_web_data.py:608`, called at `:659`) picks the row for the record's own team
+  (franchise_id where the city resolves, else the city, for franchises the city map lacks) and falls back to the
+  first row as before. Several rows for one team still resolve to the first.
+- Result: **15 seasons across 14 players** changed (14 player files), each a stats-only move: no other field
+  changed and no stats object was lost, gained or altered. The 9 multi-team seasons that were already right (7 plus
+  the two the dedup would have broken, 193/2001 and 808/2002) are unchanged. `manifest.json` is unchanged: build
+  code is not a digest input, so this commit alone would not have purged visitors' caches.
+- **651/2001 falls back to the first row**: the record's team is Titanes de Morovis but the player's career has no
+  Morovis row that season (Mayaguez and Ponce only), so there is nothing to match. Left as is; see open items.
+- Raw check: for players 143, 1562, 217 (Morovis 2003), 193 (Bayamón and Coamo 2001) and 808 (Cayey 2002), the
+  record's player row and numbers are on that team's own captured page (heading and URL team code match). 217's
+  ppg match is weak ("5"); its name, page and URL agree.
+- Tests +12 (helper cases, a whole-data invariant, the five seasons that exposed it); with the helper reverted to
+  first-row, 6 fail.
+
+**Commit `e82c034`, "fix: merge cross-source duplicate career rows (jug05 vs players)"** (113 files, +1,449/-775;
+hook ran and passed). Implements D1-D6 of `docs/specs/merge_jug05_audit_spec.md`:
+- One shared function, `fold_cross_source_career` (`src/parse_players.py:443`), keyed on (bsnpr_id, season, city
+  token). A jug05 row is folded into a row of another source only when games AND points are identical; the players
+  row survives. A pair whose stats differ stays as two rows and is logged. Rows that both name a franchise and
+  resolve apart, and rows of one source, are never folded. `merge_jug05` (`:525`) calls it at the end (`:675`); the
+  raw-string key (`:550`, `:597`) remains only as the "same jug05 row offered twice" guard.
+- `src/apply_career_dedup.py` applies the same function to the committed `player_career_seasons.csv` in place
+  (`python -m src.apply_career_dedup [--check]`; deterministic; a second run is byte-identical; not a Makefile
+  target). Two tracked logs in `data/interim`: `jug05_career_merged.csv` and `jug05_career_conflicts.csv`, both
+  with `jug05_retrieved_at` (the jug05 row's fetch time; 0 blank). Columns use `bsnpr_id`, not `pid`.
+- **665 identical-stats pairs merged** (628 franchise-resolved + 37 with a blank franchise_id), **125 stat-conflict
+  groups left as two rows** (79 players), **276 trade pairs untouched**. CSV 6,467 -> **5,802**; built career rows
+  6,815 -> **6,150**; **105 player files** + `index/players.json` + `manifest.json` changed (107 web files).
+- Lossless against `a8aa002`, per season: 51 stats objects moved onto their same-team twin with identical content;
+  0 seasons lost stats, 0 gained, 0 non-null fields dropped, 0 values changed; stats sit on the record's own team in
+  all 232 checked Tier-2 seasons. Of the 33 data/clean files only `player_career_seasons.csv` changed.
+- Caught before applying: my first franchise guard blocked 16 groups (a dry run gave 650 merged, 124 conflicts)
+  because a bare city ("GUAYNABO") resolves to the city-map franchise while "Conquistadores, Guaynabo" resolves to
+  its own nickname key. The guard now compares only rows that both name a franchise.
+- Cross-check: the same function over the regenerated control CSV (see N7) decides identically (665 merged, 125
+  conflicts, 0 differences), so a future regeneration is covered too.
+- Tests +32 (`tests/test_career_dedup.py`; rule fixtures, `merge_jug05`, the apply script, a log-writer round
+  trip, pins for 665 / 125 / 276 and player 1995). Drift guard 37 passed.
+
+**Push and deploy.** `git push origin main`: `2117e84..e82c034`, plain fast-forward, no force (reflog
+`origin/main@{1}` = `2117e84` -> `@{0}` = `e82c034`); both commits went together. Rollback dry run before pushing:
+`git revert --no-edit 2117e84..HEAD` applied cleanly in a scratch clone and gave a tree identical to `2117e84`.
+Pages run **`35539162083`** (event push, head `e82c034`): conclusion **success**, 2026-09-20T21:35:14Z to
+21:35:32Z = **18 s** of workflow time (excludes CDN propagation). Run page:
+`https://github.com/benniz888/bsn-archivo/actions/runs/35539162083`.
+
+**Live verification (bsnarchivo.com, public GETs of data files, re-read this phase).** `manifest.json`
+`source_digest` `6a04359f7b39e233` (equal to the committed one; it was `015dedb23e8a1f13` before); `index/players.json`
+`career_seasons` sums to 6,150 (6,815 before); player **1995**: 21 career rows, exactly one Criollos de Caguas row
+each for 2002, 2003, 2004, 0 `osos_manati`, Atenienses 2015 (42/415) and 2016 (34/311); player **37**: one Atenienses
+2016 row (11/139), 0 `osos_manati`; stats on the recorded team's row for **143/2003** (Titanes, Morovis) and
+**1878/2001** (Vaqueros, Bayamon); `players/1995.json`, `players/143.json`, `players/101.json` (unchanged),
+`index/franchises.json`, `seasons/2024.json` byte-identical to the committed files; `index.html` byte-identical to
+`web/index.html` at HEAD; all 107 player files changed by the two commits, `manifest.json` and `index/players.json`
+also identical. Because `player_career_seasons.csv` is a digest input, the digest change makes `syncVersion()`
+(`app/bsn_archivo.html:5910`) purge returning visitors' cached data on their next load (code-read; whether any
+particular visitor did is UNVERIFIED).
+- **Owner visual confirmation on the live page (2026-09-20): player 1995 CONFIRMED** (Ricardo Melendez Huertas):
+  exactly one Criollos de Caguas row each for 2002 (23/53), 2003 (25/199) and 2004 (29/511); Atenienses de Manati
+  rows for 2015 (42/415) and 2016 (34/311); Cariduros de Fajardo for 2017. Player 143 (Angel Miguel Lopez Ortiz): the
+  owner saw the career table only (2003 shows Titanes de Morovis 12/135 and Vaqueros de Bayamon 18/61 as separate
+  rows); the 2003 SEASON CARD for 143 was not viewed by the owner, so that item stays UNVERIFIED. Browser checks
+  (Chromium + WebKit) ran against local copies of the rebuilt `web/` before the push, not against bsnarchivo.com.
+
+**N7 — `make parse-players` is not idempotent at HEAD (HIGH for future work).** A control run on UNMODIFIED code
+changed all 9 files `parse_players` writes, so regenerating cannot be the fix path for anything. Cause: the
+committed identity outputs carry hand edits, made directly in `data/clean` with no curated input or generator
+change: `0982e40` (Berdiel 990001 -> 1666), `990da5b` (9 identities), `33f3249` (13 candidates) and `dd46c86`
+(Piculin Ortiz), all 2026-09-14. Regenerating re-mints the ids they removed. Control run (committed at `2117e84` ->
+regenerated), rows: `players_canonical` 3,333 -> 3,325; `player_aliases` 24,208 -> 24,182;
+`player_career_seasons` 6,467 -> 6,505; `player_id_map` 876 -> 888; `player_bios` 152 -> 146;
+`player_review_queue` 506 -> 494; `jug05_review` 2 -> 20; `jugador05_review` 3 -> 9; `jugador05_dob_conflicts`
+5 -> 6. The working tree was restored with `git checkout` afterwards (verified against a snapshot).
+- **Do NOT run `make parse-players` (or `make sync-web-data`, which also runs it) until identity triage makes
+  regeneration reproduce the committed spine.** The dedup was applied as a transformation of the committed CSV for
+  this reason, so the identity outputs were untouched by construction.
+- Same class as the earlier reconcile drift (`4dd4198`: generated CSVs hand-edited after generation), now for the
+  identity outputs.
+
+**Open items.**
+- **125 stat conflicts on 79 players** stay visible as two rows (seasons 2000: 17, 2001: 51, 2002: 18, 2003: 3,
+  2005: 36); they need a third source. Cause of the clustering is UNVERIFIED.
+- **651/2001**: the stats record's team has no career row (see `a8aa002`).
+- **`parse_players.py` `main()` has never executed the new log-writer wiring** (`:1464`, `:1502`); it is
+  source-checked by a test only, so this is UNVERIFIED by execution. The first real run must check both logs.
+- **Audit tier counts**: recomputed Tier-1 and Tier-2 groups were 59 and 128 against 57 and 136 recorded
+  (UNVERIFIED which definition differs).
+- **J16**: career rows with a null franchise_id were 181 at audit time and are **144** now (the dedup merged the 37
+  duplicates in those franchises); Aguadilla, Cayey, Villalba and Cabo Rojo are absent from
+  `city_franchise_map.csv`.
+- **N6** (the generator ignores the seed CSV's own `source` cell; 2026 RealGM row) and **N1** (starting-five 404s).
+- Unchanged from earlier blocks: F5 partial, F6, F7 (held), F10, N2, N4.
+
+**NEXT_ACTIONS (owner-gated; none started; priority order, supersedes `:5617`).**
+1. **N6** — the general fix for the ignored seed `source` cell (and the 2026 RealGM attribution).
+2. **N1** — starting-five 404s on team pages `ate`, `man`, `hum`, `vil` (`app/bsn_archivo.html:4204`).
+3. **Identity triage** (`:5013-5020`) — this also unblocks N7: it is what would make regeneration reproduce the
+   committed spine.
+4. **The 125 stat conflicts** against a third source (`jug05_career_conflicts.csv` is the worklist).
+5. **J16** — add the missing cities to the city map (a separate, owner-approved data change).
+6. **F7** — when an archive-supported source exists for the Brujos 2022 season and the Osos 2023 opening.
+
+**Cold-start notes (additions).**
+1. To re-run the dedup: `python -m src.apply_career_dedup --check` (exit 1 only if a pair would merge), then without
+   `--check`. Never regenerate (N7).
+2. The dedup depends on `a8aa002`: without the recorded-team stats rule, merging duplicates moves stats onto the
+   wrong team's row in trade seasons (193/2001 and 808/2002 are the pins).
+3. A push that changes `player_career_seasons.csv` (or any digest input) moves `manifest.json`'s digest and purges
+   returning visitors' caches; a build-code-only change does not, so cached player files would stay stale.
+4. Live-check method (reusable): wait for the run's conclusion, GET data files with a cache-busting `?v=` query and
+   `Cache-Control: no-cache`, and compare bytes with `git show HEAD:web/<path>`; the scripts were in the ephemeral
+   scratchpad, not the repo.
+
+**Low-priority observations from the owner's live-site review (2026-09-20).** Nothing was changed for any of them.
+1. **57 player-name slugs are shared by more than one player** (118 of the 3,333 players in `index/players.json`). The
+   route `#jugadores/jugador/<slug>` opens the first match (`app/bsn_archivo.html:8090`, `PINDEX.find` at `:8096`, then
+   the archive index). Belongs to the identity-triage backlog. The four players checked (1995, 143, 37, 1878) each
+   have a unique slug.
+2. **Player 37's page title shows the baked pool's name order** ("Alejandro Carmona Sanchez"), not the canonical order
+   ("Carmona Sanchez, Alejandro"). Cosmetic.
+3. **Player 143, 2001: two Polluelos de Aibonito rows**, 18/292 (jug05 "AIBONITO") and 23/366 (players "Polluelos,
+   Aibonito"). One of the 125 stat-conflict groups left as two rows by decision D2 (it is in
+   `data/interim/jug05_career_conflicts.csv`); visible on the live site until a third source adjudicates it.
+4. **Player 143, 2002: "Toritos, Cayey" (20/221) shows as plain text with no franchise chip.** Its franchise_id is
+   null because `city_franchise_map.csv` lacks Cayey. This is finding J16; expected.
+5. **Player 143, 2003, Titanes de Morovis: the Tier-2 season card reports 15.3 ppg while the career row is 12 games /
+   135 pts (11.25).** The Tier-2 record itself is 3 games / 46 pts. Different sources; UNVERIFIED whether they should
+   agree. `seasonCmpObj` (`app/bsn_archivo.html:4476`) takes ppg from the Tier-2 record and divides its other totals by
+   the career row's games; the rendered 0.5 rpg and 1.2 apg are 6/12 and 14/12. Nothing was changed.

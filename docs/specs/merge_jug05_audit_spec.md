@@ -2,7 +2,8 @@
 
 Audit date 2026-09-20. READ-ONLY: no code, CSV, or web/ change. State: HEAD `dd8df7c`, working tree clean.
 Every number and line reference below was re-read from the files or recomputed from the data in this phase.
-Anything not verified directly is tagged UNVERIFIED. Nothing here has been applied.
+Anything not verified directly is tagged UNVERIFIED. Nothing had been applied when this was written; the
+decisions were applied afterwards (section 5). The audit text itself is as run.
 Severity: HIGH = wrong data live on the site. MED = latent risk. LOW = cosmetic.
 
 [PURPOSE]
@@ -15,7 +16,7 @@ decision on scope (section 1), which narrows the fix the audit first proposed.
 
 [DECISION]
 
-## 1. Owner decision (recommended, 2026-09-20; NOT yet applied)
+## 1. Owner decision (2026-09-20; APPLIED in a8aa002 and e82c034, see section 5)
 
     D1  Merge a cross-source pair only when the stats are identical (same games and same points).
         That is class (a): 665 groups = 628 in franchises the city map resolves + 37 in franchises it lacks
@@ -40,7 +41,7 @@ decision on scope (section 1), which narrows the fix the audit first proposed.
 Working assumption, not stated by the owner: when a pair is merged, the `players` row survives and the
 `jug05` row is skipped (the stats are identical, so no value changes; the team string shown does).
 
-## 2. Predicted effect of the narrower rule (recomputed; UNVERIFIED until built)
+## 2. Predicted effect of the narrower rule (recomputed; confirmed when built, actuals in section 5)
 
     data/clean/player_career_seasons.csv   6,467 -> 5,802 rows (-665); jug05 rows 1,118 -> 453, players rows 5,349 unchanged
     data/interim/jug05_career_conflicts.csv   new, 125 rows (tracked directory; not published, not a digest input)
@@ -174,6 +175,57 @@ J16 | adjacent gap, out of scope (LOW-MED)
     EX-c4 | 37   | 2001 | indios_mayaguez       | "Indios, Mayaguez" (players 5/16) vs "MAYAGUEZ" (jug05 4/16)
     EX-c5 | 37   | 2005 | vaqueros_bayamon      | "BAYAMON" (jug05 13/253) vs "Vaqueros, Bayamon" (players 28/408)
 
+## 5. Status (added 2026-09-20; findings above unchanged)
+
+Status as of `e82c034` (pushed 2026-09-20, deployed by Pages run 35539162083). Format: ID | status | commit | note
+
+    D1  RESOLVED | e82c034 | 665 identical-stats pairs merged (628 franchise-resolved + 37 in franchises the city map lacks)
+    D2  RESOLVED | e82c034 | 125 stat-conflict groups kept as two rows and logged to jug05_career_conflicts.csv
+    D3  RESOLVED | e82c034 | 276 trade pairs untouched, pinned by tests/test_career_dedup.py
+    D4  RESOLVED | e82c034 | keyed on the city token; a bare city names no franchise, so it is no evidence against a named row
+    D5  RESOLVED | e82c034 | kept out of scope as decided: identity triage and J16 were not touched
+    D6  RESOLVED | e82c034 | the players row survives; every merged pair is logged to jug05_career_merged.csv
+    Prerequisite | a8aa002 | Tier-2 stats now attach to the career row of the recorded team (build_web_data.py:608),
+                              which the dedup would otherwise have broken in 5 trade seasons
+
+Predicted against built (section 2), all confirmed:
+
+    player_career_seasons.csv rows          6,467 -> 5,802   (predicted 5,802)
+    built career rows, web/data/players     6,815 -> 6,150   (predicted 6,150)
+    web files changed by e82c034            107 = 105 player files + index/players.json + manifest.json (predicted 107)
+    merged 665, conflicts 125, trade pairs 276, 37 merged rows with a blank franchise_id (all as decided)
+    lossless against a8aa002: 51 stats objects moved onto their same-team twin with identical content;
+        0 seasons lost stats, 0 gained, 0 non-null fields dropped, 0 values changed
+    correction to section 2: it said the surviving row "should keep its stats (UNVERIFIED)"; measured, the stats
+        move onto it (the 51 above), because the site build puts a season's stats on the first row of the team
+
+Differences from what the sections above proposed:
+
+    the fold lives in src/parse_players.py and merge_jug05 calls it at the end; the raw-string key stays as a guard
+    the franchise guard compares only rows that both name a franchise. The first version blocked 16 groups (a dry
+        run gave 650 merged and 124 conflicts instead of 665 and 125): a bare city ("GUAYNABO") resolves to the
+        city-map franchise while "Conquistadores, Guaynabo" resolves to its own nickname key
+    both logs use `bsnpr_id` (not `pid`) and carry jug05_retrieved_at; the tests are a new file, not test_parse_players.py
+
+Superseded:
+
+    The prediction that regenerating leaves every identity output unchanged (Q4, and the regeneration step in
+    [INTERFACES]) is FALSE. A control run of `make parse-players` on unmodified code changed all 9 files it writes
+    (docs/session.md N7). The fix therefore did not regenerate: the identity outputs were untouched by construction.
+    Of the 33 data/clean files only player_career_seasons.csv changed; the other 32 are byte-identical to HEAD.
+    J12, J14 and J15 stay superseded by section 1, as marked in section 3.
+
+Open:
+
+    Q2, Q3  125 stat conflicts on 79 players remain visible as two rows (seasons 2000: 17, 2001: 51, 2002: 18,
+            2003: 3, 2005: 36) until a third source adjudicates them
+    J16     181 career rows had a null franchise_id at audit time; 144 remain (the dedup merged 37 duplicates in them)
+    J11     recomputed tier counts 59 and 128 do not match the recorded 57 and 136; UNVERIFIED
+    651/2001  the Tier-2 record's team (Titanes de Morovis) has no career row that season, so its stats sit on the
+            first row (the fallback): found while building a8aa002
+    main()  parse_players main() has never executed the new log-writer wiring (source-checked by a test only):
+            UNVERIFIED by execution; the first real run must check both logs
+
 [RATIONALE]
 
 The defect is in the key, not in the data: the two sources describe one real season, one as "Nick, City" and
@@ -204,32 +256,49 @@ The proposed merge is cross-source only, which guards that case; none exists in 
 
 [INTERFACES]
 
-Proposed, not applied.
+As built (commit e82c034; prerequisite a8aa002). Written as a proposal; corrections are marked.
 
-    src/parse_players.py  merge_jug05 (:386-537)
-        Replace the seen-set at :408 with a mapping from (pid, season, city_token) to the stat lines already present,
-        and use the same key at :455. city_token = last comma-part of normalize(team_raw) (normalize is :92).
-        Collision with identical (games, points): skip the jug05 row.
-        Collision with different stats: append the jug05 row as today and record a conflict.
-        No collision: append as today. Never merge two rows of the same source.
-        The returned dict (:536) gains a `conflicts` list.
-    src/parse_players.py  main()
-        Write the conflicts with _write_csv(INTERIM_DIR / "jug05_career_conflicts.csv", ...) next to the
-        jug05_review.csv write (:1349). INTERIM_DIR is :65. data/interim is git-tracked (40 files, including
-        jug05_review.csv and jug05_xwalk.csv).
-    data/interim/jug05_career_conflicts.csv  (proposed columns)
+    src/parse_players.py  fold_cross_source_career (:443), city_token (:408), write_career_logs (:504)
+        ONE shared function decides every fold, keyed on (bsnpr_id, season, city token). city_token is the last
+        comma-part of normalize(team_raw). It folds a jug05 row only into a row of another source, only when games
+        AND points are identical, and the players row survives. Different stats: both rows stay and a conflict is
+        logged. Two rows that both name a franchise and resolve apart are never folded (a bare city names none).
+        It never folds two rows of one source. Pure: it does not mutate its input and returns (kept, merged, conflicts).
+    src/parse_players.py  merge_jug05 (:525)
+        Calls the fold once at the end (:675) and updates `career` in place; the returned dict gains `merged` and
+        `conflicts`. Correction: the proposal replaced the seen-set and the key with the city-token key. The
+        raw-string key survives (:550, :597) only as the guard against the same jug05 row being offered twice.
+    src/parse_players.py  main() (:1464, :1502)
+        Passes j05["merged"] and j05["conflicts"] to write_career_logs. Checked by a test that reads the source,
+        never executed here (UNVERIFIED by execution; see section 5).
+    src/apply_career_dedup.py  main (:29)
+        Applies the same function to the committed data/clean/player_career_seasons.csv IN PLACE. Deterministic and
+        idempotent: a second run leaves the CSV and both logs byte-identical. `--check` writes nothing and exits 1
+        when a pair would merge. It rewrites the CSV only when something merges, and kept rows stay in file order.
+        Run as `python -m src.apply_career_dedup [--check]`; it is not a Makefile target.
+    data/interim/jug05_career_merged.csv  (665 rows)
+        bsnpr_id, season, franchise_id, games, points, players_source_url, jug05_source_url, jug05_team_raw,
+        jug05_retrieved_at
+        franchise_id is blank for the 37 pairs in franchises the city map lacks. New pairs are ADDED to those already
+        logged, so a second run cannot empty the file.
+    data/interim/jug05_career_conflicts.csv  (125 rows)
         bsnpr_id, season, city_token, team_raw_a, source_id_a, games_a, points_a, source_url_a,
-        team_raw_b, source_id_b, games_b, points_b, source_url_b
-    tests/test_parse_players.py  (proposed cases; no test references merge_jug05 today)
-        identical stats with different spellings -> one row; differing stats -> two rows and a logged conflict;
-        two franchises in one season -> both kept; same source, same season -> both kept;
-        Aguadilla-style unresolved city with identical stats -> merged.
-        Data-level guards: the 276 trade pairs remain; no cross-source identical-stats pair remains.
-    Regeneration: `make parse-players` (Makefile:53-54), then `make build-web-data`. data/raw/players holds 4,710
-        files (enciclopedia, jug05, jugador, jugador05). The run rewrites data/clean identity outputs, which must be
-        diffed to show only player_career_seasons.csv changed.
-    Checks: src/verify_clean.py has no check that counts player_career_seasons rows, so nothing pins 6,467.
-        tests/test_build_web_data.py:169 documents the quirk in a comment that would go stale; the test still holds.
+        team_raw_b, source_id_b, games_b, points_b, source_url_b, jug05_retrieved_at
+        a is the players row and b the jug05 row. Recomputed from the rows that remain, and overwritten each run.
+    jug05_retrieved_at  (both logs)
+        The fetch time of the jug05 row: the removed row in the merged log, row b in the conflicts log. It is
+        provenance the wayback timestamp inside the URL does not carry. Blank if none (0 blank today).
+    tests/test_career_dedup.py  (new file, 32 tests; the proposal put them in tests/test_parse_players.py)
+        Rule fixtures, merge_jug05, the apply script, a log-writer round trip, and pins on the committed files for
+        665 / 125 / 276 and for player 1995.
+    Regeneration: CORRECTED. The proposed step (`make parse-players`, then `make build-web-data`) was wrong and is
+        superseded. Regeneration is NOT idempotent at HEAD: a control run on unmodified code changed all 9 files it
+        writes (docs/session.md N7), because the committed identity outputs carry hand edits (commits 0982e40,
+        990da5b, 33f3249 and dd46c86, all 2026-09-14). The fix was applied as a transformation of the committed CSV
+        instead, so the identity outputs were untouched by construction: of the 33 data/clean files only
+        player_career_seasons.csv changed. Do not run `make parse-players` at HEAD.
+    Checks: src/verify_clean.py has no check that counts player_career_seasons rows, so nothing pinned 6,467.
+        tests/test_build_web_data.py:169 documents the quirk in a comment that is now stale; the test still holds.
 
 [OPEN_QUESTIONS]
 
@@ -237,9 +306,8 @@ Proposed, not applied.
         data/interim/jug05_career_merged.csv.
     Q2  Which third source adjudicates the 125 conflicts, and why they cluster in 2000-2003 and 2005. UNVERIFIED.
     Q3  The 125 conflict seasons (79 players) stay visible as two rows on the site until adjudicated. Accept that?
-    Q4  That regeneration leaves every identity output unchanged (player_id_map, players_canonical, aliases, review
-        queues, bios). Expected, because they use season and club sets. UNVERIFIED until run.
-    Q5  All predicted counts (5,802 rows, 6,150 built rows, 107 web files) come from the CSV and JSON at HEAD
-        `dd8df7c`. UNVERIFIED until the fix is built.
-    Q6  `docs/session.md:4991` still says "unknown blast radius", and the addendum at `:5022-5035` covers the
-        separate exact-name tier. Update session.md in a later docs phase.
+    Q4  SUPERSEDED (the prediction was false): that regeneration leaves every identity output unchanged. See
+        [INTERFACES] and section 5. The fix did not regenerate; the identity outputs were untouched by construction.
+    Q5  RESOLVED: the predicted counts were built and confirmed; the actuals are in section 5.
+    Q6  RESOLVED: `docs/session.md` now records the fix (the PHASE_2C log). The old entry at `:4991` and the addendum
+        at `:5022-5035` are left in place as history.
