@@ -5122,3 +5122,253 @@ than finding a third live instance by accident.
    PHASE_5/5D redo = c22ce10 (all pushed). PHASE_5/5D v1 = VOIDED (D-044).
    PHASE_5/5D.2 = 6c6c8a5 (pushed). **PHASE_5/5D.3a** (`showSeason` detail,
    `app/bsn_archivo.html` +57/−9) + this `docs/session.md` update = pending P4.
+
+═══════════════════════════════════════════════════════════════════════
+**PHASES 1-4 (2026-09-19/20) — MANATÍ AUDIT -> RECONCILE SYNC -> SEASON-AWARE
+RESOLVER -> HANDOFF.** Data-pipeline track. Append-only: nothing above this
+line was edited. Where this block and older text disagree, **this block wins
+for current state** (global.md R3). Superseded, left in place as history:
+- `:4932-4948` and `:5018-5020` — the `_team_resolver()` era-blind Manatí bug
+  as "own scoping pass needed, blast radius unknown". Scoped (PHASE_1) and
+  fixed (`9a458b8`); details below.
+- `:5037-5124` — the numbered queue is the 2026-09-09 state (its last line
+  still reads "pending P4"). Do not resume from it. The open items at
+  `:5013-5020` that this block does not mention still stand: Tier-1/Tier-2
+  duplicate triage, the repeat-name new-player-import clusters, and the
+  `merge_jug05()` career-dedup bug (`:4991`).
+═══════════════════════════════════════════════════════════════════════
+
+**Repo state at handoff (re-read from git/files, HEAD `9a458b8`, 2026-09-20).**
+- `main` is **ahead of `origin/main` by 2**: `origin/main` = `b0accd2`. Both
+  commits below (`4dd4198`, `9a458b8`) are **LOCAL and UNPUSHED**.
+- `make verify`: PASS, 346,472 checks, 0 failed. `pytest`: **282 passed**.
+  Counts by revision (`pytest --collect-only` on a `git archive` of each):
+  200 at `b0accd2` -> 212 at `4dd4198` (+12) -> 282 at `9a458b8` (+70). The
+  full run rebuilds `web/data/` (see cold-start note 4) and left it unchanged.
+- This docs update (`docs/session.md` + `docs/specs/manati_audit_spec.md`) is
+  staged and uncommitted, pending P4. No code, CSV, or `web/data/` change in it.
+
+**PHASE_1_MANATI_AUDIT (2026-09-19, read-only).** Report:
+`docs/specs/manati_audit_spec.md` — findings F1-F11, each with row id, current
+vs expected value, evidence, severity, proposed fix. Headline: `_team_resolver()`
+(`src/build_web_data.py:411`) had no Manatí literal; its only Manatí behavior
+was one row of `data/clean/city_franchise_map.csv:15` (`MANATI,osos_manati`),
+which is era-blind. Footprint: 19 rows of `player_career_seasons.csv`
+(`"Atenienses, Manati"`, 2015 x8 + 2016 x11, 14 players) were shown as Osos de
+Manatí (a franchise founded 2023). 6 of those player-seasons also appeared
+twice in `career[]`: the latinbasket roster join keys on (season,
+franchise_id), so the wrong id broke it. Of the six call sites only
+`build_career_rows_by_pid` had live hits; game results, box scores, leaders,
+scoring champions, awards and `player_season_stats_2001_2004.csv` hold 0 Manatí
+rows (the note at `:4934-4936` that the stats file was affected was wrong).
+
+**Finding status (as of `9a458b8`).**
+- F1 RESOLVED `9a458b8` — 19 career rows now `atenienses_manati`.
+- F2 RESOLVED `9a458b8` — 6 duplicate player-seasons collapsed to one row.
+- F3 RESOLVED `9a458b8` — resolver takes a season.
+- F4 RESOLVED `4dd4198` — reconcile.py synced to the on-disk CSVs.
+- F9 RESOLVED `9a458b8` — `parse_players` reads the same override data.
+- F11 RESOLVED `9a458b8` — tests pin both eras and the unchanged default.
+- **F5 OPEN** — Atenienses "founded 2014, defunct 2017" (`franchises.csv:14`,
+  `reconcile.py:67`, `franchises.json`) is shown on the team page `ate`
+  ("fundado 2014 · desaparecido en 2017"). The archive supports only 2015 and
+  2016 (`standings.csv`; career rows). 2014 and 2017 are **UNVERIFIED**.
+- **F6 OPEN** — `bsn_franchises.csv:11` seed says Osos "founded 2014"
+  (`franchises.csv:11` says 2023). No output is affected (that file is read
+  only for its city column). Correction to the audit: the only hardcoded
+  `franchise_founded` conflict is Criollos de Caguas (`reconcile.py:528`) and
+  `reconcile_conflicts.csv` has no Osos/Atenienses row, so this is NOT
+  recorded as a conflict anywhere (the audit had marked that UNVERIFIED).
+- **F7 OPEN** — Brujos->Osos labelled 2022 (`bsn_franchises.csv:29`,
+  `docs/project.md` D2) vs 2023 (events, key map); `franchises.json` has
+  brujos `end` 2023 while osos `founded` 2023. Also, from code reading only
+  (NOT browser-verified): `hydrate()` overwrites the app's baked `end` with the
+  pipeline value (`app/bsn_archivo.html:8131` over `:1425`, baked `end:2022`).
+- **F8 OPEN** — 2024 runner-up Osos de Manati: `bsn_champions_by_season.csv:96`
+  `source` cites the base article though the note says "season page"; `docs/
+  project.md` D6 still says the 2024 runner-up is blank. Fact UNVERIFIED
+  externally.
+- **F10 OPEN** — `app/player_crosswalk.csv` lines 10, 124, 143, 144 (ids 12998,
+  13057, 1094, 2516) cite club `osos_manati` in evidence text; origin not
+  traced. Static text, feeds no output.
+
+**PHASE_2 — commit `4dd4198`, "reconcile: sync generator to committed CSVs
+(Humacao lineage)"** (2 files, +123/-15; local, unpushed). Commit `77a3aae`
+had edited `city_franchise_map.csv`, `franchises.csv` and `franchise_events.csv`
+by hand (D-045 Grises/Caciques split) without updating `src/reconcile.py`, so a
+manual `make reconcile` would have reverted it. **Owner decision: the on-disk
+CSVs are the source of truth; the generator conforms.** `reconcile.py` now:
+HUMACAO -> `caciques_humacao` (`:175`); `grises_humacao` = the 2021 expansion,
+status "renamed 2024 -> criollos_caguas" (`:76`); new `caciques_humacao`
+franchise row (`:77`); the single-source 2023 grises->criollos event replaced by
+the verified 2024 rename plus a `toritos_cayey -> caciques_humacao` 2005 event;
+`FRANCHISE_SOURCES` (`:98`), per-event source as an optional 7th tuple element
+(`_DEFAULT_EVENT_SOURCE` `:108`, use `:283`), `CITY_MAP_FLAG_TEXT` (`:183`).
+Manatí handling untouched (`:176` still generates `MANATI,osos_manati`; the era
+is handled by the overrides file, not the map).
+- **Drift guard**: `tests/test_reconcile.py:40` regenerates all 7 outputs into a
+  temp dir and compares them to `data/clean/` as parsed rows (7 cases); 5
+  lineage tests at `:118`. Implication: hand-editing any of those 7 CSVs, or
+  changing `reconcile.py` alone, now fails the suite until both agree.
+- **Known non-zero byte diff**: `data/clean/franchises.csv:21` (`caciques_
+  humacao`) has its `source` cell wrapped in quotes that CSV does not require;
+  `csv.DictWriter` omits them. Parsed rows are equal in all 7 files. **Owner
+  accepted parsed-row equality; no CSV was edited.** A manual `make reconcile`
+  would therefore change that one line (quotes only).
+
+**PHASE_3 — commit `9a458b8`, "resolver: season-aware Manatí (Atenienses 2015-16,
+Osos 2023+)"** (22 files, +298/-38; local, unpushed; pre-commit hook passed —
+it rebuilt `web/data/`, found it fresh, and did not block).
+- New `data/clean/city_franchise_season_overrides.csv` (hand-maintained, NOT
+  generated by reconcile.py; columns city, season_start, season_end,
+  franchise_id, evidence). Rows: `MANATI,2015,2016,atenienses_manati` and
+  `MANATI,2023,,osos_manati`. **2014 and 2017 deliberately absent** (F5).
+- New `src/city_season_overrides.py` — one validated loader
+  (`load_overrides` `:30`, `override_for` `:73`); raises on a row without
+  evidence, a malformed season, or overlapping ranges for a city.
+- `src/build_web_data.py`: `_team_resolver` (`:411`) is `resolve(team_raw,
+  season=None)`; unchanged when the season is omitted, non-year, or outside
+  every range. Season is passed at all 10 lines that resolve a team (each
+  already had a season in scope): `:304`, `:330`, `:350` (scoring-champion
+  club), `:515` (`build_mvp`), `:626`, `:641` (`build_career_rows_by_pid`),
+  `:786` (`_standings_from_games`), `:968` (`build_starting_fives`), `:1026`,
+  `:1028` (`build_games`). The audit's "6 call sites" counted functions, not
+  lines. The overrides file joined the manifest digest inputs (`:1138`).
+- `src/parse_players.py`: `_load_club_resolver` (`:929` loads, `:958`
+  `resolve_club(raw, season=None)`) reads the same file; passes season at the
+  career (`r["season"]`) and observation (`sy`) call sites. Proven output-
+  neutral without re-running the pipeline: 0 differences across 1,354 real
+  (club string, season) pairs, old vs new resolver.
+- `web/data/` rebuilt (`make build-web-data`): 16 files changed. 14 player files
+  (ids 37, 87, 772, 1094, 1739, 1995, 2033, 2290, 2459, 2682, 2700, 2782,
+  13010, 13011): 19 rows `osos_manati` -> `atenienses_manati` (0 `osos_manati`
+  career rows remain); total career rows **6,821 -> 6,815 (-6)**; the 6
+  duplicate pairs are single rows with games, points and roster. Two derived
+  files changed too, **owner accepted them**: `index/players.json`
+  (`career_seasons` only, 5 players: 772 15->14, 1094 16->15, 1739 23->22,
+  1995 26->24, 13011 6->5; derived at `build_web_data.py:249`) and
+  `manifest.json` (`source_digest` `a8efbf835f79` -> `89debffbdafc`; counts
+  identical).
+- Tests (+70, 18 functions, 4 parametrized = 56 of the 70):
+  `tests/test_city_season_overrides.py` (loader, boundaries, real-file checks,
+  resolver agreement — `:21`, `:81`), `TestManatiCareerRows`
+  (`tests/test_build_web_data.py:445`), two era tests in `TestHelpers`.
+
+**Verification methods used (reusable).**
+1. **Control rebuild first**: snapshot of `web/data/` (4,757 files), then a
+   rebuild on unmodified code — byte-identical, so every later difference was
+   attributable to the change. Then rebuild and diff by file.
+2. **Mutation checks**: with an empty overrides file (old behavior) 7 of the
+   new tests fail; against the original `reconcile.py`, 8 fail (3 drift-guard
+   cases + 5 lineage tests).
+3. **Real browser** (Chromium + WebKit) on players 1995 and 37: 1995 shows one
+   "Atenienses de Manatí" row each for 2015 and 2016, 37 one for 2016, no Osos
+   row; player pages log 0 console/network errors; the chip's accessibility
+   node is role **button** (not a link) named "Atenienses de Manatí"; clicking
+   it lands on `#equipos/equipo/ate`, a real team page.
+4. **App wiring**: `atenienses_manati` -> key `ate` (`app/franchise_key_map.csv:30`,
+   `franchises.json`, `hydrate()` `app/bsn_archivo.html:8168`) -> baked `F.ate`
+   (`:1436`) -> `showTeam` (`:4040`). Not a dead link; no app change needed.
+
+**New findings this session (not in the audit's F1-F11). Nothing fixed.**
+- **N1 — 404 on team pages with no starting-five file.** `showTeam` fetches
+  `starting_five/<key>.json` unconditionally (`app/bsn_archivo.html:4204`); only
+  16 files exist (aib are bay cac cag car faj gua guy isa may mor pon que san
+  sge). Confirmed in both engines for `ate`, `man`, `hum`, `vil` (`faj`, `bay`:
+  no 404). Pre-existing: the old mislabeled career links went to `man`, which
+  404s the same way. Owner call: skip the fetch when no file, or emit empty
+  files.
+- **N2 — the `"seed:bsn_franchises.csv"` source-label branch can never fire.**
+  `reconcile.py:275-276` tests `k in NAME_TO_ID`, but `NAME_TO_ID` (`:236`) is
+  keyed by canonical *name* while `k` is a franchise_id: executed, 0 of 34 ids
+  match. Every uncurated row gets `derived:champion/scoring rows` (32 of 34 rows
+  of `franchises.csv`; the other 2 are the curated Humacao rows). So the label
+  is wrong for rows that ARE in the seed (e.g. `atenienses_manati`, which no
+  champion/scoring row names). The on-disk labels match the generator, so a fix
+  must change the CSV too. Related to F5.
+- **N3 — player 1995 shows Criollos de Caguas twice for each of 2002, 2003,
+  2004** (`team_raw` `CAGUAS` vs `Criollos, Caguas`): the tracked
+  `merge_jug05()` career-dedup bug (`:4991`). Identical before this session's
+  changes (compared HEAD vs working tree), so not caused by `9a458b8`. A second
+  confirmed instance; blast radius still unmeasured.
+- **N4 — the Manatí override now exists in two places.** `src/parse_latinbasket.py`
+  `CITY_OVERRIDES` (`:73`; MANATI 2015/2016 at `:88`, `:91`) still carries it in
+  code, alongside the new CSV. The audit spec [INTERFACES] proposed migrating
+  them; not done (out of PHASE_3 scope). Risk: the two can drift.
+
+**Owner decisions this session (2026-09-20).** (1) On-disk CSVs are the source
+of truth for the reconcile outputs. (2) Parsed-row equality accepted over byte
+equality (`franchises.csv:21`). (3) Season-scoped overrides live in DATA (a
+hand-maintained CSV), not code; only rows the archive supports (no 2014/2017).
+(4) `index/players.json` and `manifest.json` changes accepted as derived.
+(5) Nothing pushed.
+
+**FILE_MANIFEST (this session).**
+- `4dd4198`: `src/reconcile.py` (M), `tests/test_reconcile.py` (M).
+- `9a458b8`: `data/clean/city_franchise_season_overrides.csv` (A),
+  `src/city_season_overrides.py` (A), `tests/test_city_season_overrides.py` (A),
+  `src/build_web_data.py` (M), `src/parse_players.py` (M),
+  `tests/test_build_web_data.py` (M), 16 x `web/data/` (M).
+- This phase (uncommitted): `docs/session.md` (M, appended),
+  `docs/specs/manati_audit_spec.md` (A; per-finding status lines added).
+- Deliberately untouched: `docs/project.md` (D2, D6 now stale), the generated
+  reconcile CSVs, `src/parse_latinbasket.py`, `app/bsn_archivo.html`.
+
+**NEXT_ACTIONS (all owner-gated; none started).**
+1. **Push decision** for `4dd4198` + `9a458b8`. `web/data/` is part of
+   `9a458b8` and the site is served from `main:/web` (Makefile site target), so
+   a push changes the live pages (14 player files). Whether Pages redeploys on
+   push: UNVERIFIED.
+2. **F5**: obtain an independent source for Atenienses' first and last seasons
+   (es.wikipedia article, Federación). If it moves the span, change `FRANCHISES`
+   in `reconcile.py` AND regenerate `franchises.csv` together (drift guard), and
+   extend the overrides CSV only with evidence.
+3. **F7 + F8, Tier-2 owner touch on `docs/project.md`**: D2 (2022 -> "sold 2022,
+   Osos from 2023"; "Grises -> Criollos (2023)" -> 2024 per
+   `franchise_events.csv`) and D6 (2024 runner-up is no longer blank). Also trace
+   where `end` is derived for `brujos_guayama` (and the `hydrate()` overwrite).
+   Confirm the 2024 runner-up against the season page, then patch the `source`.
+4. **F6**: decide whether to add a `franchise_founded` conflict row for the
+   seed's Osos "founded 2014" (`reconcile.py:528` area). Seed file untouched.
+5. **F10**: after any regeneration of `parse_players`, check whether the four
+   `osos_manati` evidence strings change; if not, they are genuine 2023+
+   observations or an untraced source.
+6. **N1-N4**: owner triage. N1 (app), N2 (label branch, F5-adjacent), N3
+   (`merge_jug05()` audit already queued), N4 (migrate `parse_latinbasket`
+   overrides into the CSV).
+7. Older open items unchanged (`:5013-5020`).
+
+**COLD-START NOTES.**
+1. Read order: `docs/global.md`, `docs/project.md` (D2, D6 stale, see NEXT 3),
+   this file. The audit spec carries per-finding status lines.
+2. Never hand-edit `franchises.csv`, `franchise_events.csv`,
+   `city_franchise_map.csv`, `club_code_map.csv`, `champions_reconciled.csv`,
+   `scoring_champions_reconciled.csv` or `reconcile_conflicts.csv` without
+   changing `src/reconcile.py` in the same change — the drift guard fails
+   otherwise. `make reconcile` writes repo data: needs owner approval.
+3. Overrides: add a row to `city_franchise_season_overrides.csv` only with
+   evidence in the row and archive support; the loader rejects the rest. Both
+   resolvers read it.
+4. `make test` rebuilds `web/data/` as a side effect: `TestBuild` has an autouse
+   class fixture calling `b.main()` (`tests/test_build_web_data.py:54-60`). It
+   is deterministic, so `git status` stays clean; check it anyway.
+5. Commits touching `data/clean/`, `app/player_crosswalk.csv`,
+   `app/bsn_archivo.html` or `src/build_web_data.py` trigger the pre-commit
+   hook (`.githooks/pre-commit:25`), which rebuilds `web/data/` and blocks
+   unless the whole tree is staged. It does NOT fire for changes only to
+   `src/parse_players.py` or `src/city_season_overrides.py`. `4dd4198` staged
+   neither hooked path, so the hook did not trigger (from reading the regex).
+6. `make sync-web-data` also runs `parse_players` (rewrites identity data) and
+   copies the app shell; it was not run this session.
+7. Browser checks: Playwright 1.45 in `/private/tmp/bsn_harness` (browsers
+   `chromium-1124`, `webkit-2035`; newer Playwright builds refuse this macOS 13
+   host). Serve with `python -m http.server -d web`. Archive-only players open
+   via `showPlayer('<Last, First>', <id>)`; the career table is `#playerExtra
+   table` (NOT `#playerDetail`); use `page.accessibility.snapshot({root,
+   interestingOnly:false})` — `true` returns nothing for a table root. The
+   check scripts lived in the session scratchpad (not in the repo); whether
+   `/private/tmp` survives is UNVERIFIED.
+8. `parse_players` was NOT re-run this session. F9 is verified by comparing the
+   old and new resolver's output on 1,354 real (club string, season) pairs (0
+   differences), so its identity outputs should be unchanged; that is an
+   equivalence proof, not a pipeline run.
