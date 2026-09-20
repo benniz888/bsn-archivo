@@ -5486,3 +5486,160 @@ and runs no tests or `make verify`; it publishes `web/` as committed.
    the push (clean apply; tree and `web/` identical to `b0accd2`):
    `git revert --no-edit b0accd2..b8d24d2`, then a plain push. Site-only
    alternative: `git revert 9a458b8`. NOT executed.
+
+═══════════════════════════════════════════════════════════════════════
+**PHASE_5D_SESSION_LOG (2026-09-20) — PHASE_5C DATA FIXES: COMMIT, PUSH, DEPLOY,
+LIVE VERIFICATION.** Append-only. Where this block and older text disagree, this
+block wins for current state. Superseded, left in place as history:
+- `:5424` (finding status "as of `b8d24d2`") and `:5441` (NEXT_ACTIONS): see the
+  updated status and the re-prioritised next actions below.
+- `:5213` and `:5450` — the "known non-zero byte diff" at `franchises.csv:21` and
+  the next action about it. RESOLVED in `8ed5f74`: a fresh generator run into a
+  temp dir is now byte-identical to on-disk for all 7 reconcile outputs.
+- `:5165` — F5, F6, F7, F8 shown as OPEN. F5 is now partial, F8 resolved; F6 and
+  F7 are decisions recorded below.
+═══════════════════════════════════════════════════════════════════════
+
+**Repo state (re-read from git, 2026-09-20, before this docs edit).** `HEAD` =
+`origin/main` = `8ed5f74` (full `8ed5f746669b2fff0526b46c5907d7235f045ff4`),
+confirmed with `git ls-remote origin refs/heads/main`. Working tree clean; nothing
+is unpushed until this file's own update is committed. Gates re-run at `HEAD`:
+`make verify` PASS (346,472 checks, 0 failed); `pytest` **290 passed** with the
+tree still clean afterwards (the full run rebuilds `web/data/`, unchanged);
+collected tests 282 at `cfdc96c` -> 290 at `8ed5f74` (+8: 5 in
+`TestAteniensesRelocation`, 3 in `TestSeedSourceOverrides`).
+
+**Commit `8ed5f74`, "data: Atenienses relocated to Fajardo 2017; 2024 runner-up
+source"** (10 files, +95/-17; pre-commit hook ran and passed: its whole output was
+`pre-commit: source data changed — rebuilding web/data/ to check it's fresh…`, no
+block). PHASE_5C, applying the owner-approved subset of the PHASE_5B plan:
+- **N5 — Atenienses status.** "defunct 2017" -> "relocated 2017 -> Fajardo"
+  (`franchises.csv:14`, `reconcile.py:74`). `founded` 2014 kept. `end` still
+  derives to 2017 because the status holds exactly one 4-digit year
+  (`build_web_data.py:190-191`; a second digit would silently fall back to the
+  curated end). `franchises.json` is unchanged (status stays "defunct").
+- **SRC_ATE provenance.** `FRANCHISE_SOURCES["atenienses_manati"]`
+  (`reconcile.py:114`) records "owner 2026-09-20" plus the primerahora.com article,
+  `wikipedia:Cariduros_de_Fajardo` and the 2016 and 2017 BSN season pages, and
+  states that **the source URLs were read from search results, not independently
+  fetched**. Those pages have not been read by this project (UNVERIFIED).
+- **F8 — 2024 runner-up source.** Patched to
+  `en.wikipedia.org/wiki/2024_Baloncesto_Superior_Nacional_season` in
+  `bsn_champions_by_season.csv:96` and `champions_reconciled.csv:97`; the value
+  (Osos de Manatí) is unchanged. `reconcile.py` gained `SEED_SOURCE_OVERRIDES`
+  (`:43`, used at `:362`) for 2024 only, because the generator credits one constant
+  to every seed row and ignores the seed's own `source` cell (see N6).
+- **`franchises.csv:21`** (`caciques_humacao`): quoting normalized to the
+  generator's exact output (2 quote characters removed, no content change). With
+  line 14 copied from the generator too, the 7-file reconcile diff is byte-zero.
+- **D2 Nota row.** The app's baked `ate` entry gained `note:"Se mudó a Fajardo en
+  2017."` (`app/bsn_archivo.html:1437`, byte-copied to `web/index.html:1437` with
+  `make site`; `cmp` identical). It renders as a Nota row on the team page.
+- **Docs.** `docs/project.md` D2 (`:26`) adds "Atenienses de Manatí -> Cariduros de
+  Fajardo (2017, relocation)"; D6 (`:30`) records the 2024 runner-up as confirmed.
+  The Brujos "(2022)" clause in D2 is unchanged (F7 held).
+  `docs/specs/manati_audit_spec.md:102-105` reworded: pushed through `cfdc96c`, the
+  resolver fix deployed by the `b8d24d2` push, `cfdc96c` docs-only.
+- **Web effect.** Only `web/data/manifest.json` (`source_digest` `89debffbdafc` ->
+  `015dedb23e8a`, counts identical) and `web/index.html` changed. No `players/`
+  file, no `franchises.json`. `franchises.csv` and `champions_reconciled.csv` are
+  manifest-digest inputs, so even these "invisible" edits change the manifest and
+  deploy.
+- **Verification used**: snapshot of `web/data/` (4,757 files) then rebuild diff
+  (only `manifest.json` changed); generator run into a temp dir compared
+  byte-for-byte; Chromium + WebKit on a local copy of the rebuilt `web/` (ate page
+  header, Nota row, player 1995 chip click-through, chip role button, console
+  limited to the known `starting_five/ate.json` 404).
+
+**Push and deploy.** `git push origin main`: `cfdc96c..8ed5f74`, plain
+fast-forward, no force (reflog `origin/main@{1}` = `cfdc96c` -> `@{0}` = `8ed5f74`).
+Pages run **`35534613404`** (event push, head `8ed5f74`): conclusion **success**,
+`run_started_at` 2026-09-20T20:09:13Z, `updated_at` 20:09:34Z = **21 s** of workflow
+time (excludes CDN propagation). Run page:
+`https://github.com/benniz888/bsn-archivo/actions/runs/35534613404`.
+
+**Live verification (bsnarchivo.com, public GETs of data files, re-read this
+phase).** Manifest `source_digest` starts `015dedb23e8a1f13`; `index.html` is
+byte-identical to `web/index.html` at `HEAD` and contains "Se mudó a Fajardo en
+2017."; player 1995: 24 career rows, 0 `osos_manati`, Atenienses 2015 (42 games,
+415 pts) and 2016 (34 games, 311 pts); spot-checked `data/index/franchises.json`,
+`data/players/37.json` and `data/seasons/2024.json`: byte-identical to the committed
+files. **Owner visual confirmation (2026-09-20, reported by the owner, not
+independently observed by me):** the live Atenienses team page shows the "Se mudó a
+Fajardo en 2017." Nota row and the unchanged header ("fundado 2014 · desaparecido en
+2017").
+
+**Cosmetic observation (low priority, not caused by this work).** The ate team page
+prints two near-duplicate "no finals" lines: "Sin finales en el archivo"
+(`app/bsn_archivo.html:4065`, the hero note) and "Sin finales registradas en el
+archivo." (`:4087`, a paragraph lower down). Both fire whenever a franchise has no
+titles and no finals; the same two lines appeared in the pre-change PHASE_3 browser
+screenshot. Other no-finals franchises presumably show the same (code-read only, not
+checked in a browser: UNVERIFIED).
+
+**Decisions (owner, 2026-09-20).**
+- **B-series REJECTED** (first/last-season-played columns on `franchises.csv`): too
+  large a schema change for one value. Consequence: F5's "seasons played 2015-2016"
+  is not stored; the page still reads "fundado 2014 · desaparecido en 2017".
+- **D1 REJECTED** (an event `atenienses_manati -> cariduros_fajardo`):
+  `cariduros_fajardo` spans multiple eras. Re-checked in the archive: 26 seasons with
+  rows in 1973-1998, none in 1999-2006, then 2007, 2008 and 2017-2021. Linking would
+  merge two lineages under one id. The status text "relocated 2017 -> Fajardo"
+  references no id, so it cannot dangle.
+- **A4 and F6 left as they are**: `bsn_franchises.csv:14` still says "defunct 2017"
+  and `:11` still says Osos "founded 2014" (inherited seed; the file is unchanged in
+  `8ed5f74`; it is read only for its city column).
+- **F7 HELD.** Needs an archive-supported source for the Brujos 2022 season and the
+  Osos 2023 opening. Re-read this phase: `standings.csv` covers 2014-2018 only;
+  Brujos have rows for 2014-2017 (none for 2022) and Osos have no row; archive-wide
+  the last Brujos evidence is 2021 and the only Osos-era row is the 2024 runner-up.
+  Background, recorded not applied: the Oct 2022 sale versus a 2023 first season
+  (`franchise_events.csv:2` note, es.wikipedia per that note, not re-fetched;
+  UNVERIFIED). Until then `franchises.csv:30` still yields brujos `end` 2023 and D2
+  still says "(2022)".
+- **F10 open.**
+
+**Finding status (as of `8ed5f74`).**
+- **RESOLVED / live**: F1, F2, F3, F4, F8, F9, F11, N5. F5 **PARTIALLY** resolved:
+  founded 2014 kept, status and provenance corrected, first/last season played not
+  stored (B-series rejected).
+- **OPEN**: F6 (left), F7 (held), F10, N1 (starting-five 404s on team pages `ate`,
+  `man`, `hum`, `vil`; `:5274`), N2 (the `"seed:"` source-label branch, `:5281`),
+  N3 (`merge_jug05()` duplicates, player 1995; `:5289`), N4 (`CITY_OVERRIDES`
+  duplicate of the Manatí override, `:5294`), **N6** (new label, below).
+- **N6 — the generator ignores the seed's own `source` cell.** The 2026 row's seed
+  cell is `basketball.realgm.com` (`bsn_champions_by_season.csv:98`) but the
+  reconciled row credits the Wikipedia base article (`champions_reconciled.csv:98`),
+  because `SEED_SRC` is used for every seed row. `SEED_SOURCE_OVERRIDES` fixes 2024
+  only. A general fix (`sd["source"] or SEED_SRC`) would also change line 98:
+  separate approval.
+
+**NEXT_ACTIONS (owner-gated; none started; priority order, supersedes `:5441`).**
+1. **`merge_jug05()` career-dedup audit** (`:4991`; N3). Visible today on player
+   1995: Criollos de Caguas twice for each of 2002, 2003 and 2004 (`team_raw`
+   `CAGUAS` vs `Criollos, Caguas`).
+2. **N6** — decide the general fix for the ignored seed `source` cell (and the 2026
+   RealGM attribution).
+3. **N1** — starting-five 404s: skip the fetch when no file exists
+   (`app/bsn_archivo.html:4204`) or emit empty files. Owner call.
+4. **F7**, when an archive-supported source exists for the Brujos 2022 season and the
+   Osos 2023 opening.
+5. **Identity-triage backlog** (`:5013-5020`): Tier-1 (57 exact-name groups, 6
+   confirmed leads from item 7) and Tier-2 (136 birth-date groups) triage; the
+   repeat-name clusters for a new-player-import pass. F10 is identity-adjacent.
+- Open but unscheduled: F6 (left by decision), F10, N2, N4. A push of this docs
+  update will not deploy (docs only; `pages.yml` watches `web/**` and its own file).
+
+**Cold-start notes (additions).**
+1. The reconcile outputs now match on-disk byte-for-byte, so a manual `make reconcile`
+   would be a no-op (verified only by a temp-dir run; `make reconcile` writes repo
+   data and was not run). The earlier caveat about `franchises.csv:21` is obsolete.
+2. `source` cells in `franchises.csv` and the `sources` cell in
+   `champions_reconciled.csv` are GENERATED: change `FRANCHISE_SOURCES` /
+   `SEED_SOURCE_OVERRIDES` in `reconcile.py`, then regenerate, not the CSV alone
+   (drift guard).
+3. Any edit to `franchises.csv`, `franchise_events.csv` or `champions_reconciled.csv`
+   moves `manifest.json`'s `source_digest` even when no visible output changes, so a
+   commit touching them deploys and purges visitors' cached data once.
+4. Provenance labels record when URLs were only read from search results ("not
+   independently fetched"); keep that wording until someone reads the page.
