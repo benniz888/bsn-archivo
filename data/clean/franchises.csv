@@ -11,14 +11,14 @@ mets_guaynabo,Mets de Guaynabo,Guaynabo,1935,active,derived:champion/scoring row
 osos_manati,Osos de Manati,Manati,2023,active,derived:champion/scoring rows
 piratas_quebradillas,Piratas de Quebradillas,Quebradillas,1926,active,derived:champion/scoring rows
 vaqueros_bayamon,Vaqueros de Bayamon,Bayamon,1930,active,derived:champion/scoring rows
-atenienses_manati,Atenienses de Manati,Manati,2014,defunct 2017,derived:champion/scoring rows
+atenienses_manati,Atenienses de Manati,Manati,2014,relocated 2017 -> Fajardo,"owner 2026-09-20 + primerahora.com/deportes/baloncesto/notas/en-camino-dos-nuevas-franquicias-en-el-bsn (Atenienses in BSN 2015-2016, moved to Fajardo 2017) + wikipedia:Cariduros_de_Fajardo (2017 season began with purchase of the Atenienses franchise) + wikipedia:2016_Baloncesto_Superior_Nacional_season + wikipedia:2017_Baloncesto_Superior_Nacional_season (Manati present 2016, absent 2017); source URLs read from search results, not independently fetched; archive: standings.csv and player_career_seasons.csv rows for 2015-2016"
 avancinos_villalba,Avancinos de Villalba,Villalba,1996,defunct 1998,derived:champion/scoring rows
 cardenales_rio_piedras,Cardenales de Rio Piedras,Rio Piedras,1940,defunct 1985,derived:champion/scoring rows
 cariduros_fajardo,Cariduros de Fajardo,Fajardo,1973,defunct 2023,derived:champion/scoring rows
 conquistadores_aguada,Conquistadores de Aguada,Aguada,1994,defunct 1998,derived:champion/scoring rows
 gallitos_isabela,Gallitos de Isabela,Isabela,1969,defunct 2005,derived:champion/scoring rows
 grises_humacao,Grises de Humacao,Humacao,2021,renamed 2024 -> criollos_caguas,"owner 2026-09-09 + wikipedia:Grises_de_Humacao (2021 expansion, distinct from the 2005-19 Grises/Caciques)"
-caciques_humacao,Caciques de Humacao,Humacao,2005,relocated ~2019 (Isabela then Guayama),"owner 2026-09-09 + wikipedia:Caciques_de_Humacao (Toritos de Cayey -> Grises de Humacao 2005 -> Caciques 2010 -> relocated; one franchise)"
+caciques_humacao,Caciques de Humacao,Humacao,2005,relocated ~2019 (Isabela then Guayama),owner 2026-09-09 + wikipedia:Caciques_de_Humacao (Toritos de Cayey -> Grises de Humacao 2005 -> Caciques 2010 -> relocated; one franchise)
 indios_canovanas,Indios de Canovanas,Canovanas,1980,defunct 1996,derived:champion/scoring rows
 maratonistas_coamo,Maratonistas de Coamo,Coamo,1985,defunct 2015,derived:champion/scoring rows
 polluelos_aibonito,Polluelos de Aibonito,Aibonito,1977,defunct 2001,derived:champion/scoring rows

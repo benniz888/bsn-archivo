@@ -99,8 +99,10 @@ Format: ID | SEV | row identifier | current | expected | evidence | proposed fix
 
 ## Finding status (added 2026-09-20; findings above unchanged)
 
-Status as of HEAD `9a458b8`. Both fixing commits are LOCAL and UNPUSHED
-(`origin/main` = `b0accd2`). The finding text above is the audit as run on
+Status as of `cfdc96c`. Both fixing commits (`4dd4198`, `9a458b8`) are pushed
+through `cfdc96c` (`origin/main` = `cfdc96c`); the resolver fix was deployed by the
+`b8d24d2` push (Pages run 35531815794); `cfdc96c` was docs-only and did not deploy.
+The finding text above is the audit as run on
 2026-09-19; line numbers in it refer to the tree at `b0accd2` and have since
 shifted. Format: ID | status | commit | note
 

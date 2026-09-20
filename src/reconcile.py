@@ -36,6 +36,13 @@ from src.parse_pre2007 import _write_csv
 CLEAN = REPO_ROOT / "data" / "clean"
 SEED_SRC = "en.wikipedia.org/wiki/Baloncesto_Superior_Nacional"
 BSNPR_SRC = "wayback:bsnpr.com/estadisticas/campeonatos.asp"
+# champions_reconciled.csv credits SEED_SRC for every seed row; it does not read
+# the seed CSV's own `source` cell. A season listed here names the page its
+# seed values were actually confirmed from. 2024: the runner-up (Osos de Manati)
+# comes from the 2024 season page, not the franchise table.
+SEED_SOURCE_OVERRIDES = {
+    "2024": "en.wikipedia.org/wiki/2024_Baloncesto_Superior_Nacional_season",
+}
 
 
 def strip_accents(s: str) -> str:
@@ -64,7 +71,7 @@ FRANCHISES: dict[str, tuple[str, str, str, str]] = {
     "osos_manati": ("Osos de Manati", "Manati", "2023", "active"),
     "piratas_quebradillas": ("Piratas de Quebradillas", "Quebradillas", "1926", "active"),
     "vaqueros_bayamon": ("Vaqueros de Bayamon", "Bayamon", "1930", "active"),
-    "atenienses_manati": ("Atenienses de Manati", "Manati", "2014", "defunct 2017"),
+    "atenienses_manati": ("Atenienses de Manati", "Manati", "2014", "relocated 2017 -> Fajardo"),
     "avancinos_villalba": ("Avancinos de Villalba", "Villalba", "1996", "defunct 1998"),
     "cardenales_rio_piedras": ("Cardenales de Rio Piedras", "Rio Piedras", "1940", "defunct 1985"),
     "cariduros_fajardo": ("Cariduros de Fajardo", "Fajardo", "1973", "defunct 2023"),
@@ -93,13 +100,26 @@ FRANCHISES: dict[str, tuple[str, str, str, str]] = {
 }
 
 # Hand-curated `source` cells for franchises whose lineage was settled by the
-# owner (2026-09-09, commit 77a3aae edited the CSVs directly). Any franchise not
-# listed here gets the derived label in write_franchise_layer().
+# owner (Humacao: 2026-09-09, commit 77a3aae edited the CSVs directly;
+# Atenienses: 2026-09-20). Any franchise not listed here gets the derived label
+# in write_franchise_layer().
 FRANCHISE_SOURCES: dict[str, str] = {
     "grises_humacao": "owner 2026-09-09 + wikipedia:Grises_de_Humacao "
                       "(2021 expansion, distinct from the 2005-19 Grises/Caciques)",
     "caciques_humacao": "owner 2026-09-09 + wikipedia:Caciques_de_Humacao (Toritos de Cayey "
                         "-> Grises de Humacao 2005 -> Caciques 2010 -> relocated; one franchise)",
+    # The URLs below came from search results on 2026-09-20 and were not fetched
+    # and read independently. Keep exactly one 4-digit year in this franchise's
+    # status: build_franchises() derives `end` from the digits in it.
+    "atenienses_manati": "owner 2026-09-20 + primerahora.com/deportes/baloncesto/notas/"
+                         "en-camino-dos-nuevas-franquicias-en-el-bsn (Atenienses in BSN "
+                         "2015-2016, moved to Fajardo 2017) + wikipedia:Cariduros_de_Fajardo "
+                         "(2017 season began with purchase of the Atenienses franchise) + "
+                         "wikipedia:2016_Baloncesto_Superior_Nacional_season + "
+                         "wikipedia:2017_Baloncesto_Superior_Nacional_season (Manati present "
+                         "2016, absent 2017); source URLs read from search results, not "
+                         "independently fetched; archive: standings.csv and "
+                         "player_career_seasons.csv rows for 2015-2016",
 }
 
 # D2 lineage — (event_type, season, from_id, to_id, confidence, note[, source]).
@@ -339,7 +359,7 @@ def reconcile_champions(conflicts: list[dict]) -> None:
 
         srcs = []
         if sd:
-            srcs.append(SEED_SRC)
+            srcs.append(SEED_SOURCE_OVERRIDES.get(s, SEED_SRC))
         if bp:
             srcs.append(BSNPR_SRC)
         row["sources"] = "; ".join(srcs)

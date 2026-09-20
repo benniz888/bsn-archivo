@@ -7,8 +7,8 @@ import shutil
 import pytest
 
 import src.reconcile as rc
-from src.reconcile import (FRANCHISE_EVENTS, FRANCHISES, OWNER_RESOLUTIONS, ncity,
-                           resolve_city, resolve_seed_name)
+from src.reconcile import (FRANCHISE_EVENTS, FRANCHISE_SOURCES, FRANCHISES, OWNER_RESOLUTIONS,
+                           ncity, resolve_city, resolve_seed_name)
 from src.wayback_cdx import REPO_ROOT
 
 REPO_CLEAN = REPO_ROOT / "data" / "clean"
@@ -139,3 +139,57 @@ class TestHumacaoLineage:
     def test_toritos_to_caciques_2005_event(self):
         assert any(e[:4] == ("relocated_renamed", "2005", "toritos_cayey", "caciques_humacao")
                    for e in FRANCHISE_EVENTS)
+
+
+class TestAteniensesRelocation:
+    """N5: Atenienses de Manati did not disappear in 2017, it moved to Fajardo.
+    Pinned individually so a failure names the drifted fact."""
+
+    def test_status_is_a_relocation_to_fajardo(self):
+        assert FRANCHISES["atenienses_manati"][3] == "relocated 2017 -> Fajardo"
+
+    def test_status_keeps_exactly_one_four_digit_year(self):
+        # build_franchises() derives `end` from every digit in the status; any
+        # other digit would silently fall back to the curated end.
+        status = FRANCHISES["atenienses_manati"][3]
+        assert "".join(ch for ch in status if ch.isdigit()) == "2017"
+
+    def test_founded_is_kept(self):
+        assert FRANCHISES["atenienses_manati"][2] == "2014"
+
+    def test_source_records_provenance_and_that_urls_were_not_fetched(self):
+        src = FRANCHISE_SOURCES["atenienses_manati"]
+        assert "2026-09-20" in src and "not independently fetched" in src
+        for part in ("primerahora.com", "wikipedia:Cariduros_de_Fajardo",
+                     "wikipedia:2016_Baloncesto_Superior_Nacional_season",
+                     "wikipedia:2017_Baloncesto_Superior_Nacional_season"):
+            assert part in src
+
+    def test_regenerated_franchise_row(self, regenerated):
+        row = next(r for r in _rows(regenerated / "franchises.csv")
+                   if r["franchise_id"] == "atenienses_manati")
+        assert row["status"] == "relocated 2017 -> Fajardo" and row["founded"] == "2014"
+        assert row["source"] == FRANCHISE_SOURCES["atenienses_manati"]
+
+
+class TestSeedSourceOverrides:
+    """F8: the 2024 runner-up was confirmed from the 2024 season page."""
+
+    SEASON_PAGE = "en.wikipedia.org/wiki/2024_Baloncesto_Superior_Nacional_season"
+
+    def test_2024_credits_the_season_page_and_keeps_the_runner_up(self, regenerated):
+        row = next(r for r in _rows(regenerated / "champions_reconciled.csv")
+                   if r["season"] == "2024")
+        assert row["sources"] == self.SEASON_PAGE
+        assert row["champion_franchise_id"] == "criollos_caguas"
+        assert row["runner_up_franchise_id"] == "osos_manati"
+
+    def test_no_other_season_cites_the_2024_page(self, regenerated):
+        others = [r["season"] for r in _rows(regenerated / "champions_reconciled.csv")
+                  if r["season"] != "2024" and self.SEASON_PAGE in r["sources"]]
+        assert others == []
+
+    def test_seed_csv_cell_agrees(self):
+        seed = next(r for r in _rows(REPO_CLEAN / "bsn_champions_by_season.csv")
+                    if r["season"] == "2024")
+        assert seed["source"] == self.SEASON_PAGE
