@@ -419,7 +419,57 @@ class TestHelpers:
         assert r("SANTURCE") == r("Santurce") == "cangrejeros_santurce"
         assert r("Nowhere") is None
 
+    def test_team_resolver_manati_is_era_aware(self):
+        # Atenienses de Manati (2015-16) and Osos de Manati (2023+) share a city.
+        r = b._team_resolver()
+        assert r("MANATI", 2015) == r("Manatí", "2016") == "atenienses_manati"
+        assert r("MANATI", 2023) == r("Manati", 2024) == r("MANATI", "2030") == "osos_manati"
+
+    def test_team_resolver_unchanged_when_no_override_matches(self):
+        r = b._team_resolver()
+        # season omitted, non-year, or outside every override: the era-blind map answers
+        assert r("MANATI") == r("MANATI", None) == r("MANATI", "unknown") == "osos_manati"
+        # 2014 and 2017 are UNVERIFIED (audit F5), so deliberately not overridden.
+        assert r("MANATI", 2014) == r("MANATI", 2017) == "osos_manati"
+        for row in b._read("city_franchise_map.csv"):
+            assert r(row["normalized_city"]) == row["franchise_id"]
+            if row["normalized_city"] != "MANATI":
+                assert r(row["normalized_city"], 2016) == row["franchise_id"]
+
     def test_source_digest_is_stable(self):
         d1 = b._source_digest(["franchises.csv", "franchise_curated.json"])
         d2 = b._source_digest(["franchise_curated.json", "franchises.csv"])
         assert d1 == d2 and len(d1) == 64
+
+
+class TestManatiCareerRows:
+    """Audit F1/F2: a wrong Manatí franchise_id also broke the latinbasket
+    roster join (keyed on season + franchise_id), leaving one player-season as
+    two career rows. Calls the pure career builder, not the built files."""
+
+    MANATI = {"osos_manati", "atenienses_manati"}
+
+    def test_no_player_season_carries_both_manati_franchises(self):
+        both = []
+        for pid, rows in b.build_career_rows_by_pid().items():
+            seen: dict[int, set[str]] = {}
+            for r in rows:
+                if r["franchise_id"] in self.MANATI:
+                    seen.setdefault(r["season"], set()).add(r["franchise_id"])
+            both += [(pid, s) for s, fids in seen.items() if len(fids) > 1]
+        assert both == []
+
+    def test_2015_2016_career_rows_are_atenienses(self):
+        rows = [(pid, r) for pid, rs in b.build_career_rows_by_pid().items() for r in rs
+                if r["season"] in (2015, 2016) and r["franchise_id"] in self.MANATI]
+        assert rows and all(r["franchise_id"] == "atenienses_manati" for _, r in rows)
+
+    def test_former_duplicates_are_one_populated_row(self):
+        career = b.build_career_rows_by_pid()
+        for pid, season in [("1094", 2015), ("13011", 2015), ("1995", 2015),
+                            ("1739", 2016), ("1995", 2016), ("772", 2016)]:
+            rows = [r for r in career[pid]
+                    if r["season"] == season and r["franchise_id"] == "atenienses_manati"]
+            assert len(rows) == 1, (pid, season)
+            assert rows[0]["games"] is not None and rows[0]["points"] is not None, (pid, season)
+            assert "roster" in rows[0], (pid, season)

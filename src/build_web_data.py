@@ -26,6 +26,7 @@ from pathlib import Path
 
 from src.wayback_cdx import REPO_ROOT
 from src.parse_wayback import open_clean_text
+from src.city_season_overrides import OVERRIDES_FILE, load_overrides, override_for
 
 CLEAN = REPO_ROOT / "data" / "clean"
 APP = REPO_ROOT / "app"
@@ -296,11 +297,11 @@ def _scoring_club_resolver():
             else:
                 by_nick[n] = r["franchise_id"]
 
-    def resolve(raw: str) -> str | None:
+    def resolve(raw: str, season: int | str | None = None) -> str | None:
         if not raw:
             return None
         n = _norm(raw.split(",")[0])   # "Capitanes, Arecibo" -> "capitanes"
-        return (by_city(raw) or by_name.get(_norm(raw)) or by_name.get(n)
+        return (by_city(raw, season) or by_name.get(_norm(raw)) or by_name.get(n)
                 or (None if n in ambiguous else by_nick.get(n)))
     return resolve
 
@@ -326,7 +327,7 @@ def build_scoring_titles() -> Path:
         raw = (prefer_raw or (seed[season]["club"] if season in seed else "")
                or (hist[season]["team_raw"] if season in hist else "")
                or lead.get(season, "")) or None
-        return raw, (resolve(raw) if raw else None)
+        return raw, (resolve(raw, season) if raw else None)
 
     out = []
     for r in _read("scoring_champions_reconciled.csv"):
@@ -346,7 +347,7 @@ def build_scoring_titles() -> Path:
                 "total_points": {"player": r["total_points_champion"],
                                  "value": _int(r["total_points_value"]),
                                  "club_raw": (hist[s]["team_raw"] if s in hist else None),
-                                 "franchise_id": resolve(hist[s]["team_raw"]) if s in hist else None,
+                                 "franchise_id": resolve(hist[s]["team_raw"], s) if s in hist else None,
                                  "bsnpr_id": pid_for(r["total_points_champion"], s)},
             }
         else:
@@ -408,15 +409,23 @@ def build_records() -> Path:
 # 5C — per-entity files: players/ seasons/ games/                              #
 # --------------------------------------------------------------------------- #
 def _team_resolver():
-    """team_raw (a bare, case-inconsistent city name in the game + leader data)
-    -> franchise_id | None, via city_franchise_map.csv. For the 2001-2013 game
-    seasons the San Juan / Rio Piedras era-ambiguity does not arise."""
+    """team_raw (a bare, case-inconsistent city name in the game, leader and
+    career data) -> franchise_id | None, via city_franchise_map.csv.
+
+    The map is era-blind (one franchise per city), so `resolve(team_raw,
+    season)` first consults city_franchise_season_overrides.csv for cities that
+    changed hands (Manatí: Atenienses 2015-16, Osos 2023+). With `season`
+    omitted, non-year, or outside every override range, the answer is the
+    map's, unchanged. The San Juan / Rio Piedras ambiguity is not handled here;
+    it does not arise for the 2001-2013 game seasons."""
     city = {}
     for r in _read("city_franchise_map.csv"):
         city[_norm(r["normalized_city"])] = r["franchise_id"]
+    overrides = load_overrides(CLEAN / OVERRIDES_FILE, _norm)
 
-    def resolve(team_raw: str) -> str | None:
-        return city.get(_norm(team_raw))
+    def resolve(team_raw: str, season: int | str | None = None) -> str | None:
+        key = _norm(team_raw)
+        return override_for(overrides, key, season) or city.get(key)
     return resolve
 
 
@@ -503,7 +512,7 @@ def build_mvp() -> Path:
             "player": _titlecase(r["player_raw"]),
             "player_raw": r["player_raw"],
             "bsnpr_id": _int(idmap.get((_norm(r["player_raw"]), r["season"]))),
-            "franchise_id": resolve_team(r["team_raw"]),
+            "franchise_id": resolve_team(r["team_raw"], yr),
             "team_raw": _titlecase(r["team_raw"]),
             "also": _titlecase(r["player_raw"]) if disagree else None,
         })
@@ -614,7 +623,7 @@ def build_career_rows_by_pid() -> dict[str, list[dict]]:
     for pid in pids:
         career_rows = [
             {"season": _int(r["season"]), "team_raw": r["team_raw"],
-             "franchise_id": resolve_team(r["team_raw"].split(",")[-1]),
+             "franchise_id": resolve_team(r["team_raw"].split(",")[-1], _int(r["season"])),
              "games": _int(r["games"]), "points": _int(r["points"])}
             for r in career.get(pid, [])
         ]
@@ -629,7 +638,7 @@ def build_career_rows_by_pid() -> dict[str, list[dict]]:
                 city = _DE_SPLIT.split(s["team_raw"], maxsplit=1)[-1]
                 career_rows.append({
                     "season": season, "team_raw": s["team_raw"],
-                    "franchise_id": resolve_team(city),
+                    "franchise_id": resolve_team(city, season),
                     "games": s["games"], "points": s["points"],
                     "stats": s["fields"],
                 })
@@ -774,7 +783,7 @@ def _standings_from_games(resolve_team) -> dict[str, list]:
         rows = []
         for d in teams.values():
             rows.append({"team_raw": d["team_raw"].title(),
-                         "franchise_id": resolve_team(d["team_raw"]),
+                         "franchise_id": resolve_team(d["team_raw"], s),
                          "w": d["w"], "l": d["l"]})
         rows.sort(key=lambda x: (-(x["w"] / max(x["w"] + x["l"], 1)), -x["w"], x["team_raw"]))
         out[s] = rows
@@ -956,7 +965,7 @@ def build_starting_fives(fid_to_app: dict[str, str]) -> int:
             continue
         ranked = sorted(freq, key=lambda k: -freq[k])[:5]
         resolved = sum(1 for k in ranked if not k.startswith("raw:") and position.get(k))
-        fid = resolve_team(team_raw)
+        fid = resolve_team(team_raw, season)
         app_key = fid_to_app.get(fid) if fid else None
         if not app_key:
             # e.g. "CAYEY" (2002) — Toritos de Cayey's later-franchise identity
@@ -1014,9 +1023,9 @@ def build_games() -> tuple[int, int]:
             "date": date, "script": res.get("script") or None,
             "teams": {
                 "a": {"team_raw": res.get("team_a_raw") or None,
-                      "franchise_id": resolve_team(res.get("team_a_raw", ""))},
+                      "franchise_id": resolve_team(res.get("team_a_raw", ""), season)},
                 "b": {"team_raw": res.get("team_b_raw") or None,
-                      "franchise_id": resolve_team(res.get("team_b_raw", ""))},
+                      "franchise_id": resolve_team(res.get("team_b_raw", ""), season)},
             },
             "score": {"a": _int(res.get("score_a")), "b": _int(res.get("score_b"))},
             "quarters": ({"a": _quarters(res.get("quarters_a")),
@@ -1126,7 +1135,7 @@ def main() -> int:
         "player_season_leaders.csv", "player_season_leaders_2000_2002.csv",
         "player_season_stats_2001_2004.csv",
         "seasons_stats_tracked.csv", "leader_coverage_gaps.csv",
-        "city_franchise_map.csv", "game_results.csv", "game_box_player.csv",
+        "city_franchise_map.csv", OVERRIDES_FILE, "game_results.csv", "game_box_player.csv",
         "bsn_career_leaders.csv", "bsn_records.csv",
         "franchise_key_map.csv", "franchise_curated.json", "player_crosswalk.csv",
     ]

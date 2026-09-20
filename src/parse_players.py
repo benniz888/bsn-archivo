@@ -58,6 +58,7 @@ from bs4 import BeautifulSoup
 from src.wayback_cdx import REPO_ROOT
 from src.parse_wayback import decode_html, squish, to_int
 from src.parse_pre2007 import _write_csv  # noqa: F401 - re-exported helper
+from src.city_season_overrides import OVERRIDES_FILE, load_overrides, override_for
 
 RAW_DIR = REPO_ROOT / "data" / "raw" / "players"
 CLEAN_DIR = REPO_ROOT / "data" / "clean"
@@ -922,6 +923,11 @@ def _load_club_resolver():
     city_map: dict[str, str] = {}
     for r in _rows("city_franchise_map.csv"):
         city_map[normalize(r["normalized_city"])] = r["franchise_id"]
+    # Same era-scoped overrides build_web_data._team_resolver reads, so the two
+    # resolvers cannot disagree about a city that changed hands (Manatí). Absent
+    # file = no overrides, matching how _rows() treats every other optional file.
+    overrides_fp = CLEAN_DIR / OVERRIDES_FILE
+    overrides = load_overrides(overrides_fp, normalize) if overrides_fp.exists() else {}
     nick_map: dict[str, str] = {}
     nick_ambiguous: set[str] = set()
 
@@ -949,7 +955,7 @@ def _load_club_resolver():
     # stays unresolved (advisory no_obs_club) rather than a spurious contradiction.
     nick_ambiguous.add(normalize("Grises"))
 
-    def resolve_club(raw: str) -> str:
+    def resolve_club(raw: str, season: int | str | None = None) -> str:
         if not raw:
             return ""
         s = squish(raw)
@@ -958,7 +964,7 @@ def _load_club_resolver():
         parts = _DE_SPLIT.split(s, maxsplit=1)
         nick = normalize(parts[0]) if parts else ""
         city = normalize(parts[1]) if len(parts) == 2 else ""
-        city_fid = city_map.get(city)
+        city_fid = override_for(overrides, city, season) or city_map.get(city)
         nick_fid = None if nick in nick_ambiguous else nick_map.get(nick)
         if city_fid and (not nick_fid or nick_fid == city_fid):
             return city_fid
@@ -967,7 +973,8 @@ def _load_club_resolver():
         if nick and city:
             return f"{nick}_{city}"          # synthetic — consistent both sides
         # bare single token: could be a city or an (unambiguous) nickname
-        return city_map.get(nick) or ("" if nick in nick_ambiguous else nick_map.get(nick, "")) or ""
+        return (override_for(overrides, nick, season) or city_map.get(nick)
+                or ("" if nick in nick_ambiguous else nick_map.get(nick, "")) or "")
 
     return resolve_club
 
@@ -1147,7 +1154,7 @@ def build_id_map(canon: list[dict], aliases: list[dict],
     club_by_pid_season: dict[str, dict[int, set[str]]] = {}
     club_by_pid: dict[str, set[str]] = {}
     for r in career:
-        fid = resolve_club(r["team_raw"])
+        fid = resolve_club(r["team_raw"], r["season"])
         if not fid:
             continue
         club_by_pid_season.setdefault(r["bsnpr_id"], {}).setdefault(r["season"], set()).add(fid)
@@ -1164,7 +1171,7 @@ def build_id_map(canon: list[dict], aliases: list[dict],
             cands = alias_idx.get(normalize(pr), set()) or key_idx.get(norm_key(pr), set())
         cands = set(cands)
         sy = int(season) if re.fullmatch(r"\d{4}", season) else None
-        obs_fid = resolve_club(o["club_raw"])
+        obs_fid = resolve_club(o["club_raw"], sy)
 
         # corroborate with career span / season-in-range
         def in_career(pid: str) -> bool:

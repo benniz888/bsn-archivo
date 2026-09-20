@@ -1,0 +1,3 @@
+city,season_start,season_end,franchise_id,evidence
+MANATI,2015,2016,atenienses_manati,"Atenienses de Manati is a defunct franchise distinct from osos_manati (franchises.csv). Observed in the archive for 2015 and 2016 only: standings.csv, plus 'Atenienses, Manati' rows in player_career_seasons.csv (wayback_bsnpr_players). Range is seasons observed, not founding/dissolution: 2014 and 2017 are UNVERIFIED (docs/specs/manati_audit_spec.md F5) and deliberately not covered."
+MANATI,2023,,osos_manati,"Brujos de Guayama relocated and became Osos de Manati from the 2023 season (franchise_events.csv relocated_renamed 2023, verified); champions_reconciled.csv has osos_manati as the 2024 runner-up. Open-ended: the franchise is active."
