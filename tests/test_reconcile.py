@@ -1,6 +1,51 @@
-"""Unit coverage for the pure helpers in src/reconcile.py."""
+"""Unit coverage for the pure helpers in src/reconcile.py, plus a drift guard
+tying the generator's output to the committed CSVs."""
 
-from src.reconcile import OWNER_RESOLUTIONS, ncity, resolve_city, resolve_seed_name
+import csv
+import shutil
+
+import pytest
+
+import src.reconcile as rc
+from src.reconcile import (FRANCHISE_EVENTS, FRANCHISES, OWNER_RESOLUTIONS, ncity,
+                           resolve_city, resolve_seed_name)
+from src.wayback_cdx import REPO_ROOT
+
+REPO_CLEAN = REPO_ROOT / "data" / "clean"
+_INPUTS = ("bsn_champions_by_season.csv", "champions_from_bsnpr.csv",
+           "historic_scoring_champions.csv", "bsn_scoring_champions.csv",
+           "player_season_leaders.csv")
+_OUTPUTS = ("franchises.csv", "franchise_events.csv", "city_franchise_map.csv",
+            "club_code_map.csv", "champions_reconciled.csv",
+            "scoring_champions_reconciled.csv", "reconcile_conflicts.csv")
+
+
+def _rows(path):
+    with path.open(encoding="utf-8", newline="") as fh:
+        return list(csv.DictReader(fh))
+
+
+@pytest.fixture(scope="module")
+def regenerated(tmp_path_factory):
+    """One full reconcile run into a temp dir, never over data/clean."""
+    out = tmp_path_factory.mktemp("reconcile_out")
+    for name in _INPUTS:
+        shutil.copy(REPO_CLEAN / name, out / name)
+    with pytest.MonkeyPatch.context() as mp:
+        mp.setattr(rc, "CLEAN", out)
+        assert rc.main() == 0
+    return out
+
+
+class TestGeneratorMatchesCommittedCsvs:
+    """The committed CSVs are the source of truth (owner decision 2026-09-19:
+    commit 77a3aae edited them by hand, so the generator had drifted). If this
+    fails, either a CSV was hand-edited or reconcile.py changed without the
+    other. Compared as parsed rows so redundant CSV quoting is not drift."""
+
+    @pytest.mark.parametrize("name", _OUTPUTS)
+    def test_output_matches(self, regenerated, name):
+        assert _rows(regenerated / name) == _rows(REPO_CLEAN / name)
 
 
 class TestOwnerResolutions:
@@ -68,3 +113,29 @@ class TestResolveSeedName:
 
     def test_blank(self):
         assert resolve_seed_name("") == ""
+
+
+class TestHumacaoLineage:
+    """D-045: the 2005-19 Humacao chain and the 2021 Grises expansion are two
+    franchises. Pinned individually so a failure names the drifted fact."""
+
+    def test_humacao_city_is_caciques_with_no_dispute(self):
+        fid, disp, unmapped = resolve_city("HUMACAO", "2010")
+        assert fid == "caciques_humacao" and not disp and not unmapped
+
+    def test_caciques_is_a_named_franchise(self):
+        assert resolve_seed_name("Caciques de Humacao") == "caciques_humacao"
+        assert FRANCHISES["caciques_humacao"][2] == "2005"
+
+    def test_grises_is_the_2021_expansion(self):
+        _, _, founded, status = FRANCHISES["grises_humacao"]
+        assert founded == "2021" and "criollos_caguas" in status
+
+    def test_grises_to_criollos_dated_2024_not_2023(self):
+        renames = [e for e in FRANCHISE_EVENTS
+                   if e[2] == "grises_humacao" and e[3] == "criollos_caguas"]
+        assert [(e[1], e[4]) for e in renames] == [("2024", "verified")]
+
+    def test_toritos_to_caciques_2005_event(self):
+        assert any(e[:4] == ("relocated_renamed", "2005", "toritos_cayey", "caciques_humacao")
+                   for e in FRANCHISE_EVENTS)

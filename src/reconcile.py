@@ -70,7 +70,11 @@ FRANCHISES: dict[str, tuple[str, str, str, str]] = {
     "cariduros_fajardo": ("Cariduros de Fajardo", "Fajardo", "1973", "defunct 2023"),
     "conquistadores_aguada": ("Conquistadores de Aguada", "Aguada", "1994", "defunct 1998"),
     "gallitos_isabela": ("Gallitos de Isabela", "Isabela", "1969", "defunct 2005"),
-    "grises_humacao": ("Grises de Humacao", "Humacao", "2005", "defunct 2023"),
+    # Two distinct Humacao franchises (D-045): the 2005-19 chain is
+    # caciques_humacao (Toritos de Cayey -> Grises -> Caciques); grises_humacao
+    # is the separate 2021 expansion that became Criollos de Caguas in 2024.
+    "grises_humacao": ("Grises de Humacao", "Humacao", "2021", "renamed 2024 -> criollos_caguas"),
+    "caciques_humacao": ("Caciques de Humacao", "Humacao", "2005", "relocated ~2019 (Isabela then Guayama)"),
     "indios_canovanas": ("Indios de Canovanas", "Canovanas", "1980", "defunct 1996"),
     "maratonistas_coamo": ("Maratonistas de Coamo", "Coamo", "1985", "defunct 2015"),
     "polluelos_aibonito": ("Polluelos de Aibonito", "Aibonito", "1977", "defunct 2001"),
@@ -88,7 +92,20 @@ FRANCHISES: dict[str, tuple[str, str, str, str]] = {
     "vega_baja": ("Vega Baja", "Vega Baja", "1934", "defunct ~1940"),
 }
 
-# D2 lineage — (event_type, season, from_id, to_id, confidence, note)
+# Hand-curated `source` cells for franchises whose lineage was settled by the
+# owner (2026-09-09, commit 77a3aae edited the CSVs directly). Any franchise not
+# listed here gets the derived label in write_franchise_layer().
+FRANCHISE_SOURCES: dict[str, str] = {
+    "grises_humacao": "owner 2026-09-09 + wikipedia:Grises_de_Humacao "
+                      "(2021 expansion, distinct from the 2005-19 Grises/Caciques)",
+    "caciques_humacao": "owner 2026-09-09 + wikipedia:Caciques_de_Humacao (Toritos de Cayey "
+                        "-> Grises de Humacao 2005 -> Caciques 2010 -> relocated; one franchise)",
+}
+
+# D2 lineage — (event_type, season, from_id, to_id, confidence, note[, source]).
+# The optional 7th element is a per-event source; without it the event is
+# credited to _DEFAULT_EVENT_SOURCE.
+_DEFAULT_EVENT_SOURCE = "docs/project.md D2/D5"
 FRANCHISE_EVENTS: list[tuple] = [
     ("relocated_renamed", "2023", "brujos_guayama", "osos_manati", "verified",
      "D2 + es.wikipedia (Brujos de Guayama): after a poor 2022 season the "
@@ -96,12 +113,18 @@ FRANCHISE_EVENTS: list[tuple] = [
      "playing as Osos de Manati from the 2023 season. One continuous franchise "
      "(Guayama, 1971 -> Manati, 2023). The seed's 'Osos founded 2014' conflated "
      "it with the UNRELATED Atenienses de Manati (2014-2017, defunct)."),
-    ("renamed", "2023", "grises_humacao", "criollos_caguas", "single-source",
-     "D2 asserts Grises de Humacao -> Criollos de Caguas (2023). NOT corroborated "
-     "by Wikipedia: en.wiki 'Criollos de Caguas (basketball)' says only 'refounded "
-     "in 2023' with no Grises mention; es.wiki's Grises article is stale (to 2018) "
-     "and describes a different, older franchise chain. Kept as D2's claim, "
-     "unverified — owner review."),
+    ("relocated_renamed", "2005", "toritos_cayey", "caciques_humacao", "verified",
+     "Toritos de Cayey (2002-04) relocated to Humacao as Grises de Humacao (2005), "
+     "renamed Caciques de Humacao (2010). ONE continuous franchise; later relocated "
+     "away from Humacao (Isabela, then Guayama, ~2019). This is the 2005-19 Humacao "
+     "franchise — NOT the same as the 2021 'Grises de Humacao' expansion below.",
+     "wikipedia:Caciques_de_Humacao + owner 2026-09-09"),
+    ("renamed", "2024", "grises_humacao", "criollos_caguas", "verified",
+     "The 'Grises de Humacao' that became Criollos de Caguas is a NEW 2021 expansion "
+     "franchise (Wikipedia: explicitly 'a new franchise', not a continuation). Played "
+     "2021-2023, became Criollos de Caguas from 2024. DISTINCT from caciques_humacao "
+     "(the 2005-19 Grises/Caciques). Supersedes the earlier single-source 2023 claim.",
+     "wikipedia:Grises_de_Humacao + wikipedia:Criollos_de_Caguas + owner 2026-09-09"),
     ("merged", "1998", "capitalinos_san_juan", "cangrejeros_santurce", "single-source",
      "D2: Tiburones de Aguadilla + Capitalinos de San Juan -> Cangrejeros (1998)."),
     ("merged", "1998", "tiburones_aguadilla", "cangrejeros_santurce", "single-source",
@@ -149,8 +172,20 @@ CITY_MAP: dict[str, tuple[str, dict[str, str]]] = {
         # 1936 handled by OWNER_RESOLUTIONS (Club Nautico de San Juan).
         "1945": "D5: EN-wiki=Capitalinos, ES-wiki=Santos de San Juan; bsnpr city only",
     }),
-    "HUMACAO": ("grises_humacao", {"*": "Humacao also had Caciques (~2012) — verify per season"}),
+    "HUMACAO": ("caciques_humacao", {}),
     "MANATI": ("osos_manati", {"*": "Manati: Atenienses 2014-17 then Osos 2022+ — verify per season"}),
+}
+
+# Owner-curated `season_flags` prose that does not fit the "season: note" pairs
+# CITY_MAP's exceptions render. Written verbatim in place of them. HUMACAO is
+# not an exception in resolve_city(): every archived Humacao season is the
+# caciques_humacao chain, so it carries a note but no dispute.
+CITY_MAP_FLAG_TEXT: dict[str, str] = {
+    "HUMACAO": "2005-2019 = Toritos de Cayey -> Grises de Humacao (2005) -> Caciques de "
+               "Humacao (2010), one franchise (wikipedia:Caciques_de_Humacao). The "
+               "2021-2023 'Grises de Humacao' is a SEPARATE 2021 expansion (grises_humacao "
+               "-> criollos_caguas 2024) that never appears in the archived game window "
+               "(2001-2013).",
 }
 
 # lideres200x 5-char codes + equiposstat 2-letter `t=` codes -> franchise_id
@@ -236,15 +271,16 @@ def write_franchise_layer() -> None:
     _write_csv(CLEAN / "franchises.csv", [
         {"franchise_id": k, "canonical_name": v[0], "city": v[1],
          "founded": v[2], "status": v[3],
-         "source": "seed:bsn_franchises.csv" if k in NAME_TO_ID and v[3] != "active"
-                   or k in NAME_TO_ID else "derived:champion/scoring rows"}
+         "source": FRANCHISE_SOURCES.get(k) or (
+             "seed:bsn_franchises.csv" if k in NAME_TO_ID and v[3] != "active"
+             or k in NAME_TO_ID else "derived:champion/scoring rows")}
         for k, v in FRANCHISES.items()
     ], ["franchise_id", "canonical_name", "city", "founded", "status", "source"])
 
     _write_csv(CLEAN / "franchise_events.csv", [
         {"event_type": e[0], "season": e[1], "from_franchise_id": e[2],
          "to_franchise_id": e[3], "confidence": e[4], "note": e[5],
-         "source": "docs/project.md D2/D5"}
+         "source": e[6] if len(e) > 6 else _DEFAULT_EVENT_SOURCE}
         for e in FRANCHISE_EVENTS
     ], ["event_type", "season", "from_franchise_id", "to_franchise_id",
         "confidence", "note", "source"])
@@ -252,7 +288,8 @@ def write_franchise_layer() -> None:
     rows = []
     for city, (fid, exc) in sorted(CITY_MAP.items()):
         rows.append({"normalized_city": city, "franchise_id": fid,
-                     "season_flags": " | ".join(f"{k}: {v}" for k, v in exc.items())})
+                     "season_flags": CITY_MAP_FLAG_TEXT.get(city)
+                     or " | ".join(f"{k}: {v}" for k, v in exc.items())})
     _write_csv(CLEAN / "city_franchise_map.csv", rows,
                ["normalized_city", "franchise_id", "season_flags"])
 
