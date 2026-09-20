@@ -383,6 +383,145 @@ def _pdate(s: str):
         return None
 
 
+# --------------------------------------------------------------------------- #
+# cross-source career dedup (docs/specs/merge_jug05_audit_spec.md, D1-D6)       #
+# --------------------------------------------------------------------------- #
+# jugador.asp writes a team as "Nick, City" and jug05.asp as a bare city, so one
+# real player-season arrived twice under two spellings. The key is the city,
+# which both spellings share; the stats decide whether it is one record.
+# `fold_cross_source_career` is the ONE place that decision is made. merge_jug05
+# calls it, and src/apply_career_dedup.py applies it to the committed
+# player_career_seasons.csv, which cannot simply be regenerated because the
+# identity outputs carry hand edits (docs/session.md).
+# jug05_retrieved_at is the fetch time of the jug05 row (the removed row in the merged log,
+# row b in the conflicts log); it is provenance that the wayback timestamp in the URL does
+# not carry. Blank when the row has none.
+CAREER_MERGED_COLUMNS = ["bsnpr_id", "season", "franchise_id", "games", "points",
+                         "players_source_url", "jug05_source_url", "jug05_team_raw",
+                         "jug05_retrieved_at"]
+CAREER_CONFLICT_COLUMNS = ["bsnpr_id", "season", "city_token",
+                           "team_raw_a", "source_id_a", "games_a", "points_a", "source_url_a",
+                           "team_raw_b", "source_id_b", "games_b", "points_b", "source_url_b",
+                           "jug05_retrieved_at"]
+
+
+def city_token(team_raw) -> str:
+    """The city half of a team string: "Criollos, Caguas" and "CAGUAS" both give "caguas"."""
+    return normalize(team_raw or "").split(",")[-1].strip()
+
+
+def _career_stats(row) -> tuple:
+    """(games, points) as ints or None, whether the row came from memory or a CSV.
+    None is kept apart from 0 (PC2): a blank stat never equals a recorded zero."""
+    return (to_int(row.get("games")), to_int(row.get("points")))
+
+
+def _load_site_franchise_resolver():
+    """(team_raw, season) -> the franchise_id the site shows for it: city_franchise_map.csv
+    plus the season overrides, keyed on the city half of the string; "" when the city map
+    lacks the city (Aguadilla, Cayey, Villalba, Cabo Rojo). Mirrors
+    build_web_data._team_resolver on purpose, so the merged-pairs log names franchises the
+    way the site does (and leaves the unresolved ones blank, never guessed)."""
+    with (CLEAN_DIR / "city_franchise_map.csv").open(encoding="utf-8") as fh:
+        city = {normalize(r["normalized_city"]): r["franchise_id"] for r in csv.DictReader(fh)}
+    overrides_fp = CLEAN_DIR / OVERRIDES_FILE
+    overrides = load_overrides(overrides_fp, normalize) if overrides_fp.exists() else {}
+
+    def resolve(team_raw, season) -> str:
+        key = normalize(str(team_raw).split(",")[-1])
+        return override_for(overrides, key, season) or city.get(key, "")
+    return resolve
+
+
+def _named_franchise(row, season, resolve_club) -> str:
+    """The franchise a row names, or "" when it names none. A bare city ("CAGUAS") says where,
+    not which team, so it is no evidence against a "Nick, City" row of the same city."""
+    team = row["team_raw"]
+    return resolve_club(team, season) if "," in team else ""
+
+
+def fold_cross_source_career(career: list[dict], resolve_club=None, site_franchise=None):
+    """Fold jug05 career rows into the players row they duplicate.
+
+    Key: (bsnpr_id, season, city token). Only a jug05 row is ever folded, only into a row
+    from another source, and only when games AND points are identical: the players row
+    survives. A pair whose stats differ stays as two rows and is reported as a conflict
+    (neither source is known to be right). Rows that name different franchises (two
+    "Nick, City" strings that resolve apart, e.g. Atenienses and Osos) are never folded,
+    and rows of one source are never folded into each other.
+
+    Pure: nothing is written and `career` is not mutated. Rows may hold ints (in memory)
+    or strings (read from the CSV). Returns (kept, merged, conflicts): kept is every row
+    except the folded ones, in input order; merged and conflicts are sorted log rows."""
+    resolve_club = resolve_club or _load_club_resolver()
+    site_franchise = site_franchise or _load_site_franchise_resolver()
+    groups: dict[tuple, list[int]] = defaultdict(list)
+    for i, r in enumerate(career):
+        groups[(str(r["bsnpr_id"]), int(r["season"]), city_token(r["team_raw"]))].append(i)
+
+    dropped: set[int] = set()
+    merged: list[dict] = []
+    conflicts: list[dict] = []
+    for key in sorted(groups, key=lambda k: (int(k[0]), k[1], k[2])):
+        idx = groups[key]
+        if len(idx) < 2:
+            continue
+        base = [i for i in idx if career[i]["source_id"] != JUG05_SOURCE_ID]
+        for j in (i for i in idx if career[i]["source_id"] == JUG05_SOURCE_ID):
+            row = career[j]
+            twins = []
+            for i in base:
+                fa = _named_franchise(career[i], key[1], resolve_club)
+                fb = _named_franchise(row, key[1], resolve_club)
+                if not (fa and fb and fa != fb):       # two named, different franchises: never fold
+                    twins.append(i)
+            if not twins:
+                continue
+            same = next((i for i in twins if _career_stats(career[i]) == _career_stats(row)), None)
+            if same is not None:
+                dropped.add(j)
+                games, points = _career_stats(career[same])
+                merged.append({
+                    "bsnpr_id": key[0], "season": key[1],
+                    "franchise_id": site_franchise(career[same]["team_raw"], key[1]),
+                    "games": games, "points": points,
+                    "players_source_url": career[same]["source_url"],
+                    "jug05_source_url": row["source_url"], "jug05_team_raw": row["team_raw"],
+                    "jug05_retrieved_at": row.get("retrieved_at") or ""})
+            else:
+                a, b = career[twins[0]], row
+                (ga, pa), (gb, pb) = _career_stats(a), _career_stats(b)
+                conflicts.append({
+                    "bsnpr_id": key[0], "season": key[1], "city_token": key[2],
+                    "team_raw_a": a["team_raw"], "source_id_a": a["source_id"],
+                    "games_a": ga, "points_a": pa, "source_url_a": a["source_url"],
+                    "team_raw_b": b["team_raw"], "source_id_b": b["source_id"],
+                    "games_b": gb, "points_b": pb, "source_url_b": b["source_url"],
+                    "jug05_retrieved_at": b.get("retrieved_at") or ""})
+    return [r for i, r in enumerate(career) if i not in dropped], merged, conflicts
+
+
+def write_career_logs(merged: list[dict], conflicts: list[dict], interim_dir=None) -> None:
+    """Write data/interim/jug05_career_merged.csv and jug05_career_conflicts.csv.
+    Conflicts are recomputed from the rows that remain, so that file is overwritten.
+    Merged pairs are history (the jug05 row is gone from the CSV once merged), so new pairs
+    are ADDED to those already logged: a second run must not empty the log."""
+    out = interim_dir or INTERIM_DIR
+    path = out / "jug05_career_merged.csv"
+    logged: dict[tuple, dict] = {}
+    if path.exists():
+        with path.open(encoding="utf-8", newline="") as fh:
+            for r in csv.DictReader(fh):
+                logged[(r["bsnpr_id"], r["season"], r["jug05_team_raw"], r["jug05_source_url"])] = r
+    for r in merged:
+        logged[(str(r["bsnpr_id"]), str(r["season"]), r["jug05_team_raw"], r["jug05_source_url"])] = r
+    _write_csv(path, sorted(logged.values(), key=lambda r: (
+        int(r["bsnpr_id"]), int(r["season"]), r["jug05_team_raw"], r["jug05_source_url"])),
+        CAREER_MERGED_COLUMNS)
+    _write_csv(out / "jug05_career_conflicts.csv", sorted(conflicts, key=lambda r: (
+        int(r["bsnpr_id"]), int(r["season"]), r["team_raw_b"])), CAREER_CONFLICT_COLUMNS)
+
+
 def merge_jug05(canon: list[dict], career: list[dict],
                 jug05: list[dict]) -> dict:
     """Fold jug05 players into the spine. Three tiers:
@@ -405,6 +544,9 @@ def merge_jug05(canon: list[dict], career: list[dict],
         fam = normalize(c["apellidos"]).split()
         if fam:
             byfam[fam[0]].append(c)
+    # Exact repeats only: the same jug05 row offered twice (two jug05 pages mapped to one id)
+    # is skipped in _union_career. A jug05 row that differs in spelling from a players row is
+    # decided at the end by fold_cross_source_career (city token + stats), not by this key.
     have = {(r["bsnpr_id"], int(r["season"]), normalize(r["team_raw"])) for r in career}
 
     # tier 0 — hand-curated resolution of the name+birth-year collisions
@@ -530,11 +672,16 @@ def merge_jug05(canon: list[dict], career: list[dict],
         })
         added += _union_career(pid, j)
 
+    kept, merged, conflicts = fold_cross_source_career(career)
+    career[:] = kept                      # in place, like every other mutation in this function
+    added -= len(merged)
     print(f"[jug05] {len(jug05)} players -> {enriched} enriched ({xw_hits} via xwalk), "
           f"{minted} minted (id {JUG05_ID_BASE+1}..{JUG05_ID_BASE+minted}), "
-          f"{len(review)} to review; {added} new career-season rows")
+          f"{len(review)} to review; {added} new career-season rows; "
+          f"{len(merged)} duplicate rows merged, {len(conflicts)} stat conflicts kept as two rows")
     return {"enriched": enriched, "minted": minted, "review": len(review),
-            "career_rows": added, "review_list": review}
+            "career_rows": added, "review_list": review,
+            "merged": merged, "conflicts": conflicts}
 
 
 # --------------------------------------------------------------------------- #
@@ -1311,8 +1458,11 @@ def main() -> int:
     canon = build_canonical(enc, prof)
     dob_settled = apply_dob_overrides(canon)   # curated birth-date fixes, jug05/jugador05-corroborated
     jug05_review: list[dict] = []
+    jug05_merged: list[dict] = []
+    jug05_conflicts: list[dict] = []
     if (RAW_DIR / "jug05").exists():
-        jug05_review = merge_jug05(canon, career, parse_jug05())["review_list"]
+        j05 = merge_jug05(canon, career, parse_jug05())
+        jug05_review, jug05_merged, jug05_conflicts = j05["review_list"], j05["merged"], j05["conflicts"]
     j05b_review: list[dict] = []
     j05b_bios: list[dict] = []
     j05b_dob: list[dict] = []
@@ -1349,6 +1499,7 @@ def main() -> int:
     _write_csv(INTERIM_DIR / "jug05_review.csv",
                sorted(jug05_review, key=lambda r: r["name"]),
                ["name", "birth_date", "position", "seasons", "collides_with"])
+    write_career_logs(jug05_merged, jug05_conflicts)
     _write_csv(CLEAN_DIR / "player_bios.csv",
                sorted(j05b_bios, key=lambda r: int(r["bsnpr_id"])),
                ["bsnpr_id", "notes_es", "birthplace", "roster_team", "roster_year",
