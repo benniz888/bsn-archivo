@@ -5372,3 +5372,117 @@ hand-maintained CSV), not code; only rows the archive supports (no 2014/2017).
    old and new resolver's output on 1,354 real (club string, season) pairs (0
    differences), so its identity outputs should be unchanged; that is an
    equivalence proof, not a pipeline run.
+
+═══════════════════════════════════════════════════════════════════════
+**PHASE_5A_SESSION_LOG (2026-09-20) — PUSH, DEPLOY, LIVE VERIFICATION.**
+Append-only. Where this block and the PHASES 1-4 block (`:5127`) disagree,
+this block wins for current state. Superseded, left in place as history:
+- `:5143`, `:5196`, `:5220` — "LOCAL and UNPUSHED" / "local, unpushed". All
+  three commits are now pushed (below).
+- `:5149` — "staged and uncommitted, pending P4". That docs update was
+  committed as `b8d24d2` and pushed.
+- `:5165` (finding status "as of `9a458b8`") and `:5317` (NEXT_ACTIONS) — see
+  the updated status and reordered next actions below.
+- Known stale, NOT edited this phase (scope was `docs/session.md` only):
+  `docs/specs/manati_audit_spec.md:102` still says "Both fixing commits are
+  LOCAL and UNPUSHED". Fix in the next docs commit.
+═══════════════════════════════════════════════════════════════════════
+
+**Repo state (re-read from git, 2026-09-20, before this docs edit).**
+`HEAD` = `origin/main` = `b8d24d2` (full `b8d24d2342df3430154536916d49c8080ef0bc7a`),
+confirmed against the remote with `git ls-remote origin refs/heads/main`.
+Working tree clean. Nothing local is unpushed until this file's own update is
+committed.
+
+**Push.** `git push origin main`: `b0accd2..b8d24d2`, plain fast-forward, no
+force (reflog: `origin/main@{1}` = `b0accd2` -> `@{0}` = `b8d24d2`, "update by
+push"). Commits pushed: `4dd4198` (reconcile sync), `9a458b8` (season-aware
+resolver), `b8d24d2` (handoff docs).
+
+**Deploy.** Workflow `.github/workflows/pages.yml`, run **`35531815794`**,
+event push, head `b8d24d2`: conclusion **success**. `run_started_at`
+2026-09-20T19:17:26Z, `updated_at` 19:17:50Z = **24 s** of workflow time (this
+excludes CDN/browser propagation). The live manifest's `Last-Modified` read
+Sun, 20 Sep 2026 19:17:42 GMT. Run page:
+`https://github.com/benniz888/bsn-archivo/actions/runs/35531815794`.
+
+**Live verification (bsnarchivo.com; public GETs, all re-read this phase).**
+- Manifest `source_digest` starts `89debffbdafc9bed` (first 16 hex chars read;
+  the full digest is in `web/data/manifest.json` at `b8d24d2`).
+- Player **1995**: 24 career rows, 0 `osos_manati`; Atenienses de Manatí 2015
+  (42 games, 415 pts) and 2016 (34 games, 311 pts).
+- Player **37**: one Atenienses de Manatí row, 2016 (11 games, 139 pts); 0
+  `osos_manati`.
+- All **16** `web/` files changed in `b0accd2..b8d24d2`: live bytes identical
+  to the committed bytes (0 mismatches). `index.html` and
+  `data/index/franchises.json`: identical to the committed files and unchanged
+  in this push.
+- **Not checked**: a rendered page in a browser on the live domain (owner is
+  checking manually). The earlier Chromium + WebKit check (PHASE_3 block) ran
+  against a local copy of `web/` BEFORE the push, not against bsnarchivo.com.
+
+**Finding status (as of `b8d24d2`).**
+- **LIVE**: F1, F2, F3, F4, F9, F11. Precision: "live" here means pushed to
+  `origin/main`. Only F1 and F2 change what visitors see, and their data is
+  deployed and verified on the live domain above. F3, F4, F9 and F11 are
+  pipeline code and tests (`src/`, `tests/`), which sit outside the published
+  `web/` directory, so there is nothing to observe on the site for them.
+- **OPEN (unchanged)**: F5, F6, F7, F8, F10. Details in the list at `:5165`.
+
+**Deploy trigger — docs-only pushes do not deploy.** `pages.yml:9-14` runs on
+push to `main` only when the push touches `web/**` or
+`.github/workflows/pages.yml` (`:12-13`), or on manual `workflow_dispatch`
+(`:14`). Checked against history through the public API: the docs-only commits
+`b0accd2` and `3c80bb8` (each touches only `docs/session.md`) produced 0 Pages
+runs, while `95b84fd` (touches `web/`) produced 1. So pushing this file's own
+update will not redeploy the site. The workflow does not rebuild `web/data/`
+and runs no tests or `make verify`; it publishes `web/` as committed.
+
+**NEXT_ACTIONS (owner-gated; none started; reordered, supersedes `:5317`).**
+1. **PHASE_5 data fixes: F5, F6, F7, F8.** Each needs an owner-confirmed fact
+   first: F5 the first and last season Atenienses played (independent source,
+   e.g. es.wikipedia or the Federación); F7 the wording of the Brujos->Osos
+   dates and where brujos `end` is derived (also `docs/project.md` D2, Tier-2
+   owner touch); F8 the source for the 2024 runner-up (also D6); F6 whether to
+   log a `franchise_founded` conflict for the seed's Osos "founded 2014". Then:
+   change `reconcile.py` and the CSVs together (drift guard), rebuild
+   `web/data/`, and re-verify live the way this block did.
+2. **The `reconcile.py` quote line**: `data/clean/franchises.csv:21` differs
+   from a regenerated file by redundant quotes only (parsed rows equal, owner
+   accepted). Matters only if someone runs `make reconcile`, or if byte-zero is
+   wanted (a 1-line CSV edit; needs owner approval).
+3. **N1 — starting-five 404s** on team pages `ate`, `man`, `hum`, `vil`
+   (`app/bsn_archivo.html:4204`); owner call: skip the fetch when no file, or
+   emit empty files.
+4. **`merge_jug05()` career-dedup audit** (`:4991`); N3 is a second confirmed
+   instance (player 1995, 2002-2004).
+5. **`_team_resolver` caller notes** — interpreted as N4 plus the caller
+   inventory in the PHASE_3 block: `src/parse_latinbasket.py` `CITY_OVERRIDES`
+   (`:73`; MANATI at `:88`, `:91`) still duplicates the Manatí override in code
+   next to the overrides CSV, and 10 lines pass a season (list in the PHASE_3
+   block). Owner to correct if a different note was meant.
+6. **Identity-triage backlog** (`:5013-5020`): Tier-1 (57 exact-name groups, 6
+   confirmed leads from item 7) and Tier-2 (136 birth-date groups) canonical-file
+   triage; the repeat-name clusters (Ricardo Sanchez, Christian Dalmau, Falcon
+   Alexander, Alex Franklin, Alexander Galindo, Owens Perez) for a future
+   new-player-import pass. F10 (four `osos_manati` evidence strings in
+   `app/player_crosswalk.csv`) is identity-adjacent and stays OPEN with it.
+7. **Housekeeping**: correct `docs/specs/manati_audit_spec.md:102` in the next
+   docs commit.
+
+**Cold-start notes (deploy and live verification).**
+1. The site is `bsnarchivo.com`, a custom domain set in Pages settings (no
+   `CNAME` file in the repo); `benniz888.github.io/bsn-archivo` 301s to it.
+   The Pages source setting cannot be read without auth; "GitHub Actions" is
+   inferred from successful `deploy-pages` runs (UNVERIFIED as a setting).
+2. `gh` is not installed on this machine. Use the unauthenticated public API
+   (`/repos/benniz888/bsn-archivo/actions/workflows/pages.yml/runs?head_sha=<sha>`;
+   rate-limited) to read a run's conclusion and timing.
+3. Live check method that worked: wait for the run's conclusion, GET the data
+   files with a cache-busting `?v=<timestamp>` and `Cache-Control: no-cache`,
+   and compare live bytes with `git show <sha>:web/<path>` for every file the
+   push changed. The scripts lived in the session scratchpad (not in the repo).
+4. Rollback for the pushed range, dry-run verified in a scratch clone before
+   the push (clean apply; tree and `web/` identical to `b0accd2`):
+   `git revert --no-edit b0accd2..b8d24d2`, then a plain push. Site-only
+   alternative: `git revert 9a458b8`. NOT executed.
