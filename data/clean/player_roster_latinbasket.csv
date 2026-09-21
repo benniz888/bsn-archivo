@@ -3,11 +3,11 @@ bsnpr_id,season,franchise_id,jersey_number,height_cm,position_raw,name_raw,sourc
 37,2015,brujos_guayama,,194,G/F,Alejandro Carmona,latinbasket,http://basketball.latinbasket.com:80/team/Puerto-Rico/Brujos_de_Guayama/2634,20150421134809,single-source
 37,2018,piratas_quebradillas,12,194,G/F,Alejandro Carmona,latinbasket,https://basketball.latinbasket.com/team/Puerto-Rico/Piratas-de-Quebradillas/20147,20181012123815,single-source
 37,2019,piratas_quebradillas,12,194,G/F,Alejandro Carmona,latinbasket,https://basketball.latinbasket.com/team/Puerto-Rico/Piratas-de-Quebradillas/20147,20190721090530,single-source
-73,2010,leones_ponce,28,186,G,Cruz Alvin,latinbasket,http://basketball.latinbasket.com:80/team/Puerto-Rico/Leones_de_Ponce/1954?Year=2010,20140122015859,single-source
-73,2014,capitanes_arecibo,,186,PG,Alvin Cruz,latinbasket,http://basketball.latinbasket.com:80/team/Puerto-Rico/Capitanes_de_Arecibo/2187,20141015195216,single-source
-73,2016,capitanes_arecibo,28,186,PG,Alvin Cruz,latinbasket,http://basketball.latinbasket.com:80/team/Puerto-Rico/Capitanes-de-Arecibo/2187,20160709120133,single-source
-73,2017,capitanes_arecibo,28,186,PG,Cruz Alvin,latinbasket,http://basketball.latinbasket.com/team/Puerto-Rico/Capitanes-de-Arecibo/2187?Year=2016-2017,20170703152251,single-source
-73,2018,capitanes_arecibo,28,186,PG,Cruz Alvin,latinbasket,http://basketball.latinbasket.com/team/Puerto-Rico/Capitanes-de-Arecibo/2187?Page=1&Year=2017-2018,20171115170726,single-source
+74,2010,leones_ponce,28,186,G,Cruz Alvin,latinbasket,http://basketball.latinbasket.com:80/team/Puerto-Rico/Leones_de_Ponce/1954?Year=2010,20140122015859,single-source
+74,2014,capitanes_arecibo,,186,PG,Alvin Cruz,latinbasket,http://basketball.latinbasket.com:80/team/Puerto-Rico/Capitanes_de_Arecibo/2187,20141015195216,single-source
+74,2016,capitanes_arecibo,28,186,PG,Alvin Cruz,latinbasket,http://basketball.latinbasket.com:80/team/Puerto-Rico/Capitanes-de-Arecibo/2187,20160709120133,single-source
+74,2017,capitanes_arecibo,28,186,PG,Cruz Alvin,latinbasket,http://basketball.latinbasket.com/team/Puerto-Rico/Capitanes-de-Arecibo/2187?Year=2016-2017,20170703152251,single-source
+74,2018,capitanes_arecibo,28,186,PG,Cruz Alvin,latinbasket,http://basketball.latinbasket.com/team/Puerto-Rico/Capitanes-de-Arecibo/2187?Page=1&Year=2017-2018,20171115170726,single-source
 86,2014,indios_mayaguez,,191,G,Andres Ortiz,latinbasket,http://basketball.latinbasket.com:80/team/Puerto-Rico/Indios_de_Mayaguez/10936,20140918102201,single-source
 86,2015,indios_mayaguez,,191,G,Andres Ortiz,latinbasket,http://basketball.latinbasket.com:80/team/Puerto-Rico/Indios_de_Mayaguez/10936,20150516181941,single-source
 87,2010,capitanes_arecibo,05,182,G,Rodriguez Andres,latinbasket,http://basketball.latinbasket.com:80/team/Puerto-Rico/Capitanes_de_Arecibo/2187?Year=2010,20150110124312,single-source
@@ -104,7 +104,7 @@ bsnpr_id,season,franchise_id,jersey_number,height_cm,position_raw,name_raw,sourc
 870,2009,leones_ponce,20,201,F,Zayas Hector,latinbasket,http://basketball.latinbasket.com:80/team/Puerto-Rico/Leones_de_Ponce/1954?Year=2009,20140122015854,single-source
 870,2010,leones_ponce,20,196,F,Zayas Hector,latinbasket,http://basketball.latinbasket.com:80/team/Puerto-Rico/Leones_de_Ponce/1954?Year=2010,20140122015859,single-source
 870,2011,atleticos_san_german,16,196,F,Zayas Hector,latinbasket,http://basketball.latinbasket.com:80/team/Puerto-Rico/Atleticos-de-San-German/1957?Year=2011,20160401120859,single-source
-951,2013,leones_ponce,,208,C/F,Lopez Ivan,latinbasket,http://basketball.latinbasket.com:80/team/Puerto-Rico/Leones_de_Ponce/1954?Year=2013,20140122015914,single-source
+952,2013,leones_ponce,,208,C/F,Lopez Ivan,latinbasket,http://basketball.latinbasket.com:80/team/Puerto-Rico/Leones_de_Ponce/1954?Year=2013,20140122015914,single-source
 968,2016,caciques_humacao,15,201,F,Jack Michael Martinez,latinbasket,http://basketball.latinbasket.com:80/team/Puerto-Rico/Caciques-de-Humacao/1901?,20160813193526,single-source
 1019,2010,caciques_humacao,32,207,C,Morales Jean Carlos,latinbasket,http://basketball.latinbasket.com:80/team/Puerto-Rico/Caciques_de_Humacao/1901?Year=2010,20140504034152,single-source
 1025,2013,indios_mayaguez,,205,C,Jeffrion Aubry,latinbasket,http://basketball.latinbasket.com:80/team/Puerto-Rico/Indios_de_Mayaguez/10936,20131117123350,single-source

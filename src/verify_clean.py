@@ -315,6 +315,45 @@ def verify_players(c: Checker) -> None:
             f"{len(mapped_keys & review_keys)} overlap")
 
 
+def verify_identity_decisions(c: Checker) -> None:
+    """Curated identity decisions and tombstones (src/apply_identity_decisions.py). Skipped if absent."""
+    if not (_exists("player_identity_decisions.csv") and _exists("player_id_tombstones.csv")):
+        return
+    decisions, tombs = _read("player_identity_decisions.csv"), _read("player_id_tombstones.csv")
+    canon = {r["bsnpr_id"] for r in _read("players_canonical.csv")}
+    by_id = {d["decision_id"]: d for d in decisions}
+    retired = {t["retired_id"]: t["survivor_id"] for t in tombs}
+    c.check(len(by_id) == len(decisions), "identity decisions: decision_id unique")
+    c.check(all(d["kind"] in ("merge", "not_same") for d in decisions), "identity decisions: kind is merge or not_same")
+    c.check(all(d["evidence"].strip() and d["source_doc"].strip() and d["decided_by"].strip() and d["decided_at"].strip()
+                for d in decisions), "identity decisions: every row states evidence, source, who and when (PC3)")
+    c.check(len(retired) == len(tombs), "identity tombstones: retired_id unique")
+    c.check(not (set(retired) & canon), "identity tombstones: a retired id is never a canonical row (never reused)")
+    c.check(all(s in canon for s in retired.values()), "identity tombstones: every survivor is a canonical row")
+    c.check(not (set(retired) & set(retired.values())), "identity tombstones: no chains (a survivor is never retired)")
+    c.check(all(t["decision_id"] in by_id and by_id[t["decision_id"]]["kind"] == "merge"
+                and by_id[t["decision_id"]]["survivor_id"] == t["survivor_id"]
+                and t["retired_id"] in by_id[t["decision_id"]]["ids"].split(";") for t in tombs),
+            "identity tombstones: each cites a merge decision that retires it into its survivor")
+    c.check(all(t["retired_name"].strip() for t in tombs), "identity tombstones: retired_name present (redirects use it)")
+    for d in decisions:
+        if d["kind"] == "not_same":
+            a, b = d["ids"].split(";")[:2]
+            c.check(retired.get(a, a) != retired.get(b, b), f"identity decisions: {a} and {b} (not_same) are not merged")
+    # nothing may still point at a retired id
+    for name in ("players_canonical.csv", "player_aliases.csv", "player_id_map.csv", "player_bios.csv",
+                 "player_career_seasons.csv", "player_roster_latinbasket.csv", "game_box_player.csv"):
+        if _exists(name):
+            left = sum(1 for r in _read(name) if r["bsnpr_id"] in retired)
+            c.check(left == 0, f"identity tombstones: {name} has no row for a retired id", f"{left} rows")
+    for name, col in (("player_review_queue.csv", "candidate_ids"), ("jug05_career_merged.csv", "bsnpr_id")):
+        p = REPO_ROOT / "data" / "interim" / name
+        if p.exists():
+            with p.open(encoding="utf-8") as fh:
+                left = sum(1 for r in csv.DictReader(fh) if set(r[col].split("|")) & set(retired))
+            c.check(left == 0, f"identity tombstones: interim {name} names no retired id", f"{left} rows")
+
+
 def _read_interim(name: str) -> list[dict]:
     with (REPO_ROOT / "data" / "interim" / name).open(encoding="utf-8") as fh:
         return list(csv.DictReader(fh))
@@ -682,6 +721,7 @@ def main() -> int:
     verify_coverage_gaps(c)
     verify_pre2007(c)
     verify_players(c)
+    verify_identity_decisions(c)
     verify_reconcile(c)
     verify_standings(c)
     verify_player_roster_latinbasket(c)

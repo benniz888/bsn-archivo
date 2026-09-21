@@ -5995,3 +5995,60 @@ Supersedes the "still unpushed" wording at the end of the previous block.
 - **Status.** The route fix is live. Open: cluster merges (batch 1: A01, A02, A06), the 125 stat conflicts, J16b
   Cayey (41 rows), the 2 hybrid Humacao strings (25 rows), the data-quality view, F7, a redirect map for retired
   ids, and the mobile PTS column.
+
+**PHASE_MERGE_B1_APPLY (2026-09-21): identity merges 73 -> 74, 951 -> 952, 24 -> 35 applied. STAGED, NOT COMMITTED.**
+- **Decisions (owner, 2026-09-21; `data/clean/player_identity_decisions.csv`, 4 rows).** D-ID-001 merge 73 -> 74;
+  D-ID-002 merge 951 -> 952; D-ID-003 merge 24 -> 35; D-ID-004 not_same 35 and 273. Tombstones
+  (`player_id_tombstones.csv`, 3 rows): 73 -> 74, 951 -> 952, 24 -> 35. A retired id is never reused and stays
+  resolvable.
+- **Evidence for the merges.** Recorded in `docs/specs/cluster_evidence_batch1.md` (staged with this change). 73 and
+  951 were dropped by the league's own enciclopedia after 2008-03-07. 24 -> 35 was conditional on the jersey: 24 and
+  35 have the identical enciclopedia jersey in 76 of 76 captures (blank, then 11), and 35 wore 10 at Santurce (box
+  2001-03) and 11 at Fajardo (box 2008), so the difference follows the team change. The Santurce 2006 line of 24's
+  bio against 35's Guaynabo 2006 row stays UNVERIFIED.
+- **35 and 273 are different people (not_same).** They share 20 Santurce games in the box scores (2001: 8, 2002: 5,
+  2003: 7), jerseys 10 and 7, minutes 1-17 against 20-38. 273 matches Carlos Alberto Arroyo Bermudez (DOB 7/30/1979,
+  Santurce No. 7), source en.wikipedia.org/wiki/Carlos_Arroyo, read from search results and not independently
+  fetched (project.md L2). The audit's Tier-2 rule over-linked A01 through the initial-compatibility test. Player
+  273's records are untouched.
+- **A17 (1947/1948): finding only, no decision and no action.** 1947's DOB, bio and its 2 roster rows were inherited
+  from 1948's person: the DOB came from an early enciclopedia listing and a jugador05 bio attached by exact name,
+  and the roster rows sit on the lower id by the tie-break rule. 1947's own profile has an unknown DOB and one 1963
+  row.
+- **What changed in the data.** Canonical 3,333 -> 3,330; aliases 24,208 -> 24,203 (13 re-pointed, retired canonical
+  names kept as `merged_name`, 5 duplicates dropped); career rows 5,802 -> 5,796; roster 744 and bios 152 (6 and 2
+  rows re-pointed). Merged pairs 665 -> 667, stat conflicts 125 -> 126 (79 -> 80 players), trade pairs 276
+  unchanged. `game_box_player`, `player_id_map` and the crosswalk had no row for a retired id.
+- **73 -> 74, row by row.** 73 had 6 career rows: 3 players rows (2000-02) were identical to 74's and dropped
+  (logged in `data/interim/player_merge_dropped_rows.csv`, with 951's one row, 4 in all); 2 jug05 rows (1998, 1999)
+  were folded into 74's identical players rows (2 new merged pairs); 1 jug05 row (2005, 24/211) was carried and
+  conflicts with 74's 11/134. CSV -5 for 73 and -1 for 951 = -6. In `index/players.json` 74's `career_seasons` goes
+  18 -> 20: +1 the carried 2005 row, +1 a roster-only 2018 row the web build makes from 73's re-pointed roster rows
+  (the other four attach to existing rows).
+- **Files.** `src/apply_identity_decisions.py` (idempotent, `--check`, same pattern as `apply_career_dedup`; a
+  second run changes nothing) transforms the committed CSVs and does not touch `parse_players` (N7 stays open). A
+  future regeneration would read the same two curated files and apply the same function to its in-memory tables; not
+  implemented. `build_latinbasket_roster_clean.promote()` takes an optional tombstones argument (default unchanged);
+  with the tombstones it reproduces the committed roster file. `verify_clean.py` gained the tombstone checks.
+- **Redirect design.** `build_web_data.py` writes `web/data/index/player_redirects.json` from the tombstones: `{ids:
+  {24: 35, 73: 74, 951: 952}, slugs: {arroyo-alberto, arroyo-alberto-24, cruz-alvin, cruz-alvin-73, lopez-ivan,
+  lopez-ivan-951}}` and counts it in the manifest (`player_redirects`: 3). A redirect key that a live player could
+  hold stops the build. The app loads the file in `hydrate()`, and the router tries the curated pool, then `PSLUG`,
+  then the redirects: it replaces the URL with `history.replaceState` (Back does not loop) and opens the survivor.
+  `openArchivePlayer` and `showPlayer` remap a retired id through `PREDIR.ids`. `buildPlayerSlugs` and the "Mismo
+  nombre" line are unaffected: none of the six ids was in a shared-slug group.
+- **Deploy.** `web/data`: 24, 73 and 951 deleted; 35, 74 and 952 rewritten; `index/players.json`, `manifest.json`
+  and the new `player_redirects.json` change; no games, seasons or other player file. The two curated files are now
+  digest inputs, so `source_digest` goes `1832f6cda8cf` -> `048e92ee36a9` and returning visitors purge their cached
+  data once (checked in both engines). `web/index.html` is the byte copy of the app.
+- **Verified locally, Chromium and WebKit.** cruz-alvin, lopez-ivan, arroyo-alberto and their -73, -951, -24 forms
+  (and /2001, /2002) open 74, 952 and 35 and the URL becomes the survivor's slug; Back lands on the previous page.
+  All 57 slug groups and 61 slug-id routes work and survive a reload; pool and compare routes, the MVP and scoring
+  click-throughs and player 1995 are unchanged; the pages for 35 and 273 differ; 0 console errors. `make verify`
+  346,462 checks, 0 failed; `make test` 374 passed. The service worker's own data-cache purge on a digest change was
+  not observed (UNVERIFIED).
+- **Found while checking (recorded, not fixed).** The enciclopedia parser reads the birth-date column only under the
+  header "Nació"; 75 of 77 captures write "Nacio", so only 2 blank canonical DOBs are affected (ids 130 and 556).
+  jugador05 bios are attached to canonical rows by exact name, which put the bios of 24, 951 and 1947 on stubs.
+  `player_roster_latinbasket.csv` is not in `SOURCES` (an existing gap: a roster-only change would not change the
+  digest).

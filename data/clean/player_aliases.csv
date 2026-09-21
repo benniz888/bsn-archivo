@@ -163,12 +163,11 @@ bsnpr_id,alias,normalized_alias,alias_type,source
 23,"maldonado davila, albert","maldonado davila, albert",normalized,derived
 23,"Maldonado Davila, Albert","maldonado davila, albert",paternal_surname,derived
 23,"Maldonado, Albert","maldonado, albert",paternal_surname,derived
-24,"Arroyo, Alberto","arroyo, alberto",canonical,derived
-24,"Arroyo, Alberto","arroyo, alberto",enciclopedia,bsnpr
-24,Alberto Arroyo,alberto arroyo,given_family_order,derived
-24,"Arroyo, A.","arroyo, a",initial,derived
-24,"arroyo, alberto","arroyo, alberto",normalized,derived
-24,"Arroyo, Alberto","arroyo, alberto",paternal_surname,derived
+35,"Arroyo, Alberto","arroyo, alberto",merged_name,derived
+35,"Arroyo, Alberto","arroyo, alberto",enciclopedia,bsnpr
+35,Alberto Arroyo,alberto arroyo,given_family_order,derived
+35,"arroyo, alberto","arroyo, alberto",normalized,derived
+35,"Arroyo, Alberto","arroyo, alberto",paternal_surname,derived
 25,"Aviles Bonilla, Alberto","aviles bonilla, alberto",canonical,derived
 25,"Aviles Bonilla, Alberto","aviles bonilla, alberto",enciclopedia,bsnpr
 25,Alberto Aviles Bonilla,alberto aviles bonilla,given_family_order,derived
@@ -533,12 +532,10 @@ bsnpr_id,alias,normalized_alias,alias_type,source
 72,"Boria, A.","boria, a",initial,derived
 72,"boria, alvin","boria, alvin",normalized,derived
 72,"Boria, Alvin","boria, alvin",paternal_surname,derived
-73,"Cruz, Alvin","cruz, alvin",canonical,derived
-73,"Cruz, Alvin","cruz, alvin",enciclopedia,bsnpr
-73,Alvin Cruz,alvin cruz,given_family_order,derived
-73,"Cruz, A.","cruz, a",initial,derived
-73,"cruz, alvin","cruz, alvin",normalized,derived
-73,"Cruz, Alvin","cruz, alvin",paternal_surname,derived
+74,"Cruz, Alvin","cruz, alvin",merged_name,derived
+74,"Cruz, Alvin","cruz, alvin",enciclopedia,bsnpr
+74,Alvin Cruz,alvin cruz,given_family_order,derived
+74,"cruz, alvin","cruz, alvin",normalized,derived
 74,"Cruz Torres, Alvin","cruz torres, alvin",canonical,derived
 74,"Cruz Torres, Alvin","cruz torres, alvin",enciclopedia,bsnpr
 74,Alvin Cruz Torres,alvin cruz torres,given_family_order,derived
@@ -7126,12 +7123,10 @@ bsnpr_id,alias,normalized_alias,alias_type,source
 950,"latimore aponte, ivan","latimore aponte, ivan",normalized,derived
 950,"Latimore Aponte, Ivan","latimore aponte, ivan",paternal_surname,derived
 950,"Latimore, Ivan","latimore, ivan",paternal_surname,derived
-951,"Lopez, Ivan","lopez, ivan",canonical,derived
-951,"Lopez, Ivan","lopez, ivan",enciclopedia,bsnpr
-951,Ivan Lopez,ivan lopez,given_family_order,derived
-951,"Lopez, I.","lopez, i",initial,derived
-951,"lopez, ivan","lopez, ivan",normalized,derived
-951,"Lopez, Ivan","lopez, ivan",paternal_surname,derived
+952,"Lopez, Ivan","lopez, ivan",merged_name,derived
+952,"Lopez, Ivan","lopez, ivan",enciclopedia,bsnpr
+952,Ivan Lopez,ivan lopez,given_family_order,derived
+952,"lopez, ivan","lopez, ivan",normalized,derived
 952,"Lopez Rodriguez, Ivan","lopez rodriguez, ivan",canonical,derived
 952,"Lopez Rodriguez, Ivan","lopez rodriguez, ivan",enciclopedia,bsnpr
 952,Ivan Lopez Rodriguez,ivan lopez rodriguez,given_family_order,derived

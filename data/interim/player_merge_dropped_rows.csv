@@ -1,0 +1,5 @@
+decision_id,retired_id,survivor_id,season,team_raw,games,points,source_id,source_url,retrieved_at,reason
+D-ID-001,73,74,2000,"Vaqueros, Bayamon",8,9,wayback_bsnpr_players,https://web.archive.org/web/20080406040813id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=73&e=10,2026-09-08T14:26:40Z,identical to a row the survivor already has
+D-ID-001,73,74,2001,"Vaqueros, Bayamon",11,60,wayback_bsnpr_players,https://web.archive.org/web/20080406040813id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=73&e=10,2026-09-08T14:26:40Z,identical to a row the survivor already has
+D-ID-001,73,74,2002,"Vaqueros, Bayamon",20,87,wayback_bsnpr_players,https://web.archive.org/web/20080406040813id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=73&e=10,2026-09-08T14:26:40Z,identical to a row the survivor already has
+D-ID-002,951,952,2002,"Indios, Mayaguez",2,3,wayback_bsnpr_players,https://web.archive.org/web/20070829041642id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=951&e=,2026-09-08T14:35:48Z,identical to a row the survivor already has

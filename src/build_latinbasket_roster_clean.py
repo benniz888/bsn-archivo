@@ -18,7 +18,9 @@ evidence, not the roster facts themselves.
 not resolved here). Each is written under the lower-numbered id,
 deterministically, disclosed here rather than silently picked — the real
 merge decision belongs to that future triage pass, not to this wiring
-step.
+step. Pairs the owner has since merged (data/clean/player_id_tombstones.csv)
+are written under their survivor: `build()` passes the tombstones to `promote`,
+whose default is no tombstones, i.e. the lower id as before.
 
 Run: `python -m src.build_latinbasket_roster_clean`
 """
@@ -57,12 +59,14 @@ def _load_raw_index() -> dict[tuple[str, str, str], dict]:
 
 
 def promote(match_rows_by_franchise: dict[str, list[dict]],
-            raw_idx: dict[tuple[str, str, str], dict]) -> list[dict]:
+            raw_idx: dict[tuple[str, str, str], dict],
+            tombstones: dict[str, str] | None = None) -> list[dict]:
     """Pure selection logic, no file I/O — the part worth unit-testing in
     isolation. `match_rows_by_franchise` is franchise_id -> that franchise's
     rows from `latinbasket_match_<fid>.csv`; `raw_idx` is the
     (franchise_id, season, name_raw) -> row index from
-    `latinbasket_roster_raw.csv` (see `_load_raw_index`)."""
+    `latinbasket_roster_raw.csv` (see `_load_raw_index`). `tombstones` maps a retired
+    id to its survivor; an id it names is written under the survivor."""
     out_rows: list[dict] = []
     duplicate_pair_rows = 0
     unmatched_to_raw = []
@@ -75,6 +79,8 @@ def promote(match_rows_by_franchise: dict[str, list[dict]],
             if len(candidate_ids) > 1:
                 duplicate_pair_rows += 1
             bsnpr_id = min(candidate_ids, key=int)
+            if tombstones:
+                bsnpr_id = tombstones.get(bsnpr_id, bsnpr_id)
 
             raw = raw_idx.get((fid, r["season"], r["name_raw"]))
             if raw is None:
@@ -127,7 +133,12 @@ def build() -> list[dict]:
         match_path = INTERIM_DIR / f"latinbasket_match_{fid}.csv"
         with match_path.open(encoding="utf-8") as fh:
             match_rows_by_franchise[fid] = list(csv.DictReader(fh))
-    return promote(match_rows_by_franchise, raw_idx)
+    tomb_path = CLEAN_DIR / "player_id_tombstones.csv"
+    tombstones = {}
+    if tomb_path.exists():
+        with tomb_path.open(encoding="utf-8") as fh:
+            tombstones = {r["retired_id"]: r["survivor_id"] for r in csv.DictReader(fh)}
+    return promote(match_rows_by_franchise, raw_idx, tombstones)
 
 
 def main() -> int:

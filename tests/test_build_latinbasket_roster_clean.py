@@ -79,6 +79,18 @@ class TestPromote:
         assert len(out) == 1
         assert out[0]["bsnpr_id"] == "73"
 
+    def test_a_tombstoned_pair_is_written_under_its_survivor(self):
+        """73 was merged into 74 (data/clean/player_id_tombstones.csv): the lower id no longer wins."""
+        match_rows = {"leones_ponce": [
+            _match_row("Cruz Alvin", "2010", "1_exact_birth_confirmed", "74;73", "confirmed_match"),
+            _match_row("Lopez Ivan", "2013", "1_exact_birth_confirmed", "951;952", "confirmed_match"),
+        ]}
+        raw_idx = {("leones_ponce", "2010", "Cruz Alvin"): _raw_row("leones_ponce", "2010", "Cruz Alvin"),
+                   ("leones_ponce", "2013", "Lopez Ivan"): _raw_row("leones_ponce", "2013", "Lopez Ivan")}
+        out = promote(match_rows, raw_idx, {"73": "74", "951": "952"})
+        assert [r["bsnpr_id"] for r in out] == ["74", "952"]
+        assert [r["bsnpr_id"] for r in promote(match_rows, raw_idx)] == ["73", "951"]     # default unchanged
+
     def test_missing_raw_row_is_fatal_not_silently_dropped(self):
         match_rows = {"vaqueros_bayamon": [
             _match_row("Ghost Player", "2016", "1_exact_birth_confirmed", "1", "confirmed_match"),

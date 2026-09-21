@@ -4224,9 +4224,11 @@ let PXWALK=null, FID2APP=null;
    on file:// — the toggle stays inert. */
 let PALL=null, XWALK_REV=null, PMODE='top';
 /* One URL per archive player. PSLUG: url slug -> PALL row; USLUG: id -> its url slug;
-   PTWINS: id -> the other players that share its name. Built by buildPlayerSlugs()
-   when PALL lands; null (and the old slug(name) URLs) on file://. */
-let PSLUG=null, USLUG=null, PTWINS=null;
+   PTWINS: id -> the other players that share its name; PBYID: id -> PALL row. Built by
+   buildPlayerSlugs() when PALL lands; null (and the old slug(name) URLs) on file://.
+   PREDIR: index/player_redirects.json, where a merged (retired) player id and its old URL go:
+   {ids:{retired:survivor}, slugs:{old slug:survivor}}. */
+let PSLUG=null, USLUG=null, PTWINS=null, PBYID=null, PREDIR=null;
 /* 5D.2b — MVP_ID: year -> bsnpr_id (archive-card click-through for gap-year
    MVPs not in PINDEX). MVP_ALSO: year -> the name the archive records where it
    disagrees with the baked row (footnote, app value stays canonical). */
@@ -4342,6 +4344,7 @@ function refreshPlayerIndexArchive(){
    Curated-pool slugs are unchanged and the router still tries them first. */
 function buildPlayerSlugs(){
   if(!PALL) return;
+  PBYID=new Map(PALL.map(p=>[p.id,p]));
   const by=new Map();
   PALL.forEach(p=>{ const s=slug(p.name); if(!by.has(s)) by.set(s,[]); by.get(s).push(p); });
   const rank=(a,b)=>(b.career_seasons||0)-(a.career_seasons||0)||(b.birth_year?1:0)-(a.birth_year?1:0)||a.id-b.id;
@@ -4354,6 +4357,13 @@ function buildPlayerSlugs(){
     if(list.length>1) list.forEach(p=>PTWINS.set(p.id,list.filter(q=>q!==p)));
   });
   rest.forEach(([s,p])=>{ let u=s+'-'+p.id; while(PSLUG.has(u)) u+='-'+p.id; PSLUG.set(u,p); USLUG.set(p.id,u); });
+}
+/* A retired player id (merged into a survivor) resolves to the survivor, and its name follows. */
+function survivorOf(id,name){
+  const to=PREDIR&&id!=null?PREDIR.ids[id]:null;
+  if(to==null) return [id,name];
+  const q=PBYID&&PBYID.get(to);
+  return [to,q?q.name:name];
 }
 /* The hash for a player card: curated (pool) names keep slug(name); an archive player gets
    its unique slug. Needs PINDEX built, so showPlayer() calls buildPlayerIndex() first. */
@@ -4417,6 +4427,7 @@ function renderArchiveIndex(q){
     note:list.length>ARCH_CAP?`Mostrando ${ARCH_CAP} de ${list.length.toLocaleString('es-PR')} — afiná la búsqueda.`:''});
 }
 function openArchivePlayer(id,name,season){
+  [id,name]=survivorOf(id,name);
   if(XWALK_REV && XWALK_REV[id]!=null){ showPlayer(XWALK_REV[id],null,season); return; }  /* is a curated player -> rich card */
   showPlayer(name,id,season);
 }
@@ -4438,6 +4449,7 @@ function renderArchiveCard(name,id,host){
   revealNode(host); host.scrollIntoView({block:'start',behavior:'smooth'});
 }
 function showPlayer(name,id,season){
+  [id,name]=survivorOf(id,name);
   showView('jugadores','buscar',{noScroll:true,noHash:true});   /* a player card lives in the Buscar view */
   buildPlayerIndex();   /* before the hash: playerSlug() needs the curated pool */
   setHash('jugadores/jugador/'+playerSlug(name,id)+(season!=null?'/'+season:''));
@@ -8130,7 +8142,18 @@ function applyHash(){
     const season = p[3] && /^\d{4}$/.test(p[3]) ? +p[3] : null;
     const pl=PINDEX&&PINDEX.find(x=>slug(x.name)===c);
     if(pl) showPlayer(pl.name,null,season);
-    else { const q=PSLUG&&PSLUG.get(c); if(q&&typeof openArchivePlayer==='function') openArchivePlayer(q.id,q.name,season); }
+    else {
+      const q=PSLUG&&PSLUG.get(c);
+      if(q&&typeof openArchivePlayer==='function') openArchivePlayer(q.id,q.name,season);
+      else {
+        /* a retired player's old URL: open the survivor and replace the URL (no Back trap) */
+        const to=PREDIR&&PREDIR.slugs[c], r=to!=null&&PBYID?PBYID.get(to):null;
+        if(r&&typeof openArchivePlayer==='function'){
+          history.replaceState(null,'','#jugadores/jugador/'+USLUG.get(r.id)+(season!=null?'/'+season:''));
+          openArchivePlayer(r.id,r.name,season);
+        }
+      }
+    }
     return;
   }
   if(a==='equipos' && b==='equipo' && c && F[c]){ showTeam(c); return; }
@@ -8206,6 +8229,8 @@ async function hydrate(){
   if(xw){ PXWALK=xw; XWALK_REV={}; for(const k in xw) XWALK_REV[xw[k]]=k; }
 
   /* 5D.3c — the whole 3.303-row archive index, for "Todo el archivo" search. */
+  const pr=await DATA.get('index/player_redirects.json');
+  if(pr) PREDIR=pr;
   const pa=await DATA.get('index/players.json');
   if(pa){ PALL=pa; buildPlayerSlugs(); if(typeof refreshPlayerIndexArchive==='function') refreshPlayerIndexArchive();
     if(typeof refreshCompareCandidates==='function') refreshCompareCandidates(); }

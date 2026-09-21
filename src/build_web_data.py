@@ -253,6 +253,36 @@ def build_players_index(career_rows_by_pid: dict[str, list[dict]]) -> Path:
     return WEB / "index" / "players.json"
 
 
+
+def _slug(s: str) -> str:
+    """Port of slug() in app/bsn_archivo.html, the player-route slug. tests/test_route_slugs.py pins the two together."""
+    s = unicodedata.normalize("NFD", str(s).lower())
+    s = re.sub(r"[\u0300-\u036f]", "", s)
+    s = re.sub(r"[«»\"'.]", "", s)
+    return re.sub(r"[^a-z0-9]+", "-", s).strip("-")
+
+
+def build_player_redirects() -> Path:
+    """web/data/index/player_redirects.json: where the site sends a retired player id or an old player URL.
+    Built from player_id_tombstones.csv. `ids` maps a retired id to its survivor; `slugs` maps the retired
+    player's old plain slug and its slug-id form to the survivor. A key that a live player could hold is an
+    error: the site tries live slugs first, so a clash would hide the redirect and mislead a reader."""
+    live: set[str] = set()
+    for r in _read("players_canonical.csv"):
+        s = _slug(r["canonical_name"])
+        live |= {s, f"{s}-{r['bsnpr_id']}"}
+    ids: dict[str, int] = {}
+    slugs: dict[str, int] = {}
+    for t in _read("player_id_tombstones.csv"):
+        ids[t["retired_id"]] = int(t["survivor_id"])
+        base = _slug(t["retired_name"])
+        for key in (base, f"{base}-{t['retired_id']}"):
+            if key in live:
+                sys.exit(f"! player_redirects: {key!r} (retired id {t['retired_id']}) is also a live player's slug")
+            slugs[key] = int(t["survivor_id"])
+    _jdump({"ids": ids, "slugs": slugs}, WEB / "index" / "player_redirects.json")
+    return WEB / "index" / "player_redirects.json"
+
 def _app_norm(s: str) -> str:
     """Match the app's `norm()` (bsn_archivo.html) exactly: lower, NFD, drop
     combining marks, strip « » " ' . — no internal-whitespace collapse."""
@@ -1138,6 +1168,7 @@ def main() -> int:
 
     # 5C — per-entity files
     n_pdetail, n_pthin = build_players_detail(career_rows_by_pid)
+    counts["player_redirects"] = len(json.loads(build_player_redirects().read_text(encoding="utf-8"))["ids"])
     season_counts = build_seasons_detail()
     n_games, n_gseasons = build_games()
     n_sf = build_starting_fives(fid_to_app)
@@ -1166,6 +1197,7 @@ def main() -> int:
         "city_franchise_map.csv", OVERRIDES_FILE, "game_results.csv", "game_box_player.csv",
         "bsn_career_leaders.csv", "bsn_records.csv",
         "franchise_key_map.csv", "franchise_curated.json", "player_crosswalk.csv",
+        "player_id_tombstones.csv", "player_identity_decisions.csv",
     ]
     assets = _scan_assets()
     manifest = {

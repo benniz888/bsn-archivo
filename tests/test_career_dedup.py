@@ -1,7 +1,8 @@
 """Cross-source career dedup (docs/specs/merge_jug05_audit_spec.md, D1-D6).
 
 Fixture tests pin the rule; TestCommittedData pins the numbers on the committed files
-(665 merged, 125 stat conflicts, 276 trade pairs, player 1995 one row per year).
+(667 merged, 126 stat conflicts, 276 trade pairs, player 1995 one row per year). 665 and 125 before the
+identity merges of 2026-09-21 (73 -> 74 folded two more jug05 rows and added one conflict).
 """
 
 import csv
@@ -271,14 +272,14 @@ class TestCommittedData:
 
     def test_665_pairs_were_merged_and_logged(self, committed):
         _, merged, _ = committed
-        assert len(merged) == 665
+        assert len(merged) == 667
         assert list(merged[0]) == CAREER_MERGED_COLUMNS
         assert sum(1 for r in merged if r["franchise_id"] == "") == 19    # Cayey, deferred (J16b)
         assert all(r["jug05_retrieved_at"] for r in merged)               # every dropped row keeps its fetch time
 
     def test_125_stat_conflicts_remain_as_two_rows_and_are_logged(self, committed):
         rows, _, conflicts = committed
-        assert len(conflicts) == 125 and list(conflicts[0]) == CAREER_CONFLICT_COLUMNS
+        assert len(conflicts) == 126 and list(conflicts[0]) == CAREER_CONFLICT_COLUMNS
         assert all((c["games_a"], c["points_a"]) != (c["games_b"], c["points_b"]) for c in conflicts)
         assert all(c["jug05_retrieved_at"] for c in conflicts)
         for c in conflicts:
@@ -289,7 +290,7 @@ class TestCommittedData:
     def test_folding_the_committed_csv_again_merges_nothing(self, committed):
         rows, _, conflicts = committed
         kept, merged, again = fold_cross_source_career(rows)
-        assert merged == [] and len(kept) == len(rows) and len(again) == len(conflicts) == 125
+        assert merged == [] and len(kept) == len(rows) and len(again) == len(conflicts) == 126
 
     def test_trade_pairs_stay_at_276(self, committed):
         rows = committed[0]
@@ -330,7 +331,7 @@ class TestLogWriter:
                     "source_url": m["jug05_source_url"], "retrieved_at": m["jug05_retrieved_at"]}
                    for m in merged]
         _, got_merged, got_conflicts = fold_cross_source_career(rows + dropped)
-        assert len(got_merged) == 665 and len(got_conflicts) == 125
+        assert len(got_merged) == 667 and len(got_conflicts) == 126
         pp.write_career_logs(got_merged, got_conflicts, interim_dir=tmp_path)
         with (tmp_path / "jug05_career_merged.csv").open(encoding="utf-8", newline="") as fh:
             reader = csv.DictReader(fh)
@@ -340,8 +341,8 @@ class TestLogWriter:
             reader = csv.DictReader(fh)
             assert reader.fieldnames == CAREER_CONFLICT_COLUMNS
             out_conflicts = list(reader)
-        assert len(out_merged) == 665 and sum(1 for r in out_merged if r["franchise_id"] == "") == 19
-        assert len(out_conflicts) == 125
+        assert len(out_merged) == 667 and sum(1 for r in out_merged if r["franchise_id"] == "") == 19
+        assert len(out_conflicts) == 126
         assert out_merged == merged and out_conflicts == conflicts       # the committed files, row for row
 
     def test_writing_twice_does_not_empty_the_merged_log(self, committed, tmp_path):

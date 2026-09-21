@@ -146,12 +146,7 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 57,1966,"Cangrejeros, Santurce",2,2,wayback_bsnpr_players,https://web.archive.org/web/20070828231504id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=57&e=,2026-09-08T14:26:36Z
 67,1984,"Cariduros, Fajardo",3,1,wayback_bsnpr_players,https://web.archive.org/web/20070828224339id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=67&e=,2026-09-08T14:26:38Z
 67,1989,"Cariduros, Fajardo",24,53,wayback_bsnpr_players,https://web.archive.org/web/20070828224339id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=67&e=,2026-09-08T14:26:38Z
-73,1998,BAYAMON,9,12,wayback_bsnpr_jug05,https://web.archive.org/web/20061119230826id_/http://www.bsnpr.com/jug05.asp?r2=NFGFOVGUNE&r3=EDWFK&r=00034&e=ARECIBO,2026-09-10T01:54:15Z
-73,1999,BAYAMON,10,15,wayback_bsnpr_jug05,https://web.archive.org/web/20061119230826id_/http://www.bsnpr.com/jug05.asp?r2=NFGFOVGUNE&r3=EDWFK&r=00034&e=ARECIBO,2026-09-10T01:54:15Z
-73,2000,"Vaqueros, Bayamon",8,9,wayback_bsnpr_players,https://web.archive.org/web/20080406040813id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=73&e=10,2026-09-08T14:26:40Z
-73,2001,"Vaqueros, Bayamon",11,60,wayback_bsnpr_players,https://web.archive.org/web/20080406040813id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=73&e=10,2026-09-08T14:26:40Z
-73,2002,"Vaqueros, Bayamon",20,87,wayback_bsnpr_players,https://web.archive.org/web/20080406040813id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=73&e=10,2026-09-08T14:26:40Z
-73,2005,BAYAMON,24,211,wayback_bsnpr_jug05,https://web.archive.org/web/20061119230826id_/http://www.bsnpr.com/jug05.asp?r2=NFGFOVGUNE&r3=EDWFK&r=00034&e=ARECIBO,2026-09-10T01:54:15Z
+74,2005,BAYAMON,24,211,wayback_bsnpr_jug05,https://web.archive.org/web/20061119230826id_/http://www.bsnpr.com/jug05.asp?r2=NFGFOVGUNE&r3=EDWFK&r=00034&e=ARECIBO,2026-09-10T01:54:15Z
 74,1998,"Vaqueros, Bayamon",9,12,wayback_bsnpr_players,https://web.archive.org/web/20170817055003id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=74&e=2,2026-09-08T14:26:42Z
 74,1999,"Vaqueros, Bayamon",10,15,wayback_bsnpr_players,https://web.archive.org/web/20170817055003id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=74&e=2,2026-09-08T14:26:42Z
 74,2000,"Vaqueros, Bayamon",8,9,wayback_bsnpr_players,https://web.archive.org/web/20170817055003id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=74&e=2,2026-09-08T14:26:42Z
@@ -2000,7 +1995,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 946,1996,"Polluelos, Aibonito",16,50,wayback_bsnpr_players,https://web.archive.org/web/20070829040525id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=946&e=,2026-09-08T14:35:46Z
 946,1997,"Santos, San Juan",26,98,wayback_bsnpr_players,https://web.archive.org/web/20070829040525id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=946&e=,2026-09-08T14:35:46Z
 946,1998,"Gallitos, Isabela",12,20,wayback_bsnpr_players,https://web.archive.org/web/20070829040525id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=946&e=,2026-09-08T14:35:46Z
-951,2002,"Indios, Mayaguez",2,3,wayback_bsnpr_players,https://web.archive.org/web/20070829041642id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=951&e=,2026-09-08T14:35:48Z
 952,2002,"Indios, Mayaguez",2,3,wayback_bsnpr_players,https://web.archive.org/web/20130428001411id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=952&e=,2026-09-08T14:35:50Z
 952,2005,BAYAMON,3,0,wayback_bsnpr_jug05,https://web.archive.org/web/20050927081426id_/http://www.bsnpr.com:80/jug05.asp?r2=462696RWZ9&r=00078&e=ISABELA,2026-09-10T01:52:03Z
 952,2005,"Gallitos, Isabela",22,123,wayback_bsnpr_players,https://web.archive.org/web/20130428001411id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=952&e=,2026-09-08T14:35:50Z

@@ -58,7 +58,7 @@ class TestUniqueUrls:
     def test_every_player_gets_its_own_url(self):
         players = load()
         by_url, by_id, _, _ = urls_for(players)
-        assert len(players) == 3333
+        assert len(players) == 3330
         assert len(by_url) == len(by_id) == len(players)
         assert all(by_url[by_id[p["id"]]] == p["id"] for p in players)
 
@@ -98,21 +98,60 @@ class TestUniqueUrls:
         assert players[402]["career_seasons"] == players[2738]["career_seasons"] == 0
 
 
+def _pool_slugs():
+    """Slugs of the curated names written in the app file. A subset of the runtime pool (it is assembled
+    at runtime), enough to catch a clash; the exact check (378 names) runs in the browser."""
+    text = APP.read_text(encoding="utf-8")
+    lit = r'"((?:[^"\\]|\\.)*)"'
+    names = set(re.findall(r'(?<![A-Za-z_])"?n"?\s*:\s*' + lit, text))
+    names |= set(re.findall(r"(?<![A-Za-z_])n\s*:\s*'((?:[^'\\]|\\.)*)'", text))
+    names |= set(re.findall(r"\[\s*\d+\s*,\s*" + lit, text))
+    return {slug(n) for n in names if slug(n)}
+
+
 class TestCuratedPool:
-    """Best effort: the pool is assembled at runtime, so this reads the names written in the app file
-    (a subset of it) and checks none of them takes an archive player's URL. The exact check (378 names)
-    runs in the browser."""
+    """Best effort: see _pool_slugs."""
 
     def test_no_pool_name_shares_a_slug_with_an_archive_player(self):
-        text = APP.read_text(encoding="utf-8")
-        lit = r'"((?:[^"\\]|\\.)*)"'
-        names = set(re.findall(r'(?<![A-Za-z_])"?n"?\s*:\s*' + lit, text))
-        names |= set(re.findall(r"(?<![A-Za-z_])n\s*:\s*'((?:[^'\\]|\\.)*)'", text))
-        names |= set(re.findall(r"\[\s*\d+\s*,\s*" + lit, text))
-        pool = {slug(n) for n in names if slug(n)}
+        pool = _pool_slugs()
         assert len(pool) > 300
         by_url, _, _, _ = urls_for(load())
         assert sorted(pool & set(by_url)) == []
+
+
+REDIRECTS = REPO_ROOT / "web" / "data" / "index" / "player_redirects.json"
+
+
+class TestRedirects:
+    """index/player_redirects.json: where a merged (retired) player id and its old URL go."""
+
+    def test_no_redirect_key_equals_a_live_slug(self):
+        red = json.loads(REDIRECTS.read_text(encoding="utf-8"))
+        by_url, _, _, _ = urls_for(load())
+        assert red["slugs"] and sorted(set(red["slugs"]) & set(by_url)) == []
+        assert sorted(set(red["slugs"]) & _pool_slugs()) == []
+
+    def test_every_redirect_lands_on_a_live_player(self):
+        red = json.loads(REDIRECTS.read_text(encoding="utf-8"))
+        live = {p["id"] for p in load()}
+        assert set(red["slugs"].values()) <= live and set(red["ids"].values()) <= live
+        assert not (set(map(int, red["ids"])) & live)          # a retired id is never a live one
+
+    def test_the_three_merges_redirect_their_old_urls(self):
+        red = json.loads(REDIRECTS.read_text(encoding="utf-8"))
+        assert red["ids"] == {"24": 35, "73": 74, "951": 952}
+        assert red["slugs"] == {"arroyo-alberto": 35, "arroyo-alberto-24": 35, "cruz-alvin": 74,
+                                "cruz-alvin-73": 74, "lopez-ivan": 952, "lopez-ivan-951": 952}
+
+    def test_the_build_slug_port_matches_the_app_slug(self):
+        from src import build_web_data as b
+        # expected values were produced by slug() in app/bsn_archivo.html (node)
+        for name, want in (("Peña, Carmelo", "pena-carmelo"), ("Arroyo Bermúdez, Carlos A.", "arroyo-bermudez-carlos-a"),
+                           ("O'Neal, Shaquille", "oneal-shaquille"), ("Juan «Pachín» Vicéns", "juan-pachin-vicens"),
+                           ("Bonilla, Carlos (1)", "bonilla-carlos-1"), ("A.D. Vassallo", "ad-vassallo"),
+                           ("Iván López-Ñ", "ivan-lopez-n")):
+            assert b._slug(name) == slug(name) == want
+        assert all(b._slug(p["name"]) == slug(p["name"]) for p in load())
 
 
 class TestAppMatchesThisRule:
@@ -122,3 +161,10 @@ class TestAppMatchesThisRule:
         assert "const q=PSLUG&&PSLUG.get(c);" in text
         assert "PSLUG.set(u,p); USLUG.set(p.id,u);" in text
         assert "buildPlayerSlugs(); if(typeof refreshPlayerIndexArchive" in text
+
+    def test_the_app_reads_the_redirects_after_the_archive_slugs(self):
+        text = APP.read_text(encoding="utf-8")
+        assert text.index("const q=PSLUG&&PSLUG.get(c);") < text.index("const to=PREDIR&&PREDIR.slugs[c]")
+        assert "history.replaceState(null,'','#jugadores/jugador/'+USLUG.get(r.id)" in text
+        assert text.count("[id,name]=survivorOf(id,name);") == 2          # openArchivePlayer and showPlayer
+        assert "const pr=await DATA.get('index/player_redirects.json');" in text
