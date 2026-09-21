@@ -116,7 +116,8 @@ class TestOnlyRecordedFactsAndSpanishText:
         assert [(d["id"], d["kind"], d["ids"], d["survivor_id"]) for d in dq["decisions"]] == [
             ("D-ID-001", "merge", [73, 74], 74), ("D-ID-002", "merge", [951, 952], 952),
             ("D-ID-003", "merge", [24, 35], 35), ("D-ID-004", "not_same", [35, 273], None)]
-        assert set(dq) == {"schema_version", "counts", "conflicts", "decisions", "dob_open", "season_totals", "relabeled"}   # no heuristic classes, no stub twins
+        assert set(dq) == {"schema_version", "counts", "conflicts", "decisions", "dob_open", "season_totals", "relabeled",
+                      "foreign_rows"}   # no heuristic classes, no stub twins
 
     def test_no_wikipedia_claim_or_url_and_never_the_word_error(self):
         text = DQ.read_text(encoding="utf-8")
@@ -171,7 +172,7 @@ class TestDigest:
     def test_the_five_logs_exist_and_are_listed(self):
         assert bwd.DQ_INTERIM_LOGS == ["jug05_career_conflicts.csv", "jug05_career_merged.csv", "player_merge_dropped_rows.csv",
                                        "jugador05_dob_conflicts.csv", "player_dob_overrides.csv",
-                                       "jug05_season_totals.csv", "jug05_relabeled_rows.csv"]
+                                       "jug05_season_totals.csv", "jug05_relabeled_rows.csv", "jug05_foreign_rows.csv"]
         assert all((REPO_ROOT / "data" / "interim" / n).exists() for n in bwd.DQ_INTERIM_LOGS)
 
 
@@ -252,4 +253,31 @@ class TestSeasonTotalsAndRelabelNotes:
         rows = _csv("interim", "jug05_relabeled_rows.csv")
         assert len(rows) == 145
         assert sum(1 for r in rows if (r["games"], r["points"]) in ficha.get(r["bsnpr_id"], ())) == 100
+
+
+class TestForeignRowsNote:
+    """The note about jug05 rows that showed another player's line (docs/specs/foreign_slot_check.md)."""
+
+    def test_the_counts_and_the_published_rows(self, dq):
+        n = dq["counts"]
+        assert n["foreign_rows"] == len(dq["foreign_rows"]) == len(_csv("interim", "jug05_foreign_rows.csv")) == 5
+        assert sorted((r["id"], r["season"], r["team"], r["games"], r["points"]) for r in dq["foreign_rows"]) == [
+            (4, 2006, "BAYAMON", 24, 211), (49, 2001, "COAMO", 11, 18), (49, 2001, "PONCE", 3, 0),
+            (313, 2006, "GUAYAMA", 9, 6), (1208, 2006, "GUAYNABO", 9, 43)]
+        assert len({r["id"] for r in dq["foreign_rows"]}) == 4
+        assert all(r["evidence"].strip() and r["owner_name"] and r["url"].startswith("https://web.archive.org/") for r in dq["foreign_rows"])
+
+    def test_each_foreign_row_is_gone_and_is_a_row_of_the_owner(self, dq):
+        for r in dq["foreign_rows"]:
+            mine = [(x["season"], x["team_raw"], x["games"], x["points"]) for x in _player(r["id"])["career"]]
+            assert (r["season"], r["team"], r["games"], r["points"]) not in mine
+            theirs = [(x["season"], x["games"], x["points"]) for x in _player(r["owner_id"])["career"]]
+            assert (r["season"], r["games"], r["points"]) in theirs
+
+    def test_the_note_reads_as_approved_and_is_driven_by_the_counts(self):
+        text = APP.read_text(encoding="utf-8")
+        assert ("En ${nf(c.foreign_rows)} filas de ${nf(new Set((d.foreign_rows||[]).map(x=>x.id)).size)} jugadores, una página de "
+                "jug05 mostraba la línea de otro jugador. Las quitamos de la ficha y de los totales y publicamos el registro. "
+                "No podemos detectar los casos cuyo dueño no tiene captura.") in text
+        assert "c.foreign_rows?" in text
 

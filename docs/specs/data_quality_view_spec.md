@@ -18,21 +18,22 @@ It shows where the archive's sources disagree and what was decided about each ca
 - Identity decisions (4): `data/clean/player_identity_decisions.csv`; the Spanish `evidence_es` text.
 - Open birth-date conflicts (5): `data/interim/jugador05_dob_conflicts.csv`; a table, values as recorded.
 - Birth-date corrections (10): `data/interim/player_dob_overrides.csv`; a count with its basis.
+- Foreign rows (5, 4 players): `data/interim/jug05_foreign_rows.csv`; the rows and their evidence (section 9).
 
 Not published: the stub twins, the heuristic same-person / different-people classes (they over-link; they are
 not decisions), and any Wikipedia claim or URL (project.md L2). The English `evidence` column keeps its
 attribution in the decisions CSV; the public text is the new `evidence_es` column.
 
-## 3. Data shape: `web/data/index/data_quality.json` (about 85 KB, 12.7 KB gzipped)
+## 3. Data shape: `web/data/index/data_quality.json` (about 88 KB, 13.3 KB gzipped)
 
-`schema_version`, `counts`, `conflicts`, `decisions`, `dob_open`, `season_totals`, `relabeled`.
+`schema_version`, `counts`, `conflicts`, `decisions`, `dob_open`, `season_totals`, `relabeled`, `foreign_rows`.
 A conflict has `id`, `name`, `season`,
 `franchise_id`, `a` (the jugador.asp row: team, games, points, Internet Archive url), `b` (the jug05.asp row,
 same fields) and `b_retrieved_at`. `build_data_quality()` matches each side to exactly one `career[]` row of the
 player's file and stops the build if it cannot. It changes no player, season or game file.
 
-Digest: `_source_digest` now resolves each input in `data/clean`, then `app/`, then `data/interim`. The seven interim
-logs (the two of sections 7 and 8 included) are digest inputs, so returning visitors purge their cached data once.
+Digest: `_source_digest` now resolves each input in `data/clean`, then `app/`, then `data/interim`. The eight interim
+logs (those of sections 7, 8 and 9 included) are digest inputs, so returning visitors purge their cached data once.
 `counts.data_quality` is 94; `counts.season_totals` is 13 and `counts.relabeled` is 145.
 
 ## 4. The view
@@ -125,4 +126,34 @@ stay conflicts, cause UNVERIFIED. The causes of the 2000-2003 conflicts (89) are
 ficha 2006 twin (of them 12 are now season totals): UNVERIFIED against the ficha. The exact flip day and the real
 calendar meaning of the labels are UNVERIFIED. Id 320 may be two players. A jug05 page can carry another player's line
 in the slot (Carmona, Abel, id 4, shows Alvin Cruz's BAYAMON 24/211): found while reading the registry, not fixed.
+
+## 9. Foreign rows dropped (2026-09-21, owner-approved)
+
+Finding (docs/specs/foreign_slot_check.md). A jug05 page can show ANOTHER player's line: the slot row follows the `r`
+URL parameter while the name and history come from another record. Found by lines shared between different players'
+captures: 4 lines in the newest-season slot (8 players, 11 captures, all of 2006-06-18 to 2006-12-12) and 3 rows on one
+page in the 2001 block. Shared lines also occur by chance, so nothing is detected automatically.
+
+Rule. The owner decided that 5 published rows rest on another player's line: id 4 (2006 BAYAMON 24/211), id 313
+(2006 GUAYAMA 9/6), id 1208 (2006 GUAYNABO 9/43) and id 49 (2001 COAMO 11/18 and 2001 PONCE 3/0). They are listed
+by hand, with per-row evidence, in `data/interim/jug05_foreign_lines.csv`; `parse_players.drop_foreign_rows` drops
+them (after the relabel, before the season totals and the fold), `src/apply_jug05_foreign_rows.py` (--check,
+idempotent) applies it to the committed CSV, and every dropped row is logged with its evidence in
+`data/interim/jug05_foreign_rows.csv`, a digest input. Class b (Cruz 74, Santiago Ricardo 2000: the owners) and
+class c (Allen 1912, Saez 990032: no evidence either way) stay, and so do all other rows of the 4 players.
+
+Counts. 5 rows removed; career CSV 5,683 -> 5,678; conflicts 94 and merged 767 unchanged; trade pairs 235 -> 233 (1208
+in 2006, 49 in 2001). 4 player files change (4, 313, 1208, 49); ids 4 and 313 lose their 2006 season and 313 has no
+career rows left. The 4 players' totals fall by 278 points and 56 games in all (id 4: 211 / 24, id 313: 6 / 9, id 1208:
+43 / 9, id 49: 18 / 14). `counts.foreign_rows` is 5 and `foreign_rows` holds the rows (id, name, season, team, games,
+points, owner, evidence in Spanish, capture date, url).
+
+The view. One more note under the relabel note, driven by the count and the rows:
+    "En 5 filas de 4 jugadores, una página de jug05 mostraba la línea de otro jugador. Las quitamos de la ficha y
+    de los totales y publicamos el registro. No podemos detectar los casos cuyo dueño no tiene captura."
+
+Open. The mechanism (why a page mixes two players) is UNCLEAR. Cases whose owner has no capture cannot be seen by this
+method: extent UNVERIFIED. The 31 unchecked relabelled rows with no twin (3 were these; 2 are class c, 26 have no
+evidence). 5 minted ids (990007, 990019, 990023, 990024, 990033) carry the same rows as ficha ids (out of scope). The
+exact flip day and id 320 (may be two players) stay open.
 

@@ -1,7 +1,8 @@
 """jug05 season totals (docs/specs/jug05_sumrow_check.md). A jug05 row that equals the SUM of the players-source
 rows of the same player-season is corroboration of the season, not a conflict: it is folded out and logged, the
 per-team rows stay. Fixture tests pin the rule and the script; TestCommittedData pins the committed numbers
-(13 folded, career CSV 5,683, conflicts 94 on 71 players, merged 767, trade pairs 235)."""
+(13 folded; career CSV 5,678 after the 5 foreign rows of tests/test_jug05_foreign_rows.py, conflicts 94 on 71
+players, merged 767, trade pairs 233)."""
 
 import csv
 
@@ -97,7 +98,7 @@ class TestCommittedData:
 
     def test_the_career_csv_lost_those_13_rows_and_no_team_row(self):
         rows = _rd("player_career_seasons.csv", "clean")
-        assert len(rows) == 5683                                                # 5,696 before
+        assert len(rows) == 5678                                                # 5,696 before the totals, then 5 foreign rows
         for t in _rd("jug05_season_totals.csv", "interim"):
             mine = [r for r in rows if r["bsnpr_id"] == t["bsnpr_id"] and r["season"] == t["season"]]
             assert not [r for r in mine if r["source_id"] == JUG05_SOURCE_ID and r["team_raw"] == t["jug05_team_raw"]]
@@ -110,7 +111,7 @@ class TestCommittedData:
         assert sum(1 for c in conflicts if c["season"] in ("2000", "2001", "2002", "2003")) == 89
         assert {("1442", "2002"), ("1512", "2000")} <= {(m["bsnpr_id"], m["season"]) for m in merged}
 
-    def test_trade_pairs_stay_at_235(self):
+    def test_trade_pairs_are_233_after_the_foreign_rows_left(self):   # 235 before: 1208 in 2006 and 49 in 2001
         rows = _rd("player_career_seasons.csv", "clean")
         site = pp._load_site_franchise_resolver()
         by_pair = {}
@@ -118,7 +119,7 @@ class TestCommittedData:
             fid = site(r["team_raw"], int(r["season"]))
             if fid:
                 by_pair.setdefault((r["bsnpr_id"], r["season"]), set()).add(fid)
-        assert sum(1 for f in by_pair.values() if len(f) >= 2) == 235
+        assert sum(1 for f in by_pair.values() if len(f) >= 2) == 233
 
     def test_the_apply_script_finds_nothing_left_to_do(self):
         assert apply.main(["--check"]) == 0
@@ -128,5 +129,5 @@ class TestWiring:
     def test_merge_and_main_hand_the_season_totals_to_the_fold_and_the_writer(self):
         import inspect
         merge, main = inspect.getsource(pp.merge_jug05), inspect.getsource(pp.main)
-        assert merge.index("fold_season_totals(career)") < merge.index("fold_cross_source_career(kept)")
+        assert merge.index("fold_season_totals(kept)") < merge.index("fold_cross_source_career(kept)")
         assert 'j05["season_totals"]' in main and "write_season_totals_log(jug05_season_totals)" in main

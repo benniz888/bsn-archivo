@@ -292,7 +292,7 @@ def build_player_redirects() -> Path:
 
 DQ_INTERIM_LOGS = ["jug05_career_conflicts.csv", "jug05_career_merged.csv", "player_merge_dropped_rows.csv",
                    "jugador05_dob_conflicts.csv", "player_dob_overrides.csv",
-                   "jug05_season_totals.csv", "jug05_relabeled_rows.csv"]
+                   "jug05_season_totals.csv", "jug05_relabeled_rows.csv", "jug05_foreign_rows.csv"]
 
 
 def build_data_quality(career_rows_by_pid: dict[str, list[dict]]) -> Path:
@@ -362,6 +362,14 @@ def build_data_quality(career_rows_by_pid: dict[str, list[dict]]) -> Path:
                   "points": _int(r["points"]), "url": r["source_url"]}
                  for r in _read_interim("jug05_relabeled_rows.csv")]
 
+    # jug05 rows that showed ANOTHER player's line and were dropped (jug05_foreign_rows.csv, from the hand-curated
+    # jug05_foreign_lines.csv): published as logged, with the Spanish evidence, so the note in the view can say so
+    foreign_rows = [{"id": int(r["bsnpr_id"]), "name": names[r["bsnpr_id"]], "season": int(r["season"]),
+                     "team": r["team_raw"], "games": _int(r["games"]), "points": _int(r["points"]),
+                     "owner_id": int(r["owner_id"]), "owner_name": r["owner_name"], "evidence": r["evidence_es"],
+                     "capture_date": r["capture_date"], "url": r["source_url"]}
+                    for r in _read_interim("jug05_foreign_rows.csv")]
+
     dob_open = [{"id": int(r["bsnpr_id"]), "name": r["canonical_name"], "canonical": r["canonical_dob"],
                  "jugador05": r["jugador05_dob"]} for r in _read_interim("jugador05_dob_conflicts.csv")]
     corrections = _read_interim("player_dob_overrides.csv")
@@ -379,6 +387,7 @@ def build_data_quality(career_rows_by_pid: dict[str, list[dict]]) -> Path:
             "dropped_rows": len(_read_interim("player_merge_dropped_rows.csv")),
             "season_totals": len(season_totals),
             "relabeled": len(relabeled),
+            "foreign_rows": len(foreign_rows),
             "decisions": len(decisions),
             "tombstones": len(tombs),
             "dob_open": len(dob_open),
@@ -391,6 +400,7 @@ def build_data_quality(career_rows_by_pid: dict[str, list[dict]]) -> Path:
         "dob_open": dob_open,
         "season_totals": season_totals,
         "relabeled": relabeled,
+        "foreign_rows": foreign_rows,
     }
     _jdump(out, WEB / "index" / "data_quality.json")
     return WEB / "index" / "data_quality.json"

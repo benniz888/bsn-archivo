@@ -6260,3 +6260,33 @@ Supersedes the "still unpushed" wording at the end of the previous block.
 - **NEXT_ACTIONS (owner-gated; none started; priority order).** 1. The read-only extent check of other-player slot
   lines. 2. J16b Cayey. 3. The remaining cluster review.
 - **Hold lifted.** Nothing is unpushed; docs-only pushes are safe again.
+
+### PHASE_FOREIGN_SLOT_APPLY — STAGED, NOT COMMITTED (2026-09-21, owner-approved)
+- **Why.** A jug05 page can show ANOTHER player's line (docs/specs/foreign_slot_check.md): the slot row follows the `r`
+  URL parameter, the name and history come from another record. 4 shared slot lines (8 players, 11 captures, all of
+  2006-06-18 to 2006-12-12) and 3 foreign rows on one page in the 2001 block. Shared lines also occur by chance, so
+  nothing is detected automatically.
+- **The fix.** The owner decided that 5 published rows rest on another player's line: id 4 (2006 BAYAMON 24/211),
+  id 313 (2006 GUAYAMA 9/6), id 1208 (2006 GUAYNABO 9/43), id 49 (2001 COAMO 11/18 and 2001 PONCE 3/0). A hand-curated
+  list with per-row evidence, `data/interim/jug05_foreign_lines.csv`; `parse_players.drop_foreign_rows` (after the
+  relabel, before the season totals and the fold, also in `merge_jug05`); the new `src/apply_jug05_foreign_rows.py`
+  (--check, idempotent, committed CSV); the provenance log `data/interim/jug05_foreign_rows.csv`, a digest input.
+  Class b (Cruz 74, Santiago Ricardo 2000) and class c (Allen 1912, Saez 990032) stay. No regeneration target was run.
+- **Counts.** 5 rows removed (4 players); career CSV 5,683 -> 5,678; trade pairs 235 -> 233 (1208 in 2006, 49 in
+  2001); merged 767 and conflicts 94 unchanged; the other 4 interim logs unchanged byte for byte.
+- **Web.** Changed: `players/4.json`, `313.json`, `1208.json`, `49.json`, `index/players.json`,
+  `index/data_quality.json` (88 KB; `counts.foreign_rows` 5 and the 5 rows with owner and Spanish evidence),
+  `manifest.json` (digest 20b5b782e59c -> 8968921b69b1). No games, seasons or identity output changed.
+- **Totals.** id 4: 273 -> 62 points, 65 -> 41 games, 5 -> 4 seasons; id 313: 6 / 9 -> no rows; id 1208: 46 -> 3
+  points, 15 -> 6 games; id 49: 258 -> 240 points, 136 -> 122 games. Net -278 points and -56 games. Recomputed
+  from the files and read on the page in Chromium and WebKit at 1000 and 390 px: 0 mismatches.
+- **The view.** One more note under the relabel note ("En 5 filas de 4 jugadores, una página de jug05 mostraba la
+  línea de otro jugador. ..."), driven by `counts.foreign_rows` and the rows. No other app text changed.
+- **Checks.** `make verify` 346,488 checks, 0 failed; `make test` 452 passed; a second run of the apply script is
+  byte-identical; `apply_jug05_foreign_rows`, `apply_jug05_season_totals`, `apply_jug05_relabel`, `apply_career_dedup`
+  and `apply_identity_decisions` `--check` exit 0; `cmp` app vs web passes; 0 console errors; a returning visitor
+  purges once.
+- **Open.** The mechanism (why a page mixes two players) is UNCLEAR. Cases whose owner has no capture cannot be seen by
+  this method: extent UNVERIFIED. The 31 unchecked no-twin relabelled rows (3 were these, 2 are class c, 26 have no
+  evidence). 5 minted ids (990007, 990019, 990023, 990024, 990033) carry the same rows as ficha ids (2204, 388, 757,
+  763, 1205): out of scope. The exact flip day; id 320 may be two players.

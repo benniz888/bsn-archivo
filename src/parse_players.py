@@ -611,6 +611,66 @@ def write_season_totals_log(totals: list[dict], interim_dir=None) -> None:
         int(r["bsnpr_id"]), int(r["season"]), r["jug05_team_raw"], r["jug05_source_url"])), SEASON_TOTALS_COLUMNS)
 
 
+FOREIGN_INPUT_FILE = "jug05_foreign_lines.csv"
+FOREIGN_LOG_FILE = "jug05_foreign_rows.csv"
+FOREIGN_LOG_COLUMNS = ["bsnpr_id", "season", "team_raw", "games", "points", "source_url", "capture_date",
+                       "retrieved_at", "owner_id", "owner_name", "evidence", "evidence_es"]
+
+
+def load_foreign_rows(interim_dir=None) -> list[dict]:
+    """The hand-curated list of jug05 rows that show ANOTHER player's line (data/interim/jug05_foreign_lines.csv,
+    with per-row evidence; docs/specs/foreign_slot_check.md). Like player_dob_overrides.csv it is curated by hand:
+    shared lines also occur by chance, so nothing here is detected automatically. [] when the file is absent."""
+    path = (interim_dir or INTERIM_DIR) / FOREIGN_INPUT_FILE
+    if not path.exists():
+        return []
+    with path.open(encoding="utf-8", newline="") as fh:
+        return list(csv.DictReader(fh))
+
+
+def _foreign_key(r) -> tuple:
+    return (str(r["bsnpr_id"]), int(r["season"]), r["team_raw"], str(r["games"]), str(r["points"]), r["source_url"])
+
+
+def drop_foreign_rows(career: list[dict], foreign: list[dict]):
+    """Drop the jug05 rows the curated list says are another player's line. A row goes only when its player, season,
+    team, games, points AND capture url all equal a listed row, and only a jug05 row is ever dropped. Runs after the
+    relabel (the listed season is the relabelled one) and before the season-total and per-team folds.
+
+    Pure: `career` is not mutated; rows may hold ints or strings. Returns (kept, dropped): kept is every row but the
+    dropped ones, in input order; dropped are log rows (FOREIGN_LOG_COLUMNS), sorted."""
+    want = {_foreign_key(f): f for f in foreign}
+    kept: list[dict] = []
+    dropped: list[dict] = []
+    for r in career:
+        f = want.get(_foreign_key(r)) if r["source_id"] == JUG05_SOURCE_ID else None
+        if f is None:
+            kept.append(r)
+            continue
+        dropped.append({"bsnpr_id": str(r["bsnpr_id"]), "season": int(r["season"]), "team_raw": r["team_raw"],
+                        "games": r["games"], "points": r["points"], "source_url": r["source_url"],
+                        "capture_date": f["capture_date"], "retrieved_at": r.get("retrieved_at") or "",
+                        "owner_id": f["owner_id"], "owner_name": f["owner_name"],
+                        "evidence": f["evidence"], "evidence_es": f["evidence_es"]})
+    dropped.sort(key=lambda d: (int(d["bsnpr_id"]), d["season"], d["team_raw"], d["source_url"]))
+    return kept, dropped
+
+
+def write_foreign_rows_log(dropped: list[dict], interim_dir=None) -> None:
+    """Write data/interim/jug05_foreign_rows.csv. History, like the merged log: the row is gone from the career CSV
+    once dropped, so new rows are ADDED to those already logged and a second run does not empty the file."""
+    path = (interim_dir or INTERIM_DIR) / FOREIGN_LOG_FILE
+    logged: dict[tuple, dict] = {}
+    if path.exists():
+        with path.open(encoding="utf-8", newline="") as fh:
+            for r in csv.DictReader(fh):
+                logged[(r["bsnpr_id"], r["season"], r["team_raw"], r["source_url"])] = r
+    for r in dropped:
+        logged[(str(r["bsnpr_id"]), str(r["season"]), r["team_raw"], r["source_url"])] = r
+    _write_csv(path, sorted(logged.values(), key=lambda r: (
+        int(r["bsnpr_id"]), int(r["season"]), r["team_raw"], r["source_url"])), FOREIGN_LOG_COLUMNS)
+
+
 def merge_jug05(canon: list[dict], career: list[dict],
                 jug05: list[dict]) -> dict:
     """Fold jug05 players into the spine. Three tiers:
@@ -761,18 +821,21 @@ def merge_jug05(canon: list[dict], career: list[dict],
         })
         added += _union_career(pid, j)
 
-    kept, season_totals = fold_season_totals(career)          # after the relabel (parse_jug05), before the fold
+    kept, foreign_rows = drop_foreign_rows(career, load_foreign_rows())      # after the relabel (parse_jug05)
+    kept, season_totals = fold_season_totals(kept)                            # then the season totals, then the fold
     kept, merged, conflicts = fold_cross_source_career(kept)
     career[:] = kept                      # in place, like every other mutation in this function
-    added -= len(merged) + len(season_totals)
+    added -= len(merged) + len(season_totals) + len(foreign_rows)
     print(f"[jug05] {len(jug05)} players -> {enriched} enriched ({xw_hits} via xwalk), "
           f"{minted} minted (id {JUG05_ID_BASE+1}..{JUG05_ID_BASE+minted}), "
           f"{len(review)} to review; {added} new career-season rows; "
           f"{len(merged)} duplicate rows merged, {len(season_totals)} season totals folded, "
+          f"{len(foreign_rows)} foreign rows dropped, "
           f"{len(conflicts)} stat conflicts kept as two rows")
     return {"enriched": enriched, "minted": minted, "review": len(review),
             "career_rows": added, "review_list": review,
-            "merged": merged, "conflicts": conflicts, "season_totals": season_totals}
+            "merged": merged, "conflicts": conflicts, "season_totals": season_totals,
+            "foreign_rows": foreign_rows}
 
 
 # --------------------------------------------------------------------------- #
@@ -1552,10 +1615,12 @@ def main() -> int:
     jug05_merged: list[dict] = []
     jug05_conflicts: list[dict] = []
     jug05_season_totals: list[dict] = []
+    jug05_foreign_rows: list[dict] = []
     if (RAW_DIR / "jug05").exists():
         j05 = merge_jug05(canon, career, parse_jug05())
         jug05_review, jug05_merged, jug05_conflicts = j05["review_list"], j05["merged"], j05["conflicts"]
         jug05_season_totals = j05["season_totals"]
+        jug05_foreign_rows = j05["foreign_rows"]
     j05b_review: list[dict] = []
     j05b_bios: list[dict] = []
     j05b_dob: list[dict] = []
@@ -1594,6 +1659,7 @@ def main() -> int:
                ["name", "birth_date", "position", "seasons", "collides_with"])
     write_career_logs(jug05_merged, jug05_conflicts)
     write_season_totals_log(jug05_season_totals)
+    write_foreign_rows_log(jug05_foreign_rows)
     _write_csv(CLEAN_DIR / "player_bios.csv",
                sorted(j05b_bios, key=lambda r: int(r["bsnpr_id"])),
                ["bsnpr_id", "notes_es", "birthplace", "roster_team", "roster_year",

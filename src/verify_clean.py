@@ -626,6 +626,21 @@ def verify_data_quality(c: Checker, web, manifest) -> None:
         gone = not any(x["team_raw"] == t["jug05"]["team"] for x in rows)      # the total itself left the career rows
         bad_t += not (len(t["ficha"]) >= 2 and listed and summed and gone)
     c.check(bad_t == 0, "data_quality: every season total equals the sum of two or more per-team rows that stay, and is gone from the player file", f"{bad_t} rows")
+    foreign_log = _read_interim("jug05_foreign_rows.csv")
+    c.check(n["foreign_rows"] == len(dq["foreign_rows"]) == len(foreign_log),
+            "data_quality: foreign rows equal the rows of jug05_foreign_rows.csv")
+    bad_f = 0
+    for t in dq["foreign_rows"]:
+        pf = web / "players" / f"{t['id']}.json"
+        rows = json.loads(pf.read_text(encoding="utf-8"))["career"] if pf.exists() else []
+        gone = not any((x["season"], x["team_raw"], x["games"], x["points"]) == (t["season"], t["team"], t["games"], t["points"])
+                       for x in rows)                                          # the foreign row left the player's file
+        of = web / "players" / f"{t['owner_id']}.json"
+        orows = json.loads(of.read_text(encoding="utf-8"))["career"] if of.exists() else []
+        owned = any((x["season"], x["games"], x["points"]) == (t["season"], t["games"], t["points"]) for x in orows)
+        bad_f += not (gone and owned and t["id"] != t["owner_id"] and t["evidence"].strip()
+                      and t["url"].startswith("https://web.archive.org/web/"))
+    c.check(bad_f == 0, "data_quality: every foreign row is gone from its player's file and is a row of the line's owner", f"{bad_f} rows")
     c.check(all((r["old_season"], r["new_season"]) == (2005, 2006) and r["capture_date"] >= "2006-05-01" for r in dq["relabeled"]),
             "data_quality: every relabeled row is a 2005 label filed under 2006 from a capture on or after 2006-05-01")
     c.check(n["dob_open"] == len(dq["dob_open"]) == len(logs["dob_open"]),

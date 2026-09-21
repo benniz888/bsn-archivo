@@ -163,8 +163,8 @@ class TestCommittedData:
         rows = _rd("player_career_seasons.csv", "clean")
         assert not [r for r in rows if r["source_id"] == JUG05_SOURCE_ID and r["season"] == "2005"
                     and jug05_capture_ts(r["source_url"]) >= pp.JUG05_SLOT_FLIP]
-        assert len(rows) == 5683                                              # 5,796 before: 100 folded, then 13 season totals
-        assert sum(1 for r in rows if r["source_id"] == JUG05_SOURCE_ID and r["season"] == "2006") == 33   # 45, 12 of them season totals
+        assert len(rows) == 5678                                              # 5,796 before: 100 folded, 13 season totals, 5 foreign
+        assert sum(1 for r in rows if r["source_id"] == JUG05_SOURCE_ID and r["season"] == "2006") == 30   # 45: 12 season totals, 3 foreign rows
 
     def test_the_fold_logged_100_more_pairs_and_left_the_conflicts_the_totals_fold_did_not_take(self):
         merged, conflicts = _rd("jug05_career_merged.csv", "interim"), _rd("jug05_career_conflicts.csv", "interim")

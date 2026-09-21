@@ -1,10 +1,11 @@
 """Cross-source career dedup (docs/specs/merge_jug05_audit_spec.md, D1-D6).
 
 Fixture tests pin the rule; TestCommittedData pins the numbers on the committed files
-(767 merged, 94 stat conflicts, 235 trade pairs, player 1995 one row per year). 665 and 125 before the
+(767 merged, 94 stat conflicts, 233 trade pairs, player 1995 one row per year). 665 and 125 before the
 identity merges of 2026-09-21 (73 -> 74 folded two more jug05 rows and added one conflict); 667, 126 and 276 before
 the jug05 relabel (src/apply_jug05_relabel.py: 100 more rows folded, 33 conflicts gone, 14 new ones, 41 trade pairs
-were the mislabel); 107 conflicts before the 13 season totals (apply_jug05_season_totals).
+were the mislabel); 107 conflicts before the 13 season totals (apply_jug05_season_totals); 235 trade pairs before the 5 foreign
+rows (apply_jug05_foreign_rows: 1208 in 2006 and 49 in 2001 were made by another player's line).
 """
 
 import csv
@@ -306,7 +307,7 @@ class TestCommittedData:
             fid = site(r["team_raw"], int(r["season"]))
             if fid:
                 by_pair.setdefault((r["bsnpr_id"], r["season"]), set()).add(fid)
-        assert sum(1 for f in by_pair.values() if len(f) >= 2) == 235
+        assert sum(1 for f in by_pair.values() if len(f) >= 2) == 233
 
     def test_no_false_merges(self, committed):
         rows, merged, _ = committed
