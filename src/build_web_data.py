@@ -29,6 +29,7 @@ from src.parse_wayback import open_clean_text
 from src.city_season_overrides import OVERRIDES_FILE, load_overrides, override_for
 
 CLEAN = REPO_ROOT / "data" / "clean"
+INTERIM = REPO_ROOT / "data" / "interim"
 APP = REPO_ROOT / "app"
 WEB = REPO_ROOT / "web" / "data"
 WEB_IMG = REPO_ROOT / "web" / "img"
@@ -45,6 +46,11 @@ _DE_SPLIT = re.compile(r"\s+de\s+|,\s*", re.I)   # "Nick de City" / "Nick, City"
 # --------------------------------------------------------------------------- #
 def _read(name: str) -> list[dict]:
     with open_clean_text(CLEAN / name, "r") as fh:
+        return list(csv.DictReader(fh))
+
+
+def _read_interim(name: str) -> list[dict]:
+    with open_clean_text(INTERIM / name, "r") as fh:
         return list(csv.DictReader(fh))
 
 
@@ -103,7 +109,7 @@ def _source_digest(inputs: list[str]) -> str:
     alongside its own manifest). Changes iff an input changes."""
     h = hashlib.sha256()
     for name in sorted(inputs):
-        path = (CLEAN / name) if (CLEAN / name).exists() else (APP / name)
+        path = next((d / name for d in (CLEAN, APP, INTERIM) if (d / name).exists()), CLEAN / name)
         with open_clean_text(path, "r") as fh:
             h.update(fh.read().encode("utf-8"))
     return h.hexdigest()
@@ -282,6 +288,86 @@ def build_player_redirects() -> Path:
             slugs[key] = int(t["survivor_id"])
     _jdump({"ids": ids, "slugs": slugs}, WEB / "index" / "player_redirects.json")
     return WEB / "index" / "player_redirects.json"
+
+
+DQ_INTERIM_LOGS = ["jug05_career_conflicts.csv", "jug05_career_merged.csv", "player_merge_dropped_rows.csv",
+                   "jugador05_dob_conflicts.csv", "player_dob_overrides.csv"]
+
+
+def build_data_quality(career_rows_by_pid: dict[str, list[dict]]) -> Path:
+    """web/data/index/data_quality.json: the Calidad de datos view (docs/specs/data_quality_view_spec.md).
+    Only RECORDED facts: the stat-conflict log, the merged-pair log, the dropped-row log, the decisions file
+    (its Spanish evidence_es, never the English evidence), and the birth-date logs. Nothing heuristic, and no
+    Wikipedia claim or URL (project.md L2: the decisions CSV keeps its own attribution). Every conflict row is
+    matched to the two career[] rows the player file carries, so the app can flag exactly those rows."""
+    names = {r["bsnpr_id"]: r["canonical_name"] for r in _read("players_canonical.csv")}
+    tombs = _read("player_id_tombstones.csv")
+    names.update({t["retired_id"]: t["retired_name"] for t in tombs})
+
+    conflicts = []
+    for r in _read_interim("jug05_career_conflicts.csv"):
+        pid, season = r["bsnpr_id"], int(r["season"])
+        side = {}
+        for k in ("a", "b"):
+            g, p, team = _int(r[f"games_{k}"]), _int(r[f"points_{k}"]), r[f"team_raw_{k}"]
+            rows = [c for c in career_rows_by_pid.get(pid, [])
+                    if c["season"] == season and c["games"] == g and c["points"] == p and c["team_raw"] == team]
+            if len(rows) != 1:
+                sys.exit(f"! data_quality: conflict {pid}/{season}/{k} matches {len(rows)} career rows in the player file")
+            side[k] = {"team": team, "games": g, "points": p, "url": r[f"source_url_{k}"],
+                       "franchise_id": rows[0]["franchise_id"]}
+        if side["a"]["franchise_id"] != side["b"]["franchise_id"]:
+            sys.exit(f"! data_quality: conflict {pid}/{season} resolves to two franchises")
+        fid = side["a"].pop("franchise_id")
+        side["b"].pop("franchise_id")
+        conflicts.append({"id": int(pid), "name": names[pid], "season": season, "franchise_id": fid,
+                          "a": side["a"], "b": side["b"], "b_retrieved_at": r["jug05_retrieved_at"]})
+    conflicts.sort(key=lambda c: (c["name"], c["season"], c["a"]["team"]))
+
+    merged = _read_interim("jug05_career_merged.csv")
+    merged_by_season: dict[str, int] = {}
+    for r in merged:
+        merged_by_season[r["season"]] = merged_by_season.get(r["season"], 0) + 1
+
+    decisions = []
+    for d in _read("player_identity_decisions.csv"):
+        if d["status"] != "applied":
+            continue
+        ids = d["ids"].split(";")
+        decisions.append({
+            "id": d["decision_id"], "kind": d["kind"], "ids": [int(i) for i in ids],
+            "survivor_id": int(d["survivor_id"]) if d["survivor_id"] else None,
+            "names": {i: names[i] for i in ids}, "decided_at": d["decided_at"], "text_es": d["evidence_es"],
+        })
+
+    dob_open = [{"id": int(r["bsnpr_id"]), "name": r["canonical_name"], "canonical": r["canonical_dob"],
+                 "jugador05": r["jugador05_dob"]} for r in _read_interim("jugador05_dob_conflicts.csv")]
+    corrections = _read_interim("player_dob_overrides.csv")
+
+    out = {
+        "schema_version": 1,
+        "counts": {
+            "stat_conflicts": len(conflicts),
+            "stat_conflict_players": len({c["id"] for c in conflicts}),
+            "conflicts_by_season": {str(k): v for k, v in sorted(
+                {s: sum(1 for c in conflicts if c["season"] == s) for s in {c["season"] for c in conflicts}}.items())},
+            "merged_pairs": len(merged),
+            "merged_players": len({r["bsnpr_id"] for r in merged}),
+            "merged_by_season": dict(sorted(merged_by_season.items())),
+            "dropped_rows": len(_read_interim("player_merge_dropped_rows.csv")),
+            "decisions": len(decisions),
+            "tombstones": len(tombs),
+            "dob_open": len(dob_open),
+            "dob_corrections": len(corrections),
+            "dob_corrections_high": sum(1 for r in corrections if r["confidence"] == "high"),
+            "dob_corrections_low": sum(1 for r in corrections if r["confidence"] == "low"),
+        },
+        "conflicts": conflicts,
+        "decisions": decisions,
+        "dob_open": dob_open,
+    }
+    _jdump(out, WEB / "index" / "data_quality.json")
+    return WEB / "index" / "data_quality.json"
 
 def _app_norm(s: str) -> str:
     """Match the app's `norm()` (bsn_archivo.html) exactly: lower, NFD, drop
@@ -1169,6 +1255,7 @@ def main() -> int:
     # 5C — per-entity files
     n_pdetail, n_pthin = build_players_detail(career_rows_by_pid)
     counts["player_redirects"] = len(json.loads(build_player_redirects().read_text(encoding="utf-8"))["ids"])
+    counts["data_quality"] = len(json.loads(build_data_quality(career_rows_by_pid).read_text(encoding="utf-8"))["conflicts"])
     season_counts = build_seasons_detail()
     n_games, n_gseasons = build_games()
     n_sf = build_starting_fives(fid_to_app)
@@ -1198,7 +1285,7 @@ def main() -> int:
         "bsn_career_leaders.csv", "bsn_records.csv",
         "franchise_key_map.csv", "franchise_curated.json", "player_crosswalk.csv",
         "player_id_tombstones.csv", "player_identity_decisions.csv",
-    ]
+    ] + DQ_INTERIM_LOGS
     assets = _scan_assets()
     manifest = {
         "schema_version": SCHEMA_VERSION,

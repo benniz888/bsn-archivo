@@ -6,6 +6,7 @@ rows already in the CSVs, the way apply_career_dedup does, and touches nothing e
 
 Inputs are two curated files in data/clean:
   player_identity_decisions.csv  merge / not_same verdicts with their evidence, who decided and when
+                                 (evidence_es is the Spanish public text; no Wikipedia claim or URL in it)
   player_id_tombstones.csv       retired_id -> survivor_id for every applied merge (retired_name feeds the
                                  redirects the site builds)
 For every tombstone: whatever the retired id owns is re-pointed to the survivor (aliases, id_map, bios,
@@ -23,6 +24,7 @@ A future regeneration reads the same two files and applies apply() to its in-mem
 from __future__ import annotations
 
 import csv
+import re
 import sys
 from collections import Counter
 from pathlib import Path
@@ -32,7 +34,7 @@ from src import parse_players as pp
 DECISIONS_FILE = "player_identity_decisions.csv"
 TOMBSTONES_FILE = "player_id_tombstones.csv"
 DROPPED_FILE = "player_merge_dropped_rows.csv"
-DECISION_COLUMNS = ["decision_id", "kind", "ids", "survivor_id", "status", "evidence",
+DECISION_COLUMNS = ["decision_id", "kind", "ids", "survivor_id", "status", "evidence", "evidence_es",
                     "source_doc", "decided_by", "decided_at"]
 TOMBSTONE_COLUMNS = ["retired_id", "survivor_id", "decision_id", "retired_name", "retired_at"]
 DROPPED_COLUMNS = ["decision_id", "retired_id", "survivor_id", "season", "team_raw", "games", "points",
@@ -91,9 +93,11 @@ def validate(decisions: list[dict], tombstones: list[dict]) -> list[str]:
             out.append(f"{where}: a merge needs a survivor_id among its ids")
         if d["kind"] == "not_same" and (d["survivor_id"] or len(ids) != 2):
             out.append(f"{where}: not_same names exactly two ids and no survivor")
-        for col in ("evidence", "source_doc", "decided_by", "decided_at"):
-            if not d[col].strip():
+        for col in ("evidence", "evidence_es", "source_doc", "decided_by", "decided_at"):
+            if not d.get(col, "").strip():
                 out.append(f"{where}: {col} is required")
+        if re.search(r"wikipedia|https?://", d.get("evidence_es", ""), re.I):
+            out.append(f"{where}: evidence_es is public text; no Wikipedia claim or URL (project.md L2)")
     retired: dict[str, str] = {}
     for t in tombstones:
         where = f"tombstone {t['retired_id']}"

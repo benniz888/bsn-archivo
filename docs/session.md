@@ -6087,3 +6087,44 @@ Supersedes the "still unpushed" wording at the end of the previous block.
   `SOURCES`; the Nació/Nacio parser header bug (2 blank DOBs).
 - **NEXT_ACTIONS (owner-gated; none started; priority order; supersedes the earlier list).** 1. Data-quality view
   (plan first). 2. Mobile PTS column check. 3. The one-page summary. 4. The remaining cluster review.
+
+### PHASE_DQ_VIEW_APPLY — STAGED, NOT COMMITTED (2026-09-21)
+- **What.** A public "Calidad de datos" sub-view (`#archivo/calidad`, menu "El estado del archivo") and a
+  "2 fuentes" tag on flagged career rows. Spec: `docs/specs/data_quality_view_spec.md`.
+- **Data.** New `web/data/index/data_quality.json` (61 KB, 8.7 KB gzipped) from `build_data_quality()`; the manifest
+  gains `counts.data_quality` (126). No player, season or game file changed. `_source_digest` now also reads
+  `data/interim`; the five logs (conflicts, merged, dropped rows, DOB conflicts, DOB corrections) are digest inputs.
+  Digest 048e92ee36a9 -> 0121241e9332. Only recorded decisions and logs are public; no Wikipedia claim or URL.
+- **Decisions file.** `evidence_es` (Spanish public text) added to `player_identity_decisions.csv` and to
+  `DECISION_COLUMNS`; `validate` requires it and refuses a Wikipedia claim in it. `--check` still exits 0.
+  D-ID-003 says "76 de las 77 capturas" (checked: 77 captures, jersey 11 in 76 for both ids, blank in the first).
+- **Totals ruling.** Both rows of a conflicted team-season leave "Totales del archivo", and the line says so.
+  Alvin Cruz (74): 2,330 pts / 397 games become 1,985 / 362. All 80 conflict players and 40 others match an
+  independent computation in the browser. Only this line sums career rows; leaders and compare use the baked
+  Wikipedia table.
+- **Checks.** `make verify` 346,482 checks, 0 failed (18 new); 396 tests pass; `apply_career_dedup --check` and
+  `apply_identity_decisions --check` exit 0; a second build is byte-identical; `cmp` app vs web passes.
+  Chromium and WebKit, 1000 and 390 px: the view opens from the tab, the landing card, the desktop mega menu and a
+  direct hash; counts equal the file; 126 rows sort and filter; CSV downloads; a year link opens the season; two
+  markers and the note on Alvin Cruz; no page-level horizontal scroll; 0 console errors; an old-digest visitor purges
+  once; if the file fails to load, the player page is unchanged.
+- **Findings, not changed (owner decision).** (1) 33 of the 37 conflicts in 2005 have jug05 figures equal to the
+  same player's 2006 row on the ficha, so they may be a season-label offset; not published as a cause. (2) The
+  season card of a flagged season shows only one of the two rows. (3) The career table's PTS column is clipped at
+  390 px for long team names (existing). (4) `buildSources()` still says Dalmau is the only self-contradicting figure.
+- **Changed outside the plan.** `buildTable` got optional `csvHead` and `csvRow`, so the CSV can carry ids and links.
+
+### PHASE_DQ_VIEW_APPLY — pre-commit notes (2026-09-21, owner-directed)
+- **buildSources() scoped.** The Dalmau card said "the only figure in the archive that contradicts itself". It now
+  says "de las tablas de campeones y líderes", and a line under the cards points to Calidad de datos
+  (`#archivo/calidad`) for player-level differences between sources. No other text changed.
+- **Open finding: a possible 2005 season-label offset.** 33 of the 37 conflicts for 2005 have jug05 figures equal to
+  the same player's 2006 row on the ficha (Alvin Cruz: jug05 2005 is 24/211, the ficha 2006 is 24/211). No cause is
+  published. Needs a read-only check of whether merged pairs or non-conflict jug05 rows are affected the same way.
+- **Season card, flagged seasons.** `renderSeasonDetail` shows one of the two rows of a flagged season (Alvin Cruz
+  2005 shows 24 games / 211 points and not the ficha's 11 / 134), without saying there are two. Not changed.
+- **PTS clipping at 390 px.** In the player career table the PTS column (and JJ) is clipped for long team names
+  such as "Gigantes de Carolina/Canóvanas". Existing before this phase; the "2 fuentes" tag sits under the chip so it
+  does not widen the table. Not changed.
+- **Not re-checked.** The 9 high-confidence birth-date corrections were not re-checked against the raw jugador05
+  pages; the public text says only that the correction log cites jug05 and jugador05.

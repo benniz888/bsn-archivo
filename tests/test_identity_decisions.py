@@ -106,7 +106,7 @@ class TestApply:
 
 def _decision(**kw):
     d = {"decision_id": "D-1", "kind": "merge", "ids": "73;74", "survivor_id": "74", "status": "applied", "evidence": "e",
-         "source_doc": "d", "decided_by": "owner", "decided_at": "2026-09-21"}
+         "evidence_es": "t", "source_doc": "d", "decided_by": "owner", "decided_at": "2026-09-21"}
     d.update(kw)
     return d
 

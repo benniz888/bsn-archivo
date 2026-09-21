@@ -327,6 +327,10 @@ def verify_identity_decisions(c: Checker) -> None:
     c.check(all(d["kind"] in ("merge", "not_same") for d in decisions), "identity decisions: kind is merge or not_same")
     c.check(all(d["evidence"].strip() and d["source_doc"].strip() and d["decided_by"].strip() and d["decided_at"].strip()
                 for d in decisions), "identity decisions: every row states evidence, source, who and when (PC3)")
+    c.check(all(d.get("evidence_es", "").strip() for d in decisions),
+            "identity decisions: every row has a Spanish public text (evidence_es)")
+    c.check(not any(re.search(r"wikipedia|https?://", d.get("evidence_es", ""), re.I) for d in decisions),
+            "identity decisions: evidence_es carries no Wikipedia claim or URL (project.md L2)")
     c.check(len(retired) == len(tombs), "identity tombstones: retired_id unique")
     c.check(not (set(retired) & canon), "identity tombstones: a retired id is never a canonical row (never reused)")
     c.check(all(s in canon for s in retired.values()), "identity tombstones: every survivor is a canonical row")
@@ -580,6 +584,65 @@ def verify_player_roster_latinbasket(c: Checker) -> None:
             str(dupes[:5]))
 
 
+def verify_data_quality(c: Checker, web, manifest) -> None:
+    """index/data_quality.json (the Calidad de datos view): every count equals the log it came from, every
+    conflict resolves to two career rows in that player's file, and nothing but recorded, Spanish, attributed
+    facts is public (no Wikipedia claim, no URL outside web.archive.org)."""
+    import json
+    path = web / "index" / "data_quality.json"
+    c.check(path.exists(), "web/data: index/data_quality.json exists")
+    if not path.exists():
+        return
+    text = path.read_text(encoding="utf-8")
+    dq = json.loads(text)
+    n = dq["counts"]
+    logs = {k: _read_interim(f) for k, f in (
+        ("conflicts", "jug05_career_conflicts.csv"), ("merged", "jug05_career_merged.csv"),
+        ("dropped", "player_merge_dropped_rows.csv"), ("dob_open", "jugador05_dob_conflicts.csv"),
+        ("dob_fix", "player_dob_overrides.csv"))}
+    c.check(n["stat_conflicts"] == len(dq["conflicts"]) == len(logs["conflicts"]),
+            "data_quality: conflicts equal the rows of jug05_career_conflicts.csv")
+    c.check(n["stat_conflict_players"] == len({r["bsnpr_id"] for r in logs["conflicts"]}),
+            "data_quality: conflict players equal the log's distinct ids")
+    c.check(n["merged_pairs"] == len(logs["merged"]) and sum(n["merged_by_season"].values()) == len(logs["merged"])
+            and n["merged_players"] == len({r["bsnpr_id"] for r in logs["merged"]}),
+            "data_quality: merged pairs (total, by season, players) equal jug05_career_merged.csv")
+    c.check(n["dropped_rows"] == len(logs["dropped"]), "data_quality: dropped rows equal player_merge_dropped_rows.csv")
+    c.check(n["dob_open"] == len(dq["dob_open"]) == len(logs["dob_open"]),
+            "data_quality: open birth-date conflicts equal jugador05_dob_conflicts.csv")
+    c.check(n["dob_corrections"] == len(logs["dob_fix"]) == n["dob_corrections_high"] + n["dob_corrections_low"],
+            "data_quality: birth-date corrections equal player_dob_overrides.csv (high + low)")
+    c.check(n["decisions"] == len(dq["decisions"]) == sum(1 for d in _read("player_identity_decisions.csv")
+                                                          if d["status"] == "applied"),
+            "data_quality: decisions equal the applied rows of player_identity_decisions.csv")
+    c.check(n["tombstones"] == len(_read("player_id_tombstones.csv")), "data_quality: tombstones equal the file")
+    c.check(manifest["counts"].get("data_quality") == len(dq["conflicts"]),
+            "data_quality: manifest count matches the file")
+    c.check(sum(n["conflicts_by_season"].values()) == n["stat_conflicts"], "data_quality: conflicts by season add up")
+
+    bad = 0
+    for r in dq["conflicts"]:
+        pf = web / "players" / f"{r['id']}.json"
+        rows = json.loads(pf.read_text(encoding="utf-8"))["career"] if pf.exists() else []
+        for k in ("a", "b"):
+            hit = [x for x in rows if x["season"] == r["season"] and x["games"] == r[k]["games"]
+                   and x["points"] == r[k]["points"] and x["team_raw"] == r[k]["team"]
+                   and x["franchise_id"] == r["franchise_id"]]
+            bad += len(hit) != 1
+    c.check(bad == 0, "data_quality: every conflict side is exactly one career row in that player's file",
+            f"{bad} sides")
+    urls = [r[k]["url"] for r in dq["conflicts"] for k in ("a", "b")]
+    c.check(all(u.startswith("https://web.archive.org/web/") for u in urls),
+            "data_quality: every conflict source is an Internet Archive capture (PC3)")
+    c.check(all(r["a"]["games"] is not None or r["a"]["points"] is not None for r in dq["conflicts"]),
+            "data_quality: no conflict side is an empty row")
+    c.check(not re.search(r"wikipedia", text, re.I), "data_quality: no Wikipedia claim or URL in the public file (L2)")
+    c.check(not re.search(r"\berror\b", text, re.I), "data_quality: the public file never calls a difference an error")
+    c.check(all(d["text_es"].strip() for d in dq["decisions"]), "data_quality: every decision has its Spanish text")
+    c.check(all(d["kind"] == "merge" or d["survivor_id"] is None for d in dq["decisions"]),
+            "data_quality: only recorded decisions (merge or not_same) are published")
+
+
 def verify_web_data(c: Checker) -> None:
     """PHASE_5 / 5B. Skipped cleanly if `make build-web-data` has not run."""
     import json
@@ -670,6 +733,7 @@ def verify_web_data(c: Checker) -> None:
     pdir, sdir, gdir = web / "players", web / "seasons", web / "games"
     if not pdir.exists():
         return
+    verify_data_quality(c, web, manifest)
     n_pfiles = len(list(pdir.glob("*.json")))
     c.check(manifest["counts"].get("player_files") == n_pfiles,
             "web/data: manifest player_files matches players/*.json count", str(n_pfiles))

@@ -1325,6 +1325,10 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
     <div id="coverage"></div>
     <div id="sourcesBox"></div>
 
+    <h3 class="sec">Calidad de datos</h3>
+    <p class="lede">Dónde las fuentes no coinciden y qué hicimos con cada caso. El archivo muestra las dos cifras; no escoge una a ojo.</p>
+    <div id="dqBox"></div>
+
     <h3 class="sec">Calendario y cobertura de temporada</h3>
     <p class="lede">El BSN no publica un calendario permanente. Esto es lo que se puede reconstruir del patrón de las últimas temporadas, y lo que el archivo no tiene.</p>
     <h4 class="sub">La forma del año</h4>
@@ -3243,7 +3247,7 @@ const NAV_MENU={
   ],feat:'daily'},
   archivo:{cols:[
     ['Preguntar',[['Consulta en español','preguntar'],['Consulta a la medida','constructor']]],
-    ['El estado del archivo',[['Cobertura, huecos y fuentes','cobertura'],['Calendario de temporada','calendario']]],
+    ['El estado del archivo',[['Cobertura, huecos y fuentes','cobertura'],['Calidad de datos','calidad'],['Calendario de temporada','calendario']]],
     ['Referencia',[['Glosario','glosario']]]
   ],feat:'gap'}
 };
@@ -3422,6 +3426,7 @@ function showView(sec,view,opts){
     target.classList.remove('view-enter'); void target.offsetWidth; target.classList.add('view-enter');
   }
   VIEW_NOW[sec]=now;
+  if(sec==='archivo'&&now==='calidad') openDQ();   /* index/data_quality.json is fetched only here and on a player page */
   syncSubnav(sec,now);
   if(!opts.fromHash && !opts.noHash) setHash(now==='__landing'?sec:sec+'/'+now);
   if(!opts.noScroll){
@@ -3491,7 +3496,8 @@ function buildTable(host,cols,rows,opts){
     meta.innerHTML=`<span>${data.length} fila${data.length===1?'':'s'}</span>`;
     const b=el('button','btn'); b.style.padding='5px 10px'; b.style.fontSize='12px';
     b.textContent='Descargar CSV';
-    b.onclick=()=>downloadCSV(cols.map(c=>c.label),data,(opts.file||'bsn_'+id)+'.csv');
+    /* opts.csvHead / opts.csvRow: export a different (fuller) shape than the columns on screen */
+    b.onclick=()=>downloadCSV(opts.csvHead||cols.map(c=>c.label),opts.csvRow?data.map(opts.csvRow):data,(opts.file||'bsn_'+id)+'.csv');
     meta.appendChild(b);
     if(opts.note){ const n=el('span'); n.textContent=opts.note; meta.appendChild(n); }
   }
@@ -4639,6 +4645,157 @@ const _LEADER_CAT_ES={scoring:'anotación',rebounds:'rebotes',assists:'asistenci
   steals:'robos',turnovers:'pérdidas',threes:'triples',three_pct:'% de triples',
   off_rebounds:'rebotes ofensivos',free_throws:'tiros libres',free_throw_pct:'% de tiros libres'};
 
+/* ============================================================
+   CALIDAD DE DATOS — #archivo/calidad
+   index/data_quality.json (build_data_quality; docs/specs/data_quality_view_spec.md): the places where two
+   pages of bsnpr.com give different figures, and what was decided about each. Only recorded facts.
+   Fetched on demand, by this view or by a player page; when it cannot be fetched the player page just
+   shows no marker and the totals stay as they were.
+   ============================================================ */
+let DQ=null, DQ_IDX=null, DQ_T=null, DQ_SORT={sort:0,dir:1}, DQ_FILTER={q:'',season:''};
+async function ensureDQ(fresh){
+  if(DQ) return DQ;
+  const d=await DATA.get('index/data_quality.json',fresh);
+  if(!d || !Array.isArray(d.conflicts)) return null;
+  DQ=d; DQ_IDX=new Map();
+  d.conflicts.forEach(c=>{
+    const k=c.id+'|'+c.season+'|'+c.franchise_id;
+    if(!DQ_IDX.has(k)) DQ_IDX.set(k,[]);
+    DQ_IDX.get(k).push(c);
+  });
+  return DQ;
+}
+/* the conflict a career row belongs to (either of its two rows), or null */
+function dqFlag(id,row){
+  const l=DQ_IDX&&DQ_IDX.get(Number(id)+'|'+row.season+'|'+row.franchise_id); if(!l) return null;
+  const same=s=>row.games===s.games&&row.points===s.points&&row.team_raw===s.team;
+  return l.find(c=>same(c.a)||same(c.b))||null;
+}
+function dqTag(c){
+  const f=v=>v==null?'—':v;
+  const tip='Dos páginas de bsnpr.com dan cifras distintas para este equipo y temporada: '
+    +`ficha del jugador ${f(c.a.games)} JJ, ${f(c.a.points)} PTS · página jug05 ${f(c.b.games)} JJ, ${f(c.b.points)} PTS. `
+    +'El archivo no escoge una: las dos filas quedan fuera de los totales.';
+  return `<a class="tag" href="#archivo/calidad" title="${esc(tip)}">2 fuentes</a>`;
+}
+function buildDQ(){
+  const host=$('#dqBox'); if(host) host.innerHTML='<p class="note">Cargando…</p>';
+}
+async function openDQ(){
+  const host=$('#dqBox'); if(!host || host.dataset.ready) return;
+  const d=await ensureDQ(host.dataset.tried==='1');   /* a second visit after a miss asks the network again */
+  if(!d){
+    host.dataset.tried='1';
+    host.innerHTML=`<div class="card"><div class="note">No se pudieron cargar los datos de esta vista`
+      +`${DATA.base===null?' (hace falta abrir el sitio publicado, no el archivo suelto)':''}. Vuelve a intentarlo más tarde.</div></div>`;
+    return;
+  }
+  host.dataset.ready='1';
+  drawDQ(host,d);
+}
+function drawDQ(host,d){
+  const c=d.counts, nf=n=>Number(n).toLocaleString('es-PR');
+  const btn=(id,name,season)=>`<button class="btn" style="padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal" `
+    +`onclick="openArchivePlayer(${id},${JSON.stringify(name).replace(/"/g,'&quot;')}${season!=null?','+season:''})">${esc(name)}</button>`;
+  const gEq=d.conflicts.filter(x=>x.a.games===x.b.games).length;
+  const pEq=d.conflicts.filter(x=>x.a.points===x.b.points).length;
+  const both=d.conflicts.length-gEq-pEq;
+  const mSeasons=Object.keys(c.merged_by_season).map(Number);
+  const nMerge=d.decisions.filter(x=>x.kind==='merge').length, nSame=d.decisions.length-nMerge;
+  const seasons=Object.keys(c.conflicts_by_season);
+
+  const decisions=d.decisions.map(x=>{
+    const [a,b]=x.ids, nm=i=>x.names[String(i)];
+    const head = x.kind==='merge'
+      ? `Se unieron: ${esc(nm(a===x.survivor_id?b:a))} (ID ${a===x.survivor_id?b:a}) ahora es ${esc(nm(x.survivor_id))} (ID ${x.survivor_id})`
+      : `No se unen: ${esc(nm(a))} (ID ${a}) y ${esc(nm(b))} (ID ${b})`;
+    const links = x.kind==='merge' ? btn(x.survivor_id,nm(x.survivor_id)) : btn(a,nm(a))+' '+btn(b,nm(b));
+    return `<div class="card" style="margin-top:var(--sp-3)">`
+      +`<div style="font-weight:700">${head}</div>`
+      +`<p style="margin:var(--sp-2) 0 0;line-height:1.5">${esc(x.text_es)}</p>`
+      +`<div class="muted" style="font-size:var(--fs-2xs);margin-top:var(--sp-2)">Decidido el ${esc(fmtLongDate(x.decided_at))} · ${links}</div></div>`;
+  }).join('');
+
+  host.innerHTML=`
+    <div class="strip">
+      <div><div class="n">${nf(c.stat_conflicts)}</div><div class="l">cifras distintas entre dos páginas de bsnpr.com, en ${nf(c.stat_conflict_players)} jugadores</div></div>
+      <div><div class="n">${nf(c.merged_pairs)}</div><div class="l">filas que las dos páginas dan idénticas, en ${nf(c.merged_players)} jugadores (${Math.min(...mSeasons)}–${Math.max(...mSeasons)})</div></div>
+      <div><div class="n">${nf(d.decisions.length)}</div><div class="l">decisiones de identidad registradas: ${nMerge} uniones y ${nSame} «no se unen»</div></div>
+      <div><div class="n">${nf(c.dob_open)}</div><div class="l">fechas de nacimiento con dos valores, sin resolver</div></div>
+    </div>
+
+    <h4 class="sub">Cifras que no coinciden</h4>
+    <p class="lede">Dos páginas archivadas de bsnpr.com traen filas de carrera del mismo jugador, equipo y temporada con juegos (JJ) o puntos (PTS) distintos.
+      El archivo guarda las dos filas y muestra las dos cifras. En la ficha del jugador esas filas llevan la marca «2 fuentes» y quedan fuera de los totales.</p>
+    <p class="muted" style="font-size:var(--fs-2xs);margin:var(--sp-2) 0 0">Por temporada: ${seasons.map(y=>`${y} (${nf(c.conflicts_by_season[y])})`).join(' · ')}.
+      En ${gEq} coinciden los juegos y difieren los puntos; en ${pEq} coinciden los puntos y difieren los juegos; en ${both} difieren los dos.</p>
+    <div class="filters">
+      <div class="field"><label for="dqQ">Jugador</label><input id="dqQ" type="search" placeholder="Buscar por nombre" autocomplete="off"></div>
+      <div class="field"><label for="dqS">Temporada</label><select id="dqS"><option value="">Todas</option>${seasons.map(y=>`<option value="${y}">${y}</option>`).join('')}</select></div>
+    </div>
+    <div id="dqTable" style="margin-top:var(--sp-3)"></div>
+    <p class="muted" style="font-size:var(--fs-2xs);margin:var(--sp-2) 0 0">Cada celda muestra JJ / PTS. <b>Ficha</b> es la página del jugador en bsnpr.com (jugador.asp); <b>jug05</b>, su página de estadísticas (jug05.asp).
+      Cada par enlaza a la captura en Internet Archive; en negrita, la cifra que difiere. Las dos columnas se ordenan por PTS.</p>
+
+    <h4 class="sub">Identidades: qué se unió y qué no</h4>
+    <p class="lede">Al unir dos IDs, las filas idénticas no se cuentan dos veces: ${nf(c.dropped_rows)} filas del ID retirado eran idénticas a filas del ID que se conserva y quedaron en un registro aparte.
+      Un ID retirado sigue abriendo la ficha que se conservó.</p>
+    ${decisions}
+    <details style="margin-top:var(--sp-3)"><summary class="muted" style="cursor:pointer">Las ${nf(c.merged_pairs)} filas idénticas, por temporada</summary>
+      <p class="muted" style="font-size:var(--fs-2xs);margin:var(--sp-2) 0 0">${mSeasons.map(y=>`${y}: ${nf(c.merged_by_season[y])}`).join(' · ')}.
+        Donde las dos páginas coinciden en juegos y puntos, la fila se cuenta una vez.</p></details>
+
+    <h4 class="sub">Fechas de nacimiento</h4>
+    <p class="lede">${nf(c.dob_open)} jugadores tienen dos fechas distintas en dos páginas de bsnpr.com. El archivo conserva las dos y no escoge. «Archivo» es el valor que carga el archivo; «jugador05», el de la página jugador05 de bsnpr.com (formato M/D/AAAA).</p>
+    <div id="dqDob" style="margin-top:var(--sp-3)"></div>
+    <p class="muted" style="font-size:var(--fs-2xs);margin:var(--sp-2) 0 0">Otras ${nf(c.dob_corrections)} fechas ya se corrigieron. En ${nf(c.dob_corrections_high)}, el registro de correcciones cita
+      dos páginas de bsnpr.com (jug05 y jugador05) que respaldan la fecha nueva${c.dob_corrections_low?`; en ${nf(c.dob_corrections_low)}, la fecha anterior era imposible y solo jugador05 da una plausible (confianza baja)`:''}.</p>
+
+    <h4 class="sub">Cómo decidimos</h4>
+    <ul style="margin:var(--sp-2) 0 0;padding-left:var(--sp-5);line-height:1.6;max-width:70ch">
+      <li>Nunca unimos a dos jugadores solo por el nombre.</li>
+      <li>Cuando dos fuentes dan cifras distintas, mostramos las dos; no las promediamos.</li>
+      <li>Una unión necesita evidencia y queda registrada con quién la decidió y cuándo.</li>
+    </ul>`;
+
+  $('#dqQ').oninput=e=>{ DQ_FILTER.q=e.target.value; drawDQTable(); };
+  $('#dqS').onchange=e=>{ DQ_FILTER.season=e.target.value; drawDQTable(); };
+  drawDQTable();
+  buildTable($('#dqDob'),[
+    {label:'Jugador',wide:true,render:(v,r)=>btn(r[3],v)},
+    {label:'Archivo'},{label:'jugador05'}
+  ],d.dob_open.map(x=>[x.name,x.canonical,x.jugador05,x.id]),
+    {file:'bsn_fechas_nacimiento_sin_resolver',sort:0,dir:1,
+     csvHead:['ID','Jugador','Valor en el archivo (M/D/AAAA)','Valor en jugador05 (M/D/AAAA)'],csvRow:r=>[r[3],r[0],r[1],r[2]]});
+}
+function drawDQTable(){
+  const host=$('#dqTable'); if(!host||!DQ) return;
+  if(DQ_T) DQ_SORT={sort:DQ_T.state.sort,dir:DQ_T.state.dir};   /* a filter change keeps the current sort */
+  const q=norm(DQ_FILTER.q||'');
+  const list=DQ.conflicts.filter(x=>(!DQ_FILTER.season||String(x.season)===DQ_FILTER.season)&&(!q||norm(x.name).includes(q)));
+  /* four columns so it reads at phone width; the cells that hold two figures sort by PTS. A row carries
+     what the cells and the CSV need beyond the columns: [name, season, ficha PTS, jug05 PTS, id, team,
+     ficha JJ, jug05 JJ, ficha url, jug05 url] */
+  const rows=list.map(x=>{
+    const ak=FID2APP&&FID2APP[x.franchise_id];
+    return [x.name,x.season,x.a.points,x.b.points,x.id,(ak&&F[ak])?F[ak].name:x.a.team,x.a.games,x.b.games,x.a.url,x.b.url];
+  });
+  const pair=(g,p,og,op,url)=>{
+    const one=(v,o)=>v==null?'—':(v!==o?'<b>'+v.toLocaleString('es-PR')+'</b>':v.toLocaleString('es-PR'));
+    return `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${one(g,og)} / ${one(p,op)}</a>`;
+  };
+  DQ_T=buildTable(host,[
+    {label:'Jugador',wide:true,render:(v,r)=>`<button class="btn" style="padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal" onclick="openArchivePlayer(${r[4]},${JSON.stringify(v).replace(/"/g,'&quot;')})">${esc(v)}</button>`
+      +`<div class="muted" style="font-size:var(--fs-3xs);margin-top:var(--sp-1)">${esc(r[5])}</div>`},
+    {label:'Año',num:true,render:(v,r)=>`<button style="background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer" onclick="openArchivePlayer(${r[4]},${JSON.stringify(r[0]).replace(/"/g,'&quot;')},${v})">${v}</button>`},
+    {label:'Ficha',num:true,render:(v,r)=>pair(r[6],v,r[7],r[3],r[8])},
+    {label:'jug05',num:true,render:(v,r)=>pair(r[7],v,r[6],r[2],r[9])}
+  ],rows,{file:'bsn_cifras_en_conflicto',sort:DQ_SORT.sort,dir:DQ_SORT.dir,
+    csvHead:['ID','Jugador','Temporada','Equipo','JJ ficha','PTS ficha','JJ jug05','PTS jug05','Captura ficha','Captura jug05'],
+    csvRow:r=>[r[4],r[0],r[1],r[5],r[6],r[2],r[7],r[3],r[8],r[9]],
+    note:list.length!==DQ.conflicts.length?`de ${DQ.conflicts.length}`:''});
+}
+
 async function loadPlayerExtra(name,idHint,season){
   const host=$('#playerExtra'); if(!host) return;
   const id = (idHint!=null) ? idHint : (PXWALK && PXWALK[norm(name)]);
@@ -4650,7 +4807,7 @@ async function loadPlayerExtra(name,idHint,season){
       +`<span class="muted">— no se ha podido identificar con certeza a este jugador en esa base</span>.</div></div>`;
     return;
   }
-  const d=await DATA.get('players/'+id+'.json');
+  const [d]=await Promise.all([DATA.get('players/'+id+'.json'), ensureDQ()]);   /* ensureDQ never rejects; null = no markers */
   if(!d || host.dataset.key!==key) return;
 
   let h='';
@@ -4679,9 +4836,13 @@ async function loadPlayerExtra(name,idHint,season){
     if(pv.filter(v=>v!=null).length>=2) sp.innerHTML=spark(pv,{area:true,dot:true,w:150,h:26});
   }
   if(car.length){
+    /* rows the archive holds twice with different figures (Calidad de datos): both rows stay in the table,
+       marked, and both stay out of the totals below; the archive does not pick one. */
+    const fl=car.map(c=>dqFlag(id,c));
+    const nConf=new Set(fl.filter(Boolean)).size;
     let tp=0,tg=0; const sea=new Set();
-    car.forEach(c=>{ if(c.points!=null)tp+=c.points; if(c.games!=null)tg+=c.games; if(c.season)sea.add(c.season); });
-    const yrs=car.map(c=>c.season).filter(Boolean);
+    car.forEach((c,i)=>{ if(fl[i]) return; if(c.points!=null)tp+=c.points; if(c.games!=null)tg+=c.games; if(c.season)sea.add(c.season); });
+    const yrs=car.filter((c,i)=>!fl[i]).map(c=>c.season).filter(Boolean);
     const lo=yrs.length?Math.min(...yrs):null, hi=yrs.length?Math.max(...yrs):null;
     h+='<div class="note" style="margin-top:var(--sp-2_5)">Temporada por temporada <span class="dim" style="font-weight:400">— marca 2 o 3 para comparar</span></div>'
       +'<div class="tblwrap"><table><thead><tr><th></th><th>Año</th><th>Equipo</th><th class="num">JJ</th><th class="num">PTS</th></tr></thead><tbody>'
@@ -4690,19 +4851,23 @@ async function loadPlayerExtra(name,idHint,season){
         const team=(ak&&F[ak])
           ? `<button class="chip" style="padding:1px 7px" onclick="showTeam('${ak}')">${esc(F[ak].name)}</button>`
           : esc(c.team_raw||'—');
+        const tag=fl[i]?dqTag(fl[i]):'';
         const yr=c.season
           ? `<button style="background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer" onclick="showPlayer(${JSON.stringify(name).replace(/"/g,'&quot;')},${id},${c.season})">${c.season}</button>`
           : '—';
         return `<tr><td><input type="checkbox" aria-label="Comparar ${c.season||''}" onchange="toggleSeasonCmp(this,${i})"></td>`
-          +`<td>${yr}</td><td>${team}</td><td class="num">${c.games==null?'—':c.games}</td><td class="num">${c.points==null?'—':c.points.toLocaleString('es-PR')}</td></tr>`;
+          +`<td>${yr}</td><td>${team}${tag?'<div>'+tag+'</div>':''}</td><td class="num">${c.games==null?'—':c.games}</td><td class="num">${c.points==null?'—':c.points.toLocaleString('es-PR')}</td></tr>`;
       }).join('')
       +'</tbody></table></div>'
       +'<div id="seasonCmpPanel"></div>';
-    if(tp||tg)
-      h+=`<div class="muted" style="font-size:var(--fs-2xs);margin-top:6px">Totales del archivo: `
+    if(tp||tg||nConf)
+      h+=`<div class="muted" style="font-size:var(--fs-2xs);margin-top:6px">`
+        +((tp||tg)?`Totales del archivo: `
         +`${tp.toLocaleString('es-PR')} puntos en ${tg.toLocaleString('es-PR')} juegos · `
         +`${sea.size} temporada${sea.size===1?'':'s'}${lo?` (${lo}–${hi})`:''}. `
-        +`Serie regular; suma de la tabla por temporada de bsnpr.com, no incluye playoffs.</div>`;
+        +`Serie regular; suma de la tabla por temporada de bsnpr.com, no incluye playoffs.`:'')
+        +(nConf?` Totales sin ${nConf} temporada${nConf===1?'':'s'} con fuentes en conflicto `
+        +`(<a href="#archivo/calidad">ver Calidad de datos</a>).`:'')+`</div>`;
   }else{
     h+=`<div class="note" style="margin-top:var(--sp-2_5)">Sin estadísticas por temporada en el archivo `
       +`<span class="muted">— ${bio&&bio.notes_es?'sólo la reseña de arriba':'sin ficha detallada'}</span>.</div>`;
@@ -4890,7 +5055,7 @@ function buildSources(){
     ['1945','Campeón en disputa','Wikipedia en inglés dice Capitalinos de San Juan; la de español, Santos de San Juan. Ambas coinciden en el subcampeón, Gallitos de la UPR. El archivo carga la versión inglesa y lo marca.'],
     ['1942–43','Temporada partida','Español separa 1942 y 1942-43, ambas de San Germán. Aquí van juntas, así que San Germán aparece con 13 títulos donde casi todas las fuentes dicen 14. Arreglarlo necesita una clave de temporada que admita años partidos.'],
     ['1953','Sin campeón','Ninguna fuente consultada registra uno. O no hubo temporada, o la tabla de franquicias está incompleta.'],
-    ['Dalmau, asistencias','Total y promedio no cuadran','2.302 en 537 juegos son 4,3 por juego, no 5,1. Es el único dato del archivo que se contradice a sí mismo. Marcado en dos sitios y excluido de los juegos.'],
+    ['Dalmau, asistencias','Total y promedio no cuadran','2.302 en 537 juegos son 4,3 por juego, no 5,1. Es el único dato de las tablas de campeones y líderes que se contradice a sí mismo. Marcado en dos sitios y excluido de los juegos.'],
     ['Harrell 2026','Club en disputa','RealGM lo pone en San Germán; Noticel, en Caguas.'],
     ['2026','Dos cifras para la misma temporada','El export oficial del BSN cuenta solo temporada regular; RealGM incluye la postemporada. Trice aparece con 34 juegos y 18,4 puntos en uno y con 44 y 19,3 en el otro. Ninguna está mal. El archivo guarda las dos y no promedia.'],
     ['Dalmau, asistencias','Posible resolución','bsnpr.com lista al líder de asistencias como Raymond «Richie» Dalmau Santana con 455 juegos, no como Raymond Dalmau Pérez con 537. Si son dos personas distintas, la contradicción de 4,3 contra 5,1 desaparece. Sin confirmar.']
@@ -4953,6 +5118,7 @@ function buildSources(){
       <div class="dim" style="font-size:11px;letter-spacing:.07em;font-weight:600">${esc(c[0]).toUpperCase()}</div>
       <div style="font-weight:700;margin-top:3px">${esc(c[1])}</div>
       <div class="muted" style="font-size:13.5px;margin-top:4px">${esc(c[2])}</div></div>`).join('')}</div>
+    <p class="muted" style="font-size:var(--fs-2xs);margin:var(--sp-2) 0 0">Las diferencias entre fuentes en las estadísticas de cada jugador están en <a href="#archivo/calidad">Calidad de datos</a>.</p>
 
     <h3 class="sec">Cómo se decide quién es leyenda</h3>
     <div class="cards g2">${LEGEND_NOTE.map(c=>`<div class="card">
@@ -7691,6 +7857,7 @@ const BOOT=[
   ['ask',buildAsk],
   ['constructor',buildQB],
   ['cobertura',buildCoverage],
+  ['calidad de datos',buildDQ],
   ['cinta',buildRibbon],
   ['stats de títulos',buildTitleStats],
   ['barras de títulos',buildTitleBars],
@@ -7939,6 +8106,7 @@ const VIEW_MAP={
   archivo:{ pre:['preguntar','Preguntar'], split:'h3.sec', map:[
     ['Consulta a la medida',['constructor','A la medida']],
     ['Cobertura del archivo',['cobertura','Cobertura y fuentes']],
+    ['Calidad de datos',['calidad','Calidad de datos']],
     ['Calendario y cobertura',['calendario','Calendario']],
     ['Glosario',['glosario','Glosario']]
   ]}
@@ -7992,6 +8160,7 @@ const VIEW_DESC={
     preguntar:'Pregúntale al archivo en español.',
     constructor:'Escoge una tabla, filtra, ordena y baja a CSV.',
     cobertura:'Cuánto del archivo está verificado, por década, y de dónde sale cada dato.',
+    calidad:'Dónde las fuentes no coinciden y qué hicimos con cada caso.',
     calendario:'Lo que se puede reconstruir del calendario del BSN, y lo que falta.',
     glosario:'Las palabras que el archivo usa sin explicar en el resto de la app.'
   }
