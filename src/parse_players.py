@@ -550,6 +550,67 @@ def write_career_logs(merged: list[dict], conflicts: list[dict], interim_dir=Non
         int(r["bsnpr_id"]), int(r["season"]), r["team_raw_b"])), CAREER_CONFLICT_COLUMNS)
 
 
+SEASON_TOTALS_COLUMNS = ["bsnpr_id", "season", "jug05_team_raw", "jug05_games", "jug05_points",
+                         "jug05_source_url", "jug05_retrieved_at", "ficha_rows", "ficha_games_sum",
+                         "ficha_points_sum", "ficha_source_urls"]
+
+
+def fold_season_totals(career: list[dict]):
+    """Fold a jug05 row that is the SEASON TOTAL of a player who changed team.
+
+    jugador.asp (the "ficha", source `wayback_bsnpr_players`) has one row per team; in the slot labelled 2005
+    jug05.asp mostly shows one row for the whole season (docs/specs/jug05_sumrow_check.md). The per-team fold
+    then pairs that total with one team's partial row and reports a conflict. Owner decision 2026-09-21: a jug05
+    row whose games AND points both equal the sum of the players-source rows of the same player-season, at least
+    two rows, none with a blank figure (PC2), is corroboration of the season, not a conflict. It is folded out and
+    logged; the per-team rows stay. It is NOT folded when it equals a single team row (a second row of 0/0 makes
+    the sum equal that row: the ordinary fold merges it), and a jug05 row that matches no sum is left alone.
+
+    Pure: `career` is not mutated; rows may hold ints or strings. Returns (kept, totals): kept is every row but
+    the folded ones, in input order; totals are log rows (SEASON_TOTALS_COLUMNS), sorted."""
+    by: dict[tuple, list[dict]] = defaultdict(list)
+    for r in career:
+        if r["source_id"] == SOURCE_ID:
+            by[(str(r["bsnpr_id"]), int(r["season"]))].append(r)
+    kept: list[dict] = []
+    totals: list[dict] = []
+    for r in career:
+        if r["source_id"] == JUG05_SOURCE_ID:
+            comp = by.get((str(r["bsnpr_id"]), int(r["season"])), [])
+            j = _career_stats(r)
+            stats = [_career_stats(c) for c in comp]
+            if (len(comp) >= 2 and None not in j and all(None not in st for st in stats)
+                    and j not in stats
+                    and (sum(st[0] for st in stats), sum(st[1] for st in stats)) == j):
+                comp = sorted(comp, key=lambda c: c["team_raw"])
+                totals.append({
+                    "bsnpr_id": str(r["bsnpr_id"]), "season": int(r["season"]),
+                    "jug05_team_raw": r["team_raw"], "jug05_games": j[0], "jug05_points": j[1],
+                    "jug05_source_url": r["source_url"], "jug05_retrieved_at": r.get("retrieved_at") or "",
+                    "ficha_rows": " | ".join(f"{c['team_raw']} {c['games']}/{c['points']}" for c in comp),
+                    "ficha_games_sum": j[0], "ficha_points_sum": j[1],
+                    "ficha_source_urls": " | ".join(dict.fromkeys(c["source_url"] for c in comp))})
+                continue
+        kept.append(r)
+    totals.sort(key=lambda t: (int(t["bsnpr_id"]), t["season"], t["jug05_team_raw"], t["jug05_source_url"]))
+    return kept, totals
+
+
+def write_season_totals_log(totals: list[dict], interim_dir=None) -> None:
+    """Write data/interim/jug05_season_totals.csv. History, like the merged log: the jug05 row is gone from the
+    CSV once folded, so new rows are ADDED to those already logged and a second run does not empty the file."""
+    path = (interim_dir or INTERIM_DIR) / "jug05_season_totals.csv"
+    logged: dict[tuple, dict] = {}
+    if path.exists():
+        with path.open(encoding="utf-8", newline="") as fh:
+            for r in csv.DictReader(fh):
+                logged[(r["bsnpr_id"], r["season"], r["jug05_team_raw"], r["jug05_source_url"])] = r
+    for r in totals:
+        logged[(str(r["bsnpr_id"]), str(r["season"]), r["jug05_team_raw"], r["jug05_source_url"])] = r
+    _write_csv(path, sorted(logged.values(), key=lambda r: (
+        int(r["bsnpr_id"]), int(r["season"]), r["jug05_team_raw"], r["jug05_source_url"])), SEASON_TOTALS_COLUMNS)
+
+
 def merge_jug05(canon: list[dict], career: list[dict],
                 jug05: list[dict]) -> dict:
     """Fold jug05 players into the spine. Three tiers:
@@ -700,16 +761,18 @@ def merge_jug05(canon: list[dict], career: list[dict],
         })
         added += _union_career(pid, j)
 
-    kept, merged, conflicts = fold_cross_source_career(career)
+    kept, season_totals = fold_season_totals(career)          # after the relabel (parse_jug05), before the fold
+    kept, merged, conflicts = fold_cross_source_career(kept)
     career[:] = kept                      # in place, like every other mutation in this function
-    added -= len(merged)
+    added -= len(merged) + len(season_totals)
     print(f"[jug05] {len(jug05)} players -> {enriched} enriched ({xw_hits} via xwalk), "
           f"{minted} minted (id {JUG05_ID_BASE+1}..{JUG05_ID_BASE+minted}), "
           f"{len(review)} to review; {added} new career-season rows; "
-          f"{len(merged)} duplicate rows merged, {len(conflicts)} stat conflicts kept as two rows")
+          f"{len(merged)} duplicate rows merged, {len(season_totals)} season totals folded, "
+          f"{len(conflicts)} stat conflicts kept as two rows")
     return {"enriched": enriched, "minted": minted, "review": len(review),
             "career_rows": added, "review_list": review,
-            "merged": merged, "conflicts": conflicts}
+            "merged": merged, "conflicts": conflicts, "season_totals": season_totals}
 
 
 # --------------------------------------------------------------------------- #
@@ -1488,9 +1551,11 @@ def main() -> int:
     jug05_review: list[dict] = []
     jug05_merged: list[dict] = []
     jug05_conflicts: list[dict] = []
+    jug05_season_totals: list[dict] = []
     if (RAW_DIR / "jug05").exists():
         j05 = merge_jug05(canon, career, parse_jug05())
         jug05_review, jug05_merged, jug05_conflicts = j05["review_list"], j05["merged"], j05["conflicts"]
+        jug05_season_totals = j05["season_totals"]
     j05b_review: list[dict] = []
     j05b_bios: list[dict] = []
     j05b_dob: list[dict] = []
@@ -1528,6 +1593,7 @@ def main() -> int:
                sorted(jug05_review, key=lambda r: r["name"]),
                ["name", "birth_date", "position", "seasons", "collides_with"])
     write_career_logs(jug05_merged, jug05_conflicts)
+    write_season_totals_log(jug05_season_totals)
     _write_csv(CLEAN_DIR / "player_bios.csv",
                sorted(j05b_bios, key=lambda r: int(r["bsnpr_id"])),
                ["bsnpr_id", "notes_es", "birthplace", "roster_team", "roster_year",

@@ -4729,6 +4729,8 @@ function drawDQ(host,d){
       El archivo guarda las dos filas y muestra las dos cifras. En la ficha del jugador esas filas llevan la marca «2 fuentes» y quedan fuera de los totales.</p>
     <p class="muted" style="font-size:var(--fs-2xs);margin:var(--sp-2) 0 0">Por temporada: ${seasons.map(y=>`${y} (${nf(c.conflicts_by_season[y])})`).join(' · ')}.
       En ${gEq} coinciden los juegos y difieren los puntos; en ${pEq} coinciden los puntos y difieren los juegos; en ${both} difieren los dos.</p>
+    ${c.season_totals?`<p class="muted" style="font-size:var(--fs-2xs);margin:var(--sp-2) 0 0">En ${nf(c.season_totals)} casos la fila de jug05 es el total de la temporada de un jugador que cambió de equipo. El archivo conserva las filas por equipo y registra el total como corroboración.</p>`:''}
+    ${c.relabeled?`<p class="muted" style="font-size:var(--fs-2xs);margin:var(--sp-2) 0 0">En las capturas de jug05 a partir de mayo de 2006, la temporada más reciente conserva la etiqueta 2005. En 100 de ${nf(c.relabeled)} filas las cifras coinciden con la temporada 2006 de la ficha del jugador. Reasignamos las ${nf(c.relabeled)} a 2006 y publicamos el registro.</p>`:''}
     <div class="filters">
       <div class="field"><label for="dqQ">Jugador</label><input id="dqQ" type="search" placeholder="Buscar por nombre" autocomplete="off"></div>
       <div class="field"><label for="dqS">Temporada</label><select id="dqS"><option value="">Todas</option>${seasons.map(y=>`<option value="${y}">${y}</option>`).join('')}</select></div>

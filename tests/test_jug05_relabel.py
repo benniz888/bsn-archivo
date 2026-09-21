@@ -2,7 +2,8 @@
 every capture and overwrote the figures under it between the captures of 2006-02-24 and 2006-05-28, so a row
 labelled 2005 on a later capture is the season jugador.asp files under 2006. parse_players.jug05_season is the one
 rule; src/apply_jug05_relabel.py applies it to the committed CSV. Fixture tests pin the rule and the script;
-TestCommittedData pins the numbers on the committed files (145 relabelled, 100 folded, 767 merged, 107 conflicts)."""
+TestCommittedData pins the numbers on the committed files (145 relabelled, 100 folded, 767 merged). The season-total fold that followed (13 rows, 107 -> 94
+conflicts) is pinned in tests/test_jug05_season_totals.py."""
 
 import csv
 import json
@@ -162,16 +163,16 @@ class TestCommittedData:
         rows = _rd("player_career_seasons.csv", "clean")
         assert not [r for r in rows if r["source_id"] == JUG05_SOURCE_ID and r["season"] == "2005"
                     and jug05_capture_ts(r["source_url"]) >= pp.JUG05_SLOT_FLIP]
-        assert len(rows) == 5696                                              # 5,796 before: 100 folded
-        assert sum(1 for r in rows if r["source_id"] == JUG05_SOURCE_ID and r["season"] == "2006") == 45   # the 100 others folded
+        assert len(rows) == 5683                                              # 5,796 before: 100 folded, then 13 season totals
+        assert sum(1 for r in rows if r["source_id"] == JUG05_SOURCE_ID and r["season"] == "2006") == 33   # 45, 12 of them season totals
 
-    def test_the_fold_logged_100_more_pairs_and_left_107_conflicts(self):
+    def test_the_fold_logged_100_more_pairs_and_left_the_conflicts_the_totals_fold_did_not_take(self):
         merged, conflicts = _rd("jug05_career_merged.csv", "interim"), _rd("jug05_career_conflicts.csv", "interim")
         assert len(merged) == 767 and sum(1 for r in merged if r["season"] == "2006") == 100
         assert sum(1 for r in merged if r["season"] == "2005") == 4          # the pre-flip pairs are unchanged
-        assert len(conflicts) == 107
+        assert len(conflicts) == 94                                            # 107 after the relabel, minus 13 season totals
         assert sorted({(int(r["season"]), sum(1 for c in conflicts if c["season"] == r["season"])) for r in conflicts}) == [
-            (2000, 17), (2001, 51), (2002, 18), (2003, 3), (2005, 4), (2006, 14)]
+            (2000, 17), (2001, 51), (2002, 18), (2003, 3), (2005, 3), (2006, 2)]
 
     def test_the_apply_script_finds_nothing_left_to_do(self):
         assert apply.main(["--check"]) == 0

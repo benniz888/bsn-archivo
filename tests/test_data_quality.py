@@ -38,8 +38,8 @@ class TestCountsComeFromTheLogs:
         conflicts = _csv("interim", "jug05_career_conflicts.csv")
         merged = _csv("interim", "jug05_career_merged.csv")
         corrections = _csv("interim", "player_dob_overrides.csv")
-        assert n["stat_conflicts"] == len(dq["conflicts"]) == len(conflicts) == 107
-        assert n["stat_conflict_players"] == len({r["bsnpr_id"] for r in conflicts}) == 74
+        assert n["stat_conflicts"] == len(dq["conflicts"]) == len(conflicts) == 94
+        assert n["stat_conflict_players"] == len({r["bsnpr_id"] for r in conflicts}) == 71
         assert n["merged_pairs"] == len(merged) == 767 and n["merged_players"] == len({r["bsnpr_id"] for r in merged}) == 130
         assert sum(n["merged_by_season"].values()) == 767 and min(n["merged_by_season"]) == "1980" and max(n["merged_by_season"]) == "2006"
         assert n["dropped_rows"] == len(_csv("interim", "player_merge_dropped_rows.csv")) == 4
@@ -48,17 +48,17 @@ class TestCountsComeFromTheLogs:
         assert (n["dob_corrections"], n["dob_corrections_high"], n["dob_corrections_low"]) == (10, 9, 1) == (len(corrections), 9, 1)
 
     def test_conflicts_by_season(self, dq):
-        assert dq["counts"]["conflicts_by_season"] == {"2000": 17, "2001": 51, "2002": 18, "2003": 3, "2005": 4, "2006": 14}
+        assert dq["counts"]["conflicts_by_season"] == {"2000": 17, "2001": 51, "2002": 18, "2003": 3, "2005": 3, "2006": 2}
 
     def test_the_manifest_counts_the_conflicts(self):
-        assert json.loads((WEB / "manifest.json").read_text(encoding="utf-8"))["counts"]["data_quality"] == 107
+        assert json.loads((WEB / "manifest.json").read_text(encoding="utf-8"))["counts"]["data_quality"] == 94
 
     def test_no_conflict_has_two_equal_sides(self, dq):
         both_equal = [c for c in dq["conflicts"] if c["a"]["games"] == c["b"]["games"] and c["a"]["points"] == c["b"]["points"]]
         assert both_equal == []
         games_eq = sum(c["a"]["games"] == c["b"]["games"] for c in dq["conflicts"])
         points_eq = sum(c["a"]["points"] == c["b"]["points"] for c in dq["conflicts"])
-        assert (games_eq, points_eq, len(dq["conflicts"]) - games_eq - points_eq) == (21, 20, 66)
+        assert (games_eq, points_eq, len(dq["conflicts"]) - games_eq - points_eq) == (21, 19, 54)
 
 
 class TestConflictRowsAreTheRowsOnThePlayerPage:
@@ -93,7 +93,7 @@ class TestConflictRowsAreTheRowsOnThePlayerPage:
             return (sum(r["points"] or 0 for r in kept), sum(r["games"] or 0 for r in kept),
                     sum(r["points"] or 0 for r in rows), sum(r["games"] or 0 for r in rows), len(flagged))
         assert totals(74) == (2119, 373, 2119, 373, 0)            # 1,985 / 362 while the 2005 row was a conflict
-        assert totals(1995) == (4300, 455, 4533, 484, 2)          # a 2006 conflict: jug05 24/194 vs the 5/39 stint
+        assert totals(1995) == (4339, 460, 4339, 460, 0)          # was 4,300 / 455 while jug05's 24/194 (= 5/39 + 19/155) was a conflict
         # every conflict flags exactly two rows
         for pid in {c["id"] for c in dq["conflicts"]}:
             assert totals(pid)[4] == 2 * sum(1 for c in dq["conflicts"] if c["id"] == pid)
@@ -116,7 +116,7 @@ class TestOnlyRecordedFactsAndSpanishText:
         assert [(d["id"], d["kind"], d["ids"], d["survivor_id"]) for d in dq["decisions"]] == [
             ("D-ID-001", "merge", [73, 74], 74), ("D-ID-002", "merge", [951, 952], 952),
             ("D-ID-003", "merge", [24, 35], 35), ("D-ID-004", "not_same", [35, 273], None)]
-        assert set(dq) == {"schema_version", "counts", "conflicts", "decisions", "dob_open"}   # no heuristic classes, no stub twins
+        assert set(dq) == {"schema_version", "counts", "conflicts", "decisions", "dob_open", "season_totals", "relabeled"}   # no heuristic classes, no stub twins
 
     def test_no_wikipedia_claim_or_url_and_never_the_word_error(self):
         text = DQ.read_text(encoding="utf-8")
@@ -170,7 +170,8 @@ class TestDigest:
 
     def test_the_five_logs_exist_and_are_listed(self):
         assert bwd.DQ_INTERIM_LOGS == ["jug05_career_conflicts.csv", "jug05_career_merged.csv", "player_merge_dropped_rows.csv",
-                                       "jugador05_dob_conflicts.csv", "player_dob_overrides.csv"]
+                                       "jugador05_dob_conflicts.csv", "player_dob_overrides.csv",
+                                       "jug05_season_totals.csv", "jug05_relabeled_rows.csv"]
         assert all((REPO_ROOT / "data" / "interim" / n).exists() for n in bwd.DQ_INTERIM_LOGS)
 
 
@@ -207,3 +208,48 @@ class TestTheAppView:
 
     def test_the_web_copy_is_a_byte_copy(self):
         assert (REPO_ROOT / "web" / "index.html").read_bytes() == APP.read_bytes()
+
+
+class TestSeasonTotalsAndRelabelNotes:
+    """The two notes in the view and the rows behind them (docs/specs/data_quality_view_spec.md sections 7 and 8)."""
+
+    def test_the_counts_and_the_published_rows(self, dq):
+        n = dq["counts"]
+        assert n["season_totals"] == len(dq["season_totals"]) == len(_csv("interim", "jug05_season_totals.csv")) == 13
+        assert n["relabeled"] == len(dq["relabeled"]) == len(_csv("interim", "jug05_relabeled_rows.csv")) == 145
+        assert {(r["old_season"], r["new_season"]) for r in dq["relabeled"]} == {(2005, 2006)}
+        assert min(r["capture_date"] for r in dq["relabeled"]) == "2006-05-28"
+
+    def test_each_season_total_is_the_sum_of_per_team_rows_that_stay(self, dq):
+        for t in dq["season_totals"]:
+            assert len(t["ficha"]) >= 2 and len({f["team"] for f in t["ficha"]}) >= 2      # a player who changed team
+            assert (sum(f["games"] for f in t["ficha"]), sum(f["points"] for f in t["ficha"])) == (
+                t["jug05"]["games"], t["jug05"]["points"]) == (t["sum"]["games"], t["sum"]["points"])
+            rows = [r for r in _player(t["id"])["career"] if r["season"] == t["season"]]
+            for f in t["ficha"]:
+                assert any((r["team_raw"], r["games"], r["points"]) == (f["team"], f["games"], f["points"]) for r in rows)
+            assert not any(r["team_raw"] == t["jug05"]["team"] for r in rows)                # the total left the file
+        assert [t["id"] for t in dq["season_totals"]] == [151, 193, 284, 763, 777, 808, 870, 932, 985, 1284, 1462, 1995, 2067]
+
+    def test_the_two_notes_read_as_approved_and_are_driven_by_the_counts(self):
+        text = APP.read_text(encoding="utf-8")
+        assert ("En ${nf(c.season_totals)} casos la fila de jug05 es el total de la temporada de un jugador que cambió de "
+                "equipo. El archivo conserva las filas por equipo y registra el total como corroboración.") in text
+        assert ("En las capturas de jug05 a partir de mayo de 2006, la temporada más reciente conserva la etiqueta 2005. "
+                "En 100 de ${nf(c.relabeled)} filas las cifras coinciden con la temporada 2006 de la ficha del jugador. "
+                "Reasignamos las ${nf(c.relabeled)} a 2006 y publicamos el registro.") in text
+        assert "c.season_totals?" in text and "c.relabeled?" in text
+
+    def test_ids_81_and_1066_and_the_2000_2003_conflicts_stay_conflicts(self, dq):
+        assert {81, 1066} <= {c["id"] for c in dq["conflicts"] if c["season"] == 2006}
+        assert sum(1 for c in dq["conflicts"] if 2000 <= c["season"] <= 2003) == 89
+
+    def test_the_100_in_the_relabel_note_is_the_relabelled_rows_that_equal_a_ficha_2006_row(self, dq):
+        ficha = {}
+        for r in _csv("clean", "player_career_seasons.csv"):
+            if r["source_id"] == "wayback_bsnpr_players" and r["season"] == "2006":
+                ficha.setdefault(r["bsnpr_id"], set()).add((r["games"], r["points"]))
+        rows = _csv("interim", "jug05_relabeled_rows.csv")
+        assert len(rows) == 145
+        assert sum(1 for r in rows if (r["games"], r["points"]) in ficha.get(r["bsnpr_id"], ())) == 100
+

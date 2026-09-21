@@ -6192,3 +6192,39 @@ Supersedes the "still unpushed" wording at the end of the previous block.
   Figueroa pair render as expected; 0 console errors; a returning visitor purges once.
 - **Open.** The exact flip day; which label matches the real calendar; the 45 unchecked rows; id 320 may be two
   players; the 14 new 2006 conflicts; the 9 high-confidence birth-date corrections not re-checked against raw pages.
+
+### PHASE_SUMROW_APPLY — STAGED, NOT COMMITTED (2026-09-21, owner-approved)
+- **The rule.** A jug05 row whose games AND points both equal the sum of the players-source rows of the same
+  player-season (two or more rows, no blank figure, and not equal to a single team row) is a season total: folded out
+  of the career CSV and logged in `data/interim/jug05_season_totals.csv`; the per-team rows stay. It is
+  `parse_players.fold_season_totals`, run after the relabel and before the per-team fold, by `merge_jug05` and by the
+  new `src/apply_jug05_season_totals.py` (--check, idempotent, committed CSV). No regeneration target was run.
+- **Counts.** 13 rows folded (12 of 2006, id 985 of 2005; 13 players); career CSV 5,696 -> 5,683; conflicts 107 -> 94
+  on 71 players (2005: 3, 2006: 2, 2000-2003 unchanged at 89); merged 767 and trade pairs 235 unchanged. ids 81 and
+  1066 and the 2 merged pairs whose second ficha row is 0/0 (1442, 1512) stay as they were.
+- **Web.** Changed: `players/<id>.json` for the 13 players (151, 193, 284, 763, 777, 808, 870, 932, 985, 1284, 1462,
+  1995, 2067), `index/players.json`, `index/data_quality.json` (85 KB; new `counts.season_totals` 13 and
+  `counts.relabeled` 145, and the two registries as rows), `manifest.json` (digest 6a8c9f97e999 -> 20b5b782e59c). The
+  two new logs are digest inputs. No games, seasons or identity output changed.
+- **Totals.** 13 players rise by 1,057 points and 116 games in all. Player 1995: 4,300 / 455 -> 4,339 / 460, no
+  marker. Alvin Cruz stays 2,119 / 373. Recomputed from the files and read on the page: the 13 in every engine and
+  width, and in Chromium desktop also all 71 conflict players and 40 others (0 mismatches).
+- **The view.** 94 conflicts, counts equal the file. Two notes under the conflicts paragraph, driven by the counts:
+  13 season totals ("En 13 casos la fila de jug05 es el total de la temporada de un jugador que cambió de equipo...")
+  and 145 relabelled rows ("En las capturas de jug05 a partir de mayo de 2006, ..."). "A partir de", not
+  "posteriores a": 3 relabelled rows come from captures of 2006-05-28. No other app text changed.
+- **Checks.** `make verify` 346,486 checks, 0 failed; `make test` 433 passed; a second build is byte-identical;
+  `apply_jug05_season_totals`, `apply_jug05_relabel`, `apply_career_dedup`, `apply_identity_decisions` `--check`
+  exit 0; `cmp` app vs web passes. Chromium and WebKit at 1000 and 390 px on a local copy: 0 console errors, a
+  returning visitor purges once.
+- **New finding, not fixed.** A jug05 page can carry another player's line in the newest-season slot. Carmona, Abel
+  (id 4, a Coamo player) has BAYAMON 24/211 in 2006, exactly Alvin Cruz's line. Ayala, Jose (id 1208) has GUAYNABO
+  9/43 in 2006, the same line as Allen, Ramel (id 1912); the ficha gives Ayala Bayamon 6/3, and a later jug05 capture
+  shows that. So the trade pair 1208 gained in the relabel is probably an artifact. Extent UNVERIFIED (a read-only
+  check of the slot rows against each player's later captures would size it).
+- **Open.** ids 81 and 1066; the causes of the 2000-2003 conflicts; the 45 relabelled rows with no ficha twin
+  (12 are now season totals); the exact flip day; the real calendar meaning of the labels; id 320 may be two players.
+- **Note 2 reworded (owner, before the commit).** Now: "En las capturas de jug05 a partir de mayo de 2006, la temporada
+  más reciente conserva la etiqueta 2005. En 100 de 145 filas las cifras coinciden con la temporada 2006 de la ficha
+  del jugador. Reasignamos las 145 a 2006 y publicamos el registro." The 100 was re-counted from the files: 145
+  relabelled rows, 100 with games and points equal to a ficha 2006 row (the 100 folded into the merged log).

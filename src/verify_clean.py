@@ -608,6 +608,26 @@ def verify_data_quality(c: Checker, web, manifest) -> None:
             and n["merged_players"] == len({r["bsnpr_id"] for r in logs["merged"]}),
             "data_quality: merged pairs (total, by season, players) equal jug05_career_merged.csv")
     c.check(n["dropped_rows"] == len(logs["dropped"]), "data_quality: dropped rows equal player_merge_dropped_rows.csv")
+    totals_log = _read_interim("jug05_season_totals.csv")
+    relabel_log = _read_interim("jug05_relabeled_rows.csv")
+    c.check(n["season_totals"] == len(dq["season_totals"]) == len(totals_log),
+            "data_quality: season totals equal the rows of jug05_season_totals.csv")
+    c.check(n["relabeled"] == len(dq["relabeled"]) == len(relabel_log),
+            "data_quality: relabeled rows equal the rows of jug05_relabeled_rows.csv")
+    bad_t = 0
+    for t in dq["season_totals"]:
+        pf = web / "players" / f"{t['id']}.json"
+        rows = [x for x in (json.loads(pf.read_text(encoding="utf-8"))["career"] if pf.exists() else [])
+                if x["season"] == t["season"]]
+        listed = all(any((x["team_raw"], x["games"], x["points"]) == (f["team"], f["games"], f["points"]) for x in rows)
+                     for f in t["ficha"])
+        summed = (sum(f["games"] for f in t["ficha"]), sum(f["points"] for f in t["ficha"])) == \
+                 (t["jug05"]["games"], t["jug05"]["points"]) == (t["sum"]["games"], t["sum"]["points"])
+        gone = not any(x["team_raw"] == t["jug05"]["team"] for x in rows)      # the total itself left the career rows
+        bad_t += not (len(t["ficha"]) >= 2 and listed and summed and gone)
+    c.check(bad_t == 0, "data_quality: every season total equals the sum of two or more per-team rows that stay, and is gone from the player file", f"{bad_t} rows")
+    c.check(all((r["old_season"], r["new_season"]) == (2005, 2006) and r["capture_date"] >= "2006-05-01" for r in dq["relabeled"]),
+            "data_quality: every relabeled row is a 2005 label filed under 2006 from a capture on or after 2006-05-01")
     c.check(n["dob_open"] == len(dq["dob_open"]) == len(logs["dob_open"]),
             "data_quality: open birth-date conflicts equal jugador05_dob_conflicts.csv")
     c.check(n["dob_corrections"] == len(logs["dob_fix"]) == n["dob_corrections_high"] + n["dob_corrections_low"],

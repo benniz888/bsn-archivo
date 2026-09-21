@@ -291,7 +291,8 @@ def build_player_redirects() -> Path:
 
 
 DQ_INTERIM_LOGS = ["jug05_career_conflicts.csv", "jug05_career_merged.csv", "player_merge_dropped_rows.csv",
-                   "jugador05_dob_conflicts.csv", "player_dob_overrides.csv"]
+                   "jugador05_dob_conflicts.csv", "player_dob_overrides.csv",
+                   "jug05_season_totals.csv", "jug05_relabeled_rows.csv"]
 
 
 def build_data_quality(career_rows_by_pid: dict[str, list[dict]]) -> Path:
@@ -340,6 +341,27 @@ def build_data_quality(career_rows_by_pid: dict[str, list[dict]]) -> Path:
             "names": {i: names[i] for i in ids}, "decided_at": d["decided_at"], "text_es": d["evidence_es"],
         })
 
+    # a jug05 season total folded into the per-team rows it sums (jug05_season_totals.csv) and the jug05 rows
+    # filed under 2006 because their capture postdates the slot flip (jug05_relabeled_rows.csv): both are
+    # published as they are logged, so the notes in the view can say "the registry is public"
+    season_totals = []
+    for r in _read_interim("jug05_season_totals.csv"):
+        ficha = []
+        for part in r["ficha_rows"].split(" | "):
+            m = re.match(r"^(.*) (\d+)/(\d+)$", part)
+            if not m:
+                sys.exit(f"! data_quality: cannot read the ficha rows of season total {r['bsnpr_id']}/{r['season']}")
+            ficha.append({"team": m.group(1), "games": int(m.group(2)), "points": int(m.group(3))})
+        season_totals.append({
+            "id": int(r["bsnpr_id"]), "name": names[r["bsnpr_id"]], "season": int(r["season"]),
+            "jug05": {"team": r["jug05_team_raw"], "games": int(r["jug05_games"]), "points": int(r["jug05_points"]),
+                      "url": r["jug05_source_url"]},
+            "ficha": ficha, "sum": {"games": int(r["ficha_games_sum"]), "points": int(r["ficha_points_sum"])}})
+    relabeled = [{"id": int(r["bsnpr_id"]), "old_season": int(r["old_season"]), "new_season": int(r["new_season"]),
+                  "capture_date": r["capture_date"], "team": r["team_raw"], "games": _int(r["games"]),
+                  "points": _int(r["points"]), "url": r["source_url"]}
+                 for r in _read_interim("jug05_relabeled_rows.csv")]
+
     dob_open = [{"id": int(r["bsnpr_id"]), "name": r["canonical_name"], "canonical": r["canonical_dob"],
                  "jugador05": r["jugador05_dob"]} for r in _read_interim("jugador05_dob_conflicts.csv")]
     corrections = _read_interim("player_dob_overrides.csv")
@@ -355,6 +377,8 @@ def build_data_quality(career_rows_by_pid: dict[str, list[dict]]) -> Path:
             "merged_players": len({r["bsnpr_id"] for r in merged}),
             "merged_by_season": dict(sorted(merged_by_season.items())),
             "dropped_rows": len(_read_interim("player_merge_dropped_rows.csv")),
+            "season_totals": len(season_totals),
+            "relabeled": len(relabeled),
             "decisions": len(decisions),
             "tombstones": len(tombs),
             "dob_open": len(dob_open),
@@ -365,6 +389,8 @@ def build_data_quality(career_rows_by_pid: dict[str, list[dict]]) -> Path:
         "conflicts": conflicts,
         "decisions": decisions,
         "dob_open": dob_open,
+        "season_totals": season_totals,
+        "relabeled": relabeled,
     }
     _jdump(out, WEB / "index" / "data_quality.json")
     return WEB / "index" / "data_quality.json"
