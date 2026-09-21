@@ -6052,3 +6052,38 @@ Supersedes the "still unpushed" wording at the end of the previous block.
   jugador05 bios are attached to canonical rows by exact name, which put the bios of 24, 951 and 1947 on stubs.
   `player_roster_latinbasket.csv` is not in `SOURCES` (an existing gap: a roster-only change would not change the
   digest).
+
+**PHASE_MERGE_B1_DEPLOY_LOG: identity merge batch 1 is DEPLOYED and checked live (2026-09-21).**
+- **Push `01264b9..18a0295`.** One commit, `18a0295` (`identity: merge 73->74, 951->952, 24->35 with tombstones and
+  redirects; record 35/273 as not_same`). Local `main` and `origin/main` were level after the push. The rollback was
+  dry-run first: `git revert --no-edit HEAD` in a scratch clone applied as one revert commit and gave a tree
+  identical to `01264b9`, including `web/`. Pages run **35615580916**, event push, conclusion **success**, **20 s**
+  (re-read from the Actions API). The new shell was served on the first fetch, about 26 s after the deploy finished.
+- **Live checks (data and shell).** The served `index.html` is byte-identical to `web/index.html` at HEAD (643,883
+  bytes, sha `7648f8d94940`). Manifest digest `048e92ee36a9`, equal to the committed file; `counts.players` 3,330
+  and `counts.player_redirects` 3. `index/player_redirects.json` (3 id keys, 6 slug keys) is byte-identical.
+  `players/74.json`, `35.json` and `952.json` are byte-identical; `players/24.json`, `73.json` and `951.json` return
+  404; `players/273.json`, `1995.json`, `2631.json` and `1379.json` are byte-identical. `index/players.json` has
+  3,330 entries and no retired id.
+- **Live browsers (Chromium and WebKit on bsnarchivo.com).** cruz-alvin, lopez-ivan and arroyo-alberto open 74, 952
+  and 35 and the URL is replaced with the survivor's slug; Back lands on the previous page and does not loop;
+  `cruz-alvin-73` opens 74. The pages for 35 (15 rows, with the bio note) and 273 (the curated Carlos Arroyo, 11
+  rows) differ. `figueroa-carlos` opens 2631 (7 rows) and `figueroa-carlos-286` opens 286 (2 rows), each surviving a
+  reload; `vigo-castillo-julio` opens 1379 (10 rows); player 1995 is unchanged (21 rows). 0 console errors, and no
+  request for a retired player file.
+- **Owner hand check on the live site (2026-09-21): confirmed, no problems reported.**
+- **Observation: player 273 shows 11 rows live against 10 career rows in the CSV.** `players/273.json` is
+  byte-identical to its version before this commit, so the commit did not cause it. Re-read from the file: the
+  eleventh row is a roster-only 2018 row (Cariduros de Fajardo, no games) that the web build makes from the
+  latinbasket roster, as for 74's 2018 row. The owner's note called this likely and UNVERIFIED; the file confirms
+  it.
+- **Not checked (UNVERIFIED).** The service worker's own cache purge on a digest change (the `localStorage` purge
+  was checked locally in both engines, before the push).
+- **Status.** Batch 1 is live: A02 (73 -> 74), A06 (951 -> 952), A01 narrowed to 24 -> 35, and the not_same for 35
+  and 273. Open: the A17 finding (1947's DOB, bio and 2 roster rows were inherited from 1948's person; no action);
+  the other 14 clusters (A03-A05, A07-A17; A17 only after its 1963 row is reviewed, A05 and A16 held); the 126 stat
+  conflicts on 80 players (Alvin Cruz 2005 shows two rows); J16b Cayey (41 rows); the 2 hybrid Humacao strings (25
+  rows); the data-quality view; F7; the mobile PTS column; birth-date display; the latinbasket CSV missing from
+  `SOURCES`; the Nació/Nacio parser header bug (2 blank DOBs).
+- **NEXT_ACTIONS (owner-gated; none started; priority order; supersedes the earlier list).** 1. Data-quality view
+  (plan first). 2. Mobile PTS column check. 3. The one-page summary. 4. The remaining cluster review.
