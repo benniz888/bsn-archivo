@@ -6290,3 +6290,32 @@ Supersedes the "still unpushed" wording at the end of the previous block.
   this method: extent UNVERIFIED. The 31 unchecked no-twin relabelled rows (3 were these, 2 are class c, 26 have no
   evidence). 5 minted ids (990007, 990019, 990023, 990024, 990033) carry the same rows as ficha ids (2204, 388, 757,
   763, 1205): out of scope. The exact flip day; id 320 may be two players.
+
+### PHASE_FOREIGN_ROWS_DEPLOY_LOG — foreign jug05 rows excluded, deployed (2026-09-21)
+- **Push.** Commit `5384848` (`data: exclude 5 jug05 rows that show another player's line (4 players)`), pushed
+  `baf9be0..5384848`. Pages run 35660075014, success, 24 s (21:57:14Z to 21:57:38Z). The new shell was served on the
+  first poll.
+- **Rollback dry run (before the push).** `git revert --no-edit HEAD` in a scratch clone applied cleanly and matched
+  `baf9be0` including `web/` (tree `5ebe451ff1c0`).
+- **Live checks (data and shell).** `index.html` is byte-identical to `web/index.html` at HEAD (657,454 bytes) with
+  the new note. Digest `8968921b69b1`. `index/data_quality.json` is byte-identical (87,917 bytes): 94 conflicts on 71
+  players, 767 merged pairs, 145 relabeled, 13 season totals, 5 foreign rows. `index/players.json` and
+  `players/4.json`, `313.json`, `1208.json`, `49.json`, `74.json`, `1995.json`, `273.json`, `2631.json` are
+  byte-identical to the committed files.
+- **Live browsers (Chromium and WebKit on bsnarchivo.com, 1000 and 390 px).** All four runs passed on the first
+  attempt, 0 console errors. Calidad de datos shows 94 rows and the note. `carmona-andino-abel` 62 / 41 (4 rows);
+  `santiago-carlos` "Sin estadísticas por temporada"; `ayala-perla-jose-anibal` 3 / 6 (one 2006 Bayamon row);
+  `rivera-cruz-alexander` 240 / 122 (7 seasons); `cruz-alvin` 2,119 / 373; `melendez-huertas-ricardo` 4,339 / 460;
+  the Figueroa pair unchanged (7 and 2 rows).
+- **Owner hand check on the live site (2026-09-21): confirmed.** `#archivo/calidad` with the new note, and
+  `santiago-carlos` showing "Sin estadísticas por temporada", both looked right.
+- **Status.** The foreign-slot fix is live.
+- **Open.** The mechanism (why a jug05 page mixes two players) is UNCLEAR; undetected cases are UNVERIFIED (a foreign
+  line whose owner has no capture cannot be seen); the 5 minted ids that carry the same rows as ficha ids (out of
+  scope); ids 81 and 1066 and the 89 conflicts of 2000-2003 (causes UNVERIFIED); the 31 unchecked no-twin relabelled
+  rows; the flip day; id 320 may be two players; the remaining 14 identity clusters; J16b Cayey (41 rows); the 2 hybrid
+  Humacao strings; the season card for a flagged season shows one of two rows; the PTS column clipped at 390 px for
+  long team names; the service worker's own cache purge (UNVERIFIED); F7; the latinbasket CSV missing from `SOURCES`;
+  the Nació/Nacio parser header bug.
+- **NEXT_ACTIONS (owner-gated; none started; priority order).** 1. J16b Cayey (plan first). 2. The remaining 14
+  identity clusters.
