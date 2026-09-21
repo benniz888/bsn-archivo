@@ -6228,3 +6228,35 @@ Supersedes the "still unpushed" wording at the end of the previous block.
   más reciente conserva la etiqueta 2005. En 100 de 145 filas las cifras coinciden con la temporada 2006 de la ficha
   del jugador. Reasignamos las 145 a 2006 y publicamos el registro." The 100 was re-counted from the files: 145
   relabelled rows, 100 with games and points equal to a ficha 2006 row (the 100 folded into the merged log).
+
+### PHASE_SUMROW_DEPLOY_LOG — jug05 relabel and season totals deployed (2026-09-21)
+- **Push.** Commits `155c2c4` (relabel post-flip jug05 2005 rows to 2006 and fold duplicates, 145 rows) and `29aa8eb`
+  (fold jug05 season totals as corroboration, 13 rows; clarify the relabel note), pushed `e661781..29aa8eb`. Pages
+  run 35648190875, success, 35 s (19:58:55Z to 19:59:30Z). The new shell was served on the first poll.
+- **Rollback dry run (before the push).** `git revert --no-edit e661781..HEAD` (two reverts) in a scratch clone applied
+  cleanly and matched `e661781` including `web/` (tree `297186d76047`).
+- **Live checks (data and shell).** `index.html` is byte-identical to `web/index.html` at HEAD (657,066 bytes) with
+  both notes. Digest `20b5b782e59c`, `counts.data_quality` 94. `index/data_quality.json` is byte-identical (85,243
+  bytes): 94 conflicts on 71 players, 767 merged pairs, 145 relabeled, 13 season totals. `index/players.json` and
+  `players/74.json`, `1995.json`, `273.json`, `2631.json`, `1208.json`, `4.json` are byte-identical to the committed
+  files.
+- **Live browsers (Chromium and WebKit on bsnarchivo.com, 1000 and 390 px).** 0 console errors. The Calidad view, sort,
+  filter, CSV, year link and returning-visitor purge passed. `cruz-alvin` 2,119 pts / 373 games;
+  `melendez-huertas-ricardo` 4,339 / 460; the Figueroa pair unchanged (7 and 2 rows); all 13 season-total players
+  match the values recomputed from the files. The first WebKit view run failed on a null `USLUG` read in the test
+  script (it did not wait for the value) and passed on rerun with the wait added; the site had no error.
+- **Owner hand check on the live site (2026-09-21): confirmed.** `#archivo/calidad` with 94 conflicts and both notes,
+  `melendez-huertas-ricardo` 4,339 / 460 and `cruz-alvin` 2,119 / 373 all looked right.
+- **One-pager.** The owner reports its numbers were updated (767 merged, 94 conflicts, about 5,700 records). The
+  document is not in the repo, so this is UNVERIFIED here; the career CSV has 5,683 rows.
+- **Open, new finding, not fixed.** A jug05 page can carry another player's line in the newest-season slot: id 4
+  (Carmona, Abel) has Alvin Cruz's line, and id 1208 (Ayala, Jose) has the same line as id 1912. Extent UNVERIFIED; it
+  needs a read-only check of the slot rows against each player's later captures.
+- **Open, earlier.** ids 81 and 1066, and the 89 conflicts of 2000-2003 (causes UNVERIFIED); the 45 relabelled rows not
+  checked against the ficha; the flip day; id 320 may be two players; the remaining 14 identity clusters; J16b Cayey
+  (41 rows); the 2 hybrid Humacao strings; the season card for a flagged season shows one of two rows; the PTS column
+  clipped at 390 px for long team names; the service worker's own cache purge (UNVERIFIED); F7; the latinbasket CSV
+  missing from `SOURCES`; the Nació/Nacio parser header bug.
+- **NEXT_ACTIONS (owner-gated; none started; priority order).** 1. The read-only extent check of other-player slot
+  lines. 2. J16b Cayey. 3. The remaining cluster review.
+- **Hold lifted.** Nothing is unpushed; docs-only pushes are safe again.
