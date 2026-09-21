@@ -1,11 +1,12 @@
 """Cross-source career dedup (docs/specs/merge_jug05_audit_spec.md, D1-D6).
 
 Fixture tests pin the rule; TestCommittedData pins the numbers on the committed files
-(767 merged, 94 stat conflicts, 233 trade pairs, player 1995 one row per year). 665 and 125 before the
+(767 merged, 94 stat conflicts, 241 trade pairs, player 1995 one row per year). 665 and 125 before the
 identity merges of 2026-09-21 (73 -> 74 folded two more jug05 rows and added one conflict); 667, 126 and 276 before
 the jug05 relabel (src/apply_jug05_relabel.py: 100 more rows folded, 33 conflicts gone, 14 new ones, 41 trade pairs
 were the mislabel); 107 conflicts before the 13 season totals (apply_jug05_season_totals); 235 trade pairs before the 5 foreign
-rows (apply_jug05_foreign_rows: 1208 in 2006 and 49 in 2001 were made by another player's line).
+rows (apply_jug05_foreign_rows: 1208 in 2006 and 49 in 2001 were made by another player's line); 233 before J16b (Cayey mapped to
+toritos_cayey: 8 more player-seasons show two franchises, one of them the minted duplicate 990024).
 """
 
 import csv
@@ -71,6 +72,11 @@ class TestFold:
                                      (52, "Avancinos, Villalba", "VILLALBA", "avancinos_villalba")):
             kept, merged, _ = fold_cross_source_career([_row(pid, 1993, team, 33, 248), _jug(pid, 1993, bare, 33, 248)])
             assert len(kept) == 1 and merged[0]["franchise_id"] == fid, team
+
+    def test_cayey_merges_with_toritos_cayey(self):
+        # J16b: "Toritos, Cayey" and the bare "CAYEY" name the franchise the site shows (toritos_cayey).
+        kept, merged, _ = fold_cross_source_career([_row(53, 2002, "Toritos, Cayey", 20, 221), _jug(53, 2002, "CAYEY", 20, 221)])
+        assert len(kept) == 1 and merged[0]["franchise_id"] == "toritos_cayey"
 
     def test_different_stats_stay_two_rows_and_both_lines_are_logged(self):
         rows = [_row(37, 2005, "Vaqueros, Bayamon", 28, 408), _jug(37, 2005, "BAYAMON", 13, 253)]
@@ -277,7 +283,8 @@ class TestCommittedData:
         _, merged, _ = committed
         assert len(merged) == 767
         assert list(merged[0]) == CAREER_MERGED_COLUMNS
-        assert sum(1 for r in merged if r["franchise_id"] == "") == 19    # Cayey, deferred (J16b)
+        assert sum(1 for r in merged if r["franchise_id"] == "") == 0     # the 19 Cayey rows carry toritos_cayey (J16b)
+        assert sum(1 for r in merged if r["franchise_id"] == "toritos_cayey") == 19
         assert all(r["jug05_retrieved_at"] for r in merged)               # every dropped row keeps its fetch time
 
     def test_the_stat_conflicts_remain_as_two_rows_and_are_logged(self, committed):
@@ -299,7 +306,8 @@ class TestCommittedData:
         """276 before the relabel. 41 of them were the mislabel: a jug05 row labelled 2005 that was really the
         player's 2006 season at his 2006 team looked like a 2005 trade against the ficha's 2005 team (42 pairs
         went, 1 came: player 1208 in 2006, a jug05 Guaynabo row against a ficha Bayamon row). No trade pair is
-        ever folded (D3); only the season a jug05 row is filed under changed."""
+        ever folded (D3); only the season a jug05 row is filed under changed. J16b: mapping Cayey to toritos_cayey
+        gave 8 more player-seasons two franchises (241); (990024, 2003) is one of them, a minted duplicate of 763."""
         rows = committed[0]
         site = pp._load_site_franchise_resolver()
         by_pair = {}
@@ -307,7 +315,7 @@ class TestCommittedData:
             fid = site(r["team_raw"], int(r["season"]))
             if fid:
                 by_pair.setdefault((r["bsnpr_id"], r["season"]), set()).add(fid)
-        assert sum(1 for f in by_pair.values() if len(f) >= 2) == 233
+        assert sum(1 for f in by_pair.values() if len(f) >= 2) == 241
 
     def test_no_false_merges(self, committed):
         rows, merged, _ = committed
@@ -348,7 +356,7 @@ class TestLogWriter:
             reader = csv.DictReader(fh)
             assert reader.fieldnames == CAREER_CONFLICT_COLUMNS
             out_conflicts = list(reader)
-        assert len(out_merged) == 767 and sum(1 for r in out_merged if r["franchise_id"] == "") == 19
+        assert len(out_merged) == 767 and sum(1 for r in out_merged if r["franchise_id"] == "") == 0
         assert len(out_conflicts) == 94
         assert out_merged == merged and out_conflicts == conflicts       # the committed files, row for row
 

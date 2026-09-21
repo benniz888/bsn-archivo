@@ -2,7 +2,7 @@
 rows of the same player-season is corroboration of the season, not a conflict: it is folded out and logged, the
 per-team rows stay. Fixture tests pin the rule and the script; TestCommittedData pins the committed numbers
 (13 folded; career CSV 5,678 after the 5 foreign rows of tests/test_jug05_foreign_rows.py, conflicts 94 on 71
-players, merged 767, trade pairs 233)."""
+players, merged 767, trade pairs 241 after J16b)."""
 
 import csv
 
@@ -111,7 +111,7 @@ class TestCommittedData:
         assert sum(1 for c in conflicts if c["season"] in ("2000", "2001", "2002", "2003")) == 89
         assert {("1442", "2002"), ("1512", "2000")} <= {(m["bsnpr_id"], m["season"]) for m in merged}
 
-    def test_trade_pairs_are_233_after_the_foreign_rows_left(self):   # 235 before: 1208 in 2006 and 49 in 2001
+    def test_trade_pairs_are_241_after_cayey_was_mapped(self):   # 233 before J16b, 235 before the foreign rows
         rows = _rd("player_career_seasons.csv", "clean")
         site = pp._load_site_franchise_resolver()
         by_pair = {}
@@ -119,7 +119,7 @@ class TestCommittedData:
             fid = site(r["team_raw"], int(r["season"]))
             if fid:
                 by_pair.setdefault((r["bsnpr_id"], r["season"]), set()).add(fid)
-        assert sum(1 for f in by_pair.values() if len(f) >= 2) == 233
+        assert sum(1 for f in by_pair.values() if len(f) >= 2) == 241
 
     def test_the_apply_script_finds_nothing_left_to_do(self):
         assert apply.main(["--check"]) == 0

@@ -1,7 +1,7 @@
 """jug05 rows that show ANOTHER player's line (docs/specs/foreign_slot_check.md). A hand-curated list with per-row
 evidence (data/interim/jug05_foreign_lines.csv) says which published rows go; nothing is detected automatically.
 Fixture tests pin the rule and the script; TestCommittedData pins the committed numbers (5 rows, 4 players, career CSV
-5,678, trade pairs 233, the class b and c rows and the other 2005/2006 rows untouched)."""
+5,678, trade pairs 233 then and 241 after J16b, the class b and c rows and the other 2005/2006 rows untouched)."""
 
 import csv
 

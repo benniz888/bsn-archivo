@@ -418,11 +418,11 @@ class TestBuild:
             for season, rec in seasons.items():
                 assert rec["games"] >= b.STARTING_FIVE_MIN_GAMES
                 assert len(rec["players"]) == 5
-        # D-045 (Cayey/Humacao lineage) and the 2013 merged team-name gap
-        # are excluded at the source (no franchise_id to key a file on) —
-        # confirm neither leaked in under some other franchise's file.
-        cay = b.WEB / "starting_five" / "cay.json"
-        assert not cay.exists() or "2002" not in json.loads(cay.read_text())
+        # J16b: Cayey resolves to toritos_cayey, so its 2002 team-season (30 games) has a file. The 2013
+        # merged team-name gap (Humacao-Carolina) is still excluded at the source (no franchise_id to
+        # key a file on): confirm it did not leak in under some other franchise's file.
+        cay = json.loads((b.WEB / "starting_five" / "cay.json").read_text())
+        assert list(cay) == ["2002"] and cay["2002"]["games"] == 30 and len(cay["2002"]["players"]) == 5
         hum = b.WEB / "starting_five" / "hum.json"
         assert not hum.exists() or "2013" not in json.loads(hum.read_text())
 

@@ -6319,3 +6319,34 @@ Supersedes the "still unpushed" wording at the end of the previous block.
   the Nació/Nacio parser header bug.
 - **NEXT_ACTIONS (owner-gated; none started; priority order).** 1. J16b Cayey (plan first). 2. The remaining 14
   identity clusters.
+
+### PHASE_CAYEY_APPLY — J16b STAGED, NOT COMMITTED (2026-09-21, owner-approved)
+- **What.** The raw strings "Toritos, Cayey" (36 rows) and "CAYEY" (5 rows) now resolve to `toritos_cayey`: 41
+  career rows on 32 players (28 + 4), seasons 2002 (16), 2003 (13), 2004 (12). One franchise in Cayey in the
+  archive, so no season window. `toritos_cayey` was already in `franchises.csv` (founded 2002, defunct 2004) and
+  `club_code_map.csv` (CAYEY, CY); its lineage to `caciques_humacao` (relocated_renamed 2005, verified) is
+  `franchise_events.csv`. D-045 (owner, 2026-09-09) had settled the lineage; what J16b waited on was which id the
+  Cayey rows take.
+- **Edit.** `CITY_MAP["CAYEY"]` in `src/reconcile.py` (line 201, after VILLALBA) and the paired
+  `city_franchise_map.csv` row (line 11), copied from generator output: all 7 reconcile files are byte-identical to
+  a temp-dir run. The 19 blank `franchise_id` cells of `data/interim/jug05_career_merged.csv` (14 players; 2002: 9,
+  2003: 4, 2004: 6) now carry `toritos_cayey`. Docstrings and comments cleaned (`parse_players.py:450`,
+  `build_web_data.py:765`, 1147-1152, 1181).
+- **Web.** 97 files changed, as measured before: 61 game files (2002: 30, 2003: 31; only `teams`), 2 season files (only
+  the Cayey standings row), 32 player files (only `franchise_id` on 41 rows), `starting_five/cay.json` (2002, 30
+  games, 5 players; was `{}`), `manifest.json` (digest 8968921b69b1 -> f0e2983903f5; `starting_five_files` 16 -> 17).
+  No `index/` file and not `data_quality.json` changed. Totals on the player pages are unchanged.
+- **Trade pairs 233 -> 241.** 9 player-seasons now show two franchises with Cayey, 1 of them already a pair (+8):
+  808 and 1442 and 1753 (2002); 217, 763, 1280, 1711 and 990024 (2003); 1429 (2004). (990024, 2003) is the minted
+  duplicate of 763 (same rows, jug05-only id, birth 1976 against 1978, in the review queue as candidate 763|990024).
+  It stays in: the mapping is per raw string; the duplicate is a separate identity issue, out of scope.
+- **Tests.** cay.json pin flipped; new Cayey city pin; 0 blank merged rows and 19 `toritos_cayey`; trade pairs 241 in
+  both test files.
+- **Checks.** `make verify` 346,488 checks, 0 failed; `make test` 453 passed; a second build is byte-identical; the 5
+  `--check` commands exit 0; `cmp` app vs web passes (the app is unchanged). Chromium and WebKit at 1000 and 390 px,
+  old copy against new: the `cay` team page shows "Cinco inicial 2002"; players 143, 808 and 1442 show a "Toritos de
+  Cayey" chip that opens `cay`; `cac`, `hum`, `man` and players 37, 74, 1995, melendez and the Figueroa pair are
+  identical old against new; 0 console errors; a returning visitor purges once. The season standings show "Cayey"
+  as text (the app draws no chip there) and no game page exists in the app: game files are data only (fetched: 200).
+- **Open.** The 2 hybrid Humacao strings (25 rows); the 5 minted ids that duplicate ficha ids (990024 among them); the
+  rest as before.

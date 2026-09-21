@@ -196,6 +196,9 @@ CITY_MAP: dict[str, tuple[str, dict[str, str]]] = {
     "AGUADILLA": ("tiburones_aguadilla", {}),
     "CABO ROJO": ("tainos_cabo_rojo", {}),
     "VILLALBA": ("avancinos_villalba", {}),
+    # J16b: Toritos de Cayey (2002-2004) is the one franchise in Cayey in the archive. Its lineage to
+    # caciques_humacao (relocated_renamed 2005, D-045) is franchise_events, not this map.
+    "CAYEY": ("toritos_cayey", {}),
 }
 
 # Owner-curated `season_flags` prose that does not fit the "season: note" pairs

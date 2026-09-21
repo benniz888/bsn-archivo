@@ -157,3 +157,10 @@ method: extent UNVERIFIED. The 31 unchecked relabelled rows with no twin (3 were
 evidence). 5 minted ids (990007, 990019, 990023, 990024, 990033) carry the same rows as ficha ids (out of scope). The
 exact flip day and id 320 (may be two players) stay open.
 
+## 10. Cayey mapped (J16b, 2026-09-21): counts that moved
+
+"Toritos, Cayey" and "CAYEY" now resolve to `toritos_cayey` (city map and `reconcile.py`). No data_quality.json field
+changes. The 19 blank `franchise_id` cells of the merged log now carry it (0 blank). The trade pairs of section 9 go
+from 233 to 241: 9 player-seasons now show two franchises with Cayey, one of them already a pair; (990024, 2003) is
+the minted duplicate of id 763 and would leave the count if that duplicate is merged. The test pins follow.
+

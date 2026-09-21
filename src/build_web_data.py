@@ -762,7 +762,7 @@ def _row_for_stats(rows: list[dict], team_raw: str | None, resolve_team, season:
     (_season_stats keeps the team with the most games), so in a mid-season-trade year it goes
     on the row for that team; the first row of the season is only the fallback, when the
     record names no team or no row matches it. Matches on franchise_id where the city
-    resolves, else on the city itself (franchises the city map lacks: Cayey, Aguadilla...).
+    resolves, else on the city itself (the two hybrid Humacao-* labels, which the city map lacks).
     Several rows for the same team (one season written two ways) resolve to the first, as
     they always did. Before this, the stats went on the first row in CSV order, which is the
     wrong team whenever another team's row sorts ahead of it (13 seasons at HEAD)."""
@@ -1144,12 +1144,8 @@ def build_starting_fives(fid_to_app: dict[str, str]) -> int:
         fid = resolve_team(team_raw, season)
         app_key = fid_to_app.get(fid) if fid else None
         if not app_key:
-            # e.g. "CAYEY" (2002) — Toritos de Cayey's later-franchise identity
-            # is D-045's open question (Toritos -> Grises -> Caciques de
-            # Humacao, one lineage per city_franchise_map.csv vs. a separate
-            # standalone franchise_id elsewhere) — not this feature's call to
-            # make. "Humacao-Carolina" (2013) is a similar merged-name gap.
-            # Both stay excluded until that's resolved on its own terms.
+            # e.g. "Humacao-Carolina" (2013): a merged team name the city map does not
+            # resolve. It stays excluded, not this feature's call to make.
             excluded_unresolved_team.append(f"{season} {team_raw}")
             continue
         players = []
@@ -1177,8 +1173,8 @@ def build_starting_fives(fid_to_app: dict[str, str]) -> int:
     for app_key in sorted(set(fid_to_app.values()) - set(by_franchise)):
         _jdump({}, WEB / "starting_five" / f"{app_key}.json")
     if excluded_unresolved_team:
-        print(f"  [starting_five] excluded (team_raw has no franchise_id — "
-              f"D-045 or similar, not this feature's call): {', '.join(sorted(set(excluded_unresolved_team)))}")
+        print(f"  [starting_five] excluded (team_raw has no franchise_id, "
+              f"not this feature's call): {', '.join(sorted(set(excluded_unresolved_team)))}")
     return len(by_franchise)
 
 
