@@ -5800,3 +5800,33 @@ regenerated), rows: `players_canonical` 3,333 -> 3,325; `player_aliases` 24,208 
    135 pts (11.25).** The Tier-2 record itself is 3 games / 46 pts. Different sources; UNVERIFIED whether they should
    agree. `seasonCmpObj` (`app/bsn_archivo.html:4476`) takes ppg from the Tier-2 record and divides its other totals by
    the career row's games; the rendered 0.5 rpg and 1.2 apg are 6/12 and 14/12. Nothing was changed.
+
+**PHASE_N6_FIX: N6 CLOSED (2026-09-20). This commit is HELD unpushed, to batch with N1.**
+This block supersedes the open N6 items above (`:5610`, `:5621`, `:5764`, `:5768`); those stay as history.
+- **What changed.** `champions_reconciled.csv` `sources` now names each row's own seed `source` cell instead of one
+  constant. `src/reconcile.py` gained `seed_source(sd)` (`:41`): the seed row's `source` cell, or `SEED_SRC` if the cell
+  is blank. It is used for the seed entry of `sources` (`:360`) and in the 1953 no-champion path (`:343`).
+  `SEED_SOURCE_OVERRIDES` (the F8 stopgap for 2024) is removed: the 2024 seed cell already holds the season page,
+  and the regenerated 2024 line (`champions_reconciled.csv:97`) is byte-identical to before. The `source_a` columns
+  written to `reconcile_conflicts.csv` (`SEED_SRC` at the champion and runner-up conflict paths) were deliberately left
+  alone; that file has no rows using them today.
+- **Data.** One line changed in `data/clean/champions_reconciled.csv`: the 2026 row, **line 99** (the earlier note at
+  `:5612` said `:98`; that was wrong, `:98` is the 2025 row). `sources` went from
+  `en.wikipedia.org/wiki/Baloncesto_Superior_Nacional` to `basketball.realgm.com`, the seed cell at
+  `bsn_champions_by_season.csv:98`, which is untouched. The line was copied from generator output. A temp-dir reconcile
+  run is byte-identical to disk for all 7 reconcile CSVs.
+- **L2 (`docs/project.md:53`).** The 2026 row no longer credits Wikipedia for values that came from RealGM, so the
+  machine-tracked attribution is now correct for that row. **RealGM's reuse terms are UNVERIFIED**; the cell is a bare
+  host, not a page URL, and was recorded as written.
+- **Tests** (`tests/test_reconcile.py`): `TestSeedSourceOverrides` renamed `TestSeedSourceCell` (`:175`). The 2024
+  assertions are kept. Added: every reconciled row's first `sources` entry equals its seed cell (`:198`), 2026 is
+  pinned to `basketball.realgm.com` (`:206`), and the blank-cell fallback (`:211`). With the constant restored in a
+  scratch copy, 4 tests fail, so the generic test would have caught this bug. Full suite: 334 -> 337 passed;
+  `make verify` 346,472 checks, 0 failed.
+- **Deploy.** `champions_reconciled.csv` is a manifest digest input, so `web/data/manifest.json` `source_digest` changes
+  from `6a04359f7b39` to `08edb6334e83`. It is the only `web/` file that changes; the app does not display `sources`.
+  `web/**` is a Pages trigger, and a digest change makes returning visitors purge and refetch their cached `data:*`
+  entries, with no visible change.
+- **HELD.** This commit is not pushed, on purpose, so it can go out together with N1. **Any push of `main` deploys
+  it.** No docs-only push may go out in the meantime: it would carry this commit with it. Push only when N1 is
+  ready, or when the owner explicitly decides to deploy N6 alone.

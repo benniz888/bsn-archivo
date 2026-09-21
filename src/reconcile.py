@@ -36,13 +36,11 @@ from src.parse_pre2007 import _write_csv
 CLEAN = REPO_ROOT / "data" / "clean"
 SEED_SRC = "en.wikipedia.org/wiki/Baloncesto_Superior_Nacional"
 BSNPR_SRC = "wayback:bsnpr.com/estadisticas/campeonatos.asp"
-# champions_reconciled.csv credits SEED_SRC for every seed row; it does not read
-# the seed CSV's own `source` cell. A season listed here names the page its
-# seed values were actually confirmed from. 2024: the runner-up (Osos de Manati)
-# comes from the 2024 season page, not the franchise table.
-SEED_SOURCE_OVERRIDES = {
-    "2024": "en.wikipedia.org/wiki/2024_Baloncesto_Superior_Nacional_season",
-}
+
+
+def seed_source(sd: dict) -> str:
+    """The source a seed row names in its own `source` cell; SEED_SRC if the cell is blank."""
+    return (sd.get("source") or "").strip() or SEED_SRC
 
 
 def strip_accents(s: str) -> str:
@@ -342,7 +340,7 @@ def reconcile_champions(conflicts: list[dict]) -> None:
                        confidence="single-source", sources=BSNPR_SRC,
                        seed_champion=sd["champion"] if sd else "")
             if sd and not sd["champion"]:
-                row["sources"] = f"{SEED_SRC}; {BSNPR_SRC}"
+                row["sources"] = f"{seed_source(sd)}; {BSNPR_SRC}"
             out.append(row)
             continue
 
@@ -359,7 +357,7 @@ def reconcile_champions(conflicts: list[dict]) -> None:
 
         srcs = []
         if sd:
-            srcs.append(SEED_SOURCE_OVERRIDES.get(s, SEED_SRC))
+            srcs.append(seed_source(sd))
         if bp:
             srcs.append(BSNPR_SRC)
         row["sources"] = "; ".join(srcs)

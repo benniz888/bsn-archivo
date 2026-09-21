@@ -172,8 +172,9 @@ class TestAteniensesRelocation:
         assert row["source"] == FRANCHISE_SOURCES["atenienses_manati"]
 
 
-class TestSeedSourceOverrides:
-    """F8: the 2024 runner-up was confirmed from the 2024 season page."""
+class TestSeedSourceCell:
+    """N6: each reconciled row's `sources` names its own seed row's `source` cell.
+    F8: the 2024 runner-up was confirmed from the 2024 season page."""
 
     SEASON_PAGE = "en.wikipedia.org/wiki/2024_Baloncesto_Superior_Nacional_season"
 
@@ -193,3 +194,22 @@ class TestSeedSourceOverrides:
         seed = next(r for r in _rows(REPO_CLEAN / "bsn_champions_by_season.csv")
                     if r["season"] == "2024")
         assert seed["source"] == self.SEASON_PAGE
+
+    def test_every_seed_row_credits_its_own_source_cell(self, regenerated):
+        seed = {r["season"]: r["source"] for r in _rows(REPO_CLEAN / "bsn_champions_by_season.csv")}
+        reconciled = {r["season"]: r for r in _rows(regenerated / "champions_reconciled.csv")}
+        assert set(seed) <= set(reconciled)
+        for season, cell in seed.items():
+            first = reconciled[season]["sources"].split(";")[0].strip()
+            assert first == cell, season
+
+    def test_2026_credits_realgm(self, regenerated):
+        row = next(r for r in _rows(regenerated / "champions_reconciled.csv")
+                   if r["season"] == "2026")
+        assert row["sources"] == "basketball.realgm.com"
+
+    def test_blank_seed_cell_falls_back_to_the_base_article(self):
+        assert rc.seed_source({"source": ""}) == rc.SEED_SRC
+        assert rc.seed_source({"source": "  "}) == rc.SEED_SRC
+        assert rc.seed_source({}) == rc.SEED_SRC
+        assert rc.seed_source({"source": " basketball.realgm.com "}) == "basketball.realgm.com"
