@@ -5911,3 +5911,58 @@ Supersedes the "still unpushed" wording at the end of the previous block.
   (read-only); this also unblocks N7. 2. J16b Cayey (needs the `toritos_cayey` vs `caciques_humacao` call; brings 61
   game files, 2 season files and a real `cay.json`). 3. The 125 stat conflicts against a third source. 4. Data-quality
   view. 5. F7, when an archive-supported source exists for the Brujos 2022 season and the Osos 2023 opening.
+
+**PHASE_ROUTE_FIX (2026-09-21): ONE URL PER PLAYER. Staged, not committed. Owner rulings on the identity audit.**
+- **Baseline (Chromium and WebKit, local copy of `web/`).** All 57 shared name slugs opened the lowest id, so 61 of
+  the 118 players had no URL of their own. Pool names: 378, with 0 slug collisions inside the pool and 0 with the
+  archive (the audit's UNVERIFIED item is resolved).
+- **Rule.** `buildPlayerSlugs()` (`app/bsn_archivo.html:4343`) runs when `PALL` lands (`:8210`). The plain slug
+  opens the richest member (career_seasons, then a birth year, then lowest id); every other member is `<slug>-<id>`.
+  `PSLUG` maps url -> row and `USLUG` maps id -> url. The router tries the curated pool first (unchanged), then
+  `PSLUG` (`:8133`).
+- **Links.** `showPlayer()` (`:4440`) now builds the player index first, then sets the hash with `playerSlug()`
+  (`:4360`, `:4443`): curated names keep `slug(name)`, archive players get their unique slug. That also fixes the
+  MVP and scoring-champion click-throughs, whose display names resolved nowhere on reload (12 of 36 MVP and 34 of 65
+  scoring rows).
+- **Same-name line.** `sameNameLine()` (`:4365`, called at `:4650`) lists the other same-name players as
+  `<slug>-<id>` links, with years and `#id`, using the existing `.note` and link styles. No new CSS; about 8 lines.
+- **Files.** `app/bsn_archivo.html` and its byte copy `web/index.html` (`make site`, `cmp` passes), plus
+  `tests/test_route_slugs.py` (8 tests). Nothing in `data/`, `src/` or `web/data/` changed.
+- **Measured after the change.** In-page maps equal a Python port for all 3,333 players (3,333 distinct URLs, 0 pool
+  clashes against the real PINDEX). 46 plain routes unchanged, 11 targets moved (alamo-candido-fret 268,
+  carter-maurice 12972, farmer-anthony 172, figueroa-carlos 2631, ortiz-chris 13057, ramirez-francis 710,
+  santana-edson 990021, smith-greg 13199, stewart-kebu 1387, vigo-castillo-julio 1379, williams-corey 2738). All 61
+  slug-id routes open their own id and survive a reload; 61 players are newly reachable, so all 118 are. Chromium
+  and WebKit, 0 console errors.
+- **Click-throughs.** "Todo el archivo": the second Farmer, Anthony (171) gets `farmer-anthony-171` and reloads to
+  the same person. MVP 1965 Richie Pietri (id 2024) and scoring champion Raul Feliciano (id 1943) now reload to the
+  right player (the heading becomes the canonical name). Pool hashes and the compare route are unchanged.
+- **Old links.** The plain URLs of the 46 unchanged groups are identical. In the 11 moved groups an old plain link
+  now opens the richest member: 10 are class a or c (a same-person twin or an unclear pair, mostly with one empty
+  record); figueroa-carlos (class b) now opens the 2010s player, and the 1960s one is `figueroa-carlos-286`. The
+  same-name line is how a visitor finds the other.
+- **Deploy.** Only `index.html` changes; the manifest digest stays `1832f6cda8cf`, so there is no cache purge and
+  the cached data is untouched. The service worker serves the shell network-first (`web/sw.js:56-67`), but GitHub
+  Pages sends `max-age=600`, so a returning visitor can get the old shell for up to 10 minutes, and a tab already
+  open keeps the old app until it is reloaded. An old app opening a `<slug>-<id>` link finds no match and shows
+  nothing new; old plain links still work. Real iOS Safari and hydrate taking longer than 2.5 s stay UNVERIFIED.
+- **Owner rulings on the audit's open questions (2026-09-21).**
+- **Q1** approve clusters in batches. Batch 1 = A01, A02, A06. A17 only after its 1963 row is reviewed. Hold A05
+  (rows predate the 1980 birth) and A16 (Jan-1 date). The rest are reviewed together.
+- **Q2** survivor = richest id (career rows, then DOB, then id_map/roster), ties to the lowest id. Retired ids stay
+  resolvable as merged_into tombstones.
+- **Q3** stub twins: leave them. Adjacency is not evidence. Raise with the league.
+- **Q4** keep the bsnpr_id column name, documented as an opaque person id.
+- **Q5** Tier-3 is out of scope until Tier-1/2 are settled.
+- **Q6** keep the three Notienenombre rows, never merge them; relabel later.
+- **Q7** leave the 991xxx rows until the identity refactor (curated input file).
+- **Q8** the stale review-queue rows and the 5 open DOB conflicts: resolve in one interim-only pass.
+- **Q9** M/D/YYYY is canonical; hand-check the 45 swap-only pairs later.
+- **Q10** route fix now (this change).
+- **Q11** the owner asks the league for the registry, its duplicate-id list, roster history, box-score player ids
+  and a merge changelog.
+- **Q12** height/weight deferred until after the meeting.
+- **For the merge phase.** The in-app rule (career_seasons, then birth year, then lowest id) can shift when
+  survivors gain rows, so pin slugs in data at that point (Option B). 11 of the 20 retired ids have a plain slug
+  different from the survivor's and need a redirect map, read after PSLUG in the router; retired ids resolve through
+  merged_into tombstones.

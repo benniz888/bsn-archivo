@@ -329,3 +329,33 @@ Q11. Request the league registry, its duplicate-id list and box-score player ids
 Q12. Height/weight: extract from jugador.asp and jugador05 raw so cross-source height checks become possible (UNVERIFIED coverage)?
 Not verified: how the 9 `991xxx` rows were created; whether any T2 (b) pair is a DOB copied to the wrong row; slug collisions with the baked pool;
 how many Tier-3 groups are real duplicates; why 1271 disagrees in a jugador05 replay but not in the committed log; hard position contradictions.
+
+## Addendum 2026-09-21: route fix (Q10) and owner rulings
+
+- **Route fix, applied (staged, uncommitted at the time of writing).** Section 5's first-match route is replaced:
+  the plain slug opens the richest member, every other member is `<slug>-<id>`, computed in the app when `PALL`
+  lands (`app/bsn_archivo.html:4343`). Baseline before: 57 of 57 shared routes opened the lowest id.
+- **Results.** 11 plain slugs moved to the richest member and 46 are unchanged. All 61 previously unreachable
+  players now open by `<slug>-<id>` and survive a reload; all 118 are reachable. 3,333 distinct URLs; the curated
+  pool has 378 names and 0 collisions with them (this resolves the section 5 UNVERIFIED item). Verified in Chromium
+  and WebKit.
+- **Deploy.** `web/index.html` only; the digest is unchanged, so there is no cache purge.
+- **Rulings.**
+- **Q1** approve clusters in batches. Batch 1 = A01, A02, A06. A17 only after its 1963 row is reviewed. Hold A05
+  (rows predate the 1980 birth) and A16 (Jan-1 date). The rest are reviewed together.
+- **Q2** survivor = richest id (career rows, then DOB, then id_map/roster), ties to the lowest id. Retired ids stay
+  resolvable as merged_into tombstones.
+- **Q3** stub twins: leave them. Adjacency is not evidence. Raise with the league.
+- **Q4** keep the bsnpr_id column name, documented as an opaque person id.
+- **Q5** Tier-3 is out of scope until Tier-1/2 are settled.
+- **Q6** keep the three Notienenombre rows, never merge them; relabel later.
+- **Q7** leave the 991xxx rows until the identity refactor (curated input file).
+- **Q8** the stale review-queue rows and the 5 open DOB conflicts: resolve in one interim-only pass.
+- **Q9** M/D/YYYY is canonical; hand-check the 45 swap-only pairs later.
+- **Q10** route fix now (this change).
+- **Q11** the owner asks the league for the registry, its duplicate-id list, roster history, box-score player ids
+  and a merge changelog.
+- **Q12** height/weight deferred until after the meeting.
+- **Recorded for the merge phase.** The in-app rule can shift when survivors gain rows, so pin slugs in data then.
+  11 of the 20 retired ids have a plain slug different from the survivor's and need a redirect map; retired ids
+  resolve through merged_into tombstones.

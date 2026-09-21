@@ -4223,6 +4223,10 @@ let PXWALK=null, FID2APP=null;
    card. PMODE: 'top' (Destacados) | 'all' (Todo el archivo). All null/'top'
    on file:// — the toggle stays inert. */
 let PALL=null, XWALK_REV=null, PMODE='top';
+/* One URL per archive player. PSLUG: url slug -> PALL row; USLUG: id -> its url slug;
+   PTWINS: id -> the other players that share its name. Built by buildPlayerSlugs()
+   when PALL lands; null (and the old slug(name) URLs) on file://. */
+let PSLUG=null, USLUG=null, PTWINS=null;
 /* 5D.2b — MVP_ID: year -> bsnpr_id (archive-card click-through for gap-year
    MVPs not in PINDEX). MVP_ALSO: year -> the name the archive records where it
    disagrees with the baked row (footnote, app value stays canonical). */
@@ -4333,6 +4337,36 @@ function refreshPlayerIndexArchive(){
   }
   if($('#playerSearch').dataset.built) renderPlayerIndex();
 }
+/* Players sharing slug(name) (57 slugs, 118 players): the richest keeps the plain slug
+   (career_seasons, then a birth year, then the lowest id); every other one is <slug>-<id>.
+   Curated-pool slugs are unchanged and the router still tries them first. */
+function buildPlayerSlugs(){
+  if(!PALL) return;
+  const by=new Map();
+  PALL.forEach(p=>{ const s=slug(p.name); if(!by.has(s)) by.set(s,[]); by.get(s).push(p); });
+  const rank=(a,b)=>(b.career_seasons||0)-(a.career_seasons||0)||(b.birth_year?1:0)-(a.birth_year?1:0)||a.id-b.id;
+  PSLUG=new Map(); USLUG=new Map(); PTWINS=new Map();
+  const rest=[];
+  by.forEach((list,s)=>{
+    const best=list.length>1?list.slice().sort(rank)[0]:list[0];
+    PSLUG.set(s,best); USLUG.set(best.id,s);
+    list.forEach(p=>{ if(p!==best) rest.push([s,p]); });
+    if(list.length>1) list.forEach(p=>PTWINS.set(p.id,list.filter(q=>q!==p)));
+  });
+  rest.forEach(([s,p])=>{ let u=s+'-'+p.id; while(PSLUG.has(u)) u+='-'+p.id; PSLUG.set(u,p); USLUG.set(p.id,u); });
+}
+/* The hash for a player card: curated (pool) names keep slug(name); an archive player gets
+   its unique slug. Needs PINDEX built, so showPlayer() calls buildPlayerIndex() first. */
+function playerSlug(name,id){
+  const pooled=PINDEX&&PINDEX.some(x=>norm(x.name)===norm(name));
+  return (!pooled && id!=null && USLUG && USLUG.has(id)) ? USLUG.get(id) : slug(name);
+}
+/* "Mismo nombre" line: the other archive players with this exact name, as slug-id links. */
+function sameNameLine(id){
+  const tw=PTWINS&&PTWINS.get(id); if(!tw||!tw.length) return '';
+  const yrs=q=>q.first_season?(q.first_season===q.last_season?''+q.first_season:q.first_season+'–'+q.last_season):'sin años';
+  return `<div class="note">Mismo nombre en el archivo: ${tw.map(q=>`<a href="#jugadores/jugador/${USLUG.get(q.id)}">${esc(q.name)} (${yrs(q)} · #${q.id})</a>`).join(' · ')}</div>`;
+}
 function renderPlayerIndex(){
   const q=norm($('#pq')?$('#pq').value:''), f=$('#pf')?$('#pf').value:'';
   /* inline display, not [hidden] — .field{display:flex} in the stylesheet
@@ -4405,8 +4439,8 @@ function renderArchiveCard(name,id,host){
 }
 function showPlayer(name,id,season){
   showView('jugadores','buscar',{noScroll:true,noHash:true});   /* a player card lives in the Buscar view */
-  setHash('jugadores/jugador/'+slug(name)+(season!=null?'/'+season:''));
-  buildPlayerIndex();
+  buildPlayerIndex();   /* before the hash: playerSlug() needs the curated pool */
+  setHash('jugadores/jugador/'+playerSlug(name,id)+(season!=null?'/'+season:''));
   loadPlayerExtra(name,id,season);   /* 5D.3b/c — async, fills #playerExtra; season_detail_spec.md §4 */
   const p=PINDEX.find(x=>norm(x.name)===norm(name));
   const host=$('#playerDetail');
@@ -4613,6 +4647,7 @@ async function loadPlayerExtra(name,idHint,season){
   if(d.position) top.push(esc(d.position));
   if(d.nationality && d.nationality!=='Puerto Rico') top.push(esc(d.nationality));
   if(top.length) h+=`<div class="muted" style="font-size:var(--fs-xs)">${top.join(' · ')}</div>`;
+  h+=sameNameLine(id);
 
   /* jugador05.asp scouting note (2005–06), where the archive has one */
   const bio=d.bio||null;
@@ -8095,7 +8130,7 @@ function applyHash(){
     const season = p[3] && /^\d{4}$/.test(p[3]) ? +p[3] : null;
     const pl=PINDEX&&PINDEX.find(x=>slug(x.name)===c);
     if(pl) showPlayer(pl.name,null,season);
-    else { const q=PALL&&PALL.find(x=>slug(x.name)===c); if(q&&typeof openArchivePlayer==='function') openArchivePlayer(q.id,q.name,season); }
+    else { const q=PSLUG&&PSLUG.get(c); if(q&&typeof openArchivePlayer==='function') openArchivePlayer(q.id,q.name,season); }
     return;
   }
   if(a==='equipos' && b==='equipo' && c && F[c]){ showTeam(c); return; }
@@ -8172,7 +8207,7 @@ async function hydrate(){
 
   /* 5D.3c — the whole 3.303-row archive index, for "Todo el archivo" search. */
   const pa=await DATA.get('index/players.json');
-  if(pa){ PALL=pa; if(typeof refreshPlayerIndexArchive==='function') refreshPlayerIndexArchive();
+  if(pa){ PALL=pa; buildPlayerSlugs(); if(typeof refreshPlayerIndexArchive==='function') refreshPlayerIndexArchive();
     if(typeof refreshCompareCandidates==='function') refreshCompareCandidates(); }
 
   /* 5D.2b — fill MVP_YEARS gaps (1959-2003) from historic_awards. Union: a
