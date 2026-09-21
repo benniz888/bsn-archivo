@@ -5868,3 +5868,46 @@ This block supersedes the open N6 items above (`:5610`, `:5621`, `:5764`, `:5768
   (`bay` still shows Cinco inicial); the new chips on players 50, 305, 40 and 462 open `agd`, `cab` and `vil` with no
   console errors. Not run against bsnarchivo.com. The N6 commit is still unpushed, and any push of `main` deploys it
   together with this.
+
+**PHASE_DEPLOY_LOG: N6, N1 and J16a DEPLOYED and checked live (2026-09-20).**
+Supersedes the "still unpushed" wording at the end of the previous block.
+- **Push `cb22151..337677e`.** Two commits: `e03b688` (N6, `reconcile: credit each champion row to its own seed
+  source`) and `337677e` (N1 and J16a, `data: map Aguadilla, Cabo Rojo, Villalba (J16a); emit empty starting_five
+  files (N1)`). Local `main` and `origin/main` were level at `337677e` after the push. Rollback was dry-run in a
+  scratch clone first: `git revert --no-edit cb22151..HEAD` applied as two revert commits and gave a tree identical to
+  `cb22151`, including `web/`. Pages run **35557587817**, event push, conclusion **success**, **22 s** (re-read from
+  the Actions API).
+- **Live checks (bsnarchivo.com, data files).** `manifest.json` `source_digest` `1832f6cda8cf`, equal to the committed
+  file, and `counts.starting_five_files` still 16. `starting_five/ate`, `man`, `hum`, `vil` and `cay` return 200 with
+  `{}`; `bay` has data (6 seasons). Players 50, 305, 40 and 462: the J16a rows carry `tiburones_aguadilla` (5 rows),
+  `tainos_cabo_rojo` (1), `avancinos_villalba` (1 and 2). Player 1995 unchanged: 21 career rows, one Criollos de
+  Caguas row each for 2002 (23/53), 2003 (25/199) and 2004 (29/511), Atenienses 2015 (42/415) and 2016 (34/311), 0
+  `osos_manati` rows. Six files byte-identical to the committed versions: `players/50.json`, `players/305.json`,
+  `players/1995.json`, `index/franchises.json`, `seasons/2024.json` and `index.html` (equal to `web/index.html` at
+  HEAD).
+- **Live browsers (Chromium and WebKit).** Team pages `ate` and `man`: the starting-five file returns 200, no
+  starting-five section, no console errors or 404s. The chip on player 50 opens `agd` (Tiburones de Aguadilla) and the
+  chip on player 305 opens `cab` (Taínos de Cabo Rojo), with no errors; the hash routes
+  `#jugadores/jugador/falcon-melendez-alexander` and `#jugadores/jugador/ramos-colon-carlos` resolve. Player 1995
+  shows one Criollos de Caguas row per 2002-2004 and 21 rows.
+- **Player 37 note.** The 2016 season has two rows, Atenienses de Manati (11/139) and Brujos de Guayama (26/378), read
+  as a genuine two-team season. It is unchanged in every revision checked (five), and `web/data/players/37.json` was
+  not touched by the pushed commits. The requirement recorded earlier is one Atenienses row for 2016 (met, 0
+  `osos_manati` rows); a check that asked for exactly one 2016 row of any team was too strict and failed for that
+  reason only.
+- **Not checked (UNVERIFIED).** Of the 17 team pages that had no starting-five file, 11 were never opened by URL in
+  any browser (only `ate`, `man`, `hum`, `vil`, `cno` and `cay` were, and on the live site only `ate` and `man`; the
+  rest were checked locally before the push). Of those 11, `agd` and `cab` were reached through the player chips on
+  the live site; 9 (`agu`, `cap`, `coa`, `con`, `nau`, `rio`, `toi`, `upr`, `veg`) have not been opened in any
+  browser. Their `{}` files exist in the committed tree (17 empty of 33) and were deployed with it, but only `ate`,
+  `man`, `hum`, `vil`, `cay` and `bay` were fetched from the live site. The owner's visual check on the live site is
+  pending unless the owner says otherwise.
+- **Status.** N6 closed and live. N1 closed (live). J16a live: 78 career rows gained a franchise_id, and 66 null rows
+  remain (re-counted from `web/data/players`): J16b Cayey 41 rows (`Toritos, Cayey` 36, `CAYEY` 5) and the two hybrid
+  Humacao strings 25 rows (`Caciques-Gallitos, Humacao-Isabela` 17, `Caciques-Gigantes, Humacao-Carolina` 8), all
+  deferred. The 125 stat conflicts (79 players) are unchanged. Cosmetic: the `_row_for_stats` docstring at
+  `src/build_web_data.py:613` still lists "Cayey, Aguadilla" as cities the map lacks, which is stale for Aguadilla.
+- **NEXT_ACTIONS (owner-gated; none started; priority order; supersedes the earlier list).** 1. Identity-triage audit
+  (read-only); this also unblocks N7. 2. J16b Cayey (needs the `toritos_cayey` vs `caciques_humacao` call; brings 61
+  game files, 2 season files and a real `cay.json`). 3. The 125 stat conflicts against a third source. 4. Data-quality
+  view. 5. F7, when an archive-supported source exists for the Brujos 2022 season and the Osos 2023 opening.
