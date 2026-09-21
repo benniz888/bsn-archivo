@@ -6128,3 +6128,33 @@ Supersedes the "still unpushed" wording at the end of the previous block.
   does not widen the table. Not changed.
 - **Not re-checked.** The 9 high-confidence birth-date corrections were not re-checked against the raw jugador05
   pages; the public text says only that the correction log cites jug05 and jugador05.
+
+### PHASE_DQ_DEPLOY_LOG — Calidad de datos deployed (2026-09-21)
+- **Push.** Commit `64cc605` (`data quality: public Calidad de datos view; totals exclude conflicted seasons`),
+  pushed `034b94b..64cc605`. Pages run 35639040058, success, 42 s (18:32:30Z to 18:33:12Z). The new shell was
+  served on the first poll.
+- **Rollback dry run (before the push).** `git revert --no-edit HEAD` in a scratch clone applied cleanly and gave a
+  tree identical to `034b94b`, including `web/` (tree `bf7c97d0d983`).
+- **Live checks (data and shell).** `index.html` is byte-identical to `web/index.html` at HEAD (656,390 bytes).
+  Manifest digest `0121241e9332`, `counts.data_quality` 126. `index/data_quality.json` is byte-identical (61,072
+  bytes): 126 conflicts on 80 players, 667 merged pairs on 105 players, 4 dropped rows, 4 decisions, 3 tombstones,
+  5 open birth-date conflicts, 10 corrections. `players/74.json`, `273.json`, `1995.json` and `2631.json` are
+  byte-identical to the committed files.
+- **Live browsers (Chromium and WebKit on bsnarchivo.com, 1000 and 390 px).** 0 console errors and no page-level
+  horizontal scroll. `#archivo/calidad` opens from the tab, the landing card, the mega menu (desktop) and a direct
+  hash. The 126 rows sort and filter; the CSV downloads (126 rows + header); a year link opens
+  `cruz-torres-alvin/2005`. `cruz-alvin` redirects (20 rows, two "2 fuentes" markers, totals 1,985 points in 362
+  games, "sin 1 temporada con fuentes en conflicto"). The scoped Dalmau sentence and its pointer link work. Player
+  1995 and the Figueroa pair are unchanged. An old-digest visitor purges once.
+- **Owner hand check on the live site (2026-09-21): confirmed.** `#archivo/calidad`, the `cruz-alvin` redirect with
+  its corrected totals, and the same page on the owner's phone all looked right.
+- **Not checked (UNVERIFIED).** The service worker's own cache purge on a digest change (the `localStorage` purge was
+  checked in both engines).
+- **Status.** Calidad de datos is live; the player-page totals line excludes conflicted seasons. Open: the 2005
+  label-offset check (33 of 37 conflicts for 2005 match the same player's 2006 row on the ficha; no cause published);
+  the remaining 14 identity clusters; J16b Cayey (41 rows); the 2 hybrid Humacao strings; the season card for a
+  flagged season shows one of its two rows; PTS clipping at 390 px for long team names; the 9 high-confidence
+  birth-date corrections not re-checked against raw pages; F7; the latinbasket CSV missing from `SOURCES`; the
+  Nació/Nacio parser header bug.
+- **NEXT_ACTIONS (owner-gated; none started; priority order).** 1. The 2005 label-offset check (read-only). 2. The
+  remaining cluster review. 3. J16b Cayey.
