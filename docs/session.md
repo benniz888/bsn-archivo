@@ -5830,3 +5830,41 @@ This block supersedes the open N6 items above (`:5610`, `:5621`, `:5764`, `:5768
 - **HELD.** This commit is not pushed, on purpose, so it can go out together with N1. **Any push of `main` deploys
   it.** No docs-only push may go out in the meantime: it would carry this commit with it. Push only when N1 is
   ready, or when the owner explicitly decides to deploy N6 alone.
+
+**PHASE_N1_J16A: N1 and J16a APPLIED, STAGED, NOT COMMITTED (2026-09-20).**
+- **N1 (starting-five 404s).** 17 of the 33 team keys had no `starting_five/<key>.json`, so **17 team pages** logged
+  the 404, not the four in the earlier notes (`ate`, `man`, `hum`, `vil` were the ones checked in a browser; the other
+  13 were derived from the file listing against the 33 baked `F` keys). The fetch is
+  `DATA.get('starting_five/'+k+'.json')` at `app/bsn_archivo.html:4205` (function at `:4202`, not `:4204`). Fix, build
+  side only: `build_starting_fives()` writes `{}` for every app key with no data (`src/build_web_data.py:1023-1026`);
+  `loadStartingFive` already returns on an empty object (`:4206`), so no section renders. No app change, so
+  `web/index.html` is still byte-identical to the app. `manifest.json` `counts.starting_five_files` stays **16**
+  (teams that have a starting five, not placeholder files); the directory now holds 33 files. `cay.json` is `{}`:
+  Cayey 2002 stays excluded (J16b).
+- **J16a (career rows with a null franchise_id).** `AGUADILLA`, `CABO ROJO` and `VILLALBA` added to `CITY_MAP`
+  (`src/reconcile.py:196-198`), one franchise per city in `franchises.csv`, all observed seasons inside its window, so
+  no season override was needed. `city_franchise_map.csv` gains 3 rows (`:3`, `:7`, `:29`), copied from generator
+  output; all 7 reconcile CSVs are byte-identical to a temp-dir run. **78 career rows gain a franchise_id** (Aguadilla
+  37, Cabo Rojo 25, Villalba 16) in 43 player files, no other field. Null rows drop from 144 to 66 (Cayey 41, the two
+  hybrid strings 25). `index/`, `games/` and `seasons/` are unchanged.
+- **Merged log.** 18 blank `franchise_id` cells in `data/interim/jug05_career_merged.csv` backfilled (Aguadilla 11,
+  Cabo Rojo 1, Villalba 6) so the log agrees with the site resolver; 19 Cayey rows stay blank. Still 665 rows. No
+  regeneration: a transformation of the committed file. Trade pairs still 276; conflicts still 125.
+- **Tests** (337 -> 340 passed): the blank-franchise fixtures in `tests/test_career_dedup.py` use a synthetic city
+  ("Nowhere") instead of Aguadilla; new tests pin the three cities (`:63`) and the 19 remaining blanks (`:276`,
+  `:343`); `tests/test_build_web_data.py` gains the 33-files and empty-file tests (`:411`, `:418`).
+  `src/parse_players.py:420-423` docstring updated. The `_row_for_stats` docstring in `build_web_data.py` still lists
+  "Cayey, Aguadilla" as cities the map lacks; left as is (out of scope), so it is stale for Aguadilla.
+- **Deploy.** `manifest.json` `source_digest` `08edb6334e83` -> `1832f6cda8cf`, so returning visitors purge and
+  refetch cached data. `web/` changes: 43 player files, `manifest.json`, 17 new `starting_five/*.json`.
+- **DEFERRED, not approved.** J16b (Cayey: 41 rows, 61 game files, 2 season files, and a real `cay.json` for 2002;
+  needs the `toritos_cayey` vs `caciques_humacao` call) and the two hybrid strings, "Caciques-Gallitos,
+  Humacao-Isabela" (17 rows, 2017) and "Caciques-Gigantes, Humacao-Carolina" (8 rows, 2008-2013). The 2017 hybrid
+  rests on a `disputed` latinbasket inference and would also fold 7 roster-only rows away; the Carolina one has no
+  archive evidence.
+- **Verified before staging.** `make verify` 346,472 checks, 0 failed; full `make test` 340 passed;
+  `apply_career_dedup --check` exit 0; identity outputs identical. Chromium and WebKit on a local copy of `web/`: no
+  starting_five 404 and no starting-five section on `ate`, `man`, `hum`, `vil`, `cno`, `cay`, on first and second load
+  (`bay` still shows Cinco inicial); the new chips on players 50, 305, 40 and 462 open `agd`, `cab` and `vil` with no
+  console errors. Not run against bsnarchivo.com. The N6 commit is still unpushed, and any push of `main` deploys it
+  together with this.

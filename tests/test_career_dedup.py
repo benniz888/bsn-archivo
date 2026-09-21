@@ -56,9 +56,17 @@ class TestFold:
         assert m["players_source_url"] == rows[1]["source_url"] and m["jug05_source_url"] == rows[0]["source_url"]
 
     def test_a_city_the_map_lacks_merges_with_a_blank_franchise(self):
-        rows = [_row(50, 1993, "Tiburones, Aguadilla", 33, 248), _jug(50, 1993, "AGUADILLA", 33, 248)]
+        rows = [_row(50, 1993, "Tiburones, Nowhere", 33, 248), _jug(50, 1993, "NOWHERE", 33, 248)]
         kept, merged, _ = fold_cross_source_career(rows)
         assert len(kept) == 1 and merged[0]["franchise_id"] == ""
+
+    def test_aguadilla_cabo_rojo_and_villalba_merge_with_their_franchise(self):
+        # J16a: the city map names them now, so the merged pair carries the franchise the site shows.
+        for pid, team, bare, fid in ((50, "Tiburones, Aguadilla", "AGUADILLA", "tiburones_aguadilla"),
+                                     (51, "Tainos, Cabo Rojo", "CABO ROJO", "tainos_cabo_rojo"),
+                                     (52, "Avancinos, Villalba", "VILLALBA", "avancinos_villalba")):
+            kept, merged, _ = fold_cross_source_career([_row(pid, 1993, team, 33, 248), _jug(pid, 1993, bare, 33, 248)])
+            assert len(kept) == 1 and merged[0]["franchise_id"] == fid, team
 
     def test_different_stats_stay_two_rows_and_both_lines_are_logged(self):
         rows = [_row(37, 2005, "Vaqueros, Bayamon", 28, 408), _jug(37, 2005, "BAYAMON", 13, 253)]
@@ -203,7 +211,7 @@ class TestApplyScript:
         monkeypatch.setattr(pp, "INTERIM_DIR", interim)
         rows = [_row(1995, 2002, "Criollos, Caguas", 23, 53), _jug(1995, 2002, "CAGUAS", 23, 53),
                 _row(2, 2001, "Cangrejeros, Santurce", 12, 14), _jug(2, 2001, "SANTURCE", 12, 26),
-                _row(50, 1993, "Tiburones, Aguadilla", 33, 248), _jug(50, 1993, "AGUADILLA", 33, 248)]
+                _row(50, 1993, "Tiburones, Nowhere", 33, 248), _jug(50, 1993, "NOWHERE", 33, 248)]
         with (clean / "player_career_seasons.csv").open("w", encoding="utf-8", newline="") as fh:
             w = csv.DictWriter(fh, fieldnames=apply.CAREER_COLUMNS)
             w.writeheader()
@@ -228,11 +236,11 @@ class TestApplyScript:
             kept = list(csv.DictReader(fh))
         assert [(r["bsnpr_id"], r["team_raw"]) for r in kept] == [
             ("1995", "Criollos, Caguas"), ("2", "Cangrejeros, Santurce"), ("2", "SANTURCE"),
-            ("50", "Tiburones, Aguadilla")]
+            ("50", "Tiburones, Nowhere")]
         with (interim / "jug05_career_merged.csv").open(encoding="utf-8") as fh:
             merged = list(csv.DictReader(fh))
         assert [(r["bsnpr_id"], r["franchise_id"], r["jug05_team_raw"]) for r in merged] == [
-            ("50", "", "AGUADILLA"), ("1995", "criollos_caguas", "CAGUAS")]   # sorted by int player id
+            ("50", "", "NOWHERE"), ("1995", "criollos_caguas", "CAGUAS")]   # sorted by int player id
         assert {r["jug05_retrieved_at"] for r in merged} == {"t"}
         with (interim / "jug05_career_conflicts.csv").open(encoding="utf-8") as fh:
             conflicts = list(csv.DictReader(fh))
@@ -265,7 +273,7 @@ class TestCommittedData:
         _, merged, _ = committed
         assert len(merged) == 665
         assert list(merged[0]) == CAREER_MERGED_COLUMNS
-        assert sum(1 for r in merged if r["franchise_id"] == "") == 37    # cities the map lacks
+        assert sum(1 for r in merged if r["franchise_id"] == "") == 19    # Cayey, deferred (J16b)
         assert all(r["jug05_retrieved_at"] for r in merged)               # every dropped row keeps its fetch time
 
     def test_125_stat_conflicts_remain_as_two_rows_and_are_logged(self, committed):
@@ -332,7 +340,7 @@ class TestLogWriter:
             reader = csv.DictReader(fh)
             assert reader.fieldnames == CAREER_CONFLICT_COLUMNS
             out_conflicts = list(reader)
-        assert len(out_merged) == 665 and sum(1 for r in out_merged if r["franchise_id"] == "") == 37
+        assert len(out_merged) == 665 and sum(1 for r in out_merged if r["franchise_id"] == "") == 19
         assert len(out_conflicts) == 125
         assert out_merged == merged and out_conflicts == conflicts       # the committed files, row for row
 

@@ -419,7 +419,7 @@ def _career_stats(row) -> tuple:
 def _load_site_franchise_resolver():
     """(team_raw, season) -> the franchise_id the site shows for it: city_franchise_map.csv
     plus the season overrides, keyed on the city half of the string; "" when the city map
-    lacks the city (Aguadilla, Cayey, Villalba, Cabo Rojo). Mirrors
+    lacks the city (Cayey, until J16b; the two hybrid Humacao-* labels). Mirrors
     build_web_data._team_resolver on purpose, so the merged-pairs log names franchises the
     way the site does (and leaves the unresolved ones blank, never guessed)."""
     with (CLEAN_DIR / "city_franchise_map.csv").open(encoding="utf-8") as fh:

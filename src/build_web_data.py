@@ -1020,6 +1020,10 @@ def build_starting_fives(fid_to_app: dict[str, str]) -> int:
     _reset_dir(WEB / "starting_five")
     for app_key, seasons in by_franchise.items():
         _jdump(seasons, WEB / "starting_five" / f"{app_key}.json")
+    # N1: every team page fetches starting_five/<key>.json, so a team with no data gets an
+    # empty object rather than a 404 (loadStartingFive() already returns on an empty one).
+    for app_key in sorted(set(fid_to_app.values()) - set(by_franchise)):
+        _jdump({}, WEB / "starting_five" / f"{app_key}.json")
     if excluded_unresolved_team:
         print(f"  [starting_five] excluded (team_raw has no franchise_id — "
               f"D-045 or similar, not this feature's call): {', '.join(sorted(set(excluded_unresolved_team)))}")

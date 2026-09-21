@@ -192,6 +192,10 @@ CITY_MAP: dict[str, tuple[str, dict[str, str]]] = {
     }),
     "HUMACAO": ("caciques_humacao", {}),
     "MANATI": ("osos_manati", {"*": "Manati: Atenienses 2014-17 then Osos 2022+ — verify per season"}),
+    # J16a: each hosts one franchise in the archive (franchises.csv), all seasons inside its window.
+    "AGUADILLA": ("tiburones_aguadilla", {}),
+    "CABO ROJO": ("tainos_cabo_rojo", {}),
+    "VILLALBA": ("avancinos_villalba", {}),
 }
 
 # Owner-curated `season_flags` prose that does not fit the "season: note" pairs

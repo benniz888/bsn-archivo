@@ -408,6 +408,22 @@ class TestBuild:
         hum = b.WEB / "starting_five" / "hum.json"
         assert not hum.exists() or "2013" not in json.loads(hum.read_text())
 
+    def test_every_app_team_key_has_a_starting_five_file(self):
+        # N1: a team page fetches starting_five/<key>.json for every key, so a missing
+        # file is a 404 in the console. All 33 keys get one.
+        app_to_fid, _ = b.load_crosswalk()
+        files = {p.stem for p in (b.WEB / "starting_five").glob("*.json")}
+        assert files == set(app_to_fid) and len(files) == 33
+
+    def test_a_team_with_no_starting_five_data_has_an_empty_file(self):
+        empty = {p.stem for p in (b.WEB / "starting_five").glob("*.json")
+                 if json.loads(p.read_text()) == {}}
+        assert {"ate", "man", "hum", "vil"} <= empty          # the four checked in real browsers
+        assert not empty & {"are", "bay", "cac"}               # teams with data are never blanked
+        manifest = json.loads((b.WEB / "manifest.json").read_text())
+        # the manifest still counts teams that have a starting five, not placeholder files
+        assert manifest["counts"]["starting_five_files"] == 33 - len(empty)
+
 
 class TestHelpers:
     def test_norm(self):
