@@ -11,7 +11,7 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 4,2000,COAMO,2,7,wayback_bsnpr_jug05,https://web.archive.org/web/20060917070037id_/http://www.bsnpr.com:80/jug05.asp?r2=NFGFOVGUNE&r3=3532+&r=00034&e=ARECIBO,2026-09-10T02:06:28Z
 4,2002,COAMO,16,39,wayback_bsnpr_jug05,https://web.archive.org/web/20060917070037id_/http://www.bsnpr.com:80/jug05.asp?r2=NFGFOVGUNE&r3=3532+&r=00034&e=ARECIBO,2026-09-10T02:06:28Z
 4,2004,COAMO,15,10,wayback_bsnpr_jug05,https://web.archive.org/web/20060917070037id_/http://www.bsnpr.com:80/jug05.asp?r2=NFGFOVGUNE&r3=3532+&r=00034&e=ARECIBO,2026-09-10T02:06:28Z
-4,2005,BAYAMON,24,211,wayback_bsnpr_jug05,https://web.archive.org/web/20060917070037id_/http://www.bsnpr.com:80/jug05.asp?r2=NFGFOVGUNE&r3=3532+&r=00034&e=ARECIBO,2026-09-10T02:06:28Z
+4,2006,BAYAMON,24,211,wayback_bsnpr_jug05,https://web.archive.org/web/20060917070037id_/http://www.bsnpr.com:80/jug05.asp?r2=NFGFOVGUNE&r3=3532+&r=00034&e=ARECIBO,2026-09-10T02:06:28Z
 11,1974,"Cariduros, Fajardo",31,128,wayback_bsnpr_players,https://web.archive.org/web/20070829042648id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=11&e=,2026-09-08T14:26:07Z
 11,1975,"Cariduros, Fajardo",28,108,wayback_bsnpr_players,https://web.archive.org/web/20070829042648id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=11&e=,2026-09-08T14:26:07Z
 11,1976,"Cariduros, Fajardo",29,90,wayback_bsnpr_players,https://web.archive.org/web/20070829042648id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=11&e=,2026-09-08T14:26:07Z
@@ -46,7 +46,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 35,2003,"Cangrejeros, Santurce",17,38,wayback_bsnpr_players,https://web.archive.org/web/20080803163146id_/http://bsnpr.com:80/jugadores/jugador.asp?id=35&e=,2026-09-08T14:26:19Z
 35,2004,"Cangrejeros, Santurce",10,18,wayback_bsnpr_players,https://web.archive.org/web/20080803163146id_/http://bsnpr.com:80/jugadores/jugador.asp?id=35&e=,2026-09-08T14:26:19Z
 35,2005,"Cangrejeros, Santurce",6,11,wayback_bsnpr_players,https://web.archive.org/web/20080803163146id_/http://bsnpr.com:80/jugadores/jugador.asp?id=35&e=,2026-09-08T14:26:19Z
-35,2005,GUAYNABO,20,21,wayback_bsnpr_jug05,https://web.archive.org/web/20061208064347id_/http://www.bsnpr.com:80/jug05.asp?r3=00112&r2=462786RX3B&r=00102&e=,2026-09-10T01:53:41Z
 35,2006,"Conquistadores, Guaynabo",20,21,wayback_bsnpr_players,https://web.archive.org/web/20080803163146id_/http://bsnpr.com:80/jugadores/jugador.asp?id=35&e=,2026-09-08T14:26:19Z
 35,2007,"Cariduros, Fajardo",16,14,wayback_bsnpr_players,https://web.archive.org/web/20080803163146id_/http://bsnpr.com:80/jugadores/jugador.asp?id=35&e=,2026-09-08T14:26:19Z
 35,2008,"Cariduros, Fajardo",12,5,wayback_bsnpr_players,https://web.archive.org/web/20080803163146id_/http://bsnpr.com:80/jugadores/jugador.asp?id=35&e=,2026-09-08T14:26:19Z
@@ -56,7 +55,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 37,2002,"Indios, Mayaguez",13,217,wayback_bsnpr_players,https://web.archive.org/web/20170715120606id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=37&e=,2026-09-08T14:26:23Z
 37,2003,"Indios, Mayaguez",30,482,wayback_bsnpr_players,https://web.archive.org/web/20170715120606id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=37&e=,2026-09-08T14:26:23Z
 37,2004,"Indios, Mayaguez",22,398,wayback_bsnpr_players,https://web.archive.org/web/20170715120606id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=37&e=,2026-09-08T14:26:23Z
-37,2005,BAYAMON,13,253,wayback_bsnpr_jug05,https://web.archive.org/web/20061212190415id_/http://www.bsnpr.com:80/jug05.asp?r3=00145&r2=462736RX0S&r=00025&e=,2026-09-10T01:56:41Z
 37,2005,"Vaqueros, Bayamon",28,408,wayback_bsnpr_players,https://web.archive.org/web/20170715120606id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=37&e=,2026-09-08T14:26:23Z
 37,2006,"Vaqueros, Bayamon",13,253,wayback_bsnpr_players,https://web.archive.org/web/20170715120606id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=37&e=,2026-09-08T14:26:23Z
 37,2007,"Vaqueros, Bayamon",29,573,wayback_bsnpr_players,https://web.archive.org/web/20170715120606id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=37&e=,2026-09-08T14:26:23Z
@@ -107,7 +105,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 49,2003,"Criollos, Caguas",22,77,wayback_bsnpr_players,https://web.archive.org/web/20080501072254id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=49&e=11,2026-09-08T14:26:31Z
 49,2003,MOROVIS,26,79,wayback_bsnpr_jug05,https://web.archive.org/web/20061119230859id_/http://www.bsnpr.com/jug05.asp?r2=462686RWYN&r3=00053&r=00545&e=CAGUAS,2026-09-10T01:57:29Z
 49,2004,"Criollos, Caguas",23,24,wayback_bsnpr_players,https://web.archive.org/web/20080501072254id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=49&e=11,2026-09-08T14:26:31Z
-49,2005,CAGUAS,7,6,wayback_bsnpr_jug05,https://web.archive.org/web/20061119230859id_/http://www.bsnpr.com/jug05.asp?r2=462686RWYN&r3=00053&r=00545&e=CAGUAS,2026-09-10T01:57:29Z
 49,2006,"Criollos, Caguas",7,6,wayback_bsnpr_players,https://web.archive.org/web/20080501072254id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=49&e=11,2026-09-08T14:26:31Z
 49,2007,"Criollos, Caguas",8,5,wayback_bsnpr_players,https://web.archive.org/web/20080501072254id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=49&e=11,2026-09-08T14:26:31Z
 49,2008,"Criollos, Caguas",6,0,wayback_bsnpr_players,https://web.archive.org/web/20080501072254id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=49&e=11,2026-09-08T14:26:31Z
@@ -146,7 +143,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 57,1966,"Cangrejeros, Santurce",2,2,wayback_bsnpr_players,https://web.archive.org/web/20070828231504id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=57&e=,2026-09-08T14:26:36Z
 67,1984,"Cariduros, Fajardo",3,1,wayback_bsnpr_players,https://web.archive.org/web/20070828224339id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=67&e=,2026-09-08T14:26:38Z
 67,1989,"Cariduros, Fajardo",24,53,wayback_bsnpr_players,https://web.archive.org/web/20070828224339id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=67&e=,2026-09-08T14:26:38Z
-74,2005,BAYAMON,24,211,wayback_bsnpr_jug05,https://web.archive.org/web/20061119230826id_/http://www.bsnpr.com/jug05.asp?r2=NFGFOVGUNE&r3=EDWFK&r=00034&e=ARECIBO,2026-09-10T01:54:15Z
 74,1998,"Vaqueros, Bayamon",9,12,wayback_bsnpr_players,https://web.archive.org/web/20170817055003id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=74&e=2,2026-09-08T14:26:42Z
 74,1999,"Vaqueros, Bayamon",10,15,wayback_bsnpr_players,https://web.archive.org/web/20170817055003id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=74&e=2,2026-09-08T14:26:42Z
 74,2000,"Vaqueros, Bayamon",8,9,wayback_bsnpr_players,https://web.archive.org/web/20170817055003id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=74&e=2,2026-09-08T14:26:42Z
@@ -169,11 +165,10 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 78,2004,"Criollos, Caguas",18,207,wayback_bsnpr_players,https://web.archive.org/web/20080417000059id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=78&e=13,2026-09-08T14:26:44Z
 81,2002,"Maratonistas, Coamo",2,22,wayback_bsnpr_players,https://web.archive.org/web/20071211045931id_/http://bsnpr.com:80/jugadores/jugador.asp?id=81&e=,2026-09-08T14:26:47Z
 81,2005,"Maratonistas, Coamo",21,227,wayback_bsnpr_players,https://web.archive.org/web/20071211045931id_/http://bsnpr.com:80/jugadores/jugador.asp?id=81&e=,2026-09-08T14:26:47Z
-81,2005,SAN GERMAN,31,333,wayback_bsnpr_jug05,https://web.archive.org/web/20070404012113id_/http://www.bsnpr.com:80/jug05.asp?r3=QSBVQ&r2=QQRXUFBMBV&r=00029&e=,2026-09-10T02:12:19Z
+81,2006,SAN GERMAN,31,333,wayback_bsnpr_jug05,https://web.archive.org/web/20070404012113id_/http://www.bsnpr.com:80/jug05.asp?r3=QSBVQ&r2=QQRXUFBMBV&r=00029&e=,2026-09-10T02:12:19Z
 81,2006,"Atleticos, San German",13,126,wayback_bsnpr_players,https://web.archive.org/web/20071211045931id_/http://bsnpr.com:80/jugadores/jugador.asp?id=81&e=,2026-09-08T14:26:47Z
 81,2006,"Maratonistas, Coamo",13,136,wayback_bsnpr_players,https://web.archive.org/web/20071211045931id_/http://bsnpr.com:80/jugadores/jugador.asp?id=81&e=,2026-09-08T14:26:47Z
 81,2007,"Gigantes, Carolina",29,134,wayback_bsnpr_players,https://web.archive.org/web/20071211045931id_/http://bsnpr.com:80/jugadores/jugador.asp?id=81&e=,2026-09-08T14:26:47Z
-86,2005,COAMO,13,40,wayback_bsnpr_jug05,https://web.archive.org/web/20070404072946id_/http://www.bsnpr.com:80/jug05.asp?r3=QRJGN&r2=WCPCJDEPGL&r=00542&e=,2026-09-10T02:09:54Z
 86,2006,"Maratonistas, Coamo",13,40,wayback_bsnpr_players,https://web.archive.org/web/20140122201102id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=86&e=,2026-09-08T14:26:49Z
 86,2007,"Maratonistas, Coamo",8,17,wayback_bsnpr_players,https://web.archive.org/web/20140122201102id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=86&e=,2026-09-08T14:26:49Z
 86,2008,"Mets, Guaynabo",27,128,wayback_bsnpr_players,https://web.archive.org/web/20140122201102id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=86&e=,2026-09-08T14:26:49Z
@@ -189,7 +184,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 87,2002,CAGUAS,0,0,wayback_bsnpr_jug05,https://web.archive.org/web/20060713002107id_/http://www.bsnpr.com:80/jug05.asp?r=00052,2026-09-10T01:55:51Z
 87,2002,"Criollos, Caguas",26,179,wayback_bsnpr_players,https://web.archive.org/web/20180424203035id_/http://www.bsnpr.com/jugadores/jugador.asp?id=87&e,2026-09-08T14:26:50Z
 87,2004,"Criollos, Caguas",21,172,wayback_bsnpr_players,https://web.archive.org/web/20180424203035id_/http://www.bsnpr.com/jugadores/jugador.asp?id=87&e,2026-09-08T14:26:50Z
-87,2005,CAGUAS,20,131,wayback_bsnpr_jug05,https://web.archive.org/web/20060713002107id_/http://www.bsnpr.com:80/jug05.asp?r=00052,2026-09-10T01:55:51Z
 87,2006,"Criollos, Caguas",20,131,wayback_bsnpr_players,https://web.archive.org/web/20180424203035id_/http://www.bsnpr.com/jugadores/jugador.asp?id=87&e,2026-09-08T14:26:50Z
 87,2007,"Criollos, Caguas",5,35,wayback_bsnpr_players,https://web.archive.org/web/20180424203035id_/http://www.bsnpr.com/jugadores/jugador.asp?id=87&e,2026-09-08T14:26:50Z
 87,2010,"Capitanes, Arecibo",28,195,wayback_bsnpr_players,https://web.archive.org/web/20180424203035id_/http://www.bsnpr.com/jugadores/jugador.asp?id=87&e,2026-09-08T14:26:50Z
@@ -210,7 +204,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 89,1981,"Atleticos, San German",7,13,wayback_bsnpr_players,https://web.archive.org/web/20070829042611id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=89&e=,2026-09-08T14:26:52Z
 93,2003,"Titanes, Morovis",29,114,wayback_bsnpr_players,https://web.archive.org/web/20090110001639id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=93&e=,2026-09-08T14:26:54Z
 93,2004,"Piratas, Quebradillas",29,126,wayback_bsnpr_players,https://web.archive.org/web/20090110001639id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=93&e=,2026-09-08T14:26:54Z
-93,2005,GUAYAMA,22,50,wayback_bsnpr_jug05,https://web.archive.org/web/20061119230228id_/http://www.bsnpr.com/jug05.asp?r2=462746RX1G&r3=00178&r=00541&e=GUAYAMA,2026-09-10T01:59:40Z
 93,2006,"Brujos, Guayama",22,50,wayback_bsnpr_players,https://web.archive.org/web/20090110001639id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=93&e=,2026-09-08T14:26:54Z
 93,2007,"Indios, Mayaguez",17,38,wayback_bsnpr_players,https://web.archive.org/web/20090110001639id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=93&e=,2026-09-08T14:26:54Z
 93,2008,"Brujos, Guayama",10,80,wayback_bsnpr_players,https://web.archive.org/web/20090110001639id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=93&e=,2026-09-08T14:26:54Z
@@ -263,7 +256,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 118,2003,"Vaqueros, Bayamon",26,76,wayback_bsnpr_players,https://web.archive.org/web/20090713001227id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=118&e=7,2026-09-08T14:27:08Z
 118,2004,"Atleticos, San German",30,237,wayback_bsnpr_players,https://web.archive.org/web/20090713001227id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=118&e=7,2026-09-08T14:27:08Z
 118,2005,"Atleticos, San German",29,305,wayback_bsnpr_players,https://web.archive.org/web/20090713001227id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=118&e=7,2026-09-08T14:27:08Z
-118,2005,SAN GERMAN,10,58,wayback_bsnpr_jug05,https://web.archive.org/web/20070404080846id_/http://www.bsnpr.com:80/jug05.asp?r3=00032&r2=462676RWYA&r=00120&e=,2026-09-10T02:11:49Z
 118,2006,"Atleticos, San German",10,58,wayback_bsnpr_players,https://web.archive.org/web/20090713001227id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=118&e=7,2026-09-08T14:27:08Z
 118,2007,"Brujos, Guayama",30,176,wayback_bsnpr_players,https://web.archive.org/web/20090713001227id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=118&e=7,2026-09-08T14:27:08Z
 118,2008,"Conquistadores, Guaynabo",11,3,wayback_bsnpr_players,https://web.archive.org/web/20090713001227id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=118&e=7,2026-09-08T14:27:08Z
@@ -304,14 +296,12 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 120,2003,"Indios, Mayaguez",12,73,wayback_bsnpr_players,https://web.archive.org/web/20091209192040id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=120&e=,2026-09-08T14:27:12Z
 120,2003,"Titanes, Morovis",14,142,wayback_bsnpr_players,https://web.archive.org/web/20091209192040id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=120&e=,2026-09-08T14:27:12Z
 120,2004,"Cangrejeros, Santurce",29,190,wayback_bsnpr_players,https://web.archive.org/web/20091209192040id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=120&e=,2026-09-08T14:27:12Z
-120,2005,CAGUAS,26,246,wayback_bsnpr_jug05,https://web.archive.org/web/20061119230941id_/http://www.bsnpr.com/jug05.asp?r2=462736RX0U&r3=00147&r=00064&e=CAGUAS,2026-09-10T02:02:15Z
 120,2005,"Grises, Humacao",25,293,wayback_bsnpr_players,https://web.archive.org/web/20091209192040id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=120&e=,2026-09-08T14:27:12Z
 120,2006,"Criollos, Caguas",26,246,wayback_bsnpr_players,https://web.archive.org/web/20091209192040id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=120&e=,2026-09-08T14:27:12Z
 120,2007,"Criollos, Caguas",26,178,wayback_bsnpr_players,https://web.archive.org/web/20091209192040id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=120&e=,2026-09-08T14:27:12Z
 120,2007,"Vaqueros, Bayamon",5,13,wayback_bsnpr_players,https://web.archive.org/web/20091209192040id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=120&e=,2026-09-08T14:27:12Z
 120,2008,"Grises, Humacao",7,32,wayback_bsnpr_players,https://web.archive.org/web/20091209192040id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=120&e=,2026-09-08T14:27:12Z
 120,2009,"Conquistadores, Guaynabo",30,234,wayback_bsnpr_players,https://web.archive.org/web/20091209192040id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=120&e=,2026-09-08T14:27:12Z
-121,2005,MOROVIS,8,5,wayback_bsnpr_jug05,https://web.archive.org/web/20061119231107id_/http://www.bsnpr.com/jug05.asp?r2=FVGQJLPHGG&r3=EYUHM&r=00553&e=MOROVIS,2026-09-10T02:03:22Z
 121,2006,"Titanes, Morovis",8,5,wayback_bsnpr_players,https://web.archive.org/web/20070829042551id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=121&e=,2026-09-08T14:27:15Z
 122,1983,"Indios, Mayaguez",12,24,wayback_bsnpr_players,https://web.archive.org/web/20070829040729id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=122&e=,2026-09-08T14:27:17Z
 122,1988,"Gallitos, Isabela",2,0,wayback_bsnpr_players,https://web.archive.org/web/20070829040729id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=122&e=,2026-09-08T14:27:17Z
@@ -336,7 +326,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 135,2002,"Capitanes, Arecibo",30,467,wayback_bsnpr_players,https://web.archive.org/web/20140122195630id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=135&e=,2026-09-08T14:27:22Z
 135,2003,"Capitanes, Arecibo",30,536,wayback_bsnpr_players,https://web.archive.org/web/20140122195630id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=135&e=,2026-09-08T14:27:22Z
 135,2004,"Capitanes, Arecibo",19,311,wayback_bsnpr_players,https://web.archive.org/web/20140122195630id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=135&e=,2026-09-08T14:27:22Z
-135,2005,ARECIBO,26,539,wayback_bsnpr_jug05,https://web.archive.org/web/20061005151722id_/http://www.bsnpr.com:80/jug05.asp?r3=00011&r2=462666RWXV&r=00004&e=,2026-09-10T01:55:25Z
 135,2005,"Capitanes, Arecibo",30,570,wayback_bsnpr_players,https://web.archive.org/web/20140122195630id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=135&e=,2026-09-08T14:27:22Z
 135,2006,"Capitanes, Arecibo",26,539,wayback_bsnpr_players,https://web.archive.org/web/20140122195630id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=135&e=,2026-09-08T14:27:22Z
 135,2007,"Capitanes, Arecibo",28,691,wayback_bsnpr_players,https://web.archive.org/web/20140122195630id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=135&e=,2026-09-08T14:27:22Z
@@ -360,7 +349,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 136,2002,"Criollos, Caguas",30,250,wayback_bsnpr_players,https://web.archive.org/web/20080501071021id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=136&e=13,2026-09-08T14:27:24Z
 136,2003,"Criollos, Caguas",15,105,wayback_bsnpr_players,https://web.archive.org/web/20080501071021id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=136&e=13,2026-09-08T14:27:24Z
 136,2004,"Toritos, Cayey",12,159,wayback_bsnpr_players,https://web.archive.org/web/20080501071021id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=136&e=13,2026-09-08T14:27:24Z
-136,2005,ARECIBO,13,8,wayback_bsnpr_jug05,https://web.archive.org/web/20061206190144id_/http://www.bsnpr.com:80/jug05.asp?r3=00042&r2=462676RWYI&r=00057&e=,2026-09-10T01:54:20Z
 136,2005,"Brujos, Guayama",27,83,wayback_bsnpr_players,https://web.archive.org/web/20080501071021id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=136&e=13,2026-09-08T14:27:24Z
 136,2006,"Capitanes, Arecibo",13,8,wayback_bsnpr_players,https://web.archive.org/web/20080501071021id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=136&e=13,2026-09-08T14:27:24Z
 136,2007,"Brujos, Guayama",26,56,wayback_bsnpr_players,https://web.archive.org/web/20080501071021id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=136&e=13,2026-09-08T14:27:24Z
@@ -380,14 +368,12 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 143,2003,"Vaqueros, Bayamon",18,61,wayback_bsnpr_players,https://web.archive.org/web/20090411231151id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=143&e=11,2026-09-08T14:27:26Z
 143,2004,"Maratonistas, Coamo",26,266,wayback_bsnpr_players,https://web.archive.org/web/20090411231151id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=143&e=11,2026-09-08T14:27:26Z
 143,2005,"Brujos, Guayama",16,71,wayback_bsnpr_players,https://web.archive.org/web/20090411231151id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=143&e=11,2026-09-08T14:27:26Z
-143,2005,COAMO,10,6,wayback_bsnpr_jug05,https://web.archive.org/web/20061119230613id_/http://www.bsnpr.com/jug05.asp?r2=462746RX1H&r3=00179&r=00045&e=COAMO,2026-09-10T01:55:54Z
 143,2006,"Maratonistas, Coamo",10,6,wayback_bsnpr_players,https://web.archive.org/web/20090411231151id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=143&e=11,2026-09-08T14:27:26Z
 143,2008,"Brujos, Guayama",21,195,wayback_bsnpr_players,https://web.archive.org/web/20090411231151id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=143&e=11,2026-09-08T14:27:26Z
 143,2008,"Leones, Ponce",2,3,wayback_bsnpr_players,https://web.archive.org/web/20090411231151id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=143&e=11,2026-09-08T14:27:26Z
 144,2003,"Gigantes, Carolina",30,400,wayback_bsnpr_players,https://web.archive.org/web/20091004045433id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=144&e=,2026-09-08T14:27:28Z
 144,2004,"Maratonistas, Coamo",20,168,wayback_bsnpr_players,https://web.archive.org/web/20091004045433id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=144&e=,2026-09-08T14:27:28Z
 144,2005,"Leones, Ponce",30,122,wayback_bsnpr_players,https://web.archive.org/web/20091004045433id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=144&e=,2026-09-08T14:27:28Z
-144,2005,PONCE,21,134,wayback_bsnpr_jug05,https://web.archive.org/web/20061007174742id_/http://www.bsnpr.com:80/jug05.asp?r3=00061&r2=462686RWYU&r=00086&e=,2026-09-10T01:58:11Z
 144,2006,"Leones, Ponce",21,134,wayback_bsnpr_players,https://web.archive.org/web/20091004045433id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=144&e=,2026-09-08T14:27:28Z
 144,2007,"Indios, Mayaguez",28,230,wayback_bsnpr_players,https://web.archive.org/web/20091004045433id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=144&e=,2026-09-08T14:27:28Z
 144,2008,"Indios, Mayaguez",26,263,wayback_bsnpr_players,https://web.archive.org/web/20091004045433id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=144&e=,2026-09-08T14:27:28Z
@@ -399,7 +385,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 145,1996,"Piratas, Quebradillas",2,3,wayback_bsnpr_players,https://web.archive.org/web/20070829040602id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=145&e=,2026-09-08T14:27:30Z
 148,2002,"Leones, Ponce",3,6,wayback_bsnpr_players,https://web.archive.org/web/20171030093558id_/http://www.bsnpr.com/jugadores/jugador.asp?id=148,2026-09-08T14:27:32Z
 148,2005,"Leones, Ponce",13,26,wayback_bsnpr_players,https://web.archive.org/web/20171030093558id_/http://www.bsnpr.com/jugadores/jugador.asp?id=148,2026-09-08T14:27:32Z
-148,2005,PONCE,24,96,wayback_bsnpr_jug05,https://web.archive.org/web/20061206115703id_/http://www.bsnpr.com:80/jug05.asp?r3=KGAGM&r2=TLRPRTYNXO&r=00098&e=,2026-09-10T02:07:25Z
 148,2006,"Leones, Ponce",24,96,wayback_bsnpr_players,https://web.archive.org/web/20171030093558id_/http://www.bsnpr.com/jugadores/jugador.asp?id=148,2026-09-08T14:27:32Z
 148,2007,"Capitanes, Arecibo",23,106,wayback_bsnpr_players,https://web.archive.org/web/20171030093558id_/http://www.bsnpr.com/jugadores/jugador.asp?id=148,2026-09-08T14:27:32Z
 148,2007,"Leones, Ponce",6,36,wayback_bsnpr_players,https://web.archive.org/web/20171030093558id_/http://www.bsnpr.com/jugadores/jugador.asp?id=148,2026-09-08T14:27:32Z
@@ -416,7 +401,7 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 151,2002,MOROVIS,2,11,wayback_bsnpr_jug05,https://web.archive.org/web/20070224021044id_/http://www.bsnpr.com:80/jug05.asp?r=00065,2026-09-10T02:10:29Z
 151,2002,"Titanes, Morovis",26,157,wayback_bsnpr_players,https://web.archive.org/web/20140122195645id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=151&e=,2026-09-08T14:27:33Z
 151,2004,"Criollos, Caguas",27,133,wayback_bsnpr_players,https://web.archive.org/web/20140122195645id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=151&e=,2026-09-08T14:27:33Z
-151,2005,CAGUAS,27,468,wayback_bsnpr_jug05,https://web.archive.org/web/20070224021044id_/http://www.bsnpr.com:80/jug05.asp?r=00065,2026-09-10T02:10:29Z
+151,2006,CAGUAS,27,468,wayback_bsnpr_jug05,https://web.archive.org/web/20070224021044id_/http://www.bsnpr.com:80/jug05.asp?r=00065,2026-09-10T02:10:29Z
 151,2005,"Caciques, Humacao",14,102,wayback_bsnpr_players,https://web.archive.org/web/20140122195645id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=151&e=,2026-09-08T14:27:33Z
 151,2006,"Criollos, Caguas",4,71,wayback_bsnpr_players,https://web.archive.org/web/20140122195645id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=151&e=,2026-09-08T14:27:33Z
 151,2006,"Titanes, Morovis",23,397,wayback_bsnpr_players,https://web.archive.org/web/20140122195645id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=151&e=,2026-09-08T14:27:33Z
@@ -430,7 +415,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 152,1975,"Capitanes, Arecibo",11,24,wayback_bsnpr_players,https://web.archive.org/web/20070829041922id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=152&e=,2026-09-08T14:27:35Z
 152,1979,"Capitanes, Arecibo",20,55,wayback_bsnpr_players,https://web.archive.org/web/20070829041922id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=152&e=,2026-09-08T14:27:35Z
 158,2003,"Indios, Mayaguez",11,9,wayback_bsnpr_players,https://web.archive.org/web/20170715113537id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=158&e=,2026-09-08T14:27:37Z
-158,2005,HUMACAO,26,314,wayback_bsnpr_jug05,https://web.archive.org/web/20061207193751id_/http://www.bsnpr.com:80/jug05.asp?r3=VBIFB&r2=NXYQYWMCRL&r=00503&e=,2026-09-10T02:09:17Z
 158,2006,"Caciques, Humacao",26,314,wayback_bsnpr_players,https://web.archive.org/web/20170715113537id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=158&e=,2026-09-08T14:27:37Z
 158,2007,"Caciques, Humacao",28,436,wayback_bsnpr_players,https://web.archive.org/web/20170715113537id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=158&e=,2026-09-08T14:27:37Z
 158,2008,"Caciques, Humacao",31,587,wayback_bsnpr_players,https://web.archive.org/web/20170715113537id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=158&e=,2026-09-08T14:27:37Z
@@ -450,7 +434,7 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 160,2002,PONCE,19,291,wayback_bsnpr_jug05,https://web.archive.org/web/20061206190223id_/http://www.bsnpr.com:80/jug05.asp?r3=00190&r2=462756RX1S&r=00090&e=,2026-09-10T01:57:23Z
 160,2003,PONCE,12,125,wayback_bsnpr_jug05,https://web.archive.org/web/20061206190223id_/http://www.bsnpr.com:80/jug05.asp?r3=00190&r2=462756RX1S&r=00090&e=,2026-09-10T01:57:23Z
 160,2004,PONCE,28,311,wayback_bsnpr_jug05,https://web.archive.org/web/20061206190223id_/http://www.bsnpr.com:80/jug05.asp?r3=00190&r2=462756RX1S&r=00090&e=,2026-09-10T01:57:23Z
-160,2005,COAMO,17,154,wayback_bsnpr_jug05,https://web.archive.org/web/20061206190223id_/http://www.bsnpr.com:80/jug05.asp?r3=00190&r2=462756RX1S&r=00090&e=,2026-09-10T01:57:23Z
+160,2006,COAMO,17,154,wayback_bsnpr_jug05,https://web.archive.org/web/20061206190223id_/http://www.bsnpr.com:80/jug05.asp?r3=00190&r2=462756RX1S&r=00090&e=,2026-09-10T01:57:23Z
 165,1997,"Titanes, Morovis",11,124,wayback_bsnpr_players,https://web.archive.org/web/20070828223356id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=165&e=,2026-09-08T14:27:40Z
 176,1965,"Vaqueros, Bayamon",17,32,wayback_bsnpr_players,https://web.archive.org/web/20070828224035id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=176&e=,2026-09-08T14:27:42Z
 176,1966,"Vaqueros, Bayamon",18,106,wayback_bsnpr_players,https://web.archive.org/web/20070828224035id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=176&e=,2026-09-08T14:27:42Z
@@ -475,7 +459,7 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 193,2002,"Maratonistas, Coamo",16,244,wayback_bsnpr_players,https://web.archive.org/web/20130612084140id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=193&e=14,2026-09-08T14:27:47Z
 193,2003,"Indios, Mayaguez",21,319,wayback_bsnpr_players,https://web.archive.org/web/20130612084140id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=193&e=14,2026-09-08T14:27:47Z
 193,2004,"Indios, Mayaguez",13,136,wayback_bsnpr_players,https://web.archive.org/web/20130612084140id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=193&e=14,2026-09-08T14:27:47Z
-193,2005,COAMO,20,364,wayback_bsnpr_jug05,https://web.archive.org/web/20061119230512id_/http://www.bsnpr.com/jug05.asp?r2=462736RX10&r3=00155&r=00026&e=COAMO,2026-09-10T01:59:01Z
+193,2006,COAMO,20,364,wayback_bsnpr_jug05,https://web.archive.org/web/20061119230512id_/http://www.bsnpr.com/jug05.asp?r2=462736RX10&r3=00155&r=00026&e=COAMO,2026-09-10T01:59:01Z
 193,2005,"Vaqueros, Bayamon",29,316,wayback_bsnpr_players,https://web.archive.org/web/20130612084140id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=193&e=14,2026-09-08T14:27:47Z
 193,2006,"Atleticos, San German",8,142,wayback_bsnpr_players,https://web.archive.org/web/20130612084140id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=193&e=14,2026-09-08T14:27:47Z
 193,2006,"Maratonistas, Coamo",12,222,wayback_bsnpr_players,https://web.archive.org/web/20130612084140id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=193&e=14,2026-09-08T14:27:47Z
@@ -533,7 +517,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 217,2004,"Gallitos, Isabela",7,32,wayback_bsnpr_players,https://web.archive.org/web/20090710220945id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=217&e=,2026-09-08T14:28:07Z
 217,2004,"Vaqueros, Bayamon",10,44,wayback_bsnpr_players,https://web.archive.org/web/20090710220945id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=217&e=,2026-09-08T14:28:07Z
 217,2005,"Grises, Humacao",13,90,wayback_bsnpr_players,https://web.archive.org/web/20090710220945id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=217&e=,2026-09-08T14:28:07Z
-217,2005,HUMACAO,26,136,wayback_bsnpr_jug05,https://web.archive.org/web/20070224020905id_/http://www.bsnpr.com:80/jug05.asp?r=00021,2026-09-10T02:09:57Z
 217,2005,"Vaqueros, Bayamon",3,4,wayback_bsnpr_players,https://web.archive.org/web/20090710220945id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=217&e=,2026-09-08T14:28:07Z
 217,2006,"Grises, Humacao",26,136,wayback_bsnpr_players,https://web.archive.org/web/20090710220945id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=217&e=,2026-09-08T14:28:07Z
 217,2007,"Grises, Humacao",25,140,wayback_bsnpr_players,https://web.archive.org/web/20090710220945id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=217&e=,2026-09-08T14:28:07Z
@@ -567,7 +550,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 220,1984,"Leones, Ponce",23,58,wayback_bsnpr_players,https://web.archive.org/web/20070828225216id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=220&e=,2026-09-08T14:28:14Z
 220,1985,"Atleticos, San German",1,0,wayback_bsnpr_players,https://web.archive.org/web/20070828225216id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=220&e=,2026-09-08T14:28:14Z
 220,1986,"Conquistadores, Guaynabo",17,30,wayback_bsnpr_players,https://web.archive.org/web/20070828225216id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=220&e=,2026-09-08T14:28:14Z
-221,2005,CAGUAS,7,15,wayback_bsnpr_jug05,https://web.archive.org/web/20070224202400id_/http://www.bsnpr.com:80/jug05.asp?r=00532,2026-09-10T02:09:44Z
 221,2006,"Criollos, Caguas",7,15,wayback_bsnpr_players,https://web.archive.org/web/20080410091445id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=221&e=,2026-09-08T14:28:16Z
 221,2007,"Criollos, Caguas",15,27,wayback_bsnpr_players,https://web.archive.org/web/20080410091445id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=221&e=,2026-09-08T14:28:16Z
 236,1999,"Polluelos, Aibonito",2,0,wayback_bsnpr_players,https://web.archive.org/web/20090830021433id_/http://bsnpr.com:80/jugadores/jugador.asp?id=236&e=,2026-09-08T14:28:18Z
@@ -577,7 +559,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 236,2002,"Toritos, Cayey",19,28,wayback_bsnpr_players,https://web.archive.org/web/20090830021433id_/http://bsnpr.com:80/jugadores/jugador.asp?id=236&e=,2026-09-08T14:28:18Z
 236,2003,"Toritos, Cayey",16,37,wayback_bsnpr_players,https://web.archive.org/web/20090830021433id_/http://bsnpr.com:80/jugadores/jugador.asp?id=236&e=,2026-09-08T14:28:18Z
 236,2004,"Toritos, Cayey",24,92,wayback_bsnpr_players,https://web.archive.org/web/20090830021433id_/http://bsnpr.com:80/jugadores/jugador.asp?id=236&e=,2026-09-08T14:28:18Z
-236,2005,GUAYAMA,19,19,wayback_bsnpr_jug05,https://web.archive.org/web/20061006122443id_/http://www.bsnpr.com:80/jug05.asp?r3=00097&r2=462706RWZM&r=00540&e=,2026-09-10T01:59:30Z
 236,2006,"Brujos, Guayama",19,19,wayback_bsnpr_players,https://web.archive.org/web/20090830021433id_/http://bsnpr.com:80/jugadores/jugador.asp?id=236&e=,2026-09-08T14:28:18Z
 236,2007,"Brujos, Guayama",14,7,wayback_bsnpr_players,https://web.archive.org/web/20090830021433id_/http://bsnpr.com:80/jugadores/jugador.asp?id=236&e=,2026-09-08T14:28:18Z
 236,2008,"Brujos, Guayama",24,89,wayback_bsnpr_players,https://web.archive.org/web/20090830021433id_/http://bsnpr.com:80/jugadores/jugador.asp?id=236&e=,2026-09-08T14:28:18Z
@@ -591,7 +572,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 238,2002,"Piratas, Quebradillas",20,29,wayback_bsnpr_players,https://web.archive.org/web/20080410091503id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=238&e=,2026-09-08T14:28:21Z
 238,2003,"Piratas, Quebradillas",20,33,wayback_bsnpr_players,https://web.archive.org/web/20080410091503id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=238&e=,2026-09-08T14:28:21Z
 238,2004,"Indios, Mayaguez",12,10,wayback_bsnpr_players,https://web.archive.org/web/20080410091503id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=238&e=,2026-09-08T14:28:21Z
-238,2005,GUAYNABO,21,41,wayback_bsnpr_jug05,https://web.archive.org/web/20061208064152id_/http://www.bsnpr.com:80/jug05.asp?r3=00211&r2=462766RX2D&r=00518&e=,2026-09-10T01:55:43Z
 238,2006,"Conquistadores, Guaynabo",21,41,wayback_bsnpr_players,https://web.archive.org/web/20080410091503id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=238&e=,2026-09-08T14:28:21Z
 238,2007,"Conquistadores, Guaynabo",8,7,wayback_bsnpr_players,https://web.archive.org/web/20080410091503id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=238&e=,2026-09-08T14:28:21Z
 242,1977,"Criollos, Caguas",3,7,wayback_bsnpr_players,https://web.archive.org/web/20070828225703id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=242&e=,2026-09-08T14:28:23Z
@@ -615,7 +595,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 245,1993,"Cariduros, Fajardo",25,202,wayback_bsnpr_players,https://web.archive.org/web/20070828225358id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=245&e=,2026-09-08T14:28:25Z
 245,1994,"Cariduros, Fajardo",30,102,wayback_bsnpr_players,https://web.archive.org/web/20070828225358id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=245&e=,2026-09-08T14:28:25Z
 248,1958,"Capitanes, Arecibo",7,18,wayback_bsnpr_players,https://web.archive.org/web/20070829035334id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=248&e=,2026-09-08T14:28:26Z
-251,2005,CAGUAS,23,490,wayback_bsnpr_jug05,https://web.archive.org/web/20070224080941id_/http://www.bsnpr.com:80/jug05.asp?r=00514,2026-09-10T02:11:06Z
 251,2006,"Criollos, Caguas",23,490,wayback_bsnpr_players,https://web.archive.org/web/20080224181618id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=251&e=11,2026-09-08T14:28:28Z
 251,2007,"Criollos, Caguas",30,344,wayback_bsnpr_players,https://web.archive.org/web/20080224181618id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=251&e=11,2026-09-08T14:28:28Z
 252,1973,"Santos, San Juan",4,6,wayback_bsnpr_players,https://web.archive.org/web/20070829042530id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=252&e=,2026-09-08T14:28:30Z
@@ -672,7 +651,7 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 284,2002,"Maratonistas, Coamo",18,425,wayback_bsnpr_players,https://web.archive.org/web/20180829212304id_/https://www.bsnpr.com/jugadores/jugador.asp?id=284&e,2026-09-08T14:28:56Z
 284,2003,"Maratonistas, Coamo",30,762,wayback_bsnpr_players,https://web.archive.org/web/20180829212304id_/https://www.bsnpr.com/jugadores/jugador.asp?id=284&e,2026-09-08T14:28:56Z
 284,2004,"Maratonistas, Coamo",28,571,wayback_bsnpr_players,https://web.archive.org/web/20180829212304id_/https://www.bsnpr.com/jugadores/jugador.asp?id=284&e,2026-09-08T14:28:56Z
-284,2005,BAYAMON,25,446,wayback_bsnpr_jug05,https://web.archive.org/web/20061208064331id_/http://www.bsnpr.com:80/jug05.asp?r3=00107&r2=462706RWZV&r=00036&e=,2026-09-10T02:01:58Z
+284,2006,BAYAMON,25,446,wayback_bsnpr_jug05,https://web.archive.org/web/20061208064331id_/http://www.bsnpr.com:80/jug05.asp?r3=00107&r2=462706RWZV&r=00036&e=,2026-09-10T02:01:58Z
 284,2005,"Maratonistas, Coamo",27,537,wayback_bsnpr_players,https://web.archive.org/web/20180829212304id_/https://www.bsnpr.com/jugadores/jugador.asp?id=284&e,2026-09-08T14:28:56Z
 284,2006,"Maratonistas, Coamo",21,392,wayback_bsnpr_players,https://web.archive.org/web/20180829212304id_/https://www.bsnpr.com/jugadores/jugador.asp?id=284&e,2026-09-08T14:28:56Z
 284,2006,"Vaqueros, Bayamon",4,54,wayback_bsnpr_players,https://web.archive.org/web/20180829212304id_/https://www.bsnpr.com/jugadores/jugador.asp?id=284&e,2026-09-08T14:28:56Z
@@ -709,7 +688,7 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 311,1961,"Capitanes, Arecibo",21,131,wayback_bsnpr_players,https://web.archive.org/web/20070829035028id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=311&e=,2026-09-08T14:29:12Z
 311,1962,"Capitanes, Arecibo",12,141,wayback_bsnpr_players,https://web.archive.org/web/20070829035028id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=311&e=,2026-09-08T14:29:12Z
 311,1963,"Capitanes, Arecibo",16,50,wayback_bsnpr_players,https://web.archive.org/web/20070829035028id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=311&e=,2026-09-08T14:29:12Z
-313,2005,GUAYAMA,9,6,wayback_bsnpr_jug05,https://web.archive.org/web/20061009100408id_/http://www.bsnpr.com:80/jug05.asp?r3=VUWKH&r2=QQUHMPOFDN&r=00061&e=,2026-09-10T02:01:48Z
+313,2006,GUAYAMA,9,6,wayback_bsnpr_jug05,https://web.archive.org/web/20061009100408id_/http://www.bsnpr.com:80/jug05.asp?r3=VUWKH&r2=QQUHMPOFDN&r=00061&e=,2026-09-10T02:01:48Z
 319,1956,"Piratas, Quebradillas",11,29,wayback_bsnpr_players,https://web.archive.org/web/20070829035436id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=319&e=,2026-09-08T14:29:14Z
 319,1957,"Piratas, Quebradillas",8,20,wayback_bsnpr_players,https://web.archive.org/web/20070829035436id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=319&e=,2026-09-08T14:29:14Z
 320,1996,"Brujos, Guayama",16,31,wayback_bsnpr_players,https://web.archive.org/web/20080410091522id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=320&e=,2026-09-08T14:29:17Z
@@ -769,7 +748,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 335,2003,"Vaqueros, Bayamon",24,381,wayback_bsnpr_players,https://web.archive.org/web/20091209055642id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=335&e=,2026-09-08T14:29:29Z
 335,2004,"Atleticos, San German",20,168,wayback_bsnpr_players,https://web.archive.org/web/20091209055642id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=335&e=,2026-09-08T14:29:29Z
 335,2005,"Brujos, Guayama",32,223,wayback_bsnpr_players,https://web.archive.org/web/20091209055642id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=335&e=,2026-09-08T14:29:29Z
-335,2005,HUMACAO,25,232,wayback_bsnpr_jug05,https://web.archive.org/web/20061206115305id_/http://www.bsnpr.com:80/jug05.asp?r3=00033&r2=462676RWYB&r=00051&e=,2026-09-10T02:01:09Z
 335,2006,"Grises, Humacao",25,232,wayback_bsnpr_players,https://web.archive.org/web/20091209055642id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=335&e=,2026-09-08T14:29:29Z
 335,2007,"Capitanes, Arecibo",7,65,wayback_bsnpr_players,https://web.archive.org/web/20091209055642id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=335&e=,2026-09-08T14:29:29Z
 335,2007,"Grises, Humacao",20,114,wayback_bsnpr_players,https://web.archive.org/web/20091209055642id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=335&e=,2026-09-08T14:29:29Z
@@ -810,8 +788,7 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 344,2002,BAYAMON,30,353,wayback_bsnpr_jug05,https://web.archive.org/web/20061006122431id_/http://www.bsnpr.com:80/jug05.asp?r3=00039&r2=462676RWYF&r=00110&e=,2026-09-10T01:54:49Z
 344,2003,BAYAMON,1,14,wayback_bsnpr_jug05,https://web.archive.org/web/20061006122431id_/http://www.bsnpr.com:80/jug05.asp?r3=00039&r2=462676RWYF&r=00110&e=,2026-09-10T01:54:49Z
 344,2004,SANTURCE,21,46,wayback_bsnpr_jug05,https://web.archive.org/web/20061006122431id_/http://www.bsnpr.com:80/jug05.asp?r3=00039&r2=462676RWYF&r=00110&e=,2026-09-10T01:54:49Z
-344,2005,SANTURCE,17,57,wayback_bsnpr_jug05,https://web.archive.org/web/20061006122431id_/http://www.bsnpr.com:80/jug05.asp?r3=00039&r2=462676RWYF&r=00110&e=,2026-09-10T01:54:49Z
-349,2005,GUAYNABO,26,472,wayback_bsnpr_jug05,https://web.archive.org/web/20061208171101id_/http://www.bsnpr.com:80/jug05.asp?r3=SXFEF&r2=KVRFULQVQD&r=00084&e=,2026-09-10T01:59:17Z
+344,2006,SANTURCE,17,57,wayback_bsnpr_jug05,https://web.archive.org/web/20061006122431id_/http://www.bsnpr.com:80/jug05.asp?r3=00039&r2=462676RWYF&r=00110&e=,2026-09-10T01:54:49Z
 349,2005,"Gallitos, Isabela",32,236,wayback_bsnpr_players,https://web.archive.org/web/20140122200649id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=349&e=,2026-09-08T14:29:36Z
 349,2006,"Mets, Guaynabo",26,472,wayback_bsnpr_players,https://web.archive.org/web/20140122200649id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=349&e=,2026-09-08T14:29:36Z
 349,2007,"Mets, Guaynabo",29,526,wayback_bsnpr_players,https://web.archive.org/web/20140122200649id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=349&e=,2026-09-08T14:29:36Z
@@ -852,7 +829,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 357,2003,"Atleticos, San German",30,233,wayback_bsnpr_players,https://web.archive.org/web/20080229015214id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=357&e=5,2026-09-08T14:29:43Z
 357,2004,"Atleticos, San German",27,193,wayback_bsnpr_players,https://web.archive.org/web/20080229015214id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=357&e=5,2026-09-08T14:29:43Z
 357,2005,"Brujos, Guayama",30,59,wayback_bsnpr_players,https://web.archive.org/web/20080229015214id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=357&e=5,2026-09-08T14:29:43Z
-357,2005,PONCE,23,79,wayback_bsnpr_jug05,https://web.archive.org/web/20061212103031id_/http://www.bsnpr.com:80/jug05.asp?r3=00234&r2=462776RX2Y&r=00049&e=,2026-09-10T02:01:01Z
 357,2006,"Leones, Ponce",23,79,wayback_bsnpr_players,https://web.archive.org/web/20080229015214id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=357&e=5,2026-09-08T14:29:43Z
 357,2007,"Leones, Ponce",21,32,wayback_bsnpr_players,https://web.archive.org/web/20080229015214id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=357&e=5,2026-09-08T14:29:43Z
 359,1998,"Indios, Mayaguez",21,170,wayback_bsnpr_players,https://web.archive.org/web/20080411054336id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=359&e=,2026-09-08T14:29:45Z
@@ -869,7 +845,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 365,1998,"Vaqueros, Bayamon",5,38,wayback_bsnpr_players,https://web.archive.org/web/20070828230748id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=365&e=,2026-09-08T14:29:56Z
 372,1956,"Santos, San Juan",5,8,wayback_bsnpr_players,https://web.archive.org/web/20070828224736id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=372&e=,2026-09-08T14:29:57Z
 373,2006,"Conquistadores, Guaynabo",12,96,wayback_bsnpr_players,https://web.archive.org/web/20070828231453id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=373&e=,2026-09-08T14:29:59Z
-374,2005,CAGUAS,25,445,wayback_bsnpr_jug05,https://web.archive.org/web/20061119230906id_/http://www.bsnpr.com/jug05.asp?r2=NUOZLWHHEX&r3=EMRKV&r=00513&e=CAGUAS,2026-09-10T01:59:25Z
 374,2006,"Criollos, Caguas",25,445,wayback_bsnpr_players,https://web.archive.org/web/20080529135233id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=374&e=10,2026-09-08T14:30:05Z
 374,2008,"Gigantes, Carolina",2,27,wayback_bsnpr_players,https://web.archive.org/web/20080529135233id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=374&e=10,2026-09-08T14:30:05Z
 375,2002,"Toritos, Cayey",7,156,wayback_bsnpr_players,https://web.archive.org/web/20070828230835id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=375&e=,2026-09-08T14:30:08Z
@@ -904,14 +879,12 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 385,2003,"Gigantes, Carolina",18,31,wayback_bsnpr_players,https://web.archive.org/web/20090829072403id_/http://bsnpr.com:80/jugadores/jugador.asp?id=385&e=,2026-09-08T14:30:14Z
 385,2004,"Gallitos, Isabela",4,10,wayback_bsnpr_players,https://web.archive.org/web/20090829072403id_/http://bsnpr.com:80/jugadores/jugador.asp?id=385&e=,2026-09-08T14:30:14Z
 385,2004,"Vaqueros, Bayamon",5,2,wayback_bsnpr_players,https://web.archive.org/web/20090829072403id_/http://bsnpr.com:80/jugadores/jugador.asp?id=385&e=,2026-09-08T14:30:14Z
-385,2005,HUMACAO,23,44,wayback_bsnpr_jug05,https://web.archive.org/web/20061119231416id_/http://www.bsnpr.com/jug05.asp?r2=462696RWZ9&r3=00078&r=00074&e=HUMACAO,2026-09-10T01:56:15Z
 385,2005,"Maratonistas, Coamo",19,21,wayback_bsnpr_players,https://web.archive.org/web/20090829072403id_/http://bsnpr.com:80/jugadores/jugador.asp?id=385&e=,2026-09-08T14:30:14Z
 385,2006,"Grises, Humacao",23,44,wayback_bsnpr_players,https://web.archive.org/web/20090829072403id_/http://bsnpr.com:80/jugadores/jugador.asp?id=385&e=,2026-09-08T14:30:14Z
 385,2007,"Cariduros, Fajardo",30,75,wayback_bsnpr_players,https://web.archive.org/web/20090829072403id_/http://bsnpr.com:80/jugadores/jugador.asp?id=385&e=,2026-09-08T14:30:14Z
 385,2008,"Cariduros, Fajardo",18,27,wayback_bsnpr_players,https://web.archive.org/web/20090829072403id_/http://bsnpr.com:80/jugadores/jugador.asp?id=385&e=,2026-09-08T14:30:14Z
 385,2009,"Criollos, Caguas",30,152,wayback_bsnpr_players,https://web.archive.org/web/20090829072403id_/http://bsnpr.com:80/jugadores/jugador.asp?id=385&e=,2026-09-08T14:30:14Z
 386,2004,"Cangrejeros, Santurce",5,3,wayback_bsnpr_players,https://web.archive.org/web/20091206130013id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=386&e=,2026-09-08T14:30:15Z
-386,2005,BAYAMON,9,6,wayback_bsnpr_jug05,https://web.archive.org/web/20061206190536id_/http://www.bsnpr.com:80/jug05.asp?r2=WOBFMNCQVQ&r3=WHQFE&r=00108&e=BAYAMON,2026-09-10T01:58:27Z
 386,2005,"Cangrejeros, Santurce",4,2,wayback_bsnpr_players,https://web.archive.org/web/20091206130013id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=386&e=,2026-09-08T14:30:15Z
 386,2006,"Vaqueros, Bayamon",9,6,wayback_bsnpr_players,https://web.archive.org/web/20091206130013id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=386&e=,2026-09-08T14:30:15Z
 386,2007,"Vaqueros, Bayamon",8,2,wayback_bsnpr_players,https://web.archive.org/web/20091206130013id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=386&e=,2026-09-08T14:30:15Z
@@ -936,7 +909,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 392,2002,"Titanes, Morovis",7,17,wayback_bsnpr_players,https://web.archive.org/web/20140122200704id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=392&e=,2026-09-08T14:30:25Z
 392,2003,"Titanes, Morovis",22,198,wayback_bsnpr_players,https://web.archive.org/web/20140122200704id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=392&e=,2026-09-08T14:30:25Z
 392,2004,"Gigantes, Carolina",27,219,wayback_bsnpr_players,https://web.archive.org/web/20140122200704id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=392&e=,2026-09-08T14:30:25Z
-392,2005,BAYAMON,26,227,wayback_bsnpr_jug05,https://web.archive.org/web/20060618110626id_/http://www.bsnpr.com:80/jug05.asp?r=00009,2026-09-10T01:57:42Z
 392,2005,"Vaqueros, Bayamon",23,186,wayback_bsnpr_players,https://web.archive.org/web/20140122200704id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=392&e=,2026-09-08T14:30:25Z
 392,2006,"Vaqueros, Bayamon",26,227,wayback_bsnpr_players,https://web.archive.org/web/20140122200704id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=392&e=,2026-09-08T14:30:25Z
 392,2007,"Vaqueros, Bayamon",30,295,wayback_bsnpr_players,https://web.archive.org/web/20140122200704id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=392&e=,2026-09-08T14:30:25Z
@@ -958,7 +930,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 399,1984,"Gigantes, Carolina",7,10,wayback_bsnpr_players,https://web.archive.org/web/20070828230851id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=399&e=,2026-09-08T14:30:31Z
 399,1985,"Gallitos, Isabela",21,30,wayback_bsnpr_players,https://web.archive.org/web/20070828230851id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=399&e=,2026-09-08T14:30:31Z
 399,1986,"Maratonistas, Coamo",29,55,wayback_bsnpr_players,https://web.archive.org/web/20070828230851id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=399&e=,2026-09-08T14:30:31Z
-401,2005,GUAYNABO,5,114,wayback_bsnpr_jug05,https://web.archive.org/web/20070224202310id_/http://www.bsnpr.com:80/jug05.asp?r=00572,2026-09-10T02:10:06Z
 401,2006,"Mets, Guaynabo",5,114,wayback_bsnpr_players,https://web.archive.org/web/20220121061815id_/https://www.bsnpr.com/jugadores/jugador.asp?id=401,2026-09-08T14:30:33Z
 403,1962,"Piratas, Quebradillas",4,7,wayback_bsnpr_players,https://web.archive.org/web/20070829041647id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=403&e=,2026-09-08T14:30:35Z
 403,1964,"Piratas, Quebradillas",21,204,wayback_bsnpr_players,https://web.archive.org/web/20070829041647id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=403&e=,2026-09-08T14:30:35Z
@@ -999,7 +970,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 444,2001,"Cangrejeros, Santurce",12,172,wayback_bsnpr_players,https://web.archive.org/web/20070828223606id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=444&e=,2026-09-08T14:30:56Z
 445,1997,"Piratas, Quebradillas",6,8,wayback_bsnpr_players,https://web.archive.org/web/20090422184947id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=445&e=9,2026-09-08T14:30:59Z
 445,2000,"Criollos, Caguas",1,0,wayback_bsnpr_players,https://web.archive.org/web/20090422184947id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=445&e=9,2026-09-08T14:30:59Z
-445,2005,CAGUAS,25,274,wayback_bsnpr_jug05,https://web.archive.org/web/20070224020855id_/http://www.bsnpr.com:80/jug05.asp?r=00519,2026-09-10T02:10:44Z
 445,2006,"Criollos, Caguas",25,274,wayback_bsnpr_players,https://web.archive.org/web/20090422184947id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=445&e=9,2026-09-08T14:30:59Z
 445,2007,"Criollos, Caguas",23,102,wayback_bsnpr_players,https://web.archive.org/web/20090422184947id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=445&e=9,2026-09-08T14:30:59Z
 445,2008,"Criollos, Caguas",1,2,wayback_bsnpr_players,https://web.archive.org/web/20090422184947id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=445&e=9,2026-09-08T14:30:59Z
@@ -1057,7 +1027,7 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 462,2000,COAMO,26,213,wayback_bsnpr_jug05,https://web.archive.org/web/20061215015444id_/http://www.bsnpr.com:80/jug05.asp?r3=00103&r2=462706RWZS&r=00033&e=,2026-09-10T02:00:08Z
 462,2003,COAMO,24,83,wayback_bsnpr_jug05,https://web.archive.org/web/20061215015444id_/http://www.bsnpr.com:80/jug05.asp?r3=00103&r2=462706RWZS&r=00033&e=,2026-09-10T02:00:08Z
 462,2004,COAMO,29,108,wayback_bsnpr_jug05,https://web.archive.org/web/20061215015444id_/http://www.bsnpr.com:80/jug05.asp?r3=00103&r2=462706RWZS&r=00033&e=,2026-09-10T02:00:08Z
-462,2005,COAMO,14,11,wayback_bsnpr_jug05,https://web.archive.org/web/20061215015444id_/http://www.bsnpr.com:80/jug05.asp?r3=00103&r2=462706RWZS&r=00033&e=,2026-09-10T02:00:08Z
+462,2006,COAMO,14,11,wayback_bsnpr_jug05,https://web.archive.org/web/20061215015444id_/http://www.bsnpr.com:80/jug05.asp?r3=00103&r2=462706RWZS&r=00033&e=,2026-09-10T02:00:08Z
 463,1957,"Cardenales, Rio Piedras",16,127,wayback_bsnpr_players,https://web.archive.org/web/20070829040423id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=463&e=,2026-09-08T14:31:06Z
 463,1958,"Cardenales, Rio Piedras",18,141,wayback_bsnpr_players,https://web.archive.org/web/20070829040423id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=463&e=,2026-09-08T14:31:06Z
 463,1959,"Cardenales, Rio Piedras",21,218,wayback_bsnpr_players,https://web.archive.org/web/20070829040423id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=463&e=,2026-09-08T14:31:06Z
@@ -1118,7 +1088,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 498,2003,"Leones, Ponce",21,492,wayback_bsnpr_players,https://web.archive.org/web/20180221123707id_/http://www.bsnpr.com/jugadores/jugador.asp?id=498,2026-09-08T14:31:21Z
 498,2004,"Leones, Ponce",28,513,wayback_bsnpr_players,https://web.archive.org/web/20180221123707id_/http://www.bsnpr.com/jugadores/jugador.asp?id=498,2026-09-08T14:31:21Z
 498,2005,"Leones, Ponce",24,439,wayback_bsnpr_players,https://web.archive.org/web/20180221123707id_/http://www.bsnpr.com/jugadores/jugador.asp?id=498,2026-09-08T14:31:21Z
-498,2005,PONCE,15,179,wayback_bsnpr_jug05,https://web.archive.org/web/20060909091946id_/http://www.bsnpr.com:80/jug05.asp?r2=462756RX1T&r3=00191&r=00091&e=PONCE,2026-09-10T01:55:49Z
 498,2006,"Leones, Ponce",15,179,wayback_bsnpr_players,https://web.archive.org/web/20180221123707id_/http://www.bsnpr.com/jugadores/jugador.asp?id=498,2026-09-08T14:31:21Z
 498,2007,"Indios, Mayaguez",22,373,wayback_bsnpr_players,https://web.archive.org/web/20180221123707id_/http://www.bsnpr.com/jugadores/jugador.asp?id=498,2026-09-08T14:31:21Z
 498,2008,"Indios, Mayaguez",13,134,wayback_bsnpr_players,https://web.archive.org/web/20180221123707id_/http://www.bsnpr.com/jugadores/jugador.asp?id=498,2026-09-08T14:31:21Z
@@ -1181,7 +1150,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 509,2002,"Vaqueros, Bayamon",24,106,wayback_bsnpr_players,https://web.archive.org/web/20080803173052id_/http://bsnpr.com:80/jugadores/jugador.asp?id=509&e=,2026-09-08T14:31:30Z
 509,2003,"Cangrejeros, Santurce",29,290,wayback_bsnpr_players,https://web.archive.org/web/20080803173052id_/http://bsnpr.com:80/jugadores/jugador.asp?id=509&e=,2026-09-08T14:31:30Z
 509,2004,"Cangrejeros, Santurce",26,219,wayback_bsnpr_players,https://web.archive.org/web/20080803173052id_/http://bsnpr.com:80/jugadores/jugador.asp?id=509&e=,2026-09-08T14:31:30Z
-509,2005,ARECIBO,23,80,wayback_bsnpr_jug05,https://web.archive.org/web/20070328182250id_/http://www.bsnpr.com:80/jug05.asp?r2=462796RX3K&r3=00261&r=00007&e=ARECIBO,2026-09-10T02:11:19Z
 509,2005,"Capitanes, Arecibo",30,127,wayback_bsnpr_players,https://web.archive.org/web/20080803173052id_/http://bsnpr.com:80/jugadores/jugador.asp?id=509&e=,2026-09-08T14:31:30Z
 509,2006,"Capitanes, Arecibo",23,80,wayback_bsnpr_players,https://web.archive.org/web/20080803173052id_/http://bsnpr.com:80/jugadores/jugador.asp?id=509&e=,2026-09-08T14:31:30Z
 509,2007,"Capitanes, Arecibo",30,155,wayback_bsnpr_players,https://web.archive.org/web/20080803173052id_/http://bsnpr.com:80/jugadores/jugador.asp?id=509&e=,2026-09-08T14:31:30Z
@@ -1194,7 +1162,7 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 517,1970,"Piratas, Quebradillas",22,94,wayback_bsnpr_players,https://web.archive.org/web/20070828223504id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=517&e=,2026-09-08T14:31:34Z
 517,1971,"Piratas, Quebradillas",9,38,wayback_bsnpr_players,https://web.archive.org/web/20070828223504id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=517&e=,2026-09-08T14:31:34Z
 517,1972,"Gigantes, Carolina",4,45,wayback_bsnpr_players,https://web.archive.org/web/20070828223504id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=517&e=,2026-09-08T14:31:34Z
-524,2005,MOROVIS,23,348,wayback_bsnpr_jug05,https://web.archive.org/web/20061119231102id_/http://www.bsnpr.com/jug05.asp?r2=MUBFMJYWYX&r3=ZFGEV&r=00564&e=MOROVIS,2026-09-10T01:58:24Z
+524,2006,MOROVIS,23,348,wayback_bsnpr_jug05,https://web.archive.org/web/20061119231102id_/http://www.bsnpr.com/jug05.asp?r2=MUBFMJYWYX&r3=ZFGEV&r=00564&e=MOROVIS,2026-09-10T01:58:24Z
 526,1974,"Santos, San Juan",9,23,wayback_bsnpr_players,https://web.archive.org/web/20070829041614id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=526&e=,2026-09-08T14:31:36Z
 526,1975,"Brujos, Guayama",9,11,wayback_bsnpr_players,https://web.archive.org/web/20070829041614id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=526&e=,2026-09-08T14:31:36Z
 527,1988,"Cariduros, Fajardo",6,10,wayback_bsnpr_players,https://web.archive.org/web/20070828231733id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=527&e=,2026-09-08T14:31:38Z
@@ -1234,7 +1202,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 555,2003,"Criollos, Caguas",22,149,wayback_bsnpr_players,https://web.archive.org/web/20080411054901id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=555&e=,2026-09-08T14:31:50Z
 555,2003,"Leones, Ponce",1,7,wayback_bsnpr_players,https://web.archive.org/web/20080411054901id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=555&e=,2026-09-08T14:31:50Z
 555,2004,"Leones, Ponce",26,156,wayback_bsnpr_players,https://web.archive.org/web/20080411054901id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=555&e=,2026-09-08T14:31:50Z
-555,2005,ARECIBO,22,52,wayback_bsnpr_jug05,https://web.archive.org/web/20061009100142id_/http://www.bsnpr.com:80/jug05.asp?r3=00206&r2=462766RX28&r=00099&e=,2026-09-10T01:57:37Z
 555,2005,"Leones, Ponce",24,87,wayback_bsnpr_players,https://web.archive.org/web/20080411054901id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=555&e=,2026-09-08T14:31:50Z
 555,2006,"Capitanes, Arecibo",22,52,wayback_bsnpr_players,https://web.archive.org/web/20080411054901id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=555&e=,2026-09-08T14:31:50Z
 555,2007,"Vaqueros, Bayamon",21,55,wayback_bsnpr_players,https://web.archive.org/web/20080411054901id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=555&e=,2026-09-08T14:31:50Z
@@ -1253,7 +1220,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 574,2001,SAN GERMAN,26,617,wayback_bsnpr_jug05,https://web.archive.org/web/20061208171514id_/http://www.bsnpr.com:80/jug05.asp?r3=00233&r2=462776RX2X&r=00002&e=,2026-09-10T01:59:06Z
 574,2002,"Atleticos, San German",29,703,wayback_bsnpr_players,https://web.archive.org/web/20170715120228id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=574&e=,2026-09-08T14:31:59Z
 574,2003,"Atleticos, San German",4,78,wayback_bsnpr_players,https://web.archive.org/web/20170715120228id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=574&e=,2026-09-08T14:31:59Z
-574,2005,ARECIBO,26,517,wayback_bsnpr_jug05,https://web.archive.org/web/20061208171514id_/http://www.bsnpr.com:80/jug05.asp?r3=00233&r2=462776RX2X&r=00002&e=,2026-09-10T01:59:06Z
 574,2005,"Capitanes, Arecibo",31,742,wayback_bsnpr_players,https://web.archive.org/web/20170715120228id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=574&e=,2026-09-08T14:31:59Z
 574,2006,"Capitanes, Arecibo",26,517,wayback_bsnpr_players,https://web.archive.org/web/20170715120228id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=574&e=,2026-09-08T14:31:59Z
 574,2007,"Cangrejeros, Santurce",7,172,wayback_bsnpr_players,https://web.archive.org/web/20170715120228id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=574&e=,2026-09-08T14:31:59Z
@@ -1315,7 +1281,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 624,2002,"Cangrejeros, Santurce",29,143,wayback_bsnpr_players,https://web.archive.org/web/20140122200729id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=624&e=,2026-09-08T14:32:29Z
 624,2003,"Cangrejeros, Santurce",30,169,wayback_bsnpr_players,https://web.archive.org/web/20140122200729id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=624&e=,2026-09-08T14:32:29Z
 624,2004,"Cangrejeros, Santurce",30,173,wayback_bsnpr_players,https://web.archive.org/web/20140122200729id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=624&e=,2026-09-08T14:32:29Z
-624,2005,GUAYAMA,26,370,wayback_bsnpr_jug05,https://web.archive.org/web/20061009095710id_/http://www.bsnpr.com:80/jug05.asp?r3=00262&r2=462796RX3L&r=00100&e=,2026-09-10T01:54:41Z
 624,2005,"Leones, Ponce",31,146,wayback_bsnpr_players,https://web.archive.org/web/20140122200729id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=624&e=,2026-09-08T14:32:29Z
 624,2006,"Brujos, Guayama",26,370,wayback_bsnpr_players,https://web.archive.org/web/20140122200729id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=624&e=,2026-09-08T14:32:29Z
 624,2007,"Brujos, Guayama",30,538,wayback_bsnpr_players,https://web.archive.org/web/20140122200729id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=624&e=,2026-09-08T14:32:29Z
@@ -1326,13 +1291,12 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 624,2012,"Brujos, Guayama",28,174,wayback_bsnpr_players,https://web.archive.org/web/20140122200729id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=624&e=,2026-09-08T14:32:29Z
 624,2013,"Brujos, Guayama",33,206,wayback_bsnpr_players,https://web.archive.org/web/20140122200729id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=624&e=,2026-09-08T14:32:29Z
 626,1994,"Polluelos, Aibonito",2,0,wayback_bsnpr_players,https://web.archive.org/web/20070829042415id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=626&e=,2026-09-08T14:32:31Z
-630,2005,GUAYNABO,10,30,wayback_bsnpr_jug05,https://web.archive.org/web/20061119225608id_/http://www.bsnpr.com/jug05.asp?r2=GSPOPSUTYD&r3=LYJAY&r=00539&e=GUAYNABO,2026-09-10T01:53:52Z
 630,2006,"Conquistadores, Guaynabo",10,30,wayback_bsnpr_players,https://web.archive.org/web/20080229064900id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=630&e=3,2026-09-08T14:32:35Z
 630,2007,"Conquistadores, Guaynabo",8,4,wayback_bsnpr_players,https://web.archive.org/web/20080229064900id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=630&e=3,2026-09-08T14:32:35Z
 630,2007,"Maratonistas, Coamo",5,31,wayback_bsnpr_players,https://web.archive.org/web/20080229064900id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=630&e=3,2026-09-08T14:32:35Z
 647,2003,SAN GERMAN,5,4,wayback_bsnpr_jug05,https://web.archive.org/web/20070404080316id_/http://www.bsnpr.com:80/jug05.asp?r3=00247&r2=462786RX39&r=00560&e=,2026-09-10T02:10:02Z
 647,2004,SAN GERMAN,8,23,wayback_bsnpr_jug05,https://web.archive.org/web/20070404080316id_/http://www.bsnpr.com:80/jug05.asp?r3=00247&r2=462786RX39&r=00560&e=,2026-09-10T02:10:02Z
-647,2005,GUAYNABO,7,4,wayback_bsnpr_jug05,https://web.archive.org/web/20070404080316id_/http://www.bsnpr.com:80/jug05.asp?r3=00247&r2=462786RX39&r=00560&e=,2026-09-10T02:10:02Z
+647,2006,GUAYNABO,7,4,wayback_bsnpr_jug05,https://web.archive.org/web/20070404080316id_/http://www.bsnpr.com:80/jug05.asp?r3=00247&r2=462786RX39&r=00560&e=,2026-09-10T02:10:02Z
 651,1988,"Atleticos, San German",7,6,wayback_bsnpr_players,https://web.archive.org/web/20191215231529id_/https://www.bsnpr.com/jugadores/jugador.asp?id=651,2026-09-08T14:32:37Z
 651,1989,"Atleticos, San German",11,14,wayback_bsnpr_players,https://web.archive.org/web/20191215231529id_/https://www.bsnpr.com/jugadores/jugador.asp?id=651,2026-09-08T14:32:37Z
 651,1990,"Atleticos, San German",12,23,wayback_bsnpr_players,https://web.archive.org/web/20191215231529id_/https://www.bsnpr.com/jugadores/jugador.asp?id=651,2026-09-08T14:32:37Z
@@ -1406,7 +1370,7 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 688,2006,"Criollos, Caguas",14,34,wayback_bsnpr_players,https://web.archive.org/web/20090110024922id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=688&e=,2026-09-08T14:32:57Z
 688,2007,"Criollos, Caguas",16,36,wayback_bsnpr_players,https://web.archive.org/web/20090110024922id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=688&e=,2026-09-08T14:32:57Z
 688,2008,"Criollos, Caguas",10,12,wayback_bsnpr_players,https://web.archive.org/web/20090110024922id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=688&e=,2026-09-08T14:32:57Z
-690,2005,GUAYNABO,8,26,wayback_bsnpr_jug05,https://web.archive.org/web/20061119225616id_/http://www.bsnpr.com/jug05.asp?r2=KUTZMIBQHD&r3=SCCBZ&r=00144&e=GUAYNABO,2026-09-10T01:54:07Z
+690,2006,GUAYNABO,8,26,wayback_bsnpr_jug05,https://web.archive.org/web/20061119225616id_/http://www.bsnpr.com/jug05.asp?r2=KUTZMIBQHD&r3=SCCBZ&r=00144&e=GUAYNABO,2026-09-10T01:54:07Z
 696,2001,"Indios, Mayaguez",0,0,wayback_bsnpr_players,https://web.archive.org/web/20070829042738id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=696&e=,2026-09-08T14:32:59Z
 697,1994,"Maratonistas, Coamo",10,14,wayback_bsnpr_players,https://web.archive.org/web/20091209191937id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=697&e=,2026-09-08T14:33:01Z
 697,1995,"Maratonistas, Coamo",31,291,wayback_bsnpr_players,https://web.archive.org/web/20091209191937id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=697&e=,2026-09-08T14:33:01Z
@@ -1421,7 +1385,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 697,2002,"Maratonistas, Coamo",8,60,wayback_bsnpr_players,https://web.archive.org/web/20091209191937id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=697&e=,2026-09-08T14:33:01Z
 697,2003,"Maratonistas, Coamo",31,245,wayback_bsnpr_players,https://web.archive.org/web/20091209191937id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=697&e=,2026-09-08T14:33:01Z
 697,2004,"Maratonistas, Coamo",27,367,wayback_bsnpr_players,https://web.archive.org/web/20091209191937id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=697&e=,2026-09-08T14:33:01Z
-697,2005,CAGUAS,21,174,wayback_bsnpr_jug05,https://web.archive.org/web/20061119231009id_/http://www.bsnpr.com/jug05.asp?r2=462716RX02&r3=00116&r=00038&e=CAGUAS,2026-09-10T02:03:06Z
 697,2005,"Maratonistas, Coamo",31,271,wayback_bsnpr_players,https://web.archive.org/web/20091209191937id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=697&e=,2026-09-08T14:33:01Z
 697,2006,"Criollos, Caguas",21,174,wayback_bsnpr_players,https://web.archive.org/web/20091209191937id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=697&e=,2026-09-08T14:33:01Z
 697,2007,"Criollos, Caguas",30,275,wayback_bsnpr_players,https://web.archive.org/web/20091209191937id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=697&e=,2026-09-08T14:33:01Z
@@ -1496,7 +1459,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 733,1959,"Atleticos, San German",1,1,wayback_bsnpr_players,https://web.archive.org/web/20070829042830id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=733&e=,2026-09-08T14:33:30Z
 742,2001,COAMO,11,18,wayback_bsnpr_jug05,https://web.archive.org/web/20070404075051id_/http://www.bsnpr.com:80/jug05.asp?r3=SQUAX&r2=OLQUXXXGVB&r=00096&e=,2026-09-10T02:09:39Z
 742,2004,"Leones, Ponce",10,17,wayback_bsnpr_players,https://web.archive.org/web/20071211045905id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=742&e=,2026-09-08T14:33:32Z
-742,2005,GUAYAMA,3,8,wayback_bsnpr_jug05,https://web.archive.org/web/20070404075051id_/http://www.bsnpr.com:80/jug05.asp?r3=SQUAX&r2=OLQUXXXGVB&r=00096&e=,2026-09-10T02:09:39Z
 742,2005,"Leones, Ponce",12,15,wayback_bsnpr_players,https://web.archive.org/web/20071211045905id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=742&e=,2026-09-08T14:33:32Z
 742,2006,"Brujos, Guayama",3,8,wayback_bsnpr_players,https://web.archive.org/web/20071211045905id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=742&e=,2026-09-08T14:33:32Z
 742,2007,"Leones, Ponce",9,6,wayback_bsnpr_players,https://web.archive.org/web/20071211045905id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=742&e=,2026-09-08T14:33:32Z
@@ -1537,7 +1499,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 757,2002,"Vaqueros, Bayamon",24,484,wayback_bsnpr_players,https://web.archive.org/web/20091207221748id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=757&e=9,2026-09-08T14:33:47Z
 757,2003,"Vaqueros, Bayamon",23,251,wayback_bsnpr_players,https://web.archive.org/web/20091207221748id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=757&e=9,2026-09-08T14:33:47Z
 757,2004,"Vaqueros, Bayamon",30,541,wayback_bsnpr_players,https://web.archive.org/web/20091207221748id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=757&e=9,2026-09-08T14:33:47Z
-757,2005,BAYAMON,15,244,wayback_bsnpr_jug05,https://web.archive.org/web/20061207193824id_/http://www.bsnpr.com:80/jug05.asp?r3=00040&r2=462676RWYG&r=00019&e=,2026-09-10T01:55:31Z
 757,2005,"Vaqueros, Bayamon",5,89,wayback_bsnpr_players,https://web.archive.org/web/20091207221748id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=757&e=9,2026-09-08T14:33:47Z
 757,2006,"Vaqueros, Bayamon",15,244,wayback_bsnpr_players,https://web.archive.org/web/20091207221748id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=757&e=9,2026-09-08T14:33:47Z
 757,2007,"Vaqueros, Bayamon",26,273,wayback_bsnpr_players,https://web.archive.org/web/20091207221748id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=757&e=9,2026-09-08T14:33:47Z
@@ -1554,7 +1515,7 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 763,2003,"Toritos, Cayey",22,185,wayback_bsnpr_players,https://web.archive.org/web/20090713002149id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=763&e=7,2026-09-08T14:33:48Z
 763,2004,"Toritos, Cayey",28,393,wayback_bsnpr_players,https://web.archive.org/web/20090713002149id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=763&e=7,2026-09-08T14:33:48Z
 763,2005,"Brujos, Guayama",28,256,wayback_bsnpr_players,https://web.archive.org/web/20090713002149id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=763&e=7,2026-09-08T14:33:48Z
-763,2005,PONCE,25,102,wayback_bsnpr_jug05,https://web.archive.org/web/20061206115502id_/http://www.bsnpr.com:80/jug05.asp?r3=00200&r2=462756RX22&r=00053&e=,2026-09-10T01:57:12Z
+763,2006,PONCE,25,102,wayback_bsnpr_jug05,https://web.archive.org/web/20061206115502id_/http://www.bsnpr.com:80/jug05.asp?r3=00200&r2=462756RX22&r=00053&e=,2026-09-10T01:57:12Z
 763,2006,"Leones, Ponce",20,86,wayback_bsnpr_players,https://web.archive.org/web/20090713002149id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=763&e=7,2026-09-08T14:33:48Z
 763,2006,"Titanes, Morovis",5,16,wayback_bsnpr_players,https://web.archive.org/web/20090713002149id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=763&e=7,2026-09-08T14:33:48Z
 763,2007,"Indios, Mayaguez",21,193,wayback_bsnpr_players,https://web.archive.org/web/20090713002149id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=763&e=7,2026-09-08T14:33:48Z
@@ -1581,7 +1542,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 773,2003,"Leones, Ponce",6,22,wayback_bsnpr_players,https://web.archive.org/web/20170715120412id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=773&e=,2026-09-08T14:33:54Z
 773,2004,"Leones, Ponce",27,183,wayback_bsnpr_players,https://web.archive.org/web/20170715120412id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=773&e=,2026-09-08T14:33:54Z
 773,2005,"Leones, Ponce",32,237,wayback_bsnpr_players,https://web.archive.org/web/20170715120412id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=773&e=,2026-09-08T14:33:54Z
-773,2005,PONCE,26,231,wayback_bsnpr_jug05,https://web.archive.org/web/20061006123058id_/http://www.bsnpr.com:80/jug05.asp?r3=00192&r2=462756RX1U&r=00092&e=,2026-09-10T01:55:03Z
 773,2006,"Leones, Ponce",26,231,wayback_bsnpr_players,https://web.archive.org/web/20170715120412id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=773&e=,2026-09-08T14:33:54Z
 773,2007,"Leones, Ponce",30,342,wayback_bsnpr_players,https://web.archive.org/web/20170715120412id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=773&e=,2026-09-08T14:33:54Z
 773,2008,"Leones, Ponce",31,370,wayback_bsnpr_players,https://web.archive.org/web/20170715120412id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=773&e=,2026-09-08T14:33:54Z
@@ -1611,7 +1571,7 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 776,2002,CAROLINA,17,73,wayback_bsnpr_jug05,https://web.archive.org/web/20061005150918id_/http://www.bsnpr.com:80/jug05.asp?r3=00265&r2=462796RX3O&r=00023&e=,2026-09-10T01:56:06Z
 776,2003,SANTURCE,21,68,wayback_bsnpr_jug05,https://web.archive.org/web/20061005150918id_/http://www.bsnpr.com:80/jug05.asp?r3=00265&r2=462796RX3O&r=00023&e=,2026-09-10T01:56:06Z
 776,2004,SANTURCE,13,32,wayback_bsnpr_jug05,https://web.archive.org/web/20061005150918id_/http://www.bsnpr.com:80/jug05.asp?r3=00265&r2=462796RX3O&r=00023&e=,2026-09-10T01:56:06Z
-776,2005,GUAYAMA,10,16,wayback_bsnpr_jug05,https://web.archive.org/web/20061005150918id_/http://www.bsnpr.com:80/jug05.asp?r3=00265&r2=462796RX3O&r=00023&e=,2026-09-10T01:56:06Z
+776,2006,GUAYAMA,10,16,wayback_bsnpr_jug05,https://web.archive.org/web/20061005150918id_/http://www.bsnpr.com:80/jug05.asp?r3=00265&r2=462796RX3O&r=00023&e=,2026-09-10T01:56:06Z
 777,1993,"Criollos, Caguas",34,285,wayback_bsnpr_players,https://web.archive.org/web/20080325084937id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=777&e=14,2026-09-08T14:33:56Z
 777,1994,"Criollos, Caguas",29,111,wayback_bsnpr_players,https://web.archive.org/web/20080325084937id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=777&e=14,2026-09-08T14:33:56Z
 777,1995,"Criollos, Caguas",18,125,wayback_bsnpr_players,https://web.archive.org/web/20080325084937id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=777&e=14,2026-09-08T14:33:56Z
@@ -1626,7 +1586,7 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 777,2003,"Atleticos, San German",11,106,wayback_bsnpr_players,https://web.archive.org/web/20080325084937id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=777&e=14,2026-09-08T14:33:56Z
 777,2003,"Indios, Mayaguez",3,0,wayback_bsnpr_players,https://web.archive.org/web/20080325084937id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=777&e=14,2026-09-08T14:33:56Z
 777,2004,"Maratonistas, Coamo",10,51,wayback_bsnpr_players,https://web.archive.org/web/20080325084937id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=777&e=14,2026-09-08T14:33:56Z
-777,2005,HUMACAO,24,56,wayback_bsnpr_jug05,https://web.archive.org/web/20060618110655id_/http://www.bsnpr.com:80/jug05.asp?r=00020,2026-09-10T02:00:44Z
+777,2006,HUMACAO,24,56,wayback_bsnpr_jug05,https://web.archive.org/web/20060618110655id_/http://www.bsnpr.com:80/jug05.asp?r=00020,2026-09-10T02:00:44Z
 777,2005,"Vaqueros, Bayamon",18,63,wayback_bsnpr_players,https://web.archive.org/web/20080325084937id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=777&e=14,2026-09-08T14:33:56Z
 777,2006,"Grises, Humacao",8,17,wayback_bsnpr_players,https://web.archive.org/web/20080325084937id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=777&e=14,2026-09-08T14:33:56Z
 777,2006,"Maratonistas, Coamo",16,39,wayback_bsnpr_players,https://web.archive.org/web/20080325084937id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=777&e=14,2026-09-08T14:33:56Z
@@ -1718,7 +1678,7 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 808,2003,"Piratas, Quebradillas",29,206,wayback_bsnpr_players,https://web.archive.org/web/20091004045524id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=808&e=,2026-09-08T14:34:18Z
 808,2004,"Indios, Mayaguez",25,122,wayback_bsnpr_players,https://web.archive.org/web/20091004045524id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=808&e=,2026-09-08T14:34:18Z
 808,2005,"Atleticos, San German",11,50,wayback_bsnpr_players,https://web.archive.org/web/20091004045524id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=808&e=,2026-09-08T14:34:18Z
-808,2005,COAMO,24,146,wayback_bsnpr_jug05,https://web.archive.org/web/20061006123158id_/http://www.bsnpr.com:80/jug05.asp?r3=FSWWD&r2=462776RX2V&r=00124&e=,2026-09-10T01:56:03Z
+808,2006,COAMO,24,146,wayback_bsnpr_jug05,https://web.archive.org/web/20061006123158id_/http://www.bsnpr.com:80/jug05.asp?r3=FSWWD&r2=462776RX2V&r=00124&e=,2026-09-10T01:56:03Z
 808,2006,"Atleticos, San German",12,47,wayback_bsnpr_players,https://web.archive.org/web/20091004045524id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=808&e=,2026-09-08T14:34:18Z
 808,2006,"Maratonistas, Coamo",12,99,wayback_bsnpr_players,https://web.archive.org/web/20091004045524id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=808&e=,2026-09-08T14:34:18Z
 808,2007,"Maratonistas, Coamo",27,120,wayback_bsnpr_players,https://web.archive.org/web/20091004045524id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=808&e=,2026-09-08T14:34:18Z
@@ -1775,7 +1735,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 838,2008,"Vaqueros, Bayamon",14,10,wayback_bsnpr_players,https://web.archive.org/web/20090429221640id_/http://bsnpr.com:80/jugadores/jugador.asp?id=838&e=,2026-09-08T14:34:36Z
 840,1991,"Atleticos, San German",21,18,wayback_bsnpr_players,https://web.archive.org/web/20070828230222id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=840&e=,2026-09-08T14:34:38Z
 841,1997,"Titanes, Morovis",2,22,wayback_bsnpr_players,https://web.archive.org/web/20070828223707id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=841&e=,2026-09-08T14:34:40Z
-842,2005,MOROVIS,9,24,wayback_bsnpr_jug05,https://web.archive.org/web/20061119231016id_/http://www.bsnpr.com/jug05.asp?r2=FSYJNUXGVK&r3=GRUAE&r=00534&e=MOROVIS,2026-09-10T01:56:49Z
 842,2006,"Titanes, Morovis",9,24,wayback_bsnpr_players,https://web.archive.org/web/20070829040938id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=842&e=,2026-09-08T14:34:41Z
 846,1993,"Gigantes, Carolina",10,11,wayback_bsnpr_players,https://web.archive.org/web/20070828230845id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=846&e=,2026-09-08T14:34:43Z
 846,1995,"Tiburones, Aguadilla",11,10,wayback_bsnpr_players,https://web.archive.org/web/20070828230845id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=846&e=,2026-09-08T14:34:43Z
@@ -1834,7 +1793,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 869,2001,"Gigantes, Carolina",14,24,wayback_bsnpr_players,https://web.archive.org/web/20140122201124id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=869&e=,2026-09-08T14:35:04Z
 869,2002,"Gigantes, Carolina",19,40,wayback_bsnpr_players,https://web.archive.org/web/20140122201124id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=869&e=,2026-09-08T14:35:04Z
 869,2005,"Brujos, Guayama",22,77,wayback_bsnpr_players,https://web.archive.org/web/20140122201124id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=869&e=,2026-09-08T14:35:04Z
-869,2005,GUAYNABO,26,205,wayback_bsnpr_jug05,https://web.archive.org/web/20061119225600id_/http://www.bsnpr.com/jug05.asp?r2=ASSATNJVES&r3=CTXLO&r=00058&e=GUAYNABO,2026-09-10T02:01:50Z
 869,2006,"Mets, Guaynabo",26,205,wayback_bsnpr_players,https://web.archive.org/web/20140122201124id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=869&e=,2026-09-08T14:35:04Z
 869,2007,"Mets, Guaynabo",30,306,wayback_bsnpr_players,https://web.archive.org/web/20140122201124id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=869&e=,2026-09-08T14:35:04Z
 869,2008,"Vaqueros, Bayamon",31,154,wayback_bsnpr_players,https://web.archive.org/web/20140122201124id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=869&e=,2026-09-08T14:35:04Z
@@ -1884,7 +1842,7 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 880,1977,"Vaqueros, Bayamon",3,2,wayback_bsnpr_players,https://web.archive.org/web/20070829040632id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=880&e=,2026-09-08T14:35:13Z
 880,1978,"Vaqueros, Bayamon",5,15,wayback_bsnpr_players,https://web.archive.org/web/20070829040632id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=880&e=,2026-09-08T14:35:13Z
 880,1979,"Vaqueros, Bayamon",7,3,wayback_bsnpr_players,https://web.archive.org/web/20070829040632id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=880&e=,2026-09-08T14:35:13Z
-881,2005,ARECIBO,6,6,wayback_bsnpr_jug05,https://web.archive.org/web/20070224202350id_/http://www.bsnpr.com:80/jug05.asp?r=00528,2026-09-10T02:10:14Z
+881,2006,ARECIBO,6,6,wayback_bsnpr_jug05,https://web.archive.org/web/20070224202350id_/http://www.bsnpr.com:80/jug05.asp?r=00528,2026-09-10T02:10:14Z
 882,1992,"Leones, Ponce",16,68,wayback_bsnpr_players,https://web.archive.org/web/20070828230252id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=882&e=,2026-09-08T14:35:15Z
 882,1993,"Leones, Ponce",20,100,wayback_bsnpr_players,https://web.archive.org/web/20070828230252id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=882&e=,2026-09-08T14:35:15Z
 882,1994,"Leones, Ponce",8,8,wayback_bsnpr_players,https://web.archive.org/web/20070828230252id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=882&e=,2026-09-08T14:35:15Z
@@ -1963,7 +1921,7 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 922,2002,SAN GERMAN,28,155,wayback_bsnpr_jug05,https://web.archive.org/web/20070224202750id_/http://www.bsnpr.com:80/jug05.asp?r2=462776RX2Z&r3=00236&r=00520&e=SAN+GERMAN,2026-09-10T02:11:37Z
 922,2003,SAN GERMAN,30,304,wayback_bsnpr_jug05,https://web.archive.org/web/20070224202750id_/http://www.bsnpr.com:80/jug05.asp?r2=462776RX2Z&r3=00236&r=00520&e=SAN+GERMAN,2026-09-10T02:11:37Z
 922,2004,SAN GERMAN,30,131,wayback_bsnpr_jug05,https://web.archive.org/web/20070224202750id_/http://www.bsnpr.com:80/jug05.asp?r2=462776RX2Z&r3=00236&r=00520&e=SAN+GERMAN,2026-09-10T02:11:37Z
-922,2005,SAN GERMAN,13,28,wayback_bsnpr_jug05,https://web.archive.org/web/20070224202750id_/http://www.bsnpr.com:80/jug05.asp?r2=462776RX2Z&r3=00236&r=00520&e=SAN+GERMAN,2026-09-10T02:11:37Z
+922,2006,SAN GERMAN,13,28,wayback_bsnpr_jug05,https://web.archive.org/web/20070224202750id_/http://www.bsnpr.com:80/jug05.asp?r2=462776RX2Z&r3=00236&r=00520&e=SAN+GERMAN,2026-09-10T02:11:37Z
 932,1998,ARECIBO,6,3,wayback_bsnpr_jug05,https://web.archive.org/web/20061206190209id_/http://www.bsnpr.com:80/jug05.asp?r3=00062&r2=462686RWYV&r=00066&e=,2026-09-10T02:04:09Z
 932,2002,"Indios, Mayaguez",9,11,wayback_bsnpr_players,https://web.archive.org/web/20110717025736id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=932&e=2,2026-09-08T14:35:37Z
 932,2002,MAYAGUEZ,8,11,wayback_bsnpr_jug05,https://web.archive.org/web/20061206190209id_/http://www.bsnpr.com:80/jug05.asp?r3=00062&r2=462686RWYV&r=00066&e=,2026-09-10T02:04:09Z
@@ -1971,7 +1929,7 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 932,2004,"Gigantes, Carolina",6,47,wayback_bsnpr_players,https://web.archive.org/web/20110717025736id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=932&e=2,2026-09-08T14:35:37Z
 932,2005,"Caciques, Humacao",15,106,wayback_bsnpr_players,https://web.archive.org/web/20110717025736id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=932&e=2,2026-09-08T14:35:37Z
 932,2005,"Maratonistas, Coamo",12,79,wayback_bsnpr_players,https://web.archive.org/web/20110717025736id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=932&e=2,2026-09-08T14:35:37Z
-932,2005,SAN GERMAN,27,302,wayback_bsnpr_jug05,https://web.archive.org/web/20061206190209id_/http://www.bsnpr.com:80/jug05.asp?r3=00062&r2=462686RWYV&r=00066&e=,2026-09-10T02:04:09Z
+932,2006,SAN GERMAN,27,302,wayback_bsnpr_jug05,https://web.archive.org/web/20061206190209id_/http://www.bsnpr.com:80/jug05.asp?r3=00062&r2=462686RWYV&r=00066&e=,2026-09-10T02:04:09Z
 932,2006,"Atleticos, San German",14,166,wayback_bsnpr_players,https://web.archive.org/web/20110717025736id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=932&e=2,2026-09-08T14:35:37Z
 932,2006,"Maratonistas, Coamo",13,136,wayback_bsnpr_players,https://web.archive.org/web/20110717025736id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=932&e=2,2026-09-08T14:35:37Z
 932,2007,"Cariduros, Fajardo",30,367,wayback_bsnpr_players,https://web.archive.org/web/20110717025736id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=932&e=2,2026-09-08T14:35:37Z
@@ -2070,7 +2028,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 989,2002,"Criollos, Caguas",30,450,wayback_bsnpr_players,https://web.archive.org/web/20070825200128id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=989&e=,2026-09-08T14:36:10Z
 989,2003,"Criollos, Caguas",30,424,wayback_bsnpr_players,https://web.archive.org/web/20070825200128id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=989&e=,2026-09-08T14:36:10Z
 989,2004,"Capitanes, Arecibo",30,215,wayback_bsnpr_players,https://web.archive.org/web/20070825200128id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=989&e=,2026-09-08T14:36:10Z
-989,2005,GUAYAMA,8,22,wayback_bsnpr_jug05,https://web.archive.org/web/20060618111039id_/http://www.bsnpr.com:80/jug05.asp?r=00156,2026-09-10T02:01:21Z
 989,2005,"Maratonistas, Coamo",23,120,wayback_bsnpr_players,https://web.archive.org/web/20070825200128id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=989&e=,2026-09-08T14:36:10Z
 989,2006,"Brujos, Guayama",8,22,wayback_bsnpr_players,https://web.archive.org/web/20070825200128id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=989&e=,2026-09-08T14:36:10Z
 996,2002,"Gigantes, Carolina",5,52,wayback_bsnpr_players,https://web.archive.org/web/20070828225211id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=996&e=,2026-09-08T14:36:11Z
@@ -2118,7 +2075,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1011,2003,PONCE,28,391,wayback_bsnpr_jug05,https://web.archive.org/web/20060618110943id_/http://www.bsnpr.com:80/jug05.asp?r=00094,2026-09-10T02:00:39Z
 1011,2004,"Leones, Ponce",29,324,wayback_bsnpr_players,https://web.archive.org/web/20190210044842id_/https://www.bsnpr.com/jugadores/jugador.asp?id=1011&e,2026-09-08T14:36:21Z
 1011,2005,"Leones, Ponce",32,325,wayback_bsnpr_players,https://web.archive.org/web/20190210044842id_/https://www.bsnpr.com/jugadores/jugador.asp?id=1011&e,2026-09-08T14:36:21Z
-1011,2005,PONCE,25,225,wayback_bsnpr_jug05,https://web.archive.org/web/20060618110943id_/http://www.bsnpr.com:80/jug05.asp?r=00094,2026-09-10T02:00:39Z
 1011,2006,"Leones, Ponce",25,225,wayback_bsnpr_players,https://web.archive.org/web/20190210044842id_/https://www.bsnpr.com/jugadores/jugador.asp?id=1011&e,2026-09-08T14:36:21Z
 1011,2007,"Leones, Ponce",28,145,wayback_bsnpr_players,https://web.archive.org/web/20190210044842id_/https://www.bsnpr.com/jugadores/jugador.asp?id=1011&e,2026-09-08T14:36:21Z
 1011,2008,"Leones, Ponce",20,51,wayback_bsnpr_players,https://web.archive.org/web/20190210044842id_/https://www.bsnpr.com/jugadores/jugador.asp?id=1011&e,2026-09-08T14:36:21Z
@@ -2128,7 +2084,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1014,1979,"Leones, Ponce",28,387,wayback_bsnpr_players,https://web.archive.org/web/20171029065309id_/http://www.bsnpr.com/jugadores/jugador.asp?id=1014,2026-09-08T14:36:23Z
 1014,1980,"Leones, Ponce",29,363,wayback_bsnpr_players,https://web.archive.org/web/20171029065309id_/http://www.bsnpr.com/jugadores/jugador.asp?id=1014,2026-09-08T14:36:23Z
 1014,1981,"Criollos, Caguas",25,216,wayback_bsnpr_players,https://web.archive.org/web/20171029065309id_/http://www.bsnpr.com/jugadores/jugador.asp?id=1014,2026-09-08T14:36:23Z
-1019,2005,GUAYNABO,9,12,wayback_bsnpr_jug05,https://web.archive.org/web/20061008162153id_/http://www.bsnpr.com:80/jug05.asp?r3=NLVVZ&r2=MAOZKUXFDO&r=00522&e=,2026-09-10T01:55:06Z
 1019,2006,"Conquistadores, Guaynabo",9,12,wayback_bsnpr_players,https://web.archive.org/web/20091209191247id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1019&e=,2026-09-08T14:36:25Z
 1019,2007,"Conquistadores, Guaynabo",20,6,wayback_bsnpr_players,https://web.archive.org/web/20091209191247id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1019&e=,2026-09-08T14:36:25Z
 1019,2008,"Grises, Humacao",20,34,wayback_bsnpr_players,https://web.archive.org/web/20091209191247id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1019&e=,2026-09-08T14:36:25Z
@@ -2217,13 +2172,11 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1063,2002,"Piratas, Quebradillas",30,462,wayback_bsnpr_players,https://web.archive.org/web/20090110181606id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1063&e=,2026-09-08T14:36:41Z
 1063,2003,"Piratas, Quebradillas",25,327,wayback_bsnpr_players,https://web.archive.org/web/20090110181606id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1063&e=,2026-09-08T14:36:41Z
 1063,2004,"Leones, Ponce",30,205,wayback_bsnpr_players,https://web.archive.org/web/20090110181606id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1063&e=,2026-09-08T14:36:41Z
-1063,2005,GUAYNABO,17,191,wayback_bsnpr_jug05,https://web.archive.org/web/20061119225540id_/http://www.bsnpr.com/jug05.asp?r2=462766RX2G&r3=00216&r=00093&e=GUAYNABO,2026-09-10T01:56:13Z
 1063,2006,"Conquistadores, Guaynabo",17,191,wayback_bsnpr_players,https://web.archive.org/web/20090110181606id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1063&e=,2026-09-08T14:36:41Z
 1063,2007,"Capitanes, Arecibo",7,44,wayback_bsnpr_players,https://web.archive.org/web/20090110181606id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1063&e=,2026-09-08T14:36:41Z
 1063,2008,"Leones, Ponce",27,86,wayback_bsnpr_players,https://web.archive.org/web/20090110181606id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1063&e=,2026-09-08T14:36:41Z
 1064,2002,"Vaqueros, Bayamon",13,169,wayback_bsnpr_players,https://web.archive.org/web/20140122195620id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1064&e=,2026-09-08T14:36:43Z
 1064,2004,"Vaqueros, Bayamon",4,52,wayback_bsnpr_players,https://web.archive.org/web/20140122195620id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1064&e=,2026-09-08T14:36:43Z
-1064,2005,BAYAMON,16,245,wayback_bsnpr_jug05,https://web.archive.org/web/20061215215345id_/http://www.bsnpr.com:80/jug05.asp?r3=YSKUU&r2=MJPRZLCMZJ&r=00016&e=,2026-09-10T02:01:14Z
 1064,2005,"Vaqueros, Bayamon",32,460,wayback_bsnpr_players,https://web.archive.org/web/20140122195620id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1064&e=,2026-09-08T14:36:43Z
 1064,2006,"Vaqueros, Bayamon",16,245,wayback_bsnpr_players,https://web.archive.org/web/20140122195620id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1064&e=,2026-09-08T14:36:43Z
 1064,2007,"Leones, Ponce",29,535,wayback_bsnpr_players,https://web.archive.org/web/20140122195620id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1064&e=,2026-09-08T14:36:43Z
@@ -2284,7 +2237,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1092,2003,"Capitanes, Arecibo",21,59,wayback_bsnpr_players,https://web.archive.org/web/20080411054220id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1092&e=,2026-09-08T14:37:08Z
 1092,2004,"Capitanes, Arecibo",11,15,wayback_bsnpr_players,https://web.archive.org/web/20080411054220id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1092&e=,2026-09-08T14:37:08Z
 1092,2007,"Indios, Mayaguez",21,62,wayback_bsnpr_players,https://web.archive.org/web/20080411054220id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1092&e=,2026-09-08T14:37:08Z
-1094,2005,CAGUAS,7,12,wayback_bsnpr_jug05,https://web.archive.org/web/20060618111135id_/http://www.bsnpr.com:80/jug05.asp?r=00527,2026-09-10T01:54:32Z
 1094,2006,"Criollos, Caguas",7,12,wayback_bsnpr_players,https://web.archive.org/web/20170715112450id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1094&e=,2026-09-08T14:37:10Z
 1094,2007,"Criollos, Caguas",29,48,wayback_bsnpr_players,https://web.archive.org/web/20170715112450id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1094&e=,2026-09-08T14:37:10Z
 1094,2008,"Criollos, Caguas",15,69,wayback_bsnpr_players,https://web.archive.org/web/20170715112450id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1094&e=,2026-09-08T14:37:10Z
@@ -2485,7 +2437,7 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1199,1999,ISABELA,28,295,wayback_bsnpr_jug05,https://web.archive.org/web/20061207024835id_/http://www.bsnpr.com:80/jug05.asp?r3=0129+&r2=BVQKGAXBXG&r=00552&e=,2026-09-10T02:05:12Z
 1199,2000,ISABELA,27,196,wayback_bsnpr_jug05,https://web.archive.org/web/20061207024835id_/http://www.bsnpr.com:80/jug05.asp?r3=0129+&r2=BVQKGAXBXG&r=00552&e=,2026-09-10T02:05:12Z
 1199,2001,ISABELA,26,249,wayback_bsnpr_jug05,https://web.archive.org/web/20061207024835id_/http://www.bsnpr.com:80/jug05.asp?r3=0129+&r2=BVQKGAXBXG&r=00552&e=,2026-09-10T02:05:12Z
-1199,2005,COAMO,21,60,wayback_bsnpr_jug05,https://web.archive.org/web/20061207024835id_/http://www.bsnpr.com:80/jug05.asp?r3=0129+&r2=BVQKGAXBXG&r=00552&e=,2026-09-10T02:05:12Z
+1199,2006,COAMO,21,60,wayback_bsnpr_jug05,https://web.archive.org/web/20061207024835id_/http://www.bsnpr.com:80/jug05.asp?r3=0129+&r2=BVQKGAXBXG&r=00552&e=,2026-09-10T02:05:12Z
 1201,1972,"Indios, Mayaguez",32,143,wayback_bsnpr_players,https://web.archive.org/web/20070828230901id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1201&e=,2026-09-08T14:38:10Z
 1201,1973,"Indios, Mayaguez",32,143,wayback_bsnpr_players,https://web.archive.org/web/20070828230901id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1201&e=,2026-09-08T14:38:10Z
 1201,1974,"Indios, Mayaguez",29,239,wayback_bsnpr_players,https://web.archive.org/web/20070828230901id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1201&e=,2026-09-08T14:38:10Z
@@ -2537,7 +2489,7 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1207,1962,"Cardenales, Rio Piedras",9,80,wayback_bsnpr_players,https://web.archive.org/web/20070829040022id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1207&e=,2026-09-08T14:38:16Z
 1207,1963,"Cardenales, Rio Piedras",21,247,wayback_bsnpr_players,https://web.archive.org/web/20070829040022id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1207&e=,2026-09-08T14:38:16Z
 1207,1964,"Cardenales, Rio Piedras",19,124,wayback_bsnpr_players,https://web.archive.org/web/20070829040022id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1207&e=,2026-09-08T14:38:16Z
-1208,2005,GUAYNABO,9,43,wayback_bsnpr_jug05,https://web.archive.org/web/20061006123149id_/http://www.bsnpr.com:80/jug05.asp?r3=CKWRH&r2=AIDAEEAJHL&r=00602&e=,2026-09-10T01:58:34Z
+1208,2006,GUAYNABO,9,43,wayback_bsnpr_jug05,https://web.archive.org/web/20061006123149id_/http://www.bsnpr.com:80/jug05.asp?r3=CKWRH&r2=AIDAEEAJHL&r=00602&e=,2026-09-10T01:58:34Z
 1208,2006,"Vaqueros, Bayamon",6,3,wayback_bsnpr_players,https://web.archive.org/web/20080411054224id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1208&e=,2026-09-08T14:38:18Z
 1209,1975,"Cangrejeros, Santurce",3,20,wayback_bsnpr_players,https://web.archive.org/web/20070828231355id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1209&e=,2026-09-08T14:38:20Z
 1210,1982,"Conquistadores, Guaynabo",15,29,wayback_bsnpr_players,https://web.archive.org/web/20070828224518id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1210&e=,2026-09-08T14:38:22Z
@@ -2573,7 +2525,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1220,2004,"Leones, Ponce",10,15,wayback_bsnpr_players,https://web.archive.org/web/20080803172212id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1220&e=,2026-09-08T14:38:30Z
 1220,2008,"Indios, Mayaguez",18,64,wayback_bsnpr_players,https://web.archive.org/web/20080803172212id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1220&e=,2026-09-08T14:38:30Z
 1224,1971,"Brujos, Guayama",3,6,wayback_bsnpr_players,https://web.archive.org/web/20070828225708id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1224&e=,2026-09-08T14:38:31Z
-1231,2005,PONCE,5,24,wayback_bsnpr_jug05,https://web.archive.org/web/20061214185945id_/http://www.bsnpr.com:80/jug05.asp?r3=UHJSY&r2=SYUDIFEUFB&r=00537&e=,2026-09-10T02:06:07Z
 1231,2006,"Leones, Ponce",5,24,wayback_bsnpr_players,https://web.archive.org/web/20090710220933id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1231&e=,2026-09-08T14:38:33Z
 1231,2007,"Leones, Ponce",10,12,wayback_bsnpr_players,https://web.archive.org/web/20090710220933id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1231&e=,2026-09-08T14:38:33Z
 1231,2008,"Brujos, Guayama",19,95,wayback_bsnpr_players,https://web.archive.org/web/20090710220933id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1231&e=,2026-09-08T14:38:33Z
@@ -2591,7 +2542,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1234,2001,"Indios, Mayaguez",13,27,wayback_bsnpr_players,https://web.archive.org/web/20190220003341id_/https://www.bsnpr.com/jugadores/jugador.asp?id=1234,2026-09-08T14:38:39Z
 1234,2001,MAYAGUEZ,11,16,wayback_bsnpr_jug05,https://web.archive.org/web/20060528213827id_/http://www.bsnpr.com:80/jug05.asp?r2=PVWYCJKBPH&r3=NBDGR&r=00600&e=SANTURCE,2026-09-10T02:01:07Z
 1234,2002,"Indios, Mayaguez",14,39,wayback_bsnpr_players,https://web.archive.org/web/20190220003341id_/https://www.bsnpr.com/jugadores/jugador.asp?id=1234,2026-09-08T14:38:39Z
-1234,2005,SANTURCE,9,94,wayback_bsnpr_jug05,https://web.archive.org/web/20060528213827id_/http://www.bsnpr.com:80/jug05.asp?r2=PVWYCJKBPH&r3=NBDGR&r=00600&e=SANTURCE,2026-09-10T02:01:07Z
 1234,2006,"Cangrejeros, Santurce",9,94,wayback_bsnpr_players,https://web.archive.org/web/20190220003341id_/https://www.bsnpr.com/jugadores/jugador.asp?id=1234,2026-09-08T14:38:39Z
 1236,1994,"Indios, Mayaguez",15,8,wayback_bsnpr_players,https://web.archive.org/web/20070828223443id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1236&e=,2026-09-08T14:38:41Z
 1236,1995,"Indios, Mayaguez",7,17,wayback_bsnpr_players,https://web.archive.org/web/20070828223443id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1236&e=,2026-09-08T14:38:41Z
@@ -2630,7 +2580,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1247,1983,"Polluelos, Aibonito",21,52,wayback_bsnpr_players,https://web.archive.org/web/20070828230405id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1247&e=,2026-09-08T14:38:54Z
 1247,1984,"Vaqueros, Bayamon",20,31,wayback_bsnpr_players,https://web.archive.org/web/20070828230405id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1247&e=,2026-09-08T14:38:54Z
 1249,2004,"Piratas, Quebradillas",23,329,wayback_bsnpr_players,https://web.archive.org/web/20090911012339id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1249&e=,2026-09-08T14:38:56Z
-1249,2005,BAYAMON,8,12,wayback_bsnpr_jug05,https://web.archive.org/web/20061206190511id_/http://www.bsnpr.com:80/jug05.asp?r2=MZVWRLQGJV&r3=RHHIP&r=00054&e=BAYAMON,2026-09-10T01:56:59Z
 1249,2005,"Grises, Humacao",10,25,wayback_bsnpr_players,https://web.archive.org/web/20090911012339id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1249&e=,2026-09-08T14:38:56Z
 1249,2005,"Vaqueros, Bayamon",7,11,wayback_bsnpr_players,https://web.archive.org/web/20090911012339id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1249&e=,2026-09-08T14:38:56Z
 1249,2006,"Vaqueros, Bayamon",8,12,wayback_bsnpr_players,https://web.archive.org/web/20090911012339id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1249&e=,2026-09-08T14:38:56Z
@@ -2684,7 +2633,7 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1271,2002,SANTURCE,28,541,wayback_bsnpr_jug05,https://web.archive.org/web/20061209152333id_/http://www.bsnpr.com/jug05.asp?r3=00260&r2=462796RX3J&r=00107&e=,2026-09-10T01:58:01Z
 1271,2003,SANTURCE,16,225,wayback_bsnpr_jug05,https://web.archive.org/web/20061209152333id_/http://www.bsnpr.com/jug05.asp?r3=00260&r2=462796RX3J&r=00107&e=,2026-09-10T01:58:01Z
 1271,2004,SANTURCE,29,302,wayback_bsnpr_jug05,https://web.archive.org/web/20061209152333id_/http://www.bsnpr.com/jug05.asp?r3=00260&r2=462796RX3J&r=00107&e=,2026-09-10T01:58:01Z
-1271,2005,ARECIBO,4,20,wayback_bsnpr_jug05,https://web.archive.org/web/20061209152333id_/http://www.bsnpr.com/jug05.asp?r3=00260&r2=462796RX3J&r=00107&e=,2026-09-10T01:58:01Z
+1271,2006,ARECIBO,4,20,wayback_bsnpr_jug05,https://web.archive.org/web/20061209152333id_/http://www.bsnpr.com/jug05.asp?r3=00260&r2=462796RX3J&r=00107&e=,2026-09-10T01:58:01Z
 1272,1992,"Brujos, Guayama",12,12,wayback_bsnpr_players,https://web.archive.org/web/20091209192016id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1272&e=,2026-09-08T14:39:09Z
 1272,1993,"Brujos, Guayama",25,73,wayback_bsnpr_players,https://web.archive.org/web/20091209192016id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1272&e=,2026-09-08T14:39:09Z
 1272,1994,"Brujos, Guayama",30,220,wayback_bsnpr_players,https://web.archive.org/web/20091209192016id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1272&e=,2026-09-08T14:39:09Z
@@ -2699,7 +2648,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1272,2003,"Gallitos, Isabela",30,465,wayback_bsnpr_players,https://web.archive.org/web/20091209192016id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1272&e=,2026-09-08T14:39:09Z
 1272,2004,"Gallitos, Isabela",29,437,wayback_bsnpr_players,https://web.archive.org/web/20091209192016id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1272&e=,2026-09-08T14:39:09Z
 1272,2005,"Brujos, Guayama",32,279,wayback_bsnpr_players,https://web.archive.org/web/20091209192016id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1272&e=,2026-09-08T14:39:09Z
-1272,2005,SANTURCE,26,189,wayback_bsnpr_jug05,https://web.archive.org/web/20061206115330id_/http://www.bsnpr.com:80/jug05.asp?r3=00138&r2=462726RX0L&r=00046&e=,2026-09-10T01:54:34Z
 1272,2006,"Cangrejeros, Santurce",26,189,wayback_bsnpr_players,https://web.archive.org/web/20091209192016id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1272&e=,2026-09-08T14:39:09Z
 1272,2007,"Atleticos, San German",30,215,wayback_bsnpr_players,https://web.archive.org/web/20091209192016id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1272&e=,2026-09-08T14:39:09Z
 1272,2008,"Leones, Ponce",28,98,wayback_bsnpr_players,https://web.archive.org/web/20091209192016id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1272&e=,2026-09-08T14:39:09Z
@@ -2737,11 +2685,10 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1279,2003,"Piratas, Quebradillas",22,88,wayback_bsnpr_players,https://web.archive.org/web/20070829041800id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1279&e=,2026-09-08T14:39:17Z
 1279,2004,"Piratas, Quebradillas",30,457,wayback_bsnpr_players,https://web.archive.org/web/20070829041800id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1279&e=,2026-09-08T14:39:17Z
 1279,2005,"Atleticos, San German",29,90,wayback_bsnpr_players,https://web.archive.org/web/20070829041800id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1279&e=,2026-09-08T14:39:17Z
-1279,2005,BAYAMON,13,30,wayback_bsnpr_jug05,https://web.archive.org/web/20061206115532id_/http://www.bsnpr.com:80/jug05.asp?r3=00209&r2=462766RX2B&r=00125&e=,2026-09-10T02:07:12Z
 1279,2006,"Vaqueros, Bayamon",13,30,wayback_bsnpr_players,https://web.archive.org/web/20070829041800id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1279&e=,2026-09-08T14:39:17Z
 1280,2003,ARECIBO,7,191,wayback_bsnpr_jug05,https://web.archive.org/web/20061206190118id_/http://www.bsnpr.com:80/jug05.asp?r3=00005&r2=462656RWXP&r=00085&e=,2026-09-10T01:56:18Z
 1280,2003,CAYEY,2,44,wayback_bsnpr_jug05,https://web.archive.org/web/20061206190118id_/http://www.bsnpr.com:80/jug05.asp?r3=00005&r2=462656RWXP&r=00085&e=,2026-09-10T01:56:18Z
-1280,2005,SAN GERMAN,9,258,wayback_bsnpr_jug05,https://web.archive.org/web/20061206190118id_/http://www.bsnpr.com:80/jug05.asp?r3=00005&r2=462656RWXP&r=00085&e=,2026-09-10T01:56:18Z
+1280,2006,SAN GERMAN,9,258,wayback_bsnpr_jug05,https://web.archive.org/web/20061206190118id_/http://www.bsnpr.com:80/jug05.asp?r3=00005&r2=462656RWXP&r=00085&e=,2026-09-10T01:56:18Z
 1281,1972,"Criollos, Caguas",18,114,wayback_bsnpr_players,https://web.archive.org/web/20070829042405id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1281&e=,2026-09-08T14:39:19Z
 1281,1973,"Criollos, Caguas",23,127,wayback_bsnpr_players,https://web.archive.org/web/20070829042405id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1281&e=,2026-09-08T14:39:19Z
 1281,1974,"Criollos, Caguas",17,140,wayback_bsnpr_players,https://web.archive.org/web/20070829042405id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1281&e=,2026-09-08T14:39:19Z
@@ -2774,7 +2721,7 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1284,2003,"Gigantes, Carolina",30,283,wayback_bsnpr_players,https://web.archive.org/web/20080411054818id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1284&e=,2026-09-08T14:39:25Z
 1284,2004,"Criollos, Caguas",17,72,wayback_bsnpr_players,https://web.archive.org/web/20080411054818id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1284&e=,2026-09-08T14:39:25Z
 1284,2004,"Piratas, Quebradillas",11,51,wayback_bsnpr_players,https://web.archive.org/web/20080411054818id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1284&e=,2026-09-08T14:39:25Z
-1284,2005,MOROVIS,12,72,wayback_bsnpr_jug05,https://web.archive.org/web/20061119231056id_/http://www.bsnpr.com/jug05.asp?r2=462696RWZ6&r3=00075&r=00559&e=MOROVIS,2026-09-10T01:54:51Z
+1284,2006,MOROVIS,12,72,wayback_bsnpr_jug05,https://web.archive.org/web/20061119231056id_/http://www.bsnpr.com/jug05.asp?r2=462696RWZ6&r3=00075&r=00559&e=MOROVIS,2026-09-10T01:54:51Z
 1284,2006,"Cangrejeros, Santurce",5,5,wayback_bsnpr_players,https://web.archive.org/web/20080411054818id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1284&e=,2026-09-08T14:39:25Z
 1284,2006,"Titanes, Morovis",7,67,wayback_bsnpr_players,https://web.archive.org/web/20080411054818id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1284&e=,2026-09-08T14:39:25Z
 1284,2007,"Vaqueros, Bayamon",12,17,wayback_bsnpr_players,https://web.archive.org/web/20080411054818id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1284&e=,2026-09-08T14:39:25Z
@@ -2794,7 +2741,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1286,2003,"Indios, Mayaguez",22,27,wayback_bsnpr_players,https://web.archive.org/web/20080228053258id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1286&e=5,2026-09-08T14:39:27Z
 1286,2004,"Leones, Ponce",21,26,wayback_bsnpr_players,https://web.archive.org/web/20080228053258id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1286&e=5,2026-09-08T14:39:27Z
 1286,2005,"Atleticos, San German",26,56,wayback_bsnpr_players,https://web.archive.org/web/20080228053258id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1286&e=5,2026-09-08T14:39:27Z
-1286,2005,SAN GERMAN,24,91,wayback_bsnpr_jug05,https://web.archive.org/web/20070404075323id_/http://www.bsnpr.com:80/jug05.asp?r3=00160&r2=462736RX14&r=00117&e=,2026-09-10T02:10:26Z
 1286,2006,"Atleticos, San German",24,91,wayback_bsnpr_players,https://web.archive.org/web/20080228053258id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1286&e=5,2026-09-08T14:39:27Z
 1286,2007,"Leones, Ponce",27,37,wayback_bsnpr_players,https://web.archive.org/web/20080228053258id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1286&e=5,2026-09-08T14:39:27Z
 1289,1981,"Gallitos, Isabela",6,16,wayback_bsnpr_players,https://web.archive.org/web/20070828230445id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1289&e=,2026-09-08T14:39:29Z
@@ -2815,7 +2761,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1293,2003,"Criollos, Caguas",10,98,wayback_bsnpr_players,https://web.archive.org/web/20090422185032id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1293&e=9,2026-09-08T14:39:33Z
 1293,2003,"Indios, Mayaguez",20,116,wayback_bsnpr_players,https://web.archive.org/web/20090422185032id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1293&e=9,2026-09-08T14:39:33Z
 1293,2004,"Indios, Mayaguez",26,383,wayback_bsnpr_players,https://web.archive.org/web/20090422185032id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1293&e=9,2026-09-08T14:39:33Z
-1293,2005,ARECIBO,24,144,wayback_bsnpr_jug05,https://web.archive.org/web/20061008162018id_/http://www.bsnpr.com:80/jug05.asp?r3=00162&r2=462746RX16&r=00011&e=,2026-09-10T01:57:04Z
 1293,2005,"Capitanes, Arecibo",31,200,wayback_bsnpr_players,https://web.archive.org/web/20090422185032id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1293&e=9,2026-09-08T14:39:33Z
 1293,2006,"Capitanes, Arecibo",24,144,wayback_bsnpr_players,https://web.archive.org/web/20090422185032id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1293&e=9,2026-09-08T14:39:33Z
 1293,2008,"Vaqueros, Bayamon",2,17,wayback_bsnpr_players,https://web.archive.org/web/20090422185032id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1293&e=9,2026-09-08T14:39:33Z
@@ -2967,7 +2912,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1385,2001,"Brujos, Guayama",16,63,wayback_bsnpr_players,https://web.archive.org/web/20130428000839id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1385&e=,2026-09-08T14:40:14Z
 1385,2003,"Gallitos, Isabela",3,1,wayback_bsnpr_players,https://web.archive.org/web/20130428000839id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1385&e=,2026-09-08T14:40:14Z
 1385,2004,"Toritos, Cayey",17,69,wayback_bsnpr_players,https://web.archive.org/web/20130428000839id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1385&e=,2026-09-08T14:40:14Z
-1385,2005,MOROVIS,23,186,wayback_bsnpr_jug05,https://web.archive.org/web/20061119231113id_/http://www.bsnpr.com/jug05.asp?r2=462726RX0H&r3=00133&r=00501&e=MOROVIS,2026-09-10T01:54:45Z
 1385,2006,"Titanes, Morovis",23,186,wayback_bsnpr_players,https://web.archive.org/web/20130428000839id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1385&e=,2026-09-08T14:40:14Z
 1385,2007,"Maratonistas, Coamo",30,146,wayback_bsnpr_players,https://web.archive.org/web/20130428000839id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1385&e=,2026-09-08T14:40:14Z
 1385,2008,"Caciques-Gigantes, Humacao-Carolina",17,49,wayback_bsnpr_players,https://web.archive.org/web/20130428000839id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1385&e=,2026-09-08T14:40:14Z
@@ -2991,7 +2935,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1405,2003,"Vaqueros, Bayamon",7,116,wayback_bsnpr_players,https://web.archive.org/web/20151224105242id_/http://bsnpr.com/jugadores/jugador.asp?id=1405&e=,2026-09-08T14:40:25Z
 1408,1997,"Santos, San Juan",3,36,wayback_bsnpr_players,https://web.archive.org/web/20070829035344id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1408&e=,2026-09-08T14:40:27Z
 1411,2004,"Gallitos, Isabela",17,270,wayback_bsnpr_players,https://web.archive.org/web/20160214153825id_/http://bsnpr.com/jugadores/jugador.asp?id=1411,2026-09-08T14:40:29Z
-1411,2005,GUAYNABO,26,370,wayback_bsnpr_jug05,https://web.archive.org/web/20060618110535id_/http://www.bsnpr.com:80/jug05.asp?r=00500,2026-09-10T01:55:12Z
 1411,2006,"Mets, Guaynabo",26,370,wayback_bsnpr_players,https://web.archive.org/web/20160214153825id_/http://bsnpr.com/jugadores/jugador.asp?id=1411,2026-09-08T14:40:29Z
 1411,2007,"Maratonistas, Coamo",15,211,wayback_bsnpr_players,https://web.archive.org/web/20160214153825id_/http://bsnpr.com/jugadores/jugador.asp?id=1411,2026-09-08T14:40:29Z
 1411,2008,"Mets, Guaynabo",31,455,wayback_bsnpr_players,https://web.archive.org/web/20160214153825id_/http://bsnpr.com/jugadores/jugador.asp?id=1411,2026-09-08T14:40:29Z
@@ -2999,7 +2942,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1416,2001,"Capitanes, Arecibo",9,103,wayback_bsnpr_players,https://web.archive.org/web/20070828231656id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1416&e=,2026-09-08T14:40:33Z
 1429,2004,"Indios, Mayaguez",5,101,wayback_bsnpr_players,https://web.archive.org/web/20090429221318id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1429&e=14,2026-09-08T14:40:34Z
 1429,2004,"Toritos, Cayey",17,412,wayback_bsnpr_players,https://web.archive.org/web/20090429221318id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1429&e=14,2026-09-08T14:40:34Z
-1429,2005,ARECIBO,10,214,wayback_bsnpr_jug05,https://web.archive.org/web/20070223161647id_/http://www.bsnpr.com:80/jug05.asp?r=00151,2026-09-10T02:10:53Z
 1429,2005,"Grises, Humacao",25,570,wayback_bsnpr_players,https://web.archive.org/web/20090429221318id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1429&e=14,2026-09-08T14:40:34Z
 1429,2006,"Capitanes, Arecibo",10,214,wayback_bsnpr_players,https://web.archive.org/web/20090429221318id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1429&e=14,2026-09-08T14:40:34Z
 1429,2007,"Vaqueros, Bayamon",9,126,wayback_bsnpr_players,https://web.archive.org/web/20090429221318id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1429&e=14,2026-09-08T14:40:34Z
@@ -3055,7 +2997,7 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1462,2003,"Criollos, Caguas",30,378,wayback_bsnpr_players,https://web.archive.org/web/20070829035055id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1462&e=,2026-09-08T14:40:53Z
 1462,2004,"Criollos, Caguas",29,270,wayback_bsnpr_players,https://web.archive.org/web/20070829035055id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1462&e=,2026-09-08T14:40:53Z
 1462,2005,"Maratonistas, Coamo",32,187,wayback_bsnpr_players,https://web.archive.org/web/20070829035055id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1462&e=,2026-09-08T14:40:53Z
-1462,2005,SAN GERMAN,9,9,wayback_bsnpr_jug05,https://web.archive.org/web/20061119230314id_/http://www.bsnpr.com/jug05.asp?r2=462676RWYH&r3=00041&r=00041&e=SAN%20GERMAN,2026-09-10T01:58:53Z
+1462,2006,SAN GERMAN,9,9,wayback_bsnpr_jug05,https://web.archive.org/web/20061119230314id_/http://www.bsnpr.com/jug05.asp?r2=462676RWYH&r3=00041&r=00041&e=SAN%20GERMAN,2026-09-10T01:58:53Z
 1462,2006,"Atleticos, San German",5,9,wayback_bsnpr_players,https://web.archive.org/web/20070829035055id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1462&e=,2026-09-08T14:40:53Z
 1462,2006,"Maratonistas, Coamo",4,0,wayback_bsnpr_players,https://web.archive.org/web/20070829035055id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1462&e=,2026-09-08T14:40:53Z
 1464,1973,"Leones, Ponce",21,39,wayback_bsnpr_players,https://web.archive.org/web/20070828231519id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1464&e=,2026-09-08T14:40:56Z
@@ -3105,7 +3047,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1497,2000,GUAYNABO,3,5,wayback_bsnpr_jug05,https://web.archive.org/web/20070224021002id_/http://www.bsnpr.com:80/jug05.asp?r=00524,2026-09-10T02:12:32Z
 1497,2000,"Mets, Guaynabo",4,5,wayback_bsnpr_players,https://web.archive.org/web/20100310231433id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1497&e=7,2026-09-08T14:41:13Z
 1497,2002,"Leones, Ponce",10,45,wayback_bsnpr_players,https://web.archive.org/web/20100310231433id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1497&e=7,2026-09-08T14:41:13Z
-1497,2005,CAGUAS,1,2,wayback_bsnpr_jug05,https://web.archive.org/web/20070224021002id_/http://www.bsnpr.com:80/jug05.asp?r=00524,2026-09-10T02:12:32Z
 1497,2006,"Criollos, Caguas",1,2,wayback_bsnpr_players,https://web.archive.org/web/20100310231433id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1497&e=7,2026-09-08T14:41:13Z
 1497,2007,"Maratonistas, Coamo",19,62,wayback_bsnpr_players,https://web.archive.org/web/20100310231433id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1497&e=7,2026-09-08T14:41:13Z
 1497,2008,"Gigantes, Carolina",22,31,wayback_bsnpr_players,https://web.archive.org/web/20100310231433id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1497&e=7,2026-09-08T14:41:13Z
@@ -3114,7 +3055,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1498,2003,"Piratas, Quebradillas",19,42,wayback_bsnpr_players,https://web.archive.org/web/20091209190556id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1498&e=,2026-09-08T14:41:15Z
 1498,2004,"Criollos, Caguas",10,10,wayback_bsnpr_players,https://web.archive.org/web/20091209190556id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1498&e=,2026-09-08T14:41:15Z
 1498,2005,"Grises, Humacao",31,157,wayback_bsnpr_players,https://web.archive.org/web/20091209190556id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1498&e=,2026-09-08T14:41:15Z
-1498,2005,MOROVIS,23,73,wayback_bsnpr_jug05,https://web.archive.org/web/20061119231027id_/http://www.bsnpr.com/jug05.asp?r2=462776RX2U&r3=00230&r=00143&e=MOROVIS,2026-09-10T02:03:36Z
 1498,2006,"Titanes, Morovis",23,73,wayback_bsnpr_players,https://web.archive.org/web/20091209190556id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1498&e=,2026-09-08T14:41:15Z
 1498,2007,"Cariduros, Fajardo",28,109,wayback_bsnpr_players,https://web.archive.org/web/20091209190556id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1498&e=,2026-09-08T14:41:15Z
 1498,2008,"Cariduros, Fajardo",32,148,wayback_bsnpr_players,https://web.archive.org/web/20091209190556id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1498&e=,2026-09-08T14:41:15Z
@@ -3125,7 +3065,7 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1499,1987,"Criollos, Caguas",6,27,wayback_bsnpr_players,https://web.archive.org/web/20070829041943id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1499&e=,2026-09-08T14:41:17Z
 1499,1987,"Gigantes, Carolina",11,10,wayback_bsnpr_players,https://web.archive.org/web/20070829041943id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1499&e=,2026-09-08T14:41:17Z
 1499,1988,"Gigantes, Carolina",12,4,wayback_bsnpr_players,https://web.archive.org/web/20070829041943id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1499&e=,2026-09-08T14:41:17Z
-1500,2005,PONCE,6,11,wayback_bsnpr_jug05,https://web.archive.org/web/20061010080239id_/http://www.bsnpr.com:80/jug05.asp?r3=EXFEJ&r2=IEHKJPQPCI&r=00536&e=,2026-09-10T01:54:58Z
+1500,2006,PONCE,6,11,wayback_bsnpr_jug05,https://web.archive.org/web/20061010080239id_/http://www.bsnpr.com:80/jug05.asp?r3=EXFEJ&r2=IEHKJPQPCI&r=00536&e=,2026-09-10T01:54:58Z
 1501,2000,"Maratonistas, Coamo",6,6,wayback_bsnpr_players,https://web.archive.org/web/20070828231651id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1501&e=,2026-09-08T14:41:19Z
 1502,1999,"Cangrejeros, Santurce",9,2,wayback_bsnpr_players,https://web.archive.org/web/20170801070847id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1502&e=,2026-09-08T14:41:21Z
 1502,2000,"Cangrejeros, Santurce",4,6,wayback_bsnpr_players,https://web.archive.org/web/20170801070847id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1502&e=,2026-09-08T14:41:21Z
@@ -3155,7 +3095,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1512,2003,"Criollos, Caguas",19,209,wayback_bsnpr_players,https://web.archive.org/web/20100227055903id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1512&e=8,2026-09-08T14:41:25Z
 1512,2004,"Gallitos, Isabela",6,43,wayback_bsnpr_players,https://web.archive.org/web/20100227055903id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1512&e=8,2026-09-08T14:41:25Z
 1512,2005,"Leones, Ponce",14,28,wayback_bsnpr_players,https://web.archive.org/web/20100227055903id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1512&e=8,2026-09-08T14:41:25Z
-1512,2005,MOROVIS,26,226,wayback_bsnpr_jug05,https://web.archive.org/web/20061119231048id_/http://www.bsnpr.com/jug05.asp?r2=462686RWYO&r3=00054&r=00089&e=MOROVIS,2026-09-10T02:06:48Z
 1512,2006,"Titanes, Morovis",26,226,wayback_bsnpr_players,https://web.archive.org/web/20100227055903id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1512&e=8,2026-09-08T14:41:25Z
 1512,2007,"Cariduros, Fajardo",30,308,wayback_bsnpr_players,https://web.archive.org/web/20100227055903id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1512&e=8,2026-09-08T14:41:25Z
 1512,2008,"Cangrejeros, Santurce",32,256,wayback_bsnpr_players,https://web.archive.org/web/20100227055903id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1512&e=8,2026-09-08T14:41:25Z
@@ -3169,7 +3108,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1531,1977,"Conquistadores, Guaynabo",29,121,wayback_bsnpr_players,https://web.archive.org/web/20070828223717id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1531&e=,2026-09-08T14:41:32Z
 1531,1978,"Conquistadores, Guaynabo",30,153,wayback_bsnpr_players,https://web.archive.org/web/20070828223717id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1531&e=,2026-09-08T14:41:32Z
 1531,1981,"Criollos, Caguas",19,96,wayback_bsnpr_players,https://web.archive.org/web/20070828223717id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1531&e=,2026-09-08T14:41:32Z
-1533,2005,MOROVIS,19,64,wayback_bsnpr_jug05,https://web.archive.org/web/20061119231041id_/http://www.bsnpr.com/jug05.asp?r2=XWVSOJZOLS&r3=YTCJJ&r=00504&e=MOROVIS,2026-09-10T02:02:47Z
 1533,2006,"Titanes, Morovis",19,64,wayback_bsnpr_players,https://web.archive.org/web/20090110023957id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1533&e=,2026-09-08T14:41:34Z
 1533,2008,"Brujos, Guayama",21,69,wayback_bsnpr_players,https://web.archive.org/web/20090110023957id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1533&e=,2026-09-08T14:41:34Z
 1534,1957,"Piratas, Quebradillas",6,9,wayback_bsnpr_players,https://web.archive.org/web/20070829042541id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1534&e=,2026-09-08T14:41:36Z
@@ -3185,7 +3123,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1550,2002,"Piratas, Quebradillas",16,14,wayback_bsnpr_players,https://web.archive.org/web/20170715113531id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1550&e=,2026-09-08T14:41:42Z
 1550,2003,"Piratas, Quebradillas",0,0,wayback_bsnpr_players,https://web.archive.org/web/20170715113531id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1550&e=,2026-09-08T14:41:42Z
 1550,2004,"Gallitos, Isabela",15,26,wayback_bsnpr_players,https://web.archive.org/web/20170715113531id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1550&e=,2026-09-08T14:41:42Z
-1550,2005,SANTURCE,24,85,wayback_bsnpr_jug05,https://web.archive.org/web/20060528213655id_/http://www.bsnpr.com:80/jug05.asp?r2=462766RX2H&r3=00217&r=00529&e=SANTURCE,2026-09-10T02:04:03Z
 1550,2006,"Cangrejeros, Santurce",24,85,wayback_bsnpr_players,https://web.archive.org/web/20170715113531id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1550&e=,2026-09-08T14:41:42Z
 1550,2007,"Atleticos, San German",24,56,wayback_bsnpr_players,https://web.archive.org/web/20170715113531id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1550&e=,2026-09-08T14:41:42Z
 1550,2008,"Atleticos, San German",30,118,wayback_bsnpr_players,https://web.archive.org/web/20170715113531id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1550&e=,2026-09-08T14:41:42Z
@@ -3236,7 +3173,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1562,2004,"Gallitos, Isabela",9,66,wayback_bsnpr_players,https://web.archive.org/web/20140122195655id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1562&e=,2026-09-08T14:41:50Z
 1562,2004,"Leones, Ponce",5,25,wayback_bsnpr_players,https://web.archive.org/web/20140122195655id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1562&e=,2026-09-08T14:41:50Z
 1562,2005,"Leones, Ponce",31,109,wayback_bsnpr_players,https://web.archive.org/web/20140122195655id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1562&e=,2026-09-08T14:41:50Z
-1562,2005,PONCE,12,103,wayback_bsnpr_jug05,https://web.archive.org/web/20061119231617id_/http://www.bsnpr.com/jug05.asp?r2=462746RX1L&r3=00183&r=00088&e=PONCE,2026-09-10T01:56:11Z
 1562,2006,"Leones, Ponce",12,103,wayback_bsnpr_players,https://web.archive.org/web/20140122195655id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1562&e=,2026-09-08T14:41:50Z
 1562,2007,"Maratonistas, Coamo",29,408,wayback_bsnpr_players,https://web.archive.org/web/20140122195655id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1562&e=,2026-09-08T14:41:50Z
 1562,2008,"Cangrejeros, Santurce",22,85,wayback_bsnpr_players,https://web.archive.org/web/20140122195655id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1562&e=,2026-09-08T14:41:50Z
@@ -3251,7 +3187,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1567,1972,"Atleticos, San German",11,21,wayback_bsnpr_players,https://web.archive.org/web/20070829042819id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1567&e=,2026-09-08T14:41:51Z
 1569,1985,"Cariduros, Fajardo",3,0,wayback_bsnpr_players,https://web.archive.org/web/20070828224717id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1569&e=,2026-09-08T14:41:53Z
 1570,2004,"Vaqueros, Bayamon",11,20,wayback_bsnpr_players,https://web.archive.org/web/20090819210337id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1570&e=,2026-09-08T14:41:55Z
-1570,2005,BAYAMON,9,20,wayback_bsnpr_jug05,https://web.archive.org/web/20070404013830id_/http://www.bsnpr.com:80/jug05.asp?r3=BHVDA&r2=LAZPZZSQHB&r=00017&e=,2026-09-10T02:11:45Z
 1570,2005,"Vaqueros, Bayamon",12,23,wayback_bsnpr_players,https://web.archive.org/web/20090819210337id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1570&e=,2026-09-08T14:41:55Z
 1570,2006,"Vaqueros, Bayamon",9,20,wayback_bsnpr_players,https://web.archive.org/web/20090819210337id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1570&e=,2026-09-08T14:41:55Z
 1570,2007,"Capitanes, Arecibo",7,2,wayback_bsnpr_players,https://web.archive.org/web/20090819210337id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1570&e=,2026-09-08T14:41:55Z
@@ -3300,7 +3235,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1575,2003,"Titanes, Morovis",26,115,wayback_bsnpr_players,https://web.archive.org/web/20090110113911id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1575&e=,2026-09-08T14:41:59Z
 1575,2004,"Gigantes, Carolina",27,83,wayback_bsnpr_players,https://web.archive.org/web/20090110113911id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1575&e=,2026-09-08T14:41:59Z
 1575,2005,"Capitanes, Arecibo",20,8,wayback_bsnpr_players,https://web.archive.org/web/20090110113911id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1575&e=,2026-09-08T14:41:59Z
-1575,2005,MOROVIS,14,22,wayback_bsnpr_jug05,https://web.archive.org/web/20070224095549id_/http://www.bsnpr.com:80/jug05.asp?r=00008,2026-09-10T02:10:48Z
 1575,2006,"Titanes, Morovis",14,22,wayback_bsnpr_players,https://web.archive.org/web/20090110113911id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1575&e=,2026-09-08T14:41:59Z
 1575,2007,"Capitanes, Arecibo",17,6,wayback_bsnpr_players,https://web.archive.org/web/20090110113911id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1575&e=,2026-09-08T14:41:59Z
 1575,2008,"Capitanes, Arecibo",14,13,wayback_bsnpr_players,https://web.archive.org/web/20090110113911id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1575&e=,2026-09-08T14:41:59Z
@@ -3310,7 +3244,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1579,1969,"Santos, San Juan",20,72,wayback_bsnpr_players,https://web.archive.org/web/20070829042713id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1579&e=,2026-09-08T14:42:01Z
 1579,1970,"Santos, San Juan",11,16,wayback_bsnpr_players,https://web.archive.org/web/20070829042713id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1579&e=,2026-09-08T14:42:01Z
 1579,1971,"Brujos, Guayama",24,169,wayback_bsnpr_players,https://web.archive.org/web/20070829042713id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1579&e=,2026-09-08T14:42:01Z
-1601,2005,GUAYAMA,20,303,wayback_bsnpr_jug05,https://web.archive.org/web/20060829175159id_/http://www.bsnpr.com:80/jug05.asp?r3=+++++&r2=IDMKNHYNVN&r=00565&e=,2026-09-10T01:54:10Z
 1601,2006,"Brujos, Guayama",20,303,wayback_bsnpr_players,https://web.archive.org/web/20090829072335id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1601&e=,2026-09-08T14:42:03Z
 1601,2007,"Brujos, Guayama",21,383,wayback_bsnpr_players,https://web.archive.org/web/20090829072335id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1601&e=,2026-09-08T14:42:03Z
 1601,2008,"Brujos, Guayama",20,364,wayback_bsnpr_players,https://web.archive.org/web/20090829072335id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1601&e=,2026-09-08T14:42:03Z
@@ -3321,7 +3254,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1613,1999,"Titanes, Morovis",7,65,wayback_bsnpr_players,https://web.archive.org/web/20091209193450id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1613&e=,2026-09-08T14:42:06Z
 1613,2000,"Gallitos, Isabela",10,139,wayback_bsnpr_players,https://web.archive.org/web/20091209193450id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1613&e=,2026-09-08T14:42:06Z
 1613,2004,"Vaqueros, Bayamon",16,133,wayback_bsnpr_players,https://web.archive.org/web/20091209193450id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1613&e=,2026-09-08T14:42:06Z
-1613,2005,GUAYNABO,26,287,wayback_bsnpr_jug05,https://web.archive.org/web/20070404013551id_/http://www.bsnpr.com:80/jug05.asp?r3=RFVTH&r2=RBWYUXRNGI&r=00153&e=,2026-09-10T02:12:30Z
 1613,2005,"Gallitos, Isabela",5,38,wayback_bsnpr_players,https://web.archive.org/web/20091209193450id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1613&e=,2026-09-08T14:42:06Z
 1613,2005,"Vaqueros, Bayamon",21,106,wayback_bsnpr_players,https://web.archive.org/web/20091209193450id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1613&e=,2026-09-08T14:42:06Z
 1613,2006,"Conquistadores, Guaynabo",26,287,wayback_bsnpr_players,https://web.archive.org/web/20091209193450id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1613&e=,2026-09-08T14:42:06Z
@@ -3347,7 +3279,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1628,2002,"Gigantes, Carolina",5,105,wayback_bsnpr_players,https://web.archive.org/web/20091006104719id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1628&e=,2026-09-08T14:42:20Z
 1628,2004,"Gigantes, Carolina",13,199,wayback_bsnpr_players,https://web.archive.org/web/20091006104719id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1628&e=,2026-09-08T14:42:20Z
 1628,2005,"Grises, Humacao",27,331,wayback_bsnpr_players,https://web.archive.org/web/20091006104719id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1628&e=,2026-09-08T14:42:20Z
-1628,2005,SANTURCE,26,233,wayback_bsnpr_jug05,https://web.archive.org/web/20061211012026id_/http://www.bsnpr.com:80/jug05.asp?r3=SBEVR&r2=ZBCOCSGWCF&r=00067&e=,2026-09-10T01:57:32Z
 1628,2006,"Cangrejeros, Santurce",26,233,wayback_bsnpr_players,https://web.archive.org/web/20091006104719id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1628&e=,2026-09-08T14:42:20Z
 1628,2007,"Cangrejeros, Santurce",17,148,wayback_bsnpr_players,https://web.archive.org/web/20091006104719id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1628&e=,2026-09-08T14:42:20Z
 1628,2008,"Cangrejeros, Santurce",25,116,wayback_bsnpr_players,https://web.archive.org/web/20091006104719id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1628&e=,2026-09-08T14:42:20Z
@@ -3412,7 +3343,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1667,1984,"Criollos, Caguas",5,5,wayback_bsnpr_players,https://web.archive.org/web/20070828230418id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1667&e=,2026-09-08T14:42:39Z
 1667,1984,"Leones, Ponce",12,18,wayback_bsnpr_players,https://web.archive.org/web/20070828230418id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1667&e=,2026-09-08T14:42:39Z
 1673,1980,"Indios, Mayaguez",16,51,wayback_bsnpr_players,https://web.archive.org/web/20070828230753id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1673&e=,2026-09-08T14:42:41Z
-1675,2005,HUMACAO,25,464,wayback_bsnpr_jug05,https://web.archive.org/web/20070223232715id_/http://www.bsnpr.com:80/jug05.asp?r=00517,2026-09-10T02:11:42Z
 1675,2006,"Grises, Humacao",25,464,wayback_bsnpr_players,https://web.archive.org/web/20070828223454id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1675&e=,2026-09-08T14:42:43Z
 1675,2007,"Grises, Humacao",3,39,wayback_bsnpr_players,https://web.archive.org/web/20070828223454id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1675&e=,2026-09-08T14:42:43Z
 1676,1978,"Capitanes, Arecibo",27,346,wayback_bsnpr_players,https://web.archive.org/web/20070828223636id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1676&e=,2026-09-08T14:42:44Z
@@ -3454,7 +3384,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1685,2003,"Cangrejeros, Santurce",30,605,wayback_bsnpr_players,https://web.archive.org/web/20100310065704id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1685&e=7,2026-09-08T14:42:50Z
 1685,2004,"Cangrejeros, Santurce",29,476,wayback_bsnpr_players,https://web.archive.org/web/20100310065704id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1685&e=7,2026-09-08T14:42:50Z
 1685,2005,"Brujos, Guayama",25,440,wayback_bsnpr_players,https://web.archive.org/web/20100310065704id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1685&e=7,2026-09-08T14:42:50Z
-1685,2005,GUAYAMA,25,523,wayback_bsnpr_jug05,https://web.archive.org/web/20061207122823id_/http://www.bsnpr.com:80/jug05.asp?r3=00266&r2=462796RX3P&r=00047&e=,2026-09-10T02:01:32Z
 1685,2006,"Brujos, Guayama",25,523,wayback_bsnpr_players,https://web.archive.org/web/20100310065704id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1685&e=7,2026-09-08T14:42:50Z
 1685,2007,"Brujos, Guayama",30,500,wayback_bsnpr_players,https://web.archive.org/web/20100310065704id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1685&e=7,2026-09-08T14:42:50Z
 1685,2008,"Mets, Guaynabo",21,352,wayback_bsnpr_players,https://web.archive.org/web/20100310065704id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1685&e=7,2026-09-08T14:42:50Z
@@ -3565,7 +3494,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1728,1995,"Tiburones, Aguadilla",7,2,wayback_bsnpr_players,https://web.archive.org/web/20070829040801id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1728&e=,2026-09-08T14:43:16Z
 1728,1996,"Tiburones, Aguadilla",4,4,wayback_bsnpr_players,https://web.archive.org/web/20070829040801id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1728&e=,2026-09-08T14:43:16Z
 1737,2005,"Cangrejeros, Santurce",30,428,wayback_bsnpr_players,https://web.archive.org/web/20091207220650id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1737&e=9,2026-09-08T14:43:18Z
-1737,2005,SANTURCE,1,16,wayback_bsnpr_jug05,https://web.archive.org/web/20070404072712id_/http://www.bsnpr.com:80/jug05.asp?r3=+++++&r2=HCSGGIFNLF&r=00129&e=,2026-09-10T02:11:14Z
 1737,2006,"Cangrejeros, Santurce",1,16,wayback_bsnpr_players,https://web.archive.org/web/20091207220650id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1737&e=9,2026-09-08T14:43:18Z
 1737,2009,"Vaqueros, Bayamon",8,89,wayback_bsnpr_players,https://web.archive.org/web/20091207220650id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1737&e=9,2026-09-08T14:43:18Z
 1738,1996,"Gallitos, Isabela",1,2,wayback_bsnpr_players,https://web.archive.org/web/20070829035254id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1738&e=,2026-09-08T14:43:20Z
@@ -3579,7 +3507,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1739,2002,"Toritos, Cayey",22,45,wayback_bsnpr_players,https://web.archive.org/web/20170715113542id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1739&e=,2026-09-08T14:43:22Z
 1739,2003,"Toritos, Cayey",30,101,wayback_bsnpr_players,https://web.archive.org/web/20170715113542id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1739&e=,2026-09-08T14:43:22Z
 1739,2004,"Toritos, Cayey",29,183,wayback_bsnpr_players,https://web.archive.org/web/20170715113542id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1739&e=,2026-09-08T14:43:22Z
-1739,2005,CAGUAS,26,346,wayback_bsnpr_jug05,https://web.archive.org/web/20060618110838id_/http://www.bsnpr.com:80/jug05.asp?r=00069,2026-09-10T01:55:38Z
 1739,2005,"Caciques, Humacao",32,202,wayback_bsnpr_players,https://web.archive.org/web/20170715113542id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1739&e=,2026-09-08T14:43:22Z
 1739,2006,"Criollos, Caguas",26,346,wayback_bsnpr_players,https://web.archive.org/web/20170715113542id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1739&e=,2026-09-08T14:43:22Z
 1739,2007,"Criollos, Caguas",30,374,wayback_bsnpr_players,https://web.archive.org/web/20170715113542id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1739&e=,2026-09-08T14:43:22Z
@@ -3629,7 +3556,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1753,2003,"Atleticos, San German",24,133,wayback_bsnpr_players,https://web.archive.org/web/20080803172233id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1753&e=,2026-09-08T14:43:34Z
 1753,2004,"Indios, Mayaguez",20,39,wayback_bsnpr_players,https://web.archive.org/web/20080803172233id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1753&e=,2026-09-08T14:43:34Z
 1753,2005,"Gallitos, Isabela",31,139,wayback_bsnpr_players,https://web.archive.org/web/20080803172233id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1753&e=,2026-09-08T14:43:34Z
-1753,2005,HUMACAO,25,87,wayback_bsnpr_jug05,https://web.archive.org/web/20061213195853id_/http://www.bsnpr.com:80/jug05.asp?r3=00245&r2=462786RX37&r=00142&e=,2026-09-10T02:01:55Z
 1753,2006,"Grises, Humacao",25,87,wayback_bsnpr_players,https://web.archive.org/web/20080803172233id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1753&e=,2026-09-08T14:43:34Z
 1753,2007,"Cangrejeros, Santurce",13,65,wayback_bsnpr_players,https://web.archive.org/web/20080803172233id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1753&e=,2026-09-08T14:43:34Z
 1753,2007,"Maratonistas, Coamo",9,59,wayback_bsnpr_players,https://web.archive.org/web/20080803172233id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1753&e=,2026-09-08T14:43:34Z
@@ -3651,7 +3577,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1759,2002,"Leones, Ponce",17,215,wayback_bsnpr_players,https://web.archive.org/web/20190209180827id_/https://www.bsnpr.com/jugadores/jugador.asp?id=1759&e,2026-09-08T14:43:39Z
 1759,2003,"Leones, Ponce",29,346,wayback_bsnpr_players,https://web.archive.org/web/20190209180827id_/https://www.bsnpr.com/jugadores/jugador.asp?id=1759&e,2026-09-08T14:43:39Z
 1759,2004,"Gallitos, Isabela",28,413,wayback_bsnpr_players,https://web.archive.org/web/20190209180827id_/https://www.bsnpr.com/jugadores/jugador.asp?id=1759&e,2026-09-08T14:43:39Z
-1759,2005,ARECIBO,1,0,wayback_bsnpr_jug05,https://web.archive.org/web/20061216221534id_/http://www.bsnpr.com:80/jug05.asp?r3=00208&r2=462766RX2A&r=00075&e=,2026-09-10T01:53:43Z
 1759,2005,"Gallitos, Isabela",26,310,wayback_bsnpr_players,https://web.archive.org/web/20190209180827id_/https://www.bsnpr.com/jugadores/jugador.asp?id=1759&e,2026-09-08T14:43:39Z
 1759,2006,"Capitanes, Arecibo",1,0,wayback_bsnpr_players,https://web.archive.org/web/20190209180827id_/https://www.bsnpr.com/jugadores/jugador.asp?id=1759&e,2026-09-08T14:43:39Z
 1759,2007,"Indios, Mayaguez",25,154,wayback_bsnpr_players,https://web.archive.org/web/20190209180827id_/https://www.bsnpr.com/jugadores/jugador.asp?id=1759&e,2026-09-08T14:43:39Z
@@ -3673,7 +3598,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1760,2003,"Cangrejeros, Santurce",23,420,wayback_bsnpr_players,https://web.archive.org/web/20100225110954id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1760&e=9,2026-09-08T14:43:41Z
 1760,2004,"Cangrejeros, Santurce",27,419,wayback_bsnpr_players,https://web.archive.org/web/20100225110954id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1760&e=9,2026-09-08T14:43:41Z
 1760,2005,"Cangrejeros, Santurce",32,423,wayback_bsnpr_players,https://web.archive.org/web/20100225110954id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1760&e=9,2026-09-08T14:43:41Z
-1760,2005,SANTURCE,21,161,wayback_bsnpr_jug05,https://web.archive.org/web/20060618111024id_/http://www.bsnpr.com:80/jug05.asp?r=00109,2026-09-10T01:58:29Z
 1760,2006,"Cangrejeros, Santurce",21,161,wayback_bsnpr_players,https://web.archive.org/web/20100225110954id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1760&e=9,2026-09-08T14:43:41Z
 1760,2007,"Cangrejeros, Santurce",28,213,wayback_bsnpr_players,https://web.archive.org/web/20100225110954id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1760&e=9,2026-09-08T14:43:41Z
 1760,2008,"Cangrejeros, Santurce",28,88,wayback_bsnpr_players,https://web.archive.org/web/20100225110954id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1760&e=9,2026-09-08T14:43:41Z
@@ -3708,7 +3632,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1766,2003,"Capitanes, Arecibo",21,145,wayback_bsnpr_players,https://web.archive.org/web/20090830021428id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1766&e=,2026-09-08T14:43:47Z
 1766,2003,"Leones, Ponce",6,27,wayback_bsnpr_players,https://web.archive.org/web/20090830021428id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1766&e=,2026-09-08T14:43:47Z
 1766,2004,"Capitanes, Arecibo",28,164,wayback_bsnpr_players,https://web.archive.org/web/20090830021428id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1766&e=,2026-09-08T14:43:47Z
-1766,2005,ARECIBO,26,103,wayback_bsnpr_jug05,https://web.archive.org/web/20061206190246id_/http://www.bsnpr.com:80/jug05.asp?r3=00204&r2=462766RX26&r=00005&e=,2026-09-10T01:56:32Z
 1766,2005,"Capitanes, Arecibo",25,43,wayback_bsnpr_players,https://web.archive.org/web/20090830021428id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1766&e=,2026-09-08T14:43:47Z
 1766,2006,"Capitanes, Arecibo",26,103,wayback_bsnpr_players,https://web.archive.org/web/20090830021428id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1766&e=,2026-09-08T14:43:47Z
 1766,2007,"Capitanes, Arecibo",29,74,wayback_bsnpr_players,https://web.archive.org/web/20090830021428id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1766&e=,2026-09-08T14:43:47Z
@@ -3719,7 +3642,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1771,2001,"Leones, Ponce",3,0,wayback_bsnpr_players,https://web.archive.org/web/20091209192745id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1771&e=,2026-09-08T14:43:55Z
 1771,2004,"Leones, Ponce",10,19,wayback_bsnpr_players,https://web.archive.org/web/20091209192745id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1771&e=,2026-09-08T14:43:55Z
 1771,2005,"Leones, Ponce",12,27,wayback_bsnpr_players,https://web.archive.org/web/20091209192745id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1771&e=,2026-09-08T14:43:55Z
-1771,2005,PONCE,11,38,wayback_bsnpr_jug05,https://web.archive.org/web/20061207121703id_/http://www.bsnpr.com:80/jug05.asp?r3=YISKK&r2=GFPAQCDEDB&r=00097&e=,2026-09-10T02:00:52Z
 1771,2006,"Leones, Ponce",11,38,wayback_bsnpr_players,https://web.archive.org/web/20091209192745id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1771&e=,2026-09-08T14:43:55Z
 1771,2007,"Leones, Ponce",23,106,wayback_bsnpr_players,https://web.archive.org/web/20091209192745id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1771&e=,2026-09-08T14:43:55Z
 1771,2008,"Atleticos, San German",20,32,wayback_bsnpr_players,https://web.archive.org/web/20091209192745id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1771&e=,2026-09-08T14:43:55Z
@@ -3744,11 +3666,11 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1774,2002,MOROVIS,10,113,wayback_bsnpr_jug05,https://web.archive.org/web/20061207025848id_/http://www.bsnpr.com:80/jug05.asp?r3=QGUQO&r2=BLBESEULRP&r=00147&e=,2026-09-10T01:57:59Z
 1774,2003,COAMO,15,89,wayback_bsnpr_jug05,https://web.archive.org/web/20061207025848id_/http://www.bsnpr.com:80/jug05.asp?r3=QGUQO&r2=BLBESEULRP&r=00147&e=,2026-09-10T01:57:59Z
 1774,2004,COAMO,25,143,wayback_bsnpr_jug05,https://web.archive.org/web/20061207025848id_/http://www.bsnpr.com:80/jug05.asp?r3=QGUQO&r2=BLBESEULRP&r=00147&e=,2026-09-10T01:57:59Z
-1774,2005,MOROVIS,3,10,wayback_bsnpr_jug05,https://web.archive.org/web/20061207025848id_/http://www.bsnpr.com:80/jug05.asp?r3=QGUQO&r2=BLBESEULRP&r=00147&e=,2026-09-10T01:57:59Z
+1774,2006,MOROVIS,3,10,wayback_bsnpr_jug05,https://web.archive.org/web/20061207025848id_/http://www.bsnpr.com:80/jug05.asp?r3=QGUQO&r2=BLBESEULRP&r=00147&e=,2026-09-10T01:57:59Z
 1776,1964,"Vaqueros, Bayamon",6,11,wayback_bsnpr_players,https://web.archive.org/web/20070829035448id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1776&e=,2026-09-08T14:43:57Z
 1776,1965,"Vaqueros, Bayamon",13,41,wayback_bsnpr_players,https://web.archive.org/web/20070829035448id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1776&e=,2026-09-08T14:43:57Z
 1776,1966,"Vaqueros, Bayamon",9,7,wayback_bsnpr_players,https://web.archive.org/web/20070829035448id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1776&e=,2026-09-08T14:43:57Z
-1777,2005,ARECIBO,1,2,wayback_bsnpr_jug05,https://web.archive.org/web/20061206190039id_/http://www.bsnpr.com:80/jug05.asp?r3=+++++&r2=BQVZAGRSHM&r=00574&e=,2026-09-10T02:05:50Z
+1777,2006,ARECIBO,1,2,wayback_bsnpr_jug05,https://web.archive.org/web/20061206190039id_/http://www.bsnpr.com:80/jug05.asp?r3=+++++&r2=BQVZAGRSHM&r=00574&e=,2026-09-10T02:05:50Z
 1781,1981,"Gigantes, Carolina",7,13,wayback_bsnpr_players,https://web.archive.org/web/20070828231720id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1781&e=,2026-09-08T14:43:59Z
 1781,1982,"Gigantes, Carolina",12,34,wayback_bsnpr_players,https://web.archive.org/web/20070828231720id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1781&e=,2026-09-08T14:43:59Z
 1784,1971,"Gigantes, Carolina",27,300,wayback_bsnpr_players,https://web.archive.org/web/20070828225052id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1784&e=,2026-09-08T14:44:04Z
@@ -3759,7 +3681,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1791,2002,"Piratas, Quebradillas",12,24,wayback_bsnpr_players,https://web.archive.org/web/20090829072340id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1791&e=,2026-09-08T14:44:08Z
 1791,2003,"Piratas, Quebradillas",20,47,wayback_bsnpr_players,https://web.archive.org/web/20090829072340id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1791&e=,2026-09-08T14:44:08Z
 1791,2004,"Piratas, Quebradillas",22,346,wayback_bsnpr_players,https://web.archive.org/web/20090829072340id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1791&e=,2026-09-08T14:44:08Z
-1791,2005,GUAYNABO,26,188,wayback_bsnpr_jug05,https://web.archive.org/web/20070404080215id_/http://www.bsnpr.com:80/jug05.asp?r3=00226&r2=462776RX2Q&r=00077&e=,2026-09-10T02:10:33Z
 1791,2005,"Gallitos, Isabela",29,182,wayback_bsnpr_players,https://web.archive.org/web/20090829072340id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1791&e=,2026-09-08T14:44:08Z
 1791,2006,"Conquistadores, Guaynabo",26,188,wayback_bsnpr_players,https://web.archive.org/web/20090829072340id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1791&e=,2026-09-08T14:44:08Z
 1791,2007,"Conquistadores, Guaynabo",27,176,wayback_bsnpr_players,https://web.archive.org/web/20090829072340id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1791&e=,2026-09-08T14:44:08Z
@@ -3802,7 +3723,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1828,1974,"Brujos, Guayama",32,376,wayback_bsnpr_players,https://web.archive.org/web/20070828230758id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1828&e=,2026-09-08T14:44:26Z
 1828,1975,"Brujos, Guayama",31,413,wayback_bsnpr_players,https://web.archive.org/web/20070828230758id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1828&e=,2026-09-08T14:44:26Z
 1828,1976,"Brujos, Guayama",32,430,wayback_bsnpr_players,https://web.archive.org/web/20070828230758id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1828&e=,2026-09-08T14:44:26Z
-1829,2005,COAMO,23,100,wayback_bsnpr_jug05,https://web.archive.org/web/20060829174807id_/http://www.bsnpr.com:80/jug05.asp?r3=NEMAV&r2=BSFVOMHNPE&r=00543&e=,2026-09-10T02:00:05Z
 1829,2006,"Maratonistas, Coamo",23,100,wayback_bsnpr_players,https://web.archive.org/web/20080411054235id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1829&e=,2026-09-08T14:44:27Z
 1829,2007,"Capitanes, Arecibo",22,61,wayback_bsnpr_players,https://web.archive.org/web/20080411054235id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1829&e=,2026-09-08T14:44:27Z
 1832,1957,"Indios, Mayaguez",3,22,wayback_bsnpr_players,https://web.archive.org/web/20070828224702id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1832&e=,2026-09-08T14:44:29Z
@@ -3900,7 +3820,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1895,2002,"Capitanes, Arecibo",27,277,wayback_bsnpr_players,https://web.archive.org/web/20130428000115id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1895&e=,2026-09-08T14:45:03Z
 1895,2003,"Capitanes, Arecibo",30,426,wayback_bsnpr_players,https://web.archive.org/web/20130428000115id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1895&e=,2026-09-08T14:45:03Z
 1895,2004,"Capitanes, Arecibo",30,412,wayback_bsnpr_players,https://web.archive.org/web/20130428000115id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1895&e=,2026-09-08T14:45:03Z
-1895,2005,ARECIBO,26,242,wayback_bsnpr_jug05,https://web.archive.org/web/20061007023520id_/http://www.bsnpr.com:80/jug05.asp?r3=00010&r2=462666RWXU&r=00003&e=,2026-09-10T01:57:46Z
 1895,2005,"Capitanes, Arecibo",31,285,wayback_bsnpr_players,https://web.archive.org/web/20130428000115id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1895&e=,2026-09-08T14:45:03Z
 1895,2006,"Capitanes, Arecibo",26,242,wayback_bsnpr_players,https://web.archive.org/web/20130428000115id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1895&e=,2026-09-08T14:45:03Z
 1895,2007,"Capitanes, Arecibo",24,279,wayback_bsnpr_players,https://web.archive.org/web/20130428000115id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1895&e=,2026-09-08T14:45:03Z
@@ -3918,7 +3837,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1896,1975,"Capitanes, Arecibo",24,121,wayback_bsnpr_players,https://web.archive.org/web/20070828230712id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1896&e=,2026-09-08T14:45:05Z
 1896,1976,"Criollos, Caguas",6,8,wayback_bsnpr_players,https://web.archive.org/web/20070828230712id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1896&e=,2026-09-08T14:45:05Z
 1896,1977,"Atleticos, San German",12,28,wayback_bsnpr_players,https://web.archive.org/web/20070828230712id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1896&e=,2026-09-08T14:45:05Z
-1897,2005,GUAYAMA,23,278,wayback_bsnpr_jug05,https://web.archive.org/web/20070404013851id_/http://www.bsnpr.com:80/jug05.asp?r3=JQBJK&r2=SCJTNCXIFZ&r=00508&e=,2026-09-10T02:10:24Z
 1897,2006,"Brujos, Guayama",23,278,wayback_bsnpr_players,https://web.archive.org/web/20100224210933id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1897&e=8,2026-09-08T14:45:06Z
 1897,2007,"Brujos, Guayama",30,387,wayback_bsnpr_players,https://web.archive.org/web/20100224210933id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1897&e=8,2026-09-08T14:45:06Z
 1897,2008,"Brujos, Guayama",19,325,wayback_bsnpr_players,https://web.archive.org/web/20100224210933id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1897&e=8,2026-09-08T14:45:06Z
@@ -3937,12 +3855,12 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1904,2003,"Gallitos, Isabela",3,4,wayback_bsnpr_players,https://web.archive.org/web/20070829042338id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1904&e=,2026-09-08T14:45:12Z
 1904,2003,"Piratas, Quebradillas",3,3,wayback_bsnpr_players,https://web.archive.org/web/20070829042338id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1904&e=,2026-09-08T14:45:12Z
 1904,2003,"Titanes, Morovis",12,48,wayback_bsnpr_players,https://web.archive.org/web/20070829042338id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1904&e=,2026-09-08T14:45:12Z
-1907,2005,SAN GERMAN,4,2,wayback_bsnpr_jug05,https://web.archive.org/web/20061210150635id_/http://www.bsnpr.com:80/jug05.asp?r3=AUFGZ&r2=QTXDFUTFRQ&r=00154&e=,2026-09-10T01:54:54Z
-1908,2005,BAYAMON,4,0,wayback_bsnpr_jug05,https://web.archive.org/web/20061119231221id_/http://www.bsnpr.com/jug05.asp?r2=JCGBPWPGMG&r3=DBRCU&r=00531&e=BAYAMON,2026-09-10T02:05:48Z
+1907,2006,SAN GERMAN,4,2,wayback_bsnpr_jug05,https://web.archive.org/web/20061210150635id_/http://www.bsnpr.com:80/jug05.asp?r3=AUFGZ&r2=QTXDFUTFRQ&r=00154&e=,2026-09-10T01:54:54Z
+1908,2006,BAYAMON,4,0,wayback_bsnpr_jug05,https://web.archive.org/web/20061119231221id_/http://www.bsnpr.com/jug05.asp?r2=JCGBPWPGMG&r3=DBRCU&r=00531&e=BAYAMON,2026-09-10T02:05:48Z
 1911,1962,"Piratas, Quebradillas",3,4,wayback_bsnpr_players,https://web.archive.org/web/20070828224256id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1911&e=,2026-09-08T14:45:14Z
 1911,1963,"Atleticos, San German",15,33,wayback_bsnpr_players,https://web.archive.org/web/20070828224256id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1911&e=,2026-09-08T14:45:14Z
 1911,1964,"Atleticos, San German",11,13,wayback_bsnpr_players,https://web.archive.org/web/20070828224256id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1911&e=,2026-09-08T14:45:14Z
-1912,2005,GUAYNABO,9,43,wayback_bsnpr_jug05,https://web.archive.org/web/20061206190459id_/http://www.bsnpr.com:80/jug05.asp?r2=AIDAEEAJHL&r3=CKWRH&r=00602&e=BAYAMON,2026-09-10T01:59:46Z
+1912,2006,GUAYNABO,9,43,wayback_bsnpr_jug05,https://web.archive.org/web/20061206190459id_/http://www.bsnpr.com:80/jug05.asp?r2=AIDAEEAJHL&r3=CKWRH&r=00602&e=BAYAMON,2026-09-10T01:59:46Z
 1913,1990,"Piratas, Quebradillas",7,10,wayback_bsnpr_players,https://web.archive.org/web/20070829041933id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1913&e=,2026-09-08T14:45:15Z
 1913,1991,"Piratas, Quebradillas",5,8,wayback_bsnpr_players,https://web.archive.org/web/20070829041933id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1913&e=,2026-09-08T14:45:15Z
 1915,1957,"Indios, Mayaguez",9,10,wayback_bsnpr_players,https://web.archive.org/web/20070829041954id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1915&e=,2026-09-08T14:45:17Z
@@ -3982,7 +3900,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1948,2001,SAN GERMAN,5,2,wayback_bsnpr_jug05,https://web.archive.org/web/20061206190335id_/http://www.bsnpr.com:80/jug05.asp?r3=NELHP&r2=QCVRXUMZKI&r=00042&e=,2026-09-10T01:59:49Z
 1948,2002,"Atleticos, San German",10,3,wayback_bsnpr_players,https://web.archive.org/web/20091004043908id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1948&e=,2026-09-08T14:45:36Z
 1948,2004,"Indios, Mayaguez",15,30,wayback_bsnpr_players,https://web.archive.org/web/20091004043908id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1948&e=,2026-09-08T14:45:36Z
-1948,2005,COAMO,23,94,wayback_bsnpr_jug05,https://web.archive.org/web/20061206190335id_/http://www.bsnpr.com:80/jug05.asp?r3=NELHP&r2=QCVRXUMZKI&r=00042&e=,2026-09-10T01:59:49Z
 1948,2005,"Maratonistas, Coamo",28,84,wayback_bsnpr_players,https://web.archive.org/web/20091004043908id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1948&e=,2026-09-08T14:45:36Z
 1948,2006,"Maratonistas, Coamo",23,94,wayback_bsnpr_players,https://web.archive.org/web/20091004043908id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1948&e=,2026-09-08T14:45:36Z
 1948,2007,"Capitanes, Arecibo",26,154,wayback_bsnpr_players,https://web.archive.org/web/20091004043908id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1948&e=,2026-09-08T14:45:36Z
@@ -4079,7 +3996,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1992,2003,"Piratas, Quebradillas",27,510,wayback_bsnpr_players,https://web.archive.org/web/20110412235216id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1992&e=14,2026-09-08T14:45:59Z
 1992,2004,"Indios, Mayaguez",21,267,wayback_bsnpr_players,https://web.archive.org/web/20110412235216id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1992&e=14,2026-09-08T14:45:59Z
 1992,2005,"Cangrejeros, Santurce",30,375,wayback_bsnpr_players,https://web.archive.org/web/20110412235216id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1992&e=14,2026-09-08T14:45:59Z
-1992,2005,SANTURCE,26,319,wayback_bsnpr_jug05,https://web.archive.org/web/20070404014145id_/http://www.bsnpr.com:80/jug05.asp?r3=00220&r2=462776RX2K&r=00113&e=,2026-09-10T02:10:39Z
 1992,2006,"Cangrejeros, Santurce",26,319,wayback_bsnpr_players,https://web.archive.org/web/20110412235216id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1992&e=14,2026-09-08T14:45:59Z
 1992,2007,"Cangrejeros, Santurce",30,436,wayback_bsnpr_players,https://web.archive.org/web/20110412235216id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1992&e=14,2026-09-08T14:45:59Z
 1992,2008,"Cangrejeros, Santurce",32,385,wayback_bsnpr_players,https://web.archive.org/web/20110412235216id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1992&e=14,2026-09-08T14:45:59Z
@@ -4089,7 +4005,7 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 1995,2002,"Criollos, Caguas",23,53,wayback_bsnpr_players,https://web.archive.org/web/20170715115934id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1995&e=,2026-09-08T14:46:01Z
 1995,2003,"Criollos, Caguas",25,199,wayback_bsnpr_players,https://web.archive.org/web/20170715115934id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1995&e=,2026-09-08T14:46:01Z
 1995,2004,"Criollos, Caguas",29,511,wayback_bsnpr_players,https://web.archive.org/web/20170715115934id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1995&e=,2026-09-08T14:46:01Z
-1995,2005,CAGUAS,24,194,wayback_bsnpr_jug05,https://web.archive.org/web/20061119230912id_/http://www.bsnpr.com/jug05.asp?r2=462686RWYM&r3=00050&r=00024&e=CAGUAS,2026-09-10T02:08:19Z
+1995,2006,CAGUAS,24,194,wayback_bsnpr_jug05,https://web.archive.org/web/20061119230912id_/http://www.bsnpr.com/jug05.asp?r2=462686RWYM&r3=00050&r=00024&e=CAGUAS,2026-09-10T02:08:19Z
 1995,2005,"Vaqueros, Bayamon",26,82,wayback_bsnpr_players,https://web.archive.org/web/20170715115934id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1995&e=,2026-09-08T14:46:01Z
 1995,2006,"Criollos, Caguas",5,39,wayback_bsnpr_players,https://web.archive.org/web/20170715115934id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1995&e=,2026-09-08T14:46:01Z
 1995,2006,"Vaqueros, Bayamon",19,155,wayback_bsnpr_players,https://web.archive.org/web/20170715115934id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1995&e=,2026-09-08T14:46:01Z
@@ -4110,7 +4026,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 2000,2001,"Brujos, Guayama",14,48,wayback_bsnpr_players,https://web.archive.org/web/20080501072453id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2000&e=13,2026-09-08T14:46:03Z
 2000,2002,"Capitanes, Arecibo",1,0,wayback_bsnpr_players,https://web.archive.org/web/20080501072453id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2000&e=13,2026-09-08T14:46:03Z
 2000,2005,"Brujos, Guayama",6,13,wayback_bsnpr_players,https://web.archive.org/web/20080501072453id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2000&e=13,2026-09-08T14:46:03Z
-2000,2005,GUAYAMA,9,6,wayback_bsnpr_jug05,https://web.archive.org/web/20061212190229id_/http://www.bsnpr.com:80/jug05.asp?r3=VUWKH&r2=QQUHMPOFDN&r=00061&e=,2026-09-10T01:56:09Z
 2000,2006,"Brujos, Guayama",9,6,wayback_bsnpr_players,https://web.archive.org/web/20080501072453id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2000&e=13,2026-09-08T14:46:03Z
 2000,2007,"Brujos, Guayama",6,3,wayback_bsnpr_players,https://web.archive.org/web/20080501072453id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2000&e=13,2026-09-08T14:46:03Z
 2001,1995,"Vaqueros, Bayamon",6,10,wayback_bsnpr_players,https://web.archive.org/web/20070829042525id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2001&e=,2026-09-08T14:46:05Z
@@ -4197,7 +4112,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 2037,2004,"Capitanes, Arecibo",21,357,wayback_bsnpr_players,https://web.archive.org/web/20201209030505id_/https://www.bsnpr.com/jugadores/jugador.asp?id=2037&e=,2026-09-08T14:46:21Z
 2037,2005,"Brujos, Guayama",9,200,wayback_bsnpr_players,https://web.archive.org/web/20201209030505id_/https://www.bsnpr.com/jugadores/jugador.asp?id=2037&e=,2026-09-08T14:46:21Z
 2037,2005,"Gallitos, Isabela",22,354,wayback_bsnpr_players,https://web.archive.org/web/20201209030505id_/https://www.bsnpr.com/jugadores/jugador.asp?id=2037&e=,2026-09-08T14:46:21Z
-2037,2005,PONCE,26,449,wayback_bsnpr_jug05,https://web.archive.org/web/20061208064021id_/http://www.bsnpr.com:80/jug05.asp?r3=00199&r2=462756RX21&r=00082&e=,2026-09-10T01:55:22Z
 2037,2006,"Leones, Ponce",26,449,wayback_bsnpr_players,https://web.archive.org/web/20201209030505id_/https://www.bsnpr.com/jugadores/jugador.asp?id=2037&e=,2026-09-08T14:46:21Z
 2037,2007,"Leones, Ponce",29,472,wayback_bsnpr_players,https://web.archive.org/web/20201209030505id_/https://www.bsnpr.com/jugadores/jugador.asp?id=2037&e=,2026-09-08T14:46:21Z
 2037,2008,"Atleticos, San German",27,442,wayback_bsnpr_players,https://web.archive.org/web/20201209030505id_/https://www.bsnpr.com/jugadores/jugador.asp?id=2037&e=,2026-09-08T14:46:21Z
@@ -4227,7 +4141,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 2057,2003,ISABELA,28,365,wayback_bsnpr_jug05,https://web.archive.org/web/20060618110706id_/http://www.bsnpr.com:80/jug05.asp?r=00022,2026-09-10T01:57:07Z
 2057,2004,"Gallitos, Isabela",26,350,wayback_bsnpr_players,https://web.archive.org/web/20090110034244id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2057&e=,2026-09-08T14:46:29Z
 2057,2005,"Grises, Humacao",27,177,wayback_bsnpr_players,https://web.archive.org/web/20090110034244id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2057&e=,2026-09-08T14:46:29Z
-2057,2005,PONCE,25,83,wayback_bsnpr_jug05,https://web.archive.org/web/20060618110706id_/http://www.bsnpr.com:80/jug05.asp?r=00022,2026-09-10T01:57:07Z
 2057,2006,"Leones, Ponce",25,83,wayback_bsnpr_players,https://web.archive.org/web/20090110034244id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2057&e=,2026-09-08T14:46:29Z
 2057,2007,"Indios, Mayaguez",30,113,wayback_bsnpr_players,https://web.archive.org/web/20090110034244id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2057&e=,2026-09-08T14:46:29Z
 2057,2008,"Atleticos, San German",13,39,wayback_bsnpr_players,https://web.archive.org/web/20090110034244id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2057&e=,2026-09-08T14:46:29Z
@@ -4240,7 +4153,7 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 2067,2002,"Titanes, Morovis",8,38,wayback_bsnpr_players,https://web.archive.org/web/20140122195735id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2067&e=,2026-09-08T14:46:31Z
 2067,2003,"Titanes, Morovis",0,0,wayback_bsnpr_players,https://web.archive.org/web/20140122195735id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2067&e=,2026-09-08T14:46:31Z
 2067,2005,"Atleticos, San German",32,126,wayback_bsnpr_players,https://web.archive.org/web/20140122195735id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2067&e=,2026-09-08T14:46:31Z
-2067,2005,COAMO,25,227,wayback_bsnpr_jug05,https://web.archive.org/web/20061119230520id_/http://www.bsnpr.com/jug05.asp?r2=462746RX1M&r3=CVJWU&r=00126&e=COAMO,2026-09-10T01:57:27Z
+2067,2006,COAMO,25,227,wayback_bsnpr_jug05,https://web.archive.org/web/20061119230520id_/http://www.bsnpr.com/jug05.asp?r2=462746RX1M&r3=CVJWU&r=00126&e=COAMO,2026-09-10T01:57:27Z
 2067,2006,"Atleticos, San German",12,87,wayback_bsnpr_players,https://web.archive.org/web/20140122195735id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2067&e=,2026-09-08T14:46:31Z
 2067,2006,"Maratonistas, Coamo",13,140,wayback_bsnpr_players,https://web.archive.org/web/20140122195735id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2067&e=,2026-09-08T14:46:31Z
 2067,2007,"Caciques, Humacao",6,129,wayback_bsnpr_players,https://web.archive.org/web/20140122195735id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2067&e=,2026-09-08T14:46:31Z
@@ -4278,7 +4191,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 2074,2003,"Leones, Ponce",23,325,wayback_bsnpr_players,https://web.archive.org/web/20100216125742id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2074&e=5,2026-09-08T14:46:35Z
 2074,2004,"Leones, Ponce",29,531,wayback_bsnpr_players,https://web.archive.org/web/20100216125742id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2074&e=5,2026-09-08T14:46:35Z
 2074,2005,"Leones, Ponce",32,635,wayback_bsnpr_players,https://web.archive.org/web/20100216125742id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2074&e=5,2026-09-08T14:46:35Z
-2074,2005,PONCE,14,229,wayback_bsnpr_jug05,https://web.archive.org/web/20060618110957id_/http://www.bsnpr.com:80/jug05.asp?r=00095,2026-09-10T01:55:46Z
 2074,2006,"Leones, Ponce",14,229,wayback_bsnpr_players,https://web.archive.org/web/20100216125742id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2074&e=5,2026-09-08T14:46:35Z
 2074,2007,"Leones, Ponce",24,421,wayback_bsnpr_players,https://web.archive.org/web/20100216125742id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2074&e=5,2026-09-08T14:46:35Z
 2074,2008,"Capitanes, Arecibo",31,410,wayback_bsnpr_players,https://web.archive.org/web/20100216125742id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2074&e=5,2026-09-08T14:46:35Z
@@ -4324,7 +4236,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 2090,2003,"Cangrejeros, Santurce",15,112,wayback_bsnpr_players,https://web.archive.org/web/20200215225342id_/https://www.bsnpr.com/jugadores/jugador.asp?id=2090,2026-09-08T14:46:44Z
 2090,2004,"Cangrejeros, Santurce",24,168,wayback_bsnpr_players,https://web.archive.org/web/20200215225342id_/https://www.bsnpr.com/jugadores/jugador.asp?id=2090,2026-09-08T14:46:44Z
 2090,2005,"Cangrejeros, Santurce",29,152,wayback_bsnpr_players,https://web.archive.org/web/20200215225342id_/https://www.bsnpr.com/jugadores/jugador.asp?id=2090,2026-09-08T14:46:44Z
-2090,2005,SANTURCE,26,106,wayback_bsnpr_jug05,https://web.archive.org/web/20060528213746id_/http://www.bsnpr.com:80/jug05.asp?r2=462796RX3G&r3=00257&r=00106&e=SANTURCE,2026-09-10T01:53:47Z
 2090,2006,"Cangrejeros, Santurce",26,106,wayback_bsnpr_players,https://web.archive.org/web/20200215225342id_/https://www.bsnpr.com/jugadores/jugador.asp?id=2090,2026-09-08T14:46:44Z
 2091,1982,"Gallitos, Isabela",13,22,wayback_bsnpr_players,https://web.archive.org/web/20070828231405id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2091&e=,2026-09-08T14:46:47Z
 2091,1983,"Gallitos, Isabela",16,26,wayback_bsnpr_players,https://web.archive.org/web/20070828231405id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2091&e=,2026-09-08T14:46:47Z
@@ -4334,7 +4245,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 2091,1988,"Gallitos, Isabela",7,8,wayback_bsnpr_players,https://web.archive.org/web/20070828231405id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2091&e=,2026-09-08T14:46:47Z
 2098,2000,"Titanes, Morovis",3,49,wayback_bsnpr_players,https://web.archive.org/web/20070829035228id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2098&e=,2026-09-08T14:46:48Z
 2099,1991,"Tainos, Cabo Rojo",28,97,wayback_bsnpr_players,https://web.archive.org/web/20070829040358id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2099&e=,2026-09-08T14:46:50Z
-2100,2005,ARECIBO,7,6,wayback_bsnpr_jug05,https://web.archive.org/web/20061206115651id_/http://www.bsnpr.com:80/jug05.asp?r3=JQYFO&r2=WRGYNUCCZW&r=00551&e=,2026-09-10T02:02:13Z
 2100,2006,"Capitanes, Arecibo",7,6,wayback_bsnpr_players,https://web.archive.org/web/20070829040848id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2100&e=,2026-09-08T14:46:52Z
 2101,1960,"Santos, San Juan",13,60,wayback_bsnpr_players,https://web.archive.org/web/20070828225545id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2101&e=,2026-09-08T14:46:54Z
 2101,1961,"Cangrejeros, Santurce",20,92,wayback_bsnpr_players,https://web.archive.org/web/20070828225545id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2101&e=,2026-09-08T14:46:54Z
@@ -4442,7 +4352,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 2145,2001,"Cangrejeros, Santurce",5,3,wayback_bsnpr_players,https://web.archive.org/web/20140122195742id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2145&e=,2026-09-08T14:47:17Z
 2145,2001,SANTURCE,6,4,wayback_bsnpr_jug05,https://web.archive.org/web/20061215015245id_/http://www.bsnpr.com:80/jug05.asp?r3=OJXVC&r2=OKXSWMUWLG&r=00601&e=,2026-09-10T01:53:50Z
 2145,2002,SANTURCE,0,0,wayback_bsnpr_jug05,https://web.archive.org/web/20061215015245id_/http://www.bsnpr.com:80/jug05.asp?r3=OJXVC&r2=OKXSWMUWLG&r=00601&e=,2026-09-10T01:53:50Z
-2145,2005,SANTURCE,2,0,wayback_bsnpr_jug05,https://web.archive.org/web/20061215015245id_/http://www.bsnpr.com:80/jug05.asp?r3=OJXVC&r2=OKXSWMUWLG&r=00601&e=,2026-09-10T01:53:50Z
 2145,2006,"Cangrejeros, Santurce",2,0,wayback_bsnpr_players,https://web.archive.org/web/20140122195742id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2145&e=,2026-09-08T14:47:17Z
 2145,2007,"Cangrejeros, Santurce",26,213,wayback_bsnpr_players,https://web.archive.org/web/20140122195742id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2145&e=,2026-09-08T14:47:17Z
 2145,2008,"Atleticos, San German",31,395,wayback_bsnpr_players,https://web.archive.org/web/20140122195742id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2145&e=,2026-09-08T14:47:17Z
@@ -4455,7 +4364,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 2145,2013,"Cangrejeros, Santurce",19,47,wayback_bsnpr_players,https://web.archive.org/web/20140122195742id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2145&e=,2026-09-08T14:47:17Z
 2146,2003,"Maratonistas, Coamo",23,57,wayback_bsnpr_players,https://web.archive.org/web/20130428000919id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2146&e=,2026-09-08T14:47:19Z
 2146,2005,"Atleticos, San German",31,125,wayback_bsnpr_players,https://web.archive.org/web/20130428000919id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2146&e=,2026-09-08T14:47:19Z
-2146,2005,SAN GERMAN,26,258,wayback_bsnpr_jug05,https://web.archive.org/web/20070224202659id_/http://www.bsnpr.com:80/jug05.asp?r2=462716RX07&r3=NOGDK&r=00127&e=SAN+GERMAN,2026-09-10T02:09:42Z
 2146,2006,"Atleticos, San German",26,258,wayback_bsnpr_players,https://web.archive.org/web/20130428000919id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2146&e=,2026-09-08T14:47:19Z
 2146,2007,"Atleticos, San German",23,124,wayback_bsnpr_players,https://web.archive.org/web/20130428000919id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2146&e=,2026-09-08T14:47:19Z
 2146,2008,"Criollos, Caguas",19,113,wayback_bsnpr_players,https://web.archive.org/web/20130428000919id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2146&e=,2026-09-08T14:47:19Z
@@ -4494,7 +4402,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 2151,1998,"Capitanes, Arecibo",20,26,wayback_bsnpr_players,https://web.archive.org/web/20070828225947id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2151&e=,2026-09-08T14:47:23Z
 2151,1999,"Titanes, Morovis",20,16,wayback_bsnpr_players,https://web.archive.org/web/20070828225947id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2151&e=,2026-09-08T14:47:23Z
 2153,2005,"Brujos, Guayama",4,16,wayback_bsnpr_players,https://web.archive.org/web/20070828231410id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2153&e=,2026-09-08T14:47:25Z
-2155,2005,HUMACAO,24,393,wayback_bsnpr_jug05,https://web.archive.org/web/20070404013456id_/http://www.bsnpr.com:80/jug05.asp?r3=POOHO&r2=TDTAOSFKIV&r=00506&e=,2026-09-10T02:10:36Z
 2155,2006,"Caciques, Humacao",24,393,wayback_bsnpr_players,https://web.archive.org/web/20191209173414id_/https://www.bsnpr.com/jugadores/jugador.asp?id=2155,2026-09-08T14:47:27Z
 2155,2007,"Atleticos, San German",3,57,wayback_bsnpr_players,https://web.archive.org/web/20191209173414id_/https://www.bsnpr.com/jugadores/jugador.asp?id=2155,2026-09-08T14:47:27Z
 2156,2001,"Atleticos, San German",5,0,wayback_bsnpr_players,https://web.archive.org/web/20070829042009id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2156&e=,2026-09-08T14:47:29Z
@@ -4584,7 +4491,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 2201,2003,"Indios, Mayaguez",29,109,wayback_bsnpr_players,https://web.archive.org/web/20080325084900id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2201&e=12,2026-09-08T14:48:07Z
 2201,2004,"Indios, Mayaguez",27,273,wayback_bsnpr_players,https://web.archive.org/web/20080325084900id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2201&e=12,2026-09-08T14:48:07Z
 2201,2005,"Capitanes, Arecibo",25,105,wayback_bsnpr_players,https://web.archive.org/web/20080325084900id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2201&e=12,2026-09-08T14:48:07Z
-2201,2005,SAN GERMAN,16,181,wayback_bsnpr_jug05,https://web.archive.org/web/20070224202719id_/http://www.bsnpr.com:80/jug05.asp?r2=462736RX12&r3=00158&r=00010&e=SAN+GERMAN,2026-09-10T02:10:08Z
 2201,2006,"Atleticos, San German",16,181,wayback_bsnpr_players,https://web.archive.org/web/20080325084900id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2201&e=12,2026-09-08T14:48:07Z
 2201,2007,"Atleticos, San German",28,154,wayback_bsnpr_players,https://web.archive.org/web/20080325084900id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2201&e=12,2026-09-08T14:48:07Z
 2204,1999,"Vaqueros, Bayamon",4,59,wayback_bsnpr_players,https://web.archive.org/web/20080326141714id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2204&e=,2026-09-08T14:48:10Z
@@ -4746,7 +4652,6 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 2290,2003,"Vaqueros, Bayamon",12,160,wayback_bsnpr_players,https://web.archive.org/web/20170715121633id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2290&e=,2026-09-08T14:48:59Z
 2290,2004,"Vaqueros, Bayamon",30,430,wayback_bsnpr_players,https://web.archive.org/web/20170715121633id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2290&e=,2026-09-08T14:48:59Z
 2290,2005,"Brujos, Guayama",31,436,wayback_bsnpr_players,https://web.archive.org/web/20170715121633id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2290&e=,2026-09-08T14:48:59Z
-2290,2005,GUAYAMA,26,425,wayback_bsnpr_jug05,https://web.archive.org/web/20061208064222id_/http://www.bsnpr.com:80/jug05.asp?r3=00185&r2=462756RX1N&r=00044&e=,2026-09-10T01:53:57Z
 2290,2006,"Brujos, Guayama",26,425,wayback_bsnpr_players,https://web.archive.org/web/20170715121633id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2290&e=,2026-09-08T14:48:59Z
 2290,2007,"Brujos, Guayama",27,442,wayback_bsnpr_players,https://web.archive.org/web/20170715121633id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2290&e=,2026-09-08T14:48:59Z
 2290,2008,"Leones, Ponce",29,413,wayback_bsnpr_players,https://web.archive.org/web/20170715121633id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2290&e=,2026-09-08T14:48:59Z
@@ -4788,7 +4693,7 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 2300,2002,SAN GERMAN,27,77,wayback_bsnpr_jug05,https://web.archive.org/web/20070404013935id_/http://www.bsnpr.com:80/jug05.asp?r3=00195&r2=462756RX1X&r=00031&e=,2026-09-10T02:10:12Z
 2300,2003,PONCE,27,40,wayback_bsnpr_jug05,https://web.archive.org/web/20070404013935id_/http://www.bsnpr.com:80/jug05.asp?r3=00195&r2=462756RX1X&r=00031&e=,2026-09-10T02:10:12Z
 2300,2004,BAYAMON,24,33,wayback_bsnpr_jug05,https://web.archive.org/web/20070404013935id_/http://www.bsnpr.com:80/jug05.asp?r3=00195&r2=462756RX1X&r=00031&e=,2026-09-10T02:10:12Z
-2300,2005,COAMO,20,39,wayback_bsnpr_jug05,https://web.archive.org/web/20070404013935id_/http://www.bsnpr.com:80/jug05.asp?r3=00195&r2=462756RX1X&r=00031&e=,2026-09-10T02:10:12Z
+2300,2006,COAMO,20,39,wayback_bsnpr_jug05,https://web.archive.org/web/20070404013935id_/http://www.bsnpr.com:80/jug05.asp?r3=00195&r2=462756RX1X&r=00031&e=,2026-09-10T02:10:12Z
 2305,1959,"Vaqueros, Bayamon",3,2,wayback_bsnpr_players,https://web.archive.org/web/20070829035635id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2305&e=,2026-09-08T14:49:04Z
 2305,1960,"Vaqueros, Bayamon",18,59,wayback_bsnpr_players,https://web.archive.org/web/20070829035635id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2305&e=,2026-09-08T14:49:04Z
 2309,2002,"Vaqueros, Bayamon",5,15,wayback_bsnpr_players,https://web.archive.org/web/20170715121256id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2309&e=,2026-09-08T14:49:06Z
@@ -5734,19 +5639,16 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 13154,2017,"Santeros, Aguada",2,17,wayback_bsnpr_players,https://web.archive.org/web/20170715123524id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=13154&e=,2026-09-08T15:01:34Z
 13313,2021,"Mets, Guaynabo",2,0,wayback_bsnpr_players,https://web.archive.org/web/20210719175124id_/https://bsnpr.com/jugadores/jugador.asp?id=13313&e=14,2026-09-08T15:01:40Z
 13352,2021,"Indios, Mayaguez",3,14,wayback_bsnpr_players,https://web.archive.org/web/20211229022947id_/https://www.bsnpr.com/jugadores/jugador.asp?id=13352&e=12&s=09,2026-09-08T15:01:42Z
-910,2005,GUAYAMA,6,11,wayback_bsnpr_jug05,https://web.archive.org/web/20061207025708id_/http://www.bsnpr.com:80/jug05.asp?r3=+++++&r2=ZACUMASFSK&r=00561&e=,2026-09-10T01:57:02Z
 990005,2002,SANTURCE,6,10,wayback_bsnpr_jug05,https://web.archive.org/web/20070224202759id_/http://www.bsnpr.com:80/jug05.asp?r2=BLBESEULRP&r3=QGUQO&r=00511&e=SAN+GERMAN,2026-09-10T02:09:46Z
-990005,2005,SAN GERMAN,20,105,wayback_bsnpr_jug05,https://web.archive.org/web/20070224202759id_/http://www.bsnpr.com:80/jug05.asp?r2=BLBESEULRP&r3=QGUQO&r=00511&e=SAN+GERMAN,2026-09-10T02:09:46Z
+990005,2006,SAN GERMAN,20,105,wayback_bsnpr_jug05,https://web.archive.org/web/20070224202759id_/http://www.bsnpr.com:80/jug05.asp?r2=BLBESEULRP&r3=QGUQO&r=00511&e=SAN+GERMAN,2026-09-10T02:09:46Z
 990006,2001,MAYAGUEZ,9,171,wayback_bsnpr_jug05,https://web.archive.org/web/20050923172340id_/http://www.bsnpr.com:80/jug05.asp?r2=462696RWZ3&r=00072&e=CAROLINA,2026-09-10T01:51:04Z
 990006,2005,HUMACAO,24,267,wayback_bsnpr_jug05,https://web.archive.org/web/20050923172340id_/http://www.bsnpr.com:80/jug05.asp?r2=462696RWZ3&r=00072&e=CAROLINA,2026-09-10T01:51:04Z
 990007,2003,SAN GERMAN,30,672,wayback_bsnpr_jug05,https://web.archive.org/web/20050905122327id_/http://www.bsnpr.com:80/jug05.asp?r2=462686RWYM&r=00050&e=BAYAMON,2026-09-10T01:52:05Z
 990007,2004,SAN GERMAN,30,570,wayback_bsnpr_jug05,https://web.archive.org/web/20050905122327id_/http://www.bsnpr.com:80/jug05.asp?r2=462686RWYM&r=00050&e=BAYAMON,2026-09-10T01:52:05Z
 990007,2005,COAMO,32,498,wayback_bsnpr_jug05,https://web.archive.org/web/20050905122327id_/http://www.bsnpr.com:80/jug05.asp?r2=462686RWYM&r=00050&e=BAYAMON,2026-09-10T01:52:05Z
 990008,2004,CAYEY,5,3,wayback_bsnpr_jug05,https://web.archive.org/web/20050501060332id_/http://www.bsnpr.com:80/jug05.asp?r2=CSYPGGKYEZ&r3=WHJOL&e=BAYAMON,2026-09-10T01:48:33Z
-688,2005,CAGUAS,14,34,wayback_bsnpr_jug05,https://web.archive.org/web/20061119230852id_/http://www.bsnpr.com/jug05.asp?r2=462706RWZT&r3=00105&r=00035&e=CAGUAS,2026-09-10T02:06:51Z
-990010,2005,HUMACAO,14,25,wayback_bsnpr_jug05,https://web.archive.org/web/20061119231423id_/http://www.bsnpr.com/jug05.asp?r2=ULITXEGTV1&r3=JWSLH&r=00071&e=HUMACAO,2026-09-10T02:03:48Z
-990011,2005,SAN GERMAN,8,15,wayback_bsnpr_jug05,https://web.archive.org/web/20061214131518id_/http://www.bsnpr.com:80/jug05.asp?r3=+++++&r2=EAMPJSURGV&r=00567&e=,2026-09-10T01:56:30Z
-362,2005,SANTURCE,11,4,wayback_bsnpr_jug05,https://web.archive.org/web/20061211222054id_/http://www.bsnpr.com:80/jug05.asp?r3=EWNQQ&r2=RMDNZQUHQC&r=00133&e=,2026-09-10T02:05:22Z
+990010,2006,HUMACAO,14,25,wayback_bsnpr_jug05,https://web.archive.org/web/20061119231423id_/http://www.bsnpr.com/jug05.asp?r2=ULITXEGTV1&r3=JWSLH&r=00071&e=HUMACAO,2026-09-10T02:03:48Z
+990011,2006,SAN GERMAN,8,15,wayback_bsnpr_jug05,https://web.archive.org/web/20061214131518id_/http://www.bsnpr.com:80/jug05.asp?r3=+++++&r2=EAMPJSURGV&r=00567&e=,2026-09-10T01:56:30Z
 990014,1999,MAYAGUEZ,8,16,wayback_bsnpr_jug05,https://web.archive.org/web/20061215134720id_/http://www.bsnpr.com:80/jug05.asp?r3=00007&r2=462666RWXR&r=00014&e=,2026-09-10T01:55:17Z
 990014,2000,ARECIBO,2,3,wayback_bsnpr_jug05,https://web.archive.org/web/20061215134720id_/http://www.bsnpr.com:80/jug05.asp?r3=00007&r2=462666RWXR&r=00014&e=,2026-09-10T01:55:17Z
 990014,2002,ARECIBO,6,9,wayback_bsnpr_jug05,https://web.archive.org/web/20061215134720id_/http://www.bsnpr.com:80/jug05.asp?r3=00007&r2=462666RWXR&r=00014&e=,2026-09-10T01:55:17Z
@@ -5754,7 +5656,7 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 990014,2004,ARECIBO,16,47,wayback_bsnpr_jug05,https://web.archive.org/web/20061215134720id_/http://www.bsnpr.com:80/jug05.asp?r3=00007&r2=462666RWXR&r=00014&e=,2026-09-10T01:55:17Z
 990015,2004,ARECIBO,3,1,wayback_bsnpr_jug05,https://web.archive.org/web/20050903014657id_/http://www.bsnpr.com:80/jug05.asp?r2=462696RWZF&r=00087&e=ISABELA,2026-09-10T01:51:40Z
 990015,2005,PONCE,2,3,wayback_bsnpr_jug05,https://web.archive.org/web/20050903014657id_/http://www.bsnpr.com:80/jug05.asp?r2=462696RWZF&r=00087&e=ISABELA,2026-09-10T01:51:40Z
-990016,2005,PONCE,0,0,wayback_bsnpr_jug05,https://web.archive.org/web/20060618111200id_/http://www.bsnpr.com:80/jug05.asp?r=00538,2026-09-10T01:54:36Z
+990016,2006,PONCE,0,0,wayback_bsnpr_jug05,https://web.archive.org/web/20060618111200id_/http://www.bsnpr.com:80/jug05.asp?r=00538,2026-09-10T01:54:36Z
 990019,1996,CAROLINA,14,51,wayback_bsnpr_jug05,https://web.archive.org/web/20070404075042id_/http://www.bsnpr.com:80/jug05.asp?r3=00022&r2=462666RWY3&r=00510&e=,2026-09-10T02:12:09Z
 990019,1997,CAROLINA,7,10,wayback_bsnpr_jug05,https://web.archive.org/web/20070404075042id_/http://www.bsnpr.com:80/jug05.asp?r3=00022&r2=462666RWY3&r=00510&e=,2026-09-10T02:12:09Z
 990019,1998,AIBONITO,15,44,wayback_bsnpr_jug05,https://web.archive.org/web/20070404075042id_/http://www.bsnpr.com:80/jug05.asp?r3=00022&r2=462666RWY3&r=00510&e=,2026-09-10T02:12:09Z
@@ -5764,9 +5666,8 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 990019,2002,CAYEY,30,548,wayback_bsnpr_jug05,https://web.archive.org/web/20070404075042id_/http://www.bsnpr.com:80/jug05.asp?r3=00022&r2=462666RWY3&r=00510&e=,2026-09-10T02:12:09Z
 990019,2003,BAYAMON,30,284,wayback_bsnpr_jug05,https://web.archive.org/web/20070404075042id_/http://www.bsnpr.com:80/jug05.asp?r3=00022&r2=462666RWY3&r=00510&e=,2026-09-10T02:12:09Z
 990019,2004,BAYAMON,27,142,wayback_bsnpr_jug05,https://web.archive.org/web/20070404075042id_/http://www.bsnpr.com:80/jug05.asp?r3=00022&r2=462666RWY3&r=00510&e=,2026-09-10T02:12:09Z
-990019,2005,HUMACAO,26,387,wayback_bsnpr_jug05,https://web.archive.org/web/20070404075042id_/http://www.bsnpr.com:80/jug05.asp?r3=00022&r2=462666RWY3&r=00510&e=,2026-09-10T02:12:09Z
-502,2005,SANTURCE,24,135,wayback_bsnpr_jug05,https://web.archive.org/web/20061211011936id_/http://www.bsnpr.com:80/jug05.asp?r3=00038&r2=462676RWYE&r=00018&e=,2026-09-10T01:58:20Z
-990022,2005,GUAYAMA,19,91,wayback_bsnpr_jug05,https://web.archive.org/web/20070404075530id_/http://www.bsnpr.com:80/jug05.asp?r3=XIANC&r2=JZZUWZQBLF&r=00509&e=,2026-09-10T02:11:17Z
+990019,2006,HUMACAO,26,387,wayback_bsnpr_jug05,https://web.archive.org/web/20070404075042id_/http://www.bsnpr.com:80/jug05.asp?r3=00022&r2=462666RWY3&r=00510&e=,2026-09-10T02:12:09Z
+990022,2006,GUAYAMA,19,91,wayback_bsnpr_jug05,https://web.archive.org/web/20070404075530id_/http://www.bsnpr.com:80/jug05.asp?r3=XIANC&r2=JZZUWZQBLF&r=00509&e=,2026-09-10T02:11:17Z
 990023,1991,AIBONITO,16,147,wayback_bsnpr_jug05,https://web.archive.org/web/20050501060300id_/http://www.bsnpr.com:80/jug05.asp?r2=462676RWYG&r3=00040&e=BAYAMON,2026-09-10T01:53:23Z
 990023,1996,BAYAMON,21,280,wayback_bsnpr_jug05,https://web.archive.org/web/20050501060300id_/http://www.bsnpr.com:80/jug05.asp?r2=462676RWYG&r3=00040&e=BAYAMON,2026-09-10T01:53:23Z
 990023,1997,BAYAMON,27,544,wayback_bsnpr_jug05,https://web.archive.org/web/20050501060300id_/http://www.bsnpr.com:80/jug05.asp?r2=462676RWYG&r3=00040&e=BAYAMON,2026-09-10T01:53:23Z
@@ -5787,11 +5688,10 @@ bsnpr_id,season,team_raw,games,points,source_id,source_url,retrieved_at
 990024,2003,PONCE,5,2,wayback_bsnpr_jug05,https://web.archive.org/web/20050903082445id_/http://www.bsnpr.com:80/jug05.asp?r2=462686RWYN&r=00053&e=CAGUAS,2026-09-10T01:52:48Z
 990024,2004,CAYEY,28,393,wayback_bsnpr_jug05,https://web.archive.org/web/20050903082445id_/http://www.bsnpr.com:80/jug05.asp?r2=462686RWYN&r=00053&e=CAGUAS,2026-09-10T01:52:48Z
 990024,2005,GUAYAMA,4,21,wayback_bsnpr_jug05,https://web.archive.org/web/20050903082445id_/http://www.bsnpr.com:80/jug05.asp?r2=462686RWYN&r=00053&e=CAGUAS,2026-09-10T01:52:48Z
-870,2005,COAMO,14,43,wayback_bsnpr_jug05,https://web.archive.org/web/20061007174946id_/http://www.bsnpr.com:80/jug05.asp?r3=ETHFH&r2=OJZMQCXMNA&r=00512&e=,2026-09-10T02:02:24Z
-1066,2005,MOROVIS,29,161,wayback_bsnpr_jug05,https://web.archive.org/web/20061211114448id_/http://www.bsnpr.com:80/jug05.asp?r3=CPMHG&r2=QRMQFFHFSK&r=00533&e=,2026-09-10T02:02:29Z
-990032,2005,HUMACAO,4,8,wayback_bsnpr_jug05,https://web.archive.org/web/20061206115716id_/http://www.bsnpr.com:80/jug05.asp?r3=QIGCQ&r2=WKYIXVIKDD&r=00554&e=,2026-09-10T01:54:56Z
+870,2006,COAMO,14,43,wayback_bsnpr_jug05,https://web.archive.org/web/20061007174946id_/http://www.bsnpr.com:80/jug05.asp?r3=ETHFH&r2=OJZMQCXMNA&r=00512&e=,2026-09-10T02:02:24Z
+1066,2006,MOROVIS,29,161,wayback_bsnpr_jug05,https://web.archive.org/web/20061211114448id_/http://www.bsnpr.com:80/jug05.asp?r3=CPMHG&r2=QRMQFFHFSK&r=00533&e=,2026-09-10T02:02:29Z
+990032,2006,HUMACAO,4,8,wayback_bsnpr_jug05,https://web.archive.org/web/20061206115716id_/http://www.bsnpr.com:80/jug05.asp?r3=QIGCQ&r2=WKYIXVIKDD&r=00554&e=,2026-09-10T01:54:56Z
 990033,2003,MAYAGUEZ,24,64,wayback_bsnpr_jug05,https://web.archive.org/web/20061214131542id_/http://www.bsnpr.com:80/jug05.asp?r3=00156&r2=462736RX11&r=00555&e=,2026-09-10T01:58:58Z
 990033,2004,MAYAGUEZ,19,57,wayback_bsnpr_jug05,https://web.archive.org/web/20061214131542id_/http://www.bsnpr.com:80/jug05.asp?r3=00156&r2=462736RX11&r=00555&e=,2026-09-10T01:58:58Z
-990033,2005,COAMO,19,44,wayback_bsnpr_jug05,https://web.archive.org/web/20061214131542id_/http://www.bsnpr.com:80/jug05.asp?r3=00156&r2=462736RX11&r=00555&e=,2026-09-10T01:58:58Z
-990035,2005,GUAYAMA,14,38,wayback_bsnpr_jug05,https://web.archive.org/web/20061008161836id_/http://www.bsnpr.com:80/jug05.asp?r3=MESTH&r2=CZLCWDQUEG&r=00502&e=,2026-09-10T01:54:23Z
-1502,2005,HUMACAO,26,190,wayback_bsnpr_jug05,https://web.archive.org/web/20070404013438id_/http://www.bsnpr.com:80/jug05.asp?r3=TVJWS&r2=MWWUSPGWZU&r=00130&e=,2026-09-10T02:09:49Z
+990033,2006,COAMO,19,44,wayback_bsnpr_jug05,https://web.archive.org/web/20061214131542id_/http://www.bsnpr.com:80/jug05.asp?r3=00156&r2=462736RX11&r=00555&e=,2026-09-10T01:58:58Z
+990035,2006,GUAYAMA,14,38,wayback_bsnpr_jug05,https://web.archive.org/web/20061008161836id_/http://www.bsnpr.com:80/jug05.asp?r3=MESTH&r2=CZLCWDQUEG&r=00502&e=,2026-09-10T01:54:23Z

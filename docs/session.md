@@ -6158,3 +6158,37 @@ Supersedes the "still unpushed" wording at the end of the previous block.
   Nació/Nacio parser header bug.
 - **NEXT_ACTIONS (owner-gated; none started; priority order).** 1. The 2005 label-offset check (read-only). 2. The
   remaining cluster review. 3. J16b Cayey.
+
+### PHASE_JUG05_RELABEL — STAGED, NOT COMMITTED (2026-09-21, owner-approved)
+- **Closes the 2005 label-offset finding.** jug05.asp keeps one slot for the newest season, labelled "2005" on every
+  capture. The source overwrote it in place between the captures of 2006-02-24 and 2006-05-28, so a row labelled 2005
+  on a later capture holds the season the ficha files under 2006. 33 of the 37 conflicts of 2005 were that label; 67
+  more rows were the same season counted twice. Evidence: `docs/specs/jug05_offset_check.md`.
+- **Fix.** `parse_players.jug05_season` (cutoff 2006-05-01; the only captures between the two dates, of 2006-04-27,
+  have no 2005 row, so any cutoff in the gap gives the same rows) is called by `parse_jug05` and by the new
+  `src/apply_jug05_relabel.py`, which applies it to the committed career CSV from each row's source_url timestamp
+  and then runs the existing fold. `--check` exits 0 on the result; a second run is byte-identical. Log:
+  `data/interim/jug05_relabeled_rows.csv` (145 rows). No regeneration target was run.
+- **Counts.** 145 rows relabelled, 100 folded as identical to the ficha's 2006 row (career CSV 5,796 -> 5,696).
+  Merged 667 -> 767 (130 players); conflicts 126 -> 107 (74 players; 2005: 37 -> 4, 2006: 0 -> 14). Trade pairs
+  276 -> 235 (42 pairs of 2005 were the mislabel, 1 came: player 1208 in 2006, Guaynabo against Bayamon).
+- **Web.** Changed: `players/<id>.json` for the 145 affected players, `index/players.json`, `index/data_quality.json`
+  (52 KB), `manifest.json` (digest 0121241e9332 -> 6a8c9f97e999). No games, seasons or identity output changed.
+- **Totals.** 114 players change (33 up, 79 down, 2 equal points; net -5,562 points, -824 games). Alvin Cruz (74)
+  1,985 / 362 -> 2,119 / 373, no marker. Player 1995 4,533 / 484 -> 4,300 / 455 with two markers (a 2006 conflict).
+  Recomputed from the files for 128 players (all changed and all conflict players) and read on the page in Chromium:
+  0 mismatches; 10 read in WebKit and at 390 px: 0 mismatches.
+- **Spot-check, 5 of the 45 kept relabelled rows (ids 344, 776, 881, 462, 647).** Each is on its raw capture under
+  the label 2005; later captures show the same figures (881: the slot moved from Humacao 4/8 to Arecibo 6/6 between
+  2006-10 and 2006-12, a two-team season). None has a ficha 2006 row, so they cannot be checked against the ficha
+  (UNVERIFIED). 344 also has a 2006-02 capture with the old 2005 figures (22/141): the overwrite, seen on one player.
+- **The 14 new 2006 conflicts (not resolved; no cause published).** 13 jug05 captures are dated 2006-09 or later and
+  1 is 2006-06-18; the end of the 2006 season is not in the repo (UNVERIFIED). In 12 the jug05 row equals the sum of
+  the ficha's two 2006 rows of a player who changed team. Their totals exclude both rows until resolved.
+- **Checks.** `make verify` 346,482 checks, 0 failed; `make test` 415 passed; a second build is byte-identical;
+  `apply_jug05_relabel`, `apply_career_dedup` and `apply_identity_decisions` `--check` exit 0; `cmp` app vs web
+  passes (the app is unchanged). Chromium and WebKit at 1000 and 390 px on a local copy: the view shows 107
+  conflicts and its counts equal the file; 2005 has 4 conflicts, 2006 has 14; Alvin Cruz, player 1995 and the
+  Figueroa pair render as expected; 0 console errors; a returning visitor purges once.
+- **Open.** The exact flip day; which label matches the real calendar; the 45 unchecked rows; id 320 may be two
+  players; the 14 new 2006 conflicts; the 9 high-confidence birth-date corrections not re-checked against raw pages.

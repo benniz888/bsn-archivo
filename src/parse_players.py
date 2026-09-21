@@ -302,6 +302,31 @@ def parse_jugador() -> tuple[dict[str, dict], list[dict]]:
 # tranche C — jug05.asp (PHASE_3H)                                             #
 # --------------------------------------------------------------------------- #
 JUG05_SOURCE_ID = "wayback_bsnpr_jug05"
+
+# jug05.asp keeps ONE slot for the newest season and labels it "2005" on every capture. Until the
+# capture of 2006-02-24 the slot holds the figures jugador.asp files under 2005; from the capture of
+# 2006-05-28 it holds the ones jugador.asp files under 2006 (the source overwrote it in place and kept
+# the label). So for that one label the capture date, not the page, says which season the row is.
+# No capture lies between 2006-02-24 and 2006-05-28 with a 2005 row (the only two, of 2006-04-27, have
+# none), so any cutoff in that gap gives the same rows. docs/specs/jug05_offset_check.md.
+JUG05_SLOT_LABEL = 2005
+JUG05_SLOT_FLIP = "20060501000000"          # Wayback timestamp, YYYYMMDDhhmmss
+_WAYBACK_TS = re.compile(r"/web/(\d{14})")
+
+
+def jug05_capture_ts(source_url) -> str:
+    """The 14-digit Wayback timestamp inside a capture URL, "" when there is none."""
+    m = _WAYBACK_TS.search(source_url or "")
+    return m.group(1) if m else ""
+
+
+def jug05_season(label: int, capture_ts: str) -> int:
+    """The season a jug05 row belongs to: its page label, except that the newest-season slot
+    ("2005") captured on or after JUG05_SLOT_FLIP holds the next season's figures. The ONE place
+    this is decided; parse_jug05 and src/apply_jug05_relabel.py both call it."""
+    if label == JUG05_SLOT_LABEL and capture_ts and capture_ts >= JUG05_SLOT_FLIP:
+        return label + 1
+    return label
 _J5_NAME = re.compile(r"Estad[ií]sticas\s+Jugador\s+(.+?)\s+Ciudad\s+Nacimiento", re.S)
 _J5_BIO = re.compile(r"Ciudad\s+Nacimiento\s+Edad\s+Posici[oó]n\s+Altura\s+Peso\s+"
                      r"(.*?)\s+A[nñ]o\s+Equipo\s+3pi", re.S)
@@ -315,7 +340,9 @@ _J5_ROW = re.compile(r"(\d{4})\s+([A-ZÑÁÉÍÓÚ.\- ]+?)\s+(?=\d)(.+?)(?=\s+\d
 def parse_jug05() -> list[dict]:
     """The 2005-era player page: one record per file (deduped by digest at fetch
     time). Name is always present; birth date ~89%, position ~99%, career
-    ~95%. No league id — these only enrich existing canonical rows (D1)."""
+    ~95%. No league id — these only enrich existing canonical rows (D1). A row's season is its
+    Año label, except the newest-season slot after the capture date the source changed it
+    (jug05_season)."""
     out: list[dict] = []
     for p, html, meta, retrieved_at in _iter_files("jug05"):
         txt = " ".join(BeautifulSoup(html, "html.parser").get_text(" ").split())
@@ -335,6 +362,7 @@ def parse_jug05() -> list[dict]:
                 yr = int(r.group(1))
                 if yr < 1929 or yr > 2030:
                     continue
+                yr = jug05_season(yr, meta.get("wayback_timestamp", ""))
                 team = squish(r.group(2))
                 # row tail is: 3pi 3pa % 2pi 2pa % TLI TLA % ASIS apg REB rpg JJ PTS ppg
                 # a complete row ends on the ppg float; JJ/PTS are the two ints before it.

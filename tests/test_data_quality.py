@@ -38,35 +38,36 @@ class TestCountsComeFromTheLogs:
         conflicts = _csv("interim", "jug05_career_conflicts.csv")
         merged = _csv("interim", "jug05_career_merged.csv")
         corrections = _csv("interim", "player_dob_overrides.csv")
-        assert n["stat_conflicts"] == len(dq["conflicts"]) == len(conflicts) == 126
-        assert n["stat_conflict_players"] == len({r["bsnpr_id"] for r in conflicts}) == 80
-        assert n["merged_pairs"] == len(merged) == 667 and n["merged_players"] == len({r["bsnpr_id"] for r in merged}) == 105
-        assert sum(n["merged_by_season"].values()) == 667 and min(n["merged_by_season"]) == "1980" and max(n["merged_by_season"]) == "2005"
+        assert n["stat_conflicts"] == len(dq["conflicts"]) == len(conflicts) == 107
+        assert n["stat_conflict_players"] == len({r["bsnpr_id"] for r in conflicts}) == 74
+        assert n["merged_pairs"] == len(merged) == 767 and n["merged_players"] == len({r["bsnpr_id"] for r in merged}) == 130
+        assert sum(n["merged_by_season"].values()) == 767 and min(n["merged_by_season"]) == "1980" and max(n["merged_by_season"]) == "2006"
         assert n["dropped_rows"] == len(_csv("interim", "player_merge_dropped_rows.csv")) == 4
         assert n["decisions"] == len(dq["decisions"]) == 4 and n["tombstones"] == len(_csv("clean", "player_id_tombstones.csv")) == 3
         assert n["dob_open"] == len(dq["dob_open"]) == len(_csv("interim", "jugador05_dob_conflicts.csv")) == 5
         assert (n["dob_corrections"], n["dob_corrections_high"], n["dob_corrections_low"]) == (10, 9, 1) == (len(corrections), 9, 1)
 
     def test_conflicts_by_season(self, dq):
-        assert dq["counts"]["conflicts_by_season"] == {"2000": 17, "2001": 51, "2002": 18, "2003": 3, "2005": 37}
+        assert dq["counts"]["conflicts_by_season"] == {"2000": 17, "2001": 51, "2002": 18, "2003": 3, "2005": 4, "2006": 14}
 
     def test_the_manifest_counts_the_conflicts(self):
-        assert json.loads((WEB / "manifest.json").read_text(encoding="utf-8"))["counts"]["data_quality"] == 126
+        assert json.loads((WEB / "manifest.json").read_text(encoding="utf-8"))["counts"]["data_quality"] == 107
 
     def test_no_conflict_has_two_equal_sides(self, dq):
         both_equal = [c for c in dq["conflicts"] if c["a"]["games"] == c["b"]["games"] and c["a"]["points"] == c["b"]["points"]]
         assert both_equal == []
         games_eq = sum(c["a"]["games"] == c["b"]["games"] for c in dq["conflicts"])
         points_eq = sum(c["a"]["points"] == c["b"]["points"] for c in dq["conflicts"])
-        assert (games_eq, points_eq, 126 - games_eq - points_eq) == (22, 19, 85)
+        assert (games_eq, points_eq, len(dq["conflicts"]) - games_eq - points_eq) == (21, 20, 66)
 
 
 class TestConflictRowsAreTheRowsOnThePlayerPage:
-    def test_alvin_cruz_2005(self, dq):
-        c = next(c for c in dq["conflicts"] if c["id"] == 74 and c["season"] == 2005)
-        assert (c["a"]["games"], c["a"]["points"], c["a"]["team"]) == (11, 134, "Vaqueros, Bayamon")
-        assert (c["b"]["games"], c["b"]["points"], c["b"]["team"]) == (24, 211, "BAYAMON")
-        assert c["franchise_id"] == "vaqueros_bayamon"
+    def test_alvin_cruz_2005_is_no_longer_a_conflict(self, dq):
+        """It was: jug05's "2005" row (24/211) is the ficha's 2006 row under the capture-relative label
+        (docs/specs/jug05_offset_check.md). After the relabel it folds into 2006 and the ficha's 2005 row stands."""
+        assert [c for c in dq["conflicts"] if c["id"] == 74] == []
+        rows = [(r["season"], r["games"], r["points"]) for r in _player(74)["career"] if r["season"] in (2005, 2006)]
+        assert rows == [(2005, 11, 134), (2006, 24, 211)]
 
     def test_each_conflict_side_is_exactly_one_career_row_in_the_player_file(self, dq):
         for c in dq["conflicts"]:
@@ -91,7 +92,8 @@ class TestConflictRowsAreTheRowsOnThePlayerPage:
             kept = [r for i, r in enumerate(rows) if i not in flagged]
             return (sum(r["points"] or 0 for r in kept), sum(r["games"] or 0 for r in kept),
                     sum(r["points"] or 0 for r in rows), sum(r["games"] or 0 for r in rows), len(flagged))
-        assert totals(74) == (1985, 362, 2330, 397, 2)            # what the page shows now vs before
+        assert totals(74) == (2119, 373, 2119, 373, 0)            # 1,985 / 362 while the 2005 row was a conflict
+        assert totals(1995) == (4300, 455, 4533, 484, 2)          # a 2006 conflict: jug05 24/194 vs the 5/39 stint
         # every conflict flags exactly two rows
         for pid in {c["id"] for c in dq["conflicts"]}:
             assert totals(pid)[4] == 2 * sum(1 for c in dq["conflicts"] if c["id"] == pid)
