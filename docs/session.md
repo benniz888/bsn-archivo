@@ -5966,3 +5966,32 @@ Supersedes the "still unpushed" wording at the end of the previous block.
   survivors gain rows, so pin slugs in data at that point (Option B). 11 of the 20 retired ids have a plain slug
   different from the survivor's and need a redirect map, read after PSLUG in the router; retired ids resolve through
   merged_into tombstones.
+
+**PHASE_ROUTE_DEPLOY_LOG: the route fix is DEPLOYED and checked live (2026-09-21).**
+- **Push `859885c..c6cadf8`.** One commit, `c6cadf8` (`app: unique player routes for shared names; MVP and scoring
+  links reload correctly`). Local `main` and `origin/main` were level after the push. Rollback was dry-run first:
+  `git revert --no-edit HEAD` in a scratch clone applied cleanly and gave a tree identical to `859885c`, including
+  `web/`. Pages run **35608592219**, event push, conclusion **success**, **19 s** (re-read from the Actions API).
+- **Live checks (data and shell).** The served `index.html` is byte-identical to `web/index.html` at HEAD (sha
+  `5bafbe4cf748`, 642,793 bytes); the new shell was served on the first fetch. Manifest digest `1832f6cda8cf`,
+  unchanged. `players/1995.json`, `players/2631.json`, `players/1379.json`, `index/franchises.json` and
+  `seasons/2024.json` are byte-identical to the committed versions.
+- **Live checks (Chromium and WebKit on bsnarchivo.com).** 0 console errors or HTTP errors. `figueroa-carlos` opens
+  id 2631 (7 rows) and `figueroa-carlos-286` opens id 286 (2 rows); a reload keeps each person.
+  `vigo-castillo-julio` opens id 1379 (10 rows) and its "Mismo nombre" line links `vigo-castillo-julio-1378`, which
+  opens id 1378. `farmer-anthony-171` opens its own id and survives a reload. The Pietri (id 2024) and Feliciano (id
+  1943) click-throughs reload to the right person. The pool routes (Georgie Torres, Raymond Dalmau, Neftali Rivera)
+  and player 1995 (21 rows, one Criollos de Caguas row each for 2002-2004, Atenienses 2015 and 2016) are unchanged.
+- **Owner check on a real iPhone (Safari, private tab), 2026-09-21; reported by the owner, not re-run here.**
+  `#jugadores/jugador/figueroa-carlos` opens id 2631 (7 seasons, 101 games: matches `players/2631.json`), and the
+  "Mismo nombre" line links Figueroa, Carlos (1960-1961, #286). Tapping that link and the other routes were not
+  checked on iOS. Observation: on the phone the PTS column is clipped at the right edge; whether the table scrolls
+  sideways is UNVERIFIED. Optional later polish: show birth dates unambiguously (e.g. "6 de mayo de 1988" instead of
+  5/6/1988).
+- **Not checked (UNVERIFIED).** A cold load where hydrate takes longer than 2.5 s (a boot-time race that already
+  existed); portrait images for duplicate names (they share the `slug(name)` image key). Delivery: the service
+  worker serves the shell network-first and GitHub Pages sends `max-age=600`, so a returning visitor can keep the
+  old shell for up to 10 minutes, and a tab already open keeps the old app until reloaded.
+- **Status.** The route fix is live. Open: cluster merges (batch 1: A01, A02, A06), the 125 stat conflicts, J16b
+  Cayey (41 rows), the 2 hybrid Humacao strings (25 rows), the data-quality view, F7, a redirect map for retired
+  ids, and the mobile PTS column.
