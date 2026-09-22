@@ -1370,14 +1370,14 @@ bsnpr_id,alias,normalized_alias,alias_type,source
 179,"falu allende, antonio","falu allende, antonio",normalized,derived
 179,"Falú Allende, Antonio","falu allende, antonio",paternal_surname,derived
 179,"Falú, Antonio","falu, antonio",paternal_surname,derived
-180,"Gonzalez Arroyo, Antonio","gonzalez arroyo, antonio",canonical,derived
-180,"Gonzalez Arroyo, Antonio","gonzalez arroyo, antonio",enciclopedia,bsnpr
-180,Antonio Gonzalez Arroyo,antonio gonzalez arroyo,given_family_order,derived
-180,"Gonzalez Arroyo, A.","gonzalez arroyo, a",initial,derived
-180,"Gonzalez, A.","gonzalez, a",initial,derived
-180,"gonzalez arroyo, antonio","gonzalez arroyo, antonio",normalized,derived
-180,"Gonzalez Arroyo, Antonio","gonzalez arroyo, antonio",paternal_surname,derived
-180,"Gonzalez, Antonio","gonzalez, antonio",paternal_surname,derived
+194,"Gonzalez Arroyo, Antonio","gonzalez arroyo, antonio",merged_name,derived
+194,"Gonzalez Arroyo, Antonio","gonzalez arroyo, antonio",enciclopedia,bsnpr
+194,Antonio Gonzalez Arroyo,antonio gonzalez arroyo,given_family_order,derived
+194,"Gonzalez Arroyo, A.","gonzalez arroyo, a",initial,derived
+194,"Gonzalez, A.","gonzalez, a",initial,derived
+194,"gonzalez arroyo, antonio","gonzalez arroyo, antonio",normalized,derived
+194,"Gonzalez Arroyo, Antonio","gonzalez arroyo, antonio",paternal_surname,derived
+194,"Gonzalez, Antonio","gonzalez, antonio",paternal_surname,derived
 181,"Mendez Morgado, Antonio","mendez morgado, antonio",canonical,derived
 181,"Mendez Morgado, Antonio","mendez morgado, antonio",enciclopedia,bsnpr
 181,Antonio Mendez Morgado,antonio mendez morgado,given_family_order,derived

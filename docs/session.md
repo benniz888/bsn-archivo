@@ -6385,3 +6385,34 @@ Supersedes the "still unpushed" wording at the end of the previous block.
   (UNVERIFIED).
 - **NEXT_ACTIONS (owner-gated; none started; priority order).** 1. The remaining 14 identity clusters (owner review
   needed). 2. The standings-page chip gap. 3. F7, if a source turns up.
+
+### PHASE_CLUSTER_MERGE_BATCH2 — A03 applied; A04 blocked; A05 held (2026-09-22, owner-approved)
+- **Evidence.** docs/specs/cluster_evidence_batch2.md (A03, A04, A05), the next 3 unresolved clusters by id after
+  batch 1 (A01, A02, A06 merged; A17 held). Re-verified against 5 raw enciclopedia captures spread across the full
+  2007-2021 span before applying (2007-04-17, 2009-03-03, 2012-07-23, 2014-02-21, 2021-09-01): 344/345/346/347
+  agree exactly (name, jersey, DOB) in every one checked.
+- **A03 applied: 180 -> 194 (D-ID-005).** Same DOB (12/7/1959); the two names are the same surname tokens
+  (Gonzalez, Arroyo) in reversed order; 180 had zero career, id_map, roster, bio or box rows of its own. Survivor
+  194 keeps its 3 career rows and 15/18 aliases; nothing was lost (180 had nothing to carry). Redirect:
+  gonzalez-arroyo-antonio (and -180) -> 194. Staged, not committed.
+- **A04 NOT applied — blocked, new finding.** 345, 346, 347 share id 344's exact canonical name ("Travieso Peña,
+  Carmelo"), so `build_player_redirects()` (src/build_web_data.py) hits its own live-slug collision guard: the
+  retired id's true former slug ("travieso-pena-carmelo") is also 344's own current live slug, and the function
+  calls `sys.exit()` rather than silently redirecting a slug to the same id it already resolves to. Confirmed by
+  running the real pipeline in an isolated scratch clone (exit code 1, build aborts before manifest.json,
+  data_quality.json and player_redirects.json are written). No code change was made (out of scope for this
+  phase); the decision and tombstone rows for A04 were NOT added anywhere. Needs an owner call: either a small
+  fix to the guard (skip a redirect key that already resolves to its own target) or another approach.
+- **A05 NOT merged (owner decision, per the evidence packet's own NEEDS MORE EVIDENCE call).**
+  - New finding: id 721's own jugador.asp profile page (capture 2007-08-28) carries a birth date of 5/9/1980
+    (age 27 shown on the page), which contradicts its OWN listed career rows (1965-1969, Capitanes de Arecibo —
+    a career that would need a birth year in the mid-1940s to early 1950s) and its own 2005 jugador05 bio
+    (San German, jersey 23 — team-inconsistent with the 1965-1969 Arecibo rows). This is bsnpr.com's own page
+    content (both facts sit on the one captured id=721 HTML file); it is not a parsing artifact of this repo,
+    and it is independent of the id 722 duplicate-stub question.
+  - id 722 (an empty duplicate stub of 721: adjacent enciclopedia row, same name/jersey/DOB, zero independent
+    data) stays unmerged pending resolution of 721's own DOB/career conflict, so a merge does not launder a
+    pre-existing bsnpr.com data error into the published record as a "coherent career".
+- **Status.** 4 of 17 (a) clusters now merged (A01, A02, A03, A06). 13 remain: A04 (blocked), A05 (held), A07-A17.
+- **NEXT_ACTIONS (owner-gated; none started; priority order).** 1. Decide how to unblock A04 (guard fix or other).
+  2. A05: resolve 721's own DOB/career conflict before any merge. 3. The remaining identity clusters (A07-A16).

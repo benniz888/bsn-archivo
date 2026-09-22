@@ -145,8 +145,10 @@ class TestCommittedData:
         assert apply.validate(decisions, tombs) == []
         assert [(d["decision_id"], d["kind"], d["ids"]) for d in decisions] == [
             ("D-ID-001", "merge", "73;74"), ("D-ID-002", "merge", "951;952"),
-            ("D-ID-003", "merge", "24;35"), ("D-ID-004", "not_same", "35;273")]
-        assert {t["retired_id"]: t["survivor_id"] for t in tombs} == {"73": "74", "951": "952", "24": "35"}
+            ("D-ID-003", "merge", "24;35"), ("D-ID-004", "not_same", "35;273"),
+            ("D-ID-005", "merge", "180;194")]
+        assert {t["retired_id"]: t["survivor_id"] for t in tombs} == {
+            "73": "74", "951": "952", "24": "35", "180": "194"}
 
     def test_the_not_same_row_for_35_and_273_carries_its_evidence(self):
         d = next(d for d in apply.load_decisions() if d["kind"] == "not_same")

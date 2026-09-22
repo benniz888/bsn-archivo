@@ -116,14 +116,16 @@ class TestBuild:
         # whose evidence split ambiguously across two different candidates)
         # - 3 (identity merges of 2026-09-21, data/clean/player_id_tombstones.csv: 73 -> 74, 951 -> 952,
         # 24 -> 35; the retired ids stay resolvable through index/player_redirects.json)
-        assert len(pl) == 3330
+        # - 1 (identity merge of 2026-09-22, batch 2 A03: 180 -> 194, same-DOB reversed-surname pair,
+        # docs/specs/cluster_evidence_batch2.md)
+        assert len(pl) == 3329
         assert all(isinstance(p["id"], int) for p in pl)
         assert pl == sorted(pl, key=lambda p: p["id"])
         assert sum(1 for p in pl if p["id"] > 990000) == 30
 
     def test_manifest_counts_match(self):
         man = json.loads((b.WEB / "manifest.json").read_text())
-        assert man["counts"]["players"] == 3330
+        assert man["counts"]["players"] == 3329
         assert man["counts"]["seasons"] == 98
         assert len(man["source_digest"]) == 64      # sha256 hex
 
@@ -133,7 +135,7 @@ class TestBuild:
         assert red["ids"] == {t["retired_id"]: int(t["survivor_id"]) for t in tombs}
         assert len(red["slugs"]) == 2 * len(tombs)
         man = json.loads((b.WEB / "manifest.json").read_text())
-        assert man["counts"]["player_redirects"] == len(tombs) == 3
+        assert man["counts"]["player_redirects"] == len(tombs) == 4
         for t in tombs:                                    # no file for a retired id, one for its survivor
             assert not (b.WEB / "players" / f"{t['retired_id']}.json").exists()
             assert (b.WEB / "players" / f"{t['survivor_id']}.json").exists()

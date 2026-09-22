@@ -58,7 +58,7 @@ class TestUniqueUrls:
     def test_every_player_gets_its_own_url(self):
         players = load()
         by_url, by_id, _, _ = urls_for(players)
-        assert len(players) == 3330
+        assert len(players) == 3329
         assert len(by_url) == len(by_id) == len(players)
         assert all(by_url[by_id[p["id"]]] == p["id"] for p in players)
 
@@ -137,11 +137,12 @@ class TestRedirects:
         assert set(red["slugs"].values()) <= live and set(red["ids"].values()) <= live
         assert not (set(map(int, red["ids"])) & live)          # a retired id is never a live one
 
-    def test_the_three_merges_redirect_their_old_urls(self):
+    def test_the_four_merges_redirect_their_old_urls(self):
         red = json.loads(REDIRECTS.read_text(encoding="utf-8"))
-        assert red["ids"] == {"24": 35, "73": 74, "951": 952}
+        assert red["ids"] == {"24": 35, "73": 74, "951": 952, "180": 194}
         assert red["slugs"] == {"arroyo-alberto": 35, "arroyo-alberto-24": 35, "cruz-alvin": 74,
-                                "cruz-alvin-73": 74, "lopez-ivan": 952, "lopez-ivan-951": 952}
+                                "cruz-alvin-73": 74, "lopez-ivan": 952, "lopez-ivan-951": 952,
+                                "gonzalez-arroyo-antonio": 194, "gonzalez-arroyo-antonio-180": 194}
 
     def test_the_build_slug_port_matches_the_app_slug(self):
         from src import build_web_data as b
