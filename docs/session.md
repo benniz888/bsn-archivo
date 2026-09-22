@@ -6436,3 +6436,25 @@ Supersedes the "still unpushed" wording at the end of the previous block.
 - **Status.** 5 of 17 (a) clusters now merged (A01, A02, A03, A04, A06). 12 remain: A05 (held), A07-A17.
 - **NEXT_ACTIONS (owner-gated; none started; priority order).** 1. A05: resolve 721's own DOB/career conflict
   before any merge. 2. The remaining identity clusters (A07-A17).
+
+### PHASE_BATCH2_DEPLOY_LOG — batch 2 identity merges deployed (2026-09-22)
+- **Push.** Commits `e9f6ccb` (A03: 180 -> 194) and `2068a99` (A04: 345/346/347 -> 344, plus the
+  redirect-guard fix for same-name-as-survivor collisions), pushed `087bf7c..2068a99`. Pages run
+  35680759558, success, 25 s (02:47:32Z to 02:47:57Z).
+- **Live verification.** `index.html`, `manifest.json` (digest `866527f6d953`, player count 3326) and
+  `player_redirects.json` all byte-identical to committed. `players/194.json` and `344.json`
+  byte-identical; `players/180.json`, `345.json`, `346.json`, `347.json` all 404 as expected.
+  `data_quality.json` shows 6 decisions (D-ID-001 through D-ID-006) and 7 tombstones (D-ID-006 alone
+  retires 3 ids -- 345, 346, 347 -- into one survivor).
+- **Browser verification (Chromium + WebKit, 1000px/390px).** All redirect routes correct, including the
+  no-redirect-needed case where a retired id's slug equals its survivor's own live slug. Batch-1
+  regressions (Cruz, Arroyo, the Figueroa pair, Vigo Castillo) all intact. 0 console errors.
+- **Owner hand check on the live site (2026-09-22): confirmed.** `gonzalez-arroyo-antonio`,
+  `travieso-pena-carmelo` and `#archivo/calidad` all verified directly by the owner.
+- **Cluster status.** A01, A02, A03, A04, A06 merged. A17 held pending more evidence. A05 (721/722) held --
+  new finding logged separately: id 721's own profile page carries a birth date of 1980, contradicting its
+  own 1965-1969 career rows and its own 2005 bio. This is a pre-existing bsnpr.com data error independent
+  of any merge decision; 722 stays unmerged pending its resolution.
+- **Remaining.** 10 of the original 17 (a) clusters are unaddressed (A07-A16; all except A01-A06, A17).
+- **NEXT_ACTIONS (owner-gated; no fixed order).** A05's DOB conflict, the remaining 10 clusters, or other
+  open items, as the owner prioritizes.
