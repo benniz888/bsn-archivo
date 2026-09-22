@@ -6350,3 +6350,38 @@ Supersedes the "still unpushed" wording at the end of the previous block.
   as text (the app draws no chip there) and no game page exists in the app: game files are data only (fetched: 200).
 - **Open.** The 2 hybrid Humacao strings (25 rows); the 5 minted ids that duplicate ficha ids (990024 among them); the
   rest as before.
+
+### PHASE_CAYEY_DEPLOY_LOG — J16b Cayey deployed (2026-09-21)
+- **Push.** Commit `c50a874` (`data: map Toritos de Cayey (J16b); backfill 19 merged-log rows`), pushed
+  `ba93ed5..c50a874`. 108 files: 15 other (11 outside `web/`, plus `manifest.json`, 2 season files and `cay.json`), 32
+  player files, 61 game files. Pages run 35669650678, success, 23 s (23:54:23Z to 23:54:46Z). The new data was
+  served on the first poll. Digest `f0e2983903f5`, `counts.starting_five_files` 17.
+- **Rollback dry run (before the push).** `git revert --no-edit HEAD` in a scratch clone applied cleanly and matched
+  `ba93ed5` including `web/` (tree `60475884840e`).
+- **Result.** 41 career rows on 32 players remapped (`Toritos, Cayey` 36 and `CAYEY` 5 -> `toritos_cayey`); 19 blank
+  merged-log rows backfilled (14 players; 2002: 9, 2003: 4, 2004: 6; 0 blank now). Trade pairs 233 -> 241, and the
+  count includes one unresolved-duplicate pair: minted id 990024 against real id 763, both jug05-only rows with the
+  same rows; neither is in an identity cluster or decision, though the review queue lists them as candidates
+  `763|990024`. Noted for the identity backlog. 61 game files and 2 season files (2002, 2003) gained the
+  `toritos_cayey` team id; `starting_five/cay.json` is now real (2002, 30 games, 5 players).
+- **Live checks.** `index.html` byte-identical to `web/index.html` at HEAD (657,454 bytes); the manifest identical;
+  `cay.json`, `players/143.json`, `players/808.json`, `games/2002/BS22008.json`, `seasons/2002.json` and
+  `seasons/2003.json` byte-identical to the committed files; `index/data_quality.json` byte-identical to before the
+  deploy (87,917 bytes). Chromium and WebKit on the live site at 1000 and 390 px, all four runs on the first attempt,
+  0 console errors: the `cay` team page shows "Cinco inicial 2002" with no 404; players 143, 808 and 1442 show a
+  "Toritos de Cayey" chip that opens `cay`; `cac`, `hum`, `man`, players 37, 74, 1995, `melendez-huertas-ricardo` and
+  the Figueroa pair are identical to the pre-change copy.
+- **Owner hand check on the live site (2026-09-21): confirmed.** A Cayey player page (`lopez-ortiz-angel-miguel`, 2002,
+  id 143) shows a "Toritos de Cayey" chip, and tapping it opens the Cayey team page with its 2002 starting five.
+- **Known gap, not fixed.** The 2002 and 2003 season standings show "Cayey" as plain text (the app draws no team chip
+  on the standings view), although the data now carries `toritos_cayey`.
+- **Status.** J16b (Cayey) is closed, so J16 is resolved (J16a + J16b). The only career rows without a franchise_id are
+  the 2 hybrid Humacao strings, 25 rows (`Caciques-Gallitos, Humacao-Isabela` 17,
+  `Caciques-Gigantes, Humacao-Carolina` 8), deliberately left unmapped (re-counted from `web/data/players`).
+- **Open.** The remaining 14 identity clusters; the 2 hybrid Humacao strings; the season card for a flagged season
+  shows one of two rows; the PTS column clipped at 390 px for long team names; the standings-page team chip gap; the
+  service worker's own cache purge (UNVERIFIED); F7; the latinbasket CSV missing from `SOURCES`; the Nació/Nacio parser
+  header bug; the mechanism behind the foreign jug05 slot lines is UNCLEAR; undetected foreign-slot cases
+  (UNVERIFIED).
+- **NEXT_ACTIONS (owner-gated; none started; priority order).** 1. The remaining 14 identity clusters (owner review
+  needed). 2. The standings-page chip gap. 3. F7, if a source turns up.
