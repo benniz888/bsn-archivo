@@ -118,14 +118,16 @@ class TestBuild:
         # 24 -> 35; the retired ids stay resolvable through index/player_redirects.json)
         # - 1 (identity merge of 2026-09-22, batch 2 A03: 180 -> 194, same-DOB reversed-surname pair,
         # docs/specs/cluster_evidence_batch2.md)
-        assert len(pl) == 3329
+        # - 3 (identity merge of 2026-09-22, batch 2 A04: 345, 346, 347 -> 344, three consecutive
+        # byte-identical enciclopedia rows of 344's own listing, docs/specs/cluster_evidence_batch2.md)
+        assert len(pl) == 3326
         assert all(isinstance(p["id"], int) for p in pl)
         assert pl == sorted(pl, key=lambda p: p["id"])
         assert sum(1 for p in pl if p["id"] > 990000) == 30
 
     def test_manifest_counts_match(self):
         man = json.loads((b.WEB / "manifest.json").read_text())
-        assert man["counts"]["players"] == 3329
+        assert man["counts"]["players"] == 3326
         assert man["counts"]["seasons"] == 98
         assert len(man["source_digest"]) == 64      # sha256 hex
 
@@ -133,9 +135,15 @@ class TestBuild:
         tombs = b._read("player_id_tombstones.csv")
         red = json.loads((b.WEB / "index" / "player_redirects.json").read_text())
         assert red["ids"] == {t["retired_id"]: int(t["survivor_id"]) for t in tombs}
-        assert len(red["slugs"]) == 2 * len(tombs)
+        # 2 keys per tombstone (bare + -id), except when the retired id's own name-derived slug is
+        # identical to its survivor's current slug (J16 A04): the live route already serves that bare
+        # URL, so build_player_redirects() skips it and only the -id form is added (1 key, not 2).
+        canon = {r["bsnpr_id"]: r["canonical_name"] for r in b._read("players_canonical.csv")}
+        expect_slugs = sum(1 if b._slug(t["retired_name"]) == b._slug(canon[t["survivor_id"]]) else 2
+                           for t in tombs)
+        assert len(red["slugs"]) == expect_slugs == 11
         man = json.loads((b.WEB / "manifest.json").read_text())
-        assert man["counts"]["player_redirects"] == len(tombs) == 4
+        assert man["counts"]["player_redirects"] == len(tombs) == 7
         for t in tombs:                                    # no file for a retired id, one for its survivor
             assert not (b.WEB / "players" / f"{t['retired_id']}.json").exists()
             assert (b.WEB / "players" / f"{t['survivor_id']}.json").exists()
@@ -443,6 +451,55 @@ class TestBuild:
         manifest = json.loads((b.WEB / "manifest.json").read_text())
         # the manifest still counts teams that have a starting five, not placeholder files
         assert manifest["counts"]["starting_five_files"] == 33 - len(empty)
+
+
+class TestPlayerRedirects:
+    """build_player_redirects() with synthetic data, isolated from the committed CSVs (J16 A04: a retired id
+    whose own name-derived slug equals its survivor's current slug needs no bare-form redirect key)."""
+
+    def _write(self, tmp_path, canon_rows, tomb_rows, monkeypatch):
+        monkeypatch.setattr(b, "CLEAN", tmp_path)
+        monkeypatch.setattr(b, "WEB", tmp_path / "web")
+        (tmp_path / "web" / "index").mkdir(parents=True)
+        with (tmp_path / "players_canonical.csv").open("w", encoding="utf-8", newline="") as fh:
+            w = csv.DictWriter(fh, fieldnames=["bsnpr_id", "canonical_name"]); w.writeheader(); w.writerows(canon_rows)
+        with (tmp_path / "player_id_tombstones.csv").open("w", encoding="utf-8", newline="") as fh:
+            w = csv.DictWriter(fh, fieldnames=["retired_id", "survivor_id", "decision_id", "retired_name",
+                                               "retired_at"])
+            w.writeheader(); w.writerows(tomb_rows)
+
+    def test_a_retired_id_sharing_its_survivors_exact_name_skips_only_the_bare_key(self, tmp_path, monkeypatch):
+        # 344 survives; 345 had the identical canonical name, so its bare slug == 344's own live slug
+        self._write(tmp_path,
+                    [{"bsnpr_id": "344", "canonical_name": "Travieso Peña, Carmelo"}],
+                    [{"retired_id": "345", "survivor_id": "344", "decision_id": "D-X",
+                     "retired_name": "Travieso Peña, Carmelo", "retired_at": "2026-09-22"}],
+                    monkeypatch)
+        path = b.build_player_redirects()
+        red = json.loads(path.read_text())
+        assert red["ids"] == {"345": 344}
+        assert red["slugs"] == {"travieso-pena-carmelo-345": 344}   # bare "travieso-pena-carmelo" skipped
+
+    def test_a_retired_id_with_a_different_name_gets_both_keys(self, tmp_path, monkeypatch):
+        self._write(tmp_path,
+                    [{"bsnpr_id": "74", "canonical_name": "Cruz Torres, Alvin"}],
+                    [{"retired_id": "73", "survivor_id": "74", "decision_id": "D-X",
+                     "retired_name": "Cruz, Alvin", "retired_at": "2026-09-22"}],
+                    monkeypatch)
+        red = json.loads(b.build_player_redirects().read_text())
+        assert red["slugs"] == {"cruz-alvin": 74, "cruz-alvin-73": 74}
+
+    def test_a_key_colliding_with_an_unrelated_live_player_still_errors(self, tmp_path, monkeypatch):
+        # 74 is the survivor; 999 is a real, unrelated live player who happens to hold the retired
+        # id's bare slug -- this must still be caught, not silently skipped
+        self._write(tmp_path,
+                    [{"bsnpr_id": "74", "canonical_name": "Cruz Torres, Alvin"},
+                     {"bsnpr_id": "999", "canonical_name": "Cruz, Alvin"}],
+                    [{"retired_id": "73", "survivor_id": "74", "decision_id": "D-X",
+                     "retired_name": "Cruz, Alvin", "retired_at": "2026-09-22"}],
+                    monkeypatch)
+        with pytest.raises(SystemExit, match="cruz-alvin.*retired id 73.*also a live player's slug"):
+            b.build_player_redirects()
 
 
 class TestHelpers:

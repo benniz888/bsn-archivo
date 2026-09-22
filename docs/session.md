@@ -6416,3 +6416,23 @@ Supersedes the "still unpushed" wording at the end of the previous block.
 - **Status.** 4 of 17 (a) clusters now merged (A01, A02, A03, A06). 13 remain: A04 (blocked), A05 (held), A07-A17.
 - **NEXT_ACTIONS (owner-gated; none started; priority order).** 1. Decide how to unblock A04 (guard fix or other).
   2. A05: resolve 721's own DOB/career conflict before any merge. 3. The remaining identity clusters (A07-A16).
+
+### PHASE_A04_REDIRECT_FIX — A04 unblocked, applied and staged (2026-09-22, owner-approved)
+- **Fix.** `build_player_redirects()` (src/build_web_data.py) now compares each redirect key against the
+  SURVIVOR's OWN live slug (not just any live slug) before erroring: if a retired id's name-derived bare slug
+  is identical to its survivor's current live slug, that one key is silently skipped (the live route already
+  serves it) instead of `sys.exit()`. The `-id` suffixed form is unaffected and still redirects. A key that
+  collides with some OTHER, unrelated live player's slug still errors -- the guard's original purpose is
+  unchanged. Pinned with 3 new focused tests (tests/test_build_web_data.py, TestPlayerRedirects) using
+  synthetic data, isolated from the committed CSVs.
+- **A04 applied: 345, 346, 347 -> 344 (D-ID-006), same decisions/tombstones pattern as A03.** Redirect keys:
+  bare "travieso-pena-carmelo" skipped for all three (identical to 344's own live slug); "travieso-pena-carmelo
+  -345", "-346" and "-347" all added, redirecting to 344. Confirmed in Chromium and WebKit, 1000 and 390 px: the
+  old -347 URL opens 344's page (13 rows intact) with 0 console errors, Back does not loop, and A03's and batch
+  1's redirects are unaffected.
+- **Checks.** `make verify` 346,452 checks, 0 failed; `make test` 456 passed (453 + 3 new); reconcile drift
+  guard 40 passed; a second run of `apply_identity_decisions` and a second `make build-web-data` are both
+  byte-identical; all 5 identity/career `--check` commands exit 0; `cmp` app vs web passes.
+- **Status.** 5 of 17 (a) clusters now merged (A01, A02, A03, A04, A06). 12 remain: A05 (held), A07-A17.
+- **NEXT_ACTIONS (owner-gated; none started; priority order).** 1. A05: resolve 721's own DOB/career conflict
+  before any merge. 2. The remaining identity clusters (A07-A17).

@@ -43,7 +43,7 @@ class TestCountsComeFromTheLogs:
         assert n["merged_pairs"] == len(merged) == 767 and n["merged_players"] == len({r["bsnpr_id"] for r in merged}) == 130
         assert sum(n["merged_by_season"].values()) == 767 and min(n["merged_by_season"]) == "1980" and max(n["merged_by_season"]) == "2006"
         assert n["dropped_rows"] == len(_csv("interim", "player_merge_dropped_rows.csv")) == 4
-        assert n["decisions"] == len(dq["decisions"]) == 5 and n["tombstones"] == len(_csv("clean", "player_id_tombstones.csv")) == 4
+        assert n["decisions"] == len(dq["decisions"]) == 6 and n["tombstones"] == len(_csv("clean", "player_id_tombstones.csv")) == 7
         assert n["dob_open"] == len(dq["dob_open"]) == len(_csv("interim", "jugador05_dob_conflicts.csv")) == 5
         assert (n["dob_corrections"], n["dob_corrections_high"], n["dob_corrections_low"]) == (10, 9, 1) == (len(corrections), 9, 1)
 
@@ -112,11 +112,11 @@ class TestOnlyRecordedFactsAndSpanishText:
         assert text["D-ID-004"] == ("Los IDs 35 y 273 aparecen juntos en 20 juegos de Santurce (2001-03), con camisetas distintas "
                                     "(10 y 7) y minutos distintos. Son personas distintas y no se unen.")
 
-    def test_only_the_five_recorded_decisions_are_published(self, dq):
+    def test_only_the_six_recorded_decisions_are_published(self, dq):
         assert [(d["id"], d["kind"], d["ids"], d["survivor_id"]) for d in dq["decisions"]] == [
             ("D-ID-001", "merge", [73, 74], 74), ("D-ID-002", "merge", [951, 952], 952),
             ("D-ID-003", "merge", [24, 35], 35), ("D-ID-004", "not_same", [35, 273], None),
-            ("D-ID-005", "merge", [180, 194], 194)]
+            ("D-ID-005", "merge", [180, 194], 194), ("D-ID-006", "merge", [344, 345, 346, 347], 344)]
         assert set(dq) == {"schema_version", "counts", "conflicts", "decisions", "dob_open", "season_totals", "relabeled",
                       "foreign_rows"}   # no heuristic classes, no stub twins
 

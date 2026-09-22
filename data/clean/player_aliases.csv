@@ -2614,30 +2614,7 @@ bsnpr_id,alias,normalized_alias,alias_type,source
 344,"travieso pena, carmelo","travieso pena, carmelo",normalized,derived
 344,"Travieso Peña, Carmelo","travieso pena, carmelo",paternal_surname,derived
 344,"Travieso, Carmelo","travieso, carmelo",paternal_surname,derived
-345,"Travieso Peña, Carmelo","travieso pena, carmelo",canonical,derived
-345,"Travieso Peña, Carmelo","travieso pena, carmelo",enciclopedia,bsnpr
-345,Carmelo Travieso Peña,carmelo travieso pena,given_family_order,derived
-345,"Travieso Peña, C.","travieso pena, c",initial,derived
-345,"Travieso, C.","travieso, c",initial,derived
-345,"travieso pena, carmelo","travieso pena, carmelo",normalized,derived
-345,"Travieso Peña, Carmelo","travieso pena, carmelo",paternal_surname,derived
-345,"Travieso, Carmelo","travieso, carmelo",paternal_surname,derived
-346,"Travieso Peña, Carmelo","travieso pena, carmelo",canonical,derived
-346,"Travieso Peña, Carmelo","travieso pena, carmelo",enciclopedia,bsnpr
-346,Carmelo Travieso Peña,carmelo travieso pena,given_family_order,derived
-346,"Travieso Peña, C.","travieso pena, c",initial,derived
-346,"Travieso, C.","travieso, c",initial,derived
-346,"travieso pena, carmelo","travieso pena, carmelo",normalized,derived
-346,"Travieso Peña, Carmelo","travieso pena, carmelo",paternal_surname,derived
-346,"Travieso, Carmelo","travieso, carmelo",paternal_surname,derived
-347,"Travieso Peña, Carmelo","travieso pena, carmelo",canonical,derived
-347,"Travieso Peña, Carmelo","travieso pena, carmelo",enciclopedia,bsnpr
-347,Carmelo Travieso Peña,carmelo travieso pena,given_family_order,derived
-347,"Travieso Peña, C.","travieso pena, c",initial,derived
-347,"Travieso, C.","travieso, c",initial,derived
-347,"travieso pena, carmelo","travieso pena, carmelo",normalized,derived
-347,"Travieso Peña, Carmelo","travieso pena, carmelo",paternal_surname,derived
-347,"Travieso, Carmelo","travieso, carmelo",paternal_surname,derived
+344,"Travieso Peña, Carmelo","travieso pena, carmelo",merged_name,derived
 348,"Verdejo, Carmelo","verdejo, carmelo",canonical,derived
 348,"Verdejo, Carmelo","verdejo, carmelo",enciclopedia,bsnpr
 348,Carmelo Verdejo,carmelo verdejo,given_family_order,derived

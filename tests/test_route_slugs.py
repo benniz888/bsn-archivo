@@ -58,7 +58,7 @@ class TestUniqueUrls:
     def test_every_player_gets_its_own_url(self):
         players = load()
         by_url, by_id, _, _ = urls_for(players)
-        assert len(players) == 3329
+        assert len(players) == 3326
         assert len(by_url) == len(by_id) == len(players)
         assert all(by_url[by_id[p["id"]]] == p["id"] for p in players)
 
@@ -67,20 +67,25 @@ class TestUniqueUrls:
         _, by_id, groups, _ = urls_for(players)
         plain = set(groups)
         suffixed = [u for i, u in by_id.items() if u not in plain]
-        assert len(suffixed) == 61
+        # 61 before J16 A04 (2026-09-22): merging 345/346/347 into 344 (docs/specs/cluster_evidence_batch2.md)
+        # retired their 3 suffixed URLs, and their shared-name group (4 members) collapsed to 1 (344 alone),
+        # no longer "shared" at all -- see test_56_shared_slugs_hold_114_players.
+        assert len(suffixed) == 58
         assert all(re.search(r"-\d+$", u) for u in suffixed)
 
-    def test_57_shared_slugs_hold_118_players(self):
+    def test_56_shared_slugs_hold_114_players(self):
         _, _, groups, _ = urls_for(load())
         shared = {s: m for s, m in groups.items() if len(m) > 1}
-        assert len(shared) == 57 and sum(len(m) for m in shared.values()) == 118
+        assert len(shared) == 56 and sum(len(m) for m in shared.values()) == 114
 
-    def test_11_plain_urls_move_to_the_richest_member_and_46_stay(self):
+    def test_11_plain_urls_move_to_the_richest_member_and_45_stay(self):
         _, _, groups, owner = urls_for(load())
         shared = {s: m for s, m in groups.items() if len(m) > 1}
         moved = {s: owner[s] for s, m in shared.items() if owner[s] != min(p["id"] for p in m)}
         assert moved == CHANGED
-        assert sum(1 for s, m in shared.items() if owner[s] == min(p["id"] for p in m)) == 46
+        # "travieso-pena-carmelo" was one of the 46 that stayed (344 was already the lowest id, 344-347);
+        # J16 A04 (2026-09-22) removed the other three members, so it is no longer a shared group at all
+        assert sum(1 for s, m in shared.items() if owner[s] == min(p["id"] for p in m)) == 45
 
     def test_every_other_member_is_slug_dash_id(self):
         _, by_id, groups, owner = urls_for(load())
@@ -137,12 +142,18 @@ class TestRedirects:
         assert set(red["slugs"].values()) <= live and set(red["ids"].values()) <= live
         assert not (set(map(int, red["ids"])) & live)          # a retired id is never a live one
 
-    def test_the_four_merges_redirect_their_old_urls(self):
+    def test_the_seven_retired_ids_redirect_their_old_urls(self):
         red = json.loads(REDIRECTS.read_text(encoding="utf-8"))
-        assert red["ids"] == {"24": 35, "73": 74, "951": 952, "180": 194}
+        assert red["ids"] == {"24": 35, "73": 74, "951": 952, "180": 194,
+                              "345": 344, "346": 344, "347": 344}
         assert red["slugs"] == {"arroyo-alberto": 35, "arroyo-alberto-24": 35, "cruz-alvin": 74,
                                 "cruz-alvin-73": 74, "lopez-ivan": 952, "lopez-ivan-951": 952,
-                                "gonzalez-arroyo-antonio": 194, "gonzalez-arroyo-antonio-180": 194}
+                                "gonzalez-arroyo-antonio": 194, "gonzalez-arroyo-antonio-180": 194,
+                                # 345/346/347 (J16 A04) share 344's exact name, so only their -id
+                                # forms redirect; the bare "travieso-pena-carmelo" is 344's own live
+                                # URL and is not in this map (build_player_redirects skips it)
+                                "travieso-pena-carmelo-345": 344, "travieso-pena-carmelo-346": 344,
+                                "travieso-pena-carmelo-347": 344}
 
     def test_the_build_slug_port_matches_the_app_slug(self):
         from src import build_web_data as b

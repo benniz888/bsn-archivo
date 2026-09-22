@@ -271,18 +271,27 @@ def _slug(s: str) -> str:
 def build_player_redirects() -> Path:
     """web/data/index/player_redirects.json: where the site sends a retired player id or an old player URL.
     Built from player_id_tombstones.csv. `ids` maps a retired id to its survivor; `slugs` maps the retired
-    player's old plain slug and its slug-id form to the survivor. A key that a live player could hold is an
-    error: the site tries live slugs first, so a clash would hide the redirect and mislead a reader."""
+    player's old plain slug and its slug-id form to the survivor. A retired id whose own name-derived slug is
+    identical to its survivor's current live slug needs no redirect for that key: the live route already
+    serves it (this happens when several retired ids shared the survivor's exact canonical name, e.g. J16
+    A04). The `-id` suffixed form is unaffected -- that URL is unique to the retired id and still needs to
+    redirect. A key that still collides with some OTHER live player's slug is an error: the site tries live
+    slugs first, so a clash would hide the redirect and mislead a reader."""
     live: set[str] = set()
+    slug_of: dict[str, str] = {}
     for r in _read("players_canonical.csv"):
         s = _slug(r["canonical_name"])
         live |= {s, f"{s}-{r['bsnpr_id']}"}
+        slug_of[r["bsnpr_id"]] = s
     ids: dict[str, int] = {}
     slugs: dict[str, int] = {}
     for t in _read("player_id_tombstones.csv"):
         ids[t["retired_id"]] = int(t["survivor_id"])
         base = _slug(t["retired_name"])
+        survivor_slug = slug_of.get(t["survivor_id"])
         for key in (base, f"{base}-{t['retired_id']}"):
+            if key == survivor_slug:
+                continue  # the retired id's old bare URL is identical to the survivor's own; nothing to redirect
             if key in live:
                 sys.exit(f"! player_redirects: {key!r} (retired id {t['retired_id']}) is also a live player's slug")
             slugs[key] = int(t["survivor_id"])
