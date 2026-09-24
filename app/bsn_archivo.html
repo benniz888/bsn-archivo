@@ -4652,16 +4652,22 @@ const _LEADER_CAT_ES={scoring:'anotación',rebounds:'rebotes',assists:'asistenci
    Fetched on demand, by this view or by a player page; when it cannot be fetched the player page just
    shows no marker and the totals stay as they were.
    ============================================================ */
-let DQ=null, DQ_IDX=null, DQ_T=null, DQ_SORT={sort:0,dir:1}, DQ_FILTER={q:'',season:''};
+let DQ=null, DQ_IDX=null, DISPUTE_IDX=null, DISPUTED_IDS=null, DQ_T=null, DQ_SORT={sort:0,dir:1}, DQ_FILTER={q:'',season:''};
 async function ensureDQ(fresh){
   if(DQ) return DQ;
   const d=await DATA.get('index/data_quality.json',fresh);
   if(!d || !Array.isArray(d.conflicts)) return null;
-  DQ=d; DQ_IDX=new Map();
+  DQ=d; DQ_IDX=new Map(); DISPUTE_IDX=new Map(); DISPUTED_IDS=new Set();
   d.conflicts.forEach(c=>{
     const k=c.id+'|'+c.season+'|'+c.franchise_id;
     if(!DQ_IDX.has(k)) DQ_IDX.set(k,[]);
     DQ_IDX.get(k).push(c);
+  });
+  (d.disputed_rows||[]).forEach(r=>{
+    DISPUTED_IDS.add(r.id);
+    const k=r.id+'|'+r.season+'|'+r.team;
+    if(!DISPUTE_IDX.has(k)) DISPUTE_IDX.set(k,[]);
+    DISPUTE_IDX.get(k).push(r);
   });
   return DQ;
 }
@@ -4677,6 +4683,16 @@ function dqTag(c){
     +`ficha del jugador ${f(c.a.games)} JJ, ${f(c.a.points)} PTS · página jug05 ${f(c.b.games)} JJ, ${f(c.b.points)} PTS. `
     +'El archivo no escoge una: las dos filas quedan fuera de los totales.';
   return `<a class="tag" href="#archivo/calidad" title="${esc(tip)}">2 fuentes</a>`;
+}
+/* the disputed-row entry a career row belongs to (id+season+team+games+points), or null (J16 A05) */
+function disputeFlag(id,row){
+  const l=DISPUTE_IDX&&DISPUTE_IDX.get(Number(id)+'|'+row.season+'|'+row.team_raw); if(!l) return null;
+  return l.find(r=>r.games===row.games&&r.points===row.points)||null;
+}
+function disputeTag(){
+  const tip='La fecha de nacimiento en la ficha de este jugador (bsnpr.com) no es compatible con esta temporada. '
+    +'No sabemos cuál de los dos datos es el correcto. La fila se conserva, pero no cuenta en los totales de abajo.';
+  return `<a class="tag" href="#archivo/calidad" title="${esc(tip)}">No concuerda con la ficha</a>`;
 }
 function buildDQ(){
   const host=$('#dqBox'); if(host) host.innerHTML='<p class="note">Cargando…</p>';
@@ -4754,6 +4770,12 @@ function drawDQ(host,d){
     <p class="muted" style="font-size:var(--fs-2xs);margin:var(--sp-2) 0 0">Otras ${nf(c.dob_corrections)} fechas ya se corrigieron. En ${nf(c.dob_corrections_high)}, el registro de correcciones cita
       dos páginas de bsnpr.com (jug05 y jugador05) que respaldan la fecha nueva${c.dob_corrections_low?`; en ${nf(c.dob_corrections_low)}, la fecha anterior era imposible y solo jugador05 da una plausible (confianza baja)`:''}.</p>
 
+    <h4 class="sub">Temporadas que no concuerdan con la ficha</h4>
+    <p class="lede">${c.disputed_career_rows===1
+      ?'1 fila de temporada no es compatible con la fecha de nacimiento en la misma ficha de bsnpr.com. El archivo conserva la fila, pero la excluye de los totales; no sabemos cuál de los dos datos es el correcto.'
+      :`${nf(c.disputed_career_rows)} filas de temporada no son compatibles con la fecha de nacimiento en la misma ficha de bsnpr.com. El archivo conserva las filas, pero las excluye de los totales; no sabemos cuál de los dos datos es el correcto.`}</p>
+    <div id="dqDisputed" style="margin-top:var(--sp-3)"></div>
+
     <h4 class="sub">Cómo decidimos</h4>
     <ul style="margin:var(--sp-2) 0 0;padding-left:var(--sp-5);line-height:1.6;max-width:70ch">
       <li>Nunca unimos a dos jugadores solo por el nombre.</li>
@@ -4770,6 +4792,14 @@ function drawDQ(host,d){
   ],d.dob_open.map(x=>[x.name,x.canonical,x.jugador05,x.id]),
     {file:'bsn_fechas_nacimiento_sin_resolver',sort:0,dir:1,
      csvHead:['ID','Jugador','Valor en el archivo (M/D/AAAA)','Valor en jugador05 (M/D/AAAA)'],csvRow:r=>[r[3],r[0],r[1],r[2]]});
+  buildTable($('#dqDisputed'),[
+    {label:'Jugador',wide:true,render:(v,r)=>btn(r[5],v)},
+    {label:'Año',num:true,render:(v,r)=>`<button style="background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer" onclick="openArchivePlayer(${r[5]},${JSON.stringify(r[0]).replace(/"/g,'&quot;')},${v})">${v}</button>`},
+    {label:'Equipo'},{label:'JJ',num:true},{label:'PTS',num:true}
+  ],d.disputed_rows.map(x=>[x.name,x.season,x.team,x.games,x.points,x.id]),
+    {file:'bsn_temporadas_sin_concordar_ficha',sort:1,dir:1,
+     csvHead:['ID','Jugador','Temporada','Equipo','JJ','PTS','Captura'],
+     csvRow:r=>[r[5],r[0],r[1],r[2],r[3],r[4],d.disputed_rows.find(x=>x.id===r[5]&&x.season===r[1]).url]});
 }
 function drawDQTable(){
   const host=$('#dqTable'); if(!host||!DQ) return;
@@ -4815,7 +4845,10 @@ async function loadPlayerExtra(name,idHint,season){
 
   let h='';
   const b=d.birth||{}, top=[];
-  if(b.date) top.push('n. '+esc(b.date)+(b.city?' · '+esc(b.city):''));
+  /* J16 A05: a player with a disputed career row gets an explicit attribution on the DOB itself -- it is
+     never called verified, since it has one source family and the ages shown for it are derived, not stated. */
+  const dobDisputed=DISPUTED_IDS&&DISPUTED_IDS.has(Number(id));
+  if(b.date) top.push('n. '+esc(b.date)+(dobDisputed?' (según bsnpr.com)':'')+(b.city?' · '+esc(b.city):''));
   if(d.position) top.push(esc(d.position));
   if(d.nationality && d.nationality!=='Puerto Rico') top.push(esc(d.nationality));
   if(top.length) h+=`<div class="muted" style="font-size:var(--fs-xs)">${top.join(' · ')}</div>`;
@@ -4840,12 +4873,15 @@ async function loadPlayerExtra(name,idHint,season){
   }
   if(car.length){
     /* rows the archive holds twice with different figures (Calidad de datos): both rows stay in the table,
-       marked, and both stay out of the totals below; the archive does not pick one. */
+       marked, and both stay out of the totals below; the archive does not pick one. Same for a row that
+       conflicts with the player's own birth_date (J16 A05): it stays, is marked, and drops out of totals too. */
     const fl=car.map(c=>dqFlag(id,c));
+    const dfl=car.map(c=>disputeFlag(id,c));
     const nConf=new Set(fl.filter(Boolean)).size;
+    const nDisp=new Set(dfl.filter(Boolean)).size;
     let tp=0,tg=0; const sea=new Set();
-    car.forEach((c,i)=>{ if(fl[i]) return; if(c.points!=null)tp+=c.points; if(c.games!=null)tg+=c.games; if(c.season)sea.add(c.season); });
-    const yrs=car.filter((c,i)=>!fl[i]).map(c=>c.season).filter(Boolean);
+    car.forEach((c,i)=>{ if(fl[i]||dfl[i]) return; if(c.points!=null)tp+=c.points; if(c.games!=null)tg+=c.games; if(c.season)sea.add(c.season); });
+    const yrs=car.filter((c,i)=>!fl[i]&&!dfl[i]).map(c=>c.season).filter(Boolean);
     const lo=yrs.length?Math.min(...yrs):null, hi=yrs.length?Math.max(...yrs):null;
     h+='<div class="note" style="margin-top:var(--sp-2_5)">Temporada por temporada <span class="dim" style="font-weight:400">— marca 2 o 3 para comparar</span></div>'
       +'<div class="tblwrap"><table><thead><tr><th></th><th>Año</th><th>Equipo</th><th class="num">JJ</th><th class="num">PTS</th></tr></thead><tbody>'
@@ -4854,7 +4890,7 @@ async function loadPlayerExtra(name,idHint,season){
         const team=(ak&&F[ak])
           ? `<button class="chip" style="padding:1px 7px" onclick="showTeam('${ak}')">${esc(F[ak].name)}</button>`
           : esc(c.team_raw||'—');
-        const tag=fl[i]?dqTag(fl[i]):'';
+        const tag=(fl[i]?dqTag(fl[i]):'')+(dfl[i]?disputeTag():'');
         const yr=c.season
           ? `<button style="background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer" onclick="showPlayer(${JSON.stringify(name).replace(/"/g,'&quot;')},${id},${c.season})">${c.season}</button>`
           : '—';
@@ -4863,13 +4899,15 @@ async function loadPlayerExtra(name,idHint,season){
       }).join('')
       +'</tbody></table></div>'
       +'<div id="seasonCmpPanel"></div>';
-    if(tp||tg||nConf)
+    if(tp||tg||nConf||nDisp)
       h+=`<div class="muted" style="font-size:var(--fs-2xs);margin-top:6px">`
         +((tp||tg)?`Totales del archivo: `
         +`${tp.toLocaleString('es-PR')} puntos en ${tg.toLocaleString('es-PR')} juegos · `
         +`${sea.size} temporada${sea.size===1?'':'s'}${lo?` (${lo}–${hi})`:''}. `
         +`Serie regular; suma de la tabla por temporada de bsnpr.com, no incluye playoffs.`:'')
         +(nConf?` Totales sin ${nConf} temporada${nConf===1?'':'s'} con fuentes en conflicto `
+        +`(<a href="#archivo/calidad">ver Calidad de datos</a>).`:'')
+        +(nDisp?` Totales sin ${nDisp} temporada${nDisp===1?'':'s'} con la fecha de nacimiento en conflicto `
         +`(<a href="#archivo/calidad">ver Calidad de datos</a>).`:'')+`</div>`;
   }else{
     h+=`<div class="note" style="margin-top:var(--sp-2_5)">Sin estadísticas por temporada en el archivo `

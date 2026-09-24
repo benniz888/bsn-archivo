@@ -102,6 +102,18 @@ class TestUniqueUrls:
         assert players[2738]["birth_year"] and not players[402]["birth_year"]
         assert players[402]["career_seasons"] == players[2738]["career_seasons"] == 0
 
+    def test_721_keeps_the_plain_slug_on_the_id_tiebreak_despite_zero_career_seasons(self):
+        # J16 A05: 721's 5 career rows are all disputed against his own birth_date, so
+        # career_seasons dropped from 5 to 0 (build_players_index) -- now tied with 722's own 0.
+        # birth_year also ties (both 1980), so this falls all the way to the id tiebreak (721 < 722).
+        # Pinned here because a route/redirect change for 721 would be a stop condition, not a silent fix.
+        players = {p["id"]: p for p in load()}
+        assert players[721]["career_seasons"] == players[722]["career_seasons"] == 0
+        assert players[721]["birth_year"] == players[722]["birth_year"] == 1980
+        by_url, by_id, groups, owner = urls_for(load())
+        assert owner["llovet-ayala-francisco"] == 721
+        assert by_id[721] == "llovet-ayala-francisco" and by_id[722] == "llovet-ayala-francisco-722"
+
 
 def _pool_slugs():
     """Slugs of the curated names written in the app file. A subset of the runtime pool (it is assembled

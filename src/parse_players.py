@@ -616,6 +616,35 @@ FOREIGN_LOG_FILE = "jug05_foreign_rows.csv"
 FOREIGN_LOG_COLUMNS = ["bsnpr_id", "season", "team_raw", "games", "points", "source_url", "capture_date",
                        "retrieved_at", "owner_id", "owner_name", "evidence", "evidence_es"]
 
+DISPUTED_ROWS_FILE = "disputed_career_rows.csv"
+
+
+def load_disputed_rows(interim_dir=None) -> list[dict]:
+    """Hand-curated list of career rows that conflict with the player's OWN birth_date on the same bsnpr.com
+    page (data/interim/disputed_career_rows.csv, evidence in docs/specs/cluster_evidence_a05.md). Unlike a
+    foreign row, a disputed row is not known to belong to anyone else -- it stays in player_career_seasons.csv
+    untouched; the app marks it and drops it from the player's totals, and neither side is called wrong.
+    [] when the file is absent."""
+    path = (interim_dir or INTERIM_DIR) / DISPUTED_ROWS_FILE
+    if not path.exists():
+        return []
+    with path.open(encoding="utf-8", newline="") as fh:
+        return list(csv.DictReader(fh))
+
+
+def check_disputed_rows(career: list[dict], disputed: list[dict]) -> list[str]:
+    """Every listed row must still exactly match one row of `career` (bsnpr_id, season, team_raw, games,
+    points, source_url). The list only flags rows for display -- it never edits or removes one -- so a stale
+    entry (the underlying row changed shape, or is gone) is reported, not silently ignored."""
+    have = {(r["bsnpr_id"], str(r["season"]), r["team_raw"], str(r["games"]), str(r["points"]), r["source_url"])
+            for r in career}
+    problems = []
+    for d in disputed:
+        key = (d["bsnpr_id"], str(d["season"]), d["team_raw"], str(d["games"]), str(d["points"]), d["source_url"])
+        if key not in have:
+            problems.append(f"disputed_career_rows: {d['bsnpr_id']}/{d['season']} does not match any career row")
+    return problems
+
 
 def load_foreign_rows(interim_dir=None) -> list[dict]:
     """The hand-curated list of jug05 rows that show ANOTHER player's line (data/interim/jug05_foreign_lines.csv,
@@ -1630,6 +1659,9 @@ def main() -> int:
     aliases = build_aliases(canon, enc)   # after minting, so jug05 rows get aliases
     seed_historic_spans(canon, aliases)   # PHASE_3I — title-attested career spans
     mapped, review = build_id_map(canon, aliases, career)
+    disputed_problems = check_disputed_rows(career, load_disputed_rows())   # J16 A05 — flagged, not dropped
+    if disputed_problems:
+        sys.exit("! " + "\n! ".join(disputed_problems))
 
     _write_csv(CLEAN_DIR / "players_canonical.csv",
                sorted(canon, key=lambda c: int(c["bsnpr_id"])), [

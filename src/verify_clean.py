@@ -647,6 +647,18 @@ def verify_data_quality(c: Checker, web, manifest) -> None:
             "data_quality: open birth-date conflicts equal jugador05_dob_conflicts.csv")
     c.check(n["dob_corrections"] == len(logs["dob_fix"]) == n["dob_corrections_high"] + n["dob_corrections_low"],
             "data_quality: birth-date corrections equal player_dob_overrides.csv (high + low)")
+    disputed_log = _read_interim("disputed_career_rows.csv")
+    c.check(n["disputed_career_rows"] == len(dq["disputed_rows"]) == len(disputed_log),
+            "data_quality: disputed career rows equal the rows of disputed_career_rows.csv")
+    bad_d = 0
+    for t in dq["disputed_rows"]:
+        pf = web / "players" / f"{t['id']}.json"
+        pdata = json.loads(pf.read_text(encoding="utf-8")) if pf.exists() else {"career": [], "birth": {}}
+        stays = any((x["season"], x["team_raw"], x["games"], x["points"]) == (t["season"], t["team"], t["games"], t["points"])
+                    for x in pdata["career"])                                # unlike a foreign row, this one STAYS
+        bad_d += not (stays and pdata["birth"].get("date") and t["evidence"].strip()
+                      and t["url"].startswith("https://web.archive.org/web/"))
+    c.check(bad_d == 0, "data_quality: every disputed row still appears in its player's file and the player has a birth date", f"{bad_d} rows")
     c.check(n["decisions"] == len(dq["decisions"]) == sum(1 for d in _read("player_identity_decisions.csv")
                                                           if d["status"] == "applied"),
             "data_quality: decisions equal the applied rows of player_identity_decisions.csv")

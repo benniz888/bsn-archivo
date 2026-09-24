@@ -118,11 +118,12 @@ class TestOnlyRecordedFactsAndSpanishText:
             ("D-ID-003", "merge", [24, 35], 35), ("D-ID-004", "not_same", [35, 273], None),
             ("D-ID-005", "merge", [180, 194], 194), ("D-ID-006", "merge", [344, 345, 346, 347], 344)]
         assert set(dq) == {"schema_version", "counts", "conflicts", "decisions", "dob_open", "season_totals", "relabeled",
-                      "foreign_rows"}   # no heuristic classes, no stub twins
+                      "foreign_rows", "disputed_rows"}   # no heuristic classes, no stub twins
 
     def test_no_wikipedia_claim_or_url_and_never_the_word_error(self):
         text = DQ.read_text(encoding="utf-8")
         assert not re.search(r"wikipedia", text, re.I) and not re.search(r"\berror\b", text, re.I)
+        assert not re.search(r"equivocad", text, re.I)   # J16 A05: "no sabemos cuál es el correcto", not blame
         # a capture URL embeds the original bsnpr.com address; every URL must be an archive capture
         assert not re.findall(r'(?<!/)https?://(?!web\.archive\.org/web/)', text.replace("id_/http://", "id_/"))
 
@@ -170,10 +171,13 @@ class TestDigest:
         (tmp_path / "APP" / "f.csv").write_text("changed\n")
         assert bwd._source_digest(["f.csv"]) == d
 
-    def test_the_five_logs_exist_and_are_listed(self):
+    def test_the_nine_logs_exist_and_are_listed(self):
+        # J16 A05 (2026-09-24) added disputed_career_rows.csv, the ninth (was "the five", stale since before
+        # jug05_relabeled_rows.csv/jug05_foreign_rows.csv were added -- not renumbered again here either).
         assert bwd.DQ_INTERIM_LOGS == ["jug05_career_conflicts.csv", "jug05_career_merged.csv", "player_merge_dropped_rows.csv",
                                        "jugador05_dob_conflicts.csv", "player_dob_overrides.csv",
-                                       "jug05_season_totals.csv", "jug05_relabeled_rows.csv", "jug05_foreign_rows.csv"]
+                                       "jug05_season_totals.csv", "jug05_relabeled_rows.csv", "jug05_foreign_rows.csv",
+                                       "disputed_career_rows.csv"]
         assert all((REPO_ROOT / "data" / "interim" / n).exists() for n in bwd.DQ_INTERIM_LOGS)
 
 
@@ -194,12 +198,16 @@ class TestTheAppView:
         view = text[text.index('<h3 class="sec">Calidad de datos</h3>'):text.index('<h3 class="sec">Calendario y cobertura')]
         for s in (block, view):
             assert not re.search(r"\berror\b", s, re.I) and "wikipedia" not in s.lower()
+            assert not re.search(r"equivocad", s, re.I)   # J16 A05 wording: never assigns blame to either datum
 
     def test_totals_exclude_both_rows_of_a_conflicted_season_and_say_so(self):
         text, _ = self._block()
         assert "const fl=car.map(c=>dqFlag(id,c));" in text
-        assert "car.forEach((c,i)=>{ if(fl[i]) return; if(c.points!=null)tp+=c.points;" in text
+        # J16 A05: a row disputed against the player's own birth_date (dfl) drops out of totals the same way
+        assert "const dfl=car.map(c=>disputeFlag(id,c));" in text
+        assert "car.forEach((c,i)=>{ if(fl[i]||dfl[i]) return; if(c.points!=null)tp+=c.points;" in text
         assert "Totales sin ${nConf} temporada${nConf===1?'':'s'} con fuentes en conflicto" in text
+        assert "Totales sin ${nDisp} temporada${nDisp===1?'':'s'} con la fecha de nacimiento en conflicto" in text
         assert "ver Calidad de datos" in text
         assert "const [d]=await Promise.all([DATA.get('players/'+id+'.json'), ensureDQ()]);" in text
 
@@ -281,4 +289,107 @@ class TestForeignRowsNote:
                 "jug05 mostraba la línea de otro jugador. Las quitamos de la ficha y de los totales y publicamos el registro. "
                 "No podemos detectar los casos cuyo dueño no tiene captura.") in text
         assert "c.foreign_rows?" in text
+
+
+class TestDisputedCareerRowsNote:
+    """A career row that conflicts with the player's OWN birth_date on the same bsnpr.com page (J16 A05,
+    docs/specs/cluster_evidence_a05.md). Unlike a foreign row (known to belong to someone else, dropped) or a
+    stat conflict (two DIFFERING rows for one season, both dropped), this is one row, no known owner: it stays
+    on the player's page, marked, and only drops out of the totals -- neither datum is called wrong."""
+
+    def _block(self):
+        text = APP.read_text(encoding="utf-8")
+        return text, text[text.index("CALIDAD DE DATOS — #archivo/calidad"):text.index("async function loadPlayerExtra(")]
+
+    def test_the_counts_and_the_published_rows(self, dq):
+        n = dq["counts"]
+        assert n["disputed_career_rows"] == len(dq["disputed_rows"]) == len(_csv("interim", "disputed_career_rows.csv")) == 5
+        assert {(r["id"], r["season"], r["team"], r["games"], r["points"]) for r in dq["disputed_rows"]} == {
+            (721, 1965, "Capitanes, Arecibo", 13, 32), (721, 1966, "Capitanes, Arecibo", 10, 12),
+            (721, 1967, "Capitanes, Arecibo", 18, 44), (721, 1968, "Capitanes, Arecibo", 10, 12),
+            (721, 1969, "Capitanes, Arecibo", 16, 74)}
+        assert {r["id"] for r in dq["disputed_rows"]} == {721}   # 722 has no career rows to flag
+        assert all(r["url"].startswith("https://web.archive.org/web/") and r["evidence"].strip() for r in dq["disputed_rows"])
+
+    def test_every_disputed_row_stays_on_the_players_own_page(self, dq):
+        for r in dq["disputed_rows"]:
+            mine = [(x["season"], x["team_raw"], x["games"], x["points"]) for x in _player(r["id"])["career"]]
+            assert (r["season"], r["team"], r["games"], r["points"]) in mine   # unlike a foreign row: NOT gone
+
+    def test_players_index_excludes_the_disputed_seasons_for_721_only(self, dq):
+        players = {p["id"]: p for p in json.loads((WEB / "index" / "players.json").read_text(encoding="utf-8"))}
+        p721 = players[721]
+        assert (p721["first_season"], p721["last_season"], p721["n_seasons"], p721["career_seasons"]) == (None, None, 0, 0)
+        assert p721["has_profile"] is True and p721["position"] == "Delantero" and p721["birth_year"] == 1980
+        # 721 is the ONLY player this touches -- everyone else's index row is untouched by this mechanism
+        disputed_ids = {r["id"] for r in dq["disputed_rows"]}
+        assert disputed_ids == {721}
+
+    def test_the_flagged_player_has_a_birth_date(self, dq):
+        for pid in {r["id"] for r in dq["disputed_rows"]}:
+            assert _player(pid)["birth"]["date"]
+
+    def test_the_row_tag_and_tooltip_are_the_approved_wording(self):
+        # disputeTag() lives with dqFlag/dqTag, and the season table with loadPlayerExtra -- both outside the
+        # drawDQ block this file's _block() slices, so this checks the whole app text, like the JSON-side test
+        text = APP.read_text(encoding="utf-8")
+        assert "No concuerda con la ficha" in text
+        # disputeTag() writes the tooltip as two concatenated JS string literals -- checked as they appear in
+        # source; joined (dropping the trailing/leading quote+plus), they read exactly as the owner approved
+        part1 = "La fecha de nacimiento en la ficha de este jugador (bsnpr.com) no es compatible con esta temporada. "
+        part2 = "No sabemos cuál de los dos datos es el correcto. La fila se conserva, pero no cuenta en los totales de abajo."
+        assert f"'{part1}'" in text and f"+'{part2}';" in text
+        assert part1 + part2 == ("La fecha de nacimiento en la ficha de este jugador (bsnpr.com) no es compatible con esta "
+                                  "temporada. No sabemos cuál de los dos datos es el correcto. La fila se conserva, pero no "
+                                  "cuenta en los totales de abajo.")   # the exact approved wording, verbatim
+
+    def test_the_section_title_is_approved_and_distinct_from_the_dob_section(self):
+        _, block = self._block()
+        title = "Temporadas que no concuerdan con la ficha"
+        assert f'<h4 class="sub">{title}</h4>' in block
+        assert '<h4 class="sub">Fechas de nacimiento</h4>' in block   # the other section, unrelated mechanism
+        assert not title.startswith("Fechas de nacimiento")   # step 0b #4: must not read as its subsection
+
+    def test_the_footnote_clause_and_the_lede_are_count_driven_with_correct_plural(self):
+        text = APP.read_text(encoding="utf-8")   # footnote is in loadPlayerExtra; lede is in drawDQ -- check both via the full file
+        _, block = self._block()
+        # the JS ternary itself, pinned so both the singular and the plural branch are covered structurally
+        assert "Totales sin ${nDisp} temporada${nDisp===1?'':'s'} con la fecha de nacimiento en conflicto" in text
+        assert "c.disputed_career_rows===1" in block
+
+        def footnote(n):
+            return f"Totales sin {n} temporada{'' if n == 1 else 's'} con la fecha de nacimiento en conflicto (ver Calidad de datos)."
+
+        def lede(n):
+            if n == 1:
+                return ("1 fila de temporada no es compatible con la fecha de nacimiento en la misma ficha de "
+                        "bsnpr.com. El archivo conserva la fila, pero la excluye de los totales; no sabemos cuál "
+                        "de los dos datos es el correcto.")
+            return (f"{n} filas de temporada no son compatibles con la fecha de nacimiento en la misma ficha de "
+                    f"bsnpr.com. El archivo conserva las filas, pero las excluye de los totales; no sabemos cuál "
+                    f"de los dos datos es el correcto.")
+
+        assert footnote(1) == "Totales sin 1 temporada con la fecha de nacimiento en conflicto (ver Calidad de datos)."
+        assert footnote(5) == "Totales sin 5 temporadas con la fecha de nacimiento en conflicto (ver Calidad de datos)."
+        assert lede(1) == ("1 fila de temporada no es compatible con la fecha de nacimiento en la misma ficha de "
+                            "bsnpr.com. El archivo conserva la fila, pero la excluye de los totales; no sabemos "
+                            "cuál de los dos datos es el correcto.")
+        assert lede(5) == ("5 filas de temporada no son compatibles con la fecha de nacimiento en la misma ficha "
+                            "de bsnpr.com. El archivo conserva las filas, pero las excluye de los totales; no "
+                            "sabemos cuál de los dos datos es el correcto.")
+        # the live data currently renders the plural branch (5 rows) -- confirm the JS's own literal text matches
+        assert ("filas de temporada no son compatibles con la fecha de nacimiento en la misma ficha de bsnpr.com. "
+                "El archivo conserva las filas, pero las excluye de los totales; no sabemos cuál de los dos datos "
+                "es el correcto.") in block
+
+    def test_the_bio_line_is_unchanged_except_for_the_appended_attribution(self):
+        text = APP.read_text(encoding="utf-8")
+        assert "const dobDisputed=DISPUTED_IDS&&DISPUTED_IDS.has(Number(id));" in text
+        assert ("if(b.date) top.push('n. '+esc(b.date)+(dobDisputed?' (según bsnpr.com)':'')"
+                "+(b.city?' · '+esc(b.city):''));") in text
+
+    def test_disputed_ids_and_dispute_idx_are_built_alongside_dq_idx(self):
+        text = APP.read_text(encoding="utf-8")
+        assert "DISPUTE_IDX=new Map(); DISPUTED_IDS=new Set();" in text
+        assert "(d.disputed_rows||[]).forEach(r=>{" in text
 

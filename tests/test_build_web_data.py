@@ -502,6 +502,72 @@ class TestPlayerRedirects:
             b.build_player_redirects()
 
 
+class TestDisputedSeasonsExcludedFromIndex:
+    """build_players_index() with synthetic data (J16 A05): a season flagged in disputed_career_rows.csv
+    doesn't count toward first_season/last_season/n_seasons/career_seasons -- but only for a player who has
+    at least one flagged row. Everyone else keeps players_canonical.csv's own values, untouched."""
+
+    CANON_FIELDS = ["bsnpr_id", "canonical_name", "normalized_name", "birth_year", "nationality", "position",
+                    "first_season", "last_season", "n_seasons", "has_profile"]
+
+    def _write(self, tmp_path, canon_rows, disputed_rows, monkeypatch):
+        monkeypatch.setattr(b, "CLEAN", tmp_path)
+        monkeypatch.setattr(b, "INTERIM", tmp_path / "interim")
+        monkeypatch.setattr(b, "WEB", tmp_path / "web")
+        (tmp_path / "web" / "index").mkdir(parents=True)
+        (tmp_path / "interim").mkdir()
+        with (tmp_path / "players_canonical.csv").open("w", encoding="utf-8", newline="") as fh:
+            w = csv.DictWriter(fh, fieldnames=self.CANON_FIELDS); w.writeheader(); w.writerows(canon_rows)
+        with (tmp_path / "interim" / "disputed_career_rows.csv").open("w", encoding="utf-8", newline="") as fh:
+            w = csv.DictWriter(fh, fieldnames=["bsnpr_id", "season"]); w.writeheader(); w.writerows(disputed_rows)
+
+    def _row(self, pid, name, birth_year, first, last, n, nationality="Puerto Rico", position="Delantero"):
+        return {"bsnpr_id": pid, "canonical_name": name, "normalized_name": name.lower(), "birth_year": birth_year,
+                "nationality": nationality, "position": position, "first_season": first, "last_season": last,
+                "n_seasons": n, "has_profile": "yes"}
+
+    def test_a_player_with_every_row_disputed_gets_no_span_and_zero_counts(self, tmp_path, monkeypatch):
+        # mirrors the real id 721: 5 rows, 1965-1969, all flagged
+        career = {"1": [{"season": s} for s in (1965, 1966, 1967, 1968, 1969)]}
+        self._write(tmp_path, [self._row("1", "Test, Uno", 1980, "1965", "1969", "5")],
+                    [{"bsnpr_id": "1", "season": s} for s in (1965, 1966, 1967, 1968, 1969)], monkeypatch)
+        p = json.loads(b.build_players_index(career).read_text())[0]
+        assert (p["first_season"], p["last_season"], p["n_seasons"], p["career_seasons"]) == (None, None, 0, 0)
+        assert p["birth_year"] == 1980 and p["position"] == "Delantero"   # untouched fields stay as-is
+
+    def test_a_player_with_flagged_and_unflagged_rows_keeps_only_the_unflagged_in_the_span(self, tmp_path, monkeypatch):
+        career = {"2": [{"season": 2000}, {"season": 2001}, {"season": 2002}]}
+        self._write(tmp_path, [self._row("2", "Test, Dos", 1980, "2000", "2002", "3")],
+                    [{"bsnpr_id": "2", "season": 2000}, {"bsnpr_id": "2", "season": 2001}], monkeypatch)
+        p = json.loads(b.build_players_index(career).read_text())[0]
+        assert (p["first_season"], p["last_season"], p["n_seasons"], p["career_seasons"]) == (2002, 2002, 1, 1)
+
+    def test_an_unflagged_player_is_completely_unchanged(self, tmp_path, monkeypatch):
+        career = {"3": [{"season": 1990}, {"season": 1991}, {"season": 1992}]}
+        self._write(tmp_path, [self._row("3", "Test, Tres", 1970, "1990", "1992", "3")], [], monkeypatch)
+        p = json.loads(b.build_players_index(career).read_text())[0]
+        assert (p["first_season"], p["last_season"], p["n_seasons"], p["career_seasons"]) == (1990, 1992, 3, 3)
+
+    def test_a_players_canonical_field_that_disagrees_with_the_row_count_is_still_used_when_unflagged(self, tmp_path, monkeypatch):
+        # the free-typed n_seasons field can mismatch the real row count (build_players_index's own comment,
+        # confirmed on 251 real players) -- an UNFLAGGED player must still get the CSV's own value, not a
+        # recount, so this fix never narrows a span it wasn't asked to touch
+        career = {"4": [{"season": 1990}]}
+        self._write(tmp_path, [self._row("4", "Test, Cuatro", 1970, "1988", "1990", "5")], [], monkeypatch)
+        p = json.loads(b.build_players_index(career).read_text())[0]
+        assert (p["first_season"], p["last_season"], p["n_seasons"]) == (1988, 1990, 5)   # CSV values, not recomputed
+        assert p["career_seasons"] == 1                                                   # this one IS the row count, always
+
+    def test_disputed_seasons_helper_groups_by_id(self, tmp_path, monkeypatch):
+        # like every other DQ_INTERIM_LOGS file, disputed_career_rows.csv is always committed and expected
+        # to exist -- _read_interim has no "absent -> []" fallback, by the same convention as the rest.
+        monkeypatch.setattr(b, "INTERIM", tmp_path)
+        with (tmp_path / "disputed_career_rows.csv").open("w", encoding="utf-8", newline="") as fh:
+            w = csv.DictWriter(fh, fieldnames=["bsnpr_id", "season"])
+            w.writeheader(); w.writerows([{"bsnpr_id": "1", "season": "1965"}, {"bsnpr_id": "1", "season": "1966"}])
+        assert b._disputed_seasons() == {"1": {1965, 1966}}
+
+
 class TestHelpers:
     def test_norm(self):
         assert b._norm("SAN GERMAN") == b._norm("San Germán") == "san german"

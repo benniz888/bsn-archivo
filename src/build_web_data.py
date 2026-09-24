@@ -231,28 +231,57 @@ def build_seasons_index() -> Path:
     return WEB / "index" / "seasons.json"
 
 
+def _disputed_seasons() -> dict[str, set]:
+    """bsnpr_id -> the set of seasons (ints) flagged in disputed_career_rows.csv (J16 A05). Only a player
+    with at least one entry here has first_season/last_season/n_seasons/career_seasons recomputed below --
+    everyone else keeps players_canonical.csv's own values untouched, byte-identical to before this existed."""
+    out: dict[str, set] = {}
+    for r in _read_interim("disputed_career_rows.csv"):
+        out.setdefault(r["bsnpr_id"], set()).add(_int(r["season"]))
+    return out
+
+
 def build_players_index(career_rows_by_pid: dict[str, list[dict]]) -> Path:
+    disputed = _disputed_seasons()
     out = []
     for r in _read("players_canonical.csv"):
         pid = r["bsnpr_id"]
-        out.append({
-            "id": _int(pid),
-            "name": r["canonical_name"],
-            "norm": r["normalized_name"],
-            "first_season": _int(r["first_season"]),
-            "last_season": _int(r["last_season"]),
-            "position": r["position"] or None,
-            "birth_year": _int(r["birth_year"]),
-            "nationality": r["nationality"] or None,
-            "n_seasons": _int(r["n_seasons"]),
-            "has_profile": r["has_profile"] == "yes",
+        rows = career_rows_by_pid.get(pid, [])
+        flagged = disputed.get(pid)
+        if flagged:
+            # a season disputed against the player's own birth_date (J16 A05) doesn't count toward the
+            # span or the season tally -- the row stays on the player's own page (players/<id>.json's
+            # career[] is untouched), but nothing else treats it as real until the conflict is resolved.
+            # Only recomputes from actual career rows; a title-attested season with no row of its own
+            # (seed_historic_spans) is out of scope here and never applies to a disputed player today.
+            kept = [row for row in rows if row["season"] not in flagged]
+            seasons = sorted({row["season"] for row in kept})
+            first_season = seasons[0] if seasons else None
+            last_season = seasons[-1] if seasons else None
+            n_seasons = len(seasons)
+            career_seasons = len(kept)
+        else:
+            first_season, last_season = _int(r["first_season"]), _int(r["last_season"])
+            n_seasons = _int(r["n_seasons"])
             # derived from the SAME career[] rows web/data/players/<id>.json
             # gets (season_detail_spec.md addendum, backlog item 4) — unlike
             # `n_seasons` above (a free-typed players_canonical.csv field,
             # confirmed to mismatch the real row count on 251 players, 6 of
             # them >0 with zero actual rows), this is the one field a season
             # picker can trust to mean "there is really something to pick".
-            "career_seasons": len(career_rows_by_pid.get(pid, [])),
+            career_seasons = len(rows)
+        out.append({
+            "id": _int(pid),
+            "name": r["canonical_name"],
+            "norm": r["normalized_name"],
+            "first_season": first_season,
+            "last_season": last_season,
+            "position": r["position"] or None,
+            "birth_year": _int(r["birth_year"]),
+            "nationality": r["nationality"] or None,
+            "n_seasons": n_seasons,
+            "has_profile": r["has_profile"] == "yes",
+            "career_seasons": career_seasons,
         })
     out.sort(key=lambda p: p["id"])
     _jdump(out, WEB / "index" / "players.json")
@@ -301,7 +330,8 @@ def build_player_redirects() -> Path:
 
 DQ_INTERIM_LOGS = ["jug05_career_conflicts.csv", "jug05_career_merged.csv", "player_merge_dropped_rows.csv",
                    "jugador05_dob_conflicts.csv", "player_dob_overrides.csv",
-                   "jug05_season_totals.csv", "jug05_relabeled_rows.csv", "jug05_foreign_rows.csv"]
+                   "jug05_season_totals.csv", "jug05_relabeled_rows.csv", "jug05_foreign_rows.csv",
+                   "disputed_career_rows.csv"]
 
 
 def build_data_quality(career_rows_by_pid: dict[str, list[dict]]) -> Path:
@@ -383,6 +413,19 @@ def build_data_quality(career_rows_by_pid: dict[str, list[dict]]) -> Path:
                  "jugador05": r["jugador05_dob"]} for r in _read_interim("jugador05_dob_conflicts.csv")]
     corrections = _read_interim("player_dob_overrides.csv")
 
+    # career rows that conflict with the player's OWN birth_date on the same bsnpr.com page (J16 A05,
+    # disputed_career_rows.csv). Unlike foreign_rows, the row is NOT dropped from the player's file -- it
+    # stays, matched here only to confirm it still exists, so the app can mark it and drop it from totals.
+    disputed_rows = []
+    for r in _read_interim("disputed_career_rows.csv"):
+        pid, season = r["bsnpr_id"], int(r["season"])
+        g, p = _int(r["games"]), _int(r["points"])
+        if not any(c["season"] == season and c["games"] == g and c["points"] == p and c["team_raw"] == r["team_raw"]
+                   for c in career_rows_by_pid.get(pid, [])):
+            sys.exit(f"! data_quality: disputed row {pid}/{season} matches no career row in the player file")
+        disputed_rows.append({"id": int(pid), "name": names[pid], "season": season, "team": r["team_raw"],
+                              "games": g, "points": p, "url": r["source_url"], "evidence": r["evidence_es"]})
+
     out = {
         "schema_version": 1,
         "counts": {
@@ -403,6 +446,7 @@ def build_data_quality(career_rows_by_pid: dict[str, list[dict]]) -> Path:
             "dob_corrections": len(corrections),
             "dob_corrections_high": sum(1 for r in corrections if r["confidence"] == "high"),
             "dob_corrections_low": sum(1 for r in corrections if r["confidence"] == "low"),
+            "disputed_career_rows": len(disputed_rows),
         },
         "conflicts": conflicts,
         "decisions": decisions,
@@ -410,6 +454,7 @@ def build_data_quality(career_rows_by_pid: dict[str, list[dict]]) -> Path:
         "season_totals": season_totals,
         "relabeled": relabeled,
         "foreign_rows": foreign_rows,
+        "disputed_rows": disputed_rows,
     }
     _jdump(out, WEB / "index" / "data_quality.json")
     return WEB / "index" / "data_quality.json"
