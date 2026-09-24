@@ -6660,3 +6660,41 @@ Supersedes the "still unpushed" wording at the end of the previous block.
   the new call. 493 tests pass; `verify_clean.py`: 346,454 checks, 0 failed (unchanged -- no data
   touched). `app/bsn_archivo.html`/`web/index.html`: still byte-identical.
 - Staged, not committed. Not pushed.
+
+### PHASE_DOB_FORMAT_DEPLOY_LOG — deployed, live-verified (2026-09-24)
+- **Deployed.** Commits `e709d40` (app: show archive birth dates as unambiguous long dates) and
+  `a3deac6` (docs: log DOB format phase). Pushed `95e95d2..a3deac6`. Pages run `36029332293`, success.
+  **Digest unchanged** (app-only change, `app/bsn_archivo.html` is not a `SOURCES` input). Rollback
+  dry-run (scratch clone, revert of `e709d40`) applied with no conflicts; `web/` matched `origin/main`'s
+  `web/` byte for byte afterward.
+- **Live verification (Chromium + WebKit, 1000px + 390px, fresh contexts, `bsnarchivo.com`, plus a
+  Pacific/Auckland repeat for 721 and 578), all 6 configs identical.** Confirmed the live `index.html`
+  already had `fmtArchiveDob` (no cache-lag retry needed). 721: `n. 9 de mayo de 1980 (según
+  bsnpr.com) · Arecibo, Puerto Rico · Delantero`, 5 rows still tagged, `renderArchiveCard` header still
+  `Delantero` only. 152: `n. 31 de diciembre de 1952`. 578: `n. 29 de febrero de 1980 · Arecibo, Puerto
+  Rico · Escolta`. 194: `n. 7 de diciembre de 1959`. id 1 (no DOB): no header line, unchanged. Auckland
+  matched every other zone exactly. `#archivo/calidad`'s "Fechas de nacimiento" table: still raw values
+  with the "(formato M/D/AAAA)" note -- deliberately unchanged, confirmed. 0 console errors, 0 failed
+  requests, all 6 configs.
+- **Open finding, updated wording.** `sw.js`'s navigate handler calls plain `fetch(req)`, with the same
+  gap as `DATA.syncVersion()`: the browser's own HTTP cache (`Cache-Control: max-age=600` on both
+  `index.html` and `manifest.json`, confirmed live) can serve a stale response to either, for up to 10
+  minutes after a rebuild. Fix for both would be `{cache:'no-store'}` on the relevant `fetch()` calls in
+  `sw.js` and in `syncVersion()`; not built, both `web/sw.js` and the app's own `DATA` object are outside
+  this phase's edit scope.
+- **Open finding: 2 published texts still carry a raw M/D/YYYY date.** D-ID-006's `evidence_es`
+  ("fecha de nacimiento 5/9/1975") and `disputed_career_rows.csv`'s `evidence_es` for 721 ("nacimiento
+  5/9/1980"). Follow-up: rewrite from the canonical `birth_date` value directly, verify the rewrite
+  against `players_canonical.csv` before publishing, never retype the date by hand.
+- **Cross-check: hand-written dates on the other decision cards, against `players_canonical.csv`.**
+  D-ID-001 ("24 de abril de 1982") matches id 74's canonical `4/24/1982`, correct. D-ID-005 ("7 de
+  diciembre de 1959") matches id 194's canonical `12/7/1959`, correct. **D-ID-006 is wrong**: its
+  `evidence_es` says `5/9/1975`, but id 344's canonical `birth_date` is `9/5/1975` (September 5) -- the
+  Spanish text has the day and month transposed relative to the site's own M/D/YYYY convention (reads
+  as day-first, "5 de septiembre" if a reader assumes Spanish convention, but May 9 if read the way
+  every other date on the site is read). The English `evidence` field for the same decision already has
+  it right (`DOB 9/5/1975`) -- only the hand-typed Spanish text drifted. This is exactly the kind of
+  transcription error the "rewrite from canonical, never retype by hand" follow-up above is meant to
+  prevent; D-ID-006's `evidence_es` date needs the same fix as its independence-claim fix, next time
+  that card is touched. D-ID-002, D-ID-003 and D-ID-004 quote no date in `evidence_es` -- nothing to
+  cross-check there.
