@@ -6595,3 +6595,21 @@ Supersedes the "still unpushed" wording at the end of the previous block.
   `docs/specs/cluster_evidence_batch2.md` (its own A04 section, lines 122/124, left as originally
   written per that file's read-only convention).
 - Staged, not committed. Not pushed.
+
+### PHASE_D006_DEPLOY_LOG — D-ID-006 wording fix deployed, live-verified (2026-09-24)
+- **Deployed.** Commits `aed36a5` (data: D-ID-006 wording -- three bsnpr.com pages, not independent) and
+  `18982b1` (docs: log D-ID-006 wording correction). Pushed `e2dd3aa..18982b1`. Pages run `36026662147`,
+  success. Digest `9bc0d3657001`, confirmed live within seconds of the run finishing. Rollback dry-run
+  (scratch clone, revert of `aed36a5`) applied with no conflicts; `web/` matched `origin/main`'s `web/`
+  byte for byte afterward.
+- **Live verification (Chromium + WebKit, 1000px + 390px, fresh contexts, `bsnarchivo.com`), all 4
+  configs identical.** `#archivo/calidad`'s D-ID-006 card now reads "tres páginas de bsnpr.com ... Las
+  tres vienen de la misma fuente"; the word "independientes" no longer appears anywhere in the Calidad
+  de datos view. The other 5 decision cards (D-ID-001 through D-ID-005) checked individually -- same
+  headers, same content, same order, unchanged. 721 still shows its 5 tagged rows. 0 console errors, 0
+  failed requests, all 4 configs.
+- **Open-findings update.** Of the 5 open findings logged in PHASE_A05_DEPLOY_LOG: the Travieso Peña
+  "tres fuentes independientes" claim is now **RESOLVED** (fixed and deployed, this entry). The other 4
+  stay open as logged: the `_disputed_seasons()` same-season/different-team edge case, the recurring
+  GitHub Actions polling-script bug, the raw `M/D/YYYY` date-ambiguity proposal, and id 1947's citation
+  mismatch (A17 stays HELD).
