@@ -1,7 +1,8 @@
-"""PHASE_1_SPLIT STEP 0c proof. Right now, nothing has been split yet -- app_text() must return
-exactly what web/index.html already contains, and that must be byte-identical to
-`git show HEAD:app/bsn_archivo.html` on this branch. This is the harness's own self-test: every
-later test that switches from APP.read_text() to app_text() is only as trustworthy as this."""
+"""PHASE_1_SPLIT harness self-test. Through STEP 1, nothing had been split and app_text() was a
+no-op (proven then). STEP 2 moved <style> into web/css/main.css, so web/index.html on its own is
+no longer byte-identical to app/bsn_archivo.html BY DESIGN -- app_text() is what has to keep
+proving the underlying text is still the same, by splicing the linked file back in. Every later
+test that switched from APP.read_text() to app_text() is only as trustworthy as this file."""
 import subprocess
 
 from src.wayback_cdx import REPO_ROOT
@@ -15,13 +16,23 @@ def _head_app_html() -> bytes:
 
 
 class TestAppTextReconstructsTheOriginal:
-    def test_app_text_equals_web_index_html_today(self):
-        # today there is no <link rel=stylesheet> or <script src=...> yet, so app_text() is a no-op
-        assert app_text() == INDEX.read_text(encoding="utf-8")
+    def test_app_text_equals_app_bsn_archivo_html_byte_for_byte(self):
+        app_html = (REPO_ROOT / "app" / "bsn_archivo.html").read_bytes()
+        assert app_text().encode("utf-8") == app_html
 
     def test_app_text_equals_git_head_app_bsn_archivo_html_byte_for_byte(self):
         assert app_text().encode("utf-8") == _head_app_html()
 
-    def test_web_index_html_is_still_byte_identical_to_app_bsn_archivo_html(self):
+    def test_web_index_html_alone_no_longer_matches_app_bsn_archivo_html(self):
+        # STEP 2: this is now the EXPECTED state, not a drift bug -- index.html links css/main.css
+        # instead of inlining it. app_text() (checked above) is the thing that must still match;
+        # a raw index.html-vs-app.html compare is retired as a direct check, not just weakened.
         app_html = (REPO_ROOT / "app" / "bsn_archivo.html").read_bytes()
-        assert INDEX.read_bytes() == app_html
+        assert INDEX.read_bytes() != app_html
+
+    def test_app_text_actually_splices_something_in_not_a_silent_no_op(self):
+        # guards against the splice regex quietly matching zero tags and app_text() collapsing
+        # back to "just read index.html" without anyone noticing
+        assert app_text() != INDEX.read_text(encoding="utf-8")
+        assert '<link rel="stylesheet" href="css/main.css">' in INDEX.read_text(encoding="utf-8")
+        assert "<style>" not in INDEX.read_text(encoding="utf-8")

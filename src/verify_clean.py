@@ -695,13 +695,18 @@ def verify_web_data(c: Checker) -> None:
     import json
     web = REPO_ROOT / "web" / "data"
 
-    # 5G — the Pages site root is main:/web; web/index.html is a committed copy
-    # of the shell. Fail loudly if it drifts (edit the app, then `make site`).
+    # 5G — the Pages site root is main:/web. PHASE_1_SPLIT STEP 2: web/index.html now links
+    # web/css/main.css instead of inlining it, so a direct byte-compare against
+    # app/bsn_archivo.html no longer applies. app_text() reconstructs the pre-split text (splices
+    # each linked file back in, in document order) so this check still catches real drift during
+    # the split; replaced entirely once app/bsn_archivo.html becomes the archived pointer
+    # (step 11/12 of the split plan), at which point this whole check is retired.
     site_index = REPO_ROOT / "web" / "index.html"
     if site_index.exists():
+        from tests._app_text import app_text
         app_html = (REPO_ROOT / "app" / "bsn_archivo.html").read_bytes()
-        c.check(site_index.read_bytes() == app_html,
-                "web/index.html is byte-identical to app/bsn_archivo.html (run `make site`)")
+        c.check(app_text().encode("utf-8") == app_html,
+                "web/ (index.html + linked css/js) reconstructs byte-identical to app/bsn_archivo.html")
 
     manifest_path = web / "manifest.json"
     if not manifest_path.exists():

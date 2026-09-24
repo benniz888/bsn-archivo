@@ -316,10 +316,16 @@ class TestBuild:
         assert list(got) == sorted(got)   # deterministic key order
 
     def test_site_index_matches_shell(self):
+        # PHASE_1_SPLIT STEP 2: web/index.html links web/css/main.css instead of inlining it, so
+        # this compares the RECONSTRUCTED text (app_text() splices each linked file back in) to
+        # app/bsn_archivo.html -- same invariant as before, byte for byte, just not a raw file
+        # compare anymore. Replaced entirely once app/bsn_archivo.html becomes the archived
+        # pointer (step 11/12); this whole test is retired at that point, not just reworded again.
         idx = b.WEB.parent / "index.html"
         if not idx.exists():
             pytest.skip("web/index.html not built (make site)")
-        assert idx.read_bytes() == (b.APP / "bsn_archivo.html").read_bytes()
+        from tests._app_text import app_text
+        assert app_text().encode("utf-8") == (b.APP / "bsn_archivo.html").read_bytes()
         assert (b.WEB.parent / ".nojekyll").exists()
 
     def test_mvp_index(self):

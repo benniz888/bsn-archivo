@@ -221,7 +221,10 @@ class TestTheAppView:
         assert "MESES" not in text[text.index("function drawDQ("):text.index("function drawDQTable(")].replace("fmtLongDate", "")
 
     def test_the_web_copy_is_a_byte_copy(self):
-        assert (REPO_ROOT / "web" / "index.html").read_bytes() == APP.read_bytes()
+        # PHASE_1_SPLIT STEP 2: web/index.html links css/main.css instead of inlining it, so the
+        # reconstructed text (app_text()) is what has to match now, not the raw file.
+        from tests._app_text import app_text
+        assert app_text().encode("utf-8") == APP.read_bytes()
 
 
 class TestSeasonTotalsAndRelabelNotes:
