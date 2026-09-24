@@ -1,0 +1,282 @@
+{
+  "route": "tab:archivo",
+  "domHash": "548c1e517a6500e8127c6da1b3995866ee702cdffb401af682ce011b58a4542b",
+  "domText": "<section id=\"archivo\" role=\"tabpanel\" aria-labelledby=\"tab-archivo\" class=\"panel-enter\"><div class=\"panel\"><div class=\"phead\"><div class=\"tri\"></div><h1 class=\"big\">El archivo</h1><p class=\"lede\">Pregúntale directamente, o mira qué tiene, qué le falta y de dónde sale cada dato. Un archivo que esconde sus huecos vale menos que uno que los enseña.</p></div><div class=\"subnav\" role=\"tablist\" aria-label=\"Vistas de archivo\"><a href=\"#archivo\" data-view=\"__landing\" role=\"tab\" aria-current=\"true\">Resumen</a><a href=\"#archivo/preguntar\" data-view=\"preguntar\" role=\"tab\" aria-current=\"false\">Preguntar</a><a href=\"#archivo/constructor\" data-view=\"constructor\" role=\"tab\" aria-current=\"false\">A la medida</a><a href=\"#archivo/cobertura\" data-view=\"cobertura\" role=\"tab\" aria-current=\"false\">Cobertura y fuentes</a><a href=\"#archivo/calidad\" data-view=\"calidad\" role=\"tab\" aria-current=\"false\">Calidad de datos</a><a href=\"#archivo/calendario\" data-view=\"calendario\" role=\"tab\" aria-current=\"false\">Calendario</a><a href=\"#archivo/glosario\" data-view=\"glosario\" role=\"tab\" aria-current=\"false\">Glosario</a></div><div class=\"view\" data-view=\"__landing\" data-sec=\"archivo\"><div class=\"landing\"><div class=\"mega-feat\"><div class=\"fx\">Lo que este archivo no sabe</div><div class=\"ft\" style=\"margin-top:2px\">Antes de 2011 no hay estadística por temporada</div><div class=\"mf-viz\"><svg viewBox=\"0 0 180 24\" preserveAspectRatio=\"none\" aria-hidden=\"true\"><rect x=\"0.00\" y=\"19.20\" width=\"16.00\" height=\"4.80\" fill=\"currentColor\"></rect><rect x=\"18.00\" y=\"18.00\" width=\"16.00\" height=\"6.00\" fill=\"currentColor\"></rect><rect x=\"36.00\" y=\"16.80\" width=\"16.00\" height=\"7.20\" fill=\"currentColor\"></rect><rect x=\"54.00\" y=\"13.20\" width=\"16.00\" height=\"10.80\" fill=\"currentColor\"></rect><rect x=\"72.00\" y=\"12.00\" width=\"16.00\" height=\"12.00\" fill=\"currentColor\"></rect><rect x=\"90.00\" y=\"10.80\" width=\"16.00\" height=\"13.20\" fill=\"currentColor\"></rect><rect x=\"108.00\" y=\"12.00\" width=\"16.00\" height=\"12.00\" fill=\"currentColor\"></rect><rect x=\"126.00\" y=\"7.20\" width=\"16.00\" height=\"16.80\" fill=\"currentColor\"></rect><rect x=\"144.00\" y=\"6.00\" width=\"16.00\" height=\"18.00\" fill=\"currentColor\"></rect><rect x=\"162.00\" y=\"2.40\" width=\"16.00\" height=\"21.60\" fill=\"currentColor\"></rect></svg></div><div class=\"fd\">Ese es el muro real. Todo lo demás — los huecos, los conflictos entre fuentes, de dónde sale cada dato — está aquí, dicho de frente.</div><button class=\"btn\" style=\"padding:6px 12px;font-size:12px\" onclick=\"megaGo('cobertura')\">Ver los huecos</button></div><div class=\"landgrid\"><a class=\"landcard\" href=\"#archivo/preguntar\"><span class=\"lc-t\">Preguntar<i aria-hidden=\"true\">→</i></span><span class=\"lc-d\">Pregúntale al archivo en español.</span></a><a class=\"landcard\" href=\"#archivo/constructor\"><span class=\"lc-t\">A la medida<i aria-hidden=\"true\">→</i></span><span class=\"lc-d\">Escoge una tabla, filtra, ordena y baja a CSV.</span></a><a class=\"landcard\" href=\"#archivo/cobertura\"><span class=\"lc-t\">Cobertura y fuentes<i aria-hidden=\"true\">→</i></span><span class=\"lc-d\">Cuánto del archivo está verificado, por década, y de dónde sale cada dato.</span></a><a class=\"landcard\" href=\"#archivo/calidad\"><span class=\"lc-t\">Calidad de datos<i aria-hidden=\"true\">→</i></span><span class=\"lc-d\">Dónde las fuentes no coinciden y qué hicimos con cada caso.</span></a><a class=\"landcard\" href=\"#archivo/calendario\"><span class=\"lc-t\">Calendario<i aria-hidden=\"true\">→</i></span><span class=\"lc-d\">Lo que se puede reconstruir del calendario del BSN, y lo que falta.</span></a><a class=\"landcard\" href=\"#archivo/glosario\"><span class=\"lc-t\">Glosario<i aria-hidden=\"true\">→</i></span><span class=\"lc-d\">Las palabras que el archivo usa sin explicar en el resto de la app.</span></a></div></div></div><div class=\"view\" data-view=\"preguntar\" data-sec=\"archivo\" hidden=\"\"><div class=\"ask\"><input type=\"search\" id=\"askInput\" placeholder=\"¿Quién ganó en 1971? · títulos de Bayamón · líder de anotación 1987\" autocomplete=\"off\" spellcheck=\"false\" aria-label=\"Pregunta al archivo\"></div><div class=\"chips\" id=\"askChips\"><button class=\"chip\" onclick=\"runAsk(&quot;¿Cuándo murió Piculín?&quot;)\">¿Cuándo murió Piculín?</button><button class=\"chip\" onclick=\"runAsk(&quot;¿Qué es un refuerzo?&quot;)\">¿Qué es un refuerzo?</button><button class=\"chip\" onclick=\"runAsk(&quot;¿Quién fue Pachín Vicéns?&quot;)\">¿Quién fue Pachín Vicéns?</button><button class=\"chip\" onclick=\"runAsk(&quot;¿De dónde era Fico López?&quot;)\">¿De dónde era Fico López?</button><button class=\"chip\" onclick=\"runAsk(&quot;¿Quién ganó en 1971?&quot;)\">¿Quién ganó en 1971?</button><button class=\"chip\" onclick=\"runAsk(&quot;títulos de Bayamón&quot;)\">títulos de Bayamón</button><button class=\"chip\" onclick=\"runAsk(&quot;campeones de los 70&quot;)\">campeones de los 70</button><button class=\"chip\" onclick=\"runAsk(&quot;líder de anotación 1987&quot;)\">líder de anotación 1987</button><button class=\"chip\" onclick=\"runAsk(&quot;máximo anotador de la historia&quot;)\">máximo anotador de la historia</button><button class=\"chip\" onclick=\"runAsk(&quot;Bayamón contra Ponce en finales&quot;)\">Bayamón contra Ponce en finales</button><button class=\"chip\" onclick=\"runAsk(&quot;posiciones 2026&quot;)\">posiciones 2026</button><button class=\"chip\" onclick=\"runAsk(&quot;sequía de Mayagüez&quot;)\">sequía de Mayagüez</button><button class=\"chip\" onclick=\"runAsk(&quot;récord de puntos en un juego&quot;)\">récord de puntos en un juego</button><button class=\"chip\" onclick=\"runAsk(&quot;Georgie Torres&quot;)\">Georgie Torres</button></div><div id=\"askAnswer\" role=\"status\" aria-live=\"polite\"></div></div><div class=\"view\" data-view=\"constructor\" data-sec=\"archivo\" hidden=\"\"><h2 class=\"viewhead\">Consulta a la medida</h2><p class=\"lede\">Escoge una tabla, filtra, ordena y bájala a CSV. El mismo trabajo que harías en SQL, sobre los datos que este archivo puede verificar.</p><div id=\"qbControls\"><div class=\"filters\"><div class=\"field\" style=\"min-width:200px\"><label for=\"qbds\">Tabla</label><select id=\"qbds\"><option value=\"temporadas\">Temporadas (1930–2026)</option><option value=\"franquicias\">Franquicias (32)</option><option value=\"lideres\">Líderes de carrera (30)</option><option value=\"anotacion\">Campeones de anotación (1948–2021)</option><option value=\"records\">Récords de la liga (11)</option><option value=\"posiciones2026\">Posiciones 2026</option><option value=\"final2026\">La Final Brava 2026</option><option value=\"jugadores\">Índice de jugadores</option><option value=\"mvp\">MVP por año (39 recuperados)</option><option value=\"premios\">Premios por temporada</option><option value=\"finales\">Finales juego a juego (2024, 2025, 2026)</option><option value=\"premios2026\">Premios 2026</option></select></div><div class=\"field\" style=\"min-width:170px\"><label for=\"qbq\">Contiene</label><input type=\"search\" id=\"qbq\" placeholder=\"texto libre\"></div><div class=\"field\" style=\"max-width:104px\"><label for=\"qbfrom\">Desde</label><input type=\"text\" id=\"qbfrom\" inputmode=\"numeric\" placeholder=\"1930\"></div><div class=\"field\" style=\"max-width:104px\"><label for=\"qbto\">Hasta</label><input type=\"text\" id=\"qbto\" inputmode=\"numeric\" placeholder=\"2026\"></div><div class=\"field\" style=\"min-width:170px\"><label for=\"qbclub\">Franquicia</label><select id=\"qbclub\"><option value=\"\">Todas</option><option value=\"ate\">Atenienses de Manatí</option><option value=\"sge\">Atléticos de San Germán</option><option value=\"vil\">Avancinos de Villalba</option><option value=\"guy\">Brujos de Guayama</option><option value=\"cac\">Caciques de Humacao</option><option value=\"san\">Cangrejeros de Santurce</option><option value=\"cap\">Capitalinos de San Juan</option><option value=\"are\">Capitanes de Arecibo</option><option value=\"rio\">Cardenales de Río Piedras</option><option value=\"faj\">Cariduros de Fajardo</option><option value=\"nau\">Club Náutico de San Juan</option><option value=\"toi\">Cocoteros de Tortuguero</option><option value=\"con\">Conquistadores de Aguada</option><option value=\"cag\">Criollos de Caguas</option><option value=\"isa\">Gallitos de Isabela</option><option value=\"upr\">Gallitos de la UPR</option><option value=\"car\">Gigantes de Carolina/Canóvanas</option><option value=\"hum\">Grises de Humacao</option><option value=\"cno\">Indios de Canóvanas</option><option value=\"may\">Indios de Mayagüez</option><option value=\"pon\">Leones de Ponce</option><option value=\"coa\">Maratonistas de Coamo</option><option value=\"gua\">Mets de Guaynabo</option><option value=\"man\">Osos de Manatí</option><option value=\"que\">Piratas de Quebradillas</option><option value=\"aib\">Polluelos de Aibonito</option><option value=\"agu\">Santeros de Aguada</option><option value=\"cab\">Taínos de Cabo Rojo</option><option value=\"agd\">Tiburones de Aguadilla</option><option value=\"mor\">Titanes de Morovis</option><option value=\"cay\">Toritos de Cayey</option><option value=\"bay\">Vaqueros de Bayamón</option><option value=\"veg\">Vega Baja</option></select></div><div class=\"field\" style=\"max-width:104px\"><label for=\"qblim\">Límite</label><input type=\"text\" id=\"qblim\" inputmode=\"numeric\" placeholder=\"todo\"></div></div><div class=\"btnrow\"><button class=\"btn primary\" onclick=\"runQB()\">Ejecutar</button><button class=\"btn\" onclick=\"resetQB()\">Limpiar</button><button class=\"btn\" onclick=\"copyQB()\">Copiar como tabla</button></div><div id=\"qbSql\" class=\"note\" style=\"font-family:ui-monospace,SFMono-Regular,Menlo,monospace\">SELECT * FROM temporadas; -- 97 filas</div></div><div id=\"qbResult\"><div class=\"tblwrap tall\"><table><thead><tr><th class=\"num sortable\" data-i=\"0\" scope=\"col\">Año<span class=\"arrow\">▼</span></th><th class=\"sortable\" data-i=\"1\" scope=\"col\">Campeón</th><th class=\"sortable\" data-i=\"2\" scope=\"col\">Subcampeón</th><th class=\"num sortable\" data-i=\"3\" scope=\"col\">Década</th><th class=\"sortable\" data-i=\"4\" scope=\"col\">Nota</th></tr></thead><tbody><tr><td class=\"num\">2026</td><td class=\"name\">Vaqueros de Bayamón</td><td class=\"name\">Santeros de Aguada</td><td class=\"num\">2020</td><td class=\"name\">Confirmado: 81-74 en el séptimo juego, 23 de agosto de 2026.</td></tr><tr><td class=\"num\">2025</td><td class=\"name\">Vaqueros de Bayamón</td><td class=\"name\">Leones de Ponce</td><td class=\"num\">2020</td><td class=\"name\">—</td></tr><tr><td class=\"num\">2024</td><td class=\"name\">Criollos de Caguas</td><td class=\"name\">Osos de Manatí</td><td class=\"num\">2020</td><td class=\"name\">Subcampeón confirmado en la página de la temporada, no en la tabla de la franquicia.</td></tr><tr><td class=\"num\">2023</td><td class=\"name\">Gigantes de Carolina/Canóvanas</td><td class=\"name\">Vaqueros de Bayamón</td><td class=\"num\">2020</td><td class=\"name\">—</td></tr><tr><td class=\"num\">2022</td><td class=\"name\">Vaqueros de Bayamón</td><td class=\"name\">Atléticos de San Germán</td><td class=\"num\">2020</td><td class=\"name\">—</td></tr><tr><td class=\"num\">2021</td><td class=\"name\">Capitanes de Arecibo</td><td class=\"name\">Mets de Guaynabo</td><td class=\"num\">2020</td><td class=\"name\">—</td></tr><tr><td class=\"num\">2020</td><td class=\"name\">Vaqueros de Bayamón</td><td class=\"name\">Piratas de Quebradillas</td><td class=\"num\">2020</td><td class=\"name\">—</td></tr><tr><td class=\"num\">2019</td><td class=\"name\">Santeros de Aguada</td><td class=\"name\">Leones de Ponce</td><td class=\"num\">2010</td><td class=\"name\">—</td></tr><tr><td class=\"num\">2018</td><td class=\"name\">Capitanes de Arecibo</td><td class=\"name\">Vaqueros de Bayamón</td><td class=\"num\">2010</td><td class=\"name\">—</td></tr><tr><td class=\"num\">2017</td><td class=\"name\">Piratas de Quebradillas</td><td class=\"name\">Capitanes de Arecibo</td><td class=\"num\">2010</td><td class=\"name\">—</td></tr><tr><td class=\"num\">2016</td><td class=\"name\">Capitanes de Arecibo</td><td class=\"name\">Vaqueros de Bayamón</td><td class=\"num\">2010</td><td class=\"name\">—</td></tr><tr><td class=\"num\">2015</td><td class=\"name\">Leones de Ponce</td><td class=\"name\">Capitanes de Arecibo</td><td class=\"num\">2010</td><td class=\"name\">—</td></tr><tr><td class=\"num\">2014</td><td class=\"name\">Leones de Ponce</td><td class=\"name\">Capitanes de Arecibo</td><td class=\"num\">2010</td><td class=\"name\">—</td></tr><tr><td class=\"num\">2013</td><td class=\"name\">Piratas de Quebradillas</td><td class=\"name\">Leones de Ponce</td><td class=\"num\">2010</td><td class=\"name\">—</td></tr><tr><td class=\"num\">2012</td><td class=\"name\">Indios de Mayagüez</td><td class=\"name\">Capitanes de Arecibo</td><td class=\"num\">2010</td><td class=\"name\">—</td></tr><tr><td class=\"num\">2011</td><td class=\"name\">Capitanes de Arecibo</td><td class=\"name\">Piratas de Quebradillas</td><td class=\"num\">2010</td><td class=\"name\">—</td></tr><tr><td class=\"num\">2010</td><td class=\"name\">Capitanes de Arecibo</td><td class=\"name\">Vaqueros de Bayamón</td><td class=\"num\">2010</td><td class=\"name\">—</td></tr><tr><td class=\"num\">2009</td><td class=\"name\">Vaqueros de Bayamón</td><td class=\"name\">Piratas de Quebradillas</td><td class=\"num\">2000</td><td class=\"name\">—</td></tr><tr><td class=\"num\">2008</td><td class=\"name\">Capitanes de Arecibo</td><td class=\"name\">Gigantes de Carolina/Canóvanas</td><td class=\"num\">2000</td><td class=\"name\">—</td></tr><tr><td class=\"num\">2007</td><td class=\"name\">Cangrejeros de Santurce</td><td class=\"name\">Capitanes de Arecibo</td><td class=\"num\">2000</td><td class=\"name\">—</td></tr><tr><td class=\"num\">2006</td><td class=\"name\">Criollos de Caguas</td><td class=\"name\">Cangrejeros de Santurce</td><td class=\"num\">2000</td><td class=\"name\">—</td></tr><tr><td class=\"num\">2005</td><td class=\"name\">Capitanes de Arecibo</td><td class=\"name\">Vaqueros de Bayamón</td><td class=\"num\">2000</td><td class=\"name\">—</td></tr><tr><td class=\"num\">2004</td><td class=\"name\">Leones de Ponce</td><td class=\"name\">Maratonistas de Coamo</td><td class=\"num\">2000</td><td class=\"name\">—</td></tr><tr><td class=\"num\">2003</td><td class=\"name\">Cangrejeros de Santurce</td><td class=\"name\">Leones de Ponce</td><td class=\"num\">2000</td><td class=\"name\">—</td></tr><tr><td class=\"num\">2002</td><td class=\"name\">Leones de Ponce</td><td class=\"name\">Vaqueros de Bayamón</td><td class=\"num\">2000</td><td class=\"name\">—</td></tr><tr><td class=\"num\">2001</td><td class=\"name\">Cangrejeros de Santurce</td><td class=\"name\">Vaqueros de Bayamón</td><td class=\"num\">2000</td><td class=\"name\">—</td></tr><tr><td class=\"num\">2000</td><td class=\"name\">Cangrejeros de Santurce</td><td class=\"name\">Piratas de Quebradillas</td><td class=\"num\">2000</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1999</td><td class=\"name\">Cangrejeros de Santurce</td><td class=\"name\">Piratas de Quebradillas</td><td class=\"num\">1990</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1998</td><td class=\"name\">Cangrejeros de Santurce</td><td class=\"name\">Leones de Ponce</td><td class=\"num\">1990</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1997</td><td class=\"name\">Atléticos de San Germán</td><td class=\"name\">Gigantes de Carolina/Canóvanas</td><td class=\"num\">1990</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1996</td><td class=\"name\">Vaqueros de Bayamón</td><td class=\"name\">Leones de Ponce</td><td class=\"num\">1990</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1995</td><td class=\"name\">Vaqueros de Bayamón</td><td class=\"name\">Leones de Ponce</td><td class=\"num\">1990</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1994</td><td class=\"name\">Atléticos de San Germán</td><td class=\"name\">Brujos de Guayama</td><td class=\"num\">1990</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1993</td><td class=\"name\">Leones de Ponce</td><td class=\"name\">Mets de Guaynabo</td><td class=\"num\">1990</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1992</td><td class=\"name\">Leones de Ponce</td><td class=\"name\">Capitanes de Arecibo</td><td class=\"num\">1990</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1991</td><td class=\"name\">Atléticos de San Germán</td><td class=\"name\">Brujos de Guayama</td><td class=\"num\">1990</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1990</td><td class=\"name\">Leones de Ponce</td><td class=\"name\">Mets de Guaynabo</td><td class=\"num\">1990</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1989</td><td class=\"name\">Mets de Guaynabo</td><td class=\"name\">Leones de Ponce</td><td class=\"num\">1980</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1988</td><td class=\"name\">Vaqueros de Bayamón</td><td class=\"name\">Indios de Canóvanas</td><td class=\"num\">1980</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1987</td><td class=\"name\">Titanes de Morovis</td><td class=\"name\">Polluelos de Aibonito</td><td class=\"num\">1980</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1986</td><td class=\"name\">Polluelos de Aibonito</td><td class=\"name\">Atléticos de San Germán</td><td class=\"num\">1980</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1985</td><td class=\"name\">Atléticos de San Germán</td><td class=\"name\">Mets de Guaynabo</td><td class=\"num\">1980</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1984</td><td class=\"name\">Indios de Canóvanas</td><td class=\"name\">Gallitos de Isabela</td><td class=\"num\">1980</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1983</td><td class=\"name\">Indios de Canóvanas</td><td class=\"name\">Mets de Guaynabo</td><td class=\"num\">1980</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1982</td><td class=\"name\">Mets de Guaynabo</td><td class=\"name\">Piratas de Quebradillas</td><td class=\"num\">1980</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1981</td><td class=\"name\">Vaqueros de Bayamón</td><td class=\"name\">Mets de Guaynabo</td><td class=\"num\">1980</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1980</td><td class=\"name\">Mets de Guaynabo</td><td class=\"name\">Piratas de Quebradillas</td><td class=\"num\">1980</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1979</td><td class=\"name\">Piratas de Quebradillas</td><td class=\"name\">Gigantes de Carolina/Canóvanas</td><td class=\"num\">1970</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1978</td><td class=\"name\">Piratas de Quebradillas</td><td class=\"name\">Mets de Guaynabo</td><td class=\"num\">1970</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1977</td><td class=\"name\">Piratas de Quebradillas</td><td class=\"name\">Cardenales de Río Piedras</td><td class=\"num\">1970</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1976</td><td class=\"name\">Cardenales de Río Piedras</td><td class=\"name\">Piratas de Quebradillas</td><td class=\"num\">1970</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1975</td><td class=\"name\">Vaqueros de Bayamón</td><td class=\"name\">Piratas de Quebradillas</td><td class=\"num\">1970</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1974</td><td class=\"name\">Vaqueros de Bayamón</td><td class=\"name\">Capitalinos de San Juan</td><td class=\"num\">1970</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1973</td><td class=\"name\">Vaqueros de Bayamón</td><td class=\"name\">Piratas de Quebradillas</td><td class=\"num\">1970</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1972</td><td class=\"name\">Vaqueros de Bayamón</td><td class=\"name\">Piratas de Quebradillas</td><td class=\"num\">1970</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1971</td><td class=\"name\">Vaqueros de Bayamón</td><td class=\"name\">Cardenales de Río Piedras</td><td class=\"num\">1970</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1970</td><td class=\"name\">Piratas de Quebradillas</td><td class=\"name\">Vaqueros de Bayamón</td><td class=\"num\">1970</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1969</td><td class=\"name\">Vaqueros de Bayamón</td><td class=\"name\">Cardenales de Río Piedras</td><td class=\"num\">1960</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1968</td><td class=\"name\">Cangrejeros de Santurce</td><td class=\"name\">Cardenales de Río Piedras</td><td class=\"num\">1960</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1967</td><td class=\"name\">Vaqueros de Bayamón</td><td class=\"name\">Leones de Ponce</td><td class=\"num\">1960</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1966</td><td class=\"name\">Leones de Ponce</td><td class=\"name\">Capitanes de Arecibo</td><td class=\"num\">1960</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1965</td><td class=\"name\">Leones de Ponce</td><td class=\"name\">Atléticos de San Germán</td><td class=\"num\">1960</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1964</td><td class=\"name\">Leones de Ponce</td><td class=\"name\">Cangrejeros de Santurce</td><td class=\"num\">1960</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1963</td><td class=\"name\">Cardenales de Río Piedras</td><td class=\"name\">Leones de Ponce</td><td class=\"num\">1960</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1962</td><td class=\"name\">Cangrejeros de Santurce</td><td class=\"name\">Cardenales de Río Piedras</td><td class=\"num\">1960</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1961</td><td class=\"name\">Leones de Ponce</td><td class=\"name\">Capitanes de Arecibo</td><td class=\"num\">1960</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1960</td><td class=\"name\">Leones de Ponce</td><td class=\"name\">Cardenales de Río Piedras</td><td class=\"num\">1960</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1959</td><td class=\"name\">Capitanes de Arecibo</td><td class=\"name\">Cardenales de Río Piedras</td><td class=\"num\">1950</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1958</td><td class=\"name\">Capitalinos de San Juan</td><td class=\"name\">Leones de Ponce</td><td class=\"num\">1950</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1957</td><td class=\"name\">Cardenales de Río Piedras</td><td class=\"name\">Atléticos de San Germán</td><td class=\"num\">1950</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1956</td><td class=\"name\">Cardenales de Río Piedras</td><td class=\"name\">Atléticos de San Germán</td><td class=\"num\">1950</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1955</td><td class=\"name\">Cardenales de Río Piedras</td><td class=\"name\">Atléticos de San Germán</td><td class=\"num\">1950</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1954</td><td class=\"name\">Leones de Ponce</td><td class=\"name\">Atléticos de San Germán</td><td class=\"num\">1950</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1953</td><td class=\"name\">—</td><td class=\"name\">—</td><td class=\"num\">1950</td><td class=\"name\">Ninguna fuente consultada registra campeón.</td></tr><tr><td class=\"num\">1952</td><td class=\"name\">Leones de Ponce</td><td class=\"name\">Cangrejeros de Santurce</td><td class=\"num\">1950</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1951</td><td class=\"name\">Gallitos de la UPR</td><td class=\"name\">Cangrejeros de Santurce</td><td class=\"num\">1950</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1950</td><td class=\"name\">Atléticos de San Germán</td><td class=\"name\">Capitalinos de San Juan</td><td class=\"num\">1950</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1949</td><td class=\"name\">Atléticos de San Germán</td><td class=\"name\">Leones de Ponce</td><td class=\"num\">1940</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1948</td><td class=\"name\">Atléticos de San Germán</td><td class=\"name\">Capitanes de Arecibo</td><td class=\"num\">1940</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1947</td><td class=\"name\">Atléticos de San Germán</td><td class=\"name\">Cardenales de Río Piedras</td><td class=\"num\">1940</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1946</td><td class=\"name\">Cardenales de Río Piedras</td><td class=\"name\">Capitanes de Arecibo</td><td class=\"num\">1940</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1945</td><td class=\"name\">Capitalinos de San Juan</td><td class=\"name\">Gallitos de la UPR</td><td class=\"num\">1940</td><td class=\"name\">Las fuentes discrepan sobre el campeón. Ver «El archivo».</td></tr><tr><td class=\"num\">1944</td><td class=\"name\">Gallitos de la UPR</td><td class=\"name\">Capitalinos de San Juan</td><td class=\"num\">1940</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1943</td><td class=\"name\">Cocoteros de Tortuguero</td><td class=\"name\">Capitalinos de San Juan</td><td class=\"num\">1940</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1942</td><td class=\"name\">Atléticos de San Germán</td><td class=\"name\">Cangrejeros de Santurce</td><td class=\"num\">1940</td><td class=\"name\">Wikipedia en español separa 1942 y 1942-43; San Germán ganó ambas. Aquí van juntas, por eso el club aparece con 13 y no 14.</td></tr><tr><td class=\"num\">1941</td><td class=\"name\">Atléticos de San Germán</td><td class=\"name\">Cardenales de Río Piedras</td><td class=\"num\">1940</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1940</td><td class=\"name\">Capitalinos de San Juan</td><td class=\"name\">Atléticos de San Germán</td><td class=\"num\">1940</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1939</td><td class=\"name\">Atléticos de San Germán</td><td class=\"name\">Vega Baja</td><td class=\"num\">1930</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1938</td><td class=\"name\">Atléticos de San Germán</td><td class=\"name\">—</td><td class=\"num\">1930</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1937</td><td class=\"name\">Vega Baja</td><td class=\"name\">Piratas de Quebradillas</td><td class=\"num\">1930</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1936</td><td class=\"name\">Club Náutico de San Juan</td><td class=\"name\">Atléticos de San Germán</td><td class=\"num\">1930</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1935</td><td class=\"name\">Vaqueros de Bayamón</td><td class=\"name\">Vega Baja</td><td class=\"num\">1930</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1934</td><td class=\"name\">Vega Baja</td><td class=\"name\">Vaqueros de Bayamón</td><td class=\"num\">1930</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1933</td><td class=\"name\">Vaqueros de Bayamón</td><td class=\"name\">Atléticos de San Germán</td><td class=\"num\">1930</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1932</td><td class=\"name\">Atléticos de San Germán</td><td class=\"name\">Capitanes de Arecibo</td><td class=\"num\">1930</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1931</td><td class=\"name\">Capitalinos de San Juan</td><td class=\"name\">Atléticos de San Germán</td><td class=\"num\">1930</td><td class=\"name\">—</td></tr><tr><td class=\"num\">1930</td><td class=\"name\">Capitalinos de San Juan</td><td class=\"name\">Vaqueros de Bayamón</td><td class=\"num\">1930</td><td class=\"name\">—</td></tr></tbody></table></div><div class=\"tbl-meta\"><span>97 filas</span><button class=\"btn\" style=\"padding: 5px 10px; font-size: 12px;\">Descargar CSV</button></div></div></div><div class=\"view\" data-view=\"cobertura\" data-sec=\"archivo\" hidden=\"\"><h2 class=\"viewhead\">Cobertura del archivo</h2><p class=\"lede\">La cobertura no es pareja. Esta rejilla dice, por década, cuánto del archivo está verificado — para que nadie construya un análisis sobre un hueco.</p><div id=\"coverage\"><div class=\"covergrid\"><div class=\"cov\"><div class=\"cy\">1930s</div><div class=\"cb\"><div class=\"cf\" style=\"width:20%;background:var(--rojo)\"></div></div><div class=\"cl\">Campeones sí. Nada más.</div></div><div class=\"cov\"><div class=\"cy\">1940s</div><div class=\"cb\"><div class=\"cf\" style=\"width:25%;background:var(--rojo)\"></div></div><div class=\"cl\">Campeones y una disputa sin resolver en 1945.</div></div><div class=\"cov\"><div class=\"cy\">1950s</div><div class=\"cb\"><div class=\"cf\" style=\"width:30%;background:var(--rojo)\"></div></div><div class=\"cl\">Campeones, y MVP desde 1958.</div></div><div class=\"cov\"><div class=\"cy\">1960s</div><div class=\"cb\"><div class=\"cf\" style=\"width:45%;background:var(--azul)\"></div></div><div class=\"cl\">Campeones, MVP y campeones de anotación.</div></div><div class=\"cov\"><div class=\"cy\">1970s</div><div class=\"cb\"><div class=\"cf\" style=\"width:50%;background:var(--azul)\"></div></div><div class=\"cl\">Campeones, MVP, anotación, algunos récords.</div></div><div class=\"cov\"><div class=\"cy\">1980s</div><div class=\"cb\"><div class=\"cf\" style=\"width:55%;background:var(--azul)\"></div></div><div class=\"cl\">Igual, más MVP completo y líderes de carrera acumulados.</div></div><div class=\"cov\"><div class=\"cy\">1990s</div><div class=\"cb\"><div class=\"cf\" style=\"width:50%;background:var(--azul)\"></div></div><div class=\"cl\">Campeones, MVP y anotación completos; sin estadísticas por partido.</div></div><div class=\"cov\"><div class=\"cy\">2000s</div><div class=\"cb\"><div class=\"cf\" style=\"width:70%;background:var(--ok)\"></div></div><div class=\"cl\">MVP hasta 2004, anotación, y boxscores + posiciones de 2001–2003 y 2008–2009.</div></div><div class=\"cov\"><div class=\"cy\">2010s</div><div class=\"cb\"><div class=\"cf\" style=\"width:75%;background:var(--ok)\"></div></div><div class=\"cl\">Boxscores y posiciones 2010–2013; premios y líderes de 2016–2018; MVP disperso.</div></div><div class=\"cov\"><div class=\"cy\">2020s</div><div class=\"cb\"><div class=\"cf\" style=\"width:90%;background:var(--ok)\"></div></div><div class=\"cl\">Posiciones, finales juego a juego, premios completos, líderes, dueños.</div></div></div><p class=\"note\">El porcentaje es cuánto de lo que uno querría saber de esa década está en el archivo, no una medida de exactitud. Los años treinta son el 20% porque solo hay campeones.</p></div><div id=\"sourcesBox\"><h3 class=\"sec\">Conflictos entre fuentes</h3><div class=\"cards g2\"><div class=\"card\"><div class=\"dim\" style=\"font-size:11px;letter-spacing:.07em;font-weight:600\">1945</div><div style=\"font-weight:700;margin-top:3px\">Campeón en disputa</div><div class=\"muted\" style=\"font-size:13.5px;margin-top:4px\">Wikipedia en inglés dice Capitalinos de San Juan; la de español, Santos de San Juan. Ambas coinciden en el subcampeón, Gallitos de la UPR. El archivo carga la versión inglesa y lo marca.</div></div><div class=\"card\"><div class=\"dim\" style=\"font-size:11px;letter-spacing:.07em;font-weight:600\">1942–43</div><div style=\"font-weight:700;margin-top:3px\">Temporada partida</div><div class=\"muted\" style=\"font-size:13.5px;margin-top:4px\">Español separa 1942 y 1942-43, ambas de San Germán. Aquí van juntas, así que San Germán aparece con 13 títulos donde casi todas las fuentes dicen 14. Arreglarlo necesita una clave de temporada que admita años partidos.</div></div><div class=\"card\"><div class=\"dim\" style=\"font-size:11px;letter-spacing:.07em;font-weight:600\">1953</div><div style=\"font-weight:700;margin-top:3px\">Sin campeón</div><div class=\"muted\" style=\"font-size:13.5px;margin-top:4px\">Ninguna fuente consultada registra uno. O no hubo temporada, o la tabla de franquicias está incompleta.</div></div><div class=\"card\"><div class=\"dim\" style=\"font-size:11px;letter-spacing:.07em;font-weight:600\">DALMAU, ASISTENCIAS</div><div style=\"font-weight:700;margin-top:3px\">Total y promedio no cuadran</div><div class=\"muted\" style=\"font-size:13.5px;margin-top:4px\">2.302 en 537 juegos son 4,3 por juego, no 5,1. Es el único dato de las tablas de campeones y líderes que se contradice a sí mismo. Marcado en dos sitios y excluido de los juegos.</div></div><div class=\"card\"><div class=\"dim\" style=\"font-size:11px;letter-spacing:.07em;font-weight:600\">HARRELL 2026</div><div style=\"font-weight:700;margin-top:3px\">Club en disputa</div><div class=\"muted\" style=\"font-size:13.5px;margin-top:4px\">RealGM lo pone en San Germán; Noticel, en Caguas.</div></div><div class=\"card\"><div class=\"dim\" style=\"font-size:11px;letter-spacing:.07em;font-weight:600\">2026</div><div style=\"font-weight:700;margin-top:3px\">Dos cifras para la misma temporada</div><div class=\"muted\" style=\"font-size:13.5px;margin-top:4px\">El export oficial del BSN cuenta solo temporada regular; RealGM incluye la postemporada. Trice aparece con 34 juegos y 18,4 puntos en uno y con 44 y 19,3 en el otro. Ninguna está mal. El archivo guarda las dos y no promedia.</div></div><div class=\"card\"><div class=\"dim\" style=\"font-size:11px;letter-spacing:.07em;font-weight:600\">DALMAU, ASISTENCIAS</div><div style=\"font-weight:700;margin-top:3px\">Posible resolución</div><div class=\"muted\" style=\"font-size:13.5px;margin-top:4px\">bsnpr.com lista al líder de asistencias como Raymond «Richie» Dalmau Santana con 455 juegos, no como Raymond Dalmau Pérez con 537. Si son dos personas distintas, la contradicción de 4,3 contra 5,1 desaparece. Sin confirmar.</div></div></div><p class=\"muted\" style=\"font-size:var(--fs-2xs);margin:var(--sp-2) 0 0\">Las diferencias entre fuentes en las estadísticas de cada jugador están en <a href=\"#archivo/calidad\">Calidad de datos</a>.</p><h3 class=\"sec\">Cómo se decide quién es leyenda</h3><div class=\"cards g2\"><div class=\"card\"><div style=\"font-weight:700\">¿Quién es leyenda?</div><div class=\"muted\" style=\"font-size:13.5px;margin-top:4px\">Cuatro pruebas, todas sacadas de tablas que ya están en este archivo: top 10 histórico en puntos, rebotes o asistencias; tres o más MVP; un récord de la liga vigente; o una cancha con su nombre. Basta con una. Cada ficha dice cuál cumplió.</div></div><div class=\"card\"><div style=\"font-weight:700\">Por qué se cambió</div><div class=\"muted\" style=\"font-size:13.5px;margin-top:4px\">Antes la etiqueta estaba puesta a mano sobre diecinueve jugadores sin criterio escrito en ninguna parte, y pesaba más que el MVP tanto en el orden del índice como en la puntuación de La Temporada Perfecta. Una opinión editorial estaba ordenando la liga en silencio.</div></div><div class=\"card\"><div style=\"font-weight:700\">Lo que el criterio no ve</div><div class=\"muted\" style=\"font-size:13.5px;margin-top:4px\">Seis nombres que tenían la etiqueta no pasan las pruebas y ahora aparecen como «Figura del BSN»: Carlos Arroyo, J. J. Barea, Butch Lee, Jerome Mincy, Sammy Betancourt y Raúl «Tinajón» Feliciano. No es que valgan menos. Es que su huella está en la NBA, en la selección o en los años ochenta, y este archivo no guarda todavía las cifras que lo probarían. El hueco es del archivo, no del jugador.</div></div></div><h3 class=\"sec\">Lo que falta</h3><ul class=\"muted\" style=\"font-size:14px;line-height:1.7;padding-left:18px\"><li>No hay una base pública de estadísticas por temporada del BSN anterior a 2001. Antes de eso el archivo solo tiene campeones, campeones de anotación y MVP.</li><li>Boxscores: 1,292 partidos con caja completa, de las temporadas 2001–2003 y 2008–2013 — lo que sobrevivió en el Wayback Machine del motor de estadísticas de bsnpr.com. Fuera de esos años no hay ninguno.</li><li>Posiciones: esas mismas 14 temporadas (derivadas de los partidos archivados, no siempre completas) más 2025 y 2026. 2004–2007 y 2014–2024 no tienen posiciones extraíbles.</li><li>Campeones de anotación 1948–2021 (68 temporadas). Faltan 2022 en adelante.</li><li>MVP 1958–2004 de la tabla histórica de bsnpr.com; los recientes según prensa. Faltan 1950, 1953, 1956 y varias temporadas recientes que ninguna fuente pública lista.</li><li>Premios y líderes por temporada (Novato, Defensa, líderes de cada categoría) solo donde bsnpr.com o Wikipedia los publican: 47 temporadas con algún premio, 15 con tablas de líderes. 2014–2015 y 2019–2023 son los huecos grandes.</li><li>Los números retirados de Bayamón (8) y Guaynabo (3) se publican como dígitos, sin nombres.</li><li>Líderes de carrera y récords vienen de Wikipedia y están ~5 años desactualizados: los jugadores activos aparecen sub-contados.</li></ul><h3 class=\"sec\">De dónde salieron los boxscores y los líderes</h3><div class=\"card\"><p style=\"margin:0\">El viejo motor de estadísticas de <b>bsnpr.com</b> (<code>estadisticas/*.asp</code>, <code>jugadores/jugador?id=N</code>) está muerto en la web actual, pero el Wayback Machine guardó buena parte: <b>1,292 partidos</b> con caja de 2001–2003 y 2008–2013, la tabla de líderes por temporada, la de MVP históricos (1958–2004) y <b>3,326 fichas de jugador</b>. Todo eso se bajó, se parseó y es lo que llena las pestañas de Temporadas y Jugadores cuando esta página se sirve desde un servidor. Lo que el Wayback no capturó — sobre todo 2004–2007 y 2014–2023 — sigue siendo un hueco.</p></div><h3 class=\"sec\">De dónde sale cada cosa</h3><div class=\"cards g2\"><div class=\"card\"><div style=\"font-weight:700\">Campeones 1930–2025</div><div class=\"muted\" style=\"font-size:13.5px\">Wikipedia, invirtiendo las listas por franquicia. Esa inversión fue lo que reveló el hueco de 1953.</div></div><div class=\"card\"><div style=\"font-weight:700\">Temporada 2026</div><div class=\"muted\" style=\"font-size:13.5px\">El Nuevo Día, Primera Hora, Telemundo PR, El Vocero y Noticel para la final y los premios; la app oficial del BSN para posiciones y líderes.</div></div><div class=\"card\"><div style=\"font-weight:700\">Líderes de carrera y récords</div><div class=\"muted\" style=\"font-size:13.5px\">Wikipedia. Todos verificados contra los CSV del proyecto.</div></div><div class=\"card\"><div style=\"font-weight:700\">Reglas de refuerzos</div><div class=\"muted\" style=\"font-size:13.5px\">Artículos 22.1, 23.1 y 13.1 del reglamento, más la cobertura del voto de octubre de 2024.</div></div></div><h3 class=\"sec\">Escudos y fotos</h3><div class=\"card\"><p style=\"margin:0\">Todos los escudos y retratos están dibujados en SVG con los colores reales del club. Los logos oficiales y las fotos de jugadores necesitarían permiso para publicarse — es la razón principal por la que Apple rechaza apps de este tipo — así que este archivo no los usa. Con cero imágenes, todo se ve igual de bien.</p></div></div></div><div class=\"view\" data-view=\"calidad\" data-sec=\"archivo\" hidden=\"\"><h2 class=\"viewhead\">Calidad de datos</h2><p class=\"lede\">Dónde las fuentes no coinciden y qué hicimos con cada caso. El archivo muestra las dos cifras; no escoge una a ojo.</p><div id=\"dqBox\"><p class=\"note\">Cargando…</p></div></div><div class=\"view\" data-view=\"calendario\" data-sec=\"archivo\" hidden=\"\"><h2 class=\"viewhead\">Calendario y cobertura de temporada</h2><p class=\"lede\">El BSN no publica un calendario permanente. Esto es lo que se puede reconstruir del patrón de las últimas temporadas, y lo que el archivo no tiene.</p><h4 class=\"sub\">La forma del año</h4><p class=\"lede\">Tres temporadas seguidas dan un patrón bastante firme.</p><div id=\"calShape\"><div class=\"timeline\"><div class=\"tw\"><div class=\"td\">Finales de marzo</div><div class=\"tt2\">Apertura</div><div class=\"tb\">21 de marzo en 2026, 22 de marzo en 2025, 3 de abril en 2024.</div></div><div class=\"tw\"><div class=\"td\">Finales de junio</div><div class=\"tt2\">Cierre de la fase regular</div><div class=\"tb\">34 juegos por equipo, 12 equipos. 28 de junio en 2026.</div></div><div class=\"tw\"><div class=\"td\">Julio</div><div class=\"tt2\">Playoffs</div><div class=\"tb\">9 de julio en 2026. En 2024 hubo desempate y repechaje antes.</div></div><div class=\"tw\"><div class=\"td\">Agosto</div><div class=\"tt2\">Final</div><div class=\"tb\">El último juego de 2026 fue el 23 de agosto.</div></div><div class=\"tw\"><div class=\"td\">Septiembre a febrero</div><div class=\"tt2\">Receso</div><div class=\"tb\">Sin juegos. Se fijan fechas, se revisa el formato y se mueven los refuerzos.</div></div></div><div class=\"warn\"><b>Las fechas de 2027 todavía no se han anunciado.</b><br>Las últimas tres temporadas abrieron el 3 de abril, el 22 de marzo y el 21 de marzo, así que finales de marzo es el patrón que hay que esperar. La junta suele fijar fechas en el receso, y el formato de tres refuerzos se ha revisado cada noviembre. La liga femenina, el BSNF, abre su temporada 2026-27 el 12 de septiembre de 2026.</div></div><h4 class=\"sub\">Temporada por temporada</h4><p class=\"lede\">Las fechas exactas de las últimas tres temporadas, para comparar el patrón.</p><div id=\"calendarBox\"><div class=\"tblwrap\"><table><thead><tr><th class=\"num sortable\" data-i=\"0\" scope=\"col\">Año<span class=\"arrow\">▼</span></th><th class=\"sortable\" data-i=\"1\" scope=\"col\">Temp.</th><th class=\"sortable\" data-i=\"2\" scope=\"col\">Inicio</th><th class=\"sortable\" data-i=\"3\" scope=\"col\">Fin reg.</th><th class=\"sortable\" data-i=\"4\" scope=\"col\">Playoffs</th><th class=\"num sortable\" data-i=\"5\" scope=\"col\">J</th><th class=\"num sortable\" data-i=\"6\" scope=\"col\">Equipos</th><th class=\"sortable\" data-i=\"7\" scope=\"col\">Formato</th></tr></thead><tbody><tr><td class=\"num\">2026</td><td class=\"\">97.ª</td><td class=\"\">21 de marzo</td><td class=\"\">28 de junio</td><td class=\"\">9 de julio</td><td class=\"num\">34</td><td class=\"num\">12</td><td class=\"name\">Dos conferencias. Primero se corona un campeón de conferencia y luego se juega la final.</td></tr><tr><td class=\"num\">2025</td><td class=\"\">96.ª</td><td class=\"\">22 de marzo</td><td class=\"\">30 de junio</td><td class=\"\">—</td><td class=\"num\">34</td><td class=\"num\">12</td><td class=\"name\">La temporada corrió hasta el 11 de agosto con la final.</td></tr><tr><td class=\"num\">2024</td><td class=\"\">95.ª</td><td class=\"\">3 de abril</td><td class=\"\">1 de julio</td><td class=\"\">13 de julio</td><td class=\"num\">34</td><td class=\"num\">12</td><td class=\"name\">Desempate y repechaje del 10 al 12 de julio, y después todas las rondas al mejor de siete.</td></tr></tbody></table></div><div class=\"tbl-meta\"><span>3 filas</span><button class=\"btn\" style=\"padding: 5px 10px; font-size: 12px;\">Descargar CSV</button></div></div><h4 class=\"sub\">Los juegos, uno por uno</h4><p class=\"lede\">Lo que este archivo no tiene, dicho de frente.</p><div id=\"calGap\"><div class=\"warn\"><b>Este archivo no tiene los juegos uno por uno.</b><br> No hay calendario de partidos aquí: ni fechas, ni horas, ni marcadores individuales, de ninguna temporada. Lo que sí hay es el marco de cada temporada — apertura, cierre de la fase regular, playoffs y formato — que es lo que se ve arriba. </div><p class=\"note\">Para los juegos de hoy, la fuente es bsnpr.com y la app oficial de la liga, que están enlazadas en Hoy bajo «Canales oficiales». Si en algún momento entra un calendario de partidos verificado, va aquí.</p></div></div><div class=\"view\" data-view=\"glosario\" data-sec=\"archivo\" hidden=\"\"><h2 class=\"viewhead\">Glosario</h2><p class=\"lede\">Las palabras que este archivo usa sin explicar en el resto de la app. También se pueden preguntar en Consulta: escribe «qué es un refuerzo».</p><div id=\"glosBox\"><div class=\"glos\"><div class=\"glositem\"><div class=\"glost\">BSN</div><div class=\"glosd\">Baloncesto Superior Nacional: la liga profesional de baloncesto de Puerto Rico. Fundada en 1929, primera temporada en 1930. Doce equipos, 34 juegos por equipo, de marzo a agosto.</div></div><div class=\"glositem\"><div class=\"glost\">La Más Dura</div><div class=\"glosd\">El apodo de la liga. La idea es que es un torneo corto y sin descanso: con 34 juegos, una mala racha de dos semanas te puede dejar fuera.</div></div><div class=\"glositem\"><div class=\"glost\">Refuerzo</div><div class=\"glosd\">Un jugador extranjero contratado para reforzar a un equipo. Cada club puede tener un número limitado; desde 2025 son tres por equipo, antes eran dos. Es la palabra puertorriqueña para lo que en otras ligas se llama importado.</div></div><div class=\"glositem\"><div class=\"glost\">Nativizado</div><div class=\"glosd\">Un jugador nacido fuera que, por residencia o por vía federativa, cuenta como nativo y por tanto no ocupa una de las plazas de refuerzo. La distinción decide cuántos extranjeros puede vestir un equipo.</div></div><div class=\"glositem\"><div class=\"glost\">Final Brava</div><div class=\"glosd\">El nombre que la liga le da a su serie final. Se juega al mejor de siete.</div></div><div class=\"glositem\"><div class=\"glost\">Fase regular</div><div class=\"glosd\">Los 34 juegos que cada equipo juega antes de los playoffs. Deciden quién clasifica y en qué orden.</div></div><div class=\"glositem\"><div class=\"glost\">Repechaje</div><div class=\"glosd\">Una ronda extra entre los equipos que quedaron justo fuera de la clasificación, para darles una última oportunidad de entrar a los playoffs.</div></div><div class=\"glositem\"><div class=\"glost\">BSNF</div><div class=\"glosd\">Baloncesto Superior Nacional Femenino: la liga femenina de Puerto Rico. Corre en temporada aparte de la masculina.</div></div><div class=\"glositem\"><div class=\"glost\">Nuyorican</div><div class=\"glosd\">Puertorriqueño criado en Nueva York. En los setenta, Raymond Dalmau, Neftalí Rivera y Rubén Rodríguez llegaron de las canchas de Harlem y el Bronx y cambiaron cómo se jugaba aquí. Al principio contaban como refuerzos.</div></div><div class=\"glositem\"><div class=\"glost\">Dirigente</div><div class=\"glosd\">El entrenador o head coach. Muchos dirigentes del BSN son exjugadores del propio torneo.</div></div><div class=\"glositem\"><div class=\"glost\">Apoderado</div><div class=\"glosd\">El dueño o principal responsable de una franquicia. En el BSN el apoderado suele ser una figura pública con nombre propio, no una corporación anónima.</div></div><div class=\"glositem\"><div class=\"glost\">Sequía</div><div class=\"glosd\">Los años que lleva un club sin ganar un título. En este archivo se cuenta desde su último campeonato hasta 2026.</div></div><div class=\"glositem\"><div class=\"glost\">Novato del año</div><div class=\"glosd\">El premio al mejor jugador en su primera temporada.</div></div><div class=\"glositem\"><div class=\"glost\">MVP</div><div class=\"glosd\">Jugador Más Valioso de la temporada. Pachín Vicéns, Teófilo Cruz y Mario Morales lo ganaron cuatro veces cada uno, que es el récord.</div></div><div class=\"glositem\"><div class=\"glost\">Triple</div><div class=\"glosd\">El tiro de tres puntos. No existió en el BSN hasta los años ochenta, y por eso los totales de anotación de las primeras décadas no se comparan limpiamente con los de hoy.</div></div></div></div></div></div></section>",
+  "styles": {
+    "body": {
+      "color": "rgb(11, 23, 48)",
+      "background-color": "rgb(241, 244, 250)",
+      "font-size": "15px",
+      "font-family": "Inter, -apple-system, \"system-ui\", \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "0px 0px 64px",
+      "margin": "0px",
+      "border-radius": "0px",
+      "line-height": "22.5px"
+    },
+    "nav.tabs": {
+      "color": "rgb(11, 23, 48)",
+      "background-color": "rgba(0, 0, 0, 0)",
+      "font-size": "15px",
+      "font-family": "Inter, -apple-system, \"system-ui\", \"Segoe UI\", Roboto, sans-serif",
+      "display": "none",
+      "padding": "0px",
+      "margin": "0px",
+      "border-radius": "0px",
+      "line-height": "22.5px"
+    },
+    ".card": {
+      "color": "rgb(11, 23, 48)",
+      "background-color": "rgb(255, 255, 255)",
+      "font-size": "15px",
+      "font-family": "Inter, -apple-system, \"system-ui\", \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "16px",
+      "margin": "0px",
+      "border-radius": "10px",
+      "line-height": "22.5px"
+    },
+    ".foot": {
+      "color": "rgb(90, 108, 142)",
+      "background-color": "rgba(0, 0, 0, 0)",
+      "font-size": "12.5px",
+      "font-family": "Inter, -apple-system, \"system-ui\", \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "22px 0px 40px",
+      "margin": "40px 0px 0px",
+      "border-radius": "0px",
+      "line-height": "18.75px"
+    },
+    "a": {
+      "color": "rgb(90, 108, 142)",
+      "background-color": "rgba(0, 0, 0, 0)",
+      "font-size": "14px",
+      "font-family": "Inter, -apple-system, \"system-ui\", \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "13px 4px 12px",
+      "margin": "0px 9px",
+      "border-radius": "0px",
+      "line-height": "21px"
+    },
+    "button.btn": {
+      "color": "rgb(11, 23, 48)",
+      "background-color": "rgb(225, 233, 245)",
+      "font-size": "13px",
+      "font-family": "Inter, -apple-system, \"system-ui\", \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "9px 14px",
+      "margin": "0px",
+      "border-radius": "6px",
+      "line-height": "19.5px"
+    },
+    "h1, h2": {
+      "color": "rgb(11, 23, 48)",
+      "background-color": "rgba(0, 0, 0, 0)",
+      "font-size": "22px",
+      "font-family": "Inter, -apple-system, \"system-ui\", \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "0px",
+      "margin": "0px",
+      "border-radius": "0px",
+      "line-height": "25.3px"
+    },
+    ".note": {
+      "color": "rgb(90, 108, 142)",
+      "background-color": "rgba(0, 0, 0, 0)",
+      "font-size": "12px",
+      "font-family": "Inter, -apple-system, \"system-ui\", \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "0px",
+      "margin": "12px 0px",
+      "border-radius": "0px",
+      "line-height": "18px"
+    }
+  },
+  "a11y": {
+    "role": "WebArea",
+    "name": "BSN Archivo · Baloncesto Superior Nacional, 1930–2026",
+    "children": [
+      {
+        "role": "button",
+        "name": "Ir a Inicio"
+      },
+      {
+        "role": "button",
+        "name": "Tema: automático (sigue el sistema) · toca para cambiar a claro",
+        "description": "Tema: automático / claro / oscuro"
+      },
+      {
+        "role": "button",
+        "name": "Ajustes",
+        "description": "Ajustes y tu perfil"
+      },
+      {
+        "role": "button",
+        "name": "Mi club +"
+      },
+      {
+        "role": "heading",
+        "name": "EL ARCHIVO",
+        "level": 1
+      },
+      {
+        "role": "text",
+        "name": "Pregúntale directamente, o mira qué tiene, qué le falta y de dónde sale cada dato. Un archivo que esconde sus huecos vale menos que uno que los enseña."
+      },
+      {
+        "role": "tablist",
+        "name": "Vistas de archivo",
+        "orientation": "horizontal",
+        "children": [
+          {
+            "role": "tab",
+            "name": "Resumen"
+          },
+          {
+            "role": "tab",
+            "name": "Preguntar"
+          },
+          {
+            "role": "tab",
+            "name": "A la medida"
+          },
+          {
+            "role": "tab",
+            "name": "Cobertura y fuentes"
+          },
+          {
+            "role": "tab",
+            "name": "Calidad de datos"
+          },
+          {
+            "role": "tab",
+            "name": "Calendario"
+          },
+          {
+            "role": "tab",
+            "name": "Glosario"
+          }
+        ]
+      },
+      {
+        "role": "text",
+        "name": "LO QUE ESTE ARCHIVO NO SABE"
+      },
+      {
+        "role": "text",
+        "name": "Antes de 2011 no hay estadística por temporada"
+      },
+      {
+        "role": "text",
+        "name": "Ese es el muro real. Todo lo demás — los huecos, los conflictos entre fuentes, de dónde sale cada dato — está aquí, dicho de frente."
+      },
+      {
+        "role": "button",
+        "name": "Ver los huecos"
+      },
+      {
+        "role": "link",
+        "name": "Preguntar Pregúntale al archivo en español."
+      },
+      {
+        "role": "link",
+        "name": "A la medida Escoge una tabla, filtra, ordena y baja a CSV."
+      },
+      {
+        "role": "link",
+        "name": "Cobertura y fuentes Cuánto del archivo está verificado, por década, y de dónde sale cada dato."
+      },
+      {
+        "role": "link",
+        "name": "Calidad de datos Dónde las fuentes no coinciden y qué hicimos con cada caso."
+      },
+      {
+        "role": "link",
+        "name": "Calendario Lo que se puede reconstruir del calendario del BSN, y lo que falta."
+      },
+      {
+        "role": "link",
+        "name": "Glosario Las palabras que el archivo usa sin explicar en el resto de la app."
+      },
+      {
+        "role": "text",
+        "name": "BSN Archivo · construido por "
+      },
+      {
+        "role": "text",
+        "name": "bennizpr"
+      },
+      {
+        "role": "text",
+        "name": " · San Juan, Puerto Rico."
+      },
+      {
+        "role": "LineBreak",
+        "name": "\n"
+      },
+      {
+        "role": "text",
+        "name": "Los datos vienen de fuentes públicas citadas en «El archivo». Proyecto independiente de un aficionado. No está afiliado ni respaldado por el Baloncesto Superior Nacional ni por sus equipos."
+      },
+      {
+        "role": "LineBreak",
+        "name": "\n"
+      },
+      {
+        "role": "text",
+        "name": "Este sitio no usa cookies ni analítica. Las tipografías vienen de Google Fonts, por lo que Google recibe tu dirección IP. Tu navegador guarda solo tus preferencias (tema y club favorito), tu progreso en los juegos y una copia de los datos para que el sitio funcione sin conexión."
+      },
+      {
+        "role": "LineBreak",
+        "name": "\n"
+      },
+      {
+        "role": "text",
+        "name": "¿Ves un error o quieres que retiremos algo? Escríbenos a "
+      },
+      {
+        "role": "link",
+        "name": "benniz.8008@gmail.com"
+      },
+      {
+        "role": "text",
+        "name": " o por Instagram "
+      },
+      {
+        "role": "link",
+        "name": "@bennizpr"
+      },
+      {
+        "role": "text",
+        "name": "."
+      },
+      {
+        "role": "tab",
+        "name": "Inicio",
+        "selected": true
+      },
+      {
+        "role": "tab",
+        "name": "Historia"
+      },
+      {
+        "role": "tab",
+        "name": "Jugadores"
+      },
+      {
+        "role": "tab",
+        "name": "Equipos"
+      },
+      {
+        "role": "tab",
+        "name": "Juega"
+      },
+      {
+        "role": "tab",
+        "name": "Archivo"
+      }
+    ]
+  },
+  "consoleErrors": [],
+  "failedRequests": []
+}

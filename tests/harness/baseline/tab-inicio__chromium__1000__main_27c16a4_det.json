@@ -1,0 +1,2117 @@
+{
+  "route": "tab:inicio",
+  "domHash": "1edbdc92c9a32b7b00d11b565187c51441a1c374546b690c4b8e727d0e8d6d51",
+  "domText": "<section id=\"inicio\" role=\"tabpanel\" aria-labelledby=\"tab-inicio\"><div class=\"panel\"><div id=\"heroBox\"><div class=\"hero\"><div class=\"ed-eye\">BSN · JUEVES 24 DE SEPTIEMBRE DE 2026</div><div class=\"herotop\"><div class=\"clock\"><div class=\"n\">178</div><div class=\"u\">días para la 98.ª temporada</div></div><div class=\"herotext\"><h2>Temporada muerta, día 32</h2><p>El BSN corre de finales de marzo a agosto. Los otros siete meses no hay marcador que mirar — hay 97 temporadas que revisar. Para eso es esto.</p><p class=\"dim\" style=\"font-size:var(--fs-2xs);margin-top:var(--sp-2)\">Apertura estimada: 21 de marzo de 2027 · estimado — la liga no ha anunciado la fecha</p></div></div><div class=\"herofoot\"><div class=\"trophy\"><span class=\"crest\" style=\"width:30px;height:36px\"><svg width=\"30\" height=\"36\" viewBox=\"0 0 112 130\" aria-hidden=\"true\"><defs><linearGradient id=\"cgbay30\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#1B4F9C\"></stop><stop offset=\"1\" stop-color=\"#1B4F9C\" stop-opacity=\".8\"></stop></linearGradient></defs><path d=\"M8 10h96v58c0 34-32 48-48 50-16-2-48-16-48-50Z\" fill=\"url(#cgbay30)\" stroke=\"#E8B23A\" stroke-width=\"3\"></path><g transform=\"translate(56,44) scale(.6) translate(-56,-44)\"><g fill=\"#E8B23A\"><ellipse cx=\"56\" cy=\"27\" rx=\"22\" ry=\"6\"></ellipse><rect x=\"45\" y=\"9\" width=\"22\" height=\"19\" rx=\"9\"></rect><circle cx=\"56\" cy=\"39\" r=\"8\"></circle><path d=\"M50 46h12l-6 7Z\"></path></g><path d=\"M43 52h26l-5 26h-16Z\" fill=\"#E8B23A\"></path><g stroke=\"#E8B23A\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"><path d=\"M43 55q-13 4-10 17\"></path><path d=\"M69 55q13 4 8 18\"></path><path d=\"M49 78l-4 22\"></path><path d=\"M63 78l5 22\"></path></g><circle cx=\"30\" cy=\"70\" r=\"7\" fill=\"none\" stroke=\"#E8B23A\" stroke-width=\"3\"></circle></g><text x=\"56\" y=\"105\" text-anchor=\"middle\" font-family=\"Inter,sans-serif\" font-weight=\"800\" letter-spacing=\"-.3\" font-size=\"16\" fill=\"#E8B23A\">BAY</text></svg></span><div><div class=\"t1\">Vaqueros de Bayamón — campeón 2026</div><div class=\"t2\">título 18 · bicampeonato</div></div><span class=\"herospark\" style=\"color:#1B4F9C\"><svg viewBox=\"0 0 150 20\" preserveAspectRatio=\"none\" aria-hidden=\"true\"><rect x=\"4.64\" y=\"0.00\" width=\"1.00\" height=\"20.00\" fill=\"currentColor\"></rect><rect x=\"7.73\" y=\"0.00\" width=\"1.00\" height=\"20.00\" fill=\"currentColor\"></rect><rect x=\"57.22\" y=\"0.00\" width=\"1.00\" height=\"20.00\" fill=\"currentColor\"></rect><rect x=\"60.31\" y=\"0.00\" width=\"1.00\" height=\"20.00\" fill=\"currentColor\"></rect><rect x=\"63.40\" y=\"0.00\" width=\"1.00\" height=\"20.00\" fill=\"currentColor\"></rect><rect x=\"64.95\" y=\"0.00\" width=\"1.00\" height=\"20.00\" fill=\"currentColor\"></rect><rect x=\"66.49\" y=\"0.00\" width=\"1.00\" height=\"20.00\" fill=\"currentColor\"></rect><rect x=\"68.04\" y=\"0.00\" width=\"1.00\" height=\"20.00\" fill=\"currentColor\"></rect><rect x=\"69.59\" y=\"0.00\" width=\"1.00\" height=\"20.00\" fill=\"currentColor\"></rect><rect x=\"78.87\" y=\"0.00\" width=\"1.00\" height=\"20.00\" fill=\"currentColor\"></rect><rect x=\"89.69\" y=\"0.00\" width=\"1.00\" height=\"20.00\" fill=\"currentColor\"></rect><rect x=\"100.52\" y=\"0.00\" width=\"1.00\" height=\"20.00\" fill=\"currentColor\"></rect><rect x=\"102.06\" y=\"0.00\" width=\"1.00\" height=\"20.00\" fill=\"currentColor\"></rect><rect x=\"122.16\" y=\"0.00\" width=\"1.00\" height=\"20.00\" fill=\"currentColor\"></rect><rect x=\"139.18\" y=\"0.00\" width=\"1.00\" height=\"20.00\" fill=\"currentColor\"></rect><rect x=\"142.27\" y=\"0.00\" width=\"1.00\" height=\"20.00\" fill=\"currentColor\"></rect><rect x=\"146.91\" y=\"0.00\" width=\"1.00\" height=\"20.00\" fill=\"currentColor\"></rect><rect x=\"148.45\" y=\"0.00\" width=\"1.00\" height=\"20.00\" fill=\"currentColor\"></rect></svg></span></div><div style=\"flex:1\"></div><button class=\"btn\" onclick=\"showView('historia','cinta')\">Ver la cinta</button></div></div></div><div id=\"hubTop\"><div class=\"hubtop\"><div style=\"flex:1;min-width:240px\"><h1 class=\"hubhead\">El archivo del BSN</h1><p class=\"hublede\">Noventa y siete temporadas, 1930 a 2026. Escoge por dónde entrar, o pregunta directamente.</p></div></div></div><div class=\"hubsearch\"><input type=\"search\" id=\"hubSearch\" onkeydown=\"hubAsk(event)\" placeholder=\"Prueba: cuándo murió Piculín · 1971 · títulos de Bayamón\" aria-label=\"Buscar en el archivo\"></div><div id=\"hubGrid\"><div class=\"edhub\"><button class=\"ed ed-lead\" onclick=\"showView('historia','cinta')\"><div class=\"ed-eye\">Historia</div><div class=\"ed-row\"><div class=\"ed-stat\">18</div><span class=\"ed-viz\"><svg viewBox=\"0 0 220 32\" preserveAspectRatio=\"none\" aria-hidden=\"true\"><rect x=\"6.80\" y=\"0.00\" width=\"1.27\" height=\"32.00\" fill=\"currentColor\"></rect><rect x=\"11.34\" y=\"0.00\" width=\"1.27\" height=\"32.00\" fill=\"currentColor\"></rect><rect x=\"83.92\" y=\"0.00\" width=\"1.27\" height=\"32.00\" fill=\"currentColor\"></rect><rect x=\"88.45\" y=\"0.00\" width=\"1.27\" height=\"32.00\" fill=\"currentColor\"></rect><rect x=\"92.99\" y=\"0.00\" width=\"1.27\" height=\"32.00\" fill=\"currentColor\"></rect><rect x=\"95.26\" y=\"0.00\" width=\"1.27\" height=\"32.00\" fill=\"currentColor\"></rect><rect x=\"97.53\" y=\"0.00\" width=\"1.27\" height=\"32.00\" fill=\"currentColor\"></rect><rect x=\"99.79\" y=\"0.00\" width=\"1.27\" height=\"32.00\" fill=\"currentColor\"></rect><rect x=\"102.06\" y=\"0.00\" width=\"1.27\" height=\"32.00\" fill=\"currentColor\"></rect><rect x=\"115.67\" y=\"0.00\" width=\"1.27\" height=\"32.00\" fill=\"currentColor\"></rect><rect x=\"131.55\" y=\"0.00\" width=\"1.27\" height=\"32.00\" fill=\"currentColor\"></rect><rect x=\"147.42\" y=\"0.00\" width=\"1.27\" height=\"32.00\" fill=\"currentColor\"></rect><rect x=\"149.69\" y=\"0.00\" width=\"1.27\" height=\"32.00\" fill=\"currentColor\"></rect><rect x=\"179.18\" y=\"0.00\" width=\"1.27\" height=\"32.00\" fill=\"currentColor\"></rect><rect x=\"204.12\" y=\"0.00\" width=\"1.27\" height=\"32.00\" fill=\"currentColor\"></rect><rect x=\"208.66\" y=\"0.00\" width=\"1.27\" height=\"32.00\" fill=\"currentColor\"></rect><rect x=\"215.46\" y=\"0.00\" width=\"1.27\" height=\"32.00\" fill=\"currentColor\"></rect><rect x=\"217.73\" y=\"0.00\" width=\"1.27\" height=\"32.00\" fill=\"currentColor\"></rect></svg></span></div><div class=\"ed-phrase\">títulos de Bayamón, el máximo de la liga</div><div class=\"ed-ctx\">La cinta de campeones, 1930 a 2026. Las dinastías se leen como franjas sólidas de color; los años flacos, como huecos.</div><span class=\"ed-act\">Ver la cinta <span aria-hidden=\"true\">→</span></span></button><button class=\"ed\" onclick=\"showView('jugadores','buscar')\"><div class=\"ed-eye\">Jugadores</div><div class=\"ed-row\"><div class=\"ed-stat\">3,326</div><span class=\"ed-viz\"><svg viewBox=\"0 0 96 24\" preserveAspectRatio=\"none\" aria-hidden=\"true\"><path d=\"M2.0 22.0 L17.3 21.8 L32.7 19.5 L48.0 18.7 L63.3 4.6 L78.7 4.6 L94.0 2.0 L 94.0 24 L 2.0 24 Z\" fill=\"currentColor\" opacity=\".14\"></path><path d=\"M2.0 22.0 L17.3 21.8 L32.7 19.5 L48.0 18.7 L63.3 4.6 L78.7 4.6 L94.0 2.0\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" vector-effect=\"non-scaling-stroke\"></path></svg></span></div><div class=\"ed-phrase\">jugadores con fuente</div><div class=\"ed-ctx\">Cada ficha dice también qué no se sabe de él.</div><span class=\"ed-act\">El índice <span aria-hidden=\"true\">→</span></span></button><button class=\"ed\" onclick=\"cmpPreset('Georgie Torres','Mario Morales')\"><div class=\"ed-eye\">Comparar</div><div class=\"ed-row\"><span class=\"ed-viz\"><span class=\"ed-cmp\"><i><b style=\"width:100%;background:var(--azul)\"></b></i><i><b style=\"width:96%;background:var(--rojo)\"></b></i></span></span></div><div class=\"ed-phrase\">Georgie Torres ⇄ Mario Morales</div><div class=\"ed-ctx\">Dos carreras lado a lado. Las casillas vacías son huecos del archivo, no ceros.</div><span class=\"ed-act\">Comparar <span aria-hidden=\"true\">→</span></span></button><button class=\"ed\" onclick=\"showView('juega','cuadricula')\"><div class=\"ed-eye\">Juega</div><div class=\"ed-row\"><div class=\"ed-stat\">#267</div><span class=\"ed-viz\"><svg viewBox=\"0 0 38 38\" aria-hidden=\"true\"><rect x=\"0\" y=\"0\" width=\"10\" height=\"10\" rx=\"2\" fill=\"none\" stroke=\"currentColor\" stroke-opacity=\"0.4\" stroke-width=\"1.4\"></rect><rect x=\"14\" y=\"0\" width=\"10\" height=\"10\" rx=\"2\" fill=\"currentColor\" stroke=\"currentColor\" stroke-opacity=\"1\" stroke-width=\"1.4\"></rect><rect x=\"28\" y=\"0\" width=\"10\" height=\"10\" rx=\"2\" fill=\"none\" stroke=\"currentColor\" stroke-opacity=\"0.4\" stroke-width=\"1.4\"></rect><rect x=\"0\" y=\"14\" width=\"10\" height=\"10\" rx=\"2\" fill=\"none\" stroke=\"currentColor\" stroke-opacity=\"0.4\" stroke-width=\"1.4\"></rect><rect x=\"14\" y=\"14\" width=\"10\" height=\"10\" rx=\"2\" fill=\"none\" stroke=\"currentColor\" stroke-opacity=\"0.4\" stroke-width=\"1.4\"></rect><rect x=\"28\" y=\"14\" width=\"10\" height=\"10\" rx=\"2\" fill=\"currentColor\" stroke=\"currentColor\" stroke-opacity=\"1\" stroke-width=\"1.4\"></rect><rect x=\"0\" y=\"28\" width=\"10\" height=\"10\" rx=\"2\" fill=\"currentColor\" stroke=\"currentColor\" stroke-opacity=\"1\" stroke-width=\"1.4\"></rect><rect x=\"14\" y=\"28\" width=\"10\" height=\"10\" rx=\"2\" fill=\"none\" stroke=\"currentColor\" stroke-opacity=\"0.4\" stroke-width=\"1.4\"></rect><rect x=\"28\" y=\"28\" width=\"10\" height=\"10\" rx=\"2\" fill=\"none\" stroke=\"currentColor\" stroke-opacity=\"0.4\" stroke-width=\"1.4\"></rect></svg></span></div><div class=\"ed-phrase\">La Cuadrícula de hoy</div><div class=\"ed-ctx\">Nueve cruces de club × logro. Un jugador que encaje en cada uno.</div><span class=\"ed-act\">Jugar <span aria-hidden=\"true\">→</span></span></button><button class=\"ed\" onclick=\"showView('archivo','cobertura')\"><div class=\"ed-eye\">Archivo</div><div class=\"ed-row\"><div class=\"ed-stat\">2011</div><span class=\"ed-viz\"><svg viewBox=\"0 0 110 24\" preserveAspectRatio=\"none\" aria-hidden=\"true\"><rect x=\"0.00\" y=\"19.20\" width=\"9.50\" height=\"4.80\" fill=\"currentColor\"></rect><rect x=\"11.00\" y=\"18.00\" width=\"9.50\" height=\"6.00\" fill=\"currentColor\"></rect><rect x=\"22.00\" y=\"16.80\" width=\"9.50\" height=\"7.20\" fill=\"currentColor\"></rect><rect x=\"33.00\" y=\"13.20\" width=\"9.50\" height=\"10.80\" fill=\"currentColor\"></rect><rect x=\"44.00\" y=\"12.00\" width=\"9.50\" height=\"12.00\" fill=\"currentColor\"></rect><rect x=\"55.00\" y=\"10.80\" width=\"9.50\" height=\"13.20\" fill=\"currentColor\"></rect><rect x=\"66.00\" y=\"12.00\" width=\"9.50\" height=\"12.00\" fill=\"currentColor\"></rect><rect x=\"77.00\" y=\"7.20\" width=\"9.50\" height=\"16.80\" fill=\"currentColor\"></rect><rect x=\"88.00\" y=\"6.00\" width=\"9.50\" height=\"18.00\" fill=\"currentColor\"></rect><rect x=\"99.00\" y=\"2.40\" width=\"9.50\" height=\"21.60\" fill=\"currentColor\"></rect></svg></span></div><div class=\"ed-phrase\">el muro real</div><div class=\"ed-ctx\">Antes de 2011 no hay estadística por temporada del BSN. El archivo enseña ese hueco y todos los demás.</div><span class=\"ed-act\">Cobertura <span aria-hidden=\"true\">→</span></span></button></div></div><p class=\"note\" id=\"hubFoot\">Escoge un club en Equipos y el archivo se reordena a su alrededor.</p><div id=\"hubPrimer\"><div class=\"primer\"><div class=\"primerhead\"><h4>¿Qué es el BSN?</h4><button class=\"x\" onclick=\"dismissPrimer()\">Ya lo sé, ocúltalo</button></div><p>El Baloncesto Superior Nacional es la liga profesional de baloncesto de Puerto Rico. Empezó en 1930 y no ha parado desde entonces, salvo unos pocos años sueltos. Hoy son doce equipos, cada uno de un pueblo, y cada equipo juega 34 partidos entre marzo y junio. Después vienen los playoffs, y en agosto se corona un campeón.</p><p>Lo que la hace distinta de otras ligas es el tamaño. Con 34 juegos, dos malas semanas te cuestan la temporada; de ahí el apodo, «La Más Dura». Y cada club puede firmar un número limitado de jugadores extranjeros, llamados refuerzos, así que el resto de la cancha es talento puertorriqueño.</p><p>Este archivo cubre las 97 temporadas: quién ganó, quién anotó, quién jugó y qué se perdió por el camino. Si una palabra no te suena, está en el <button class=\"x\" onclick=\"showView('archivo','glosario')\">glosario</button>.</p></div></div><div class=\"phead\"><div class=\"tri\"></div><h2 class=\"big\">La liga ahora</h2><p class=\"lede\">Dónde está el BSN en este momento — la Final Brava de 2026, cómo terminaron las posiciones, y lo que viene.</p></div><details class=\"liga\" open=\"\"><summary><h4>Lo próximo</h4></summary><p class=\"lede\">Cuándo se espera que arranque la temporada y qué fechas vienen. Lo confirmado y lo estimado van marcados aparte.</p><div id=\"calCount\"><div class=\"strip\"><div><div class=\"n\">178</div><div class=\"l\">días para la apertura estimada de 2027</div></div><div><div class=\"n\">—</div><div class=\"l\">días para la próxima fecha confirmada</div></div><div><div class=\"n\">32</div><div class=\"l\">días desde el último juego del BSN</div></div></div><p class=\"note\">La apertura de 2027 es un estimado de este archivo. La liga no ha anunciado fechas.</p></div><div id=\"calNext\"><div class=\"timeline\"><div class=\"tw\"><div class=\"td\">12 de septiembre de 2026 · ya pasó</div><div class=\"tt2\">Arranca el BSNF 2026-27 <span class=\"tag blue\">Confirmado</span></div><div class=\"tb\">La liga femenina abre temporada. Es la próxima fecha anunciada del baloncesto puertorriqueño, y la única de esta lista que no depende de un patrón.</div></div><div class=\"tw\"><div class=\"td\">Noviembre de 2026</div><div class=\"tt2\">Revisión del formato de refuerzos <span class=\"tag\">Patrón, sin fecha</span></div><div class=\"tb\">La regla de importados se ha revisado cada noviembre, incluida la de tres por club que entró en 2025. No hay fecha anunciada para esta.</div></div><div class=\"tw\"><div class=\"td\">Receso 2026-27</div><div class=\"tt2\">La junta fija las fechas de 2027 <span class=\"tag\">Patrón, sin fecha</span></div><div class=\"tb\">Las fechas suelen salir en el receso, no con mucha antelación.</div></div><div class=\"tw\"><div class=\"td\">21 de marzo de 2027</div><div class=\"tt2\">Apertura estimada del BSN 2027 <span class=\"tag gold\">Estimado</span></div><div class=\"tb\">Estimado por este archivo, no anunciado por la liga. Las últimas tres temporadas abrieron el 21 de marzo, el 22 de marzo y el 3 de abril.</div></div></div></div></details><details class=\"liga\" open=\"\"><summary><h4>La Final Brava 2026</h4></summary><p class=\"lede\">La serie final de 2026, juego por juego. «Final Brava» es como la liga le llama a su final.</p><div id=\"finalBrava\"><div class=\"series\"><div class=\"seriesrow win\"><span class=\"crest\" style=\"width:30px;height:36px\"><svg width=\"30\" height=\"36\" viewBox=\"0 0 112 130\" aria-hidden=\"true\"><defs><linearGradient id=\"cgbay30\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#1B4F9C\"></stop><stop offset=\"1\" stop-color=\"#1B4F9C\" stop-opacity=\".8\"></stop></linearGradient></defs><path d=\"M8 10h96v58c0 34-32 48-48 50-16-2-48-16-48-50Z\" fill=\"url(#cgbay30)\" stroke=\"#E8B23A\" stroke-width=\"3\"></path><g transform=\"translate(56,44) scale(.6) translate(-56,-44)\"><g fill=\"#E8B23A\"><ellipse cx=\"56\" cy=\"27\" rx=\"22\" ry=\"6\"></ellipse><rect x=\"45\" y=\"9\" width=\"22\" height=\"19\" rx=\"9\"></rect><circle cx=\"56\" cy=\"39\" r=\"8\"></circle><path d=\"M50 46h12l-6 7Z\"></path></g><path d=\"M43 52h26l-5 26h-16Z\" fill=\"#E8B23A\"></path><g stroke=\"#E8B23A\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"><path d=\"M43 55q-13 4-10 17\"></path><path d=\"M69 55q13 4 8 18\"></path><path d=\"M49 78l-4 22\"></path><path d=\"M63 78l5 22\"></path></g><circle cx=\"30\" cy=\"70\" r=\"7\" fill=\"none\" stroke=\"#E8B23A\" stroke-width=\"3\"></circle></g><text x=\"56\" y=\"105\" text-anchor=\"middle\" font-family=\"Inter,sans-serif\" font-weight=\"800\" letter-spacing=\"-.3\" font-size=\"16\" fill=\"#E8B23A\">BAY</text></svg></span><span class=\"nm\">Vaqueros de Bayamón</span><span class=\"sc\">4</span></div><div class=\"seriesrow lose\"><span class=\"crest\" style=\"width:30px;height:36px\"><svg width=\"30\" height=\"36\" viewBox=\"0 0 112 130\" aria-hidden=\"true\"><defs><linearGradient id=\"cgagu30\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#0C4DA2\"></stop><stop offset=\"1\" stop-color=\"#0C4DA2\" stop-opacity=\".8\"></stop></linearGradient></defs><path d=\"M8 10h96v58c0 34-32 48-48 50-16-2-48-16-48-50Z\" fill=\"url(#cgagu30)\" stroke=\"#F0A81E\" stroke-width=\"3\"></path><text x=\"56\" y=\"74\" text-anchor=\"middle\" font-family=\"Inter,sans-serif\" font-weight=\"800\" letter-spacing=\"-.3\" font-size=\"32\" fill=\"#F0A81E\">AGU</text></svg></span><span class=\"nm\">Santeros de Aguada</span><span class=\"sc\">3</span></div></div><div class=\"good\">MVP de la final: <b>Renaldo Balkman</b>. Primer bicampeonato desde los Leones de Ponce en 2014 y 2015. Octava final a siete juegos desde que la liga adoptó el formato de cancha local en 2002; el anfitrión del séptimo ha ganado siete de las ocho, la excepción fue Bayamón en 2010.</div><div><div class=\"tblwrap\"><table><thead><tr><th class=\"sortable\" data-i=\"0\" scope=\"col\">Juego</th><th class=\"sortable\" data-i=\"1\" scope=\"col\">Fecha</th><th class=\"sortable\" data-i=\"2\" scope=\"col\">Local</th><th class=\"sortable\" data-i=\"3\" scope=\"col\">Visita</th><th class=\"sortable\" data-i=\"4\" scope=\"col\">Marcador</th><th class=\"sortable\" data-i=\"5\" scope=\"col\">Ganó</th><th class=\"sortable\" data-i=\"6\" scope=\"col\">Serie</th><th class=\"sortable\" data-i=\"7\" scope=\"col\">Qué pasó</th></tr></thead><tbody><tr><td class=\"\">Juego 1</td><td class=\"\">9 ago</td><td class=\"\">BAY (L)</td><td class=\"\">AGU (V)</td><td class=\"\">91-75</td><td class=\"\">BAY</td><td class=\"\">1-0</td><td class=\"name\">Bayamón impone ritmo en casa.</td></tr><tr><td class=\"\">Juego 2</td><td class=\"\">12 ago</td><td class=\"\">AGU (L)</td><td class=\"\">BAY (V)</td><td class=\"\">86-87</td><td class=\"\">BAY</td><td class=\"\">2-0</td><td class=\"name\">Bayamón gana como visitante por un punto. Jones sale con su quinta falta y se arranca el dorsal; lo suspenden para el tercero.</td></tr><tr><td class=\"\">Juego 3</td><td class=\"\">14 ago</td><td class=\"\">BAY (L)</td><td class=\"\">AGU (V)</td><td class=\"\">93-95</td><td class=\"\">AGU</td><td class=\"\">2-1</td><td class=\"name\">Aguada gana en tiempo extra en el «rancho», sin Jones en el otro banco.</td></tr><tr><td class=\"\">Juego 4</td><td class=\"\">16 ago</td><td class=\"\">AGU (L)</td><td class=\"\">BAY (V)</td><td class=\"\">67-64</td><td class=\"\">AGU</td><td class=\"\">2-2</td><td class=\"name\">Triple de Manny Camper a 45 segundos. Rigoberto Mendoza, 22 puntos, 15 en el primer parcial.</td></tr><tr><td class=\"\">Juego 5</td><td class=\"\">19 ago</td><td class=\"\">BAY (L)</td><td class=\"\">AGU (V)</td><td class=\"\">97-79</td><td class=\"\">BAY</td><td class=\"\">3-2</td><td class=\"name\">Chris McCullough, 25 puntos. Bayamón llega a estar 22 arriba.</td></tr><tr><td class=\"\">Juego 6</td><td class=\"\">21 ago</td><td class=\"\">AGU (L)</td><td class=\"\">BAY (V)</td><td class=\"\">82-76</td><td class=\"\">AGU</td><td class=\"\">3-3</td><td class=\"name\">Aguada borra un déficit de 16 con un avance de 22-1 en el tercero y fuerza el séptimo.</td></tr><tr><td class=\"\">Juego 7</td><td class=\"\">23 ago</td><td class=\"\">BAY (L)</td><td class=\"\">AGU (V)</td><td class=\"\">81-74</td><td class=\"\">BAY</td><td class=\"\">4-3</td><td class=\"name\">Triples consecutivos de Thompson Jr. y Balkman a 2:43. Mojica sella desde la línea a 19.7 segundos.</td></tr></tbody></table></div><div class=\"tbl-meta\"><span>7 filas</span><button class=\"btn\" style=\"padding: 5px 10px; font-size: 12px;\">Descargar CSV</button></div></div><div><h4 class=\"sub\">Cómo llegaron</h4><div><div class=\"tblwrap\"><table><thead><tr><th class=\"sortable\" data-i=\"0\" scope=\"col\">Ronda</th><th class=\"sortable\" data-i=\"1\" scope=\"col\">Ganó</th><th class=\"sortable\" data-i=\"2\" scope=\"col\">Perdió</th><th class=\"sortable\" data-i=\"3\" scope=\"col\">Serie</th><th class=\"sortable\" data-i=\"4\" scope=\"col\">Detalle</th></tr></thead><tbody><tr><td class=\"\">Final Conferencia A</td><td class=\"\">Vaqueros de Bayamón</td><td class=\"\">Criollos de Caguas</td><td class=\"\">4-2</td><td class=\"name\">Bayamón ganó el quinto 122-79 y cerró en Caguas — su primer triunfo como visitante en la serie.</td></tr><tr><td class=\"\">Final Conferencia B</td><td class=\"\">Santeros de Aguada</td><td class=\"\">Leones de Ponce</td><td class=\"\">—</td><td class=\"name\">Aguada dominaba 3-2 y cerró en Ponce. El marcador del juego decisivo no aparece en las fuentes consultadas.</td></tr></tbody></table></div><div class=\"tbl-meta\"><span>2 filas</span><button class=\"btn\" style=\"padding: 5px 10px; font-size: 12px;\">Descargar CSV</button></div></div></div><div><h4 class=\"sub\">Premios 2026</h4><div><div class=\"tblwrap\"><table><thead><tr><th class=\"sortable\" data-i=\"0\" scope=\"col\">Premio</th><th class=\"sortable\" data-i=\"1\" scope=\"col\">Jugador</th><th class=\"sortable\" data-i=\"2\" scope=\"col\">Club</th><th class=\"sortable\" data-i=\"3\" scope=\"col\">Nota</th></tr></thead><tbody><tr><td class=\"\">Más Valioso</td><td class=\"name\">Travis Trice</td><td class=\"\">Criollos de Caguas</td><td class=\"name\">Su segundo MVP tras el de 2024.</td></tr><tr><td class=\"\">MVP de la final</td><td class=\"name\">Renaldo Balkman</td><td class=\"\">Vaqueros de Bayamón</td><td class=\"name\">A los 41 años.</td></tr><tr><td class=\"\">Dirigente del Año</td><td class=\"name\">Christian Dalmau</td><td class=\"\">Vaqueros de Bayamón</td><td class=\"name\">—</td></tr><tr><td class=\"\">Progreso del Año</td><td class=\"name\">André Curbelo</td><td class=\"\">Atléticos de San Germán</td><td class=\"name\">Único nativo del Quinteto Ideal.</td></tr><tr><td class=\"\">Novato del Año</td><td class=\"name\">Daniel Rivera</td><td class=\"\">Gigantes de Carolina</td><td class=\"name\">—</td></tr><tr><td class=\"\">Defensor del Año</td><td class=\"name\">Moses Brown</td><td class=\"\">Criollos de Caguas</td><td class=\"name\">Según RealGM.</td></tr><tr><td class=\"\">Sexto Hombre</td><td class=\"name\">Christian López</td><td class=\"\">Criollos de Caguas</td><td class=\"name\">Según RealGM.</td></tr><tr><td class=\"\">Excelencia Arbitral</td><td class=\"name\">Jorge Vázquez</td><td class=\"\">—</td><td class=\"name\">—</td></tr></tbody></table></div><div class=\"tbl-meta\"><span>8 filas</span><button class=\"btn\" style=\"padding: 5px 10px; font-size: 12px;\">Descargar CSV</button></div></div></div><div><h4 class=\"sub\">Quinteto Ideal</h4><div class=\"chips\"><span class=\"tag blue\">Travis Trice · PG · Criollos de Caguas</span><span class=\"tag blue\">André Curbelo · PG · Atléticos de San Germán</span><span class=\"tag blue\">Jaylen Nowell · SG · Gigantes de Carolina</span><span class=\"tag blue\">Montrezl Harrell · F · San Germán según RealGM · Caguas según Noticel</span><span class=\"tag blue\">Moses Brown · C · Criollos de Caguas</span></div><div class=\"warn\">Montrezl Harrell aparece con dos clubes distintos según la fuente. RealGM lo pone en San Germán, Noticel en Caguas. El archivo no escoge por ti.</div></div><div><h4 class=\"sub\">Lo último del cierre</h4><div class=\"cards g2\"><div class=\"card\"><div class=\"dim\" style=\"font-size:11px;letter-spacing:.07em;font-weight:600\">25 ago</div><div style=\"font-weight:700;margin-top:4px;font-size:15px\">Ricardo Dalmau habla de los 96 años de la liga</div><div class=\"muted\" style=\"font-size:13px;margin-top:4px\">El presidente del BSN, en la premiación: la liga sigue creciendo y llenando canchas.</div></div><div class=\"card\"><div class=\"dim\" style=\"font-size:11px;letter-spacing:.07em;font-weight:600\">24 ago</div><div style=\"font-weight:700;margin-top:4px;font-size:15px\">El Juego 7 lideró la televisión puertorriqueña</div><div class=\"muted\" style=\"font-size:13px;margin-top:4px\">125 mil personas conectadas en YouTube, 12 mil en el Coliseo Rubén Rodríguez.</div></div><div class=\"card\"><div class=\"dim\" style=\"font-size:11px;letter-spacing:.07em;font-weight:600\">23 ago</div><div style=\"font-weight:700;margin-top:4px;font-size:15px\">¡Vaqueros campeones! Bayamón conquista su campeonato número 18</div><div class=\"muted\" style=\"font-size:13px;margin-top:4px\">81-74 sobre Aguada en el séptimo.</div></div><div class=\"card\"><div class=\"dim\" style=\"font-size:11px;letter-spacing:.07em;font-weight:600\">21 ago</div><div style=\"font-weight:700;margin-top:4px;font-size:15px\">Rigoberto Mendoza, tras la eliminación de Aguada</div><div class=\"muted\" style=\"font-size:13px;margin-top:4px\">El anotador dominicano habla de su grupo.</div></div><div class=\"card\"><div class=\"dim\" style=\"font-size:11px;letter-spacing:.07em;font-weight:600\">21 ago</div><div style=\"font-weight:700;margin-top:4px;font-size:15px\">Aguada completa la remontada y habrá Juego 7</div><div class=\"muted\" style=\"font-size:13px;margin-top:4px\">82-76 en el Chavalillo Delgado.</div></div><div class=\"card\"><div class=\"dim\" style=\"font-size:11px;letter-spacing:.07em;font-weight:600\">19 ago</div><div style=\"font-weight:700;margin-top:4px;font-size:15px\">Chris McCullough: la serie no se había acabado</div><div class=\"muted\" style=\"font-size:13px;margin-top:4px\">Tras los 25 puntos del quinto juego.</div></div></div><p class=\"note\">Titulares vistos en la app oficial del BSN el 2 de septiembre de 2026. Solo los títulos, resumidos — el texto de los artículos es de sus medios.</p></div></div></details><details class=\"liga\" open=\"\"><summary><h4>Finales anteriores, juego a juego</h4></summary><p class=\"lede\">Las tres finales que se pudieron reconstruir partido por partido (2024–2026). Las demás existen como resultado, no como serie — ver Historia.</p><div id=\"finalsByYear\"><div class=\"filters\"><div class=\"field\"><label for=\"finYear\">Final</label><select id=\"finYear\"><option value=\"2026\">2026</option><option value=\"2025\">2025</option><option value=\"2024\">2024</option></select></div></div><div id=\"finBody\"><div class=\"series\" style=\"margin-top:12px\"><div class=\"seriesrow win\"><span class=\"crest\" style=\"width:28px;height:34px\"><svg width=\"28\" height=\"34\" viewBox=\"0 0 112 130\" aria-hidden=\"true\"><defs><linearGradient id=\"cgbay28\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#1B4F9C\"></stop><stop offset=\"1\" stop-color=\"#1B4F9C\" stop-opacity=\".8\"></stop></linearGradient></defs><path d=\"M8 10h96v58c0 34-32 48-48 50-16-2-48-16-48-50Z\" fill=\"url(#cgbay28)\" stroke=\"#E8B23A\" stroke-width=\"3\"></path><g transform=\"translate(56,44) scale(.6) translate(-56,-44)\"><g fill=\"#E8B23A\"><ellipse cx=\"56\" cy=\"27\" rx=\"22\" ry=\"6\"></ellipse><rect x=\"45\" y=\"9\" width=\"22\" height=\"19\" rx=\"9\"></rect><circle cx=\"56\" cy=\"39\" r=\"8\"></circle><path d=\"M50 46h12l-6 7Z\"></path></g><path d=\"M43 52h26l-5 26h-16Z\" fill=\"#E8B23A\"></path><g stroke=\"#E8B23A\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"><path d=\"M43 55q-13 4-10 17\"></path><path d=\"M69 55q13 4 8 18\"></path><path d=\"M49 78l-4 22\"></path><path d=\"M63 78l5 22\"></path></g><circle cx=\"30\" cy=\"70\" r=\"7\" fill=\"none\" stroke=\"#E8B23A\" stroke-width=\"3\"></circle></g><text x=\"56\" y=\"105\" text-anchor=\"middle\" font-family=\"Inter,sans-serif\" font-weight=\"800\" letter-spacing=\"-.3\" font-size=\"16\" fill=\"#E8B23A\">BAY</text></svg></span><span class=\"nm\">Vaqueros de Bayamón</span><span class=\"sc\">4</span></div><div class=\"seriesrow lose\"><span class=\"crest\" style=\"width:28px;height:34px\"><svg width=\"28\" height=\"34\" viewBox=\"0 0 112 130\" aria-hidden=\"true\"><defs><linearGradient id=\"cgagu28\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#0C4DA2\"></stop><stop offset=\"1\" stop-color=\"#0C4DA2\" stop-opacity=\".8\"></stop></linearGradient></defs><path d=\"M8 10h96v58c0 34-32 48-48 50-16-2-48-16-48-50Z\" fill=\"url(#cgagu28)\" stroke=\"#F0A81E\" stroke-width=\"3\"></path><text x=\"56\" y=\"74\" text-anchor=\"middle\" font-family=\"Inter,sans-serif\" font-weight=\"800\" letter-spacing=\"-.3\" font-size=\"32\" fill=\"#F0A81E\">AGU</text></svg></span><span class=\"nm\">Santeros de Aguada</span><span class=\"sc\">3</span></div></div><div class=\"note\">MVP de la final: <b>Renaldo Balkman</b></div><div id=\"finTbl\"><div class=\"tblwrap\"><table><thead><tr><th class=\"sortable\" data-i=\"0\" scope=\"col\">Juego</th><th class=\"sortable\" data-i=\"1\" scope=\"col\">Fecha</th><th class=\"sortable\" data-i=\"2\" scope=\"col\">Local</th><th class=\"sortable\" data-i=\"3\" scope=\"col\">Visita</th><th class=\"sortable\" data-i=\"4\" scope=\"col\">Marcador</th><th class=\"num sortable\" data-i=\"5\" scope=\"col\">Margen</th><th class=\"sortable\" data-i=\"6\" scope=\"col\">Ganó</th><th class=\"sortable\" data-i=\"7\" scope=\"col\">Serie</th><th class=\"sortable\" data-i=\"8\" scope=\"col\">Parciales</th></tr></thead><tbody><tr><td class=\"\">Juego 1</td><td class=\"\">9 ago</td><td class=\"\">BAY (L)</td><td class=\"\">AGU (V)</td><td class=\"\">91-75</td><td class=\"num\">16</td><td class=\"\">BAY</td><td class=\"\">1-0</td><td class=\"name\">—</td></tr><tr><td class=\"\">Juego 2</td><td class=\"\">12 ago</td><td class=\"\">AGU (L)</td><td class=\"\">BAY (V)</td><td class=\"\">86-87</td><td class=\"num\">1</td><td class=\"\">BAY</td><td class=\"\">2-0</td><td class=\"name\">—</td></tr><tr><td class=\"\">Juego 3</td><td class=\"\">14 ago</td><td class=\"\">BAY (L)</td><td class=\"\">AGU (V)</td><td class=\"\">93-95</td><td class=\"num\">2</td><td class=\"\">AGU</td><td class=\"\">2-1</td><td class=\"name\">—</td></tr><tr><td class=\"\">Juego 4</td><td class=\"\">16 ago</td><td class=\"\">AGU (L)</td><td class=\"\">BAY (V)</td><td class=\"\">67-64</td><td class=\"num\">3</td><td class=\"\">AGU</td><td class=\"\">2-2</td><td class=\"name\">—</td></tr><tr><td class=\"\">Juego 5</td><td class=\"\">19 ago</td><td class=\"\">BAY (L)</td><td class=\"\">AGU (V)</td><td class=\"\">97-79</td><td class=\"num\">18</td><td class=\"\">BAY</td><td class=\"\">3-2</td><td class=\"name\">—</td></tr><tr><td class=\"\">Juego 6</td><td class=\"\">21 ago</td><td class=\"\">AGU (L)</td><td class=\"\">BAY (V)</td><td class=\"\">82-76</td><td class=\"num\">6</td><td class=\"\">AGU</td><td class=\"\">3-3</td><td class=\"name\">—</td></tr><tr><td class=\"\">Juego 7</td><td class=\"\">23 ago</td><td class=\"\">BAY (L)</td><td class=\"\">AGU (V)</td><td class=\"\">81-74</td><td class=\"num\">7</td><td class=\"\">BAY</td><td class=\"\">4-3</td><td class=\"name\">—</td></tr></tbody></table></div><div class=\"tbl-meta\"><span>7 filas</span><button class=\"btn\" style=\"padding: 5px 10px; font-size: 12px;\">Descargar CSV</button></div></div></div></div></details><details class=\"liga\" open=\"\"><summary><h4>Posiciones BSN 2026</h4></summary><p class=\"lede\">Cómo terminó la fase regular: doce equipos, 34 juegos cada uno, ordenados por victorias.</p><div id=\"standings2026\"><div class=\"standhead\"><h4>Grupo A</h4><span class=\"dim\" style=\"font-size:var(--fs-2xs)\">34 juegos · los cuatro primeros a cuartos</span></div><div class=\"tblwrap\"><table><thead><tr><th>#</th><th>Equipo</th><th class=\"num\">PG</th><th class=\"num\">PP</th><th class=\"num\">PCT</th><th class=\"num\">DIF</th><th class=\"num\">LOC</th><th class=\"num\">VIS</th></tr></thead><tbody><tr class=\"\"><td class=\"rank\">1</td><td class=\"team\"><span class=\"crest\" style=\"width:22px;height:26px\"><svg width=\"22\" height=\"26\" viewBox=\"0 0 112 130\" aria-hidden=\"true\"><defs><linearGradient id=\"cgbay22\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#1B4F9C\"></stop><stop offset=\"1\" stop-color=\"#1B4F9C\" stop-opacity=\".8\"></stop></linearGradient></defs><path d=\"M8 10h96v58c0 34-32 48-48 50-16-2-48-16-48-50Z\" fill=\"url(#cgbay22)\" stroke=\"#E8B23A\" stroke-width=\"3\"></path><g transform=\"translate(56,44) scale(.6) translate(-56,-44)\"><g fill=\"#E8B23A\"><ellipse cx=\"56\" cy=\"27\" rx=\"22\" ry=\"6\"></ellipse><rect x=\"45\" y=\"9\" width=\"22\" height=\"19\" rx=\"9\"></rect><circle cx=\"56\" cy=\"39\" r=\"8\"></circle><path d=\"M50 46h12l-6 7Z\"></path></g><path d=\"M43 52h26l-5 26h-16Z\" fill=\"#E8B23A\"></path><g stroke=\"#E8B23A\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"><path d=\"M43 55q-13 4-10 17\"></path><path d=\"M69 55q13 4 8 18\"></path><path d=\"M49 78l-4 22\"></path><path d=\"M63 78l5 22\"></path></g><circle cx=\"30\" cy=\"70\" r=\"7\" fill=\"none\" stroke=\"#E8B23A\" stroke-width=\"3\"></circle></g><text x=\"56\" y=\"105\" text-anchor=\"middle\" font-family=\"Inter,sans-serif\" font-weight=\"800\" letter-spacing=\"-.3\" font-size=\"16\" fill=\"#E8B23A\">BAY</text></svg></span><span>Vaqueros</span></td><td class=\"num\">22</td><td class=\"num\">12</td><td class=\"num\">.650</td><td class=\"num\">—</td><td class=\"num\">14-3</td><td class=\"num\">8-9</td></tr><tr class=\"\"><td class=\"rank\">2</td><td class=\"team\"><span class=\"crest\" style=\"width:22px;height:26px\"><svg width=\"22\" height=\"26\" viewBox=\"0 0 112 130\" aria-hidden=\"true\"><defs><linearGradient id=\"cgcag22\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#6B2C8F\"></stop><stop offset=\"1\" stop-color=\"#6B2C8F\" stop-opacity=\".8\"></stop></linearGradient></defs><path d=\"M8 10h96v58c0 34-32 48-48 50-16-2-48-16-48-50Z\" fill=\"url(#cgcag22)\" stroke=\"#EFD25C\" stroke-width=\"3\"></path><text x=\"56\" y=\"74\" text-anchor=\"middle\" font-family=\"Inter,sans-serif\" font-weight=\"800\" letter-spacing=\"-.3\" font-size=\"32\" fill=\"#EFD25C\">CAG</text></svg></span><span>Criollos</span></td><td class=\"num\">22</td><td class=\"num\">12</td><td class=\"num\">.650</td><td class=\"num\">—</td><td class=\"num\">15-2</td><td class=\"num\">7-10</td></tr><tr class=\"\"><td class=\"rank\">3</td><td class=\"team\"><span class=\"crest\" style=\"width:22px;height:26px\"><svg width=\"22\" height=\"26\" viewBox=\"0 0 112 130\" aria-hidden=\"true\"><defs><linearGradient id=\"cgsan22\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#E85D1F\"></stop><stop offset=\"1\" stop-color=\"#E85D1F\" stop-opacity=\".8\"></stop></linearGradient></defs><path d=\"M8 10h96v58c0 34-32 48-48 50-16-2-48-16-48-50Z\" fill=\"url(#cgsan22)\" stroke=\"#191919\" stroke-width=\"3\"></path><g transform=\"translate(56,44) scale(.6) translate(-56,-44)\"><path d=\"M30 56Q34 42 44 44Q50 38 56 38Q62 38 68 44Q78 42 82 56Q84 68 72 74Q62 78 56 78Q50 78 40 74Q28 68 30 56Z\" fill=\"#191919\"></path><g stroke=\"#191919\" stroke-width=\"2.6\"><line x1=\"46\" y1=\"44\" x2=\"43\" y2=\"34\"></line><line x1=\"66\" y1=\"44\" x2=\"69\" y2=\"34\"></line></g><circle cx=\"43\" cy=\"32\" r=\"3\" fill=\"#191919\"></circle><circle cx=\"69\" cy=\"32\" r=\"3\" fill=\"#191919\"></circle><g fill=\"#191919\"><path d=\"M30 50q-10-4-12 6q8 4 14-1Z\"></path><path d=\"M22 56q-4 8 4 12q4-6 0-12Z\"></path><path d=\"M82 50q10-4 12 6q-8 4-14-1Z\"></path><path d=\"M90 56q4 8-4 12q-4-6 0-12Z\"></path></g><g stroke=\"#191919\" stroke-width=\"2.4\" fill=\"none\" stroke-linecap=\"round\"><path d=\"M32 62L22 66L17 74\"></path><path d=\"M34 70L25 76L21 84\"></path><path d=\"M40 76L33 84L30 92\"></path><path d=\"M80 62L90 66L95 74\"></path><path d=\"M78 70L87 76L91 84\"></path><path d=\"M72 76L79 84L82 92\"></path></g></g><text x=\"56\" y=\"105\" text-anchor=\"middle\" font-family=\"Inter,sans-serif\" font-weight=\"800\" letter-spacing=\"-.3\" font-size=\"16\" fill=\"#191919\">SAN</text></svg></span><span>Cangrejeros</span></td><td class=\"num\">19</td><td class=\"num\">15</td><td class=\"num\">.560</td><td class=\"num\">3.0</td><td class=\"num\">9-8</td><td class=\"num\">10-7</td></tr><tr class=\"cut \"><td class=\"rank\">4</td><td class=\"team\"><span class=\"crest\" style=\"width:22px;height:26px\"><svg width=\"22\" height=\"26\" viewBox=\"0 0 112 130\" aria-hidden=\"true\"><defs><linearGradient id=\"cgcar22\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#1E9B54\"></stop><stop offset=\"1\" stop-color=\"#1E9B54\" stop-opacity=\".8\"></stop></linearGradient></defs><path d=\"M8 10h96v58c0 34-32 48-48 50-16-2-48-16-48-50Z\" fill=\"url(#cgcar22)\" stroke=\"#F5F5F5\" stroke-width=\"3\"></path><g transform=\"translate(56,44) scale(.6) translate(-56,-44)\"><circle cx=\"56\" cy=\"26\" r=\"13\" fill=\"#F5F5F5\"></circle><path d=\"M30 76c0-24 12-34 26-34s26 10 26 34Z\" fill=\"#F5F5F5\"></path><g stroke=\"#F5F5F5\" stroke-width=\"7\" stroke-linecap=\"round\"><path d=\"M32 50q-14 4-16 20\"></path><path d=\"M80 50q14 4 16 20\"></path></g><g stroke=\"#F5F5F5\" stroke-width=\"7\" stroke-linecap=\"round\"><line x1=\"46\" y1=\"76\" x2=\"40\" y2=\"94\"></line><line x1=\"66\" y1=\"76\" x2=\"72\" y2=\"94\"></line></g></g><text x=\"56\" y=\"105\" text-anchor=\"middle\" font-family=\"Inter,sans-serif\" font-weight=\"800\" letter-spacing=\"-.3\" font-size=\"16\" fill=\"#F5F5F5\">CAR</text></svg></span><span>Gigantes</span></td><td class=\"num\">18</td><td class=\"num\">16</td><td class=\"num\">.530</td><td class=\"num\">4.0</td><td class=\"num\">9-8</td><td class=\"num\">9-8</td></tr><tr class=\"\"><td class=\"rank\">5</td><td class=\"team\"><span class=\"crest\" style=\"width:22px;height:26px\"><svg width=\"22\" height=\"26\" viewBox=\"0 0 112 130\" aria-hidden=\"true\"><defs><linearGradient id=\"cgman22\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#7A4A22\"></stop><stop offset=\"1\" stop-color=\"#7A4A22\" stop-opacity=\".8\"></stop></linearGradient></defs><path d=\"M8 10h96v58c0 34-32 48-48 50-16-2-48-16-48-50Z\" fill=\"url(#cgman22)\" stroke=\"#E4C07A\" stroke-width=\"3\"></path><g transform=\"translate(56,44) scale(.6) translate(-56,-44)\"><circle cx=\"43\" cy=\"29\" r=\"9\" fill=\"#E4C07A\"></circle><circle cx=\"69\" cy=\"29\" r=\"9\" fill=\"#E4C07A\"></circle><circle cx=\"56\" cy=\"48\" r=\"20\" fill=\"#E4C07A\"></circle><ellipse cx=\"56\" cy=\"58\" rx=\"11\" ry=\"8\" fill=\"#7A4A22\"></ellipse><circle cx=\"49\" cy=\"42\" r=\"2.3\" fill=\"#7A4A22\"></circle><circle cx=\"63\" cy=\"42\" r=\"2.3\" fill=\"#7A4A22\"></circle><ellipse cx=\"56\" cy=\"56\" rx=\"2.6\" ry=\"2\" fill=\"#E4C07A\"></ellipse></g><text x=\"56\" y=\"105\" text-anchor=\"middle\" font-family=\"Inter,sans-serif\" font-weight=\"800\" letter-spacing=\"-.3\" font-size=\"16\" fill=\"#E4C07A\">MAN</text></svg></span><span>Osos</span></td><td class=\"num\">15</td><td class=\"num\">19</td><td class=\"num\">.440</td><td class=\"num\">7.0</td><td class=\"num\">11-6</td><td class=\"num\">4-13</td></tr><tr class=\"\"><td class=\"rank\">6</td><td class=\"team\"><span class=\"crest\" style=\"width:22px;height:26px\"><svg width=\"22\" height=\"26\" viewBox=\"0 0 112 130\" aria-hidden=\"true\"><defs><linearGradient id=\"cggua22\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#122E5C\"></stop><stop offset=\"1\" stop-color=\"#122E5C\" stop-opacity=\".8\"></stop></linearGradient></defs><path d=\"M8 10h96v58c0 34-32 48-48 50-16-2-48-16-48-50Z\" fill=\"url(#cggua22)\" stroke=\"#25C4E0\" stroke-width=\"3\"></path><text x=\"56\" y=\"74\" text-anchor=\"middle\" font-family=\"Inter,sans-serif\" font-weight=\"800\" letter-spacing=\"-.3\" font-size=\"32\" fill=\"#25C4E0\">GBO</text></svg></span><span>Mets</span></td><td class=\"num\">14</td><td class=\"num\">20</td><td class=\"num\">.410</td><td class=\"num\">8.0</td><td class=\"num\">8-9</td><td class=\"num\">6-11</td></tr></tbody></table></div><div class=\"standhead\"><h4>Grupo B</h4><span class=\"dim\" style=\"font-size:var(--fs-2xs)\">34 juegos · los cuatro primeros a cuartos</span></div><div class=\"tblwrap\"><table><thead><tr><th>#</th><th>Equipo</th><th class=\"num\">PG</th><th class=\"num\">PP</th><th class=\"num\">PCT</th><th class=\"num\">DIF</th><th class=\"num\">LOC</th><th class=\"num\">VIS</th></tr></thead><tbody><tr class=\"\"><td class=\"rank\">1</td><td class=\"team\"><span class=\"crest\" style=\"width:22px;height:26px\"><svg width=\"22\" height=\"26\" viewBox=\"0 0 112 130\" aria-hidden=\"true\"><defs><linearGradient id=\"cgsge22\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#F26A21\"></stop><stop offset=\"1\" stop-color=\"#F26A21\" stop-opacity=\".8\"></stop></linearGradient></defs><path d=\"M8 10h96v58c0 34-32 48-48 50-16-2-48-16-48-50Z\" fill=\"url(#cgsge22)\" stroke=\"#141414\" stroke-width=\"3\"></path><text x=\"56\" y=\"74\" text-anchor=\"middle\" font-family=\"Inter,sans-serif\" font-weight=\"800\" letter-spacing=\"-.3\" font-size=\"32\" fill=\"#141414\">SG</text></svg></span><span>Atléticos</span></td><td class=\"num\">21</td><td class=\"num\">13</td><td class=\"num\">.620</td><td class=\"num\">—</td><td class=\"num\">12-5</td><td class=\"num\">9-8</td></tr><tr class=\"\"><td class=\"rank\">2</td><td class=\"team\"><span class=\"crest\" style=\"width:22px;height:26px\"><svg width=\"22\" height=\"26\" viewBox=\"0 0 112 130\" aria-hidden=\"true\"><defs><linearGradient id=\"cgare22\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#0E7C7B\"></stop><stop offset=\"1\" stop-color=\"#0E7C7B\" stop-opacity=\".8\"></stop></linearGradient></defs><path d=\"M8 10h96v58c0 34-32 48-48 50-16-2-48-16-48-50Z\" fill=\"url(#cgare22)\" stroke=\"#F2F2F2\" stroke-width=\"3\"></path><g transform=\"translate(56,44) scale(.6) translate(-56,-44)\"><path d=\"M50 12l6 10 6-10Z\" fill=\"#F2F2F2\"></path><path d=\"M50 20a6 6 0 1 0 12 0a6 6 0 1 0 -12 0\" fill=\"none\" stroke=\"#F2F2F2\" stroke-width=\"4\"></path><line x1=\"56\" y1=\"26\" x2=\"56\" y2=\"72\" stroke=\"#F2F2F2\" stroke-width=\"5\"></line><line x1=\"42\" y1=\"38\" x2=\"70\" y2=\"38\" stroke=\"#F2F2F2\" stroke-width=\"4\"></line><path d=\"M40 60c0 12 8 18 16 18\" fill=\"none\" stroke=\"#F2F2F2\" stroke-width=\"5\" stroke-linecap=\"round\"></path><path d=\"M72 60c0 12-8 18-16 18\" fill=\"none\" stroke=\"#F2F2F2\" stroke-width=\"5\" stroke-linecap=\"round\"></path></g><text x=\"56\" y=\"105\" text-anchor=\"middle\" font-family=\"Inter,sans-serif\" font-weight=\"800\" letter-spacing=\"-.3\" font-size=\"16\" fill=\"#F2F2F2\">ARE</text></svg></span><span>Capitanes</span></td><td class=\"num\">18</td><td class=\"num\">16</td><td class=\"num\">.530</td><td class=\"num\">3.0</td><td class=\"num\">12-5</td><td class=\"num\">6-11</td></tr><tr class=\"\"><td class=\"rank\">3</td><td class=\"team\"><span class=\"crest\" style=\"width:22px;height:26px\"><svg width=\"22\" height=\"26\" viewBox=\"0 0 112 130\" aria-hidden=\"true\"><defs><linearGradient id=\"cgagu22\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#0C4DA2\"></stop><stop offset=\"1\" stop-color=\"#0C4DA2\" stop-opacity=\".8\"></stop></linearGradient></defs><path d=\"M8 10h96v58c0 34-32 48-48 50-16-2-48-16-48-50Z\" fill=\"url(#cgagu22)\" stroke=\"#F0A81E\" stroke-width=\"3\"></path><text x=\"56\" y=\"74\" text-anchor=\"middle\" font-family=\"Inter,sans-serif\" font-weight=\"800\" letter-spacing=\"-.3\" font-size=\"32\" fill=\"#F0A81E\">AGU</text></svg></span><span>Santeros</span></td><td class=\"num\">17</td><td class=\"num\">17</td><td class=\"num\">.500</td><td class=\"num\">4.0</td><td class=\"num\">10-7</td><td class=\"num\">7-10</td></tr><tr class=\"cut \"><td class=\"rank\">4</td><td class=\"team\"><span class=\"crest\" style=\"width:22px;height:26px\"><svg width=\"22\" height=\"26\" viewBox=\"0 0 112 130\" aria-hidden=\"true\"><defs><linearGradient id=\"cgpon22\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#C8102E\"></stop><stop offset=\"1\" stop-color=\"#C8102E\" stop-opacity=\".8\"></stop></linearGradient></defs><path d=\"M8 10h96v58c0 34-32 48-48 50-16-2-48-16-48-50Z\" fill=\"url(#cgpon22)\" stroke=\"#F0C24B\" stroke-width=\"3\"></path><g transform=\"translate(56,44) scale(.6) translate(-56,-44)\"><g fill=\"#F0C24B\"><path d=\"M56 44l6 -24 6 20Z\"></path><path d=\"M56 44l-6 -24 -6 20Z\"></path><path d=\"M56 44l14 -20 3 22Z\"></path><path d=\"M56 44l-14 -20 -3 22Z\"></path><path d=\"M56 44l20 -12 -1 22Z\"></path><path d=\"M56 44l-20 -12 1 22Z\"></path><path d=\"M56 44l24 -4 -6 20Z\"></path><path d=\"M56 44l-24 -4 6 20Z\"></path><path d=\"M56 48l25 4 -10 18Z\"></path><path d=\"M56 48l-25 4 10 18Z\"></path><path d=\"M56 52l22 12 -14 14Z\"></path><path d=\"M56 52l-22 12 14 14Z\"></path></g><circle cx=\"56\" cy=\"48\" r=\"15\" fill=\"#F0C24B\"></circle><path d=\"M44 40q4-6 10-3\" fill=\"none\" stroke=\"#C8102E\" stroke-width=\"2\"></path><path d=\"M68 40q-4-6-10-3\" fill=\"none\" stroke=\"#C8102E\" stroke-width=\"2\"></path><ellipse cx=\"49\" cy=\"46\" rx=\"2\" ry=\"2.6\" fill=\"#C8102E\"></ellipse><ellipse cx=\"63\" cy=\"46\" rx=\"2\" ry=\"2.6\" fill=\"#C8102E\"></ellipse><path d=\"M53 52h6l-3 4Z\" fill=\"#C8102E\"></path><path d=\"M48 58q8 5 16 0\" fill=\"none\" stroke=\"#C8102E\" stroke-width=\"1.8\" stroke-linecap=\"round\"></path><g stroke=\"#C8102E\" stroke-width=\"1.2\" opacity=\".75\"><line x1=\"40\" y1=\"52\" x2=\"30\" y2=\"50\"></line><line x1=\"40\" y1=\"56\" x2=\"30\" y2=\"57\"></line><line x1=\"72\" y1=\"52\" x2=\"82\" y2=\"50\"></line><line x1=\"72\" y1=\"56\" x2=\"82\" y2=\"57\"></line></g></g><text x=\"56\" y=\"105\" text-anchor=\"middle\" font-family=\"Inter,sans-serif\" font-weight=\"800\" letter-spacing=\"-.3\" font-size=\"16\" fill=\"#F0C24B\">PON</text></svg></span><span>Leones</span></td><td class=\"num\">15</td><td class=\"num\">19</td><td class=\"num\">.440</td><td class=\"num\">6.0</td><td class=\"num\">10-7</td><td class=\"num\">5-12</td></tr><tr class=\"\"><td class=\"rank\">5</td><td class=\"team\"><span class=\"crest\" style=\"width:22px;height:26px\"><svg width=\"22\" height=\"26\" viewBox=\"0 0 112 130\" aria-hidden=\"true\"><defs><linearGradient id=\"cgmay22\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#1F5B3A\"></stop><stop offset=\"1\" stop-color=\"#1F5B3A\" stop-opacity=\".8\"></stop></linearGradient></defs><path d=\"M8 10h96v58c0 34-32 48-48 50-16-2-48-16-48-50Z\" fill=\"url(#cgmay22)\" stroke=\"#D9342B\" stroke-width=\"3\"></path><text x=\"56\" y=\"74\" text-anchor=\"middle\" font-family=\"Inter,sans-serif\" font-weight=\"800\" letter-spacing=\"-.3\" font-size=\"32\" fill=\"#D9342B\">MAY</text></svg></span><span>Indios</span></td><td class=\"num\">13</td><td class=\"num\">21</td><td class=\"num\">.380</td><td class=\"num\">8.0</td><td class=\"num\">6-11</td><td class=\"num\">7-10</td></tr><tr class=\"\"><td class=\"rank\">6</td><td class=\"team\"><span class=\"crest\" style=\"width:22px;height:26px\"><svg width=\"22\" height=\"26\" viewBox=\"0 0 112 130\" aria-hidden=\"true\"><defs><linearGradient id=\"cgque22\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#B3141F\"></stop><stop offset=\"1\" stop-color=\"#B3141F\" stop-opacity=\".8\"></stop></linearGradient></defs><path d=\"M8 10h96v58c0 34-32 48-48 50-16-2-48-16-48-50Z\" fill=\"url(#cgque22)\" stroke=\"#1A1A1A\" stroke-width=\"3\"></path><g transform=\"translate(56,44) scale(.6) translate(-56,-44)\"><path d=\"M36 26Q56 14 76 26Q68 34 56 30Q44 34 36 26Z\" fill=\"#1A1A1A\"></path><circle cx=\"56\" cy=\"40\" r=\"10\" fill=\"#1A1A1A\"></circle><rect x=\"49\" y=\"37\" width=\"9\" height=\"4\" fill=\"#B3141F\" transform=\"rotate(-10 53 39)\"></rect><path d=\"M43 52h26l-5 26h-16Z\" fill=\"#1A1A1A\"></path><g stroke=\"#1A1A1A\" stroke-width=\"4\" stroke-linecap=\"round\"><line x1=\"44\" y1=\"66\" x2=\"68\" y2=\"78\"></line><line x1=\"68\" y1=\"66\" x2=\"44\" y2=\"78\"></line></g><circle cx=\"44\" cy=\"66\" r=\"2.4\" fill=\"#1A1A1A\"></circle><circle cx=\"68\" cy=\"66\" r=\"2.4\" fill=\"#1A1A1A\"></circle><circle cx=\"44\" cy=\"78\" r=\"2.4\" fill=\"#1A1A1A\"></circle><circle cx=\"68\" cy=\"78\" r=\"2.4\" fill=\"#1A1A1A\"></circle></g><text x=\"56\" y=\"105\" text-anchor=\"middle\" font-family=\"Inter,sans-serif\" font-weight=\"800\" letter-spacing=\"-.3\" font-size=\"16\" fill=\"#1A1A1A\">QUE</text></svg></span><span>Piratas</span></td><td class=\"num\">10</td><td class=\"num\">24</td><td class=\"num\">.290</td><td class=\"num\">11.0</td><td class=\"num\">7-10</td><td class=\"num\">3-14</td></tr></tbody></table></div><p class=\"note\">La línea azul marca el corte de cuartos de final. DIF es juegos detrás del primero, calculado aquí — la app oficial no lo publica. Bayamón y Caguas terminaron 22-12 empatados; Bayamón se quedó el primer lugar del Grupo A.</p><button class=\"btn\" style=\"margin-top: var(--sp-2_5);\">Descargar posiciones 2026 (CSV)</button></div></details><details class=\"liga\" open=\"\"><summary><h4>Líderes 2026</h4></summary><p class=\"lede\">Los que más anotaron, rebotearon y asistieron en la última temporada.</p><div id=\"leaders2026\"><div class=\"tblwrap\"><table><thead><tr><th class=\"sortable\" data-i=\"0\" scope=\"col\">#</th><th class=\"sortable\" data-i=\"1\" scope=\"col\">Jugador</th><th class=\"sortable\" data-i=\"2\" scope=\"col\">Club</th><th class=\"num sortable\" data-i=\"3\" scope=\"col\">PPJ<span class=\"arrow\">▼</span></th><th class=\"sortable\" data-i=\"4\" scope=\"col\">Nombre</th></tr></thead><tbody><tr><td class=\"\">1</td><td class=\"name\">K. Davis</td><td class=\"\">Osos de Manatí</td><td class=\"num\">23.4</td><td class=\"\">la app abrevia el nombre</td></tr><tr><td class=\"\">2</td><td class=\"name\">Jaylen Nowell</td><td class=\"\">Gigantes de Carolina/Canóvanas</td><td class=\"num\">22.4</td><td class=\"\">expandido</td></tr><tr><td class=\"\">3</td><td class=\"name\">Jassel Pérez</td><td class=\"\">Vaqueros de Bayamón</td><td class=\"num\">21.4</td><td class=\"\">expandido</td></tr><tr><td class=\"\">4</td><td class=\"name\">J. Nelson Jr</td><td class=\"\">Osos de Manatí</td><td class=\"num\">20.8</td><td class=\"\">la app abrevia el nombre</td></tr><tr><td class=\"\">5</td><td class=\"name\">J. Mcveigh</td><td class=\"\">Capitanes de Arecibo</td><td class=\"num\">20.4</td><td class=\"\">la app abrevia el nombre</td></tr></tbody></table></div><div class=\"tbl-meta\"><span>5 filas</span><button class=\"btn\" style=\"padding: 5px 10px; font-size: 12px;\">Descargar CSV</button><span>Fuente: app oficial del BSN, 2 sep 2026.</span></div><p class=\"note\">La app de la liga imprime solo la inicial del nombre. Dos de los cinco se pudieron confirmar contra la prensa; los otros tres quedan como aparecen, sin adivinar.</p></div></details><details class=\"liga\" open=\"\"><summary><h4>En esta fecha</h4></summary><p class=\"lede\">Lo que pasó un día como hoy en la historia de la liga. Cambia todos los días.</p><div id=\"onThisDay\"><h4 class=\"sub\">Lo demás de septiembre</h4><div class=\"cards g2\"><div class=\"card\"><div class=\"dim\" style=\"font-size:var(--fs-3xs);letter-spacing:.07em;font-weight:600\">8 septiembre 1969</div><div style=\"font-weight:700;margin-top:3px\">17,621 fanáticos en Bayamón</div><div class=\"muted\" style=\"font-size:var(--fs-xs);margin-top:3px\">La entrada más grande de la historia de la liga, contra Río Piedras. Superó un Ponce-Santurce que había llevado 16,564.</div></div><div class=\"card\"><div class=\"dim\" style=\"font-size:var(--fs-3xs);letter-spacing:.07em;font-weight:600\">19 septiembre 2019</div><div style=\"font-weight:700;margin-top:3px\">Ricardo Dalmau, electo presidente</div><div class=\"muted\" style=\"font-size:var(--fs-xs);margin-top:3px\">Sucedió a Fernando Quiñones Bodea.</div></div></div></div></details><details class=\"liga\" open=\"\"><summary><h4>Canales oficiales</h4></summary><p class=\"lede\">Este archivo no compite con la liga: cubre lo que la app oficial no guarda. Para hoy, ve directo a la fuente.</p><div id=\"channels\"><div class=\"cards g3\"><a class=\"card\" href=\"https://www.bsnpr.com/\" target=\"_blank\" rel=\"noopener\" style=\"text-decoration:none;color:inherit;display:block\"><div class=\"dim\" style=\"font-size:var(--fs-3xs);letter-spacing:.07em;font-weight:600\">SITIO OFICIAL</div><div style=\"font-weight:700;margin-top:3px;color:var(--azul-hi)\">bsnpr.com</div><div class=\"muted\" style=\"font-size:var(--fs-2xs);margin-top:3px\">Marcadores, calendario, posiciones y páginas de jugadores.</div></a><a class=\"card\" href=\"https://www.youtube.com/@BaloncestoSuperiorNacionalPR\" target=\"_blank\" rel=\"noopener\" style=\"text-decoration:none;color:inherit;display:block\"><div class=\"dim\" style=\"font-size:var(--fs-3xs);letter-spacing:.07em;font-weight:600\">YOUTUBE</div><div style=\"font-weight:700;margin-top:3px;color:var(--azul-hi)\">Baloncesto Superior Nacional PR</div><div class=\"muted\" style=\"font-size:var(--fs-2xs);margin-top:3px\">Resúmenes y juegos completos.</div></a><a class=\"card\" href=\"https://www.instagram.com/bsnpr/\" target=\"_blank\" rel=\"noopener\" style=\"text-decoration:none;color:inherit;display:block\"><div class=\"dim\" style=\"font-size:var(--fs-3xs);letter-spacing:.07em;font-weight:600\">INSTAGRAM</div><div style=\"font-weight:700;margin-top:3px;color:var(--azul-hi)\">@bsnpr</div><div class=\"muted\" style=\"font-size:var(--fs-2xs);margin-top:3px\">Clips y publicaciones diarias.</div></a><a class=\"card\" href=\"https://www.tiktok.com/@bsnpr\" target=\"_blank\" rel=\"noopener\" style=\"text-decoration:none;color:inherit;display:block\"><div class=\"dim\" style=\"font-size:var(--fs-3xs);letter-spacing:.07em;font-weight:600\">TIKTOK</div><div style=\"font-weight:700;margin-top:3px;color:var(--azul-hi)\">@bsnpr</div><div class=\"muted\" style=\"font-size:var(--fs-2xs);margin-top:3px\">Resúmenes cortos.</div></a><a class=\"card\" href=\"https://x.com/bsnpr\" target=\"_blank\" rel=\"noopener\" style=\"text-decoration:none;color:inherit;display:block\"><div class=\"dim\" style=\"font-size:var(--fs-3xs);letter-spacing:.07em;font-weight:600\">X</div><div style=\"font-weight:700;margin-top:3px;color:var(--azul-hi)\">@bsnpr</div><div class=\"muted\" style=\"font-size:var(--fs-2xs);margin-top:3px\">Actualizaciones en vivo.</div></a><a class=\"card\" href=\"https://www.facebook.com/bsnpr/\" target=\"_blank\" rel=\"noopener\" style=\"text-decoration:none;color:inherit;display:block\"><div class=\"dim\" style=\"font-size:var(--fs-3xs);letter-spacing:.07em;font-weight:600\">FACEBOOK</div><div style=\"font-weight:700;margin-top:3px;color:var(--azul-hi)\">BSN PR</div><div class=\"muted\" style=\"font-size:var(--fs-2xs);margin-top:3px\">Transmisiones y anuncios.</div></a><a class=\"card\" href=\"https://apps.apple.com/us/app/baloncesto-superior-nacional/id6479825880\" target=\"_blank\" rel=\"noopener\" style=\"text-decoration:none;color:inherit;display:block\"><div class=\"dim\" style=\"font-size:var(--fs-3xs);letter-spacing:.07em;font-weight:600\">APP MÓVIL</div><div style=\"font-weight:700;margin-top:3px;color:var(--azul-hi)\">iOS</div><div class=\"muted\" style=\"font-size:var(--fs-2xs);margin-top:3px\">La app de la propia liga.</div></a><a class=\"card\" href=\"https://play.google.com/store/apps/details?id=io.genius.bsnpr\" target=\"_blank\" rel=\"noopener\" style=\"text-decoration:none;color:inherit;display:block\"><div class=\"dim\" style=\"font-size:var(--fs-3xs);letter-spacing:.07em;font-weight:600\">APP MÓVIL</div><div style=\"font-weight:700;margin-top:3px;color:var(--azul-hi)\">Android</div><div class=\"muted\" style=\"font-size:var(--fs-2xs);margin-top:3px\">Construida sobre Genius Sports.</div></a></div></div></details></div></section>",
+  "styles": {
+    "body": {
+      "color": "rgb(11, 23, 48)",
+      "background-color": "rgb(241, 244, 250)",
+      "font-size": "15px",
+      "font-family": "Inter, -apple-system, \"system-ui\", \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "0px",
+      "margin": "0px",
+      "border-radius": "0px",
+      "line-height": "22.5px"
+    },
+    "nav.tabs": {
+      "color": "rgb(11, 23, 48)",
+      "background-color": "rgba(0, 0, 0, 0)",
+      "font-size": "15px",
+      "font-family": "Inter, -apple-system, \"system-ui\", \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "0px",
+      "margin": "0px",
+      "border-radius": "0px",
+      "line-height": "22.5px"
+    },
+    ".card": {
+      "color": "rgb(11, 23, 48)",
+      "background-color": "rgb(255, 255, 255)",
+      "font-size": "15px",
+      "font-family": "Inter, -apple-system, \"system-ui\", \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "16px",
+      "margin": "0px",
+      "border-radius": "10px",
+      "line-height": "22.5px"
+    },
+    ".foot": {
+      "color": "rgb(90, 108, 142)",
+      "background-color": "rgba(0, 0, 0, 0)",
+      "font-size": "12.5px",
+      "font-family": "Inter, -apple-system, \"system-ui\", \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "22px 0px 40px",
+      "margin": "40px 0px 0px",
+      "border-radius": "0px",
+      "line-height": "18.75px"
+    },
+    "a": {
+      "color": "rgb(90, 108, 142)",
+      "background-color": "rgba(0, 0, 0, 0)",
+      "font-size": "14px",
+      "font-family": "Inter, -apple-system, \"system-ui\", \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "13px 4px 12px",
+      "margin": "0px 9px",
+      "border-radius": "0px",
+      "line-height": "21px"
+    },
+    "button.btn": {
+      "color": "rgb(11, 23, 48)",
+      "background-color": "rgb(225, 233, 245)",
+      "font-size": "13px",
+      "font-family": "Inter, -apple-system, \"system-ui\", \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "9px 14px",
+      "margin": "0px",
+      "border-radius": "6px",
+      "line-height": "19.5px"
+    },
+    "h1, h2": {
+      "color": "rgb(11, 23, 48)",
+      "background-color": "rgba(0, 0, 0, 0)",
+      "font-size": "30px",
+      "font-family": "Inter, -apple-system, \"system-ui\", \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "0px",
+      "margin": "0px",
+      "border-radius": "0px",
+      "line-height": "34.5px"
+    },
+    ".note": {
+      "color": "rgb(90, 108, 142)",
+      "background-color": "rgba(0, 0, 0, 0)",
+      "font-size": "12px",
+      "font-family": "Inter, -apple-system, \"system-ui\", \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "0px",
+      "margin": "12px 0px",
+      "border-radius": "0px",
+      "line-height": "18px"
+    }
+  },
+  "a11y": {
+    "role": "WebArea",
+    "name": "BSN Archivo · Baloncesto Superior Nacional, 1930–2026",
+    "children": [
+      {
+        "role": "button",
+        "name": "Ir a Inicio"
+      },
+      {
+        "role": "button",
+        "name": "Tema: automático (sigue el sistema) · toca para cambiar a claro",
+        "description": "Tema: automático / claro / oscuro"
+      },
+      {
+        "role": "button",
+        "name": "Ajustes",
+        "description": "Ajustes y tu perfil"
+      },
+      {
+        "role": "button",
+        "name": "Mi club +"
+      },
+      {
+        "role": "tab",
+        "name": "Historia",
+        "haspopup": "menu"
+      },
+      {
+        "role": "tab",
+        "name": "Jugadores",
+        "haspopup": "menu"
+      },
+      {
+        "role": "tab",
+        "name": "Equipos",
+        "haspopup": "menu"
+      },
+      {
+        "role": "tab",
+        "name": "Juega",
+        "haspopup": "menu"
+      },
+      {
+        "role": "tab",
+        "name": "Archivo",
+        "haspopup": "menu"
+      },
+      {
+        "role": "text",
+        "name": "BSN · JUEVES 24 DE SEPTIEMBRE DE 2026"
+      },
+      {
+        "role": "text",
+        "name": "178"
+      },
+      {
+        "role": "text",
+        "name": "DÍAS PARA LA 98.ª TEMPORADA"
+      },
+      {
+        "role": "heading",
+        "name": "TEMPORADA MUERTA, DÍA 32",
+        "level": 2
+      },
+      {
+        "role": "text",
+        "name": "El BSN corre de finales de marzo a agosto. Los otros siete meses no hay marcador que mirar — hay 97 temporadas que revisar. Para eso es esto."
+      },
+      {
+        "role": "text",
+        "name": "Apertura estimada: 21 de marzo de 2027 · estimado — la liga no ha anunciado la fecha"
+      },
+      {
+        "role": "text",
+        "name": "Vaqueros de Bayamón — campeón 2026"
+      },
+      {
+        "role": "text",
+        "name": "título 18 · bicampeonato"
+      },
+      {
+        "role": "button",
+        "name": "Ver la cinta"
+      },
+      {
+        "role": "heading",
+        "name": "EL ARCHIVO DEL BSN",
+        "level": 1
+      },
+      {
+        "role": "text",
+        "name": "Noventa y siete temporadas, 1930 a 2026. Escoge por dónde entrar, o pregunta directamente."
+      },
+      {
+        "role": "searchbox",
+        "name": "Buscar en el archivo"
+      },
+      {
+        "role": "button",
+        "name": "HISTORIA 18 títulos de Bayamón, el máximo de la liga La cinta de campeones, 1930 a 2026. Las dinastías se leen como franjas sólidas de color; los años flacos, como huecos. Ver la cinta"
+      },
+      {
+        "role": "button",
+        "name": "JUGADORES 3,326 jugadores con fuente Cada ficha dice también qué no se sabe de él. El índice"
+      },
+      {
+        "role": "button",
+        "name": "COMPARAR Georgie Torres ⇄ Mario Morales Dos carreras lado a lado. Las casillas vacías son huecos del archivo, no ceros. Comparar"
+      },
+      {
+        "role": "button",
+        "name": "JUEGA #267 La Cuadrícula de hoy Nueve cruces de club × logro. Un jugador que encaje en cada uno. Jugar"
+      },
+      {
+        "role": "button",
+        "name": "ARCHIVO 2011 el muro real Antes de 2011 no hay estadística por temporada del BSN. El archivo enseña ese hueco y todos los demás. Cobertura"
+      },
+      {
+        "role": "text",
+        "name": "Escoge un club en Equipos y el archivo se reordena a su alrededor."
+      },
+      {
+        "role": "heading",
+        "name": "¿QUÉ ES EL BSN?",
+        "level": 4
+      },
+      {
+        "role": "button",
+        "name": "Ya lo sé, ocúltalo"
+      },
+      {
+        "role": "text",
+        "name": "El Baloncesto Superior Nacional es la liga profesional de baloncesto de Puerto Rico. Empezó en 1930 y no ha parado desde entonces, salvo unos pocos años sueltos. Hoy son doce equipos, cada uno de un pueblo, y cada equipo juega 34 partidos entre marzo y junio. Después vienen los playoffs, y en agosto se corona un campeón."
+      },
+      {
+        "role": "text",
+        "name": "Lo que la hace distinta de otras ligas es el tamaño. Con 34 juegos, dos malas semanas te cuestan la temporada; de ahí el apodo, «La Más Dura». Y cada club puede firmar un número limitado de jugadores extranjeros, llamados refuerzos, así que el resto de la cancha es talento puertorriqueño."
+      },
+      {
+        "role": "text",
+        "name": "Este archivo cubre las 97 temporadas: quién ganó, quién anotó, quién jugó y qué se perdió por el camino. Si una palabra no te suena, está en el "
+      },
+      {
+        "role": "button",
+        "name": "glosario"
+      },
+      {
+        "role": "text",
+        "name": "."
+      },
+      {
+        "role": "heading",
+        "name": "LA LIGA AHORA",
+        "level": 2
+      },
+      {
+        "role": "text",
+        "name": "Dónde está el BSN en este momento — la Final Brava de 2026, cómo terminaron las posiciones, y lo que viene."
+      },
+      {
+        "role": "DisclosureTriangle",
+        "name": "Lo próximo",
+        "expanded": true
+      },
+      {
+        "role": "text",
+        "name": "Cuándo se espera que arranque la temporada y qué fechas vienen. Lo confirmado y lo estimado van marcados aparte."
+      },
+      {
+        "role": "text",
+        "name": "178"
+      },
+      {
+        "role": "text",
+        "name": "días para la apertura estimada de 2027"
+      },
+      {
+        "role": "text",
+        "name": "—"
+      },
+      {
+        "role": "text",
+        "name": "días para la próxima fecha confirmada"
+      },
+      {
+        "role": "text",
+        "name": "32"
+      },
+      {
+        "role": "text",
+        "name": "días desde el último juego del BSN"
+      },
+      {
+        "role": "text",
+        "name": "La apertura de 2027 es un estimado de este archivo. La liga no ha anunciado fechas."
+      },
+      {
+        "role": "text",
+        "name": "12 DE SEPTIEMBRE DE 2026 · YA PASÓ"
+      },
+      {
+        "role": "text",
+        "name": "Arranca el BSNF 2026-27 "
+      },
+      {
+        "role": "text",
+        "name": "Confirmado"
+      },
+      {
+        "role": "text",
+        "name": "La liga femenina abre temporada. Es la próxima fecha anunciada del baloncesto puertorriqueño, y la única de esta lista que no depende de un patrón."
+      },
+      {
+        "role": "text",
+        "name": "NOVIEMBRE DE 2026"
+      },
+      {
+        "role": "text",
+        "name": "Revisión del formato de refuerzos "
+      },
+      {
+        "role": "text",
+        "name": "Patrón, sin fecha"
+      },
+      {
+        "role": "text",
+        "name": "La regla de importados se ha revisado cada noviembre, incluida la de tres por club que entró en 2025. No hay fecha anunciada para esta."
+      },
+      {
+        "role": "text",
+        "name": "RECESO 2026-27"
+      },
+      {
+        "role": "text",
+        "name": "La junta fija las fechas de 2027 "
+      },
+      {
+        "role": "text",
+        "name": "Patrón, sin fecha"
+      },
+      {
+        "role": "text",
+        "name": "Las fechas suelen salir en el receso, no con mucha antelación."
+      },
+      {
+        "role": "text",
+        "name": "21 DE MARZO DE 2027"
+      },
+      {
+        "role": "text",
+        "name": "Apertura estimada del BSN 2027 "
+      },
+      {
+        "role": "text",
+        "name": "Estimado"
+      },
+      {
+        "role": "text",
+        "name": "Estimado por este archivo, no anunciado por la liga. Las últimas tres temporadas abrieron el 21 de marzo, el 22 de marzo y el 3 de abril."
+      },
+      {
+        "role": "DisclosureTriangle",
+        "name": "La Final Brava 2026",
+        "expanded": true
+      },
+      {
+        "role": "text",
+        "name": "La serie final de 2026, juego por juego. «Final Brava» es como la liga le llama a su final."
+      },
+      {
+        "role": "text",
+        "name": "Vaqueros de Bayamón"
+      },
+      {
+        "role": "text",
+        "name": "4"
+      },
+      {
+        "role": "text",
+        "name": "Santeros de Aguada"
+      },
+      {
+        "role": "text",
+        "name": "3"
+      },
+      {
+        "role": "text",
+        "name": "MVP de la final: "
+      },
+      {
+        "role": "text",
+        "name": "Renaldo Balkman"
+      },
+      {
+        "role": "text",
+        "name": ". Primer bicampeonato desde los Leones de Ponce en 2014 y 2015. Octava final a siete juegos desde que la liga adoptó el formato de cancha local en 2002; el anfitrión del séptimo ha ganado siete de las ocho, la excepción fue Bayamón en 2010."
+      },
+      {
+        "role": "text",
+        "name": "JUEGO"
+      },
+      {
+        "role": "text",
+        "name": "FECHA"
+      },
+      {
+        "role": "text",
+        "name": "LOCAL"
+      },
+      {
+        "role": "text",
+        "name": "VISITA"
+      },
+      {
+        "role": "text",
+        "name": "MARCADOR"
+      },
+      {
+        "role": "text",
+        "name": "GANÓ"
+      },
+      {
+        "role": "text",
+        "name": "SERIE"
+      },
+      {
+        "role": "text",
+        "name": "QUÉ PASÓ"
+      },
+      {
+        "role": "text",
+        "name": "Juego 1"
+      },
+      {
+        "role": "text",
+        "name": "9 ago"
+      },
+      {
+        "role": "text",
+        "name": "BAY (L)"
+      },
+      {
+        "role": "text",
+        "name": "AGU (V)"
+      },
+      {
+        "role": "text",
+        "name": "91-75"
+      },
+      {
+        "role": "text",
+        "name": "BAY"
+      },
+      {
+        "role": "text",
+        "name": "1-0"
+      },
+      {
+        "role": "text",
+        "name": "Bayamón impone ritmo en casa."
+      },
+      {
+        "role": "text",
+        "name": "Juego 2"
+      },
+      {
+        "role": "text",
+        "name": "12 ago"
+      },
+      {
+        "role": "text",
+        "name": "AGU (L)"
+      },
+      {
+        "role": "text",
+        "name": "BAY (V)"
+      },
+      {
+        "role": "text",
+        "name": "86-87"
+      },
+      {
+        "role": "text",
+        "name": "BAY"
+      },
+      {
+        "role": "text",
+        "name": "2-0"
+      },
+      {
+        "role": "text",
+        "name": "Bayamón gana como visitante por un punto. Jones sale con su quinta falta y se arranca el dorsal; lo suspenden para el tercero."
+      },
+      {
+        "role": "text",
+        "name": "Juego 3"
+      },
+      {
+        "role": "text",
+        "name": "14 ago"
+      },
+      {
+        "role": "text",
+        "name": "BAY (L)"
+      },
+      {
+        "role": "text",
+        "name": "AGU (V)"
+      },
+      {
+        "role": "text",
+        "name": "93-95"
+      },
+      {
+        "role": "text",
+        "name": "AGU"
+      },
+      {
+        "role": "text",
+        "name": "2-1"
+      },
+      {
+        "role": "text",
+        "name": "Aguada gana en tiempo extra en el «rancho», sin Jones en el otro banco."
+      },
+      {
+        "role": "text",
+        "name": "Juego 4"
+      },
+      {
+        "role": "text",
+        "name": "16 ago"
+      },
+      {
+        "role": "text",
+        "name": "AGU (L)"
+      },
+      {
+        "role": "text",
+        "name": "BAY (V)"
+      },
+      {
+        "role": "text",
+        "name": "67-64"
+      },
+      {
+        "role": "text",
+        "name": "AGU"
+      },
+      {
+        "role": "text",
+        "name": "2-2"
+      },
+      {
+        "role": "text",
+        "name": "Triple de Manny Camper a 45 segundos. Rigoberto Mendoza, 22 puntos, 15 en el primer parcial."
+      },
+      {
+        "role": "text",
+        "name": "Juego 5"
+      },
+      {
+        "role": "text",
+        "name": "19 ago"
+      },
+      {
+        "role": "text",
+        "name": "BAY (L)"
+      },
+      {
+        "role": "text",
+        "name": "AGU (V)"
+      },
+      {
+        "role": "text",
+        "name": "97-79"
+      },
+      {
+        "role": "text",
+        "name": "BAY"
+      },
+      {
+        "role": "text",
+        "name": "3-2"
+      },
+      {
+        "role": "text",
+        "name": "Chris McCullough, 25 puntos. Bayamón llega a estar 22 arriba."
+      },
+      {
+        "role": "text",
+        "name": "Juego 6"
+      },
+      {
+        "role": "text",
+        "name": "21 ago"
+      },
+      {
+        "role": "text",
+        "name": "AGU (L)"
+      },
+      {
+        "role": "text",
+        "name": "BAY (V)"
+      },
+      {
+        "role": "text",
+        "name": "82-76"
+      },
+      {
+        "role": "text",
+        "name": "AGU"
+      },
+      {
+        "role": "text",
+        "name": "3-3"
+      },
+      {
+        "role": "text",
+        "name": "Aguada borra un déficit de 16 con un avance de 22-1 en el tercero y fuerza el séptimo."
+      },
+      {
+        "role": "text",
+        "name": "Juego 7"
+      },
+      {
+        "role": "text",
+        "name": "23 ago"
+      },
+      {
+        "role": "text",
+        "name": "BAY (L)"
+      },
+      {
+        "role": "text",
+        "name": "AGU (V)"
+      },
+      {
+        "role": "text",
+        "name": "81-74"
+      },
+      {
+        "role": "text",
+        "name": "BAY"
+      },
+      {
+        "role": "text",
+        "name": "4-3"
+      },
+      {
+        "role": "text",
+        "name": "Triples consecutivos de Thompson Jr. y Balkman a 2:43. Mojica sella desde la línea a 19.7 segundos."
+      },
+      {
+        "role": "text",
+        "name": "7 filas"
+      },
+      {
+        "role": "button",
+        "name": "Descargar CSV"
+      },
+      {
+        "role": "heading",
+        "name": "Cómo llegaron",
+        "level": 4
+      },
+      {
+        "role": "text",
+        "name": "RONDA"
+      },
+      {
+        "role": "text",
+        "name": "GANÓ"
+      },
+      {
+        "role": "text",
+        "name": "PERDIÓ"
+      },
+      {
+        "role": "text",
+        "name": "SERIE"
+      },
+      {
+        "role": "text",
+        "name": "DETALLE"
+      },
+      {
+        "role": "text",
+        "name": "Final Conferencia A"
+      },
+      {
+        "role": "text",
+        "name": "Vaqueros de Bayamón"
+      },
+      {
+        "role": "text",
+        "name": "Criollos de Caguas"
+      },
+      {
+        "role": "text",
+        "name": "4-2"
+      },
+      {
+        "role": "text",
+        "name": "Bayamón ganó el quinto 122-79 y cerró en Caguas — su primer triunfo como visitante en la serie."
+      },
+      {
+        "role": "text",
+        "name": "Final Conferencia B"
+      },
+      {
+        "role": "text",
+        "name": "Santeros de Aguada"
+      },
+      {
+        "role": "text",
+        "name": "Leones de Ponce"
+      },
+      {
+        "role": "text",
+        "name": "—"
+      },
+      {
+        "role": "text",
+        "name": "Aguada dominaba 3-2 y cerró en Ponce. El marcador del juego decisivo no aparece en las fuentes consultadas."
+      },
+      {
+        "role": "text",
+        "name": "2 filas"
+      },
+      {
+        "role": "button",
+        "name": "Descargar CSV"
+      },
+      {
+        "role": "heading",
+        "name": "Premios 2026",
+        "level": 4
+      },
+      {
+        "role": "text",
+        "name": "PREMIO"
+      },
+      {
+        "role": "text",
+        "name": "JUGADOR"
+      },
+      {
+        "role": "text",
+        "name": "CLUB"
+      },
+      {
+        "role": "text",
+        "name": "NOTA"
+      },
+      {
+        "role": "text",
+        "name": "Más Valioso"
+      },
+      {
+        "role": "text",
+        "name": "Travis Trice"
+      },
+      {
+        "role": "text",
+        "name": "Criollos de Caguas"
+      },
+      {
+        "role": "text",
+        "name": "Su segundo MVP tras el de 2024."
+      },
+      {
+        "role": "text",
+        "name": "MVP de la final"
+      },
+      {
+        "role": "text",
+        "name": "Renaldo Balkman"
+      },
+      {
+        "role": "text",
+        "name": "Vaqueros de Bayamón"
+      },
+      {
+        "role": "text",
+        "name": "A los 41 años."
+      },
+      {
+        "role": "text",
+        "name": "Dirigente del Año"
+      },
+      {
+        "role": "text",
+        "name": "Christian Dalmau"
+      },
+      {
+        "role": "text",
+        "name": "Vaqueros de Bayamón"
+      },
+      {
+        "role": "text",
+        "name": "—"
+      },
+      {
+        "role": "text",
+        "name": "Progreso del Año"
+      },
+      {
+        "role": "text",
+        "name": "André Curbelo"
+      },
+      {
+        "role": "text",
+        "name": "Atléticos de San Germán"
+      },
+      {
+        "role": "text",
+        "name": "Único nativo del Quinteto Ideal."
+      },
+      {
+        "role": "text",
+        "name": "Novato del Año"
+      },
+      {
+        "role": "text",
+        "name": "Daniel Rivera"
+      },
+      {
+        "role": "text",
+        "name": "Gigantes de Carolina"
+      },
+      {
+        "role": "text",
+        "name": "—"
+      },
+      {
+        "role": "text",
+        "name": "Defensor del Año"
+      },
+      {
+        "role": "text",
+        "name": "Moses Brown"
+      },
+      {
+        "role": "text",
+        "name": "Criollos de Caguas"
+      },
+      {
+        "role": "text",
+        "name": "Según RealGM."
+      },
+      {
+        "role": "text",
+        "name": "Sexto Hombre"
+      },
+      {
+        "role": "text",
+        "name": "Christian López"
+      },
+      {
+        "role": "text",
+        "name": "Criollos de Caguas"
+      },
+      {
+        "role": "text",
+        "name": "Según RealGM."
+      },
+      {
+        "role": "text",
+        "name": "Excelencia Arbitral"
+      },
+      {
+        "role": "text",
+        "name": "Jorge Vázquez"
+      },
+      {
+        "role": "text",
+        "name": "—"
+      },
+      {
+        "role": "text",
+        "name": "—"
+      },
+      {
+        "role": "text",
+        "name": "8 filas"
+      },
+      {
+        "role": "button",
+        "name": "Descargar CSV"
+      },
+      {
+        "role": "heading",
+        "name": "Quinteto Ideal",
+        "level": 4
+      },
+      {
+        "role": "text",
+        "name": "Travis Trice · PG · Criollos de Caguas"
+      },
+      {
+        "role": "text",
+        "name": "André Curbelo · PG · Atléticos de San Germán"
+      },
+      {
+        "role": "text",
+        "name": "Jaylen Nowell · SG · Gigantes de Carolina"
+      },
+      {
+        "role": "text",
+        "name": "Montrezl Harrell · F · San Germán según RealGM · Caguas según Noticel"
+      },
+      {
+        "role": "text",
+        "name": "Moses Brown · C · Criollos de Caguas"
+      },
+      {
+        "role": "text",
+        "name": "Montrezl Harrell aparece con dos clubes distintos según la fuente. RealGM lo pone en San Germán, Noticel en Caguas. El archivo no escoge por ti."
+      },
+      {
+        "role": "heading",
+        "name": "Lo último del cierre",
+        "level": 4
+      },
+      {
+        "role": "text",
+        "name": "25 ago"
+      },
+      {
+        "role": "text",
+        "name": "Ricardo Dalmau habla de los 96 años de la liga"
+      },
+      {
+        "role": "text",
+        "name": "El presidente del BSN, en la premiación: la liga sigue creciendo y llenando canchas."
+      },
+      {
+        "role": "text",
+        "name": "24 ago"
+      },
+      {
+        "role": "text",
+        "name": "El Juego 7 lideró la televisión puertorriqueña"
+      },
+      {
+        "role": "text",
+        "name": "125 mil personas conectadas en YouTube, 12 mil en el Coliseo Rubén Rodríguez."
+      },
+      {
+        "role": "text",
+        "name": "23 ago"
+      },
+      {
+        "role": "text",
+        "name": "¡Vaqueros campeones! Bayamón conquista su campeonato número 18"
+      },
+      {
+        "role": "text",
+        "name": "81-74 sobre Aguada en el séptimo."
+      },
+      {
+        "role": "text",
+        "name": "21 ago"
+      },
+      {
+        "role": "text",
+        "name": "Rigoberto Mendoza, tras la eliminación de Aguada"
+      },
+      {
+        "role": "text",
+        "name": "El anotador dominicano habla de su grupo."
+      },
+      {
+        "role": "text",
+        "name": "21 ago"
+      },
+      {
+        "role": "text",
+        "name": "Aguada completa la remontada y habrá Juego 7"
+      },
+      {
+        "role": "text",
+        "name": "82-76 en el Chavalillo Delgado."
+      },
+      {
+        "role": "text",
+        "name": "19 ago"
+      },
+      {
+        "role": "text",
+        "name": "Chris McCullough: la serie no se había acabado"
+      },
+      {
+        "role": "text",
+        "name": "Tras los 25 puntos del quinto juego."
+      },
+      {
+        "role": "text",
+        "name": "Titulares vistos en la app oficial del BSN el 2 de septiembre de 2026. Solo los títulos, resumidos — el texto de los artículos es de sus medios."
+      },
+      {
+        "role": "DisclosureTriangle",
+        "name": "Finales anteriores, juego a juego",
+        "expanded": true
+      },
+      {
+        "role": "text",
+        "name": "Las tres finales que se pudieron reconstruir partido por partido (2024–2026). Las demás existen como resultado, no como serie — ver Historia."
+      },
+      {
+        "role": "text",
+        "name": "FINAL"
+      },
+      {
+        "role": "combobox",
+        "name": "FINAL",
+        "haspopup": "menu",
+        "children": [
+          {
+            "role": "option",
+            "name": "2026",
+            "selected": true
+          },
+          {
+            "role": "option",
+            "name": "2025"
+          },
+          {
+            "role": "option",
+            "name": "2024"
+          }
+        ],
+        "value": "2026"
+      },
+      {
+        "role": "text",
+        "name": "Vaqueros de Bayamón"
+      },
+      {
+        "role": "text",
+        "name": "4"
+      },
+      {
+        "role": "text",
+        "name": "Santeros de Aguada"
+      },
+      {
+        "role": "text",
+        "name": "3"
+      },
+      {
+        "role": "text",
+        "name": "MVP de la final: "
+      },
+      {
+        "role": "text",
+        "name": "Renaldo Balkman"
+      },
+      {
+        "role": "text",
+        "name": "JUEGO"
+      },
+      {
+        "role": "text",
+        "name": "FECHA"
+      },
+      {
+        "role": "text",
+        "name": "LOCAL"
+      },
+      {
+        "role": "text",
+        "name": "VISITA"
+      },
+      {
+        "role": "text",
+        "name": "MARCADOR"
+      },
+      {
+        "role": "text",
+        "name": "MARGEN"
+      },
+      {
+        "role": "text",
+        "name": "GANÓ"
+      },
+      {
+        "role": "text",
+        "name": "SERIE"
+      },
+      {
+        "role": "text",
+        "name": "PARCIALES"
+      },
+      {
+        "role": "text",
+        "name": "Juego 1"
+      },
+      {
+        "role": "text",
+        "name": "9 ago"
+      },
+      {
+        "role": "text",
+        "name": "BAY (L)"
+      },
+      {
+        "role": "text",
+        "name": "AGU (V)"
+      },
+      {
+        "role": "text",
+        "name": "91-75"
+      },
+      {
+        "role": "text",
+        "name": "16"
+      },
+      {
+        "role": "text",
+        "name": "BAY"
+      },
+      {
+        "role": "text",
+        "name": "1-0"
+      },
+      {
+        "role": "text",
+        "name": "—"
+      },
+      {
+        "role": "text",
+        "name": "Juego 2"
+      },
+      {
+        "role": "text",
+        "name": "12 ago"
+      },
+      {
+        "role": "text",
+        "name": "AGU (L)"
+      },
+      {
+        "role": "text",
+        "name": "BAY (V)"
+      },
+      {
+        "role": "text",
+        "name": "86-87"
+      },
+      {
+        "role": "text",
+        "name": "1"
+      },
+      {
+        "role": "text",
+        "name": "BAY"
+      },
+      {
+        "role": "text",
+        "name": "2-0"
+      },
+      {
+        "role": "text",
+        "name": "—"
+      },
+      {
+        "role": "text",
+        "name": "Juego 3"
+      },
+      {
+        "role": "text",
+        "name": "14 ago"
+      },
+      {
+        "role": "text",
+        "name": "BAY (L)"
+      },
+      {
+        "role": "text",
+        "name": "AGU (V)"
+      },
+      {
+        "role": "text",
+        "name": "93-95"
+      },
+      {
+        "role": "text",
+        "name": "2"
+      },
+      {
+        "role": "text",
+        "name": "AGU"
+      },
+      {
+        "role": "text",
+        "name": "2-1"
+      },
+      {
+        "role": "text",
+        "name": "—"
+      },
+      {
+        "role": "text",
+        "name": "Juego 4"
+      },
+      {
+        "role": "text",
+        "name": "16 ago"
+      },
+      {
+        "role": "text",
+        "name": "AGU (L)"
+      },
+      {
+        "role": "text",
+        "name": "BAY (V)"
+      },
+      {
+        "role": "text",
+        "name": "67-64"
+      },
+      {
+        "role": "text",
+        "name": "3"
+      },
+      {
+        "role": "text",
+        "name": "AGU"
+      },
+      {
+        "role": "text",
+        "name": "2-2"
+      },
+      {
+        "role": "text",
+        "name": "—"
+      },
+      {
+        "role": "text",
+        "name": "Juego 5"
+      },
+      {
+        "role": "text",
+        "name": "19 ago"
+      },
+      {
+        "role": "text",
+        "name": "BAY (L)"
+      },
+      {
+        "role": "text",
+        "name": "AGU (V)"
+      },
+      {
+        "role": "text",
+        "name": "97-79"
+      },
+      {
+        "role": "text",
+        "name": "18"
+      },
+      {
+        "role": "text",
+        "name": "BAY"
+      },
+      {
+        "role": "text",
+        "name": "3-2"
+      },
+      {
+        "role": "text",
+        "name": "—"
+      },
+      {
+        "role": "text",
+        "name": "Juego 6"
+      },
+      {
+        "role": "text",
+        "name": "21 ago"
+      },
+      {
+        "role": "text",
+        "name": "AGU (L)"
+      },
+      {
+        "role": "text",
+        "name": "BAY (V)"
+      },
+      {
+        "role": "text",
+        "name": "82-76"
+      },
+      {
+        "role": "text",
+        "name": "6"
+      },
+      {
+        "role": "text",
+        "name": "AGU"
+      },
+      {
+        "role": "text",
+        "name": "3-3"
+      },
+      {
+        "role": "text",
+        "name": "—"
+      },
+      {
+        "role": "text",
+        "name": "Juego 7"
+      },
+      {
+        "role": "text",
+        "name": "23 ago"
+      },
+      {
+        "role": "text",
+        "name": "BAY (L)"
+      },
+      {
+        "role": "text",
+        "name": "AGU (V)"
+      },
+      {
+        "role": "text",
+        "name": "81-74"
+      },
+      {
+        "role": "text",
+        "name": "7"
+      },
+      {
+        "role": "text",
+        "name": "BAY"
+      },
+      {
+        "role": "text",
+        "name": "4-3"
+      },
+      {
+        "role": "text",
+        "name": "—"
+      },
+      {
+        "role": "text",
+        "name": "7 filas"
+      },
+      {
+        "role": "button",
+        "name": "Descargar CSV"
+      },
+      {
+        "role": "DisclosureTriangle",
+        "name": "Posiciones BSN 2026",
+        "expanded": true
+      },
+      {
+        "role": "text",
+        "name": "Cómo terminó la fase regular: doce equipos, 34 juegos cada uno, ordenados por victorias."
+      },
+      {
+        "role": "heading",
+        "name": "GRUPO A",
+        "level": 4
+      },
+      {
+        "role": "text",
+        "name": "34 juegos · los cuatro primeros a cuartos"
+      },
+      {
+        "role": "text",
+        "name": "#"
+      },
+      {
+        "role": "text",
+        "name": "EQUIPO"
+      },
+      {
+        "role": "text",
+        "name": "PG"
+      },
+      {
+        "role": "text",
+        "name": "PP"
+      },
+      {
+        "role": "text",
+        "name": "PCT"
+      },
+      {
+        "role": "text",
+        "name": "DIF"
+      },
+      {
+        "role": "text",
+        "name": "LOC"
+      },
+      {
+        "role": "text",
+        "name": "VIS"
+      },
+      {
+        "role": "text",
+        "name": "1"
+      },
+      {
+        "role": "text",
+        "name": "Vaqueros"
+      },
+      {
+        "role": "text",
+        "name": "22"
+      },
+      {
+        "role": "text",
+        "name": "12"
+      },
+      {
+        "role": "text",
+        "name": ".650"
+      },
+      {
+        "role": "text",
+        "name": "—"
+      },
+      {
+        "role": "text",
+        "name": "14-3"
+      },
+      {
+        "role": "text",
+        "name": "8-9"
+      },
+      {
+        "role": "text",
+        "name": "2"
+      },
+      {
+        "role": "text",
+        "name": "Criollos"
+      },
+      {
+        "role": "text",
+        "name": "22"
+      },
+      {
+        "role": "text",
+        "name": "12"
+      },
+      {
+        "role": "text",
+        "name": ".650"
+      },
+      {
+        "role": "text",
+        "name": "—"
+      },
+      {
+        "role": "text",
+        "name": "15-2"
+      },
+      {
+        "role": "text",
+        "name": "7-10"
+      },
+      {
+        "role": "text",
+        "name": "3"
+      },
+      {
+        "role": "text",
+        "name": "Cangrejeros"
+      },
+      {
+        "role": "text",
+        "name": "19"
+      },
+      {
+        "role": "text",
+        "name": "15"
+      },
+      {
+        "role": "text",
+        "name": ".560"
+      },
+      {
+        "role": "text",
+        "name": "3.0"
+      },
+      {
+        "role": "text",
+        "name": "9-8"
+      },
+      {
+        "role": "text",
+        "name": "10-7"
+      },
+      {
+        "role": "text",
+        "name": "4"
+      },
+      {
+        "role": "text",
+        "name": "Gigantes"
+      },
+      {
+        "role": "text",
+        "name": "18"
+      },
+      {
+        "role": "text",
+        "name": "16"
+      },
+      {
+        "role": "text",
+        "name": ".530"
+      },
+      {
+        "role": "text",
+        "name": "4.0"
+      },
+      {
+        "role": "text",
+        "name": "9-8"
+      },
+      {
+        "role": "text",
+        "name": "9-8"
+      },
+      {
+        "role": "text",
+        "name": "5"
+      },
+      {
+        "role": "text",
+        "name": "Osos"
+      },
+      {
+        "role": "text",
+        "name": "15"
+      },
+      {
+        "role": "text",
+        "name": "19"
+      },
+      {
+        "role": "text",
+        "name": ".440"
+      },
+      {
+        "role": "text",
+        "name": "7.0"
+      },
+      {
+        "role": "text",
+        "name": "11-6"
+      },
+      {
+        "role": "text",
+        "name": "4-13"
+      },
+      {
+        "role": "text",
+        "name": "6"
+      },
+      {
+        "role": "text",
+        "name": "Mets"
+      },
+      {
+        "role": "text",
+        "name": "14"
+      },
+      {
+        "role": "text",
+        "name": "20"
+      },
+      {
+        "role": "text",
+        "name": ".410"
+      },
+      {
+        "role": "text",
+        "name": "8.0"
+      },
+      {
+        "role": "text",
+        "name": "8-9"
+      },
+      {
+        "role": "text",
+        "name": "6-11"
+      },
+      {
+        "role": "heading",
+        "name": "GRUPO B",
+        "level": 4
+      },
+      {
+        "role": "text",
+        "name": "34 juegos · los cuatro primeros a cuartos"
+      },
+      {
+        "role": "text",
+        "name": "#"
+      },
+      {
+        "role": "text",
+        "name": "EQUIPO"
+      },
+      {
+        "role": "text",
+        "name": "PG"
+      },
+      {
+        "role": "text",
+        "name": "PP"
+      },
+      {
+        "role": "text",
+        "name": "PCT"
+      },
+      {
+        "role": "text",
+        "name": "DIF"
+      },
+      {
+        "role": "text",
+        "name": "LOC"
+      },
+      {
+        "role": "text",
+        "name": "VIS"
+      },
+      {
+        "role": "text",
+        "name": "1"
+      },
+      {
+        "role": "text",
+        "name": "Atléticos"
+      },
+      {
+        "role": "text",
+        "name": "21"
+      },
+      {
+        "role": "text",
+        "name": "13"
+      },
+      {
+        "role": "text",
+        "name": ".620"
+      },
+      {
+        "role": "text",
+        "name": "—"
+      },
+      {
+        "role": "text",
+        "name": "12-5"
+      },
+      {
+        "role": "text",
+        "name": "9-8"
+      },
+      {
+        "role": "text",
+        "name": "2"
+      },
+      {
+        "role": "text",
+        "name": "Capitanes"
+      },
+      {
+        "role": "text",
+        "name": "18"
+      },
+      {
+        "role": "text",
+        "name": "16"
+      },
+      {
+        "role": "text",
+        "name": ".530"
+      },
+      {
+        "role": "text",
+        "name": "3.0"
+      },
+      {
+        "role": "text",
+        "name": "12-5"
+      },
+      {
+        "role": "text",
+        "name": "6-11"
+      },
+      {
+        "role": "text",
+        "name": "3"
+      },
+      {
+        "role": "text",
+        "name": "Santeros"
+      },
+      {
+        "role": "text",
+        "name": "17"
+      },
+      {
+        "role": "text",
+        "name": "17"
+      },
+      {
+        "role": "text",
+        "name": ".500"
+      },
+      {
+        "role": "text",
+        "name": "4.0"
+      },
+      {
+        "role": "text",
+        "name": "10-7"
+      },
+      {
+        "role": "text",
+        "name": "7-10"
+      },
+      {
+        "role": "text",
+        "name": "4"
+      },
+      {
+        "role": "text",
+        "name": "Leones"
+      },
+      {
+        "role": "text",
+        "name": "15"
+      },
+      {
+        "role": "text",
+        "name": "19"
+      },
+      {
+        "role": "text",
+        "name": ".440"
+      },
+      {
+        "role": "text",
+        "name": "6.0"
+      },
+      {
+        "role": "text",
+        "name": "10-7"
+      },
+      {
+        "role": "text",
+        "name": "5-12"
+      },
+      {
+        "role": "text",
+        "name": "5"
+      },
+      {
+        "role": "text",
+        "name": "Indios"
+      },
+      {
+        "role": "text",
+        "name": "13"
+      },
+      {
+        "role": "text",
+        "name": "21"
+      },
+      {
+        "role": "text",
+        "name": ".380"
+      },
+      {
+        "role": "text",
+        "name": "8.0"
+      },
+      {
+        "role": "text",
+        "name": "6-11"
+      },
+      {
+        "role": "text",
+        "name": "7-10"
+      },
+      {
+        "role": "text",
+        "name": "6"
+      },
+      {
+        "role": "text",
+        "name": "Piratas"
+      },
+      {
+        "role": "text",
+        "name": "10"
+      },
+      {
+        "role": "text",
+        "name": "24"
+      },
+      {
+        "role": "text",
+        "name": ".290"
+      },
+      {
+        "role": "text",
+        "name": "11.0"
+      },
+      {
+        "role": "text",
+        "name": "7-10"
+      },
+      {
+        "role": "text",
+        "name": "3-14"
+      },
+      {
+        "role": "text",
+        "name": "La línea azul marca el corte de cuartos de final. DIF es juegos detrás del primero, calculado aquí — la app oficial no lo publica. Bayamón y Caguas terminaron 22-12 empatados; Bayamón se quedó el primer lugar del Grupo A."
+      },
+      {
+        "role": "button",
+        "name": "Descargar posiciones 2026 (CSV)"
+      },
+      {
+        "role": "DisclosureTriangle",
+        "name": "Líderes 2026",
+        "expanded": true
+      },
+      {
+        "role": "text",
+        "name": "Los que más anotaron, rebotearon y asistieron en la última temporada."
+      },
+      {
+        "role": "text",
+        "name": "#"
+      },
+      {
+        "role": "text",
+        "name": "JUGADOR"
+      },
+      {
+        "role": "text",
+        "name": "CLUB"
+      },
+      {
+        "role": "text",
+        "name": "PPJ"
+      },
+      {
+        "role": "text",
+        "name": "▼"
+      },
+      {
+        "role": "text",
+        "name": "NOMBRE"
+      },
+      {
+        "role": "text",
+        "name": "1"
+      },
+      {
+        "role": "text",
+        "name": "K. Davis"
+      },
+      {
+        "role": "text",
+        "name": "Osos de Manatí"
+      },
+      {
+        "role": "text",
+        "name": "23.4"
+      },
+      {
+        "role": "text",
+        "name": "la app abrevia el nombre"
+      },
+      {
+        "role": "text",
+        "name": "2"
+      },
+      {
+        "role": "text",
+        "name": "Jaylen Nowell"
+      },
+      {
+        "role": "text",
+        "name": "Gigantes de Carolina/Canóvanas"
+      },
+      {
+        "role": "text",
+        "name": "22.4"
+      },
+      {
+        "role": "text",
+        "name": "expandido"
+      },
+      {
+        "role": "text",
+        "name": "3"
+      },
+      {
+        "role": "text",
+        "name": "Jassel Pérez"
+      },
+      {
+        "role": "text",
+        "name": "Vaqueros de Bayamón"
+      },
+      {
+        "role": "text",
+        "name": "21.4"
+      },
+      {
+        "role": "text",
+        "name": "expandido"
+      },
+      {
+        "role": "text",
+        "name": "4"
+      },
+      {
+        "role": "text",
+        "name": "J. Nelson Jr"
+      },
+      {
+        "role": "text",
+        "name": "Osos de Manatí"
+      },
+      {
+        "role": "text",
+        "name": "20.8"
+      },
+      {
+        "role": "text",
+        "name": "la app abrevia el nombre"
+      },
+      {
+        "role": "text",
+        "name": "5"
+      },
+      {
+        "role": "text",
+        "name": "J. Mcveigh"
+      },
+      {
+        "role": "text",
+        "name": "Capitanes de Arecibo"
+      },
+      {
+        "role": "text",
+        "name": "20.4"
+      },
+      {
+        "role": "text",
+        "name": "la app abrevia el nombre"
+      },
+      {
+        "role": "text",
+        "name": "5 filas"
+      },
+      {
+        "role": "button",
+        "name": "Descargar CSV"
+      },
+      {
+        "role": "text",
+        "name": "Fuente: app oficial del BSN, 2 sep 2026."
+      },
+      {
+        "role": "text",
+        "name": "La app de la liga imprime solo la inicial del nombre. Dos de los cinco se pudieron confirmar contra la prensa; los otros tres quedan como aparecen, sin adivinar."
+      },
+      {
+        "role": "DisclosureTriangle",
+        "name": "En esta fecha",
+        "expanded": true
+      },
+      {
+        "role": "text",
+        "name": "Lo que pasó un día como hoy en la historia de la liga. Cambia todos los días."
+      },
+      {
+        "role": "heading",
+        "name": "Lo demás de septiembre",
+        "level": 4
+      },
+      {
+        "role": "text",
+        "name": "8 septiembre 1969"
+      },
+      {
+        "role": "text",
+        "name": "17,621 fanáticos en Bayamón"
+      },
+      {
+        "role": "text",
+        "name": "La entrada más grande de la historia de la liga, contra Río Piedras. Superó un Ponce-Santurce que había llevado 16,564."
+      },
+      {
+        "role": "text",
+        "name": "19 septiembre 2019"
+      },
+      {
+        "role": "text",
+        "name": "Ricardo Dalmau, electo presidente"
+      },
+      {
+        "role": "text",
+        "name": "Sucedió a Fernando Quiñones Bodea."
+      },
+      {
+        "role": "DisclosureTriangle",
+        "name": "Canales oficiales",
+        "expanded": true
+      },
+      {
+        "role": "text",
+        "name": "Este archivo no compite con la liga: cubre lo que la app oficial no guarda. Para hoy, ve directo a la fuente."
+      },
+      {
+        "role": "link",
+        "name": "SITIO OFICIAL bsnpr.com Marcadores, calendario, posiciones y páginas de jugadores."
+      },
+      {
+        "role": "link",
+        "name": "YOUTUBE Baloncesto Superior Nacional PR Resúmenes y juegos completos."
+      },
+      {
+        "role": "link",
+        "name": "INSTAGRAM @bsnpr Clips y publicaciones diarias."
+      },
+      {
+        "role": "link",
+        "name": "TIKTOK @bsnpr Resúmenes cortos."
+      },
+      {
+        "role": "link",
+        "name": "X @bsnpr Actualizaciones en vivo."
+      },
+      {
+        "role": "link",
+        "name": "FACEBOOK BSN PR Transmisiones y anuncios."
+      },
+      {
+        "role": "link",
+        "name": "APP MÓVIL iOS La app de la propia liga."
+      },
+      {
+        "role": "link",
+        "name": "APP MÓVIL Android Construida sobre Genius Sports."
+      },
+      {
+        "role": "text",
+        "name": "BSN Archivo · construido por "
+      },
+      {
+        "role": "text",
+        "name": "bennizpr"
+      },
+      {
+        "role": "text",
+        "name": " · San Juan, Puerto Rico."
+      },
+      {
+        "role": "LineBreak",
+        "name": "\n"
+      },
+      {
+        "role": "text",
+        "name": "Los datos vienen de fuentes públicas citadas en «El archivo». Proyecto independiente de un aficionado. No está afiliado ni respaldado por el Baloncesto Superior Nacional ni por sus equipos."
+      },
+      {
+        "role": "LineBreak",
+        "name": "\n"
+      },
+      {
+        "role": "text",
+        "name": "Este sitio no usa cookies ni analítica. Las tipografías vienen de Google Fonts, por lo que Google recibe tu dirección IP. Tu navegador guarda solo tus preferencias (tema y club favorito), tu progreso en los juegos y una copia de los datos para que el sitio funcione sin conexión."
+      },
+      {
+        "role": "LineBreak",
+        "name": "\n"
+      },
+      {
+        "role": "text",
+        "name": "¿Ves un error o quieres que retiremos algo? Escríbenos a "
+      },
+      {
+        "role": "link",
+        "name": "benniz.8008@gmail.com"
+      },
+      {
+        "role": "text",
+        "name": " o por Instagram "
+      },
+      {
+        "role": "link",
+        "name": "@bennizpr"
+      },
+      {
+        "role": "text",
+        "name": "."
+      }
+    ]
+  },
+  "consoleErrors": [],
+  "failedRequests": []
+}

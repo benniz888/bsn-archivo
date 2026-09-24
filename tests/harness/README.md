@@ -12,13 +12,23 @@ real, committed artifact, not a re-run against a moving target.
   style sample (a fixed set of selectors x properties), an accessibility-tree snapshot, console
   errors and failed requests. Runs Chromium + WebKit, 1000px + 390px, for the 6 top-level tabs,
   `#archivo/calidad`, and 5 named player pages (721, 152, 578, 194, 344) — 12 routes x 4 configs =
-  48 files per snapshot run.
+  48 files per snapshot run. **Deterministic**: `addInitScript` seeds `Math.random()` (an LCG, not
+  a constant, so code that calls it more than once per render still varies reproducibly) and pins
+  `Date` to a fixed instant, both before any page script runs. Proven: two consecutive captures of
+  the identical, unmodified code now produce identical hashes for all 48 files (see below).
 - `inventory.py` — extracts every top-level `function`/`const`/`let`/`var` name declared at
   column 0 inside the app's main `<script>` block (name, line, kind). Run before and after a
   structural change; the **set of names** must be identical, only `line` (and eventually `file`)
   may differ.
-- `baseline/*.json` — one file per `<route>__<engine>__<width>__<label>.json`. The `main_27c16a4`
-  label is the pre-split baseline, captured from `main` at that exact commit.
+- `baseline/*.json` — one file per `<route>__<engine>__<width>__<label>.json`.
+  - `main_27c16a4_det` — **the baseline to compare against.** Deterministic capture (the fixed
+    seed above), from `main` at `27c16a4` (`git archive`, no branch switch), before Playwright's
+    `Math.random`/`Date` fix landed in `capture.mjs` was even possible to trust.
+  - `main_27c16a4` (no `_det` suffix) — the **original, non-deterministic** STEP 0 capture. Kept
+    only as evidence for a real finding: two back-to-back captures of unmodified `main@27c16a4`
+    gave different `tab:juega` DOM (`app/bsn_archivo.html:6826`, a `Math.random()`-seeded preview
+    board, unrelated to the split). **Do not use this label as a comparison baseline** — it isn't
+    reproducible by construction.
 - `inventory_main_HEAD.json` — the pre-split function/const inventory.
 
 ## Running it

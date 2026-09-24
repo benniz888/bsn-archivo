@@ -1,0 +1,278 @@
+{
+  "route": "tab:juega",
+  "domHash": "0ffdba28388bc10c20f3736cfad6ceb80115cfc0771a518720b34ce0fd44a0ee",
+  "domText": "<section id=\"juega\" role=\"tabpanel\" aria-labelledby=\"tab-juega\" class=\"panel-enter\"><div class=\"panel\"><div class=\"phead\"><div class=\"tri\"></div><h1 class=\"big\">Juega</h1><p class=\"lede\">Cuatro juegos sobre el archivo. Todos usan la misma nómina verificada de jugadores, así que ninguno inventa una respuesta.</p></div><div class=\"subnav\" role=\"tablist\" aria-label=\"Vistas de juega\"><a href=\"#juega\" data-view=\"__landing\" role=\"tab\" aria-current=\"true\">Juegos</a><a href=\"#juega/cuadricula\" data-view=\"cuadricula\" role=\"tab\" aria-current=\"false\">La Cuadrícula</a><a href=\"#juega/temporada\" data-view=\"temporada\" role=\"tab\" aria-current=\"false\">La Temporada Perfecta</a><a href=\"#juega/quiensoy\" data-view=\"quiensoy\" role=\"tab\" aria-current=\"false\">¿Quién soy?</a><a href=\"#juega/subeybaja\" data-view=\"subeybaja\" role=\"tab\" aria-current=\"false\">Sube y Baja</a></div><div class=\"view\" data-view=\"__landing\" data-sec=\"juega\"><div id=\"streakStrip\"><div class=\"strip\"><div><div class=\"n\">#267</div><div class=\"l\">cuadrícula de hoy</div></div><div><div class=\"n\">0</div><div class=\"l\">racha actual</div></div><div><div class=\"n\">0</div><div class=\"l\">mejor racha</div></div><div><div class=\"n\">0</div><div class=\"l\">días jugados</div></div><div><div class=\"n\">0</div><div class=\"l\">cuadrículas perfectas</div></div><div><div class=\"n\">—</div><div class=\"l\">aciertos por día</div></div></div></div><div id=\"storageNote\"></div><div id=\"gameShelf\" class=\"shelf\"><button class=\"tile\" onclick=\"openGame('cuadricula')\" aria-label=\"Abrir La Cuadrícula\"><svg class=\"tileart\" viewBox=\"0 0 320 104\" preserveAspectRatio=\"xMidYMid slice\" aria-hidden=\"true\"><defs><linearGradient id=\"ga1\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#1663D8\"></stop><stop offset=\"1\" stop-color=\"#0B1E3E\"></stop></linearGradient></defs><rect width=\"320\" height=\"104\" fill=\"url(#ga1)\"></rect><g stroke=\"#EEF3FB\" stroke-opacity=\".85\" stroke-width=\"2\" fill=\"none\"><rect x=\"112\" y=\"14\" width=\"24\" height=\"24\" rx=\"3\"></rect><rect x=\"144\" y=\"14\" width=\"24\" height=\"24\" rx=\"3\"></rect><rect x=\"176\" y=\"14\" width=\"24\" height=\"24\" rx=\"3\"></rect><rect x=\"112\" y=\"40\" width=\"24\" height=\"24\" rx=\"3\"></rect><rect x=\"144\" y=\"40\" width=\"24\" height=\"24\" rx=\"3\"></rect><rect x=\"176\" y=\"40\" width=\"24\" height=\"24\" rx=\"3\"></rect><rect x=\"112\" y=\"66\" width=\"24\" height=\"24\" rx=\"3\"></rect><rect x=\"144\" y=\"66\" width=\"24\" height=\"24\" rx=\"3\"></rect><rect x=\"176\" y=\"66\" width=\"24\" height=\"24\" rx=\"3\"></rect></g><rect x=\"144\" y=\"40\" width=\"24\" height=\"24\" rx=\"3\" fill=\"#25C26E\" fill-opacity=\".9\"></rect><rect x=\"112\" y=\"66\" width=\"24\" height=\"24\" rx=\"3\" fill=\"#EF2B39\" fill-opacity=\".85\"></rect></svg><span class=\"tilebody\" style=\"display:block\"><span class=\"tiletitle\" style=\"display:block\">La Cuadrícula</span><span class=\"tiledesc\" style=\"display:block\">Nueve casillas, un tablero nuevo cada día, y el mismo para todo el mundo. Nombra al jugador que cruza cada fila con cada columna.</span><span class=\"tilemeta\">Diario · racha<span class=\"tileplay\">Jugar</span></span></span></button><button class=\"tile\" onclick=\"openGame('temporada')\" aria-label=\"Abrir La Temporada Perfecta\"><svg class=\"tileart\" viewBox=\"0 0 320 104\" preserveAspectRatio=\"xMidYMid slice\" aria-hidden=\"true\"><defs><linearGradient id=\"ga2\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#7A3A12\"></stop><stop offset=\"1\" stop-color=\"#1A0E06\"></stop></linearGradient></defs><rect width=\"320\" height=\"104\" fill=\"url(#ga2)\"></rect><g stroke=\"#EEF3FB\" stroke-opacity=\".5\" stroke-width=\"2\" fill=\"none\"><rect x=\"96\" y=\"8\" width=\"128\" height=\"88\" rx=\"4\"></rect><path d=\"M136 8h48v30h-48z\"></path><circle cx=\"160\" cy=\"52\" r=\"18\"></circle><path d=\"M124 96a36 36 0 0 1 72 0\"></path></g><circle cx=\"160\" cy=\"38\" r=\"7\" fill=\"#FF6A1A\"></circle><g fill=\"#EEF3FB\" fill-opacity=\".9\"><circle cx=\"118\" cy=\"80\" r=\"4\"></circle><circle cx=\"160\" cy=\"86\" r=\"4\"></circle><circle cx=\"202\" cy=\"80\" r=\"4\"></circle></g></svg><span class=\"tilebody\" style=\"display:block\"><span class=\"tiletitle\" style=\"display:block\">La Temporada Perfecta</span><span class=\"tiledesc\" style=\"display:block\">Gira equipo y década, coloca cinco posiciones en la cancha y descubre cuántos de 34 gana tu quinteto.</span><span class=\"tilemeta\">Quinteto · 5 puestos<span class=\"tileplay\">Jugar</span></span></span></button><button class=\"tile\" onclick=\"openGame('quiensoy')\" aria-label=\"Abrir ¿Quién soy?\"><svg class=\"tileart\" viewBox=\"0 0 320 104\" preserveAspectRatio=\"xMidYMid slice\" aria-hidden=\"true\"><defs><linearGradient id=\"ga3\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#4A2A7A\"></stop><stop offset=\"1\" stop-color=\"#140A24\"></stop></linearGradient></defs><rect width=\"320\" height=\"104\" fill=\"url(#ga3)\"></rect><circle cx=\"160\" cy=\"46\" r=\"24\" fill=\"#EEF3FB\" fill-opacity=\".12\" stroke=\"#EEF3FB\" stroke-opacity=\".5\" stroke-width=\"2\"></circle><path d=\"M160 34a8 8 0 0 1 5 14c-3 2-5 3-5 6\" stroke=\"#EEF3FB\" stroke-width=\"3.4\" fill=\"none\" stroke-linecap=\"round\"></path><circle cx=\"160\" cy=\"60\" r=\"2.6\" fill=\"#EEF3FB\"></circle><g fill=\"#EEF3FB\" fill-opacity=\".22\"><rect x=\"104\" y=\"82\" width=\"112\" height=\"5\" rx=\"2.5\"></rect><rect x=\"126\" y=\"92\" width=\"68\" height=\"5\" rx=\"2.5\"></rect></g></svg><span class=\"tilebody\" style=\"display:block\"><span class=\"tiletitle\" style=\"display:block\">¿Quién soy?</span><span class=\"tiledesc\" style=\"display:block\">Seis pistas que van de lo difícil a lo obvio. Mientras menos necesites, más vale el acierto.</span><span class=\"tilemeta\">Adivinanza · 3 intentos<span class=\"tileplay\">Jugar</span></span></span></button><button class=\"tile\" onclick=\"openGame('subeybaja')\" aria-label=\"Abrir Sube y Baja\"><svg class=\"tileart\" viewBox=\"0 0 320 104\" preserveAspectRatio=\"xMidYMid slice\" aria-hidden=\"true\"><defs><linearGradient id=\"ga4\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#0E5C3A\"></stop><stop offset=\"1\" stop-color=\"#04180F\"></stop></linearGradient></defs><rect width=\"320\" height=\"104\" fill=\"url(#ga4)\"></rect><path d=\"M96 78 L128 58 L160 66 L192 34 L224 44\" stroke=\"#25C26E\" stroke-width=\"3.4\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><g fill=\"#EEF3FB\"><circle cx=\"128\" cy=\"58\" r=\"3.4\"></circle><circle cx=\"192\" cy=\"34\" r=\"3.4\"></circle></g><path d=\"M206 26h14v14\" stroke=\"#25C26E\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg><span class=\"tilebody\" style=\"display:block\"><span class=\"tiletitle\" style=\"display:block\">Sube y Baja</span><span class=\"tiledesc\" style=\"display:block\">Dos jugadores, una cifra. ¿Anotó más o menos? Sigue acertando hasta que falles.</span><span class=\"tilemeta\">Rachas · sin fin<span class=\"tileplay\">Jugar</span></span></span></button></div></div><!-- Four games stacked end to end meant the fourth was never found. A shelf shows all four at once and opens one at a time; the game containers keep their ids so every builder and every re-render still writes to the same node. --><div class=\"stage view\" id=\"stage-cuadricula\" hidden=\"\" data-view=\"cuadricula\" data-sec=\"juega\"><div class=\"stagebar\"><button class=\"btn\" onclick=\"closeGame()\">‹ Juegos</button><span class=\"stagetitle\">La Cuadrícula</span></div><div id=\"gridGame\"><div class=\"gamehead\"><div class=\"modebtns\" role=\"tablist\"><button role=\"tab\" aria-selected=\"true\" onclick=\"setGMode('daily')\">Diaria</button><button role=\"tab\" aria-selected=\"false\" onclick=\"setGMode('practice')\">Práctica</button></div><div class=\"dim\" style=\"font-size:var(--fs-2xs)\">9 intentos · cada intento cuenta, acierte o falle · ningún jugador se repite<br> La nómina verificada es de 376 jugadores; el autocompletar te enseña quiénes existen.<br> Dificultad de hoy: <b>Normal</b> — 1 casilla con una sola respuesta posible.</div></div><div class=\"gridwrap\"><div class=\"gridtable\"><div class=\"gcorner\"></div><div class=\"ghead\"><span>Poste</span></div><div class=\"ghead\"><span>Jugó en los 2000</span></div><div class=\"ghead\"><span>Campeón del BSN</span></div><div class=\"ghead row\"><span class=\"crest\" style=\"width:26px;height:31px\"><svg width=\"26\" height=\"31\" viewBox=\"0 0 112 130\" aria-hidden=\"true\"><defs><linearGradient id=\"cgque26\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#B3141F\"></stop><stop offset=\"1\" stop-color=\"#B3141F\" stop-opacity=\".8\"></stop></linearGradient></defs><path d=\"M8 10h96v58c0 34-32 48-48 50-16-2-48-16-48-50Z\" fill=\"url(#cgque26)\" stroke=\"#1A1A1A\" stroke-width=\"3\"></path><g transform=\"translate(56,44) scale(.6) translate(-56,-44)\"><path d=\"M36 26Q56 14 76 26Q68 34 56 30Q44 34 36 26Z\" fill=\"#1A1A1A\"></path><circle cx=\"56\" cy=\"40\" r=\"10\" fill=\"#1A1A1A\"></circle><rect x=\"49\" y=\"37\" width=\"9\" height=\"4\" fill=\"#B3141F\" transform=\"rotate(-10 53 39)\"></rect><path d=\"M43 52h26l-5 26h-16Z\" fill=\"#1A1A1A\"></path><g stroke=\"#1A1A1A\" stroke-width=\"4\" stroke-linecap=\"round\"><line x1=\"44\" y1=\"66\" x2=\"68\" y2=\"78\"></line><line x1=\"68\" y1=\"66\" x2=\"44\" y2=\"78\"></line></g><circle cx=\"44\" cy=\"66\" r=\"2.4\" fill=\"#1A1A1A\"></circle><circle cx=\"68\" cy=\"66\" r=\"2.4\" fill=\"#1A1A1A\"></circle><circle cx=\"44\" cy=\"78\" r=\"2.4\" fill=\"#1A1A1A\"></circle><circle cx=\"68\" cy=\"78\" r=\"2.4\" fill=\"#1A1A1A\"></circle></g><text x=\"56\" y=\"105\" text-anchor=\"middle\" font-family=\"Inter,sans-serif\" font-weight=\"800\" letter-spacing=\"-.3\" font-size=\"16\" fill=\"#1A1A1A\">QUE</text></svg></span><span>Piratas</span></div><button class=\"gcell \" aria-pressed=\"false\" onclick=\"selectCell(0,0)\"><span class=\"plus\">+</span></button><button class=\"gcell \" aria-pressed=\"false\" onclick=\"selectCell(0,1)\"><span class=\"plus\">+</span></button><button class=\"gcell \" aria-pressed=\"false\" onclick=\"selectCell(0,2)\"><span class=\"plus\">+</span></button><div class=\"ghead row\"><span class=\"crest\" style=\"width:26px;height:31px\"><svg width=\"26\" height=\"31\" viewBox=\"0 0 112 130\" aria-hidden=\"true\"><defs><linearGradient id=\"cgsan26\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#E85D1F\"></stop><stop offset=\"1\" stop-color=\"#E85D1F\" stop-opacity=\".8\"></stop></linearGradient></defs><path d=\"M8 10h96v58c0 34-32 48-48 50-16-2-48-16-48-50Z\" fill=\"url(#cgsan26)\" stroke=\"#191919\" stroke-width=\"3\"></path><g transform=\"translate(56,44) scale(.6) translate(-56,-44)\"><path d=\"M30 56Q34 42 44 44Q50 38 56 38Q62 38 68 44Q78 42 82 56Q84 68 72 74Q62 78 56 78Q50 78 40 74Q28 68 30 56Z\" fill=\"#191919\"></path><g stroke=\"#191919\" stroke-width=\"2.6\"><line x1=\"46\" y1=\"44\" x2=\"43\" y2=\"34\"></line><line x1=\"66\" y1=\"44\" x2=\"69\" y2=\"34\"></line></g><circle cx=\"43\" cy=\"32\" r=\"3\" fill=\"#191919\"></circle><circle cx=\"69\" cy=\"32\" r=\"3\" fill=\"#191919\"></circle><g fill=\"#191919\"><path d=\"M30 50q-10-4-12 6q8 4 14-1Z\"></path><path d=\"M22 56q-4 8 4 12q4-6 0-12Z\"></path><path d=\"M82 50q10-4 12 6q-8 4-14-1Z\"></path><path d=\"M90 56q4 8-4 12q-4-6 0-12Z\"></path></g><g stroke=\"#191919\" stroke-width=\"2.4\" fill=\"none\" stroke-linecap=\"round\"><path d=\"M32 62L22 66L17 74\"></path><path d=\"M34 70L25 76L21 84\"></path><path d=\"M40 76L33 84L30 92\"></path><path d=\"M80 62L90 66L95 74\"></path><path d=\"M78 70L87 76L91 84\"></path><path d=\"M72 76L79 84L82 92\"></path></g></g><text x=\"56\" y=\"105\" text-anchor=\"middle\" font-family=\"Inter,sans-serif\" font-weight=\"800\" letter-spacing=\"-.3\" font-size=\"16\" fill=\"#191919\">SAN</text></svg></span><span>Cangrejeros</span></div><button class=\"gcell \" aria-pressed=\"false\" onclick=\"selectCell(1,0)\"><span class=\"plus\">+</span></button><button class=\"gcell \" aria-pressed=\"false\" onclick=\"selectCell(1,1)\"><span class=\"plus\">+</span></button><button class=\"gcell \" aria-pressed=\"false\" onclick=\"selectCell(1,2)\"><span class=\"plus\">+</span></button><div class=\"ghead row\"><span class=\"crest\" style=\"width:26px;height:31px\"><svg width=\"26\" height=\"31\" viewBox=\"0 0 112 130\" aria-hidden=\"true\"><defs><linearGradient id=\"cgare26\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#0E7C7B\"></stop><stop offset=\"1\" stop-color=\"#0E7C7B\" stop-opacity=\".8\"></stop></linearGradient></defs><path d=\"M8 10h96v58c0 34-32 48-48 50-16-2-48-16-48-50Z\" fill=\"url(#cgare26)\" stroke=\"#F2F2F2\" stroke-width=\"3\"></path><g transform=\"translate(56,44) scale(.6) translate(-56,-44)\"><path d=\"M50 12l6 10 6-10Z\" fill=\"#F2F2F2\"></path><path d=\"M50 20a6 6 0 1 0 12 0a6 6 0 1 0 -12 0\" fill=\"none\" stroke=\"#F2F2F2\" stroke-width=\"4\"></path><line x1=\"56\" y1=\"26\" x2=\"56\" y2=\"72\" stroke=\"#F2F2F2\" stroke-width=\"5\"></line><line x1=\"42\" y1=\"38\" x2=\"70\" y2=\"38\" stroke=\"#F2F2F2\" stroke-width=\"4\"></line><path d=\"M40 60c0 12 8 18 16 18\" fill=\"none\" stroke=\"#F2F2F2\" stroke-width=\"5\" stroke-linecap=\"round\"></path><path d=\"M72 60c0 12-8 18-16 18\" fill=\"none\" stroke=\"#F2F2F2\" stroke-width=\"5\" stroke-linecap=\"round\"></path></g><text x=\"56\" y=\"105\" text-anchor=\"middle\" font-family=\"Inter,sans-serif\" font-weight=\"800\" letter-spacing=\"-.3\" font-size=\"16\" fill=\"#F2F2F2\">ARE</text></svg></span><span>Capitanes</span></div><button class=\"gcell \" aria-pressed=\"false\" onclick=\"selectCell(2,0)\"><span class=\"plus\">+</span></button><button class=\"gcell \" aria-pressed=\"false\" onclick=\"selectCell(2,1)\"><span class=\"plus\">+</span></button><button class=\"gcell \" aria-pressed=\"false\" onclick=\"selectCell(2,2)\"><span class=\"plus\">+</span></button></div></div><div class=\"pips\" aria-label=\"Intentos usados\"><span class=\"pip \"></span><span class=\"pip \"></span><span class=\"pip \"></span><span class=\"pip \"></span><span class=\"pip \"></span><span class=\"pip \"></span><span class=\"pip \"></span><span class=\"pip \"></span><span class=\"pip \"></span><span class=\"dim\" style=\"font-size:var(--fs-2xs);margin-left:var(--sp-2)\">9 intentos</span></div><div class=\"guessbar\" style=\"position:relative\"><input type=\"text\" id=\"gGuess\" placeholder=\"Toca una casilla primero\" autocomplete=\"off\" spellcheck=\"false\" disabled=\"\" aria-label=\"Escribe un nombre\"><button class=\"btn primary\" onclick=\"submitGuess()\" disabled=\"\">Enviar</button><div id=\"gSugg\"></div></div><div class=\"msg\" id=\"gMsg\" role=\"status\" aria-live=\"polite\"></div><div id=\"gReveal\"></div></div></div><div class=\"stage view\" id=\"stage-temporada\" hidden=\"\" data-view=\"temporada\" data-sec=\"juega\"><div class=\"stagebar\"><button class=\"btn\" onclick=\"closeGame()\">‹ Juegos</button><span class=\"stagetitle\">La Temporada Perfecta</span></div><div id=\"draftGame\"><div class=\"gamehead\"><div class=\"dim\" style=\"font-size:var(--fs-2xs)\">Gira equipo y década · coloca cinco posiciones · 2 pases</div><div class=\"chips\" style=\"margin:0\"><span class=\"tag \">Refuerzos 0/3</span><span class=\"tag\">Nativos 0</span><span class=\"tag\">0/5</span></div></div><div style=\"display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2_5);margin:var(--sp-3) 0\"><div class=\"card\" style=\"text-align:center;border-color:#E8B23A;padding:var(--sp-2_5)\"><div style=\"font-size:var(--fs-3xs);letter-spacing:.1em;font-weight:700;color:#E8B23A\">EQUIPO</div><div style=\"font-family:inherit;font-weight:800;font-size:30px;line-height:1.1\">CAR</div><div class=\"dim\" style=\"font-size:var(--fs-3xs)\">Gigantes de Carolina/Canóvanas</div></div><div class=\"card\" style=\"text-align:center;border-color:#9B6BE0;padding:var(--sp-2_5)\"><div style=\"font-size:var(--fs-3xs);letter-spacing:.1em;font-weight:700;color:#9B6BE0\">DÉCADA</div><div style=\"font-family:inherit;font-weight:800;font-size:30px;line-height:1.1\">2020s</div><div class=\"dim\" style=\"font-size:var(--fs-3xs)\">25 disponibles</div></div></div><div class=\"btnrow\" style=\"margin-bottom:var(--sp-3)\"><button class=\"btn primary\" onclick=\"skipSpin()\">Girar de nuevo (2)</button><button class=\"btn\" onclick=\"resetDraft()\">Empezar de nuevo</button></div><div style=\"border:1px solid var(--line);border-radius:14px;padding:var(--sp-3_5); background:linear-gradient(180deg,var(--hair),transparent)\"><div style=\"display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2_5);max-width:340px;margin:0 auto var(--sp-2_5)\"><button onclick=\"selectSlot('C')\" style=\"all:unset;cursor:pointer; display:block;border:2px dashed var(--line);border-radius:12px;padding:var(--sp-2_5) var(--sp-2); text-align:center;background:var(--hair-2);min-height:58px\"><div style=\"font-size:var(--fs-3xs);letter-spacing:.08em;font-weight:700;color:var(--ink-3)\">C</div><div class=\"dim\" style=\"font-size:var(--fs-3xs);margin-top:3px\">Pívot</div></button><button onclick=\"selectSlot('PF')\" style=\"all:unset;cursor:pointer; display:block;border:2px dashed var(--line);border-radius:12px;padding:var(--sp-2_5) var(--sp-2); text-align:center;background:var(--hair-2);min-height:58px\"><div style=\"font-size:var(--fs-3xs);letter-spacing:.08em;font-weight:700;color:var(--ink-3)\">PF</div><div class=\"dim\" style=\"font-size:var(--fs-3xs);margin-top:3px\">Ala-pívot</div></button></div><div style=\"display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--sp-2_5);max-width:460px;margin:0 auto\"><button onclick=\"selectSlot('SF')\" style=\"all:unset;cursor:pointer; display:block;border:2px dashed var(--line);border-radius:12px;padding:var(--sp-2_5) var(--sp-2); text-align:center;background:var(--hair-2);min-height:58px\"><div style=\"font-size:var(--fs-3xs);letter-spacing:.08em;font-weight:700;color:var(--ink-3)\">SF</div><div class=\"dim\" style=\"font-size:var(--fs-3xs);margin-top:3px\">Alero</div></button><button onclick=\"selectSlot('PG')\" style=\"all:unset;cursor:pointer; display:block;border:2px dashed var(--line);border-radius:12px;padding:var(--sp-2_5) var(--sp-2); text-align:center;background:var(--hair-2);min-height:58px\"><div style=\"font-size:var(--fs-3xs);letter-spacing:.08em;font-weight:700;color:var(--ink-3)\">PG</div><div class=\"dim\" style=\"font-size:var(--fs-3xs);margin-top:3px\">Base</div></button><button onclick=\"selectSlot('SG')\" style=\"all:unset;cursor:pointer; display:block;border:2px dashed var(--line);border-radius:12px;padding:var(--sp-2_5) var(--sp-2); text-align:center;background:var(--hair-2);min-height:58px\"><div style=\"font-size:var(--fs-3xs);letter-spacing:.08em;font-weight:700;color:var(--ink-3)\">SG</div><div class=\"dim\" style=\"font-size:var(--fs-3xs);margin-top:3px\">Escolta</div></button></div></div><p class=\"note\" style=\"margin-top:var(--sp-3)\">Toca una posición en la cancha para colocar a alguien de Gigantes de Carolina/Canóvanas en los 2020s.</p><div class=\"msg \" id=\"dMsg\" role=\"status\" aria-live=\"polite\"></div><div id=\"dResult\" role=\"status\" aria-live=\"polite\"></div></div></div><div class=\"stage view\" id=\"stage-quiensoy\" hidden=\"\" data-view=\"quiensoy\" data-sec=\"juega\"><div class=\"stagebar\"><button class=\"btn\" onclick=\"closeGame()\">‹ Juegos</button><span class=\"stagetitle\">¿Quién soy?</span></div><div id=\"quizGame\"><div class=\"gamehead\"><div class=\"dim\" style=\"font-size:var(--fs-2xs)\">Tres intentos · cada pista revelada baja los puntos</div><div class=\"chips\" style=\"margin:0\"><span class=\"tag gold\">60 puntos</span><span class=\"tag\">Intentos 3</span></div></div><div class=\"card\" style=\"margin-top:var(--sp-2_5)\"><ol style=\"margin:0;padding-left:20px;line-height:1.8\"><li>Jugó en los 2020s.</li></ol></div><div class=\"guessbar\"><input type=\"text\" id=\"qGuess\" placeholder=\"¿Quién es?\" autocomplete=\"off\" list=\"poolNames\"><button class=\"btn primary\" onclick=\"guessQuiz()\">Adivinar</button><button class=\"btn\" onclick=\"revealClue()\">Otra pista</button></div><div class=\"msg\" id=\"qMsg\" role=\"status\" aria-live=\"polite\"></div></div></div><div class=\"stage view\" id=\"stage-subeybaja\" hidden=\"\" data-view=\"subeybaja\" data-sec=\"juega\"><div class=\"stagebar\"><button class=\"btn\" onclick=\"closeGame()\">‹ Juegos</button><span class=\"stagetitle\">Sube y Baja</span></div><div id=\"hlGame\"><div class=\"gamehead\"><div class=\"dim\" style=\"font-size:var(--fs-2xs)\">¿Quién tiene más títulos de la franquicia?</div><div class=\"chips\" style=\"margin:0\"><span class=\"tag\">Racha 0</span><span class=\"tag gold\">Mejor 0</span></div></div><div class=\"cards g2\" style=\"margin-top:var(--sp-2_5)\"><button class=\"card\" style=\"cursor:pointer;text-align:left\" onclick=\"answerHL(0)\"><div style=\"font-weight:700;font-size:17px\">Vega Baja</div><div class=\"dim\" style=\"font-size:var(--fs-2xs)\">?</div></button><button class=\"card\" style=\"cursor:pointer;text-align:left\" onclick=\"answerHL(1)\"><div style=\"font-weight:700;font-size:17px\">Santeros de Aguada</div><div class=\"dim\" style=\"font-size:var(--fs-2xs)\">?</div></button></div><div class=\"msg\" id=\"hMsg\" role=\"status\" aria-live=\"polite\"></div></div></div></div></section>",
+  "styles": {
+    "body": {
+      "color": "rgb(11, 23, 48)",
+      "background-color": "rgb(241, 244, 250)",
+      "font-size": "15px",
+      "font-family": "Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "0px",
+      "margin": "0px",
+      "border-radius": "0px",
+      "line-height": "22.5px"
+    },
+    "nav.tabs": {
+      "color": "rgb(11, 23, 48)",
+      "background-color": "rgba(0, 0, 0, 0)",
+      "font-size": "15px",
+      "font-family": "Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "0px",
+      "margin": "0px",
+      "border-radius": "0px",
+      "line-height": "22.5px"
+    },
+    ".card": {
+      "color": "rgb(11, 23, 48)",
+      "background-color": "rgb(255, 255, 255)",
+      "font-size": "15px",
+      "font-family": "Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "16px",
+      "margin": "0px",
+      "border-radius": "10px",
+      "line-height": "22.5px"
+    },
+    ".foot": {
+      "color": "rgb(90, 108, 142)",
+      "background-color": "rgba(0, 0, 0, 0)",
+      "font-size": "12.5px",
+      "font-family": "Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "22px 0px 40px",
+      "margin": "40px 0px 0px",
+      "border-radius": "0px",
+      "line-height": "18.75px"
+    },
+    "a": {
+      "color": "rgb(90, 108, 142)",
+      "background-color": "rgba(0, 0, 0, 0)",
+      "font-size": "14px",
+      "font-family": "Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "13px 4px 12px",
+      "margin": "0px 9px",
+      "border-radius": "0px",
+      "line-height": "21px"
+    },
+    "button.btn": {
+      "color": "rgb(11, 23, 48)",
+      "background-color": "rgb(225, 233, 245)",
+      "font-size": "13px",
+      "font-family": "Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "9px 14px",
+      "margin": "0px",
+      "border-radius": "6px",
+      "line-height": "19.5px"
+    },
+    "h1, h2": {
+      "color": "rgb(11, 23, 48)",
+      "background-color": "rgba(0, 0, 0, 0)",
+      "font-size": "30px",
+      "font-family": "Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "0px",
+      "margin": "0px",
+      "border-radius": "0px",
+      "line-height": "34.5px"
+    },
+    ".note": {
+      "color": "rgb(90, 108, 142)",
+      "background-color": "rgba(0, 0, 0, 0)",
+      "font-size": "12px",
+      "font-family": "Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "0px",
+      "margin": "12px 0px",
+      "border-radius": "0px",
+      "line-height": "18px"
+    }
+  },
+  "a11y": {
+    "role": "WebArea",
+    "name": "BSN Archivo · Baloncesto Superior Nacional, 1930–2026",
+    "children": [
+      {
+        "role": "button",
+        "name": "Ir a Inicio"
+      },
+      {
+        "role": "button",
+        "name": "Tema: automático (sigue el sistema) · toca para cambiar a claro"
+      },
+      {
+        "role": "button",
+        "name": "Ajustes"
+      },
+      {
+        "role": "button",
+        "name": "Mi club +"
+      },
+      {
+        "role": "tab",
+        "name": "Historia",
+        "haspopup": "menu"
+      },
+      {
+        "role": "tab",
+        "name": "Jugadores",
+        "haspopup": "menu"
+      },
+      {
+        "role": "tab",
+        "name": "Equipos",
+        "haspopup": "menu"
+      },
+      {
+        "role": "tab",
+        "name": "Juega",
+        "selected": true,
+        "haspopup": "menu"
+      },
+      {
+        "role": "tab",
+        "name": "Archivo",
+        "haspopup": "menu"
+      },
+      {
+        "role": "heading",
+        "name": "JUEGA",
+        "level": 1
+      },
+      {
+        "role": "text",
+        "name": "Cuatro juegos sobre el archivo. Todos usan la misma nómina verificada de jugadores, así que ninguno inventa una respuesta."
+      },
+      {
+        "role": "tab",
+        "name": "Juegos"
+      },
+      {
+        "role": "tab",
+        "name": "La Cuadrícula"
+      },
+      {
+        "role": "tab",
+        "name": "La Temporada Perfecta"
+      },
+      {
+        "role": "tab",
+        "name": "¿Quién soy?"
+      },
+      {
+        "role": "tab",
+        "name": "Sube y Baja"
+      },
+      {
+        "role": "text",
+        "name": "#267"
+      },
+      {
+        "role": "text",
+        "name": "cuadrícula de hoy"
+      },
+      {
+        "role": "text",
+        "name": "0"
+      },
+      {
+        "role": "text",
+        "name": "racha actual"
+      },
+      {
+        "role": "text",
+        "name": "0"
+      },
+      {
+        "role": "text",
+        "name": "mejor racha"
+      },
+      {
+        "role": "text",
+        "name": "0"
+      },
+      {
+        "role": "text",
+        "name": "días jugados"
+      },
+      {
+        "role": "text",
+        "name": "0"
+      },
+      {
+        "role": "text",
+        "name": "cuadrículas perfectas"
+      },
+      {
+        "role": "text",
+        "name": "—"
+      },
+      {
+        "role": "text",
+        "name": "aciertos por día"
+      },
+      {
+        "role": "button",
+        "name": "Abrir La Cuadrícula"
+      },
+      {
+        "role": "button",
+        "name": "Abrir La Temporada Perfecta"
+      },
+      {
+        "role": "button",
+        "name": "Abrir ¿Quién soy?"
+      },
+      {
+        "role": "button",
+        "name": "Abrir Sube y Baja"
+      },
+      {
+        "role": "text",
+        "name": "BSN Archivo · construido por "
+      },
+      {
+        "role": "text",
+        "name": "bennizpr"
+      },
+      {
+        "role": "text",
+        "name": " · San Juan, Puerto Rico."
+      },
+      {
+        "role": "text",
+        "name": "Los datos vienen de fuentes públicas citadas en «El archivo». Proyecto independiente de un aficionado. No está afiliado ni respaldado por el Baloncesto Superior Nacional ni por sus equipos."
+      },
+      {
+        "role": "text",
+        "name": "Este sitio no usa cookies ni analítica. Las tipografías vienen de Google Fonts, por lo que Google recibe tu dirección IP. Tu navegador guarda solo tus preferencias (tema y club favorito), tu progreso en los juegos y una copia de los datos para que el sitio funcione sin conexión."
+      },
+      {
+        "role": "text",
+        "name": "¿Ves un error o quieres que retiremos algo? Escríbenos a "
+      },
+      {
+        "role": "link",
+        "name": "benniz.8008@gmail.com"
+      },
+      {
+        "role": "text",
+        "name": " o por Instagram "
+      },
+      {
+        "role": "link",
+        "name": "@bennizpr"
+      },
+      {
+        "role": "text",
+        "name": "."
+      }
+    ]
+  },
+  "consoleErrors": [],
+  "failedRequests": []
+}

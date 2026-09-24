@@ -22,12 +22,14 @@ def app_text() -> str:
     html = INDEX.read_text(encoding="utf-8")
 
     def sub_link(m):
+        # the original had <style> alone on its own line, then the CSS content -- the newline
+        # that separated them belonged to the <style> line itself, so it has to be put back here.
         path = WEB / m.group(1)
-        return "<style>" + path.read_text(encoding="utf-8") + "</style>"
+        return "<style>\n" + path.read_text(encoding="utf-8") + "</style>"
 
     def sub_script(m):
         path = WEB / m.group(1)
-        return "<script>" + path.read_text(encoding="utf-8") + "</script>"
+        return "<script>\n" + path.read_text(encoding="utf-8") + "</script>"
 
     html = _LINK_RE.sub(sub_link, html)
     html = _SCRIPT_SRC_RE.sub(sub_script, html)

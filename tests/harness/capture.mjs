@@ -80,6 +80,24 @@ async function run(engineName, engine, width) {
   const browser = await engine.launch();
   const ctx = await browser.newContext({ viewport: { width, height: 900 } });
   const page = await ctx.newPage();
+  // Determinism: the app has at least one Math.random()-seeded preview (the Juega landing view,
+  // app/bsn_archivo.html:6826) and date-seeded content (todayStamp()/puzzleNo()). Both must be
+  // fixed BEFORE any page script runs, or two captures of the identical code differ from each
+  // other (proven directly: two back-to-back captures of unmodified main@27c16a4 gave different
+  // #juega content, "SAN" vs "GBO"). A seeded LCG, not a constant, so code that calls
+  // Math.random() more than once per render still gets varied-but-reproducible values.
+  await page.addInitScript(() => {
+    let seed = 42;
+    Math.random = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+    const FIXED = new Date('2026-09-24T12:00:00Z').getTime();
+    const RealDate = Date;
+    class FixedDate extends RealDate {
+      constructor(...args) { if (args.length === 0) super(FIXED); else super(...args); }
+      static now() { return FIXED; }
+    }
+    // eslint-disable-next-line no-global-assign
+    Date = FixedDate;
+  });
   await page.goto(baseUrl + '/index.html#inicio', { waitUntil: 'networkidle' });
   await page.waitForTimeout(2000);
 
