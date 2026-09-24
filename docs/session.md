@@ -6458,3 +6458,7 @@ Supersedes the "still unpushed" wording at the end of the previous block.
 - **Remaining.** 10 of the original 17 (a) clusters are unaddressed (A07-A16; all except A01-A06, A17).
 - **NEXT_ACTIONS (owner-gated; no fixed order).** A05's DOB conflict, the remaining 10 clusters, or other
   open items, as the owner prioritizes.
+
+### PHASE_TRACK_BATCH2_EVIDENCE — cluster_evidence_batch2.md tracked (2026-09-24)
+- Batch2 evidence was left untracked by oversight in e9f6ccb/2068a99 and is now tracked in 0936ee8.
+- Convention going forward: evidence docs are committed in the same phase that produces them.
