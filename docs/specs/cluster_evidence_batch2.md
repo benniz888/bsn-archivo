@@ -193,3 +193,17 @@ data/clean/player_identity_decisions.csv, published to web/data/index/data_quali
 corrected to say "tres páginas de bsnpr.com ... Las tres vienen de la misma fuente" instead of
 "independientes". This section of the document is left as originally written, per its own read-only
 convention; this note records the correction rather than editing the lines above.
+
+## Correction 2 (2026-09-24)
+
+This document's own A04 section (lines 85, 92, 116 above) always said `9/5/1975` and was never wrong.
+The bug was in D-ID-006's separately hand-typed Spanish evidence text (`player_identity_decisions.csv`'s
+`evidence_es`, published to `web/data/index/data_quality.json`), which said `5/9/1975` -- day and month
+transposed relative to id 344's canonical `birth_date` and to the English `evidence` field on the same
+row, which already had it right (`DOB 9/5/1975`). Re-checked the raw source directly before fixing: the
+enciclopedia capture `players_canonical.csv` cites as 344's source, and all 77 captures for ids
+344/345/346/347, all show `9/5/1975` (September 5) -- confirmed, not assumed. Corrected `evidence_es` to
+say "fecha de nacimiento 5 de septiembre de 1975", generated from the canonical value (never retyped by
+hand), matching the same long-form-date treatment given to 721's disputed-rows text in the same phase. A
+guard test (`tests/test_data_quality.py`, `TestQuotedDatesMatchTheirCanonicalId`) now checks every quoted
+date in published decision/dispute text against its referenced id's canonical `birth_date`.

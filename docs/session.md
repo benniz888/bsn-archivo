@@ -6698,3 +6698,30 @@ Supersedes the "still unpushed" wording at the end of the previous block.
   prevent; D-ID-006's `evidence_es` date needs the same fix as its independence-claim fix, next time
   that card is touched. D-ID-002, D-ID-003 and D-ID-004 quote no date in `evidence_es` -- nothing to
   cross-check there.
+
+### PHASE_DATE_TEXT_FIX — D-ID-006 transposition fixed, staged (2026-09-24)
+- **Gate passed first.** Read the raw enciclopedia capture `players_canonical.csv` cites as 344's
+  source, and all 77 captures for ids 344/345/346/347: every one shows `9/5/1975`, matching canonical
+  exactly, no source disagreement, no jugador/jugador05 captures exist for any of the four. Proceeded.
+- **Fixed.** `data/clean/player_identity_decisions.csv` (D-ID-006, `evidence_es` only -- 1 row, 1
+  field) and `data/interim/disputed_career_rows.csv` (721, `evidence_es` only -- 5 rows, 1 field each).
+  Both strings generated from the canonical `birth_date` via the Python `MESES` mirror in
+  `tests/test_dob_format.py`, never hand-typed: "fecha de nacimiento 5 de septiembre de 1975" (id 344)
+  and "fecha de nacimiento 9 de mayo de 1980" (721, also dropping the now-unneeded "(mes/día/año)"
+  clarifier). Merge decisions, `evidence` (English) fields, and every other column unchanged --
+  confirmed via `git diff`.
+- **Guard test.** New `TestQuotedDatesMatchTheirCanonicalId` (`tests/test_data_quality.py`): an explicit
+  `{decision_id: canonical_id}` registry (`D-ID-001`->74, `D-ID-005`->194, `D-ID-006`->344), a
+  meta-check that every decision quoting a date IS in the registry (a future unregistered dated decision
+  fails loudly instead of being silently skipped), and a check that every `disputed_rows` entry's date
+  matches its own id -- both raw M/D/YYYY and long-form patterns handled, so either format transposing
+  would fail it. Updated the two existing pins (D-ID-006's text, 721's disputed-rows text) for the new
+  strings.
+- **Rebuild.** `data_quality.json` diff (`git show HEAD` vs working tree): exactly the 6 expected lines
+  -- 1 for D-ID-006's `text_es`, 5 for `disputed_rows[].evidence` (one per row, all 721, same text).
+  Nothing else differs. Manifest digest `9bc0d3657001` -> `b4ecd384fbf9`. 496 tests pass;
+  `verify_clean.py`: 346,454 checks, 0 failed.
+- **Doc correction.** Appended a second, dated correction note to `docs/specs/cluster_evidence_batch2.md`
+  (existing lines untouched): the document's own A04 section was never wrong (always said `9/5/1975`);
+  the bug was only in D-ID-006's separately hand-typed `evidence_es`.
+- Staged, not committed. Not pushed.
