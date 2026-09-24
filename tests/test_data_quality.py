@@ -111,6 +111,10 @@ class TestOnlyRecordedFactsAndSpanishText:
                                     "bsnpr.com y el mismo número de camiseta (11) en 76 de las 77 capturas de la enciclopedia.")
         assert text["D-ID-004"] == ("Los IDs 35 y 273 aparecen juntos en 20 juegos de Santurce (2001-03), con camisetas distintas "
                                     "(10 y 7) y minutos distintos. Son personas distintas y no se unen.")
+        # J16 DATE_TEXT_FIX (2026-09-24): was "fecha de nacimiento 5/9/1975" -- transposed against id 344's
+        # own canonical 9/5/1975 (September). Regenerated from the canonical value, never retyped by hand.
+        assert "fecha de nacimiento 5 de septiembre de 1975" in text["D-ID-006"]
+        assert "5/9/1975" not in text["D-ID-006"]
 
     def test_only_the_six_recorded_decisions_are_published(self, dq):
         assert [(d["id"], d["kind"], d["ids"], d["survivor_id"]) for d in dq["decisions"]] == [
@@ -310,6 +314,9 @@ class TestDisputedCareerRowsNote:
             (721, 1969, "Capitanes, Arecibo", 16, 74)}
         assert {r["id"] for r in dq["disputed_rows"]} == {721}   # 722 has no career rows to flag
         assert all(r["url"].startswith("https://web.archive.org/web/") and r["evidence"].strip() for r in dq["disputed_rows"])
+        # J16 DATE_TEXT_FIX: long-form now, generated from canonical 5/9/1980 -- no "(mes/día/año)" needed
+        assert all("fecha de nacimiento 9 de mayo de 1980" in r["evidence"] for r in dq["disputed_rows"])
+        assert not any("5/9/1980" in r["evidence"] for r in dq["disputed_rows"])
 
     def test_every_disputed_row_stays_on_the_players_own_page(self, dq):
         for r in dq["disputed_rows"]:
@@ -394,4 +401,56 @@ class TestDisputedCareerRowsNote:
         text = APP.read_text(encoding="utf-8")
         assert "DISPUTE_IDX=new Map(); DISPUTED_IDS=new Set();" in text
         assert "(d.disputed_rows||[]).forEach(r=>{" in text
+
+
+_DATE_RAW = re.compile(r"(\d{1,2})/(\d{1,2})/(\d{4})")
+_DATE_LONG = re.compile(r"(\d{1,2}) de (\w+) de (\d{4})")
+_MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio",
+          "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
+
+
+def _extract_date(text):
+    """(month, day, year) from either a raw M/D/YYYY or a long-form "D de mes de YYYY" match in `text`,
+    or None if neither pattern appears. Catches a transposition in EITHER format."""
+    m = _DATE_RAW.search(text)
+    if m:
+        return int(m.group(1)), int(m.group(2)), int(m.group(3))
+    m = _DATE_LONG.search(text)
+    if m and m.group(2).lower() in _MESES:
+        return _MESES.index(m.group(2).lower()) + 1, int(m.group(1)), int(m.group(3))
+    return None
+
+
+class TestQuotedDatesMatchTheirCanonicalId:
+    """Every date quoted in published decision/dispute text must match the canonical birth_date of the id
+    it describes -- J16 DATE_TEXT_FIX (2026-09-24), after D-ID-006's evidence_es was found transposed
+    against id 344's own canonical value. The registry below is the ONLY place that says which id a given
+    card's date refers to; a future dated decision that isn't added here fails loudly instead of being
+    silently skipped (the meta-check in test_every_quoted_decision_date_matches_the_registered_id)."""
+
+    DECISION_DATE_ID = {"D-ID-001": 74, "D-ID-005": 194, "D-ID-006": 344}   # D-ID-002/003/004 quote no date
+
+    def _canon_tuple(self, pid):
+        r = next(x for x in _csv("clean", "players_canonical.csv") if x["bsnpr_id"] == str(pid))
+        m = _DATE_RAW.match(r["birth_date"])
+        assert m, (pid, r["birth_date"])
+        return int(m.group(1)), int(m.group(2)), int(m.group(3))
+
+    def test_every_quoted_decision_date_matches_the_registered_id(self, dq):
+        for d in dq["decisions"]:
+            found = _extract_date(d["text_es"])
+            if found is None:
+                continue
+            assert d["id"] in self.DECISION_DATE_ID, f"{d['id']} quotes a date but is not in the registry"
+            assert found == self._canon_tuple(self.DECISION_DATE_ID[d["id"]]), (d["id"], found)
+
+    def test_the_registry_covers_every_dated_decision_and_no_extra_entries(self, dq):
+        dated = {d["id"] for d in dq["decisions"] if _extract_date(d["text_es"]) is not None}
+        assert dated == set(self.DECISION_DATE_ID)
+
+    def test_every_disputed_row_date_matches_its_own_id(self, dq):
+        for r in dq["disputed_rows"]:
+            found = _extract_date(r["evidence"])
+            assert found is not None, r
+            assert found == self._canon_tuple(r["id"]), r
 
