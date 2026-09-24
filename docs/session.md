@@ -6613,3 +6613,50 @@ Supersedes the "still unpushed" wording at the end of the previous block.
   stay open as logged: the `_disputed_seasons()` same-season/different-team edge case, the recurring
   GitHub Actions polling-script bug, the raw `M/D/YYYY` date-ambiguity proposal, and id 1947's citation
   mismatch (A17 stays HELD).
+
+### PHASE_DOB_FORMAT — archive DOBs render unambiguously, staged (2026-09-24)
+- **Built.** `app/bsn_archivo.html`: new `fmtArchiveDob()`/`_daysInMonth()` (near `fmtLongDate`/`MESES`),
+  called from `loadPlayerExtra`'s bio line only (`n. 5/9/1980` -> `n. 9 de mayo de 1980`). Render-time
+  only -- no `data/clean/` write, no `players/<id>.json` schema change, no `src/` edit. On any parse
+  failure or calendar-invalid date (e.g. 2/30), falls back to the raw string unchanged -- no new
+  Spanish text introduced anywhere.
+- **Time-zone proof.** Neither `fmtArchiveDob`/`_daysInMonth` (calendar arithmetic) nor `fmtLongDate`
+  (pure string split, read directly from source) ever construct a `Date` object -- confirmed by
+  inspection, then by a real-browser regression: all 2,011 canonical `birth_date` values run through
+  the live formatter in Chromium, three time zones (America/Puerto_Rico, Pacific/Honolulu,
+  Pacific/Auckland -- Auckland is a different calendar day from the machine's own UTC reference,
+  confirmed live), 0 mismatches in every zone.
+- **DOM spot checks** (same 3 time zones, identical in each): 721 -- `n. 9 de mayo de 1980 (según
+  bsnpr.com) · Arecibo, Puerto Rico · Delantero`; Jan 1 (id 2026) -- `n. 1 de enero de 1972`; Dec 31
+  (id 152) -- `n. 31 de diciembre de 1952`; Feb 29 in a real leap year (id 578, 1980) -- `n. 29 de
+  febrero de 1980 · Arecibo, Puerto Rico · Escolta`; day >= 13 (id 5) -- `n. 24 de abril de 1966`;
+  unflagged (id 194) -- `n. 7 de diciembre de 1959`; no DOB (id 1) -- no header line renders, same as
+  before. 0 console errors throughout.
+- **New finding, not fixed (out of this phase's edit scope): `web/sw.js`'s navigate handler is not
+  truly network-first.** Read the file: the shell (`index.html`) is meant to be network-first with a
+  cache fallback, but its `fetch(req)` call has no cache-bypass option, so the BROWSER's own HTTP cache
+  can still answer it without a real network round trip -- the same class of gap as the already-logged
+  `DATA.syncVersion()` finding, this time on the app shell itself. Reproduced directly: a returning
+  visitor's tab, same origin, storage untouched, after a rebuild landed on disk -- kept rendering the
+  OLD shell (`window.fmtArchiveDob` undefined) even though a manual `cache:'no-store'` fetch in the same
+  page confirmed the server was already serving the new file. Bounded in production: `bsnarchivo.com`
+  sends `Cache-Control: max-age=600` on `index.html` (checked live, same as `manifest.json`) -- likely
+  the actual mechanism behind the team's already-known "Pages shell can lag up to 10 minutes" caveat. A
+  cache-VERSION bump (renaming the `SHELL`/`DATA` constants) would NOT fix this -- the browser's HTTP
+  cache sits in front of the service worker entirely, so the fix would need `fetch(req, {cache:
+  'no-store'})` in `sw.js`'s navigate and `manifest.json` handlers, a `web/sw.js` edit outside this
+  phase's approved scope. Not proposed as a diff here, per instruction.
+- **Read-only inventory: raw `M/D/YYYY` strings still in PUBLISHED text (not fixed here).** Two: D-ID-006's
+  `evidence_es` ("fecha de nacimiento 5/9/1975", the Travieso Peña card) and `disputed_career_rows.csv`'s
+  `evidence_es` for id 721 ("nacimiento 5/9/1980", the A05 disputed-rows note in Calidad de datos). The
+  English `evidence` field on 5 decisions also has raw dates, but `evidence` is never published (L2 --
+  only `evidence_es` is public), so those don't count. The `dqDob` table's two raw-date columns are
+  deliberate (the comparison IS the point, already labeled "formato M/D/AAAA") and are not in this list.
+- **Tests.** New `tests/test_dob_format.py`: a Python port of `fmtArchiveDob`/`_daysInMonth` (same
+  pattern as `slug()` in `test_route_slugs.py`), fixture tests for the formatting rule (leap years,
+  invalid calendar dates, no leading zeros), and a real-data regression pinning first-component>12 == 0
+  across `players_canonical.csv` (2,011 rows), `jugador05_dob_conflicts.csv` and
+  `player_dob_overrides.csv`. Updated one existing test (`test_data_quality.py`, the bio-line pin) for
+  the new call. 493 tests pass; `verify_clean.py`: 346,454 checks, 0 failed (unchanged -- no data
+  touched). `app/bsn_archivo.html`/`web/index.html`: still byte-identical.
+- Staged, not committed. Not pushed.
