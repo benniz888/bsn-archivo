@@ -35,16 +35,21 @@ if ! .venv/bin/python -m src.build_web_data > /tmp/bsn_precommit_build.log 2>&1;
     cat /tmp/bsn_precommit_build.log
     exit 1
 fi
-cp app/bsn_archivo.html web/index.html
+# PHASE_1_SPLIT: web/index.html is no longer a byte-copy of app/bsn_archivo.html (the split moved
+# <style>/<script> content into web/css/ and web/js/, on purpose, while app/bsn_archivo.html stays
+# untouched as an archived pointer). The old `cp app/bsn_archivo.html web/index.html` here would
+# silently revert the split on the next commit that happens to touch one of the paths below. Once
+# the split's own byte-compare checks land (see tests/_app_text.py), this hook can check web/
+# freshness a different way; until then it only checks web/data/.
 
-if ! git diff --quiet -- web/data/ web/index.html; then
+if ! git diff --quiet -- web/data/; then
     echo
     echo "pre-commit BLOCKED: rebuilding web/data/ from the data you're about to"
     echo "commit produced changes that aren't staged. The deployed site would go"
     echo "stale the same way it did on 2026-09-09 if this commit landed as-is."
     echo
     echo "Fix: stage the fresh rebuild too, then commit again —"
-    echo "    git add web/data/ web/index.html"
+    echo "    git add web/data/"
     echo
     exit 1
 fi
