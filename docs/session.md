@@ -6462,3 +6462,81 @@ Supersedes the "still unpushed" wording at the end of the previous block.
 ### PHASE_TRACK_BATCH2_EVIDENCE — cluster_evidence_batch2.md tracked (2026-09-24)
 - Batch2 evidence was left untracked by oversight in e9f6ccb/2068a99 and is now tracked in 0936ee8.
 - Convention going forward: evidence docs are committed in the same phase that produces them.
+
+### PHASE_A05_DOB_EVIDENCE / PHASE_A05_FLAG_PLAN — id 721's DOB-vs-career conflict, flagged (2026-09-24)
+- **Decision (Option B).** id 721's birth date (5/9/1980) is the best-corroborated field on the record --
+  attested on 3 bsnpr.com pages, 2 of them independently (jugador.asp 2007 and jugador05.asp 2005, both
+  internally age-consistent). 721's own 1965-1969 Capitanes de Arecibo career table sits on the SAME
+  jugador.asp page as the DOB and cannot belong to a 1980-born player. Kept the DOB visible; flagged the 5
+  career rows instead as a source discrepancy -- neutral wording, no claim of which datum is wrong. Full
+  evidence and the option A/B/C comparison: `docs/specs/cluster_evidence_a05.md`.
+- **New finding: 47 orphan `game_box_player.csv` rows, NOT linked.** A real, fully-stat'd career for
+  "Llovet, Francisco" at SAN GERMAN (2001 jersey 23, 2002 jersey 11, 2003 jersey 23; 47 rows, 29 games)
+  exists in the box-score data with a BLANK `bsnpr_id` on every row -- unlinked to 721, 722, or anyone.
+  Logged only; linking these rows to an id is a separate, larger identity decision, not made here.
+- **New finding: id 1947's citation is mislabeled, not the same shape as 721.** Checked whether 1947 (DOB
+  8/31/1982, one 1963 career row) shares 721's within-page conflict: it does not. The jugador.asp capture
+  cited as 1947's birth_date source actually shows a sentinel value (Nacimiento 1/1/1900, Edad 107, "No se
+  sabe"); the real 8/31/1982 comes from a different capture (jugador05.asp, 2005-03-22) whose URL was never
+  recorded as the citation. 1947 is excluded from this phase's flag list; the mislabeled citation is a
+  separate, smaller finding, not corrected here.
+- **Applied.** `data/interim/disputed_career_rows.csv` (5 rows, id 721 only) read by both
+  `parse_players.py` (validate-only -- never drops a row) and `build_web_data.py` (publishes to
+  `data_quality.json.disputed_rows`, `counts.disputed_career_rows`). App: season rows tagged "No concuerda
+  con la ficha", excluded from career totals with a count-driven footnote clause, bio DOB line gains "(según
+  bsnpr.com)" for a flagged player only, and a new Calidad de datos section "Temporadas que no concuerdan
+  con la ficha" (titled so it can't be mistaken for the existing, unrelated "Fechas de nacimiento" section).
+  Exact wording approved by the owner string-by-string before this was built.
+- **A17 stays HELD**, unaffected by this phase.
+- **Finding, not fixed here: archive DOB display is ambiguous.** Archive player pages print the raw
+  `M/D/YYYY` bsnpr.com value verbatim (e.g. `5/9/1980`), month-first per `src/parse_players.py:403` -- but
+  nothing on the page tells a Spanish-language reader it isn't day-first, and the app's existing long-date
+  formatter (`fmtLongDate`/`MESES`) is wired only to the curated-pool bios, never to archive players. 2,011
+  of the archive's 3,326 canonical players have a non-empty `birth_date`. Proposed: a separate phase to
+  render every archive DOB unambiguously (e.g. "9 de mayo de 1980") via the existing formatter, reformatting
+  the raw string to ISO first rather than adding a second, hardcoded formatter.
+- **Finding, not fixed here: `DATA.syncVersion()`'s "fresh" fetch is not cache-busted.** Verified directly
+  (Playwright, local static server, no `Cache-Control` header): a page that had already fetched
+  `manifest.json` kept reading the OLD `source_digest` from `DATA.syncVersion()` after a rebuild landed on
+  disk, even though a manual `fetch(...,{cache:'no-store'})` in the same page confirmed the server was
+  already serving the new file -- `DATA.get(path,fresh)` skips its own mem/localStorage cache when
+  `fresh` is true, but still calls plain `fetch()`, which the browser's own HTTP cache can still serve
+  from. Bounded in production: `bsnarchivo.com` sends `Cache-Control: max-age=600` on `manifest.json`
+  (checked live), matching the team's already-documented "Pages may take up to 10 minutes" caveat, so a
+  returning visitor's stale view self-heals within 10 minutes rather than indefinitely. Predates this
+  phase (`DATA`/`ST`/`syncVersion` were not touched); not fixed here.
+
+### PHASE_A05_EXCLUDE_DISPUTED_SPANS — disputed seasons excluded from counts/spans (2026-09-24)
+- **Surface audit.** Checked every consumer of `first_season`/`last_season`/`n_seasons`/`career_seasons`
+  across `app/bsn_archivo.html` and `src/`: the shared-slug tiebreak (`:4356`), the "Mismo nombre en el
+  archivo" cross-link (`:4383-4384`), the Jugadores-index search table and `renderArchiveCard`'s header
+  (`:4426-4428`, `:4442-4443`), and the "Comparar" name autocomplete (`:7498-7520`, filters to
+  `career_seasons>0`). 721's own detail-page header (`#playerExtra`, `loadPlayerExtra`) never showed a
+  year span at all -- it only uses `d.position` from `players/<id>.json`, untouched by this fix. Leaders,
+  records, season pages, team rosters, Mi club and Juega are all curated/static (`bsn_career_leaders.csv`,
+  `bsn_records.csv`, `player_season_leaders.csv`, the `POOL`/`PINDEX` curated set) -- 721 isn't in any of
+  them, so none of those surfaces counted him either way.
+- **Policy applied.** `build_web_data.py`'s `build_players_index()` now reads
+  `disputed_career_rows.csv` (`_disputed_seasons()`): a player with at least one flagged season gets
+  `first_season`/`last_season`/`n_seasons`/`career_seasons` recomputed from their UNFLAGGED career rows
+  only (empty -> `first_season`/`last_season` `null`, both counts `0`); everyone else keeps
+  `players_canonical.csv`'s own values, byte-identical to before. `data/clean/` and `parse_players.py`'s
+  own output are untouched -- the exclusion lives only in the web build.
+- **Effect.** `players.json`: exactly one player object differs (721) -- `career_seasons` 5->0,
+  `first_season`/`last_season` 1965/1969->null, `n_seasons` 5->0. Everything else (`position`,
+  `nationality`, `birth_year`, `name`, `has_profile`) unchanged. `player_redirects.json`: byte-identical.
+  Full slug/route map (`urls_for()`): zero differences -- 721 still owns the plain `llovet-ayala-francisco`
+  slug. The career_seasons tie with 722 (now 0-0) falls through the same tiebreak chain (birth_year tie,
+  1980-1980) to the id tiebreak (721 < 722), landing on the same owner as before; verified directly, not
+  assumed.
+- **Rendering (Playwright, real DOM text).** 721's `#playerExtra` header: `n. 5/9/1980 (según bsnpr.com)
+  · Arecibo, Puerto Rico · Delantero` -- unaffected (no year span there to begin with). Jugadores-index row
+  for 721: `Delantero | — | 0` (was `Delantero | 1965–1969 | 5`). `renderArchiveCard(721)` meta line: now
+  just `Delantero` (was `Delantero · 1965–1969` -- the likely source of the header text originally
+  flagged). "Mismo nombre en el archivo": 721 and 722 now render IDENTICALLY on each other's page (`sin
+  años · #<id>` both ways) -- before, 722's page showed `1965–1969 · #721`; now it matches 722's own
+  long-standing `sin años` styling. No new Spanish strings added anywhere.
+- **Side effect, disclosed.** The "Comparar" autocomplete filters candidates to `career_seasons>0`
+  (`app/bsn_archivo.html:7506/7520`); 721 now drops out of that list, same as 722 already does. Not
+  code, purely a consequence of the data change -- intentional under this policy, but a real behavior
+  change worth naming.
