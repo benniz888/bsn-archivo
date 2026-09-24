@@ -6745,3 +6745,32 @@ Supersedes the "still unpushed" wording at the end of the previous block.
   (`TestQuotedDatesMatchTheirCanonicalId`) now runs on every future `data_quality.json` rebuild and
   fails loudly if a quoted date (in either raw or long-form Spanish) ever drifts from the canonical
   `birth_date` of the id it describes, catching a repeat of this exact class of error before it ships.
+
+### PHASE_SITE_NOTICES — footer contact/unofficial/privacy lines + head tags, staged (2026-09-24)
+- **Built.** `app/bsn_archivo.html` footer (`:1362-1368`): kept the builder-credit and
+  data-sources sentences; replaced the old "Archivo personal... No está afiliado al Baloncesto
+  Superior Nacional." with the owner-approved unofficial-status sentence; added a privacy line
+  (cookies/analytics/Google Fonts/localStorage) and a contact line (mailto + Instagram, both
+  `target="_blank" rel="noopener"`). `<head>`: replaced the meta description, added `og:type`,
+  `og:site_name`, `og:title`, `og:description`, `og:url`, `twitter:card`, `twitter:title`,
+  `twitter:description` -- no `og:image` (no images exist to reference). Every string is the
+  owner's exact approved text, not paraphrased.
+- **App-only, digest unchanged.** `web/data/manifest.json` untouched; `source_digest` confirmed
+  identical before/after (`b4ecd384fbf9`). No `data/clean/` or `src/` edit.
+  `app/bsn_archivo.html`/`web/index.html`: byte-identical (`cmp`).
+- **Tests.** New `tests/test_site_notices.py`: exact-match pins for all four new/changed strings,
+  link presence/attributes, byte-copy check, and assertions that "error"/"equivocad" appear only
+  in the approved contact line and "oficial" only in the approved "no oficial" phrase (3x: meta +
+  og + twitter description). No existing test pinned the old footer/meta text. 505 tests pass;
+  `verify_clean.py`: 346,454 checks, 0 failed (unchanged).
+- **Live rendering (Chromium + WebKit, 1000px + 390px), all 4 configs identical.** Footer renders
+  as 4 lines, no horizontal overflow/wrap issue at either width. Both links present with correct
+  `href`/`target`/`rel`. All head tags read back exactly as written, `og:image` absent. 0 console
+  errors, 0 failed requests.
+- **Open finding, carried forward.** latinbasket-derived data (roster facts on 342 public player
+  pages; standings for 2014-2018, no fallback source) and RealGM-derived constants (the Juega
+  `POOL_RGM` corpus; the 2026 champion row, provisional pending Wikipedia) are published on the
+  live site and in the public repo's `data/clean/`/`data/interim/` CSVs, while both sites' full
+  terms-of-use pages returned HTTP 403 to automated fetch (PHASE_TERMS_CHECK) -- reuse terms remain
+  UNVERIFIED. The owner is reading both pages manually; not resolved by this phase.
+- Staged, not committed. Not pushed.
