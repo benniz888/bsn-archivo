@@ -6774,3 +6774,39 @@ Supersedes the "still unpushed" wording at the end of the previous block.
   terms-of-use pages returned HTTP 403 to automated fetch (PHASE_TERMS_CHECK) -- reuse terms remain
   UNVERIFIED. The owner is reading both pages manually; not resolved by this phase.
 - Staged, not committed. Not pushed.
+
+### PHASE_SITE_NOTICES_DEPLOY_LOG — deployed, live-verified (2026-09-24)
+- **Deployed.** Commits `66634d1` (app: footer contact, unofficial-status and privacy notes; meta
+  tags) and `25291ef` (docs: log site notices phase). Pushed `934eb72..25291ef`. Pages run
+  `36049746640`, success. Digest `b4ecd384fbf9`, **unchanged** as expected (app-only). Rollback
+  dry-run (scratch clone, revert of `66634d1`) applied with no conflicts; `web/` matched
+  `origin/main`'s `web/` byte for byte afterward.
+- **Live verification (Chromium + WebKit, 1000px + 390px, fresh contexts, `bsnarchivo.com`), all 4
+  configs identical.** Footer rendered as the 4 exact approved blocks; both links resolve
+  correctly (`mailto:benniz.8008@gmail.com`, `https://www.instagram.com/bennizpr/`, both
+  `target="_blank" rel="noopener"`); all 8 head meta/og/twitter tags served exactly as written;
+  `og:image` absent. 721 unchanged (5 tagged rows, correct bio); `#archivo/calidad` still shows 6
+  decision cards. 0 console errors, 0 failed requests, all 4 configs. **Owner confirmed the footer
+  and both contact links directly on an iPhone.**
+- **Open findings, not fixed here:**
+  - The footer still says "fuentes públicas citadas en «El archivo»". "Públicas" means visible, not
+    reusable, and latinbasket is not named anywhere in the app. To be rewritten with the real
+    sources/attribution text.
+  - **RealGM terms (revised 12.5.2021), read by the owner directly**: personal non-commercial use
+    only; no derivative works or republishing without written permission; no automated extraction;
+    commercial use prohibited; a separate clause restricts people tied to pro sports leagues, teams
+    or media. Permission contact: the legal address on its own terms page. RealGM-derived content
+    is currently published in app constants (`POOL_RGM`, the 2026 season-leader comparisons, the
+    provisional 2026 champion row).
+  - **latinbasket**: full terms page still not read (blocked to automated fetch); its on-page
+    notice warns against copying, redistributing or publishing downloaded information.
+    latinbasket-derived data is public today (342 player pages' roster fields, 2014-2018
+    standings; the source CSVs are in the public repo).
+  - Data sourced from archived bsnpr.com pages is the league's own material; archive.org's own
+    terms state copyright still applies to archived content regardless of the Wayback Machine's
+    own reuse policy.
+  - Cosmetic: the three new footer blocks run together with little visual spacing between them --
+    left for later, not urgent.
+  - **Not legal advice.** Decisions on removal, rewording, or seeking permission are pending the
+    PHASE_THIRD_PARTY_IMPACT report; nothing about RealGM/latinbasket content was changed in this
+    phase.
