@@ -6725,3 +6725,23 @@ Supersedes the "still unpushed" wording at the end of the previous block.
   (existing lines untouched): the document's own A04 section was never wrong (always said `9/5/1975`);
   the bug was only in D-ID-006's separately hand-typed `evidence_es`.
 - Staged, not committed. Not pushed.
+
+### PHASE_DATE_TEXT_FIX_DEPLOY_LOG — deployed, live-verified (2026-09-24)
+- **Deployed.** Commits `1cde1b4` (data: write D-ID-006 and 721 dates in long form, fix transposition)
+  and `4ea50ff` (docs: log date-text fix). Pushed `4278928..4ea50ff`. Pages run `36039598001`, success.
+  Digest `b4ecd384fbf9`, confirmed live within seconds of the run finishing. Rollback dry-run (scratch
+  clone, revert of `1cde1b4`) applied with no conflicts; `web/` matched `origin/main`'s `web/` byte for
+  byte afterward.
+- **Live verification (Chromium + WebKit, 1000px + 390px, fresh contexts, `bsnarchivo.com`), all 4
+  configs identical.** `#archivo/calidad`'s D-ID-006 card contains "5 de septiembre de 1975" and no
+  longer contains "5/9/1975"; id 344's own bio line reads the same "n. 5 de septiembre de 1975 ..." --
+  card and player page agree. 721's bio reads "n. 9 de mayo de 1980 (según bsnpr.com) ...", still 5
+  tagged rows, header still "Delantero" only. Fetched `data_quality.json` with `cache:'no-store'`: no
+  raw `M/D/YYYY` date remains in any decision or disputed-rows evidence text; the only raw dates left
+  anywhere in the file are the 10 values in the `dob_open` table (5 rows x 2 columns) -- deliberately
+  raw, by design, unchanged. 0 console errors, 0 failed requests, all 4 configs.
+- **Finding resolved.** The D-ID-006 transposed-date finding (logged in PHASE_DATE_TEXT_FIX above) is
+  now **RESOLVED** -- fixed and deployed, this entry. The new guard test
+  (`TestQuotedDatesMatchTheirCanonicalId`) now runs on every future `data_quality.json` rebuild and
+  fails loudly if a quoted date (in either raw or long-form Spanish) ever drifts from the canonical
+  `birth_date` of the id it describes, catching a repeat of this exact class of error before it ships.
