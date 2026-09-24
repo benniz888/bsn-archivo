@@ -6540,3 +6540,44 @@ Supersedes the "still unpushed" wording at the end of the previous block.
   (`app/bsn_archivo.html:7506/7520`); 721 now drops out of that list, same as 722 already does. Not
   code, purely a consequence of the data change -- intentional under this policy, but a real behavior
   change worth naming.
+
+### PHASE_A05_DEPLOY_LOG — flag deployed, live-verified (2026-09-24)
+- **Deployed.** Commits `7fa26fe` (data: flag id 721 disputed career rows, exclude from spans) and
+  `4963aa8` (docs: A05 evidence + session.md log). Pushed `65859b9..4963aa8`. Pages run `36024476920`,
+  success, ~34s. Digest `1bb525e06732`, confirmed live within seconds of the run finishing.
+- **Live verification (Chromium + WebKit, 1000px + 390px, fresh contexts, `bsnarchivo.com`), all 4
+  configs identical.** 721's `#playerExtra` header unchanged (`n. 5/9/1980 (según bsnpr.com) ·
+  Arecibo, Puerto Rico · Delantero` -- never showed years); `renderArchiveCard(721)`'s own meta line now
+  reads `Delantero` only (was `Delantero · 1965–1969`). All 5 career rows tagged "No concuerda con la
+  ficha"; the totals footnote and the "(según bsnpr.com)" DOB attribution both present. "Mismo nombre en
+  el archivo" reads `sin años · #722` on 721's page and `sin años · #721` on 722's -- identical on both
+  sides now. Jugadores-index search "Llovet": 721's row reads `Delantero | — | 0`. URLs unchanged:
+  `llovet-ayala-francisco` is still 721, `llovet-ayala-francisco-722` is still 722. `#archivo/calidad`
+  renders the new "Temporadas que no concuerdan con la ficha" section with its 5-row table. Negative
+  controls: id 194 shows no tag, no footnote, no attribution; the batch-1 redirect for id 73
+  (`cruz-alvin-73` -> `cruz-torres-alvin`) still resolves. 0 console errors, 0 failed requests, all 4
+  configs.
+- **Status: A05 is FLAGGED, not resolved.** The DOB stays visible and attributed; the 5 disputed career
+  rows stay visible but excluded from every span/count/roster/ranking that reads `players.json`. 722's
+  merge into 721 stays HELD until 721's own identity question is settled -- this phase did not change
+  that.
+- **Open findings, not fixed here:**
+  - Known limitation in `_disputed_seasons()` (`build_web_data.py`): it matches a flagged row by
+    `(bsnpr_id, season)` only, not by team -- a player with one flagged AND one unflagged row in the
+    SAME season on different teams would have both excluded, not just the flagged one. No player in the
+    committed data has that shape today; 721's 5 rows are one team, one row per season.
+  - Recurring tooling bug (third time this project): a background status-polling script against the
+    GitHub Actions API returns empty output on every attempt despite the run having actually completed.
+    Querying the API directly, once, gets the right answer every time. Root cause not yet debugged;
+    query directly instead of trusting the poll loop.
+  - `#archivo/calidad`'s Travieso Peña card (D-ID-006, already applied and pushed) reads "El ID 344 está
+    respaldado por tres fuentes independientes". Checked directly: all three (13 jug05.asp career rows,
+    130 gamestatwide.asp box-score rows, one jugador05.asp bio) are bsnpr.com pages, not independent
+    organizations -- the same "same source family, not independent" issue A05's evidence text was
+    corrected for. Not fixed here (would need a `player_identity_decisions.csv` edit, out of this
+    phase's scope).
+  - Raw `M/D/YYYY` dates on archive player pages, and on some Calidad de datos cards, are ambiguous to a
+    Spanish-language reader (month-first, no label saying so) -- already logged as a separate proposed
+    phase, 2,011 of 3,326 players affected.
+  - id 1947's citation mismatch (birth_date sourced from a different capture than the one cited) --
+    already logged, not corrected. A17 stays HELD.
