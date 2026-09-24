@@ -6581,3 +6581,17 @@ Supersedes the "still unpushed" wording at the end of the previous block.
     phase, 2,011 of 3,326 players affected.
   - id 1947's citation mismatch (birth_date sourced from a different capture than the one cited) --
     already logged, not corrected. A17 stays HELD.
+
+### PHASE_D006_WORDING_FIX — D-ID-006 "independent sources" corrected (2026-09-24)
+- Checked the open finding logged above: D-ID-006's public decision text (Calidad de datos, Travieso
+  Peña card) said id 344 was "respaldado por tres fuentes independientes". Verified directly: all three
+  cited sources (13 jug05 career rows, 130 gamestatwide.asp box-score rows, 1 jugador05.asp bio) are
+  bsnpr.com pages, not independent organizations -- same issue as A05's original evidence text.
+- Corrected `data/clean/player_identity_decisions.csv`'s D-ID-006 row (`evidence` and `evidence_es`
+  only; the merge decision, ids and survivor are unchanged) to say the three are bsnpr.com pages that
+  agree with each other, not independent sources. Rebuilt: `data_quality.json` changes in exactly that
+  one string; `manifest.json` digest `1bb525e06732` -> `9bc0d3657001`. 481 tests pass; `verify_clean.py`:
+  346,454 checks, 0 failed. Appended a dated correction note to the end of
+  `docs/specs/cluster_evidence_batch2.md` (its own A04 section, lines 122/124, left as originally
+  written per that file's read-only convention).
+- Staged, not committed. Not pushed.

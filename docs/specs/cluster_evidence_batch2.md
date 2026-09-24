@@ -181,3 +181,15 @@ Recommendation: hold the merge until this is resolved (which years, if any, 721 
 Touches if 722 alone is merged: 1 canonical row, 8 alias rows, web/data/players/722.json. No career, roster,
   id_map, bio or box rows move (722 has none). The 1965-1969 vs 1980/2005 question is unaffected by this merge
   in either direction.
+
+## Correction (2026-09-24)
+
+The A04 section above (lines 122 and 124) says id 344 is "corroborated across three independent sources"
+(13 jug05 career rows, 130 box-score rows 2001-2003, a 2006 jugador05 bio). This was overstated: all three
+are bsnpr.com pages (jug05.asp, gamestatwide.asp, jugador05.asp) -- the same site, not independent
+organizations. They do still agree with each other on team, jersey and season, which is the fact the
+merge decision actually rests on. The public-facing wording (D-ID-006's evidence/evidence_es in
+data/clean/player_identity_decisions.csv, published to web/data/index/data_quality.json) has been
+corrected to say "tres páginas de bsnpr.com ... Las tres vienen de la misma fuente" instead of
+"independientes". This section of the document is left as originally written, per its own read-only
+convention; this note records the correction rather than editing the lines above.
