@@ -6810,3 +6810,35 @@ Supersedes the "still unpushed" wording at the end of the previous block.
   - **Not legal advice.** Decisions on removal, rewording, or seeking permission are pending the
     PHASE_THIRD_PARTY_IMPACT report; nothing about RealGM/latinbasket content was changed in this
     phase.
+
+### DECISION 2026-09-24 (owner): keep RealGM/latinbasket data as-is, add nothing new
+- RealGM-derived and latinbasket-derived data **stay published as-is**. The site adds **no new
+  mentions** of either source. The owner is waiting for data from the BSN league before acting
+  further.
+- **Not built.** PHASE_A_REALGM_REMOVAL's gate report: `POOL` 376 -> 279 players without
+  `POOL_RGM`/`mergeRGM()`; **all 60 tested daily Cuadrícula boards would change**, including
+  today's -- the gate's own explicit stop condition. PHASE_REMOVAL_PLAN's latinbasket B1
+  (untrack `data/interim/` working files) and B2 (remove published roster/standings data) were
+  **not built** either.
+- **Recorded for reference.** RealGM terms (revised 12.5.2021, read directly by the owner):
+  personal non-commercial use only; no derivative works or republishing without written
+  permission; no automated extraction; commercial use prohibited; a separate clause restricts
+  people tied to pro leagues, teams or media. Acquisition of the RealGM corpus in this repo is
+  **UNKNOWN** -- its source CSV and scraper are not in the repo (`docs/specs/app_data_map.md:50,235`).
+  latinbasket: its on-page notice warns against copying, redistributing or publishing downloaded
+  information; the full terms page was never read (blocked to automated fetch). Data was
+  collected **only from Wayback captures**, respecting `robots.txt` (`src/fetch_latinbasket_roster.py:1-9`).
+  Its 18 raw working files under `data/interim/` are tracked in the public repo. Git history
+  retains everything regardless of any future removal; not addressed by this decision.
+  Independent sources for the 2026 champion now exist (bsnpr.com news, Metro PR 2026-08-24,
+  Wikipedia's BSN page: Bayamón, 81-74 over Aguada, 18th title) -- the RealGM-only `provisional`
+  row in `champions_reconciled.csv` can be re-sourced from these later, without needing RealGM at
+  all.
+- **Revisit triggers.** A reply from the league; ads or any monetization; an app store submission;
+  large-scale promotion of the site; any contact from RealGM, latinbasket, or Eurobasket.
+- **Wish list to ask the league for.** Per-game player stats, 2011-present; 2026 awards;
+  jersey/height/position; 2014-2018 standings.
+- **Still open, not decided.** The footer's "fuentes públicas citadas en «El archivo»" sentence
+  is left unchanged. The latinbasket files remain outside `build_web_data.py`'s `SOURCES` list --
+  the stale-cache gap noted in PHASE_REMOVAL_PLAN (a returning visitor wouldn't see a future
+  removal until their own cache expires) is unresolved.
