@@ -1,0 +1,2653 @@
+{
+  "route": "archivo/calidad",
+  "domHash": "3981808bd458f6127ddcc7bbc3e3ff57ec5b6f95465454a5f64ce10c21d23bab",
+  "domText": "<div id=\"dqBox\" data-ready=\"1\"><div class=\"strip\"><div><div class=\"n\">94</div><div class=\"l\">cifras distintas entre dos páginas de bsnpr.com, en 71 jugadores</div></div><div><div class=\"n\">767</div><div class=\"l\">filas que las dos páginas dan idénticas, en 130 jugadores (1980–2006)</div></div><div><div class=\"n\">6</div><div class=\"l\">decisiones de identidad registradas: 5 uniones y 1 «no se unen»</div></div><div><div class=\"n\">5</div><div class=\"l\">fechas de nacimiento con dos valores, sin resolver</div></div></div><h4 class=\"sub\">Cifras que no coinciden</h4><p class=\"lede\">Dos páginas archivadas de bsnpr.com traen filas de carrera del mismo jugador, equipo y temporada con juegos (JJ) o puntos (PTS) distintos. El archivo guarda las dos filas y muestra las dos cifras. En la ficha del jugador esas filas llevan la marca «2 fuentes» y quedan fuera de los totales.</p><p class=\"muted\" style=\"font-size:var(--fs-2xs);margin:var(--sp-2) 0 0\">Por temporada: 2000 (17) · 2001 (51) · 2002 (18) · 2003 (3) · 2005 (3) · 2006 (2). En 21 coinciden los juegos y difieren los puntos; en 19 coinciden los puntos y difieren los juegos; en 54 difieren los dos.</p><p class=\"muted\" style=\"font-size:var(--fs-2xs);margin:var(--sp-2) 0 0\">En 13 casos la fila de jug05 es el total de la temporada de un jugador que cambió de equipo. El archivo conserva las filas por equipo y registra el total como corroboración.</p><p class=\"muted\" style=\"font-size:var(--fs-2xs);margin:var(--sp-2) 0 0\">En las capturas de jug05 a partir de mayo de 2006, la temporada más reciente conserva la etiqueta 2005. En 100 de 145 filas las cifras coinciden con la temporada 2006 de la ficha del jugador. Reasignamos las 145 a 2006 y publicamos el registro.</p><p class=\"muted\" style=\"font-size:var(--fs-2xs);margin:var(--sp-2) 0 0\">En 5 filas de 4 jugadores, una página de jug05 mostraba la línea de otro jugador. Las quitamos de la ficha y de los totales y publicamos el registro. No podemos detectar los casos cuyo dueño no tiene captura.</p><div class=\"filters\"><div class=\"field\"><label for=\"dqQ\">Jugador</label><input id=\"dqQ\" type=\"search\" placeholder=\"Buscar por nombre\" autocomplete=\"off\"></div><div class=\"field\"><label for=\"dqS\">Temporada</label><select id=\"dqS\"><option value=\"\">Todas</option><option value=\"2000\">2000</option><option value=\"2001\">2001</option><option value=\"2002\">2002</option><option value=\"2003\">2003</option><option value=\"2005\">2005</option><option value=\"2006\">2006</option></select></div></div><div id=\"dqTable\" style=\"margin-top:var(--sp-3)\"><div class=\"tblwrap tall\"><table><thead><tr><th class=\"sortable\" data-i=\"0\" scope=\"col\">Jugador<span class=\"arrow\">▲</span></th><th class=\"num sortable\" data-i=\"1\" scope=\"col\">Año</th><th class=\"num sortable\" data-i=\"2\" scope=\"col\">Ficha</th><th class=\"num sortable\" data-i=\"3\" scope=\"col\">jug05</th></tr></thead><tbody><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1462,&quot;Allende Ruiz, Luis&quot;)\">Allende Ruiz, Luis</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Criollos de Caguas</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1462,&quot;Allende Ruiz, Luis&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20070829035055id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1462&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\">26 / <b>377</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061119230314id_/http://www.bsnpr.com/jug05.asp?r2=462676RWYH&amp;r3=00041&amp;r=00041&amp;e=SAN%20GERMAN\" target=\"_blank\" rel=\"noopener noreferrer\">26 / <b>427</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(2028,&quot;Apodaca Perez, Rick&quot;)\">Apodaca Perez, Rick</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Vaqueros de Bayamón</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(2028,&quot;Apodaca Perez, Rick&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20130428000129id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2028&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>4</b> / <b>42</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20060427025909id_/http://www.bsnpr.com:80/jug05.asp?r3=00002&amp;r2=462656RWXM&amp;r=00115&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>5</b> / <b>49</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(35,&quot;Arroyo Bermudez, Alberto C.&quot;)\">Arroyo Bermudez, Alberto C.</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Cangrejeros de Santurce</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(35,&quot;Arroyo Bermudez, Alberto C.&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20080803163146id_/http://bsnpr.com:80/jugadores/jugador.asp?id=35&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\">12 / <b>14</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061208064347id_/http://www.bsnpr.com:80/jug05.asp?r3=00112&amp;r2=462786RX3B&amp;r=00102&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\">12 / <b>26</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1025,&quot;Aubry Flores, Jeffrion&quot;)\">Aubry Flores, Jeffrion</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Cangrejeros de Santurce</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1025,&quot;Aubry Flores, Jeffrion&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20140122195610id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1025&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\">25 / <b>76</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20070404014307id_/http://www.bsnpr.com:80/jug05.asp?r3=00251&amp;r2=462786RX3D&amp;r=00103&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\">25 / <b>73</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1025,&quot;Aubry Flores, Jeffrion&quot;)\">Aubry Flores, Jeffrion</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Cangrejeros de Santurce</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1025,&quot;Aubry Flores, Jeffrion&quot;,2002)\">2002</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20140122195610id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1025&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>25</b> / <b>181</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20070404014307id_/http://www.bsnpr.com:80/jug05.asp?r3=00251&amp;r2=462786RX3D&amp;r=00103&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>26</b> / <b>187</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1025,&quot;Aubry Flores, Jeffrion&quot;)\">Aubry Flores, Jeffrion</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Cangrejeros de Santurce</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1025,&quot;Aubry Flores, Jeffrion&quot;,2003)\">2003</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20140122195610id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1025&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>30</b> / <b>336</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20070404014307id_/http://www.bsnpr.com:80/jug05.asp?r3=00251&amp;r2=462786RX3D&amp;r=00103&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>1</b> / <b>8</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(574,&quot;Ayuso Carrillo, Elias&quot;)\">Ayuso Carrillo, Elias</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Atléticos de San Germán</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(574,&quot;Ayuso Carrillo, Elias&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20170715120228id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=574&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\">26 / <b>580</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061208171514id_/http://www.bsnpr.com:80/jug05.asp?r3=00233&amp;r2=462776RX2X&amp;r=00002&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\">26 / <b>617</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1234,&quot;Barea Mora, José Juan&quot;)\">Barea Mora, José Juan</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Indios de Mayagüez</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1234,&quot;Barea Mora, José Juan&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20190220003341id_/https://www.bsnpr.com/jugadores/jugador.asp?id=1234\" target=\"_blank\" rel=\"noopener noreferrer\"><b>13</b> / <b>27</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20060528213827id_/http://www.bsnpr.com:80/jug05.asp?r2=PVWYCJKBPH&amp;r3=NBDGR&amp;r=00600&amp;e=SANTURCE\" target=\"_blank\" rel=\"noopener noreferrer\"><b>11</b> / <b>16</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(357,&quot;Bocachica Salvador, Cesar Armando&quot;)\">Bocachica Salvador, Cesar Armando</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Cangrejeros de Santurce</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(357,&quot;Bocachica Salvador, Cesar Armando&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20080229015214id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=357&amp;e=5\" target=\"_blank\" rel=\"noopener noreferrer\"><b>24</b> / <b>88</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061212103031id_/http://www.bsnpr.com:80/jug05.asp?r3=00234&amp;r2=462776RX2Y&amp;r=00049&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>22</b> / <b>84</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(777,&quot;Burgos Algarin, Gary Joe&quot;)\">Burgos Algarin, Gary Joe</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Criollos de Caguas</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(777,&quot;Burgos Algarin, Gary Joe&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20080325084937id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=777&amp;e=14\" target=\"_blank\" rel=\"noopener noreferrer\"><b>24</b> / <b>74</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20060618110655id_/http://www.bsnpr.com:80/jug05.asp?r=00020\" target=\"_blank\" rel=\"noopener noreferrer\"><b>21</b> / <b>58</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1575,&quot;Butler Graham, Mario Alberto&quot;)\">Butler Graham, Mario Alberto</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Cangrejeros de Santurce</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1575,&quot;Butler Graham, Mario Alberto&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20090110113911id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1575&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>11</b> / <b>23</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20070224095549id_/http://www.bsnpr.com:80/jug05.asp?r=00008\" target=\"_blank\" rel=\"noopener noreferrer\"><b>10</b> / <b>25</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(37,&quot;Carmona Sanchez, Alejandro&quot;)\">Carmona Sanchez, Alejandro</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Indios de Mayagüez</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(37,&quot;Carmona Sanchez, Alejandro&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20170715120606id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=37&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>5</b> / 16</a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061212190415id_/http://www.bsnpr.com:80/jug05.asp?r3=00145&amp;r2=462736RX0S&amp;r=00025&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>4</b> / 16</a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(932,&quot;Caro Beltran, Ismael&quot;)\">Caro Beltran, Ismael</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Indios de Mayagüez</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(932,&quot;Caro Beltran, Ismael&quot;,2002)\">2002</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20110717025736id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=932&amp;e=2\" target=\"_blank\" rel=\"noopener noreferrer\"><b>9</b> / 11</a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061206190209id_/http://www.bsnpr.com:80/jug05.asp?r3=00062&amp;r2=462686RWYV&amp;r=00066&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>8</b> / 11</a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(989,&quot;Carter Gaudino, James&quot;)\">Carter Gaudino, James</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Indios de Mayagüez</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(989,&quot;Carter Gaudino, James&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20070825200128id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=989&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>12</b> / <b>217</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20060618111039id_/http://www.bsnpr.com:80/jug05.asp?r=00156\" target=\"_blank\" rel=\"noopener noreferrer\"><b>16</b> / <b>283</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(498,&quot;Casiano Ojeda, Eddie&quot;)\">Casiano Ojeda, Eddie</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Leones de Ponce</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(498,&quot;Casiano Ojeda, Eddie&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20180221123707id_/http://www.bsnpr.com/jugadores/jugador.asp?id=498\" target=\"_blank\" rel=\"noopener noreferrer\"><b>23</b> / <b>481</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20060909091946id_/http://www.bsnpr.com:80/jug05.asp?r2=462756RX1T&amp;r3=00191&amp;r=00091&amp;e=PONCE\" target=\"_blank\" rel=\"noopener noreferrer\"><b>24</b> / <b>539</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(498,&quot;Casiano Ojeda, Eddie&quot;)\">Casiano Ojeda, Eddie</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Leones de Ponce</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(498,&quot;Casiano Ojeda, Eddie&quot;,2002)\">2002</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20180221123707id_/http://www.bsnpr.com/jugadores/jugador.asp?id=498\" target=\"_blank\" rel=\"noopener noreferrer\"><b>29</b> / <b>605</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20060909091946id_/http://www.bsnpr.com:80/jug05.asp?r2=462756RX1T&amp;r3=00191&amp;r=00091&amp;e=PONCE\" target=\"_blank\" rel=\"noopener noreferrer\"><b>30</b> / <b>614</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(136,&quot;Colon Colon, Angel Luis&quot;)\">Colon Colon, Angel Luis</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Criollos de Caguas</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(136,&quot;Colon Colon, Angel Luis&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20080501071021id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=136&amp;e=13\" target=\"_blank\" rel=\"noopener noreferrer\">26 / <b>330</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061206190144id_/http://www.bsnpr.com:80/jug05.asp?r3=00042&amp;r2=462676RWYI&amp;r=00057&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\">26 / <b>350</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(773,&quot;Colon Gracia, Gabriel&quot;)\">Colon Gracia, Gabriel</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Leones de Ponce</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(773,&quot;Colon Gracia, Gabriel&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20170715120412id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=773&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>6</b> / <b>21</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061006123058id_/http://www.bsnpr.com:80/jug05.asp?r3=00192&amp;r2=462756RX1U&amp;r=00092&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>9</b> / <b>23</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1011,&quot;Colon Rodriguez, Javier Antonio&quot;)\">Colon Rodriguez, Javier Antonio</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Leones de Ponce</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1011,&quot;Colon Rodriguez, Javier Antonio&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20190210044842id_/https://www.bsnpr.com/jugadores/jugador.asp?id=1011&amp;e\" target=\"_blank\" rel=\"noopener noreferrer\">25 / <b>341</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20060618110943id_/http://www.bsnpr.com:80/jug05.asp?r=00094\" target=\"_blank\" rel=\"noopener noreferrer\">25 / <b>352</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1011,&quot;Colon Rodriguez, Javier Antonio&quot;)\">Colon Rodriguez, Javier Antonio</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Leones de Ponce</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1011,&quot;Colon Rodriguez, Javier Antonio&quot;,2002)\">2002</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20190210044842id_/https://www.bsnpr.com/jugadores/jugador.asp?id=1011&amp;e\" target=\"_blank\" rel=\"noopener noreferrer\"><b>28</b> / <b>427</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20060618110943id_/http://www.bsnpr.com:80/jug05.asp?r=00094\" target=\"_blank\" rel=\"noopener noreferrer\"><b>29</b> / <b>460</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1011,&quot;Colon Rodriguez, Javier Antonio&quot;)\">Colon Rodriguez, Javier Antonio</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Leones de Ponce</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1011,&quot;Colon Rodriguez, Javier Antonio&quot;,2003)\">2003</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20190210044842id_/https://www.bsnpr.com/jugadores/jugador.asp?id=1011&amp;e\" target=\"_blank\" rel=\"noopener noreferrer\"><b>29</b> / <b>415</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20060618110943id_/http://www.bsnpr.com:80/jug05.asp?r=00094\" target=\"_blank\" rel=\"noopener noreferrer\"><b>28</b> / <b>391</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1063,&quot;Curbelo Melendez, Joel&quot;)\">Curbelo Melendez, Joel</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Piratas de Quebradillas</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1063,&quot;Curbelo Melendez, Joel&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20090110181606id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1063&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>22</b> / <b>396</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061119225540id_/http://www.bsnpr.com/jug05.asp?r2=462766RX2G&amp;r3=00216&amp;r=00093&amp;e=GUAYNABO\" target=\"_blank\" rel=\"noopener noreferrer\"><b>23</b> / <b>479</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(382,&quot;Dalmau Santana, Christian&quot;)\">Dalmau Santana, Christian</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Maratonistas de Coamo</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(382,&quot;Dalmau Santana, Christian&quot;,2000)\">2000</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20170715121156id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=382&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>27</b> / 512</a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20060827011831id_/http://www.bsnpr.com:80/jug05.asp?r3=00241&amp;r2=462786RX33&amp;r=00118&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>26</b> / 512</a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(382,&quot;Dalmau Santana, Christian&quot;)\">Dalmau Santana, Christian</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Atléticos de San Germán</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(382,&quot;Dalmau Santana, Christian&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20170715121156id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=382&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\">25 / <b>508</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20060827011831id_/http://www.bsnpr.com:80/jug05.asp?r3=00241&amp;r2=462786RX33&amp;r=00118&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\">25 / <b>557</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1970,&quot;Dalmau Santana, Raymond&quot;)\">Dalmau Santana, Raymond</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Piratas de Quebradillas</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1970,&quot;Dalmau Santana, Raymond&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20090517055847id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1970&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>22</b> / <b>504</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20060224014915id_/http://www.bsnpr.com:80/jug05.asp?r2=462766RX2J&amp;r3=00219&amp;r=00111&amp;e=SANTURCE\" target=\"_blank\" rel=\"noopener noreferrer\"><b>23</b> / <b>538</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1992,&quot;Dalmau Santana, Ricardo&quot;)\">Dalmau Santana, Ricardo</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Piratas de Quebradillas</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1992,&quot;Dalmau Santana, Ricardo&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20110412235216id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1992&amp;e=14\" target=\"_blank\" rel=\"noopener noreferrer\"><b>21</b> / <b>430</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20070404014145id_/http://www.bsnpr.com:80/jug05.asp?r3=00220&amp;r2=462776RX2K&amp;r=00113&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>20</b> / <b>382</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1660,&quot;Davila Cordero, Miguel&quot;)\">Davila Cordero, Miguel</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Criollos de Caguas</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1660,&quot;Davila Cordero, Miguel&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20090110135722id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1660&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\">26 / <b>216</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20050501125413id_/http://www.bsnpr.com:80/jug05.asp?r2=462736RX0V&amp;r3=00148&amp;e=COAMO\" target=\"_blank\" rel=\"noopener noreferrer\">26 / <b>215</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(120,&quot;De Jesus Velazquez, Angel&quot;)\">De Jesus Velazquez, Angel</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Indios de Mayagüez</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(120,&quot;De Jesus Velazquez, Angel&quot;,2000)\">2000</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20091209192040id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=120&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>28</b> / 361</a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061119230941id_/http://www.bsnpr.com/jug05.asp?r2=462736RX0U&amp;r3=00147&amp;r=00064&amp;e=CAGUAS\" target=\"_blank\" rel=\"noopener noreferrer\"><b>27</b> / 361</a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(120,&quot;De Jesus Velazquez, Angel&quot;)\">De Jesus Velazquez, Angel</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Indios de Mayagüez</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(120,&quot;De Jesus Velazquez, Angel&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20091209192040id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=120&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>14</b> / <b>169</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061119230941id_/http://www.bsnpr.com/jug05.asp?r2=462736RX0U&amp;r3=00147&amp;r=00064&amp;e=CAGUAS\" target=\"_blank\" rel=\"noopener noreferrer\"><b>10</b> / <b>119</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(284,&quot;Escalera Gonzalez, Carlos&quot;)\">Escalera Gonzalez, Carlos</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Maratonistas de Coamo</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(284,&quot;Escalera Gonzalez, Carlos&quot;,2000)\">2000</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20180829212304id_/https://www.bsnpr.com/jugadores/jugador.asp?id=284&amp;e\" target=\"_blank\" rel=\"noopener noreferrer\"><b>27</b> / 480</a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061208064331id_/http://www.bsnpr.com:80/jug05.asp?r3=00107&amp;r2=462706RWZV&amp;r=00036&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>26</b> / 480</a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(284,&quot;Escalera Gonzalez, Carlos&quot;)\">Escalera Gonzalez, Carlos</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Maratonistas de Coamo</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(284,&quot;Escalera Gonzalez, Carlos&quot;,2002)\">2002</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20180829212304id_/https://www.bsnpr.com/jugadores/jugador.asp?id=284&amp;e\" target=\"_blank\" rel=\"noopener noreferrer\"><b>18</b> / <b>425</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061208064331id_/http://www.bsnpr.com:80/jug05.asp?r3=00107&amp;r2=462706RWZV&amp;r=00036&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>19</b> / <b>450</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(50,&quot;Falcon Melendez, Alexander&quot;)\">Falcon Melendez, Alexander</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Mets de Guaynabo</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(50,&quot;Falcon Melendez, Alexander&quot;,2000)\">2000</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20130428000600id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=50&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>28</b> / 333</a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20060224014959id_/http://www.bsnpr.com:80/jug05.asp?r2=462796RX3F&amp;r3=00254&amp;r=00105&amp;e=SANTURCE\" target=\"_blank\" rel=\"noopener noreferrer\"><b>27</b> / 333</a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(50,&quot;Falcon Melendez, Alexander&quot;)\">Falcon Melendez, Alexander</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Cangrejeros de Santurce</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(50,&quot;Falcon Melendez, Alexander&quot;,2002)\">2002</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20130428000600id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=50&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>29</b> / <b>307</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20060224014959id_/http://www.bsnpr.com:80/jug05.asp?r2=462796RX3F&amp;r3=00254&amp;r=00105&amp;e=SANTURCE\" target=\"_blank\" rel=\"noopener noreferrer\"><b>30</b> / <b>319</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(217,&quot;Febres Salicrup, Arnaldo&quot;)\">Febres Salicrup, Arnaldo</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Vaqueros de Bayamón</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(217,&quot;Febres Salicrup, Arnaldo&quot;,2000)\">2000</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20090710220945id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=217&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\">11 / <b>24</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20070224020905id_/http://www.bsnpr.com:80/jug05.asp?r=00021\" target=\"_blank\" rel=\"noopener noreferrer\">11 / <b>28</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(217,&quot;Febres Salicrup, Arnaldo&quot;)\">Febres Salicrup, Arnaldo</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Atléticos de San Germán</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(217,&quot;Febres Salicrup, Arnaldo&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20090710220945id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=217&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>23</b> / <b>91</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20070224020905id_/http://www.bsnpr.com:80/jug05.asp?r=00021\" target=\"_blank\" rel=\"noopener noreferrer\"><b>24</b> / <b>136</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(135,&quot;Figueroa Sepulveda, Angel&quot;)\">Figueroa Sepulveda, Angel</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Mets de Guaynabo</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(135,&quot;Figueroa Sepulveda, Angel&quot;,2000)\">2000</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20140122195630id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=135&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>19</b> / 177</a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061005151722id_/http://www.bsnpr.com:80/jug05.asp?r3=00011&amp;r2=462666RWXV&amp;r=00004&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>18</b> / 177</a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(2074,&quot;Hatton Negron, Roberto Jose&quot;)\">Hatton Negron, Roberto Jose</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Atléticos de San Germán</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(2074,&quot;Hatton Negron, Roberto Jose&quot;,2000)\">2000</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20100216125742id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2074&amp;e=5\" target=\"_blank\" rel=\"noopener noreferrer\"><b>28</b> / <b>336</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20060618110957id_/http://www.bsnpr.com:80/jug05.asp?r=00095\" target=\"_blank\" rel=\"noopener noreferrer\"><b>26</b> / <b>323</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(2074,&quot;Hatton Negron, Roberto Jose&quot;)\">Hatton Negron, Roberto Jose</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Leones de Ponce</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(2074,&quot;Hatton Negron, Roberto Jose&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20100216125742id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2074&amp;e=5\" target=\"_blank\" rel=\"noopener noreferrer\"><b>25</b> / <b>267</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20060618110957id_/http://www.bsnpr.com:80/jug05.asp?r=00095\" target=\"_blank\" rel=\"noopener noreferrer\"><b>26</b> / <b>252</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(2074,&quot;Hatton Negron, Roberto Jose&quot;)\">Hatton Negron, Roberto Jose</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Leones de Ponce</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(2074,&quot;Hatton Negron, Roberto Jose&quot;,2002)\">2002</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20100216125742id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2074&amp;e=5\" target=\"_blank\" rel=\"noopener noreferrer\"><b>21</b> / <b>281</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20060618110957id_/http://www.bsnpr.com:80/jug05.asp?r=00095\" target=\"_blank\" rel=\"noopener noreferrer\"><b>22</b> / <b>294</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(2090,&quot;Hourruitiner Ortiz, Rolando&quot;)\">Hourruitiner Ortiz, Rolando</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Cangrejeros de Santurce</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(2090,&quot;Hourruitiner Ortiz, Rolando&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20200215225342id_/https://www.bsnpr.com/jugadores/jugador.asp?id=2090\" target=\"_blank\" rel=\"noopener noreferrer\">24 / <b>280</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20060528213746id_/http://www.bsnpr.com:80/jug05.asp?r2=462796RX3G&amp;r3=00257&amp;r=00106&amp;e=SANTURCE\" target=\"_blank\" rel=\"noopener noreferrer\">24 / <b>273</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(2090,&quot;Hourruitiner Ortiz, Rolando&quot;)\">Hourruitiner Ortiz, Rolando</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Cangrejeros de Santurce</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(2090,&quot;Hourruitiner Ortiz, Rolando&quot;,2002)\">2002</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20200215225342id_/https://www.bsnpr.com/jugadores/jugador.asp?id=2090\" target=\"_blank\" rel=\"noopener noreferrer\"><b>28</b> / <b>249</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20060528213746id_/http://www.bsnpr.com:80/jug05.asp?r2=462796RX3G&amp;r3=00257&amp;r=00106&amp;e=SANTURCE\" target=\"_blank\" rel=\"noopener noreferrer\"><b>29</b> / <b>251</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1442,&quot;Jackson, Leroy&quot;)\">Jackson, Leroy</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Atléticos de San Germán</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1442,&quot;Jackson, Leroy&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20070828230728id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1442&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>21</b> / <b>283</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20050409232452id_/http://www.bsnpr.com:80/jug05.asp?r2=462686RWYW&amp;r=00063&amp;e=CAROLINA\" target=\"_blank\" rel=\"noopener noreferrer\"><b>22</b> / <b>297</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(2201,&quot;Latson Poling, Therome Ray&quot;)\">Latson Poling, Therome Ray</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Indios de Mayagüez</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(2201,&quot;Latson Poling, Therome Ray&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20080325084900id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2201&amp;e=12\" target=\"_blank\" rel=\"noopener noreferrer\">26 / <b>113</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20070224202719id_/http://www.bsnpr.com:80/jug05.asp?r2=462736RX12&amp;r3=00158&amp;r=00010&amp;e=SAN+GERMAN\" target=\"_blank\" rel=\"noopener noreferrer\">26 / <b>119</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(2037,&quot;Lazor, Robert&quot;)\">Lazor, Robert</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Atléticos de San Germán</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(2037,&quot;Lazor, Robert&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20201209030505id_/https://www.bsnpr.com/jugadores/jugador.asp?id=2037&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>26</b> / <b>476</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061208064021id_/http://www.bsnpr.com:80/jug05.asp?r3=00199&amp;r2=462756RX21&amp;r=00082&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>22</b> / <b>404</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(143,&quot;Lopez Ortiz, Angel Miguel&quot;)\">Lopez Ortiz, Angel Miguel</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Polluelos de Aibonito</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(143,&quot;Lopez Ortiz, Angel Miguel&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20090411231151id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=143&amp;e=11\" target=\"_blank\" rel=\"noopener noreferrer\"><b>23</b> / <b>366</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061119230613id_/http://www.bsnpr.com/jug05.asp?r2=462746RX1H&amp;r3=00179&amp;r=00045&amp;e=COAMO\" target=\"_blank\" rel=\"noopener noreferrer\"><b>18</b> / <b>292</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(952,&quot;Lopez Rodriguez, Ivan&quot;)\">Lopez Rodriguez, Ivan</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Vaqueros de Bayamón</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(952,&quot;Lopez Rodriguez, Ivan&quot;,2005)\">2005</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20130428001411id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=952&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>8</b> / <b>36</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20050927081426id_/http://www.bsnpr.com:80/jug05.asp?r2=462696RWZ9&amp;r=00078&amp;e=ISABELA\" target=\"_blank\" rel=\"noopener noreferrer\"><b>3</b> / <b>0</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(763,&quot;Martinez Arroyo, Freddie&quot;)\">Martinez Arroyo, Freddie</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Indios de Mayagüez</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(763,&quot;Martinez Arroyo, Freddie&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20090713002149id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=763&amp;e=7\" target=\"_blank\" rel=\"noopener noreferrer\"><b>24</b> / <b>130</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061206115502id_/http://www.bsnpr.com:80/jug05.asp?r3=00200&amp;r2=462756RX22&amp;r=00053&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>25</b> / <b>140</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1791,&quot;Melendez Cardona, Pavel&quot;)\">Melendez Cardona, Pavel</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Piratas de Quebradillas</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1791,&quot;Melendez Cardona, Pavel&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20090829072340id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1791&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>14</b> / <b>24</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20070404080215id_/http://www.bsnpr.com:80/jug05.asp?r3=00226&amp;r2=462776RX2Q&amp;r=00077&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>12</b> / <b>16</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1753,&quot;Melendez Gilbert, Orlando&quot;)\">Melendez Gilbert, Orlando</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Polluelos de Aibonito</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1753,&quot;Melendez Gilbert, Orlando&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20080803172233id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1753&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\">26 / <b>308</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061213195853id_/http://www.bsnpr.com:80/jug05.asp?r3=00245&amp;r2=462786RX37&amp;r=00142&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\">26 / <b>305</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1286,&quot;Murray Quiñones, Joseph&quot;)\">Murray Quiñones, Joseph</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Polluelos de Aibonito</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1286,&quot;Murray Quiñones, Joseph&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20080228053258id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1286&amp;e=5\" target=\"_blank\" rel=\"noopener noreferrer\">26 / <b>285</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20070404075323id_/http://www.bsnpr.com:80/jug05.asp?r3=00160&amp;r2=462736RX14&amp;r=00117&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\">26 / <b>292</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1562,&quot;Narvaez Rivera, Manuel Antonio&quot;)\">Narvaez Rivera, Manuel Antonio</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Vaqueros de Bayamón</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1562,&quot;Narvaez Rivera, Manuel Antonio&quot;,2000)\">2000</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20140122195655id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1562&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>9</b> / <b>16</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061119231617id_/http://www.bsnpr.com/jug05.asp?r2=462746RX1L&amp;r3=00183&amp;r=00088&amp;e=PONCE\" target=\"_blank\" rel=\"noopener noreferrer\"><b>6</b> / <b>12</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1293,&quot;Nieves Fred, Josué&quot;)\">Nieves Fred, Josué</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Criollos de Caguas</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1293,&quot;Nieves Fred, Josué&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20090422185032id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1293&amp;e=9\" target=\"_blank\" rel=\"noopener noreferrer\">26 / <b>288</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061008162018id_/http://www.bsnpr.com:80/jug05.asp?r3=00162&amp;r2=462746RX16&amp;r=00011&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\">26 / <b>343</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(2067,&quot;Nieves Perez, Roberto&quot;)\">Nieves Perez, Roberto</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Titanes de Morovis</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(2067,&quot;Nieves Perez, Roberto&quot;,2000)\">2000</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20140122195735id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2067&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>17</b> / 32</a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061119230520id_/http://www.bsnpr.com/jug05.asp?r2=462746RX1M&amp;r3=CVJWU&amp;r=00126&amp;e=COAMO\" target=\"_blank\" rel=\"noopener noreferrer\"><b>16</b> / 32</a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(697,&quot;Ortiz Espada, Fernando&quot;)\">Ortiz Espada, Fernando</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Indios de Mayagüez</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(697,&quot;Ortiz Espada, Fernando&quot;,2000)\">2000</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20091209191937id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=697&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>18</b> / 279</a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061119231009id_/http://www.bsnpr.com/jug05.asp?r2=462716RX02&amp;r3=00116&amp;r=00038&amp;e=CAGUAS\" target=\"_blank\" rel=\"noopener noreferrer\"><b>17</b> / 279</a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(697,&quot;Ortiz Espada, Fernando&quot;)\">Ortiz Espada, Fernando</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Maratonistas de Coamo</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(697,&quot;Ortiz Espada, Fernando&quot;,2002)\">2002</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20091209191937id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=697&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>8</b> / 60</a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061119231009id_/http://www.bsnpr.com/jug05.asp?r2=462716RX02&amp;r3=00116&amp;r=00038&amp;e=CAGUAS\" target=\"_blank\" rel=\"noopener noreferrer\"><b>10</b> / 60</a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(509,&quot;Padilla Rivera, Edgar&quot;)\">Padilla Rivera, Edgar</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Mets de Guaynabo</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(509,&quot;Padilla Rivera, Edgar&quot;,2000)\">2000</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20080803173052id_/http://bsnpr.com:80/jugadores/jugador.asp?id=509&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>12</b> / 125</a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20070328182250id_/http://www.bsnpr.com:80/jug05.asp?r2=462796RX3K&amp;r3=00261&amp;r=00007&amp;e=ARECIBO\" target=\"_blank\" rel=\"noopener noreferrer\"><b>11</b> / 125</a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(509,&quot;Padilla Rivera, Edgar&quot;)\">Padilla Rivera, Edgar</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Vaqueros de Bayamón</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(509,&quot;Padilla Rivera, Edgar&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20080803173052id_/http://bsnpr.com:80/jugadores/jugador.asp?id=509&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\">26 / <b>248</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20070328182250id_/http://www.bsnpr.com:80/jug05.asp?r2=462796RX3K&amp;r3=00261&amp;r=00007&amp;e=ARECIBO\" target=\"_blank\" rel=\"noopener noreferrer\">26 / <b>253</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(2290,&quot;Pagan Roque, Wilfredo&quot;)\">Pagan Roque, Wilfredo</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Vaqueros de Bayamón</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(2290,&quot;Pagan Roque, Wilfredo&quot;,2003)\">2003</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20170715121633id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2290&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>12</b> / <b>160</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061208064222id_/http://www.bsnpr.com:80/jug05.asp?r3=00185&amp;r2=462756RX1N&amp;r=00044&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>4</b> / <b>34</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(118,&quot;Paniagua Medina, Angel&quot;)\">Paniagua Medina, Angel</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Polluelos de Aibonito</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(118,&quot;Paniagua Medina, Angel&quot;,2000)\">2000</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20090713001227id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=118&amp;e=7\" target=\"_blank\" rel=\"noopener noreferrer\"><b>6</b> / 40</a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20070404080846id_/http://www.bsnpr.com:80/jug05.asp?r3=00032&amp;r2=462676RWYA&amp;r=00120&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>5</b> / 40</a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(118,&quot;Paniagua Medina, Angel&quot;)\">Paniagua Medina, Angel</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Gallitos de Isabela</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(118,&quot;Paniagua Medina, Angel&quot;,2002)\">2002</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20090713001227id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=118&amp;e=7\" target=\"_blank\" rel=\"noopener noreferrer\"><b>11</b> / <b>81</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20070404080846id_/http://www.bsnpr.com:80/jug05.asp?r3=00032&amp;r2=462676RWYA&amp;r=00120&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>10</b> / <b>67</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(335,&quot;Payano Ocasio, Carlos R.&quot;)\">Payano Ocasio, Carlos R.</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Vaqueros de Bayamón</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(335,&quot;Payano Ocasio, Carlos R.&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20091209055642id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=335&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\">12 / <b>133</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061206115305id_/http://www.bsnpr.com:80/jug05.asp?r3=00033&amp;r2=462676RWYB&amp;r=00051&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\">12 / <b>137</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1836,&quot;Ramos Fuentes, Peter John&quot;)\">Ramos Fuentes, Peter John</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Criollos de Caguas</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1836,&quot;Ramos Fuentes, Peter John&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20210320073121id_/https://www.bsnpr.com/jugadores/jugador.asp?id=1836&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>4</b> / <b>0</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20060427041711id_/http://www.bsnpr.com:80/jug05.asp?r2=ARCZIFCHXN&amp;r3=CMIFD&amp;r=NA%20%20%20&amp;e=ARECIBO\" target=\"_blank\" rel=\"noopener noreferrer\"><b>5</b> / <b>6</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(151,&quot;Reyes Canales, Angelo&quot;)\">Reyes Canales, Angelo</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Titanes de Morovis</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(151,&quot;Reyes Canales, Angelo&quot;,2002)\">2002</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20140122195645id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=151&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>26</b> / <b>157</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20070224021044id_/http://www.bsnpr.com:80/jug05.asp?r=00065\" target=\"_blank\" rel=\"noopener noreferrer\"><b>2</b> / <b>11</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1766,&quot;Ricardo Gonzalez, Osiris&quot;)\">Ricardo Gonzalez, Osiris</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Leones de Ponce</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1766,&quot;Ricardo Gonzalez, Osiris&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20090830021428id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1766&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>17</b> / <b>35</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061206190246id_/http://www.bsnpr.com:80/jug05.asp?r3=00204&amp;r2=462766RX26&amp;r=00005&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>19</b> / <b>57</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1766,&quot;Ricardo Gonzalez, Osiris&quot;)\">Ricardo Gonzalez, Osiris</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Leones de Ponce</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1766,&quot;Ricardo Gonzalez, Osiris&quot;,2002)\">2002</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20090830021428id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1766&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>23</b> / <b>128</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061206190246id_/http://www.bsnpr.com:80/jug05.asp?r3=00204&amp;r2=462766RX26&amp;r=00005&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>24</b> / <b>130</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(985,&quot;Richards Boulware, Ja Ja&quot;)\">Richards Boulware, Ja Ja</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Vaqueros de Bayamón</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(985,&quot;Richards Boulware, Ja Ja&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20090110024201id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=985&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>26</b> / <b>221</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20050929224515id_/http://www.bsnpr.com:80/jug05.asp?r2=462676RWYG&amp;r=00040&amp;e=BAYAMON\" target=\"_blank\" rel=\"noopener noreferrer\"><b>25</b> / <b>209</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1512,&quot;Rivas Kuzmitsky, Luis A.&quot;)\">Rivas Kuzmitsky, Luis A.</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Criollos de Caguas</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1512,&quot;Rivas Kuzmitsky, Luis A.&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20100227055903id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1512&amp;e=8\" target=\"_blank\" rel=\"noopener noreferrer\"><b>26</b> / <b>287</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061119231048id_/http://www.bsnpr.com/jug05.asp?r2=462686RWYO&amp;r3=00054&amp;r=00089&amp;e=MOROVIS\" target=\"_blank\" rel=\"noopener noreferrer\"><b>25</b> / <b>265</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(320,&quot;Rivera Camacho, Carlos&quot;)\">Rivera Camacho, Carlos</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Brujos de Guayama</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(320,&quot;Rivera Camacho, Carlos&quot;,2000)\">2000</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20080410091522id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=320&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>25</b> / 71</a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20050903213008id_/http://www.bsnpr.com:80/jug05.asp?r2=462686RWYP&amp;r=00055&amp;e=CAGUAS\" target=\"_blank\" rel=\"noopener noreferrer\"><b>26</b> / 71</a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(320,&quot;Rivera Camacho, Carlos&quot;)\">Rivera Camacho, Carlos</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Brujos de Guayama</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(320,&quot;Rivera Camacho, Carlos&quot;,2005)\">2005</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20080410091522id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=320&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>31</b> / <b>113</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20050903213008id_/http://www.bsnpr.com:80/jug05.asp?r2=462686RWYP&amp;r=00055&amp;e=CAGUAS\" target=\"_blank\" rel=\"noopener noreferrer\"><b>4</b> / <b>13</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(49,&quot;Rivera Cruz, Alexander&quot;)\">Rivera Cruz, Alexander</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Criollos de Caguas</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(49,&quot;Rivera Cruz, Alexander&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20080501072254id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=49&amp;e=11\" target=\"_blank\" rel=\"noopener noreferrer\"><b>6</b> / 19</a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061119230859id_/http://www.bsnpr.com/jug05.asp?r2=462686RWYN&amp;r3=00053&amp;r=00545&amp;e=CAGUAS\" target=\"_blank\" rel=\"noopener noreferrer\"><b>7</b> / 19</a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(704,&quot;Rivera Isaac, Filiberto&quot;)\">Rivera Isaac, Filiberto</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Maratonistas de Coamo</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(704,&quot;Rivera Isaac, Filiberto&quot;,2002)\">2002</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20170715121350id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=704&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>24</b> / <b>375</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20060618110520id_/http://www.bsnpr.com:80/jug05.asp?r=00575\" target=\"_blank\" rel=\"noopener noreferrer\"><b>25</b> / <b>380</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1127,&quot;Rivera Motta, Jorge Luis&quot;)\">Rivera Motta, Jorge Luis</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Cangrejeros de Santurce</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1127,&quot;Rivera Motta, Jorge Luis&quot;,2005)\">2005</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20110412235156id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1127&amp;e=14\" target=\"_blank\" rel=\"noopener noreferrer\"><b>23</b> / <b>133</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20050924073312id_/http://www.bsnpr.com:80/jug05.asp?r2=462706RWZQ&amp;r=00101&amp;e=ARECIBO\" target=\"_blank\" rel=\"noopener noreferrer\"><b>2</b> / <b>2</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(236,&quot;Rivera Ortiz, Axel&quot;)\">Rivera Ortiz, Axel</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Polluelos de Aibonito</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(236,&quot;Rivera Ortiz, Axel&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20090830021433id_/http://bsnpr.com:80/jugadores/jugador.asp?id=236&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>18</b> / <b>14</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061006122443id_/http://www.bsnpr.com:80/jug05.asp?r3=00097&amp;r2=462706RWZM&amp;r=00540&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>16</b> / <b>17</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1948,&quot;Rivera Ramos, Raul&quot;)\">Rivera Ramos, Raul</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Atléticos de San Germán</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1948,&quot;Rivera Ramos, Raul&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20091004043908id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1948&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\">5 / <b>1</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061206190335id_/http://www.bsnpr.com:80/jug05.asp?r3=NELHP&amp;r2=QCVRXUMZKI&amp;r=00042&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\">5 / <b>2</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(87,&quot;Rodriguez Fernandez, Andres&quot;)\">Rodriguez Fernandez, Andres</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Criollos de Caguas</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(87,&quot;Rodriguez Fernandez, Andres&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20180424203035id_/http://www.bsnpr.com/jugadores/jugador.asp?id=87&amp;e\" target=\"_blank\" rel=\"noopener noreferrer\"><b>14</b> / <b>23</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20060713002107id_/http://www.bsnpr.com:80/jug05.asp?r=00052\" target=\"_blank\" rel=\"noopener noreferrer\"><b>15</b> / <b>28</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(87,&quot;Rodriguez Fernandez, Andres&quot;)\">Rodriguez Fernandez, Andres</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Criollos de Caguas</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(87,&quot;Rodriguez Fernandez, Andres&quot;,2002)\">2002</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20180424203035id_/http://www.bsnpr.com/jugadores/jugador.asp?id=87&amp;e\" target=\"_blank\" rel=\"noopener noreferrer\"><b>26</b> / <b>179</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20060713002107id_/http://www.bsnpr.com:80/jug05.asp?r=00052\" target=\"_blank\" rel=\"noopener noreferrer\"><b>0</b> / <b>0</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(624,&quot;Rodriguez Mandes, Erick&quot;)\">Rodriguez Mandes, Erick</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Polluelos de Aibonito</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(624,&quot;Rodriguez Mandes, Erick&quot;,2000)\">2000</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20140122200729id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=624&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>22</b> / 256</a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061009095710id_/http://www.bsnpr.com:80/jug05.asp?r3=00262&amp;r2=462796RX3L&amp;r=00100&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>23</b> / 256</a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(624,&quot;Rodriguez Mandes, Erick&quot;)\">Rodriguez Mandes, Erick</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Polluelos de Aibonito</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(624,&quot;Rodriguez Mandes, Erick&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20140122200729id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=624&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\">23 / <b>241</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061009095710id_/http://www.bsnpr.com:80/jug05.asp?r3=00262&amp;r2=462796RX3L&amp;r=00100&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\">23 / <b>226</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1284,&quot;Rodriguez Rodriguez, Joseph&quot;)\">Rodriguez Rodriguez, Joseph</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Gigantes de Carolina/Canóvanas</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1284,&quot;Rodriguez Rodriguez, Joseph&quot;,2002)\">2002</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20080411054818id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1284&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\">29 / <b>376</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061119231056id_/http://www.bsnpr.com/jug05.asp?r2=462696RWZ6&amp;r3=00075&amp;r=00559&amp;e=MOROVIS\" target=\"_blank\" rel=\"noopener noreferrer\">29 / <b>373</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1066,&quot;Roman Rodriguez, Joel&quot;)\">Roman Rodriguez, Joel</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Titanes de Morovis</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1066,&quot;Roman Rodriguez, Joel&quot;,2006)\">2006</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20080210080410id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1066&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>26</b> / <b>159</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061211114448id_/http://www.bsnpr.com:80/jug05.asp?r3=CPMHG&amp;r2=QRMQFFHFSK&amp;r=00533&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>29</b> / <b>161</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1497,&quot;Rosa Clemente, Luis&quot;)\">Rosa Clemente, Luis</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Mets de Guaynabo</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1497,&quot;Rosa Clemente, Luis&quot;,2000)\">2000</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20100310231433id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1497&amp;e=7\" target=\"_blank\" rel=\"noopener noreferrer\"><b>4</b> / 5</a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20070224021002id_/http://www.bsnpr.com:80/jug05.asp?r=00524\" target=\"_blank\" rel=\"noopener noreferrer\"><b>3</b> / 5</a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(2000,&quot;Santiago Acosta, Ricardo&quot;)\">Santiago Acosta, Ricardo</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Brujos de Guayama</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(2000,&quot;Santiago Acosta, Ricardo&quot;,2000)\">2000</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20080501072453id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2000&amp;e=13\" target=\"_blank\" rel=\"noopener noreferrer\"><b>11</b> / 20</a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061212190229id_/http://www.bsnpr.com:80/jug05.asp?r3=VUWKH&amp;r2=QQUHMPOFDN&amp;r=00061&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>10</b> / 20</a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1760,&quot;Santiago Cordero, Orlando&quot;)\">Santiago Cordero, Orlando</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Cangrejeros de Santurce</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1760,&quot;Santiago Cordero, Orlando&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20100225110954id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1760&amp;e=9\" target=\"_blank\" rel=\"noopener noreferrer\">24 / <b>353</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20060618111024id_/http://www.bsnpr.com:80/jug05.asp?r=00109\" target=\"_blank\" rel=\"noopener noreferrer\">24 / <b>357</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1760,&quot;Santiago Cordero, Orlando&quot;)\">Santiago Cordero, Orlando</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Cangrejeros de Santurce</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1760,&quot;Santiago Cordero, Orlando&quot;,2002)\">2002</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20100225110954id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1760&amp;e=9\" target=\"_blank\" rel=\"noopener noreferrer\"><b>19</b> / <b>150</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20060618111024id_/http://www.bsnpr.com:80/jug05.asp?r=00109\" target=\"_blank\" rel=\"noopener noreferrer\"><b>20</b> / <b>164</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(555,&quot;Santiago Rivera, Edwin&quot;)\">Santiago Rivera, Edwin</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Cangrejeros de Santurce</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(555,&quot;Santiago Rivera, Edwin&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20080411054901id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=555&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>24</b> / <b>218</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061009100142id_/http://www.bsnpr.com:80/jug05.asp?r3=00206&amp;r2=462766RX28&amp;r=00099&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>25</b> / <b>236</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(555,&quot;Santiago Rivera, Edwin&quot;)\">Santiago Rivera, Edwin</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Cangrejeros de Santurce</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(555,&quot;Santiago Rivera, Edwin&quot;,2002)\">2002</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20080411054901id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=555&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>24</b> / <b>204</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061009100142id_/http://www.bsnpr.com:80/jug05.asp?r3=00206&amp;r2=462766RX28&amp;r=00099&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>25</b> / <b>211</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(81,&quot;Sweet Valencia, Andre&quot;)\">Sweet Valencia, Andre</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Atléticos de San Germán</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(81,&quot;Sweet Valencia, Andre&quot;,2006)\">2006</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20071211045931id_/http://bsnpr.com:80/jugadores/jugador.asp?id=81&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>13</b> / <b>126</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20070404012113id_/http://www.bsnpr.com:80/jug05.asp?r3=QSBVQ&amp;r2=QQRXUFBMBV&amp;r=00029&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>31</b> / <b>333</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1759,&quot;Vega Smith, Orlando&quot;)\">Vega Smith, Orlando</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Indios de Mayagüez</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1759,&quot;Vega Smith, Orlando&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20190209180827id_/https://www.bsnpr.com/jugadores/jugador.asp?id=1759&amp;e\" target=\"_blank\" rel=\"noopener noreferrer\"><b>23</b> / <b>322</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061216221534id_/http://www.bsnpr.com:80/jug05.asp?r3=00208&amp;r2=462766RX2A&amp;r=00075&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>24</b> / <b>313</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(808,&quot;Venzen Aloyo, Gilberto&quot;)\">Venzen Aloyo, Gilberto</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Polluelos de Aibonito</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(808,&quot;Venzen Aloyo, Gilberto&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20091004045524id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=808&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>13</b> / <b>73</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061006123158id_/http://www.bsnpr.com:80/jug05.asp?r3=FSWWD&amp;r2=462776RX2V&amp;r=00124&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>15</b> / <b>79</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(2145,&quot;Villegas Aviles, Samuel&quot;)\">Villegas Aviles, Samuel</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Cangrejeros de Santurce</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(2145,&quot;Villegas Aviles, Samuel&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20140122195742id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=2145&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>5</b> / <b>3</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061215015245id_/http://www.bsnpr.com:80/jug05.asp?r3=OJXVC&amp;r2=OKXSWMUWLG&amp;r=00601&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>6</b> / <b>4</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1628,&quot;Watson Fuentes, Michael&quot;)\">Watson Fuentes, Michael</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Gigantes de Carolina/Canóvanas</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1628,&quot;Watson Fuentes, Michael&quot;,2002)\">2002</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20091006104719id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=1628&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>5</b> / 105</a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061211012026id_/http://www.bsnpr.com:80/jug05.asp?r3=SBEVR&amp;r2=ZBCOCSGWCF&amp;r=00067&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>6</b> / 105</a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(757,&quot;Western Canales, Franklin&quot;)\">Western Canales, Franklin</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Vaqueros de Bayamón</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(757,&quot;Western Canales, Franklin&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20091207221748id_/http://www.bsnpr.com:80/jugadores/jugador.asp?id=757&amp;e=9\" target=\"_blank\" rel=\"noopener noreferrer\">24 / <b>526</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061207193824id_/http://www.bsnpr.com:80/jug05.asp?r3=00040&amp;r2=462676RWYG&amp;r=00019&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\">24 / <b>507</b></a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1685,&quot;Wilson Wilder, Monty&quot;)\">Wilson Wilder, Monty</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Maratonistas de Coamo</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1685,&quot;Wilson Wilder, Monty&quot;,2000)\">2000</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20100310065704id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1685&amp;e=7\" target=\"_blank\" rel=\"noopener noreferrer\"><b>28</b> / 549</a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061207122823id_/http://www.bsnpr.com:80/jug05.asp?r3=00266&amp;r2=462796RX3P&amp;r=00047&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>27</b> / 549</a></td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(1685,&quot;Wilson Wilder, Monty&quot;)\">Wilson Wilder, Monty</button><div class=\"muted\" style=\"font-size:var(--fs-3xs);margin-top:var(--sp-1)\">Polluelos de Aibonito</div></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(1685,&quot;Wilson Wilder, Monty&quot;,2001)\">2001</button></td><td class=\"num\"><a href=\"https://web.archive.org/web/20100310065704id_/http://bsnpr.com:80/jugadores/jugador.asp?id=1685&amp;e=7\" target=\"_blank\" rel=\"noopener noreferrer\"><b>26</b> / <b>603</b></a></td><td class=\"num\"><a href=\"https://web.archive.org/web/20061207122823id_/http://www.bsnpr.com:80/jug05.asp?r3=00266&amp;r2=462796RX3P&amp;r=00047&amp;e=\" target=\"_blank\" rel=\"noopener noreferrer\"><b>25</b> / <b>583</b></a></td></tr></tbody></table></div><div class=\"tbl-meta\"><span>94 filas</span><button class=\"btn\" style=\"padding: 5px 10px; font-size: 12px;\">Descargar CSV</button></div></div><p class=\"muted\" style=\"font-size:var(--fs-2xs);margin:var(--sp-2) 0 0\">Cada celda muestra JJ / PTS. <b>Ficha</b> es la página del jugador en bsnpr.com (jugador.asp); <b>jug05</b>, su página de estadísticas (jug05.asp). Cada par enlaza a la captura en Internet Archive; en negrita, la cifra que difiere. Las dos columnas se ordenan por PTS.</p><h4 class=\"sub\">Identidades: qué se unió y qué no</h4><p class=\"lede\">Al unir dos IDs, las filas idénticas no se cuentan dos veces: 4 filas del ID retirado eran idénticas a filas del ID que se conserva y quedaron en un registro aparte. Un ID retirado sigue abriendo la ficha que se conservó.</p><div class=\"card\" style=\"margin-top:var(--sp-3)\"><div style=\"font-weight:700\">Se unieron: Cruz, Alvin (ID 73) ahora es Cruz Torres, Alvin (ID 74)</div><p style=\"margin:var(--sp-2) 0 0;line-height:1.5\">Cinco de las seis filas del ID 73 son idénticas a las del ID 74. Ambas fichas tienen la misma fecha de nacimiento (24 de abril de 1982). El listado de bsnpr.com dejó de incluir el ID 73 en 2008 y ningún juego tiene ambos IDs.</p><div class=\"muted\" style=\"font-size:var(--fs-2xs);margin-top:var(--sp-2)\">Decidido el 21 de septiembre de 2026 · <button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(74,&quot;Cruz Torres, Alvin&quot;)\">Cruz Torres, Alvin</button></div></div><div class=\"card\" style=\"margin-top:var(--sp-3)\"><div style=\"font-weight:700\">Se unieron: Lopez, Ivan (ID 951) ahora es Lopez Rodriguez, Ivan (ID 952)</div><p style=\"margin:var(--sp-2) 0 0;line-height:1.5\">La única fila del ID 951 es idéntica a la de 2002 del ID 952. El listado de bsnpr.com dejó de incluir el ID 951 en 2008 y ningún juego tiene ambos IDs.</p><div class=\"muted\" style=\"font-size:var(--fs-2xs);margin-top:var(--sp-2)\">Decidido el 21 de septiembre de 2026 · <button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(952,&quot;Lopez Rodriguez, Ivan&quot;)\">Lopez Rodriguez, Ivan</button></div></div><div class=\"card\" style=\"margin-top:var(--sp-3)\"><div style=\"font-weight:700\">Se unieron: Arroyo, Alberto (ID 24) ahora es Arroyo Bermudez, Alberto C. (ID 35)</div><p style=\"margin:var(--sp-2) 0 0;line-height:1.5\">El ID 24 es la ficha vacía del ID 35: misma fecha de nacimiento en el listado de 2007 de bsnpr.com y el mismo número de camiseta (11) en 76 de las 77 capturas de la enciclopedia.</p><div class=\"muted\" style=\"font-size:var(--fs-2xs);margin-top:var(--sp-2)\">Decidido el 21 de septiembre de 2026 · <button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(35,&quot;Arroyo Bermudez, Alberto C.&quot;)\">Arroyo Bermudez, Alberto C.</button></div></div><div class=\"card\" style=\"margin-top:var(--sp-3)\"><div style=\"font-weight:700\">No se unen: Arroyo Bermudez, Alberto C. (ID 35) y Arroyo Bermúdez, Carlos A. (ID 273)</div><p style=\"margin:var(--sp-2) 0 0;line-height:1.5\">Los IDs 35 y 273 aparecen juntos en 20 juegos de Santurce (2001-03), con camisetas distintas (10 y 7) y minutos distintos. Son personas distintas y no se unen.</p><div class=\"muted\" style=\"font-size:var(--fs-2xs);margin-top:var(--sp-2)\">Decidido el 21 de septiembre de 2026 · <button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(35,&quot;Arroyo Bermudez, Alberto C.&quot;)\">Arroyo Bermudez, Alberto C.</button><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(273,&quot;Arroyo Bermúdez, Carlos A.&quot;)\">Arroyo Bermúdez, Carlos A.</button></div></div><div class=\"card\" style=\"margin-top:var(--sp-3)\"><div style=\"font-weight:700\">Se unieron: Gonzalez Arroyo, Antonio (ID 180) ahora es Arroyo Gonzalez, Antonio (ID 194)</div><p style=\"margin:var(--sp-2) 0 0;line-height:1.5\">El ID 180 solo tiene la fecha de nacimiento (7 de diciembre de 1959) y el nombre, tomados del listado de la enciclopedia, sin ficha, temporadas, observación, fila de plantel ni de caja propia. El ID 194 usa los mismos dos apellidos (Gonzalez y Arroyo) en orden invertido, con la misma fecha de nacimiento en su propia ficha. Ningún alias del ID 180 coincide con los del ID 194, lo que confirma que es el mismo nombre en otro orden, no un duplicado literal.</p><div class=\"muted\" style=\"font-size:var(--fs-2xs);margin-top:var(--sp-2)\">Decidido el 22 de septiembre de 2026 · <button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(194,&quot;Arroyo Gonzalez, Antonio&quot;)\">Arroyo Gonzalez, Antonio</button></div></div><div class=\"card\" style=\"margin-top:var(--sp-3)\"><div style=\"font-weight:700\">Se unieron: Travieso Peña, Carmelo (ID 345) ahora es Travieso Peña, Carmelo (ID 344)</div><p style=\"margin:var(--sp-2) 0 0;line-height:1.5\">Los IDs 345, 346 y 347 son tres filas consecutivas e idénticas de la propia ficha del ID 344 en la enciclopedia (Travieso Peña, Carmelo, camiseta 06, fecha de nacimiento 5 de septiembre de 1975), confirmadas en las 77 capturas. Ninguno de los tres tiene temporadas, observación, reseña, fila de plantel ni de caja propia. El ID 344 está respaldado por tres páginas de bsnpr.com (filas de carrera de jug05, cajas de juego y la reseña de jugador05) que coinciden en equipo, camiseta y temporada. Las tres vienen de la misma fuente.</p><div class=\"muted\" style=\"font-size:var(--fs-2xs);margin-top:var(--sp-2)\">Decidido el 22 de septiembre de 2026 · <button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(344,&quot;Travieso Peña, Carmelo&quot;)\">Travieso Peña, Carmelo</button></div></div><details style=\"margin-top:var(--sp-3)\"><summary class=\"muted\" style=\"cursor:pointer\">Las 767 filas idénticas, por temporada</summary><p class=\"muted\" style=\"font-size:var(--fs-2xs);margin:var(--sp-2) 0 0\">1980: 1 · 1981: 1 · 1982: 1 · 1983: 1 · 1984: 1 · 1985: 1 · 1986: 2 · 1987: 4 · 1988: 6 · 1989: 7 · 1990: 9 · 1991: 13 · 1992: 21 · 1993: 25 · 1994: 30 · 1995: 36 · 1996: 41 · 1997: 44 · 1998: 45 · 1999: 53 · 2000: 48 · 2001: 25 · 2002: 68 · 2003: 85 · 2004: 95 · 2005: 4 · 2006: 100. Donde las dos páginas coinciden en juegos y puntos, la fila se cuenta una vez.</p></details><h4 class=\"sub\">Fechas de nacimiento</h4><p class=\"lede\">5 jugadores tienen dos fechas distintas en dos páginas de bsnpr.com. El archivo conserva las dos y no escoge. «Archivo» es el valor que carga el archivo; «jugador05», el de la página jugador05 de bsnpr.com (formato M/D/AAAA).</p><div id=\"dqDob\" style=\"margin-top:var(--sp-3)\"><div class=\"tblwrap\"><table><thead><tr><th class=\"sortable\" data-i=\"0\" scope=\"col\">Jugador<span class=\"arrow\">▲</span></th><th class=\"sortable\" data-i=\"1\" scope=\"col\">Archivo</th><th class=\"sortable\" data-i=\"2\" scope=\"col\">jugador05</th></tr></thead><tbody><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(2090,&quot;Hourruitiner Ortiz, Rolando&quot;)\">Hourruitiner Ortiz, Rolando</button></td><td class=\"\">5/28/1975</td><td class=\"\">3/28/1975</td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(812,&quot;Jimenez Brain, Giovanni&quot;)\">Jimenez Brain, Giovanni</button></td><td class=\"\">1/29/1982</td><td class=\"\">1/30/1982</td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(2016,&quot;Lugo, Richard&quot;)\">Lugo, Richard</button></td><td class=\"\">5/7/1973</td><td class=\"\">7/5/1973</td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(139,&quot;Luna Colon, Angel manuel&quot;)\">Luna Colon, Angel manuel</button></td><td class=\"\">6/21/1975</td><td class=\"\">6/9/1975</td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(911,&quot;Soto Ayala, Hugo&quot;)\">Soto Ayala, Hugo</button></td><td class=\"\">7/3/1973</td><td class=\"\">8/3/1973</td></tr></tbody></table></div><div class=\"tbl-meta\"><span>5 filas</span><button class=\"btn\" style=\"padding: 5px 10px; font-size: 12px;\">Descargar CSV</button></div></div><p class=\"muted\" style=\"font-size:var(--fs-2xs);margin:var(--sp-2) 0 0\">Otras 10 fechas ya se corrigieron. En 9, el registro de correcciones cita dos páginas de bsnpr.com (jug05 y jugador05) que respaldan la fecha nueva; en 1, la fecha anterior era imposible y solo jugador05 da una plausible (confianza baja).</p><h4 class=\"sub\">Temporadas que no concuerdan con la ficha</h4><p class=\"lede\">5 filas de temporada no son compatibles con la fecha de nacimiento en la misma ficha de bsnpr.com. El archivo conserva las filas, pero las excluye de los totales; no sabemos cuál de los dos datos es el correcto.</p><div id=\"dqDisputed\" style=\"margin-top:var(--sp-3)\"><div class=\"tblwrap\"><table><thead><tr><th class=\"sortable\" data-i=\"0\" scope=\"col\">Jugador</th><th class=\"num sortable\" data-i=\"1\" scope=\"col\">Año<span class=\"arrow\">▲</span></th><th class=\"sortable\" data-i=\"2\" scope=\"col\">Equipo</th><th class=\"num sortable\" data-i=\"3\" scope=\"col\">JJ</th><th class=\"num sortable\" data-i=\"4\" scope=\"col\">PTS</th></tr></thead><tbody><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(721,&quot;Llovet Ayala, Francisco&quot;)\">Llovet Ayala, Francisco</button></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(721,&quot;Llovet Ayala, Francisco&quot;,1965)\">1965</button></td><td class=\"\">Capitanes, Arecibo</td><td class=\"num\">13</td><td class=\"num\">32</td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(721,&quot;Llovet Ayala, Francisco&quot;)\">Llovet Ayala, Francisco</button></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(721,&quot;Llovet Ayala, Francisco&quot;,1966)\">1966</button></td><td class=\"\">Capitanes, Arecibo</td><td class=\"num\">10</td><td class=\"num\">12</td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(721,&quot;Llovet Ayala, Francisco&quot;)\">Llovet Ayala, Francisco</button></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(721,&quot;Llovet Ayala, Francisco&quot;,1967)\">1967</button></td><td class=\"\">Capitanes, Arecibo</td><td class=\"num\">18</td><td class=\"num\">44</td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(721,&quot;Llovet Ayala, Francisco&quot;)\">Llovet Ayala, Francisco</button></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(721,&quot;Llovet Ayala, Francisco&quot;,1968)\">1968</button></td><td class=\"\">Capitanes, Arecibo</td><td class=\"num\">10</td><td class=\"num\">12</td></tr><tr><td class=\"name\"><button class=\"btn\" style=\"padding:2px var(--sp-1);font-size:var(--fs-2xs);text-align:left;white-space:normal\" onclick=\"openArchivePlayer(721,&quot;Llovet Ayala, Francisco&quot;)\">Llovet Ayala, Francisco</button></td><td class=\"num\"><button style=\"background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer\" onclick=\"openArchivePlayer(721,&quot;Llovet Ayala, Francisco&quot;,1969)\">1969</button></td><td class=\"\">Capitanes, Arecibo</td><td class=\"num\">16</td><td class=\"num\">74</td></tr></tbody></table></div><div class=\"tbl-meta\"><span>5 filas</span><button class=\"btn\" style=\"padding: 5px 10px; font-size: 12px;\">Descargar CSV</button></div></div><h4 class=\"sub\">Cómo decidimos</h4><ul style=\"margin:var(--sp-2) 0 0;padding-left:var(--sp-5);line-height:1.6;max-width:70ch\"><li>Nunca unimos a dos jugadores solo por el nombre.</li><li>Cuando dos fuentes dan cifras distintas, mostramos las dos; no las promediamos.</li><li>Una unión necesita evidencia y queda registrada con quién la decidió y cuándo.</li></ul></div>",
+  "styles": {
+    "body": {
+      "color": "rgb(11, 23, 48)",
+      "background-color": "rgb(241, 244, 250)",
+      "font-size": "15px",
+      "font-family": "Inter, -apple-system, \"system-ui\", \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "0px",
+      "margin": "0px",
+      "border-radius": "0px",
+      "line-height": "22.5px"
+    },
+    "nav.tabs": {
+      "color": "rgb(11, 23, 48)",
+      "background-color": "rgba(0, 0, 0, 0)",
+      "font-size": "15px",
+      "font-family": "Inter, -apple-system, \"system-ui\", \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "0px",
+      "margin": "0px",
+      "border-radius": "0px",
+      "line-height": "22.5px"
+    },
+    ".card": {
+      "color": "rgb(11, 23, 48)",
+      "background-color": "rgb(255, 255, 255)",
+      "font-size": "15px",
+      "font-family": "Inter, -apple-system, \"system-ui\", \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "16px",
+      "margin": "0px",
+      "border-radius": "10px",
+      "line-height": "22.5px"
+    },
+    ".foot": {
+      "color": "rgb(90, 108, 142)",
+      "background-color": "rgba(0, 0, 0, 0)",
+      "font-size": "12.5px",
+      "font-family": "Inter, -apple-system, \"system-ui\", \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "22px 0px 40px",
+      "margin": "40px 0px 0px",
+      "border-radius": "0px",
+      "line-height": "18.75px"
+    },
+    "a": {
+      "color": "rgb(90, 108, 142)",
+      "background-color": "rgba(0, 0, 0, 0)",
+      "font-size": "14px",
+      "font-family": "Inter, -apple-system, \"system-ui\", \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "13px 4px 12px",
+      "margin": "0px 9px",
+      "border-radius": "0px",
+      "line-height": "21px"
+    },
+    "button.btn": {
+      "color": "rgb(11, 23, 48)",
+      "background-color": "rgb(225, 233, 245)",
+      "font-size": "13px",
+      "font-family": "Inter, -apple-system, \"system-ui\", \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "9px 14px",
+      "margin": "0px",
+      "border-radius": "6px",
+      "line-height": "19.5px"
+    },
+    "h1, h2": {
+      "color": "rgb(11, 23, 48)",
+      "background-color": "rgba(0, 0, 0, 0)",
+      "font-size": "30px",
+      "font-family": "Inter, -apple-system, \"system-ui\", \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "0px",
+      "margin": "0px",
+      "border-radius": "0px",
+      "line-height": "34.5px"
+    },
+    ".note": {
+      "color": "rgb(90, 108, 142)",
+      "background-color": "rgba(0, 0, 0, 0)",
+      "font-size": "12px",
+      "font-family": "Inter, -apple-system, \"system-ui\", \"Segoe UI\", Roboto, sans-serif",
+      "display": "block",
+      "padding": "0px",
+      "margin": "12px 0px",
+      "border-radius": "0px",
+      "line-height": "18px"
+    }
+  },
+  "a11y": {
+    "role": "WebArea",
+    "name": "BSN Archivo · Baloncesto Superior Nacional, 1930–2026",
+    "children": [
+      {
+        "role": "button",
+        "name": "Ir a Inicio"
+      },
+      {
+        "role": "button",
+        "name": "Tema: automático (sigue el sistema) · toca para cambiar a claro",
+        "description": "Tema: automático / claro / oscuro"
+      },
+      {
+        "role": "button",
+        "name": "Ajustes",
+        "description": "Ajustes y tu perfil"
+      },
+      {
+        "role": "button",
+        "name": "Mi club +"
+      },
+      {
+        "role": "tab",
+        "name": "Historia",
+        "haspopup": "menu"
+      },
+      {
+        "role": "tab",
+        "name": "Jugadores",
+        "haspopup": "menu"
+      },
+      {
+        "role": "tab",
+        "name": "Equipos",
+        "haspopup": "menu"
+      },
+      {
+        "role": "tab",
+        "name": "Juega",
+        "haspopup": "menu"
+      },
+      {
+        "role": "tab",
+        "name": "Archivo",
+        "selected": true,
+        "haspopup": "menu"
+      },
+      {
+        "role": "heading",
+        "name": "EL ARCHIVO",
+        "level": 1
+      },
+      {
+        "role": "text",
+        "name": "Pregúntale directamente, o mira qué tiene, qué le falta y de dónde sale cada dato. Un archivo que esconde sus huecos vale menos que uno que los enseña."
+      },
+      {
+        "role": "tab",
+        "name": "Resumen"
+      },
+      {
+        "role": "tab",
+        "name": "Preguntar"
+      },
+      {
+        "role": "tab",
+        "name": "A la medida"
+      },
+      {
+        "role": "tab",
+        "name": "Cobertura y fuentes"
+      },
+      {
+        "role": "tab",
+        "name": "Calidad de datos"
+      },
+      {
+        "role": "tab",
+        "name": "Calendario"
+      },
+      {
+        "role": "tab",
+        "name": "Glosario"
+      },
+      {
+        "role": "heading",
+        "name": "CALIDAD DE DATOS",
+        "level": 2
+      },
+      {
+        "role": "text",
+        "name": "Dónde las fuentes no coinciden y qué hicimos con cada caso. El archivo muestra las dos cifras; no escoge una a ojo."
+      },
+      {
+        "role": "text",
+        "name": "94"
+      },
+      {
+        "role": "text",
+        "name": "cifras distintas entre dos páginas de bsnpr.com, en 71 jugadores"
+      },
+      {
+        "role": "text",
+        "name": "767"
+      },
+      {
+        "role": "text",
+        "name": "filas que las dos páginas dan idénticas, en 130 jugadores (1980–2006)"
+      },
+      {
+        "role": "text",
+        "name": "6"
+      },
+      {
+        "role": "text",
+        "name": "decisiones de identidad registradas: 5 uniones y 1 «no se unen»"
+      },
+      {
+        "role": "text",
+        "name": "5"
+      },
+      {
+        "role": "text",
+        "name": "fechas de nacimiento con dos valores, sin resolver"
+      },
+      {
+        "role": "heading",
+        "name": "Cifras que no coinciden",
+        "level": 4
+      },
+      {
+        "role": "text",
+        "name": "Dos páginas archivadas de bsnpr.com traen filas de carrera del mismo jugador, equipo y temporada con juegos (JJ) o puntos (PTS) distintos. El archivo guarda las dos filas y muestra las dos cifras. En la ficha del jugador esas filas llevan la marca «2 fuentes» y quedan fuera de los totales."
+      },
+      {
+        "role": "text",
+        "name": "Por temporada: 2000 (17) · 2001 (51) · 2002 (18) · 2003 (3) · 2005 (3) · 2006 (2). En 21 coinciden los juegos y difieren los puntos; en 19 coinciden los puntos y difieren los juegos; en 54 difieren los dos."
+      },
+      {
+        "role": "text",
+        "name": "En 13 casos la fila de jug05 es el total de la temporada de un jugador que cambió de equipo. El archivo conserva las filas por equipo y registra el total como corroboración."
+      },
+      {
+        "role": "text",
+        "name": "En las capturas de jug05 a partir de mayo de 2006, la temporada más reciente conserva la etiqueta 2005. En 100 de 145 filas las cifras coinciden con la temporada 2006 de la ficha del jugador. Reasignamos las 145 a 2006 y publicamos el registro."
+      },
+      {
+        "role": "text",
+        "name": "En 5 filas de 4 jugadores, una página de jug05 mostraba la línea de otro jugador. Las quitamos de la ficha y de los totales y publicamos el registro. No podemos detectar los casos cuyo dueño no tiene captura."
+      },
+      {
+        "role": "text",
+        "name": "JUGADOR"
+      },
+      {
+        "role": "searchbox",
+        "name": "JUGADOR"
+      },
+      {
+        "role": "text",
+        "name": "TEMPORADA"
+      },
+      {
+        "role": "combobox",
+        "name": "TEMPORADA",
+        "haspopup": "menu",
+        "children": [
+          {
+            "role": "option",
+            "name": "Todas",
+            "selected": true
+          },
+          {
+            "role": "option",
+            "name": "2000"
+          },
+          {
+            "role": "option",
+            "name": "2001"
+          },
+          {
+            "role": "option",
+            "name": "2002"
+          },
+          {
+            "role": "option",
+            "name": "2003"
+          },
+          {
+            "role": "option",
+            "name": "2005"
+          },
+          {
+            "role": "option",
+            "name": "2006"
+          }
+        ],
+        "value": "Todas"
+      },
+      {
+        "role": "generic",
+        "name": "",
+        "children": [
+          {
+            "role": "text",
+            "name": "JUGADOR"
+          },
+          {
+            "role": "text",
+            "name": "▲"
+          },
+          {
+            "role": "text",
+            "name": "AÑO"
+          },
+          {
+            "role": "text",
+            "name": "FICHA"
+          },
+          {
+            "role": "text",
+            "name": "JUG05"
+          },
+          {
+            "role": "button",
+            "name": "Allende Ruiz, Luis"
+          },
+          {
+            "role": "text",
+            "name": "Criollos de Caguas"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "26 / 377"
+          },
+          {
+            "role": "link",
+            "name": "26 / 427"
+          },
+          {
+            "role": "button",
+            "name": "Apodaca Perez, Rick"
+          },
+          {
+            "role": "text",
+            "name": "Vaqueros de Bayamón"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "4 / 42"
+          },
+          {
+            "role": "link",
+            "name": "5 / 49"
+          },
+          {
+            "role": "button",
+            "name": "Arroyo Bermudez, Alberto C."
+          },
+          {
+            "role": "text",
+            "name": "Cangrejeros de Santurce"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "12 / 14"
+          },
+          {
+            "role": "link",
+            "name": "12 / 26"
+          },
+          {
+            "role": "button",
+            "name": "Aubry Flores, Jeffrion"
+          },
+          {
+            "role": "text",
+            "name": "Cangrejeros de Santurce"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "25 / 76"
+          },
+          {
+            "role": "link",
+            "name": "25 / 73"
+          },
+          {
+            "role": "button",
+            "name": "Aubry Flores, Jeffrion"
+          },
+          {
+            "role": "text",
+            "name": "Cangrejeros de Santurce"
+          },
+          {
+            "role": "button",
+            "name": "2002"
+          },
+          {
+            "role": "link",
+            "name": "25 / 181"
+          },
+          {
+            "role": "link",
+            "name": "26 / 187"
+          },
+          {
+            "role": "button",
+            "name": "Aubry Flores, Jeffrion"
+          },
+          {
+            "role": "text",
+            "name": "Cangrejeros de Santurce"
+          },
+          {
+            "role": "button",
+            "name": "2003"
+          },
+          {
+            "role": "link",
+            "name": "30 / 336"
+          },
+          {
+            "role": "link",
+            "name": "1 / 8"
+          },
+          {
+            "role": "button",
+            "name": "Ayuso Carrillo, Elias"
+          },
+          {
+            "role": "text",
+            "name": "Atléticos de San Germán"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "26 / 580"
+          },
+          {
+            "role": "link",
+            "name": "26 / 617"
+          },
+          {
+            "role": "button",
+            "name": "Barea Mora, José Juan"
+          },
+          {
+            "role": "text",
+            "name": "Indios de Mayagüez"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "13 / 27"
+          },
+          {
+            "role": "link",
+            "name": "11 / 16"
+          },
+          {
+            "role": "button",
+            "name": "Bocachica Salvador, Cesar Armando"
+          },
+          {
+            "role": "text",
+            "name": "Cangrejeros de Santurce"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "24 / 88"
+          },
+          {
+            "role": "link",
+            "name": "22 / 84"
+          },
+          {
+            "role": "button",
+            "name": "Burgos Algarin, Gary Joe"
+          },
+          {
+            "role": "text",
+            "name": "Criollos de Caguas"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "24 / 74"
+          },
+          {
+            "role": "link",
+            "name": "21 / 58"
+          },
+          {
+            "role": "button",
+            "name": "Butler Graham, Mario Alberto"
+          },
+          {
+            "role": "text",
+            "name": "Cangrejeros de Santurce"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "11 / 23"
+          },
+          {
+            "role": "link",
+            "name": "10 / 25"
+          },
+          {
+            "role": "button",
+            "name": "Carmona Sanchez, Alejandro"
+          },
+          {
+            "role": "text",
+            "name": "Indios de Mayagüez"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "5 / 16"
+          },
+          {
+            "role": "link",
+            "name": "4 / 16"
+          },
+          {
+            "role": "button",
+            "name": "Caro Beltran, Ismael"
+          },
+          {
+            "role": "text",
+            "name": "Indios de Mayagüez"
+          },
+          {
+            "role": "button",
+            "name": "2002"
+          },
+          {
+            "role": "link",
+            "name": "9 / 11"
+          },
+          {
+            "role": "link",
+            "name": "8 / 11"
+          },
+          {
+            "role": "button",
+            "name": "Carter Gaudino, James"
+          },
+          {
+            "role": "text",
+            "name": "Indios de Mayagüez"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "12 / 217"
+          },
+          {
+            "role": "link",
+            "name": "16 / 283"
+          },
+          {
+            "role": "button",
+            "name": "Casiano Ojeda, Eddie"
+          },
+          {
+            "role": "text",
+            "name": "Leones de Ponce"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "23 / 481"
+          },
+          {
+            "role": "link",
+            "name": "24 / 539"
+          },
+          {
+            "role": "button",
+            "name": "Casiano Ojeda, Eddie"
+          },
+          {
+            "role": "text",
+            "name": "Leones de Ponce"
+          },
+          {
+            "role": "button",
+            "name": "2002"
+          },
+          {
+            "role": "link",
+            "name": "29 / 605"
+          },
+          {
+            "role": "link",
+            "name": "30 / 614"
+          },
+          {
+            "role": "button",
+            "name": "Colon Colon, Angel Luis"
+          },
+          {
+            "role": "text",
+            "name": "Criollos de Caguas"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "26 / 330"
+          },
+          {
+            "role": "link",
+            "name": "26 / 350"
+          },
+          {
+            "role": "button",
+            "name": "Colon Gracia, Gabriel"
+          },
+          {
+            "role": "text",
+            "name": "Leones de Ponce"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "6 / 21"
+          },
+          {
+            "role": "link",
+            "name": "9 / 23"
+          },
+          {
+            "role": "button",
+            "name": "Colon Rodriguez, Javier Antonio"
+          },
+          {
+            "role": "text",
+            "name": "Leones de Ponce"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "25 / 341"
+          },
+          {
+            "role": "link",
+            "name": "25 / 352"
+          },
+          {
+            "role": "button",
+            "name": "Colon Rodriguez, Javier Antonio"
+          },
+          {
+            "role": "text",
+            "name": "Leones de Ponce"
+          },
+          {
+            "role": "button",
+            "name": "2002"
+          },
+          {
+            "role": "link",
+            "name": "28 / 427"
+          },
+          {
+            "role": "link",
+            "name": "29 / 460"
+          },
+          {
+            "role": "button",
+            "name": "Colon Rodriguez, Javier Antonio"
+          },
+          {
+            "role": "text",
+            "name": "Leones de Ponce"
+          },
+          {
+            "role": "button",
+            "name": "2003"
+          },
+          {
+            "role": "link",
+            "name": "29 / 415"
+          },
+          {
+            "role": "link",
+            "name": "28 / 391"
+          },
+          {
+            "role": "button",
+            "name": "Curbelo Melendez, Joel"
+          },
+          {
+            "role": "text",
+            "name": "Piratas de Quebradillas"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "22 / 396"
+          },
+          {
+            "role": "link",
+            "name": "23 / 479"
+          },
+          {
+            "role": "button",
+            "name": "Dalmau Santana, Christian"
+          },
+          {
+            "role": "text",
+            "name": "Maratonistas de Coamo"
+          },
+          {
+            "role": "button",
+            "name": "2000"
+          },
+          {
+            "role": "link",
+            "name": "27 / 512"
+          },
+          {
+            "role": "link",
+            "name": "26 / 512"
+          },
+          {
+            "role": "button",
+            "name": "Dalmau Santana, Christian"
+          },
+          {
+            "role": "text",
+            "name": "Atléticos de San Germán"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "25 / 508"
+          },
+          {
+            "role": "link",
+            "name": "25 / 557"
+          },
+          {
+            "role": "button",
+            "name": "Dalmau Santana, Raymond"
+          },
+          {
+            "role": "text",
+            "name": "Piratas de Quebradillas"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "22 / 504"
+          },
+          {
+            "role": "link",
+            "name": "23 / 538"
+          },
+          {
+            "role": "button",
+            "name": "Dalmau Santana, Ricardo"
+          },
+          {
+            "role": "text",
+            "name": "Piratas de Quebradillas"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "21 / 430"
+          },
+          {
+            "role": "link",
+            "name": "20 / 382"
+          },
+          {
+            "role": "button",
+            "name": "Davila Cordero, Miguel"
+          },
+          {
+            "role": "text",
+            "name": "Criollos de Caguas"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "26 / 216"
+          },
+          {
+            "role": "link",
+            "name": "26 / 215"
+          },
+          {
+            "role": "button",
+            "name": "De Jesus Velazquez, Angel"
+          },
+          {
+            "role": "text",
+            "name": "Indios de Mayagüez"
+          },
+          {
+            "role": "button",
+            "name": "2000"
+          },
+          {
+            "role": "link",
+            "name": "28 / 361"
+          },
+          {
+            "role": "link",
+            "name": "27 / 361"
+          },
+          {
+            "role": "button",
+            "name": "De Jesus Velazquez, Angel"
+          },
+          {
+            "role": "text",
+            "name": "Indios de Mayagüez"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "14 / 169"
+          },
+          {
+            "role": "link",
+            "name": "10 / 119"
+          },
+          {
+            "role": "button",
+            "name": "Escalera Gonzalez, Carlos"
+          },
+          {
+            "role": "text",
+            "name": "Maratonistas de Coamo"
+          },
+          {
+            "role": "button",
+            "name": "2000"
+          },
+          {
+            "role": "link",
+            "name": "27 / 480"
+          },
+          {
+            "role": "link",
+            "name": "26 / 480"
+          },
+          {
+            "role": "button",
+            "name": "Escalera Gonzalez, Carlos"
+          },
+          {
+            "role": "text",
+            "name": "Maratonistas de Coamo"
+          },
+          {
+            "role": "button",
+            "name": "2002"
+          },
+          {
+            "role": "link",
+            "name": "18 / 425"
+          },
+          {
+            "role": "link",
+            "name": "19 / 450"
+          },
+          {
+            "role": "button",
+            "name": "Falcon Melendez, Alexander"
+          },
+          {
+            "role": "text",
+            "name": "Mets de Guaynabo"
+          },
+          {
+            "role": "button",
+            "name": "2000"
+          },
+          {
+            "role": "link",
+            "name": "28 / 333"
+          },
+          {
+            "role": "link",
+            "name": "27 / 333"
+          },
+          {
+            "role": "button",
+            "name": "Falcon Melendez, Alexander"
+          },
+          {
+            "role": "text",
+            "name": "Cangrejeros de Santurce"
+          },
+          {
+            "role": "button",
+            "name": "2002"
+          },
+          {
+            "role": "link",
+            "name": "29 / 307"
+          },
+          {
+            "role": "link",
+            "name": "30 / 319"
+          },
+          {
+            "role": "button",
+            "name": "Febres Salicrup, Arnaldo"
+          },
+          {
+            "role": "text",
+            "name": "Vaqueros de Bayamón"
+          },
+          {
+            "role": "button",
+            "name": "2000"
+          },
+          {
+            "role": "link",
+            "name": "11 / 24"
+          },
+          {
+            "role": "link",
+            "name": "11 / 28"
+          },
+          {
+            "role": "button",
+            "name": "Febres Salicrup, Arnaldo"
+          },
+          {
+            "role": "text",
+            "name": "Atléticos de San Germán"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "23 / 91"
+          },
+          {
+            "role": "link",
+            "name": "24 / 136"
+          },
+          {
+            "role": "button",
+            "name": "Figueroa Sepulveda, Angel"
+          },
+          {
+            "role": "text",
+            "name": "Mets de Guaynabo"
+          },
+          {
+            "role": "button",
+            "name": "2000"
+          },
+          {
+            "role": "link",
+            "name": "19 / 177"
+          },
+          {
+            "role": "link",
+            "name": "18 / 177"
+          },
+          {
+            "role": "button",
+            "name": "Hatton Negron, Roberto Jose"
+          },
+          {
+            "role": "text",
+            "name": "Atléticos de San Germán"
+          },
+          {
+            "role": "button",
+            "name": "2000"
+          },
+          {
+            "role": "link",
+            "name": "28 / 336"
+          },
+          {
+            "role": "link",
+            "name": "26 / 323"
+          },
+          {
+            "role": "button",
+            "name": "Hatton Negron, Roberto Jose"
+          },
+          {
+            "role": "text",
+            "name": "Leones de Ponce"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "25 / 267"
+          },
+          {
+            "role": "link",
+            "name": "26 / 252"
+          },
+          {
+            "role": "button",
+            "name": "Hatton Negron, Roberto Jose"
+          },
+          {
+            "role": "text",
+            "name": "Leones de Ponce"
+          },
+          {
+            "role": "button",
+            "name": "2002"
+          },
+          {
+            "role": "link",
+            "name": "21 / 281"
+          },
+          {
+            "role": "link",
+            "name": "22 / 294"
+          },
+          {
+            "role": "button",
+            "name": "Hourruitiner Ortiz, Rolando"
+          },
+          {
+            "role": "text",
+            "name": "Cangrejeros de Santurce"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "24 / 280"
+          },
+          {
+            "role": "link",
+            "name": "24 / 273"
+          },
+          {
+            "role": "button",
+            "name": "Hourruitiner Ortiz, Rolando"
+          },
+          {
+            "role": "text",
+            "name": "Cangrejeros de Santurce"
+          },
+          {
+            "role": "button",
+            "name": "2002"
+          },
+          {
+            "role": "link",
+            "name": "28 / 249"
+          },
+          {
+            "role": "link",
+            "name": "29 / 251"
+          },
+          {
+            "role": "button",
+            "name": "Jackson, Leroy"
+          },
+          {
+            "role": "text",
+            "name": "Atléticos de San Germán"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "21 / 283"
+          },
+          {
+            "role": "link",
+            "name": "22 / 297"
+          },
+          {
+            "role": "button",
+            "name": "Latson Poling, Therome Ray"
+          },
+          {
+            "role": "text",
+            "name": "Indios de Mayagüez"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "26 / 113"
+          },
+          {
+            "role": "link",
+            "name": "26 / 119"
+          },
+          {
+            "role": "button",
+            "name": "Lazor, Robert"
+          },
+          {
+            "role": "text",
+            "name": "Atléticos de San Germán"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "26 / 476"
+          },
+          {
+            "role": "link",
+            "name": "22 / 404"
+          },
+          {
+            "role": "button",
+            "name": "Lopez Ortiz, Angel Miguel"
+          },
+          {
+            "role": "text",
+            "name": "Polluelos de Aibonito"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "23 / 366"
+          },
+          {
+            "role": "link",
+            "name": "18 / 292"
+          },
+          {
+            "role": "button",
+            "name": "Lopez Rodriguez, Ivan"
+          },
+          {
+            "role": "text",
+            "name": "Vaqueros de Bayamón"
+          },
+          {
+            "role": "button",
+            "name": "2005"
+          },
+          {
+            "role": "link",
+            "name": "8 / 36"
+          },
+          {
+            "role": "link",
+            "name": "3 / 0"
+          },
+          {
+            "role": "button",
+            "name": "Martinez Arroyo, Freddie"
+          },
+          {
+            "role": "text",
+            "name": "Indios de Mayagüez"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "24 / 130"
+          },
+          {
+            "role": "link",
+            "name": "25 / 140"
+          },
+          {
+            "role": "button",
+            "name": "Melendez Cardona, Pavel"
+          },
+          {
+            "role": "text",
+            "name": "Piratas de Quebradillas"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "14 / 24"
+          },
+          {
+            "role": "link",
+            "name": "12 / 16"
+          },
+          {
+            "role": "button",
+            "name": "Melendez Gilbert, Orlando"
+          },
+          {
+            "role": "text",
+            "name": "Polluelos de Aibonito"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "26 / 308"
+          },
+          {
+            "role": "link",
+            "name": "26 / 305"
+          },
+          {
+            "role": "button",
+            "name": "Murray Quiñones, Joseph"
+          },
+          {
+            "role": "text",
+            "name": "Polluelos de Aibonito"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "26 / 285"
+          },
+          {
+            "role": "link",
+            "name": "26 / 292"
+          },
+          {
+            "role": "button",
+            "name": "Narvaez Rivera, Manuel Antonio"
+          },
+          {
+            "role": "text",
+            "name": "Vaqueros de Bayamón"
+          },
+          {
+            "role": "button",
+            "name": "2000"
+          },
+          {
+            "role": "link",
+            "name": "9 / 16"
+          },
+          {
+            "role": "link",
+            "name": "6 / 12"
+          },
+          {
+            "role": "button",
+            "name": "Nieves Fred, Josué"
+          },
+          {
+            "role": "text",
+            "name": "Criollos de Caguas"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "26 / 288"
+          },
+          {
+            "role": "link",
+            "name": "26 / 343"
+          },
+          {
+            "role": "button",
+            "name": "Nieves Perez, Roberto"
+          },
+          {
+            "role": "text",
+            "name": "Titanes de Morovis"
+          },
+          {
+            "role": "button",
+            "name": "2000"
+          },
+          {
+            "role": "link",
+            "name": "17 / 32"
+          },
+          {
+            "role": "link",
+            "name": "16 / 32"
+          },
+          {
+            "role": "button",
+            "name": "Ortiz Espada, Fernando"
+          },
+          {
+            "role": "text",
+            "name": "Indios de Mayagüez"
+          },
+          {
+            "role": "button",
+            "name": "2000"
+          },
+          {
+            "role": "link",
+            "name": "18 / 279"
+          },
+          {
+            "role": "link",
+            "name": "17 / 279"
+          },
+          {
+            "role": "button",
+            "name": "Ortiz Espada, Fernando"
+          },
+          {
+            "role": "text",
+            "name": "Maratonistas de Coamo"
+          },
+          {
+            "role": "button",
+            "name": "2002"
+          },
+          {
+            "role": "link",
+            "name": "8 / 60"
+          },
+          {
+            "role": "link",
+            "name": "10 / 60"
+          },
+          {
+            "role": "button",
+            "name": "Padilla Rivera, Edgar"
+          },
+          {
+            "role": "text",
+            "name": "Mets de Guaynabo"
+          },
+          {
+            "role": "button",
+            "name": "2000"
+          },
+          {
+            "role": "link",
+            "name": "12 / 125"
+          },
+          {
+            "role": "link",
+            "name": "11 / 125"
+          },
+          {
+            "role": "button",
+            "name": "Padilla Rivera, Edgar"
+          },
+          {
+            "role": "text",
+            "name": "Vaqueros de Bayamón"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "26 / 248"
+          },
+          {
+            "role": "link",
+            "name": "26 / 253"
+          },
+          {
+            "role": "button",
+            "name": "Pagan Roque, Wilfredo"
+          },
+          {
+            "role": "text",
+            "name": "Vaqueros de Bayamón"
+          },
+          {
+            "role": "button",
+            "name": "2003"
+          },
+          {
+            "role": "link",
+            "name": "12 / 160"
+          },
+          {
+            "role": "link",
+            "name": "4 / 34"
+          },
+          {
+            "role": "button",
+            "name": "Paniagua Medina, Angel"
+          },
+          {
+            "role": "text",
+            "name": "Polluelos de Aibonito"
+          },
+          {
+            "role": "button",
+            "name": "2000"
+          },
+          {
+            "role": "link",
+            "name": "6 / 40"
+          },
+          {
+            "role": "link",
+            "name": "5 / 40"
+          },
+          {
+            "role": "button",
+            "name": "Paniagua Medina, Angel"
+          },
+          {
+            "role": "text",
+            "name": "Gallitos de Isabela"
+          },
+          {
+            "role": "button",
+            "name": "2002"
+          },
+          {
+            "role": "link",
+            "name": "11 / 81"
+          },
+          {
+            "role": "link",
+            "name": "10 / 67"
+          },
+          {
+            "role": "button",
+            "name": "Payano Ocasio, Carlos R."
+          },
+          {
+            "role": "text",
+            "name": "Vaqueros de Bayamón"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "12 / 133"
+          },
+          {
+            "role": "link",
+            "name": "12 / 137"
+          },
+          {
+            "role": "button",
+            "name": "Ramos Fuentes, Peter John"
+          },
+          {
+            "role": "text",
+            "name": "Criollos de Caguas"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "4 / 0"
+          },
+          {
+            "role": "link",
+            "name": "5 / 6"
+          },
+          {
+            "role": "button",
+            "name": "Reyes Canales, Angelo"
+          },
+          {
+            "role": "text",
+            "name": "Titanes de Morovis"
+          },
+          {
+            "role": "button",
+            "name": "2002"
+          },
+          {
+            "role": "link",
+            "name": "26 / 157"
+          },
+          {
+            "role": "link",
+            "name": "2 / 11"
+          },
+          {
+            "role": "button",
+            "name": "Ricardo Gonzalez, Osiris"
+          },
+          {
+            "role": "text",
+            "name": "Leones de Ponce"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "17 / 35"
+          },
+          {
+            "role": "link",
+            "name": "19 / 57"
+          },
+          {
+            "role": "button",
+            "name": "Ricardo Gonzalez, Osiris"
+          },
+          {
+            "role": "text",
+            "name": "Leones de Ponce"
+          },
+          {
+            "role": "button",
+            "name": "2002"
+          },
+          {
+            "role": "link",
+            "name": "23 / 128"
+          },
+          {
+            "role": "link",
+            "name": "24 / 130"
+          },
+          {
+            "role": "button",
+            "name": "Richards Boulware, Ja Ja"
+          },
+          {
+            "role": "text",
+            "name": "Vaqueros de Bayamón"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "26 / 221"
+          },
+          {
+            "role": "link",
+            "name": "25 / 209"
+          },
+          {
+            "role": "button",
+            "name": "Rivas Kuzmitsky, Luis A."
+          },
+          {
+            "role": "text",
+            "name": "Criollos de Caguas"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "26 / 287"
+          },
+          {
+            "role": "link",
+            "name": "25 / 265"
+          },
+          {
+            "role": "button",
+            "name": "Rivera Camacho, Carlos"
+          },
+          {
+            "role": "text",
+            "name": "Brujos de Guayama"
+          },
+          {
+            "role": "button",
+            "name": "2000"
+          },
+          {
+            "role": "link",
+            "name": "25 / 71"
+          },
+          {
+            "role": "link",
+            "name": "26 / 71"
+          },
+          {
+            "role": "button",
+            "name": "Rivera Camacho, Carlos"
+          },
+          {
+            "role": "text",
+            "name": "Brujos de Guayama"
+          },
+          {
+            "role": "button",
+            "name": "2005"
+          },
+          {
+            "role": "link",
+            "name": "31 / 113"
+          },
+          {
+            "role": "link",
+            "name": "4 / 13"
+          },
+          {
+            "role": "button",
+            "name": "Rivera Cruz, Alexander"
+          },
+          {
+            "role": "text",
+            "name": "Criollos de Caguas"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "6 / 19"
+          },
+          {
+            "role": "link",
+            "name": "7 / 19"
+          },
+          {
+            "role": "button",
+            "name": "Rivera Isaac, Filiberto"
+          },
+          {
+            "role": "text",
+            "name": "Maratonistas de Coamo"
+          },
+          {
+            "role": "button",
+            "name": "2002"
+          },
+          {
+            "role": "link",
+            "name": "24 / 375"
+          },
+          {
+            "role": "link",
+            "name": "25 / 380"
+          },
+          {
+            "role": "button",
+            "name": "Rivera Motta, Jorge Luis"
+          },
+          {
+            "role": "text",
+            "name": "Cangrejeros de Santurce"
+          },
+          {
+            "role": "button",
+            "name": "2005"
+          },
+          {
+            "role": "link",
+            "name": "23 / 133"
+          },
+          {
+            "role": "link",
+            "name": "2 / 2"
+          },
+          {
+            "role": "button",
+            "name": "Rivera Ortiz, Axel"
+          },
+          {
+            "role": "text",
+            "name": "Polluelos de Aibonito"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "18 / 14"
+          },
+          {
+            "role": "link",
+            "name": "16 / 17"
+          },
+          {
+            "role": "button",
+            "name": "Rivera Ramos, Raul"
+          },
+          {
+            "role": "text",
+            "name": "Atléticos de San Germán"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "5 / 1"
+          },
+          {
+            "role": "link",
+            "name": "5 / 2"
+          },
+          {
+            "role": "button",
+            "name": "Rodriguez Fernandez, Andres"
+          },
+          {
+            "role": "text",
+            "name": "Criollos de Caguas"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "14 / 23"
+          },
+          {
+            "role": "link",
+            "name": "15 / 28"
+          },
+          {
+            "role": "button",
+            "name": "Rodriguez Fernandez, Andres"
+          },
+          {
+            "role": "text",
+            "name": "Criollos de Caguas"
+          },
+          {
+            "role": "button",
+            "name": "2002"
+          },
+          {
+            "role": "link",
+            "name": "26 / 179"
+          },
+          {
+            "role": "link",
+            "name": "0 / 0"
+          },
+          {
+            "role": "button",
+            "name": "Rodriguez Mandes, Erick"
+          },
+          {
+            "role": "text",
+            "name": "Polluelos de Aibonito"
+          },
+          {
+            "role": "button",
+            "name": "2000"
+          },
+          {
+            "role": "link",
+            "name": "22 / 256"
+          },
+          {
+            "role": "link",
+            "name": "23 / 256"
+          },
+          {
+            "role": "button",
+            "name": "Rodriguez Mandes, Erick"
+          },
+          {
+            "role": "text",
+            "name": "Polluelos de Aibonito"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "23 / 241"
+          },
+          {
+            "role": "link",
+            "name": "23 / 226"
+          },
+          {
+            "role": "button",
+            "name": "Rodriguez Rodriguez, Joseph"
+          },
+          {
+            "role": "text",
+            "name": "Gigantes de Carolina/Canóvanas"
+          },
+          {
+            "role": "button",
+            "name": "2002"
+          },
+          {
+            "role": "link",
+            "name": "29 / 376"
+          },
+          {
+            "role": "link",
+            "name": "29 / 373"
+          },
+          {
+            "role": "button",
+            "name": "Roman Rodriguez, Joel"
+          },
+          {
+            "role": "text",
+            "name": "Titanes de Morovis"
+          },
+          {
+            "role": "button",
+            "name": "2006"
+          },
+          {
+            "role": "link",
+            "name": "26 / 159"
+          },
+          {
+            "role": "link",
+            "name": "29 / 161"
+          },
+          {
+            "role": "button",
+            "name": "Rosa Clemente, Luis"
+          },
+          {
+            "role": "text",
+            "name": "Mets de Guaynabo"
+          },
+          {
+            "role": "button",
+            "name": "2000"
+          },
+          {
+            "role": "link",
+            "name": "4 / 5"
+          },
+          {
+            "role": "link",
+            "name": "3 / 5"
+          },
+          {
+            "role": "button",
+            "name": "Santiago Acosta, Ricardo"
+          },
+          {
+            "role": "text",
+            "name": "Brujos de Guayama"
+          },
+          {
+            "role": "button",
+            "name": "2000"
+          },
+          {
+            "role": "link",
+            "name": "11 / 20"
+          },
+          {
+            "role": "link",
+            "name": "10 / 20"
+          },
+          {
+            "role": "button",
+            "name": "Santiago Cordero, Orlando"
+          },
+          {
+            "role": "text",
+            "name": "Cangrejeros de Santurce"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "24 / 353"
+          },
+          {
+            "role": "link",
+            "name": "24 / 357"
+          },
+          {
+            "role": "button",
+            "name": "Santiago Cordero, Orlando"
+          },
+          {
+            "role": "text",
+            "name": "Cangrejeros de Santurce"
+          },
+          {
+            "role": "button",
+            "name": "2002"
+          },
+          {
+            "role": "link",
+            "name": "19 / 150"
+          },
+          {
+            "role": "link",
+            "name": "20 / 164"
+          },
+          {
+            "role": "button",
+            "name": "Santiago Rivera, Edwin"
+          },
+          {
+            "role": "text",
+            "name": "Cangrejeros de Santurce"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "24 / 218"
+          },
+          {
+            "role": "link",
+            "name": "25 / 236"
+          },
+          {
+            "role": "button",
+            "name": "Santiago Rivera, Edwin"
+          },
+          {
+            "role": "text",
+            "name": "Cangrejeros de Santurce"
+          },
+          {
+            "role": "button",
+            "name": "2002"
+          },
+          {
+            "role": "link",
+            "name": "24 / 204"
+          },
+          {
+            "role": "link",
+            "name": "25 / 211"
+          },
+          {
+            "role": "button",
+            "name": "Sweet Valencia, Andre"
+          },
+          {
+            "role": "text",
+            "name": "Atléticos de San Germán"
+          },
+          {
+            "role": "button",
+            "name": "2006"
+          },
+          {
+            "role": "link",
+            "name": "13 / 126"
+          },
+          {
+            "role": "link",
+            "name": "31 / 333"
+          },
+          {
+            "role": "button",
+            "name": "Vega Smith, Orlando"
+          },
+          {
+            "role": "text",
+            "name": "Indios de Mayagüez"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "23 / 322"
+          },
+          {
+            "role": "link",
+            "name": "24 / 313"
+          },
+          {
+            "role": "button",
+            "name": "Venzen Aloyo, Gilberto"
+          },
+          {
+            "role": "text",
+            "name": "Polluelos de Aibonito"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "13 / 73"
+          },
+          {
+            "role": "link",
+            "name": "15 / 79"
+          },
+          {
+            "role": "button",
+            "name": "Villegas Aviles, Samuel"
+          },
+          {
+            "role": "text",
+            "name": "Cangrejeros de Santurce"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "5 / 3"
+          },
+          {
+            "role": "link",
+            "name": "6 / 4"
+          },
+          {
+            "role": "button",
+            "name": "Watson Fuentes, Michael"
+          },
+          {
+            "role": "text",
+            "name": "Gigantes de Carolina/Canóvanas"
+          },
+          {
+            "role": "button",
+            "name": "2002"
+          },
+          {
+            "role": "link",
+            "name": "5 / 105"
+          },
+          {
+            "role": "link",
+            "name": "6 / 105"
+          },
+          {
+            "role": "button",
+            "name": "Western Canales, Franklin"
+          },
+          {
+            "role": "text",
+            "name": "Vaqueros de Bayamón"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "24 / 526"
+          },
+          {
+            "role": "link",
+            "name": "24 / 507"
+          },
+          {
+            "role": "button",
+            "name": "Wilson Wilder, Monty"
+          },
+          {
+            "role": "text",
+            "name": "Maratonistas de Coamo"
+          },
+          {
+            "role": "button",
+            "name": "2000"
+          },
+          {
+            "role": "link",
+            "name": "28 / 549"
+          },
+          {
+            "role": "link",
+            "name": "27 / 549"
+          },
+          {
+            "role": "button",
+            "name": "Wilson Wilder, Monty"
+          },
+          {
+            "role": "text",
+            "name": "Polluelos de Aibonito"
+          },
+          {
+            "role": "button",
+            "name": "2001"
+          },
+          {
+            "role": "link",
+            "name": "26 / 603"
+          },
+          {
+            "role": "link",
+            "name": "25 / 583"
+          }
+        ]
+      },
+      {
+        "role": "text",
+        "name": "94 filas"
+      },
+      {
+        "role": "button",
+        "name": "Descargar CSV"
+      },
+      {
+        "role": "text",
+        "name": "Cada celda muestra JJ / PTS. "
+      },
+      {
+        "role": "text",
+        "name": "Ficha"
+      },
+      {
+        "role": "text",
+        "name": " es la página del jugador en bsnpr.com (jugador.asp); "
+      },
+      {
+        "role": "text",
+        "name": "jug05"
+      },
+      {
+        "role": "text",
+        "name": ", su página de estadísticas (jug05.asp). Cada par enlaza a la captura en Internet Archive; en negrita, la cifra que difiere. Las dos columnas se ordenan por PTS."
+      },
+      {
+        "role": "heading",
+        "name": "Identidades: qué se unió y qué no",
+        "level": 4
+      },
+      {
+        "role": "text",
+        "name": "Al unir dos IDs, las filas idénticas no se cuentan dos veces: 4 filas del ID retirado eran idénticas a filas del ID que se conserva y quedaron en un registro aparte. Un ID retirado sigue abriendo la ficha que se conservó."
+      },
+      {
+        "role": "text",
+        "name": "Se unieron: Cruz, Alvin (ID 73) ahora es Cruz Torres, Alvin (ID 74)"
+      },
+      {
+        "role": "text",
+        "name": "Cinco de las seis filas del ID 73 son idénticas a las del ID 74. Ambas fichas tienen la misma fecha de nacimiento (24 de abril de 1982). El listado de bsnpr.com dejó de incluir el ID 73 en 2008 y ningún juego tiene ambos IDs."
+      },
+      {
+        "role": "text",
+        "name": "Decidido el 21 de septiembre de 2026 · "
+      },
+      {
+        "role": "button",
+        "name": "Cruz Torres, Alvin"
+      },
+      {
+        "role": "text",
+        "name": "Se unieron: Lopez, Ivan (ID 951) ahora es Lopez Rodriguez, Ivan (ID 952)"
+      },
+      {
+        "role": "text",
+        "name": "La única fila del ID 951 es idéntica a la de 2002 del ID 952. El listado de bsnpr.com dejó de incluir el ID 951 en 2008 y ningún juego tiene ambos IDs."
+      },
+      {
+        "role": "text",
+        "name": "Decidido el 21 de septiembre de 2026 · "
+      },
+      {
+        "role": "button",
+        "name": "Lopez Rodriguez, Ivan"
+      },
+      {
+        "role": "text",
+        "name": "Se unieron: Arroyo, Alberto (ID 24) ahora es Arroyo Bermudez, Alberto C. (ID 35)"
+      },
+      {
+        "role": "text",
+        "name": "El ID 24 es la ficha vacía del ID 35: misma fecha de nacimiento en el listado de 2007 de bsnpr.com y el mismo número de camiseta (11) en 76 de las 77 capturas de la enciclopedia."
+      },
+      {
+        "role": "text",
+        "name": "Decidido el 21 de septiembre de 2026 · "
+      },
+      {
+        "role": "button",
+        "name": "Arroyo Bermudez, Alberto C."
+      },
+      {
+        "role": "text",
+        "name": "No se unen: Arroyo Bermudez, Alberto C. (ID 35) y Arroyo Bermúdez, Carlos A. (ID 273)"
+      },
+      {
+        "role": "text",
+        "name": "Los IDs 35 y 273 aparecen juntos en 20 juegos de Santurce (2001-03), con camisetas distintas (10 y 7) y minutos distintos. Son personas distintas y no se unen."
+      },
+      {
+        "role": "text",
+        "name": "Decidido el 21 de septiembre de 2026 · "
+      },
+      {
+        "role": "button",
+        "name": "Arroyo Bermudez, Alberto C."
+      },
+      {
+        "role": "button",
+        "name": "Arroyo Bermúdez, Carlos A."
+      },
+      {
+        "role": "text",
+        "name": "Se unieron: Gonzalez Arroyo, Antonio (ID 180) ahora es Arroyo Gonzalez, Antonio (ID 194)"
+      },
+      {
+        "role": "text",
+        "name": "El ID 180 solo tiene la fecha de nacimiento (7 de diciembre de 1959) y el nombre, tomados del listado de la enciclopedia, sin ficha, temporadas, observación, fila de plantel ni de caja propia. El ID 194 usa los mismos dos apellidos (Gonzalez y Arroyo) en orden invertido, con la misma fecha de nacimiento en su propia ficha. Ningún alias del ID 180 coincide con los del ID 194, lo que confirma que es el mismo nombre en otro orden, no un duplicado literal."
+      },
+      {
+        "role": "text",
+        "name": "Decidido el 22 de septiembre de 2026 · "
+      },
+      {
+        "role": "button",
+        "name": "Arroyo Gonzalez, Antonio"
+      },
+      {
+        "role": "text",
+        "name": "Se unieron: Travieso Peña, Carmelo (ID 345) ahora es Travieso Peña, Carmelo (ID 344)"
+      },
+      {
+        "role": "text",
+        "name": "Los IDs 345, 346 y 347 son tres filas consecutivas e idénticas de la propia ficha del ID 344 en la enciclopedia (Travieso Peña, Carmelo, camiseta 06, fecha de nacimiento 5 de septiembre de 1975), confirmadas en las 77 capturas. Ninguno de los tres tiene temporadas, observación, reseña, fila de plantel ni de caja propia. El ID 344 está respaldado por tres páginas de bsnpr.com (filas de carrera de jug05, cajas de juego y la reseña de jugador05) que coinciden en equipo, camiseta y temporada. Las tres vienen de la misma fuente."
+      },
+      {
+        "role": "text",
+        "name": "Decidido el 22 de septiembre de 2026 · "
+      },
+      {
+        "role": "button",
+        "name": "Travieso Peña, Carmelo"
+      },
+      {
+        "role": "DisclosureTriangle",
+        "name": "Las 767 filas idénticas, por temporada"
+      },
+      {
+        "role": "heading",
+        "name": "Fechas de nacimiento",
+        "level": 4
+      },
+      {
+        "role": "text",
+        "name": "5 jugadores tienen dos fechas distintas en dos páginas de bsnpr.com. El archivo conserva las dos y no escoge. «Archivo» es el valor que carga el archivo; «jugador05», el de la página jugador05 de bsnpr.com (formato M/D/AAAA)."
+      },
+      {
+        "role": "text",
+        "name": "JUGADOR"
+      },
+      {
+        "role": "text",
+        "name": "▲"
+      },
+      {
+        "role": "text",
+        "name": "ARCHIVO"
+      },
+      {
+        "role": "text",
+        "name": "JUGADOR05"
+      },
+      {
+        "role": "button",
+        "name": "Hourruitiner Ortiz, Rolando"
+      },
+      {
+        "role": "text",
+        "name": "5/28/1975"
+      },
+      {
+        "role": "text",
+        "name": "3/28/1975"
+      },
+      {
+        "role": "button",
+        "name": "Jimenez Brain, Giovanni"
+      },
+      {
+        "role": "text",
+        "name": "1/29/1982"
+      },
+      {
+        "role": "text",
+        "name": "1/30/1982"
+      },
+      {
+        "role": "button",
+        "name": "Lugo, Richard"
+      },
+      {
+        "role": "text",
+        "name": "5/7/1973"
+      },
+      {
+        "role": "text",
+        "name": "7/5/1973"
+      },
+      {
+        "role": "button",
+        "name": "Luna Colon, Angel manuel"
+      },
+      {
+        "role": "text",
+        "name": "6/21/1975"
+      },
+      {
+        "role": "text",
+        "name": "6/9/1975"
+      },
+      {
+        "role": "button",
+        "name": "Soto Ayala, Hugo"
+      },
+      {
+        "role": "text",
+        "name": "7/3/1973"
+      },
+      {
+        "role": "text",
+        "name": "8/3/1973"
+      },
+      {
+        "role": "text",
+        "name": "5 filas"
+      },
+      {
+        "role": "button",
+        "name": "Descargar CSV"
+      },
+      {
+        "role": "text",
+        "name": "Otras 10 fechas ya se corrigieron. En 9, el registro de correcciones cita dos páginas de bsnpr.com (jug05 y jugador05) que respaldan la fecha nueva; en 1, la fecha anterior era imposible y solo jugador05 da una plausible (confianza baja)."
+      },
+      {
+        "role": "heading",
+        "name": "Temporadas que no concuerdan con la ficha",
+        "level": 4
+      },
+      {
+        "role": "text",
+        "name": "5 filas de temporada no son compatibles con la fecha de nacimiento en la misma ficha de bsnpr.com. El archivo conserva las filas, pero las excluye de los totales; no sabemos cuál de los dos datos es el correcto."
+      },
+      {
+        "role": "text",
+        "name": "JUGADOR"
+      },
+      {
+        "role": "text",
+        "name": "AÑO"
+      },
+      {
+        "role": "text",
+        "name": "▲"
+      },
+      {
+        "role": "text",
+        "name": "EQUIPO"
+      },
+      {
+        "role": "text",
+        "name": "JJ"
+      },
+      {
+        "role": "text",
+        "name": "PTS"
+      },
+      {
+        "role": "button",
+        "name": "Llovet Ayala, Francisco"
+      },
+      {
+        "role": "button",
+        "name": "1965"
+      },
+      {
+        "role": "text",
+        "name": "Capitanes, Arecibo"
+      },
+      {
+        "role": "text",
+        "name": "13"
+      },
+      {
+        "role": "text",
+        "name": "32"
+      },
+      {
+        "role": "button",
+        "name": "Llovet Ayala, Francisco"
+      },
+      {
+        "role": "button",
+        "name": "1966"
+      },
+      {
+        "role": "text",
+        "name": "Capitanes, Arecibo"
+      },
+      {
+        "role": "text",
+        "name": "10"
+      },
+      {
+        "role": "text",
+        "name": "12"
+      },
+      {
+        "role": "button",
+        "name": "Llovet Ayala, Francisco"
+      },
+      {
+        "role": "button",
+        "name": "1967"
+      },
+      {
+        "role": "text",
+        "name": "Capitanes, Arecibo"
+      },
+      {
+        "role": "text",
+        "name": "18"
+      },
+      {
+        "role": "text",
+        "name": "44"
+      },
+      {
+        "role": "button",
+        "name": "Llovet Ayala, Francisco"
+      },
+      {
+        "role": "button",
+        "name": "1968"
+      },
+      {
+        "role": "text",
+        "name": "Capitanes, Arecibo"
+      },
+      {
+        "role": "text",
+        "name": "10"
+      },
+      {
+        "role": "text",
+        "name": "12"
+      },
+      {
+        "role": "button",
+        "name": "Llovet Ayala, Francisco"
+      },
+      {
+        "role": "button",
+        "name": "1969"
+      },
+      {
+        "role": "text",
+        "name": "Capitanes, Arecibo"
+      },
+      {
+        "role": "text",
+        "name": "16"
+      },
+      {
+        "role": "text",
+        "name": "74"
+      },
+      {
+        "role": "text",
+        "name": "5 filas"
+      },
+      {
+        "role": "button",
+        "name": "Descargar CSV"
+      },
+      {
+        "role": "heading",
+        "name": "Cómo decidimos",
+        "level": 4
+      },
+      {
+        "role": "text",
+        "name": "Nunca unimos a dos jugadores solo por el nombre."
+      },
+      {
+        "role": "text",
+        "name": "Cuando dos fuentes dan cifras distintas, mostramos las dos; no las promediamos."
+      },
+      {
+        "role": "text",
+        "name": "Una unión necesita evidencia y queda registrada con quién la decidió y cuándo."
+      },
+      {
+        "role": "text",
+        "name": "BSN Archivo · construido por "
+      },
+      {
+        "role": "text",
+        "name": "bennizpr"
+      },
+      {
+        "role": "text",
+        "name": " · San Juan, Puerto Rico."
+      },
+      {
+        "role": "LineBreak",
+        "name": "\n"
+      },
+      {
+        "role": "text",
+        "name": "Los datos vienen de fuentes públicas citadas en «El archivo». Proyecto independiente de un aficionado. No está afiliado ni respaldado por el Baloncesto Superior Nacional ni por sus equipos."
+      },
+      {
+        "role": "LineBreak",
+        "name": "\n"
+      },
+      {
+        "role": "text",
+        "name": "Este sitio no usa cookies ni analítica. Las tipografías vienen de Google Fonts, por lo que Google recibe tu dirección IP. Tu navegador guarda solo tus preferencias (tema y club favorito), tu progreso en los juegos y una copia de los datos para que el sitio funcione sin conexión."
+      },
+      {
+        "role": "LineBreak",
+        "name": "\n"
+      },
+      {
+        "role": "text",
+        "name": "¿Ves un error o quieres que retiremos algo? Escríbenos a "
+      },
+      {
+        "role": "link",
+        "name": "benniz.8008@gmail.com"
+      },
+      {
+        "role": "text",
+        "name": " o por Instagram "
+      },
+      {
+        "role": "link",
+        "name": "@bennizpr"
+      },
+      {
+        "role": "text",
+        "name": "."
+      }
+    ]
+  },
+  "consoleErrors": [],
+  "failedRequests": []
+}
