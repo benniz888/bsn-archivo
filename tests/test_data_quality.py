@@ -385,7 +385,9 @@ class TestDisputedCareerRowsNote:
     def test_the_bio_line_is_unchanged_except_for_the_appended_attribution(self):
         text = APP.read_text(encoding="utf-8")
         assert "const dobDisputed=DISPUTED_IDS&&DISPUTED_IDS.has(Number(id));" in text
-        assert ("if(b.date) top.push('n. '+esc(b.date)+(dobDisputed?' (según bsnpr.com)':'')"
+        # J16 DOB_FORMAT (2026-09-24): b.date now goes through fmtArchiveDob() first; the attribution
+        # and city clauses are otherwise byte-identical to before that existed.
+        assert ("if(b.date) top.push('n. '+esc(fmtArchiveDob(b.date))+(dobDisputed?' (según bsnpr.com)':'')"
                 "+(b.city?' · '+esc(b.city):''));") in text
 
     def test_disputed_ids_and_dispute_idx_are_built_alongside_dq_idx(self):
