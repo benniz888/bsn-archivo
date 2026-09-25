@@ -3,223 +3,181 @@
     {
       "kind": "const",
       "name": "MVP_YEARS",
-      "line": 707,
+      "line": 708,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "SEASON_AWARDS",
-      "line": 751,
+      "line": 752,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "FINALS_BY_YEAR",
-      "line": 799,
+      "line": 800,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "OWNERS",
-      "line": 819,
+      "line": 820,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "champOf",
-      "line": 830,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "const",
-      "name": "ruOf",
-      "line": 830,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "function",
-      "name": "deriveChampions",
       "line": 831,
       "file": "web/index.html"
     },
     {
       "kind": "const",
+      "name": "ruOf",
+      "line": 831,
+      "file": "web/index.html"
+    },
+    {
+      "kind": "function",
+      "name": "deriveChampions",
+      "line": 832,
+      "file": "web/index.html"
+    },
+    {
+      "kind": "const",
       "name": "YEARS",
-      "line": 840,
+      "line": 841,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "LAST",
-      "line": 841,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "const",
-      "name": "NSEASONS",
-      "line": 841,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "const",
-      "name": "FKEYS",
       "line": 842,
       "file": "web/index.html"
     },
     {
       "kind": "const",
-      "name": "ACTIVE",
+      "name": "NSEASONS",
+      "line": 842,
+      "file": "web/index.html"
+    },
+    {
+      "kind": "const",
+      "name": "FKEYS",
       "line": 843,
       "file": "web/index.html"
     },
     {
       "kind": "const",
+      "name": "ACTIVE",
+      "line": 844,
+      "file": "web/index.html"
+    },
+    {
+      "kind": "const",
       "name": "NOTES",
-      "line": 845,
+      "line": 846,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "POOL_NAME_ALIAS",
-      "line": 887,
+      "line": 888,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "FAME_W",
-      "line": 1062,
+      "line": 1063,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "fame",
-      "line": 1063,
+      "line": 1064,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "THEME_BAR",
-      "line": 1078,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "const",
-      "name": "THEME_ICON",
       "line": 1079,
       "file": "web/index.html"
     },
     {
       "kind": "const",
+      "name": "THEME_ICON",
+      "line": 1080,
+      "file": "web/index.html"
+    },
+    {
+      "kind": "const",
       "name": "THEME_NEXT",
-      "line": 1086,
+      "line": 1087,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "THEME_ES",
-      "line": 1087,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "function",
-      "name": "osTheme",
       "line": 1088,
       "file": "web/index.html"
     },
     {
       "kind": "function",
+      "name": "osTheme",
+      "line": 1089,
+      "file": "web/index.html"
+    },
+    {
+      "kind": "function",
       "name": "resolvedTheme",
-      "line": 1094,
+      "line": 1095,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "currentTheme",
-      "line": 1098,
+      "line": 1099,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "applyTheme",
-      "line": 1101,
+      "line": 1102,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "setTheme",
-      "line": 1115,
+      "line": 1116,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "toggleTheme",
-      "line": 1126,
+      "line": 1127,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "initTheme",
-      "line": 1127,
+      "line": 1128,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "CAT_KEYS",
-      "line": 1140,
+      "line": 1141,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "GRID_CLUBS",
-      "line": 1142,
+      "line": 1143,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "BOOT",
-      "line": 1147,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "function",
-      "name": "splashProgress",
-      "line": 1216,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "function",
-      "name": "hideSplash",
-      "line": 1222,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "const",
-      "name": "SPLASH_DEADLINE",
-      "line": 1232,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "function",
-      "name": "ligaFold",
-      "line": 1238,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "function",
-      "name": "finishBoot",
-      "line": 1248,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "function",
-      "name": "runBoot",
-      "line": 1269,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "function",
-      "name": "hydrate",
-      "line": 1303,
+      "line": 1148,
       "file": "web/index.html"
     },
     {
@@ -2555,6 +2513,48 @@
       "name": "applyHash",
       "line": 4471,
       "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "splashProgress",
+      "line": 34,
+      "file": "web/js/init.js"
+    },
+    {
+      "kind": "function",
+      "name": "hideSplash",
+      "line": 40,
+      "file": "web/js/init.js"
+    },
+    {
+      "kind": "const",
+      "name": "SPLASH_DEADLINE",
+      "line": 50,
+      "file": "web/js/init.js"
+    },
+    {
+      "kind": "function",
+      "name": "ligaFold",
+      "line": 56,
+      "file": "web/js/init.js"
+    },
+    {
+      "kind": "function",
+      "name": "finishBoot",
+      "line": 66,
+      "file": "web/js/init.js"
+    },
+    {
+      "kind": "function",
+      "name": "runBoot",
+      "line": 87,
+      "file": "web/js/init.js"
+    },
+    {
+      "kind": "function",
+      "name": "hydrate",
+      "line": 121,
+      "file": "web/js/init.js"
     }
   ]
 }

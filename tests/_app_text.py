@@ -59,6 +59,15 @@ was lost or reordered along the way. Splices happen in this order:
      actual boot sequence), and hydrate() plus the final bootstrap statements that literally
      start the app once every script -- including this one -- has loaded.
 
+  8. JS init (step 9): web/js/init.js holds 1 block -- ARRANQUE (splashProgress, hideSplash,
+     SPLASH_DEADLINE, ligaFold, finishBoot, runBoot, and the setInterval(checkRollover,60000)
+     statement) directly into hydrate(). Left inline, classified and reported before cutting
+     anything (see the STEP 9 commit message): MVP_YEARS/SEASON_AWARDS/FINALS_BY_YEAR/OWNERS (tab
+     data, not init), the whole DERIVED section and CAT_KEYS/GRID_CLUBS (data-derivation, not
+     boot machinery), THEME and BOOT (explicit instruction / step 8's bug), and the final
+     bootstrap statements (window.addEventListener('hashchange',applyHash), runBoot(), the
+     service-worker registration) that must stay dead last, after every split file AND this one.
+
   None of these were contiguous in the original -- steps 3 and 4 both cut blocks out of a script
   that runs ~7000 lines, with everything else (other constants, tab-specific UI code, even a few
   bare statements like F.agu.ru.push(2026) between POOL and VENUES) staying in web/index.html,
@@ -172,6 +181,27 @@ was lost or reordered along the way. Splices happen in this order:
   `const X = Y.filter(...)`-style expression -- check every element, not just the shape of the
   declaration, and don't assume "it's just a lookup table" makes it safe to move.
 
+  Step 9 (js/init.js) was the simple case after steps 7-8's lessons: ONE contiguous block
+  (ARRANQUE directly into hydrate()) with ONE new anchor (BOOT's own closing text, which stays
+  inline permanently -- BOOT was already established, in step 8, as unsafe to move). The only
+  real work was classifying the 37 declarations step 8 left in web/index.html BEFORE cutting
+  anything (see the STEP 9 commit message for the full list): only ARRANQUE and hydrate() turned
+  out to be genuinely init-only. MVP_YEARS/SEASON_AWARDS/FINALS_BY_YEAR/OWNERS are tab data (their
+  consumers are already in js/tabs.js) that fell inside step 8's SEG-boundary lines by accident of
+  position, not deliberate classification -- flagged, not moved, since this step's authorized
+  scope was js/init.js, not a tabs.js correction. The whole DERIVED section and CAT_KEYS/
+  GRID_CLUBS are data/data-derivation, not boot machinery, even though DERIVED's own
+  deriveChampions() runs at top level too -- it runs SYNCHRONOUSLY, before runBoot() ever starts,
+  which is a different thing from "the boot sequence" itself. THEME and BOOT stay inline per
+  explicit instruction (BOOT's initTheme reference -- step 8's bug -- makes this necessary
+  regardless). One cross-file check going IN: js/tabs.js's "SEG4_VIEWS_thru_applyHash" anchor
+  (the comment right before setInterval(checkRollover,60000)) turned out to be text THIS step
+  was about to move (the setInterval statement sits between runBoot and hydrate, and travels with
+  them) -- caught by checking every existing anchor against the new group's range before cutting,
+  same discipline as steps 7-8, not discovered by a failing test. Fixed by inserting js/init.js's
+  one group directly before SEG4 in `_INSERTION_ORDER`, matching their true relative order in
+  app/bsn_archivo.html.
+
   Reconstruction works by anchors, not line numbers: `preceding_anchor` is exact original text
   that survives, byte for byte, in the *working* reconstruction so far, immediately before where
   a group used to sit -- the group goes back in right after it. `group_start_marker` is the exact
@@ -192,6 +222,7 @@ PLAYER_JS = WEB / "js" / "player.js"
 DATA_QUALITY_JS = WEB / "js" / "data-quality.js"
 GAMES_JS = WEB / "js" / "games.js"
 TABS_JS = WEB / "js" / "tabs.js"
+INIT_JS = WEB / "js" / "init.js"
 
 _LINK_RE = re.compile(r'<link\s+rel="stylesheet"\s+href="([^"?]+)(?:\?v=[0-9a-f]+)?">')
 
@@ -206,6 +237,7 @@ _PLAYER_JS_SCRIPT_TAG_RE = _script_tag_re("js/player.js")
 _DATA_QUALITY_JS_SCRIPT_TAG_RE = _script_tag_re("js/data-quality.js")
 _GAMES_JS_SCRIPT_TAG_RE = _script_tag_re("js/games.js")
 _TABS_JS_SCRIPT_TAG_RE = _script_tag_re("js/tabs.js")
+_INIT_JS_SCRIPT_TAG_RE = _script_tag_re("js/init.js")
 
 # group_start_marker is the exact PREFIX text (long enough to be unique in its file) each block
 # begins with -- for a block with its own header comment, that's the comment's start, not the
@@ -335,6 +367,16 @@ _JS_TABS_GROUPS = {
                                   "setInterval(checkRollover,60000);\n\n"),
 }
 
+# STEP 9: web/js/init.js's 1 block. Anchor is BOOT's own closing text -- BOOT stays inline
+# permanently (step 8's bug), so this is stable, not a cross-file dependency. The setInterval
+# statement travels WITH this group (it sits between runBoot and hydrate in the original), which
+# is why js/tabs.js's "SEG4_VIEWS_thru_applyHash" anchor (also that same setInterval line) had to
+# move to right after this group in _INSERTION_ORDER -- see the module docstring.
+_JS_INIT_GROUPS = {
+    "ARRANQUE+hydrate": ('/* ============================================================\n   ARRANQUE',
+                         "'quién soy',newQuiz],\n  ['sube y baja',()=>newHL(false)]\n];\n"),
+}
+
 # The TRUE original document order, across ALL files, derived from every group's marker's byte
 # offset in app/bsn_archivo.html (the one file that never moves) -- computed in one pass, not
 # patched incrementally (see the module docstring: step 8's 4 segments collided with 15 of the
@@ -368,6 +410,7 @@ _INSERTION_ORDER = [
     (_JS_TABS_GROUPS, TABS_JS, "SEG3_QUIENSOY_thru_COMPARAR"),
     (_JS_DATA_GROUPS, DATA_JS, "HL_SETS"),
     (_JS_GAMES_GROUPS, GAMES_JS, "SUBE_Y_BAJA"),
+    (_JS_INIT_GROUPS, INIT_JS, "ARRANQUE+hydrate"),
     (_JS_TABS_GROUPS, TABS_JS, "SEG4_VIEWS_thru_applyHash"),
 ]
 
@@ -395,7 +438,8 @@ def app_text() -> str:
                          (_PLAYER_JS_SCRIPT_TAG_RE, PLAYER_JS),
                          (_DATA_QUALITY_JS_SCRIPT_TAG_RE, DATA_QUALITY_JS),
                          (_GAMES_JS_SCRIPT_TAG_RE, GAMES_JS),
-                         (_TABS_JS_SCRIPT_TAG_RE, TABS_JS)):
+                         (_TABS_JS_SCRIPT_TAG_RE, TABS_JS),
+                         (_INIT_JS_SCRIPT_TAG_RE, INIT_JS)):
         html, n = tag_re.subn("", html, count=1)
         assert n == 1, f"{path.name} script tag not found -- did index.html change?"
 
@@ -404,7 +448,8 @@ def app_text() -> str:
                         PLAYER_JS: _js_segments(PLAYER_JS, _JS_PLAYER_GROUPS),
                         DATA_QUALITY_JS: _js_segments(DATA_QUALITY_JS, _JS_DATA_QUALITY_GROUPS),
                         GAMES_JS: _js_segments(GAMES_JS, _JS_GAMES_GROUPS),
-                        TABS_JS: _js_segments(TABS_JS, _JS_TABS_GROUPS)}
+                        TABS_JS: _js_segments(TABS_JS, _JS_TABS_GROUPS),
+                        INIT_JS: _js_segments(INIT_JS, _JS_INIT_GROUPS)}
 
     for groups, path, name in _INSERTION_ORDER:
         _, anchor = groups[name]
