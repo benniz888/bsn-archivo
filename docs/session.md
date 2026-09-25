@@ -6940,3 +6940,38 @@ reconstruction mechanism used to verify every step are in `docs/specs/app_split_
   re-run, all `?v=` hashes current. The 48-route deterministic capture and a cold-load
   (no-prior-storage, online-once-then-offline) real-browser pass are run separately (Playwright;
   `tests/harness/README.md`), per this phase's standing per-step discipline.
+
+### PHASE_1_SPLIT_DEPLOY_LOG — deployed, live-verified (2026-09-25)
+- **Merged and pushed.** `phase-1-split` -> `main`: fast-forward, no merge commit (main had not
+  diverged). Range `27c16a4..499a2d6`, single commit landing on `main` (`499a2d6`, STEP 10's own
+  commit -- the 13 prior step commits were already the branch's own history, carried along by the
+  fast-forward). Pushed the same range, `27c16a4..499a2d6 main -> main`.
+- **Pages run `36180864156`: success, 29s** (19:37:58Z-19:38:27Z), for commit `499a2d6`.
+- **Full live verification (Chromium + WebKit, 1000px + 390px, fresh contexts, bsnarchivo.com),
+  re-run post-merge, not just trusted from the branch's prior results.** Asset wiring: all 8
+  tags (`css/main.css` + the 7 `web/js/*.js` files) returned 200 with the exact expected `?v=`
+  hash, in all 4 configs -- 0 404s, 0 failed requests, 0 console errors anywhere. All 6 tabs and
+  `#archivo/calidad` render; the one site-wide "error" occurrence is the approved footer contact
+  line, not the data-quality view (an initial whole-body-text check flagged this too broadly --
+  confirmed a false positive on closer, view-scoped inspection). Player 721: disputed-row tag,
+  long-form bio date, and the "(según bsnpr.com)" attribution clause all present. Player 722
+  renders normally. Footer (unofficial-status/privacy/contact) and head meta/OG/Twitter tags
+  present and correct, no `og:image`. 2026 champion section present in Historia. All three games
+  played through with real interaction, not just page-load checks: Cuadrícula (668 real
+  player-name cells, clicked), Sube y Baja (clicked a card via `answerHL()`, got a real scored
+  result), Temporada Perfecta (renders its form) -- 0 console errors during play. Offline reload
+  (fresh context, online once, then offline reload + tab navigation): **confirmed working,
+  Chromium, both widths** -- SW active, 0 errors, 0 failed requests, renders and navigates
+  offline.
+- **WebKit offline-reload: KNOWN TOOLING LIMITATION, not a site defect.** Playwright's
+  `context.setOffline()` + `page.reload()`/`goto()` throws `"WebKit encountered an internal
+  error"` in WebKit specifically -- proven unrelated to this site or its service worker by a
+  control test against `https://example.com` (zero service worker involved), which throws the
+  identical error. WebKit's own SW does register and go `active` online in both widths; the
+  reload step itself just can't be driven by this tool. **Independently resolved by the owner**:
+  loaded the live site on a real iPhone in Safari, enabled airplane mode, reloaded -- the site
+  remained fully functional offline. Real-device result stands; the Playwright gap is a testing
+  tool limitation, carried here for the record, not a followup item.
+- **PHASE_1_SPLIT closes here.** Steps 0-10, branch `phase-1-split`, 14 commits, merged and
+  live. `docs/specs/app_split_spec.md` has the full file map, what's still inline and why, the
+  reconstruction mechanism, and the verification standard used at every step.
