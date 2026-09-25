@@ -41,6 +41,24 @@ was lost or reordered along the way. Splices happen in this order:
      fourth game, "Quien soy?" (QZ/statClue/newQuiz/...), sits BETWEEN Temporada Perfecta and
      Sube y baja in the original and was NOT named for this step -- left in web/index.html.
 
+  7. JS tabs (step 8): web/js/tabs.js holds 4 large segments -- essentially everything tab-
+     rendering that hadn't moved yet, PLUS navigation-building code (buildNav, the mega-menu,
+     _showPanel, TABS/VIEW_SECS/syncSubnav) step 4 deliberately left out of helpers.js as "tab-
+     specific UI", PLUS "Quien soy?" (step 7 correctly left it behind, unnamed at the time). SEG1
+     is leftover tab DATA that wasn't named for step 3 (ARENAS...POOL_BSN26, including the small
+     F.agu.*.push/coach patch statements). SEG2 is the single largest piece: the image/portrait
+     SVG layer, the sortable/exportable table helpers (buildTable and friends -- used by nearly
+     every tab, never named for step 4), NAVIGATION, and every named tab (Hoy, Historia, Equipos,
+     the player-profile machinery including showPlayer, Records, Refuerzos, Fuentes, Ask/Bio,
+     Query Builder, the Hub, Glosario, Primer, Perfil -- both its render function and, confusingly
+     under the SAME "PERFIL" header, its storage layer). SEG3 is "Quien soy?" through Comparar.
+     SEG4 is the view-router infrastructure (VIEW_MAP, buildViews, ...), slug_, revealNode and
+     applyHash. Left inline (not this step, not tab-specific): the CAPA DE IDIOMA IIFE and the
+     whole DERIVED section (core data-postprocessing), CAT_KEYS/GRID_CLUBS (the step 7 FKEYS
+     island) and THEME (sitting in the same inline gap between SEG2 and SEG3), ARRANQUE (the
+     actual boot sequence), and hydrate() plus the final bootstrap statements that literally
+     start the app once every script -- including this one -- has loaded.
+
   None of these were contiguous in the original -- steps 3 and 4 both cut blocks out of a script
   that runs ~7000 lines, with everything else (other constants, tab-specific UI code, even a few
   bare statements like F.agu.ru.push(2026) between POOL and VENUES) staying in web/index.html,
@@ -108,6 +126,52 @@ was lost or reordered along the way. Splices happen in this order:
   mechanism doesn't assume the next step won't need the same care -- or, per step 7, a check of
   what's actually a function body versus a top-level statement.
 
+  Step 8 was the big one: its 4 segments interleave with 8 of js/data.js's 13 groups,
+  js/data-quality.js's group, 3 of js/helpers.js's groups, js/player.js's JUGADORES-archive
+  group, and js/games.js's HL_SETS-adjacent group -- 15 of the 25 anchors that existed before
+  this step turned out to point at text this step was about to move. Patching `_INSERTION_ORDER`
+  incrementally (as steps 4/6/7 did, one collision at a time) would have meant finding all 15 by
+  trial and error. Instead, `_INSERTION_ORDER` was rebuilt from scratch: every group's marker
+  (from every *_GROUPS dict, including the new `_JS_TABS_GROUPS`) was located by its own byte
+  offset in app/bsn_archivo.html and the whole list sorted by that offset in one pass.
+
+  Three of this step's own 4 anchors turned out to have exactly the same problem, the first time
+  around: SEG1 was first anchored on the js/games.js script tag (wrong -- its true predecessor,
+  once F moved to data.js in step 3, is F's own closing text), SEG2 was first anchored on fame()'s
+  closing text (wrong -- js/helpers.js's own "HELPERS" group sits directly between fame() and
+  SEG2 in the true order, so HELPERS's closing text is the real anchor), and SEG3 was first
+  anchored on GRID_CLUBS's closing text (wrong -- js/games.js's own CUADRICULA+TEMPORADA_PERFECTA
+  group sits between GRID_CLUBS and SEG3, so ITS closing text -- shareDraft's -- is the real
+  anchor). All three were copy-paste mistakes: reusing a NEIGHBORING group's already-established
+  anchor instead of deriving this step's own anchor fresh against the actual immediate
+  predecessor in the rebuilt order. Caught by the same app_text() byte-for-byte check every step
+  runs, not by a separate review pass. Only SEG4's anchor (the comment right before
+  setInterval(checkRollover,60000), part of ARRANQUE, which never moves) turned out to be stable
+  on the first try. Lesson doubled down from step 7: even within a single step's own new anchors,
+  check each one's TRUE immediate predecessor in the freshly rebuilt order -- don't assume a
+  neighboring group's already-correct anchor is also correct for a DIFFERENT group, even when
+  they're textually close together.
+
+  Step 8 ALSO repeated step 7's real bug (not just its anchor-ordering lesson), in a form the
+  byte-offset check could not have caught: `const BOOT=[...]` sits right after SEG3 (COMPARAR) in
+  the original and looks like it belongs with it (SEG3's own extraction originally included it).
+  BOOT is a top-level array literal storing bare function REFERENCES -- ['nav',buildNav],
+  ['tema',initTheme], and so on -- evaluated the instant its own script runs. Every entry but one
+  points at a function already in an earlier-loading split file, which is safe; ['tema',initTheme]
+  points at THEME's initTheme, which stays inline (see above), and moving BOOT into js/tabs.js (an
+  earlier-loading file than the inline remainder) threw "ReferenceError: initTheme is not defined"
+  at js/tabs.js's own load time -- which aborted the rest of ITS top-level execution, so GAMES,
+  VIEW_MAP and everything js/tabs.js declares after BOOT in its own file order silently never
+  initialized either (surfacing later as "Cannot access 'GAMES' before initialization" the first
+  time anything tried to use them). Only the real-browser test caught it, exactly like GRID_CLUBS
+  in step 7 -- a byte-offset comparison against app/bsn_archivo.html would have said BOOT's
+  position was correct, because it IS correct; correct position was never the question. Fixed by
+  leaving the whole const BOOT=[...] array inline, where every one of its references -- including
+  initTheme -- is safe, since the inline remainder always loads dead last. Lesson: an array (or
+  object) literal that collects bare function references is the SAME hazard as a single
+  `const X = Y.filter(...)`-style expression -- check every element, not just the shape of the
+  declaration, and don't assume "it's just a lookup table" makes it safe to move.
+
   Reconstruction works by anchors, not line numbers: `preceding_anchor` is exact original text
   that survives, byte for byte, in the *working* reconstruction so far, immediately before where
   a group used to sit -- the group goes back in right after it. `group_start_marker` is the exact
@@ -127,6 +191,7 @@ HELPERS_JS = WEB / "js" / "helpers.js"
 PLAYER_JS = WEB / "js" / "player.js"
 DATA_QUALITY_JS = WEB / "js" / "data-quality.js"
 GAMES_JS = WEB / "js" / "games.js"
+TABS_JS = WEB / "js" / "tabs.js"
 
 _LINK_RE = re.compile(r'<link\s+rel="stylesheet"\s+href="([^"?]+)(?:\?v=[0-9a-f]+)?">')
 
@@ -140,6 +205,7 @@ _HELPERS_JS_SCRIPT_TAG_RE = _script_tag_re("js/helpers.js")
 _PLAYER_JS_SCRIPT_TAG_RE = _script_tag_re("js/player.js")
 _DATA_QUALITY_JS_SCRIPT_TAG_RE = _script_tag_re("js/data-quality.js")
 _GAMES_JS_SCRIPT_TAG_RE = _script_tag_re("js/games.js")
+_TABS_JS_SCRIPT_TAG_RE = _script_tag_re("js/tabs.js")
 
 # group_start_marker is the exact PREFIX text (long enough to be unique in its file) each block
 # begins with -- for a block with its own header comment, that's the comment's start, not the
@@ -246,12 +312,36 @@ _JS_GAMES_GROUPS = {
                     "unit:'títulos'}\n];\n"),
 }
 
-# The TRUE original document order, across BOTH files, derived from where each group's marker
-# appears in app/bsn_archivo.html (the one file that never moves). Everything is in data.js order
-# then helpers.js order EXCEPT the one real interleave: fmtLongDate, then MESES+DIAS, then
-# daysInMonth+ArchDob -- see the module docstring.
+# STEP 8: web/js/tabs.js's 4 segments. Three of the four anchors point at another split file's
+# own content (a cross-file dependency, same mechanism as steps 4/6/7): SEG1 follows F
+# (js/data.js) directly, SEG2 follows the "HELPERS" section (js/helpers.js) directly, SEG3
+# follows CUADRICULA+TEMPORADA_PERFECTA (js/games.js) directly. Only SEG4 anchors on text that
+# stays inline permanently (part of ARRANQUE). See the module docstring for how all 15
+# PRE-EXISTING anchors that collided with this step's moves were handled (a full rebuild of
+# _INSERTION_ORDER), and for the copy-paste mistakes made (and caught) getting these four right.
+_JS_TABS_GROUPS = {
+    "SEG1_ARENAS_thru_POOL_BSN26": ('const ARENAS=[',
+                                    'arece en el archivo, no de una fuente que las declare."}\n};\n\n'),
+    "SEG2_IMAGE_thru_PERFIL_STORE": ('/* ============================================================'
+                                     '\n   IMAGE DROP-IN LAYER',
+                                     "':v;\nconst pct=v=>v==null?'—':('.'+String(Math.round(v*1000))"
+                                     ".padStart(3,'0'));\n\n"),
+    "SEG3_QUIENSOY_thru_COMPARAR": ('/* ============================================================'
+                                    '\n   ¿QUIÉN SOY?',
+                                    "clipboard&&navigator.clipboard.writeText) navigator.clipboard."
+                                    "writeText(txt);\n}\n\n"),
+    "SEG4_VIEWS_thru_applyHash": ('/* Deep links: #archivo, #equipos/bay, #jugador/georgie-torres */',
+                                  "while the streak strip showed today's number. */\n"
+                                  "setInterval(checkRollover,60000);\n\n"),
+}
+
+# The TRUE original document order, across ALL files, derived from every group's marker's byte
+# offset in app/bsn_archivo.html (the one file that never moves) -- computed in one pass, not
+# patched incrementally (see the module docstring: step 8's 4 segments collided with 15 of the
+# 25 anchors that existed before it).
 _INSERTION_ORDER = [
     (_JS_DATA_GROUPS, DATA_JS, "F"),
+    (_JS_TABS_GROUPS, TABS_JS, "SEG1_ARENAS_thru_POOL_BSN26"),  # anchor is None, special-cased
     (_JS_DATA_GROUPS, DATA_JS, "RECENT+HOF"),
     (_JS_DATA_GROUPS, DATA_JS, "RETIRED+REF_RULES"),
     (_JS_DATA_GROUPS, DATA_JS, "ON_THIS_DAY"),
@@ -261,12 +351,13 @@ _INSERTION_ORDER = [
     (_JS_DATA_GROUPS, DATA_JS, "SEASON_STATE+POOL_2026+POOL_RGM"),
     (_JS_DATA_GROUPS, DATA_JS, "POOL_PATCH"),
     (_JS_DATA_GROUPS, DATA_JS, "PLAYERS_NEW"),
+    (_JS_HELPERS_GROUPS, HELPERS_JS, "HELPERS"),
+    (_JS_TABS_GROUPS, TABS_JS, "SEG2_IMAGE_thru_PERFIL_STORE"),
+    (_JS_HELPERS_GROUPS, HELPERS_JS, "showTab"),
+    (_JS_HELPERS_GROUPS, HELPERS_JS, "setHash+showView"),
     (_JS_PLAYER_GROUPS, PLAYER_JS, "JUGADORES-archive"),
     (_JS_DATA_QUALITY_GROUPS, DATA_QUALITY_JS, "CALIDAD-DATOS"),
     (_JS_PLAYER_GROUPS, PLAYER_JS, "DQ-tags"),
-    (_JS_HELPERS_GROUPS, HELPERS_JS, "HELPERS"),
-    (_JS_HELPERS_GROUPS, HELPERS_JS, "showTab"),
-    (_JS_HELPERS_GROUPS, HELPERS_JS, "setHash+showView"),
     (_JS_HELPERS_GROUPS, HELPERS_JS, "STORAGE+DATA"),
     (_JS_HELPERS_GROUPS, HELPERS_JS, "fmtLongDate"),
     (_JS_DATA_GROUPS, DATA_JS, "MESES+DIAS"),
@@ -274,8 +365,10 @@ _INSERTION_ORDER = [
     (_JS_HELPERS_GROUPS, HELPERS_JS, "SEEDING"),
     (_JS_DATA_GROUPS, DATA_JS, "CATS"),
     (_JS_GAMES_GROUPS, GAMES_JS, "CUADRICULA+TEMPORADA_PERFECTA"),
+    (_JS_TABS_GROUPS, TABS_JS, "SEG3_QUIENSOY_thru_COMPARAR"),
     (_JS_DATA_GROUPS, DATA_JS, "HL_SETS"),
     (_JS_GAMES_GROUPS, GAMES_JS, "SUBE_Y_BAJA"),
+    (_JS_TABS_GROUPS, TABS_JS, "SEG4_VIEWS_thru_applyHash"),
 ]
 
 
@@ -301,7 +394,8 @@ def app_text() -> str:
     for tag_re, path in ((_DATA_JS_SCRIPT_TAG_RE, DATA_JS), (_HELPERS_JS_SCRIPT_TAG_RE, HELPERS_JS),
                          (_PLAYER_JS_SCRIPT_TAG_RE, PLAYER_JS),
                          (_DATA_QUALITY_JS_SCRIPT_TAG_RE, DATA_QUALITY_JS),
-                         (_GAMES_JS_SCRIPT_TAG_RE, GAMES_JS)):
+                         (_GAMES_JS_SCRIPT_TAG_RE, GAMES_JS),
+                         (_TABS_JS_SCRIPT_TAG_RE, TABS_JS)):
         html, n = tag_re.subn("", html, count=1)
         assert n == 1, f"{path.name} script tag not found -- did index.html change?"
 
@@ -309,7 +403,8 @@ def app_text() -> str:
                         HELPERS_JS: _js_segments(HELPERS_JS, _JS_HELPERS_GROUPS),
                         PLAYER_JS: _js_segments(PLAYER_JS, _JS_PLAYER_GROUPS),
                         DATA_QUALITY_JS: _js_segments(DATA_QUALITY_JS, _JS_DATA_QUALITY_GROUPS),
-                        GAMES_JS: _js_segments(GAMES_JS, _JS_GAMES_GROUPS)}
+                        GAMES_JS: _js_segments(GAMES_JS, _JS_GAMES_GROUPS),
+                        TABS_JS: _js_segments(TABS_JS, _JS_TABS_GROUPS)}
 
     for groups, path, name in _INSERTION_ORDER:
         _, anchor = groups[name]

@@ -42,9 +42,14 @@ real, committed artifact, not a re-run against a moving target.
   `web/index.html` / 18 `web/js/data.js` / 23 `web/js/helpers.js`. STEP 5: 370 `web/index.html` /
   18 `web/js/data.js` / 23 `web/js/helpers.js` / 15 `web/js/player.js`. STEP 6: 358
   `web/index.html` / 18 `web/js/data.js` / 23 `web/js/helpers.js` / 15 `web/js/player.js` / 12
-  `web/js/data-quality.js`. STEP 7: 298 `web/index.html` / 18 `web/js/data.js` / 23
-  `web/js/helpers.js` / 15 `web/js/player.js` / 12 `web/js/data-quality.js` / 60 `web/js/games.js`.
-  Regenerate after any later step
+  `web/js/data-quality.js`. STEP 7: 300 `web/index.html` (the STEP 6-era 298 in the committed file
+  was stale -- generated before that step's FKEYS fix left CAT_KEYS/GRID_CLUBS inline;
+  regenerated at the start of STEP 8) / 18 `web/js/data.js` / 23 `web/js/helpers.js` / 15
+  `web/js/player.js` / 12 `web/js/data-quality.js` / 58 `web/js/games.js`. STEP 8: 37
+  `web/index.html` (includes `const BOOT=[...]`, which looks like it belongs in js/tabs.js but
+  can't move there -- see the STEP 8 commit message) / 18 `web/js/data.js` / 23
+  `web/js/helpers.js` / 15 `web/js/player.js` / 12 `web/js/data-quality.js` / 58
+  `web/js/games.js` / 263 `web/js/tabs.js`. Regenerate after any later step
   moves more code: `python3 tests/harness/inventory.py tests/harness/inventory_web_split.json
   web/index.html web/js/data.js [<more files as they appear>]`.
 
@@ -64,7 +69,7 @@ there.
 
 ```
 python3 tests/harness/inventory.py tests/harness/inventory_main_HEAD.json app/bsn_archivo.html
-python3 tests/harness/inventory.py tests/harness/inventory_web_split.json web/index.html web/js/data.js web/js/helpers.js web/js/player.js web/js/data-quality.js web/js/games.js
+python3 tests/harness/inventory.py tests/harness/inventory_web_split.json web/index.html web/js/data.js web/js/helpers.js web/js/player.js web/js/data-quality.js web/js/games.js web/js/tabs.js
 ```
 
 ## Comparing a new snapshot to the baseline
