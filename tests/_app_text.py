@@ -24,6 +24,14 @@ was lost or reordered along the way. Splices happen in this order:
      write, which stayed behind), and the disputed-row tag/tooltip formatters (dqFlag, dqTag,
      disputeFlag, disputeTag). Both are simple contiguous cuts, no merged/split groups this step.
 
+  5. JS data-quality (step 6): web/js/data-quality.js holds 1 block -- the file's own "CALIDAD DE
+     DATOS" section whole: its state (DQ, DQ_IDX, DISPUTE_IDX, DISPUTED_IDS, DQ_T, DQ_SORT,
+     DQ_FILTER -- one `let` statement, moved as-is since splitting it would be reformatting),
+     ensureDQ, buildDQ, openDQ, drawDQ, drawDQTable. dqFlag/dqTag/disputeFlag/disputeTag stay in
+     player.js (step 5) -- moving them here too would split dqFlag from dqTag and disputeFlag
+     from disputeTag, so player.js remains the cleaner home; they now read DQ_IDX/DISPUTE_IDX/
+     DISPUTED_IDS across files, an ordinary global read like any other.
+
   None of these were contiguous in the original -- steps 3 and 4 both cut blocks out of a script
   that runs ~7000 lines, with everything else (other constants, tab-specific UI code, even a few
   bare statements like F.agu.ru.push(2026) between POOL and VENUES) staying in web/index.html,
@@ -36,18 +44,30 @@ was lost or reordered along the way. Splices happen in this order:
   up to the next declaration" rule gets this wrong every time; the *_GROUPS lists below are the
   result of doing it by hand and proving each boundary (see the STEP 3/4 commit messages).
 
-  CROSS-FILE ordering (step 4's real gotcha): fmtLongDate was originally followed directly by
-  MESES and DIAS (step 3, now in js/data.js), and only THEN by _daysInMonth+fmtArchiveDob.
-  Splitting fmtLongDate and _daysInMonth+fmtArchiveDob into two separate helpers.js groups isn't
-  enough on its own -- _daysInMonth+fmtArchiveDob's real preceding anchor is DIAS's own closing
-  text, which doesn't exist anywhere in web/index.html any more (step 3 already moved it). So
-  groups can't be spliced back file-by-file (all of data.js, then all of helpers.js): they have
-  to go back in ONE combined list, `_INSERTION_ORDER`, in the TRUE original document order --
-  data.js's MESES+DIAS group sits between helpers.js's fmtLongDate and _daysInMonth+fmtArchiveDob
-  groups in that list, so by the time _daysInMonth+fmtArchiveDob's anchor search runs, MESES+DIAS
-  has already been spliced back into the working text and the anchor is there to find. Every
-  other group this step happens to have no such cross-file dependency, but the mechanism doesn't
-  assume that going forward -- future steps just extend `_INSERTION_ORDER` in the right spot.
+  CROSS-FILE ordering (step 4's real gotcha, and again in step 6): fmtLongDate was originally
+  followed directly by MESES and DIAS (step 3, now in js/data.js), and only THEN by
+  _daysInMonth+fmtArchiveDob. Splitting fmtLongDate and _daysInMonth+fmtArchiveDob into two
+  separate helpers.js groups isn't enough on its own -- _daysInMonth+fmtArchiveDob's real
+  preceding anchor is DIAS's own closing text, which doesn't exist anywhere in web/index.html any
+  more (step 3 already moved it). So groups can't be spliced back file-by-file (all of data.js,
+  then all of helpers.js): they have to go back in ONE combined list, `_INSERTION_ORDER`, in the
+  TRUE original document order -- data.js's MESES+DIAS group sits between helpers.js's
+  fmtLongDate and _daysInMonth+fmtArchiveDob groups in that list, so by the time
+  _daysInMonth+fmtArchiveDob's anchor search runs, MESES+DIAS has already been spliced back into
+  the working text and the anchor is there to find.
+
+  Step 6 hit the same thing from the other direction: player.js's "DQ-tags" group (step 5) was
+  given the anchor "ends right where ensureDQ's own closing brace was" -- true at the time, since
+  ensureDQ was still in web/index.html. Once step 6 moved ensureDQ itself into
+  js/data-quality.js, that anchor text stopped existing in web/index.html. Fix is the same shape:
+  js/data-quality.js's one group ("CALIDAD-DATOS") sits BEFORE player.js's "DQ-tags" group in
+  `_INSERTION_ORDER` (matching their true original order in app/bsn_archivo.html), so ensureDQ's
+  text is already back in the working reconstruction by the time DQ-tags' anchor search runs.
+  `_JS_PLAYER_GROUPS["DQ-tags"]`'s anchor itself did NOT need editing -- only its position in
+  `_INSERTION_ORDER` did. Every other group so far happens to have no such cross-file dependency,
+  but the mechanism doesn't assume that going forward -- future steps just extend
+  `_INSERTION_ORDER` in the right spot, checked against app/bsn_archivo.html's own byte offsets
+  (the one file that never changes) the way both of these were.
 
   Reconstruction works by anchors, not line numbers: `preceding_anchor` is exact original text
   that survives, byte for byte, in the *working* reconstruction so far, immediately before where
@@ -66,6 +86,7 @@ INDEX = WEB / "index.html"
 DATA_JS = WEB / "js" / "data.js"
 HELPERS_JS = WEB / "js" / "helpers.js"
 PLAYER_JS = WEB / "js" / "player.js"
+DATA_QUALITY_JS = WEB / "js" / "data-quality.js"
 
 _LINK_RE = re.compile(r'<link\s+rel="stylesheet"\s+href="([^"?]+)(?:\?v=[0-9a-f]+)?">')
 
@@ -77,6 +98,7 @@ def _script_tag_re(src: str) -> re.Pattern:
 _DATA_JS_SCRIPT_TAG_RE = _script_tag_re("js/data.js")
 _HELPERS_JS_SCRIPT_TAG_RE = _script_tag_re("js/helpers.js")
 _PLAYER_JS_SCRIPT_TAG_RE = _script_tag_re("js/player.js")
+_DATA_QUALITY_JS_SCRIPT_TAG_RE = _script_tag_re("js/data-quality.js")
 
 # group_start_marker is the exact PREFIX text (long enough to be unique in its file) each block
 # begins with -- for a block with its own header comment, that's the comment's start, not the
@@ -156,6 +178,14 @@ _JS_PLAYER_GROUPS = {
                "\n  });\n  return DQ;\n}\n"),
 }
 
+# STEP 6: web/js/data-quality.js's 1 block -- the whole "CALIDAD DE DATOS" section, including its
+# state (one `let` statement: DQ, DQ_IDX, DISPUTE_IDX, DISPUTED_IDS, DQ_T, DQ_SORT, DQ_FILTER).
+_JS_DATA_QUALITY_GROUPS = {
+    "CALIDAD-DATOS": ('/* ============================================================\n   CALIDAD DE DATOS',
+                      "tes ofensivos',free_throws:'tiros libres',free_throw_pct:'% de tiros"
+                      " libres'};\n\n"),
+}
+
 # The TRUE original document order, across BOTH files, derived from where each group's marker
 # appears in app/bsn_archivo.html (the one file that never moves). Everything is in data.js order
 # then helpers.js order EXCEPT the one real interleave: fmtLongDate, then MESES+DIAS, then
@@ -172,6 +202,7 @@ _INSERTION_ORDER = [
     (_JS_DATA_GROUPS, DATA_JS, "POOL_PATCH"),
     (_JS_DATA_GROUPS, DATA_JS, "PLAYERS_NEW"),
     (_JS_PLAYER_GROUPS, PLAYER_JS, "JUGADORES-archive"),
+    (_JS_DATA_QUALITY_GROUPS, DATA_QUALITY_JS, "CALIDAD-DATOS"),
     (_JS_PLAYER_GROUPS, PLAYER_JS, "DQ-tags"),
     (_JS_HELPERS_GROUPS, HELPERS_JS, "HELPERS"),
     (_JS_HELPERS_GROUPS, HELPERS_JS, "showTab"),
@@ -206,13 +237,15 @@ def app_text() -> str:
     html = _LINK_RE.sub(sub_link, html)
 
     for tag_re, path in ((_DATA_JS_SCRIPT_TAG_RE, DATA_JS), (_HELPERS_JS_SCRIPT_TAG_RE, HELPERS_JS),
-                         (_PLAYER_JS_SCRIPT_TAG_RE, PLAYER_JS)):
+                         (_PLAYER_JS_SCRIPT_TAG_RE, PLAYER_JS),
+                         (_DATA_QUALITY_JS_SCRIPT_TAG_RE, DATA_QUALITY_JS)):
         html, n = tag_re.subn("", html, count=1)
         assert n == 1, f"{path.name} script tag not found -- did index.html change?"
 
     segments_by_file = {DATA_JS: _js_segments(DATA_JS, _JS_DATA_GROUPS),
                         HELPERS_JS: _js_segments(HELPERS_JS, _JS_HELPERS_GROUPS),
-                        PLAYER_JS: _js_segments(PLAYER_JS, _JS_PLAYER_GROUPS)}
+                        PLAYER_JS: _js_segments(PLAYER_JS, _JS_PLAYER_GROUPS),
+                        DATA_QUALITY_JS: _js_segments(DATA_QUALITY_JS, _JS_DATA_QUALITY_GROUPS)}
 
     for groups, path, name in _INSERTION_ORDER:
         _, anchor = groups[name]

@@ -40,7 +40,9 @@ real, committed artifact, not a re-run against a moving target.
 - `inventory_web_split.json` — same 426 declarations, same names, tagged with `file` via the
   multi-file form. STEP 3: 408 `web/index.html` / 18 `web/js/data.js`. STEP 4: 385
   `web/index.html` / 18 `web/js/data.js` / 23 `web/js/helpers.js`. STEP 5: 370 `web/index.html` /
-  18 `web/js/data.js` / 23 `web/js/helpers.js` / 15 `web/js/player.js`. Regenerate after any later step
+  18 `web/js/data.js` / 23 `web/js/helpers.js` / 15 `web/js/player.js`. STEP 6: 358
+  `web/index.html` / 18 `web/js/data.js` / 23 `web/js/helpers.js` / 15 `web/js/player.js` / 12
+  `web/js/data-quality.js`. Regenerate after any later step
   moves more code: `python3 tests/harness/inventory.py tests/harness/inventory_web_split.json
   web/index.html web/js/data.js [<more files as they appear>]`.
 
@@ -60,7 +62,7 @@ there.
 
 ```
 python3 tests/harness/inventory.py tests/harness/inventory_main_HEAD.json app/bsn_archivo.html
-python3 tests/harness/inventory.py tests/harness/inventory_web_split.json web/index.html web/js/data.js web/js/helpers.js web/js/player.js
+python3 tests/harness/inventory.py tests/harness/inventory_web_split.json web/index.html web/js/data.js web/js/helpers.js web/js/player.js web/js/data-quality.js
 ```
 
 ## Comparing a new snapshot to the baseline

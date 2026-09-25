@@ -3,2221 +3,2149 @@
     {
       "kind": "const",
       "name": "ARENAS",
-      "line": 441,
+      "line": 442,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "LEADERS",
-      "line": 456,
+      "line": 457,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "MVP_REPEAT",
-      "line": 492,
+      "line": 493,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "SCORING",
-      "line": 495,
+      "line": 496,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "RECORDS",
-      "line": 524,
+      "line": 525,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "COACHES",
-      "line": 538,
+      "line": 539,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "NBA_PLAYERS",
-      "line": 548,
+      "line": 549,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "STONE",
-      "line": 559,
+      "line": 560,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "REF_TIMELINE",
-      "line": 567,
+      "line": 568,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "REF_SCORERS",
-      "line": 575,
+      "line": 576,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "CALENDAR",
-      "line": 584,
+      "line": 585,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "NEXT_SEASON",
-      "line": 596,
+      "line": 597,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "CAL_MILESTONES",
-      "line": 606,
+      "line": 607,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "CAL_SHAPE",
-      "line": 623,
+      "line": 624,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "FINALS_2025",
-      "line": 633,
+      "line": 634,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "STANDINGS",
-      "line": 645,
+      "line": 646,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "CLINCHERS",
-      "line": 653,
+      "line": 654,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "CHANNELS",
-      "line": 664,
+      "line": 665,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "VENUE_NOTES",
-      "line": 697,
+      "line": 698,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "TEAM_LORE",
-      "line": 707,
+      "line": 708,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "TOWN_LORE",
-      "line": 733,
+      "line": 734,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "STAND2026",
-      "line": 749,
+      "line": 750,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "FINALS_2026",
-      "line": 758,
+      "line": 759,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "SEMIS_2026",
-      "line": 774,
+      "line": 775,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "LEAD2026",
-      "line": 782,
+      "line": 783,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "AWARDS_2026",
-      "line": 792,
+      "line": 793,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "NEWS",
-      "line": 805,
+      "line": 806,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "POOL_BSN26",
-      "line": 819,
+      "line": 820,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "MVP_YEARS",
-      "line": 1084,
+      "line": 1085,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "SEASON_AWARDS",
-      "line": 1128,
+      "line": 1129,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "FINALS_BY_YEAR",
-      "line": 1176,
+      "line": 1177,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "OWNERS",
-      "line": 1196,
+      "line": 1197,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "champOf",
-      "line": 1207,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "const",
-      "name": "ruOf",
-      "line": 1207,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "function",
-      "name": "deriveChampions",
       "line": 1208,
       "file": "web/index.html"
     },
     {
       "kind": "const",
+      "name": "ruOf",
+      "line": 1208,
+      "file": "web/index.html"
+    },
+    {
+      "kind": "function",
+      "name": "deriveChampions",
+      "line": 1209,
+      "file": "web/index.html"
+    },
+    {
+      "kind": "const",
       "name": "YEARS",
-      "line": 1217,
+      "line": 1218,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "LAST",
-      "line": 1218,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "const",
-      "name": "NSEASONS",
-      "line": 1218,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "const",
-      "name": "FKEYS",
       "line": 1219,
       "file": "web/index.html"
     },
     {
       "kind": "const",
-      "name": "ACTIVE",
+      "name": "NSEASONS",
+      "line": 1219,
+      "file": "web/index.html"
+    },
+    {
+      "kind": "const",
+      "name": "FKEYS",
       "line": 1220,
       "file": "web/index.html"
     },
     {
       "kind": "const",
+      "name": "ACTIVE",
+      "line": 1221,
+      "file": "web/index.html"
+    },
+    {
+      "kind": "const",
       "name": "NOTES",
-      "line": 1222,
+      "line": 1223,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "POOL_NAME_ALIAS",
-      "line": 1264,
+      "line": 1265,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "FAME_W",
-      "line": 1439,
+      "line": 1440,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "fame",
-      "line": 1440,
+      "line": 1441,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "USE_IMAGES",
-      "line": 1457,
+      "line": 1458,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "CREST_DIR",
-      "line": 1457,
+      "line": 1458,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "PLAYER_DIR",
-      "line": 1457,
+      "line": 1458,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "CREST_EXT",
-      "line": 1458,
+      "line": 1459,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "PLAYER_EXT",
-      "line": 1458,
+      "line": 1459,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "ASSETS",
-      "line": 1463,
+      "line": 1464,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "imgTry",
-      "line": 1464,
+      "line": 1465,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "CREST_ICONS",
-      "line": 1497,
+      "line": 1498,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "crestSVG",
-      "line": 1601,
+      "line": 1602,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "crest",
-      "line": 1632,
+      "line": 1633,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "posPose",
-      "line": 1647,
+      "line": 1648,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "POSE_ICON",
-      "line": 1655,
+      "line": 1656,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "portrait",
-      "line": 1666,
+      "line": 1667,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "spark",
-      "line": 1697,
+      "line": 1698,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "sparkBars",
-      "line": 1714,
+      "line": 1715,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "dotgrid",
-      "line": 1725,
+      "line": 1726,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "TABS",
-      "line": 1744,
+      "line": 1745,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "NAV",
-      "line": 1752,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "const",
-      "name": "BOTTOM",
       "line": 1753,
       "file": "web/index.html"
     },
     {
       "kind": "const",
+      "name": "BOTTOM",
+      "line": 1754,
+      "file": "web/index.html"
+    },
+    {
+      "kind": "const",
       "name": "PANELS",
-      "line": 1755,
+      "line": 1756,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "CURRENT",
-      "line": 1756,
+      "line": 1757,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildNav",
-      "line": 1758,
+      "line": 1759,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "NAV_MENU",
-      "line": 1802,
+      "line": 1803,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "MEGA_TAB",
-      "line": 1829,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "function",
-      "name": "megaGo",
       "line": 1830,
       "file": "web/index.html"
     },
     {
       "kind": "function",
+      "name": "megaGo",
+      "line": 1831,
+      "file": "web/index.html"
+    },
+    {
+      "kind": "function",
       "name": "titleComb",
-      "line": 1839,
+      "line": 1840,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "megaFeat",
-      "line": 1842,
+      "line": 1843,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "paintLandingFeats",
-      "line": 1895,
+      "line": 1896,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "megaCloseT",
-      "line": 1902,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "function",
-      "name": "scheduleClose",
       "line": 1903,
       "file": "web/index.html"
     },
     {
       "kind": "function",
-      "name": "cancelClose",
+      "name": "scheduleClose",
       "line": 1904,
       "file": "web/index.html"
     },
     {
       "kind": "function",
-      "name": "closeMega",
+      "name": "cancelClose",
       "line": 1905,
       "file": "web/index.html"
     },
     {
       "kind": "function",
+      "name": "closeMega",
+      "line": 1906,
+      "file": "web/index.html"
+    },
+    {
+      "kind": "function",
       "name": "openMega",
-      "line": 1911,
+      "line": 1912,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "_showPanel",
-      "line": 1937,
+      "line": 1938,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "VIEW_SECS",
-      "line": 1969,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "let",
-      "name": "VIEW_NOW",
       "line": 1970,
       "file": "web/index.html"
     },
     {
       "kind": "let",
-      "name": "HASH_ECHO",
+      "name": "VIEW_NOW",
       "line": 1971,
+      "file": "web/index.html"
+    },
+    {
+      "kind": "let",
+      "name": "HASH_ECHO",
+      "line": 1972,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "syncSubnav",
-      "line": 1972,
+      "line": 1973,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "TBL_SEQ",
-      "line": 1984,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "function",
-      "name": "buildTable",
       "line": 1985,
       "file": "web/index.html"
     },
     {
       "kind": "function",
+      "name": "buildTable",
+      "line": 1986,
+      "file": "web/index.html"
+    },
+    {
+      "kind": "function",
       "name": "csvCell",
-      "line": 2042,
+      "line": 2043,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "downloadCSV",
-      "line": 2047,
+      "line": 2048,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "bars",
-      "line": 2054,
+      "line": 2055,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "daysBetween",
-      "line": 2069,
+      "line": 2070,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "todayISO",
-      "line": 2073,
+      "line": 2074,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildHero",
-      "line": 2077,
+      "line": 2078,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildFinalBrava",
-      "line": 2120,
+      "line": 2121,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildStandings2026",
-      "line": 2171,
+      "line": 2172,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildLeaders2026",
-      "line": 2207,
+      "line": 2208,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildClubPicker",
-      "line": 2219,
+      "line": 2220,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "pickClub",
-      "line": 2228,
+      "line": 2229,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "drawClubPill",
-      "line": 2234,
+      "line": 2235,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildClubCard",
-      "line": 2239,
+      "line": 2240,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildOnThisDay",
-      "line": 2272,
+      "line": 2273,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "CAL_KIND",
-      "line": 2296,
+      "line": 2297,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildCalendar",
-      "line": 2302,
+      "line": 2303,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildChannels",
-      "line": 2366,
+      "line": 2367,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildRibbon",
-      "line": 2377,
+      "line": 2378,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "showSeason",
-      "line": 2403,
+      "line": 2404,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "SEASON_AW",
-      "line": 2433,
+      "line": 2434,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "SEASON_LC",
-      "line": 2434,
+      "line": 2435,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "loadSeasonExtra",
-      "line": 2437,
+      "line": 2438,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildTitleStats",
-      "line": 2474,
+      "line": 2475,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildTitleBars",
-      "line": 2486,
+      "line": 2487,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildDynasties",
-      "line": 2492,
+      "line": 2493,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildMatrix",
-      "line": 2512,
+      "line": 2513,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "SEASON_Q",
-      "line": 2531,
+      "line": 2532,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "SEASON_CLUB",
-      "line": 2531,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "function",
-      "name": "buildSeasonFilters",
       "line": 2532,
       "file": "web/index.html"
     },
     {
       "kind": "function",
+      "name": "buildSeasonFilters",
+      "line": 2533,
+      "file": "web/index.html"
+    },
+    {
+      "kind": "function",
       "name": "buildSeasonTable",
-      "line": 2544,
+      "line": 2545,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "tile",
-      "line": 2571,
+      "line": 2572,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildTiles",
-      "line": 2577,
+      "line": 2578,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "showTeam",
-      "line": 2582,
+      "line": 2583,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "SF_ZONE",
-      "line": 2686,
+      "line": 2687,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "SF_ZONE_ORDER",
-      "line": 2687,
+      "line": 2688,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "SF_DATA",
-      "line": 2688,
+      "line": 2689,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "SF_KEY",
-      "line": 2688,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "function",
-      "name": "sfAssignZones",
       "line": 2689,
       "file": "web/index.html"
     },
     {
       "kind": "function",
+      "name": "sfAssignZones",
+      "line": 2690,
+      "file": "web/index.html"
+    },
+    {
+      "kind": "function",
       "name": "sfInitials",
-      "line": 2699,
+      "line": 2700,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "sfCourtSvg",
-      "line": 2702,
+      "line": 2703,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "renderStartingFive",
-      "line": 2730,
+      "line": 2731,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "loadStartingFive",
-      "line": 2743,
+      "line": 2744,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "PINDEX",
-      "line": 2755,
+      "line": 2756,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "PXWALK",
-      "line": 2760,
+      "line": 2761,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "FID2APP",
-      "line": 2760,
+      "line": 2761,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "PALL",
-      "line": 2766,
+      "line": 2767,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "XWALK_REV",
-      "line": 2766,
+      "line": 2767,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "PMODE",
-      "line": 2766,
+      "line": 2767,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "PSLUG",
-      "line": 2772,
+      "line": 2773,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "USLUG",
-      "line": 2772,
+      "line": 2773,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "PTWINS",
-      "line": 2772,
+      "line": 2773,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "PBYID",
-      "line": 2772,
+      "line": 2773,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "PREDIR",
-      "line": 2772,
+      "line": 2773,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "MVP_ID",
-      "line": 2776,
+      "line": 2777,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "MVP_ALSO",
-      "line": 2776,
+      "line": 2777,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "MANIFEST",
-      "line": 2780,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "let",
-      "name": "DATA_TEXT",
-      "line": 2780,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "function",
-      "name": "showPlayer",
       "line": 2781,
       "file": "web/index.html"
     },
     {
       "kind": "let",
+      "name": "DATA_TEXT",
+      "line": 2781,
+      "file": "web/index.html"
+    },
+    {
+      "kind": "function",
+      "name": "showPlayer",
+      "line": 2782,
+      "file": "web/index.html"
+    },
+    {
+      "kind": "let",
       "name": "SEASON_CMP_CAREER",
-      "line": 2845,
+      "line": 2846,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "SEASON_CMP_SEL",
-      "line": 2845,
+      "line": 2846,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "SEASON_CMP_NAME",
-      "line": 2845,
+      "line": 2846,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "seasonCmpObj",
-      "line": 2852,
+      "line": 2853,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "SEASON_CMP_RATE",
-      "line": 2870,
+      "line": 2871,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "SEASON_CMP_SHOT",
-      "line": 2873,
+      "line": 2874,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "SEASON_CMP_TOTAL",
-      "line": 2876,
+      "line": 2877,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "toggleSeasonCmp",
-      "line": 2880,
+      "line": 2881,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "renderSeasonCmp",
-      "line": 2887,
+      "line": 2888,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "seasonDiff",
-      "line": 2911,
+      "line": 2912,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "fmtSeasonDelta",
-      "line": 2917,
+      "line": 2918,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "renderSeasonDetail",
-      "line": 2927,
+      "line": 2928,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "_LEADER_CAT_ES",
-      "line": 2968,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "let",
-      "name": "DQ",
-      "line": 2979,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "let",
-      "name": "DQ_IDX",
-      "line": 2979,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "let",
-      "name": "DISPUTE_IDX",
-      "line": 2979,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "let",
-      "name": "DISPUTED_IDS",
-      "line": 2979,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "let",
-      "name": "DQ_T",
-      "line": 2979,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "let",
-      "name": "DQ_SORT",
-      "line": 2979,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "let",
-      "name": "DQ_FILTER",
-      "line": 2979,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "function",
-      "name": "ensureDQ",
-      "line": 2980,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "function",
-      "name": "buildDQ",
-      "line": 2998,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "function",
-      "name": "openDQ",
-      "line": 3001,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "function",
-      "name": "drawDQ",
-      "line": 3013,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "function",
-      "name": "drawDQTable",
-      "line": 3105,
+      "line": 2969,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "loadPlayerExtra",
-      "line": 3133,
+      "line": 2974,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "LEAD_CAT",
-      "line": 3224,
+      "line": 3065,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "LEAD_MODE",
-      "line": 3224,
+      "line": 3065,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildLeaderControls",
-      "line": 3225,
+      "line": 3066,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildLeaders",
-      "line": 3235,
+      "line": 3076,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "HOF_SORT",
-      "line": 3249,
+      "line": 3090,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildHOFControls",
-      "line": 3250,
+      "line": 3091,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildHOF",
-      "line": 3255,
+      "line": 3096,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildStone",
-      "line": 3274,
+      "line": 3115,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildRecords",
-      "line": 3284,
+      "line": 3125,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildScoringChart",
-      "line": 3293,
+      "line": 3134,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildScoringTable",
-      "line": 3314,
+      "line": 3155,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildCoaches",
-      "line": 3321,
+      "line": 3162,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildNBA",
-      "line": 3327,
+      "line": 3168,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildRetiredNums",
-      "line": 3332,
+      "line": 3173,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildRefRules",
-      "line": 3342,
+      "line": 3183,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildRefTimeline",
-      "line": 3348,
+      "line": 3189,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildRefScorers",
-      "line": 3353,
+      "line": 3194,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "REC_LABEL",
-      "line": 3366,
+      "line": 3207,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "COVERAGE",
-      "line": 3374,
+      "line": 3215,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "LEGEND_NOTE",
-      "line": 3386,
+      "line": 3227,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildSources",
-      "line": 3394,
+      "line": 3235,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildMVPYears",
-      "line": 3495,
+      "line": 3336,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildSeasonAwards",
-      "line": 3516,
+      "line": 3357,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "FIN_YEAR",
-      "line": 3538,
+      "line": 3379,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildFinalsByYear",
-      "line": 3539,
+      "line": 3380,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "drawFinal",
-      "line": 3548,
+      "line": 3389,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildOwners",
-      "line": 3568,
+      "line": 3409,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "ASK_EXAMPLES",
-      "line": 3588,
+      "line": 3429,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "clubByText",
-      "line": 3605,
+      "line": 3446,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "answerCard",
-      "line": 3624,
+      "line": 3465,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "BIO",
-      "line": 3665,
+      "line": 3506,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "BIO_ALIAS",
-      "line": 3848,
+      "line": 3689,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "BIO_BY_NAME",
-      "line": 3868,
+      "line": 3709,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "bioByText",
-      "line": 3873,
+      "line": 3714,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "bioAge",
-      "line": 3885,
+      "line": 3726,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "bioShort",
-      "line": 3894,
+      "line": 3735,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "bioCard",
-      "line": 3898,
+      "line": 3739,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "ASKERS",
-      "line": 3960,
+      "line": 3801,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "ask",
-      "line": 4186,
+      "line": 4027,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildAsk",
-      "line": 4226,
+      "line": 4067,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "runAsk",
-      "line": 4234,
+      "line": 4075,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "DATASETS",
-      "line": 4239,
+      "line": 4080,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "QB",
-      "line": 4343,
+      "line": 4184,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildQB",
-      "line": 4344,
+      "line": 4185,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "resetQB",
-      "line": 4372,
+      "line": 4213,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "QB_LAST",
-      "line": 4376,
+      "line": 4217,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "runQB",
-      "line": 4377,
+      "line": 4218,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "copyQB",
-      "line": 4402,
+      "line": 4243,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildCoverage",
-      "line": 4413,
+      "line": 4254,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "hubAsk",
-      "line": 4431,
+      "line": 4272,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "edBlock",
-      "line": 4440,
+      "line": 4281,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "cmpMiniViz",
-      "line": 4451,
+      "line": 4292,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildHub",
-      "line": 4460,
+      "line": 4301,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildProfile",
-      "line": 4529,
+      "line": 4370,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "exportProfile",
-      "line": 4622,
+      "line": 4463,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "RESET_ARMED",
-      "line": 4643,
+      "line": 4484,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "resetProfile",
-      "line": 4644,
+      "line": 4485,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "GLOSARIO",
-      "line": 4673,
+      "line": 4514,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "glosByText",
-      "line": 4722,
+      "line": 4563,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildGlossary",
-      "line": 4733,
+      "line": 4574,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "dismissPrimer",
-      "line": 4742,
+      "line": 4583,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "showPrimer",
-      "line": 4743,
+      "line": 4584,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildPrimer",
-      "line": 4745,
+      "line": 4586,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "PROFILE_KEY",
-      "line": 4787,
+      "line": 4628,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "PROFILE_DEFAULTS",
-      "line": 4788,
+      "line": 4629,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "PROFILE",
-      "line": 4789,
+      "line": 4630,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "loadProfile",
-      "line": 4791,
+      "line": 4632,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "prof",
-      "line": 4814,
+      "line": 4655,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "saveProfile",
-      "line": 4815,
+      "line": 4656,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "setProf",
-      "line": 4820,
+      "line": 4661,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "THEME_BAR",
-      "line": 4828,
+      "line": 4669,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "THEME_ICON",
-      "line": 4829,
+      "line": 4670,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "THEME_NEXT",
-      "line": 4836,
+      "line": 4677,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "THEME_ES",
-      "line": 4837,
+      "line": 4678,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "osTheme",
-      "line": 4838,
+      "line": 4679,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "resolvedTheme",
-      "line": 4844,
+      "line": 4685,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "currentTheme",
-      "line": 4848,
+      "line": 4689,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "applyTheme",
-      "line": 4851,
+      "line": 4692,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "setTheme",
-      "line": 4865,
+      "line": 4706,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "toggleTheme",
-      "line": 4876,
+      "line": 4717,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "initTheme",
-      "line": 4877,
+      "line": 4718,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "CAT_KEYS",
-      "line": 4890,
+      "line": 4731,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "GRID_CLUBS",
-      "line": 4892,
+      "line": 4733,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "axLabel",
-      "line": 4894,
+      "line": 4735,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "axFull",
-      "line": 4895,
+      "line": 4736,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "axMatch",
-      "line": 4896,
+      "line": 4737,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "solutions",
-      "line": 4897,
+      "line": 4738,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "GRID_SCHEMA",
-      "line": 4911,
+      "line": 4752,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "GB",
-      "line": 4912,
+      "line": 4753,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "GMODE",
-      "line": 4912,
+      "line": 4753,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "newBoard",
-      "line": 4914,
+      "line": 4755,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "gridDifficulty",
-      "line": 4972,
+      "line": 4813,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "boardFor",
-      "line": 4977,
+      "line": 4818,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "cellShare",
-      "line": 4985,
+      "line": 4826,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "loadOrStartDaily",
-      "line": 4989,
+      "line": 4830,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "saveDaily",
-      "line": 5020,
+      "line": 4861,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "pruneOldBoards",
-      "line": 5044,
+      "line": 4885,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "checkRollover",
-      "line": 5051,
+      "line": 4892,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "drawStreak",
-      "line": 5057,
+      "line": 4898,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "drawStorageNote",
-      "line": 5068,
+      "line": 4909,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "SUGG_I",
-      "line": 5072,
+      "line": 4913,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "drawBoard",
-      "line": 5073,
+      "line": 4914,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "drawSugg",
-      "line": 5151,
+      "line": 4992,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "paintSugg",
-      "line": 5166,
+      "line": 5007,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "chooseSugg",
-      "line": 5169,
+      "line": 5010,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "selectCell",
-      "line": 5170,
+      "line": 5011,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "submitGuess",
-      "line": 5171,
+      "line": 5012,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "revealGrid",
-      "line": 5195,
+      "line": 5036,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "shareGrid",
-      "line": 5205,
+      "line": 5046,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "setGMode",
-      "line": 5215,
+      "line": 5056,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "DEC",
-      "line": 5242,
+      "line": 5083,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "SLOTS",
-      "line": 5243,
+      "line": 5084,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "SLOT_ES",
-      "line": 5244,
+      "line": 5085,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "FITS",
-      "line": 5249,
+      "line": 5090,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "TAGV",
-      "line": 5250,
+      "line": 5091,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "DR",
-      "line": 5251,
+      "line": 5092,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "CAL_K",
-      "line": 5266,
+      "line": 5107,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "CAL_S",
-      "line": 5266,
+      "line": 5107,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "posTokens",
-      "line": 5268,
+      "line": 5109,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "fits",
-      "line": 5269,
+      "line": 5110,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "resetDraft",
-      "line": 5274,
+      "line": 5115,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "rosterOf",
-      "line": 5279,
+      "line": 5120,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "openSlots",
-      "line": 5280,
+      "line": 5121,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "importsIn",
-      "line": 5281,
+      "line": 5122,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "rate",
-      "line": 5283,
+      "line": 5124,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "poolFor",
-      "line": 5296,
+      "line": 5137,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "combos",
-      "line": 5299,
+      "line": 5140,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "spin",
-      "line": 5309,
+      "line": 5150,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "skipSpin",
-      "line": 5321,
+      "line": 5162,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "selectSlot",
-      "line": 5325,
+      "line": 5166,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "legal",
-      "line": 5330,
+      "line": 5171,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "place",
-      "line": 5336,
+      "line": 5177,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "posLabel",
-      "line": 5348,
+      "line": 5189,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "courtHTML",
-      "line": 5352,
+      "line": 5193,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "drawPicks",
-      "line": 5379,
+      "line": 5220,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "finishDraft",
-      "line": 5449,
+      "line": 5290,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "shareDraft",
-      "line": 5490,
+      "line": 5331,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "QZ",
-      "line": 5500,
+      "line": 5341,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "statClue",
-      "line": 5511,
+      "line": 5352,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "clueList",
-      "line": 5522,
+      "line": 5363,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "newQuiz",
-      "line": 5533,
+      "line": 5374,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "drawQuiz",
-      "line": 5539,
+      "line": 5380,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "revealClue",
-      "line": 5560,
+      "line": 5401,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "guessQuiz",
-      "line": 5561,
+      "line": 5402,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "HL",
-      "line": 5581,
+      "line": 5422,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "newHL",
-      "line": 5582,
+      "line": 5423,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "drawHL",
-      "line": 5590,
+      "line": 5431,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "answerHL",
-      "line": 5605,
+      "line": 5446,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "poolDatalist",
-      "line": 5625,
+      "line": 5466,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "CMP",
-      "line": 5649,
+      "line": 5490,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "CMP_FALLBACK",
-      "line": 5650,
+      "line": 5491,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "cmpFind",
-      "line": 5652,
+      "line": 5493,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "cmpColor",
-      "line": 5657,
+      "line": 5498,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "CMP_MODE",
-      "line": 5667,
+      "line": 5508,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "CMP_DATA",
-      "line": 5667,
+      "line": 5508,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "cmpCandidateNames",
-      "line": 5677,
+      "line": 5518,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "refreshCompareCandidates",
-      "line": 5685,
+      "line": 5526,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "cmpResolveName",
-      "line": 5689,
+      "line": 5530,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "cmpEnsureData",
-      "line": 5701,
+      "line": 5542,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "cmpAdd",
-      "line": 5711,
+      "line": 5552,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "cmpRemove",
-      "line": 5733,
+      "line": 5574,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "cmpClear",
-      "line": 5734,
+      "line": 5575,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "cmpSetMode",
-      "line": 5735,
+      "line": 5576,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "JUGVIEW",
-      "line": 5741,
+      "line": 5582,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "setJugView",
-      "line": 5744,
+      "line": 5585,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "cmpFromPlayer",
-      "line": 5750,
+      "line": 5591,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "cmpPreset",
-      "line": 5758,
+      "line": 5599,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "CMP_PRESETS",
-      "line": 5767,
+      "line": 5608,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "CMP_RATE",
-      "line": 5776,
+      "line": 5617,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "CMP_SHOT",
-      "line": 5786,
+      "line": 5627,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "CMP_TOTAL",
-      "line": 5792,
+      "line": 5633,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildCompare",
-      "line": 5800,
+      "line": 5641,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "cmpSeasonSelectDisabled",
-      "line": 5830,
+      "line": 5671,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "cmpSeasonSelect",
-      "line": 5839,
+      "line": 5680,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "cmpHead",
-      "line": 5865,
+      "line": 5706,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "cmpRadar",
-      "line": 5881,
+      "line": 5722,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "cmpBarRow",
-      "line": 5916,
+      "line": 5757,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "cmpResolved",
-      "line": 5945,
+      "line": 5786,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "drawCompare",
-      "line": 5963,
+      "line": 5804,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "BOOT",
-      "line": 6059,
+      "line": 5900,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "splashProgress",
-      "line": 6128,
+      "line": 5969,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "hideSplash",
-      "line": 6134,
+      "line": 5975,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "SPLASH_DEADLINE",
-      "line": 6144,
+      "line": 5985,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "ligaFold",
-      "line": 6150,
+      "line": 5991,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "finishBoot",
-      "line": 6160,
+      "line": 6001,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "runBoot",
-      "line": 6181,
+      "line": 6022,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "GAMES",
-      "line": 6221,
+      "line": 6062,
       "file": "web/index.html"
     },
     {
       "kind": "let",
       "name": "GAME_OPEN",
-      "line": 6267,
+      "line": 6108,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildShelf",
-      "line": 6269,
+      "line": 6110,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "openGame",
-      "line": 6281,
+      "line": 6122,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "closeGame",
-      "line": 6286,
+      "line": 6127,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "VIEW_MAP",
-      "line": 6297,
+      "line": 6138,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "_mkView",
-      "line": 6329,
+      "line": 6170,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "_subnavEl",
-      "line": 6332,
+      "line": 6173,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "VIEW_DESC",
-      "line": 6348,
+      "line": 6189,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildLanding",
-      "line": 6383,
+      "line": 6224,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildJuegaViews",
-      "line": 6399,
+      "line": 6240,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "buildViews",
-      "line": 6418,
+      "line": 6259,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "slug_",
-      "line": 6479,
+      "line": 6320,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "revealNode",
-      "line": 6483,
+      "line": 6324,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "applyHash",
-      "line": 6494,
+      "line": 6335,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "hydrate",
-      "line": 6564,
+      "line": 6405,
       "file": "web/index.html"
     },
     {
@@ -2555,6 +2483,78 @@
       "name": "disputeTag",
       "line": 253,
       "file": "web/js/player.js"
+    },
+    {
+      "kind": "let",
+      "name": "DQ",
+      "line": 38,
+      "file": "web/js/data-quality.js"
+    },
+    {
+      "kind": "let",
+      "name": "DQ_IDX",
+      "line": 38,
+      "file": "web/js/data-quality.js"
+    },
+    {
+      "kind": "let",
+      "name": "DISPUTE_IDX",
+      "line": 38,
+      "file": "web/js/data-quality.js"
+    },
+    {
+      "kind": "let",
+      "name": "DISPUTED_IDS",
+      "line": 38,
+      "file": "web/js/data-quality.js"
+    },
+    {
+      "kind": "let",
+      "name": "DQ_T",
+      "line": 38,
+      "file": "web/js/data-quality.js"
+    },
+    {
+      "kind": "let",
+      "name": "DQ_SORT",
+      "line": 38,
+      "file": "web/js/data-quality.js"
+    },
+    {
+      "kind": "let",
+      "name": "DQ_FILTER",
+      "line": 38,
+      "file": "web/js/data-quality.js"
+    },
+    {
+      "kind": "function",
+      "name": "ensureDQ",
+      "line": 39,
+      "file": "web/js/data-quality.js"
+    },
+    {
+      "kind": "function",
+      "name": "buildDQ",
+      "line": 57,
+      "file": "web/js/data-quality.js"
+    },
+    {
+      "kind": "function",
+      "name": "openDQ",
+      "line": 60,
+      "file": "web/js/data-quality.js"
+    },
+    {
+      "kind": "function",
+      "name": "drawDQ",
+      "line": 72,
+      "file": "web/js/data-quality.js"
+    },
+    {
+      "kind": "function",
+      "name": "drawDQTable",
+      "line": 164,
+      "file": "web/js/data-quality.js"
     }
   ]
 }
