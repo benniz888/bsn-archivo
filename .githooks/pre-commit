@@ -25,33 +25,66 @@ touches_source() {
     echo "$staged" | grep -qE '^(data/clean/|app/player_crosswalk\.csv|app/bsn_archivo\.html|src/build_web_data\.py)'
 }
 
-if ! touches_source; then
-    exit 0
+if touches_source; then
+    echo "pre-commit: source data changed — rebuilding web/data/ to check it's fresh…"
+    if ! .venv/bin/python -m src.build_web_data > /tmp/bsn_precommit_build.log 2>&1; then
+        echo "pre-commit BLOCKED: build_web_data.py failed:"
+        cat /tmp/bsn_precommit_build.log
+        exit 1
+    fi
+    # PHASE_1_SPLIT: web/index.html is no longer a byte-copy of app/bsn_archivo.html (the split
+    # moved <style>/<script> content into web/css/ and web/js/, on purpose, while
+    # app/bsn_archivo.html stays untouched as an archived pointer). The old
+    # `cp app/bsn_archivo.html web/index.html` here would silently revert the split on the next
+    # commit that happens to touch one of the paths above. Once the split's own byte-compare
+    # checks land (see tests/_app_text.py), this hook can check web/ freshness a different way;
+    # until then it only checks web/data/.
+    if ! git diff --quiet -- web/data/; then
+        echo
+        echo "pre-commit BLOCKED: rebuilding web/data/ from the data you're about to"
+        echo "commit produced changes that aren't staged. The deployed site would go"
+        echo "stale the same way it did on 2026-09-09 if this commit landed as-is."
+        echo
+        echo "Fix: stage the fresh rebuild too, then commit again —"
+        echo "    git add web/data/"
+        echo
+        exit 1
+    fi
 fi
 
-echo "pre-commit: source data changed — rebuilding web/data/ to check it's fresh…"
-if ! .venv/bin/python -m src.build_web_data > /tmp/bsn_precommit_build.log 2>&1; then
-    echo "pre-commit BLOCKED: build_web_data.py failed:"
-    cat /tmp/bsn_precommit_build.log
-    exit 1
-fi
-# PHASE_1_SPLIT: web/index.html is no longer a byte-copy of app/bsn_archivo.html (the split moved
-# <style>/<script> content into web/css/ and web/js/, on purpose, while app/bsn_archivo.html stays
-# untouched as an archived pointer). The old `cp app/bsn_archivo.html web/index.html` here would
-# silently revert the split on the next commit that happens to touch one of the paths below. Once
-# the split's own byte-compare checks land (see tests/_app_text.py), this hook can check web/
-# freshness a different way; until then it only checks web/data/.
+# PHASE_1_SPLIT caching fix (STEP 3, approved): web/css/*.css and web/js/*.js carry a
+# ?v=<content-hash> query string on their <link>/<script src> tag in web/index.html, so a
+# visitor can't get a stale asset paired with a fresh page for up to 10 minutes (the site's
+# HTTP cache lifetime) after a design or data-shape change — see src/update_asset_hashes.py for
+# the full rationale. This runs whenever web/css/, web/js/ or web/index.html itself is staged,
+# recomputes the hashes, and blocks the commit if that rewrite isn't already staged — same
+# pattern as the web/data/ freshness check above, so nobody has to remember to bump it by hand.
+# Written to glob web/css/*.css and web/js/*.js, not a hardcoded filename list, so it extends to
+# any future web/js/*.js file with no change here.
 
-if ! git diff --quiet -- web/data/; then
-    echo
-    echo "pre-commit BLOCKED: rebuilding web/data/ from the data you're about to"
-    echo "commit produced changes that aren't staged. The deployed site would go"
-    echo "stale the same way it did on 2026-09-09 if this commit landed as-is."
-    echo
-    echo "Fix: stage the fresh rebuild too, then commit again —"
-    echo "    git add web/data/"
-    echo
-    exit 1
+touches_assets() {
+    echo "$staged" | grep -qE '^web/(css|js)/|^web/index\.html$'
+}
+
+if touches_assets; then
+    echo "pre-commit: web/css or web/js changed — refreshing web/index.html's ?v= asset hashes…"
+    if ! .venv/bin/python -m src.update_asset_hashes > /tmp/bsn_precommit_hashes.log 2>&1; then
+        echo "pre-commit BLOCKED: update_asset_hashes.py failed:"
+        cat /tmp/bsn_precommit_hashes.log
+        exit 1
+    fi
+    if ! git diff --quiet -- web/index.html; then
+        echo
+        echo "pre-commit BLOCKED: web/css/*.css or web/js/*.js changed, and refreshing the"
+        echo "?v= hashes in web/index.html produced changes that aren't staged. Without"
+        echo "this, a visitor could get the OLD css/js with the NEW page for up to 10"
+        echo "minutes (the site's HTTP cache lifetime)."
+        echo
+        echo "Fix: stage the refreshed index.html too, then commit again —"
+        echo "    git add web/index.html"
+        echo
+        exit 1
+    fi
 fi
 
 exit 0
