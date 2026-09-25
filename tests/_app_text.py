@@ -32,6 +32,15 @@ was lost or reordered along the way. Splices happen in this order:
      from disputeTag, so player.js remains the cleaner home; they now read DQ_IDX/DISPUTE_IDX/
      DISPUTED_IDS across files, an ordinary global read like any other.
 
+  6. JS games (step 7): web/js/games.js holds 2 blocks -- CUADRICULA+TEMPORADA_PERFECTA (axLabel/
+     axFull/axMatch/solutions, the grid game's axis logic, through the whole "LA CUADRICULA"
+     section, directly into the whole "LA TEMPORADA PERFECTA" section -- merged because they sit
+     right next to each other with just a blank line between; CAT_KEYS and GRID_CLUBS, declared
+     right before axLabel, stayed in web/index.html -- see the FKEYS gotcha below) and
+     SUBE_Y_BAJA (HL + newHL/drawHL/answerHL; HL_SETS itself moved to js/data.js in step 3). A
+     fourth game, "Quien soy?" (QZ/statClue/newQuiz/...), sits BETWEEN Temporada Perfecta and
+     Sube y baja in the original and was NOT named for this step -- left in web/index.html.
+
   None of these were contiguous in the original -- steps 3 and 4 both cut blocks out of a script
   that runs ~7000 lines, with everything else (other constants, tab-specific UI code, even a few
   bare statements like F.agu.ru.push(2026) between POOL and VENUES) staying in web/index.html,
@@ -64,10 +73,40 @@ was lost or reordered along the way. Splices happen in this order:
   `_INSERTION_ORDER` (matching their true original order in app/bsn_archivo.html), so ensureDQ's
   text is already back in the working reconstruction by the time DQ-tags' anchor search runs.
   `_JS_PLAYER_GROUPS["DQ-tags"]`'s anchor itself did NOT need editing -- only its position in
-  `_INSERTION_ORDER` did. Every other group so far happens to have no such cross-file dependency,
-  but the mechanism doesn't assume that going forward -- future steps just extend
-  `_INSERTION_ORDER` in the right spot, checked against app/bsn_archivo.html's own byte offsets
-  (the one file that never changes) the way both of these were.
+  `_INSERTION_ORDER` did.
+
+  Step 7 turned up two problems, both worth carrying forward as lessons for later steps -- one an
+  anchor-ordering issue like steps 4/6, the other a genuinely different kind of bug:
+
+  - SUBE_Y_BAJA's naive anchor (read off the pre-step-7 web/index.html, where it's the text
+    right after "Quien soy?") is the exact same text data.js's "HL_SETS" group is ALSO anchored
+    on (guessQuiz's own closing lines -- HL_SETS's true original neighbor once its own header
+    moved with it in step 3). Reusing it for SUBE_Y_BAJA would insert both groups at the SAME
+    spot -- SUBE_Y_BAJA before HL_SETS, not after, since neither anchor search depends on the
+    other having run. Fixed with a different anchor for SUBE_Y_BAJA: HL_SETS's own closing text,
+    checked against app/bsn_archivo.html's own byte offset before finalizing, same as steps 4/6.
+
+  - CAT_KEYS and GRID_CLUBS are declared right before axLabel in the original and look like they
+    belong with it -- but GRID_CLUBS = FKEYS.filter(...) is a top-level `const`, evaluated the
+    instant games.js runs, unlike every other cross-file reference in this split, which is safely
+    deferred inside a function body. FKEYS is computed in web/index.html's own inline <script>,
+    which loads AFTER games.js -- moving GRID_CLUBS threw ReferenceError: FKEYS is not defined at
+    games.js's own load time, which aborted the rest of its top-level execution (GB, DR, HL and
+    everything after silently never got initialized). This was NOT caught by a static check or a
+    byte-offset comparison -- both would have looked fine, since CAT_KEYS/GRID_CLUBS's true
+    position IS right before axLabel. It only showed up in the real-browser offline test, as
+    "GB is not defined" and console errors on page load. Fixed by leaving CAT_KEYS and GRID_CLUBS
+    in web/index.html and starting the group at axLabel instead (which only reads CATS/F/POOL,
+    all inside function bodies -- safe). Lesson: a group's true original TEXT position isn't the
+    same question as whether it's safe to move -- a `const`/`let` initializer evaluated at a
+    script's own top level needs everything it references to already be loaded, regardless of
+    where in the document it originally sat; only function bodies get the "loads before it's
+    ever called" pass every other cross-file reference in this split has relied on so far.
+
+  Every group placed so far either has no cross-file dependency or has had one worked out up
+  front against app/bsn_archivo.html's own byte offsets (the one file that never changes); the
+  mechanism doesn't assume the next step won't need the same care -- or, per step 7, a check of
+  what's actually a function body versus a top-level statement.
 
   Reconstruction works by anchors, not line numbers: `preceding_anchor` is exact original text
   that survives, byte for byte, in the *working* reconstruction so far, immediately before where
@@ -87,6 +126,7 @@ DATA_JS = WEB / "js" / "data.js"
 HELPERS_JS = WEB / "js" / "helpers.js"
 PLAYER_JS = WEB / "js" / "player.js"
 DATA_QUALITY_JS = WEB / "js" / "data-quality.js"
+GAMES_JS = WEB / "js" / "games.js"
 
 _LINK_RE = re.compile(r'<link\s+rel="stylesheet"\s+href="([^"?]+)(?:\?v=[0-9a-f]+)?">')
 
@@ -99,6 +139,7 @@ _DATA_JS_SCRIPT_TAG_RE = _script_tag_re("js/data.js")
 _HELPERS_JS_SCRIPT_TAG_RE = _script_tag_re("js/helpers.js")
 _PLAYER_JS_SCRIPT_TAG_RE = _script_tag_re("js/player.js")
 _DATA_QUALITY_JS_SCRIPT_TAG_RE = _script_tag_re("js/data-quality.js")
+_GAMES_JS_SCRIPT_TAG_RE = _script_tag_re("js/games.js")
 
 # group_start_marker is the exact PREFIX text (long enough to be unique in its file) each block
 # begins with -- for a block with its own header comment, that's the comment's start, not the
@@ -186,6 +227,25 @@ _JS_DATA_QUALITY_GROUPS = {
                       " libres'};\n\n"),
 }
 
+# STEP 7: web/js/games.js's 2 blocks. CAT_KEYS and GRID_CLUBS did NOT move with
+# CUADRICULA+TEMPORADA_PERFECTA even though they're declared right before axLabel in the
+# original and look like they belong together: GRID_CLUBS = FKEYS.filter(...) is a top-level
+# `const`, evaluated the instant games.js runs -- unlike every other cross-file reference in this
+# split, which is safely deferred inside a function body. FKEYS is computed in web/index.html's
+# own inline <script>, which loads AFTER games.js, so moving GRID_CLUBS would throw
+# ReferenceError: FKEYS is not defined at games.js's own load time and abort the rest of its
+# top-level execution (caught by the real-browser test, not a static check -- see the STEP 7
+# commit message). CAT_KEYS and GRID_CLUBS both stayed in web/index.html; this group's anchor is
+# GRID_CLUBS's own closing text. SUBE_Y_BAJA's anchor is HL_SETS's own closing text (NOT
+# guessQuiz's tail, which HL_SETS itself is anchored on).
+_JS_GAMES_GROUPS = {
+    "CUADRICULA+TEMPORADA_PERFECTA": ('function axLabel(a){',
+                                      "FKEYS.filter(k=>POOL.filter(p=>p.c.includes(k)).length>=2);"
+                                      "\n\n"),
+    "SUBE_Y_BAJA": ('let HL=null;\nfunction newHL(keep){',
+                    "unit:'títulos'}\n];\n"),
+}
+
 # The TRUE original document order, across BOTH files, derived from where each group's marker
 # appears in app/bsn_archivo.html (the one file that never moves). Everything is in data.js order
 # then helpers.js order EXCEPT the one real interleave: fmtLongDate, then MESES+DIAS, then
@@ -213,7 +273,9 @@ _INSERTION_ORDER = [
     (_JS_HELPERS_GROUPS, HELPERS_JS, "daysInMonth+ArchDob"),
     (_JS_HELPERS_GROUPS, HELPERS_JS, "SEEDING"),
     (_JS_DATA_GROUPS, DATA_JS, "CATS"),
+    (_JS_GAMES_GROUPS, GAMES_JS, "CUADRICULA+TEMPORADA_PERFECTA"),
     (_JS_DATA_GROUPS, DATA_JS, "HL_SETS"),
+    (_JS_GAMES_GROUPS, GAMES_JS, "SUBE_Y_BAJA"),
 ]
 
 
@@ -238,14 +300,16 @@ def app_text() -> str:
 
     for tag_re, path in ((_DATA_JS_SCRIPT_TAG_RE, DATA_JS), (_HELPERS_JS_SCRIPT_TAG_RE, HELPERS_JS),
                          (_PLAYER_JS_SCRIPT_TAG_RE, PLAYER_JS),
-                         (_DATA_QUALITY_JS_SCRIPT_TAG_RE, DATA_QUALITY_JS)):
+                         (_DATA_QUALITY_JS_SCRIPT_TAG_RE, DATA_QUALITY_JS),
+                         (_GAMES_JS_SCRIPT_TAG_RE, GAMES_JS)):
         html, n = tag_re.subn("", html, count=1)
         assert n == 1, f"{path.name} script tag not found -- did index.html change?"
 
     segments_by_file = {DATA_JS: _js_segments(DATA_JS, _JS_DATA_GROUPS),
                         HELPERS_JS: _js_segments(HELPERS_JS, _JS_HELPERS_GROUPS),
                         PLAYER_JS: _js_segments(PLAYER_JS, _JS_PLAYER_GROUPS),
-                        DATA_QUALITY_JS: _js_segments(DATA_QUALITY_JS, _JS_DATA_QUALITY_GROUPS)}
+                        DATA_QUALITY_JS: _js_segments(DATA_QUALITY_JS, _JS_DATA_QUALITY_GROUPS),
+                        GAMES_JS: _js_segments(GAMES_JS, _JS_GAMES_GROUPS)}
 
     for groups, path, name in _INSERTION_ORDER:
         _, anchor = groups[name]
