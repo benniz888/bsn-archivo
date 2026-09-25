@@ -6842,3 +6842,101 @@ Supersedes the "still unpushed" wording at the end of the previous block.
   is left unchanged. The latinbasket files remain outside `build_web_data.py`'s `SOURCES` list --
   the stale-cache gap noted in PHASE_REMOVAL_PLAN (a returning visitor wouldn't see a future
   removal until their own cache expires) is unresolved.
+
+### PHASE_1_SPLIT — steps 0-10, staged on branch `phase-1-split` (2026-09-25)
+
+`app/bsn_archivo.html` (~8,500 lines, ~663 KB: markup, every CSS rule, the whole app in one inline
+`<script>`) split into a conventional multi-file static site, `web/` (`index.html`, `css/main.css`,
+eight `web/js/*.js` files by concern), zero visual or behavioral change. Approved by the owner in
+conversation as "PHASE_1_SPLIT — APPROVED WITH AMENDMENTS"; full rationale, file map, and the
+reconstruction mechanism used to verify every step are in `docs/specs/app_split_spec.md`
+(this entry summarizes; that document is the durable record). `docs/project.md`'s
+`[PROJECT_OVERRIDES] O1` logs the PC7 rewording this required.
+
+- **Branch:** `phase-1-split`, off `main@27c16a4`. Not merged, not pushed as of this entry --
+  owner review, a rollback dry-run, and the owner's own local check all come after this step.
+- **Commits, steps 0-10 (oldest first):** `42ea8b7` STEP 0 (verification harness) · `aa7a62c`
+  STEP 1 (`sw.js` network-first for `/css/`/`/js/`) · `b75a49e` hazard fix (pre-commit hook no
+  longer `cp`'s `app/bsn_archivo.html`) · `8266b2a` harness determinism fix · `297f1c1` STEP 2
+  (extract `<style>` -> `web/css/main.css`) · `627aad9` caching fix (content-hash `?v=` on
+  css/js links) · `21ab6df` STEP 3 (`web/js/data.js`, 18 declarations) · `ddf8893` STEP 4
+  (`web/js/helpers.js`, 23) · `63ea52e` STEP 5 (`web/js/player.js`, 15) · `a6bef5b` STEP 6
+  (`web/js/data-quality.js`, 12) · `0777b0b` STEP 7 (`web/js/games.js`, 58) · `dd3cb59` STEP 8
+  (`web/js/tabs.js`, 263) · `714849f` STEP 9 (`web/js/init.js`, 7) · STEP 10 (this entry's own
+  commit, cleanup -- see below).
+- **Final file map (426 declarations total, unchanged name set from the original file):**
+  `web/css/main.css` (all CSS) · `web/js/data.js` 18 · `web/js/helpers.js` 23 ·
+  `web/js/player.js` 15 · `web/js/data-quality.js` 12 · `web/js/games.js` 58 ·
+  `web/js/tabs.js` 267 (263 + STEP 10's 4) · `web/js/init.js` 7 · `web/index.html`'s own inline
+  `<script>` 26 (data/data-derivation, `THEME`, and the `BOOT`/`GRID_CLUBS` load-order hazard --
+  see below; full breakdown in `docs/specs/app_split_spec.md` §3).
+- **Three real bugs caught, all only by the real-browser offline test, never by a static or
+  byte-offset check** (`docs/specs/app_split_spec.md` §3 has the full mechanism):
+  1. **`GRID_CLUBS` (STEP 7).** `GRID_CLUBS = FKEYS.filter(...)` is a top-level `const`,
+     evaluated the instant its script runs -- unlike every other cross-file reference in this
+     split, which is safely deferred inside a function body. `FKEYS` is computed in
+     `web/index.html`'s own inline script, which loads dead last; moving `GRID_CLUBS` to
+     `games.js` threw `ReferenceError: FKEYS is not defined` at that file's own load time, which
+     aborted the rest of ITS top-level execution too. Fixed by leaving `GRID_CLUBS` (and
+     `CAT_KEYS`, declared next to it) inline.
+  2. **`BOOT` (STEP 8).** Same shape of bug on an array instead of a single expression:
+     `const BOOT=[...]` stores ~50 bare function references; one, `['tema',initTheme]`, points at
+     `initTheme` (`THEME`), which stays inline. Moving the whole array into `tabs.js` threw
+     `ReferenceError: initTheme is not defined` at `tabs.js`'s own load time, silently aborting
+     initialization of everything `tabs.js` declares after `BOOT` (`GAMES`, `VIEW_MAP`, ...) --
+     surfaced later as `"Cannot access 'GAMES' before initialization"`. Fixed by leaving the whole
+     `BOOT` array inline. **Lesson from both:** a group's correct byte *position* in the original
+     file is a different question from whether it's *safe to move* -- check every top-level
+     `const`/`let` initializer and every array/object literal for function references, not just
+     the declaration's shape.
+  3. **Two stale inventory counts (documentation staleness, not a functional bug).**
+     `tests/harness/inventory_web_split.json` recorded `web/index.html=298`/`games.js=60` in
+     STEP 7's own commit -- generated before that step's own `GRID_CLUBS` fix landed, while
+     `CAT_KEYS`/`GRID_CLUBS` were still briefly counted as part of `games.js`. Never regenerated
+     after. Caught and corrected at the start of STEP 8 (verified directly against STEP 7's own
+     committed `games.js` blob: 0 matches for `CAT_KEYS`/`GRID_CLUBS`, fresh count 58).
+- **STEP 10 (cleanup), the step that closes the phase out:**
+  1. Moved the 4 tab-data declarations STEP 9 had flagged but left inline (`MVP_YEARS`,
+     `SEASON_AWARDS`, `FINALS_BY_YEAR`, `OWNERS`) into `web/js/tabs.js`, whose functions already
+     consume them.
+  2. Replaced `app/bsn_archivo.html`'s content with a one-paragraph pointer to
+     `docs/specs/app_split_spec.md`; wrote that document (file map, what's still inline and why,
+     the reconstruction mechanism, the verification standard, this file's own post-split role).
+  3. Rewrote `Makefile`'s `site` and `sync-web-data` targets -- neither `cp`'s
+     `app/bsn_archivo.html` into `web/` any more; `web/` is treated as its own source.
+  4. `docs/project.md`: reworded PC7 ("no bundler, no framework, no build step, no dependencies;
+     multiple plain files allowed"), updated `[PROJECT_IDENTITY]`/`[REPO_LAYOUT]`, logged
+     `[PROJECT_OVERRIDES] O1`.
+  5. `CLAUDE.md`'s "Quick orientation" now points at `web/` instead of the single file.
+  6. **Retired the `app_text()`-vs-`app.html` byte-compare** in `src/verify_clean.py`'s
+     `verify_web_data()`, repointing it to three checks that don't depend on the now-retired
+     pointer file: every `<link>`/`<script src>` tag in `web/index.html` resolves to a real file,
+     every `?v=` content hash matches that file's current bytes, and the split's 426-declaration
+     inventory (`tests/harness/inventory.py`) still matches the frozen pre-split name set
+     (`tests/harness/inventory_main_HEAD.json`). The reconstruction module itself
+     (`tests/_app_text.py` -> `tests/_web_text.py`, `app_text()` -> `web_text()`) was **kept, not
+     deleted** -- several tests need "the whole app's current text" for a check whose target
+     genuinely spans more than one split file now (e.g. the Calidad de datos view's markup/state/
+     render functions live across `web/index.html`, `web/js/tabs.js`, and
+     `web/js/data-quality.js`); it's just never compared to `app.html` again.
+     `tests/test_app_text.py` -> `tests/test_web_text.py`, self-tested against a frozen git blob
+     (`app/bsn_archivo.html` as of `714849f`, the last commit before it became the pointer)
+     instead of the live file.
+  7. **Wider breakage than the named "5 tests" scope, found by a full `pytest` run going red
+     after item 2, fixed the same way:** `tests/test_data_quality.py`, `tests/test_site_notices.py`,
+     `tests/test_dob_format.py`, and `tests/test_route_slugs.py` all read
+     `app/bsn_archivo.html` directly (not through `app_text()`) in places beyond their one named
+     byte-copy test -- repointed to `web_text()`. More seriously, **production code**, not a test:
+     `src/build_web_data.py`'s `_parse_app_mvp()` (feeds `web/data/index/mvp.json` via
+     `build_mvp()`) and `diff_app_champions()` (a print-only sanity check) both parsed baked JS
+     directly out of `app/bsn_archivo.html`; repointed to `web/js/tabs.js` and `web/js/data.js`
+     respectively (the data didn't move, only its file). Both discoveries were surfaced to the
+     owner before being fixed, per the phase's standing "STOP on any surprise" rule, and approved
+     before proceeding.
+  8. This entry.
+- **Verification (this step):** `pytest` 514 passed, 1 xfailed (0 failed); `python -m
+  src.verify_clean` 346,472 checks, 0 failed; `tests/harness/inventory.py` across all 8 files:
+  426 declarations, same name set as `inventory_main_HEAD.json`; `src/update_asset_hashes.py`
+  re-run, all `?v=` hashes current. The 48-route deterministic capture and a cold-load
+  (no-prior-storage, online-once-then-offline) real-browser pass are run separately (Playwright;
+  `tests/harness/README.md`), per this phase's standing per-step discipline.

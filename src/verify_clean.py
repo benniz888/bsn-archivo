@@ -692,21 +692,62 @@ def verify_data_quality(c: Checker, web, manifest) -> None:
 
 def verify_web_data(c: Checker) -> None:
     """PHASE_5 / 5B. Skipped cleanly if `make build-web-data` has not run."""
+    import hashlib
+    import importlib.util
     import json
     web = REPO_ROOT / "web" / "data"
 
-    # 5G — the Pages site root is main:/web. PHASE_1_SPLIT STEP 2: web/index.html now links
-    # web/css/main.css instead of inlining it, so a direct byte-compare against
-    # app/bsn_archivo.html no longer applies. app_text() reconstructs the pre-split text (splices
-    # each linked file back in, in document order) so this check still catches real drift during
-    # the split; replaced entirely once app/bsn_archivo.html becomes the archived pointer
-    # (step 11/12 of the split plan), at which point this whole check is retired.
+    # 5G — the Pages site root is main:/web. PHASE_1_SPLIT STEP 10: app/bsn_archivo.html is now
+    # an archived pointer (docs/specs/app_split_spec.md §6), not a second copy of the site, so a
+    # byte-compare against it no longer means anything -- the checks below replace it, verifying
+    # web/ is internally consistent instead of matching a retired file. Three things:
+    # (1) every asset tag in web/index.html resolves to a real file under web/; (2) every such
+    # tag's ?v= content hash is exactly sha256(file bytes)[:12], src/update_asset_hashes.py's own
+    # convention -- so a visitor can never load a page paired with a stale cached asset; (3) the
+    # 426-declaration inventory (tests/harness/inventory.py, the same tool used at every split
+    # step) still has the exact name set recorded in tests/harness/inventory_main_HEAD.json --
+    # the frozen pre-split baseline -- across web/index.html + web/js/*.js, i.e. nothing was
+    # lost, duplicated, or silently renamed since the split. (The 48-route DOM/style/a11y
+    # capture against tests/harness/baseline/*__main_27c16a4_det.json needs a real browser
+    # [Playwright] and stays a separate, manually-run step -- see docs/specs/app_split_spec.md
+    # §5 and tests/harness/README.md -- verify_clean.py itself has no browser dependency, PC7.)
     site_index = REPO_ROOT / "web" / "index.html"
     if site_index.exists():
-        from tests._app_text import app_text
-        app_html = (REPO_ROOT / "app" / "bsn_archivo.html").read_bytes()
-        c.check(app_text().encode("utf-8") == app_html,
-                "web/ (index.html + linked css/js) reconstructs byte-identical to app/bsn_archivo.html")
+        index_text = site_index.read_text(encoding="utf-8")
+        tag_re = re.compile(
+            r'<link rel="stylesheet" href="(css/[^"?]+\.css)\?v=([0-9a-f]+)">'
+            r'|<script src="(js/[^"?]+\.js)\?v=([0-9a-f]+)"></script>'
+        )
+        tags = tag_re.findall(index_text)
+        c.check(len(tags) > 0, "web/index.html: has at least one hashed css/js asset tag")
+        for css_rel, css_hash, js_rel, js_hash in tags:
+            rel, want_hash = (css_rel, css_hash) if css_rel else (js_rel, js_hash)
+            asset_path = REPO_ROOT / "web" / rel
+            c.check(asset_path.is_file(), f"web/index.html: <{rel}> resolves to a real file")
+            if asset_path.is_file():
+                got_hash = hashlib.sha256(asset_path.read_bytes()).hexdigest()[:12]
+                c.check(got_hash == want_hash,
+                        f"web/index.html: {rel}'s ?v= hash matches its current bytes",
+                        f"tag says {want_hash}, file is {got_hash}")
+
+        js_dir = REPO_ROOT / "web" / "js"
+        spec = importlib.util.spec_from_file_location(
+            "harness_inventory", REPO_ROOT / "tests" / "harness" / "inventory.py")
+        inventory_mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(inventory_mod)
+        current = inventory_mod.inventory_multi(
+            [str(site_index)] + sorted(str(p) for p in js_dir.glob("*.js")))
+        current_names = {d["name"] for d in current["declarations"]}
+        baseline = json.loads(
+            (REPO_ROOT / "tests" / "harness" / "inventory_main_HEAD.json").read_text(encoding="utf-8"))
+        baseline_names = {d["name"] for d in baseline["declarations"]}
+        c.check(current_names == baseline_names,
+                "web/ (index.html + js/*.js): declaration name set == frozen pre-split baseline",
+                f"missing {sorted(baseline_names - current_names)}, "
+                f"extra {sorted(current_names - baseline_names)}")
+        c.check(len(current["declarations"]) == len(baseline["declarations"]),
+                "web/ (index.html + js/*.js): declaration count == frozen pre-split baseline (426)",
+                f"{len(current['declarations'])} vs {len(baseline['declarations'])}")
 
     manifest_path = web / "manifest.json"
     if not manifest_path.exists():

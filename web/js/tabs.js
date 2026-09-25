@@ -64,7 +64,15 @@
    group, 3 of js/helpers.js's groups, js/player.js's JUGADORES-archive group, and
    js/games.js's HL_SETS-adjacent group. Verified: app_text() still reconstructs
    app/bsn_archivo.html byte for byte. Replaced entirely once app/bsn_archivo.html becomes the
-   archived pointer (step 11/12 of the split). */
+   archived pointer (step 11/12 of the split).
+
+   STEP 10 (cleanup): MVP_YEARS, SEASON_AWARDS, FINALS_BY_YEAR, OWNERS -- appended at the end of
+   this file, moved byte for byte from web/index.html, where their consumers (buildMVPYears,
+   buildSeasonAwards, buildFinalsByYear, buildOwners) already lived. Step 9 flagged these as tab
+   data that fell inside step 8's SEG-boundary lines by accident of position, not deliberate
+   classification, and left them inline since step 9's own scope was js/init.js. Checked for the
+   GRID_CLUBS/BOOT failure shape before moving: pure data, no top-level immediate-execution
+   hazard (verified directly -- see the STEP 10 commit message). */
 
 const ARENAS=[
   ["Atléticos de San Germán","San Germán","Arquelio Torres Ramírez Coliseum",5000],
@@ -4532,3 +4540,143 @@ function applyHash(){
   }
   showTab('inicio');
 }
+/* ============================================================
+   EXPANSIÓN DE JUGADORES Y PREMIOS — 3 sep 2026
+
+   Everything here was pulled this session from English Wikipedia's
+   BSN season pages (2009, 2016, 2017, 2018, 2024, 2025, 2026), the
+   BSN MVP award page, the league's main article, and Puerto Rican
+   press. It exists to close the hole the archive had between 1995
+   and 2020 — the era most fans actually remember, and the era in
+   which the archive previously knew almost nobody.
+
+   Club fields are left empty where the source names a player but
+   not his team. An empty club is a recorded gap, not an oversight.
+   ============================================================ */
+
+/* ---- MVP por año ----
+   Wikipedia renders the full year-by-year MVP table inside a
+   sortable widget that does not survive text extraction. The
+   repeat-winners table does survive, and it carries years AND
+   clubs — so these 30 seasons are recovered. Single-time winners
+   remain unextractable and are listed as a known gap. */
+const MVP_YEARS=[
+  [1951,'Raúl «Tinajón» Feliciano','Gallitos de la UPR'],
+  [1952,'Juan «Pachín» Vicéns','Leones de Ponce'],
+  [1954,'Juan «Pachín» Vicéns','Leones de Ponce'],
+  [1955,'Raúl «Tinajón» Feliciano','Cardenales de Río Piedras'],
+  [1957,'Juan Báez','Cardenales de Río Piedras'],
+  [1958,'Juan «Pachín» Vicéns','Leones de Ponce'],
+  [1960,'Juan «Pachín» Vicéns','Leones de Ponce'],
+  [1962,'Teófilo Cruz','Cangrejeros de Santurce'],
+  [1963,'Juan Báez','Cardenales de Río Piedras'],
+  [1964,'Juan Báez','Cardenales de Río Piedras'],
+  [1967,'Teófilo Cruz','Cangrejeros de Santurce'],
+  [1968,'Raymond Dalmau','Piratas de Quebradillas'],
+  [1969,'Raymond Dalmau','Piratas de Quebradillas'],
+  [1970,'Teófilo Cruz','Cangrejeros de Santurce'],
+  [1971,'Teófilo Cruz','Cangrejeros de Santurce'],
+  [1972,'Raymond Dalmau','Piratas de Quebradillas'],
+  [1980,'Mario «Quijote» Morales','Mets de Guaynabo'],
+  [1981,'Rolando Frazer','Polluelos de Aibonito'],
+  [1982,'Mario «Quijote» Morales','Mets de Guaynabo'],
+  [1983,'Mario «Quijote» Morales','Mets de Guaynabo'],
+  [1984,'Georgie Torres','Cariduros de Fajardo'],
+  [1985,'Georgie Torres','Cariduros de Fajardo'],
+  [1986,'Georgie Torres','Cariduros de Fajardo'],
+  [1987,'Rolando Frazer','Polluelos de Aibonito'],
+  [1991,'James Carter','Brujos de Guayama'],
+  [1993,'Mario «Quijote» Morales','Mets de Guaynabo'],
+  [1994,'James Carter','Brujos de Guayama'],
+  [2004,'Christian Dalmau','Atléticos de San Germán'],
+  [2009,'Jesse Pellot','Atléticos de San Germán'],
+  [2010,'Christian Dalmau','Vaqueros de Bayamón'],
+  [2011,'Christian Dalmau','Vaqueros de Bayamón'],
+  [2014,'Walter Hodge','Capitanes de Arecibo'],
+  [2016,'Ángel Daniel Vassallo','—'],
+  [2017,'Gary Browne','—'],
+  [2018,'Reyshawn Terry','Piratas de Quebradillas'],
+  [2022,'Walter Hodge','Capitanes de Arecibo'],
+  [2024,'Travis Trice','Criollos de Caguas'],
+  [2025,'Emmanuel Mudiay','Piratas de Quebradillas'],
+  [2026,'Travis Trice','Criollos de Caguas']
+];
+
+/* ---- Premios y líderes por temporada ----
+   [year, category, player, club, line] */
+const SEASON_AWARDS=[
+  [2009,'Más Valioso','Jesse Pellot','Atléticos de San Germán',''],
+  [2009,'Líder de anotación','Jesse Pellot','Atléticos de San Germán',''],
+  [2009,'MVP de la final','Christian Dalmau','Vaqueros de Bayamón',''],
+  [2009,'Primera selección del sorteo','Darnell Hinson','Caciques de Humacao',''],
+  [2016,'Más Valioso','Ángel Daniel Vassallo','—',''],
+  [2016,'MVP de la final','Renaldo Balkman','Capitanes de Arecibo',''],
+  [2016,'Líder de anotación','Damion James','—',''],
+  [2016,'Líder de rebotes','Damion James','—',''],
+  [2016,'Líder de asistencias','Alex Abreu','—',''],
+  [2017,'Más Valioso','Gary Browne','—',''],
+  [2017,'Progreso del Año','Gary Browne','—',''],
+  [2017,'MVP de la final','Tu Holloway','Piratas de Quebradillas',''],
+  [2017,'Líder de anotación','Víctor Liz','—',''],
+  [2017,'Líder de rebotes','Eric Dawson','—',''],
+  [2017,'Líder de asistencias','Gary Browne','—',''],
+  [2018,'Más Valioso','Reyshawn Terry','Piratas de Quebradillas','36 juegos, 835 puntos, 23.2 por juego'],
+  [2018,'MVP de la final','Walter Hodge','Capitanes de Arecibo',''],
+  [2018,'Líder de anotación','Reyshawn Terry','Piratas de Quebradillas','835 puntos'],
+  [2018,'Líder de rebotes','Reyshawn Terry','Piratas de Quebradillas',''],
+  [2018,'Líder de asistencias','Carlos Arroyo','Cariduros de Fajardo',''],
+  [2018,'2.º en anotación','Brandon Costner','Caciques de Humacao','34 juegos, 668 puntos, 19.6'],
+  [2024,'Más Valioso','Travis Trice','Criollos de Caguas','20.7 pts, 7.2 ast, 3.5 reb'],
+  [2024,'Defensor del Año','George Conditt IV','Gigantes de Carolina','14.6 pts, 9.2 reb'],
+  [2024,'Novato del Año','Jhivvan Jackson','Osos de Manatí','12.0 pts, 2.9 ast, 2.7 reb'],
+  [2024,'Sexto Hombre','Emmanuel Maldonado','Cangrejeros de Santurce','8.0 pts, 2.1 reb'],
+  [2024,'Progreso del Año','Alfonso Plummer','Capitanes de Arecibo','18.9 pts, 3.8 ast, 3.1 reb'],
+  [2024,'Dirigente del Año','Juan Cardona','Capitanes de Arecibo',''],
+  [2024,'Gerente del Año','José Manuel Baeza','Capitanes de Arecibo',''],
+  [2024,'MVP de la final','Travis Trice','Criollos de Caguas','20.9 pts, 6.1 ast'],
+  [2025,'Más Valioso','Emmanuel Mudiay','Piratas de Quebradillas','23.6 pts, 5.8 ast, 4.5 reb'],
+  [2025,'Defensor del Año','JaVale McGee','Vaqueros de Bayamón','17.4 pts, 8.4 reb, 1.6 tapones'],
+  [2025,'Novato del Año','André Curbelo','Atléticos de San Germán',''],
+  [2025,'MVP de la final','Danilo Gallinari','Vaqueros de Bayamón',''],
+  [2025,'Líder de anotación','Emmanuel Mudiay','Piratas de Quebradillas','779 puntos en 33 juegos'],
+  [2025,'Líder de rebotes','Akil Mitchell','—',''],
+  [2025,'Líder de asistencias','Ángel Rodríguez','—',''],
+  [2026,'Más Valioso','Travis Trice','Criollos de Caguas','Su segundo MVP'],
+  [2026,'MVP de la final','Renaldo Balkman','Vaqueros de Bayamón','A los 41 años'],
+  [2026,'Dirigente del Año','Christian Dalmau','Vaqueros de Bayamón',''],
+  [2026,'Progreso del Año','André Curbelo','Atléticos de San Germán',''],
+  [2026,'Novato del Año','Daniel Rivera','Gigantes de Carolina',''],
+  [2026,'Defensor del Año','Moses Brown','Criollos de Caguas','Según RealGM'],
+  [2026,'Sexto Hombre','Christian López','Criollos de Caguas','Según RealGM'],
+  [2026,'Líder de anotación','K. Davis','Osos de Manatí','23.4 por juego']
+];
+
+/* ---- Finales juego a juego, las que se pudieron reconstruir ---- */
+const FINALS_BY_YEAR={
+  2026:{champ:'bay',ru:'agu',series:'4-3',mvp:'Renaldo Balkman',
+    games:FINALS_2026.games.map(g=>[g[0],g[1],g[2],g[3],g[4],g[5],g[6],''])},
+  2025:{champ:'bay',ru:'pon',series:'4-1',mvp:'Danilo Gallinari',
+    games:[[1,'3 ago','bay','pon',92,76,'1-0','19-25, 18-12, 14-31, 25-24'],
+           [2,'5 ago','pon','bay',90,76,'1-1',''],
+           [3,'7 ago','bay','pon',100,79,'2-1',''],
+           [4,'9 ago','pon','bay',79,88,'3-1',''],
+           [5,'11 ago','bay','pon',82,68,'4-1','']]},
+  2024:{champ:'cag',ru:'man',series:'4-3',mvp:'Travis Trice',
+    games:[[1,'17 ago','cag','man',99,105,'0-1','31-18, 23-26, 29-27, 22-28'],
+           [2,'19 ago','man','cag',104,109,'1-1','29-21, 22-24, 22-26, 26-28 · tiempo extra'],
+           [3,'21 ago','cag','man',85,89,'1-2','23-25, 30-19, 19-22, 17-19'],
+           [4,'23 ago','man','cag',86,91,'2-2','24-29, 23-16, 23-17, 21-24'],
+           [5,'25 ago','cag','man',89,98,'2-3','18-16, 29-19, 27-31, 24-23'],
+           [6,'27 ago','man','cag',121,122,'3-3','23-22, 18-19, 19-24, 31-26 · doble tiempo extra'],
+           [7,'30 ago','cag','man',96,81,'4-3','20-19, 25-30, 13-26, 23-21']]}
+};
+
+/* ---- Dueños ---- */
+const OWNERS=[
+  ['bay','Eric «Duars» Pérez y Carlos Arroyo','Compraron la franquicia en diciembre de 2024 a Yadier Molina, que la había adquirido en octubre de 2020. Ganaron el título en su primera temporada.'],
+  ['san','Noah Assad, Jonathan Miranda y Bad Bunny','El club volvió al BSN en abril de 2021; Bad Bunny se sumó al grupo dueño ese mismo mes.'],
+  ['man','Ozuna','Compró a los Brujos de Guayama en octubre de 2022 y los mudó a Manatí como los Osos.'],
+  ['cag','John Herrero','Empujó la regla de los tres refuerzos a toda la liga tras ganar con tres en 2024.'],
+  ['agu','Wilson López','']
+];
+

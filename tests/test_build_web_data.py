@@ -316,16 +316,22 @@ class TestBuild:
         assert list(got) == sorted(got)   # deterministic key order
 
     def test_site_index_matches_shell(self):
-        # PHASE_1_SPLIT STEP 2: web/index.html links web/css/main.css instead of inlining it, so
-        # this compares the RECONSTRUCTED text (app_text() splices each linked file back in) to
-        # app/bsn_archivo.html -- same invariant as before, byte for byte, just not a raw file
-        # compare anymore. Replaced entirely once app/bsn_archivo.html becomes the archived
-        # pointer (step 11/12); this whole test is retired at that point, not just reworded again.
+        # STEP 10 (cleanup): app/bsn_archivo.html is now an archived pointer (docs/specs/
+        # app_split_spec.md), so a byte-compare against it is retired -- web/ is its own source
+        # now, per `make site`'s rewritten target (Makefile). What this checks now, exactly (same
+        # three things src.verify_clean.verify_web_data() checks under `make verify` -- exercised
+        # here too so a plain `pytest` run alone still catches drift, the way the old byte-copy
+        # test did): every <link>/<script src> tag in web/index.html resolves to a real file
+        # under web/, each one's ?v= content hash matches that file's current bytes, and the
+        # split's 426-declaration inventory still has exactly the name set recorded in
+        # tests/harness/inventory_main_HEAD.json (the frozen pre-split baseline).
         idx = b.WEB.parent / "index.html"
         if not idx.exists():
             pytest.skip("web/index.html not built (make site)")
-        from tests._app_text import app_text
-        assert app_text().encode("utf-8") == (b.APP / "bsn_archivo.html").read_bytes()
+        from src.verify_clean import Checker, verify_web_data
+        c = Checker()
+        verify_web_data(c)
+        assert not c.failures, c.failures
         assert (b.WEB.parent / ".nojekyll").exists()
 
     def test_mvp_index(self):

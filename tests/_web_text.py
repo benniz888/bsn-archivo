@@ -1,7 +1,8 @@
-"""PHASE_1_SPLIT. app_text() reconstructs app/bsn_archivo.html's exact original text from the
-split web/ tree, so every existing test that used to scan APP.read_text() keeps working unchanged
-(swap that call for app_text()), and the split's own byte-compare checks can keep proving nothing
-was lost or reordered along the way. Splices happen in this order:
+"""PHASE_1_SPLIT. web_text() (STEP 0-9: app_text() -- renamed in STEP 10 when its role changed,
+see the closing paragraph) reconstructs the pre-split app's exact original text from the split
+web/ tree, so every existing test that used to scan APP.read_text() keeps working unchanged (swap
+that call for web_text()), and the split's own byte-compare checks can keep proving nothing was
+lost or reordered along the way. Splices happen in this order:
 
   1. CSS (step 2): <link rel="stylesheet" href="css/main.css"> back to <style>...</style>. The
      <style> tag's own newline belongs to the tag, not the content, so it's put back here.
@@ -208,7 +209,16 @@ was lost or reordered along the way. Splices happen in this order:
   text the split-out file's own block begins with, used to cut that file back into its original
   pieces (each runs up to the next marker in the SAME file, or EOF for the last one).
 
-Replaced entirely once app/bsn_archivo.html becomes the archived pointer (step 11/12).
+  Step 10 (cleanup) retired app/bsn_archivo.html as a comparison target -- it's an archived
+  pointer now (docs/specs/app_split_spec.md), not a second copy of the app, so byte-comparing
+  against it stopped meaning anything. This module (renamed app_text() -> web_text() here) is
+  KEPT, not deleted: it's the only thing that can still answer "what's the whole app's current
+  text", which several tests genuinely need -- e.g. the Calidad de datos view's own text now
+  spans web/index.html + web/js/tabs.js + web/js/data-quality.js, not one file, after the split
+  put its markup, its state, and its render functions in different places. Self-tested in
+  tests/test_web_text.py against a frozen git blob (app/bsn_archivo.html at the last commit
+  before it became the pointer) instead of the live file, since the live file no longer carries
+  the original content to check against.
 """
 import re
 
@@ -365,6 +375,19 @@ _JS_TABS_GROUPS = {
     "SEG4_VIEWS_thru_applyHash": ('/* Deep links: #archivo, #equipos/bay, #jugador/georgie-torres */',
                                   "while the streak strip showed today's number. */\n"
                                   "setInterval(checkRollover,60000);\n\n"),
+    # STEP 10 (cleanup): appended at the end of the file (physically after SEG4, so it has to be
+    # LAST in this dict too -- _js_segments asserts marker order matches file order). True
+    # original predecessor is the CAPA DE IDIOMA IIFE's own closing text (translate()'s `})();`)
+    # -- NOT POOL_PATCH, even though POOL_PATCH is the nearest EARLIER group by byte offset;
+    # CAPA DE IDIOMA sits directly between them and never moves, so its text is what's actually
+    # adjacent. This anchor is stable (inline forever), so this group's _INSERTION_ORDER position
+    # only has to satisfy ONE real constraint: it must come before "PLAYERS_NEW" (js/data.js),
+    # whose own anchor is THIS group's closing text (OWNERS's tail, including the blank line
+    # that was frozen as part of PLAYERS_NEW's anchor back in step 3 -- this group's segment had
+    # to be extended by one line to reproduce it exactly).
+    "MVP_YEARS+SEASON_AWARDS+FINALS_BY_YEAR+OWNERS":
+        ('/* ============================================================\n   EXPANSIÓN DE JUGADORES Y PREMIOS',
+         'BIO_ES[p.n]) p.b=BIO_ES[p.n]; });\n})();\n'),
 }
 
 # STEP 9: web/js/init.js's 1 block. Anchor is BOOT's own closing text -- BOOT stays inline
@@ -392,6 +415,7 @@ _INSERTION_ORDER = [
     (_JS_DATA_GROUPS, DATA_JS, "FIVE_2026"),
     (_JS_DATA_GROUPS, DATA_JS, "SEASON_STATE+POOL_2026+POOL_RGM"),
     (_JS_DATA_GROUPS, DATA_JS, "POOL_PATCH"),
+    (_JS_TABS_GROUPS, TABS_JS, "MVP_YEARS+SEASON_AWARDS+FINALS_BY_YEAR+OWNERS"),
     (_JS_DATA_GROUPS, DATA_JS, "PLAYERS_NEW"),
     (_JS_HELPERS_GROUPS, HELPERS_JS, "HELPERS"),
     (_JS_TABS_GROUPS, TABS_JS, "SEG2_IMAGE_thru_PERFIL_STORE"),
@@ -425,7 +449,7 @@ def _js_segments(path, groups: dict) -> dict[str, str]:
     return {name: text[bounds[i]:bounds[i + 1]] for i, (name, _) in enumerate(items)}
 
 
-def app_text() -> str:
+def web_text() -> str:
     html = INDEX.read_text(encoding="utf-8")
 
     def sub_link(m):

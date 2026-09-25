@@ -9,9 +9,9 @@ import re
 import unicodedata
 
 from src.wayback_cdx import REPO_ROOT
+from tests._web_text import web_text
 
 INDEX = REPO_ROOT / "web" / "data" / "index" / "players.json"
-APP = REPO_ROOT / "app" / "bsn_archivo.html"
 
 # The 11 shared slugs whose plain URL moved from the lowest id to the richest member.
 CHANGED = {
@@ -118,7 +118,7 @@ class TestUniqueUrls:
 def _pool_slugs():
     """Slugs of the curated names written in the app file. A subset of the runtime pool (it is assembled
     at runtime), enough to catch a clash; the exact check (378 names) runs in the browser."""
-    text = APP.read_text(encoding="utf-8")
+    text = web_text()
     lit = r'"((?:[^"\\]|\\.)*)"'
     names = set(re.findall(r'(?<![A-Za-z_])"?n"?\s*:\s*' + lit, text))
     names |= set(re.findall(r"(?<![A-Za-z_])n\s*:\s*'((?:[^'\\]|\\.)*)'", text))
@@ -180,14 +180,14 @@ class TestRedirects:
 
 class TestAppMatchesThisRule:
     def test_the_app_uses_the_same_ordering_and_route(self):
-        text = APP.read_text(encoding="utf-8")
+        text = web_text()
         assert "const rank=(a,b)=>(b.career_seasons||0)-(a.career_seasons||0)||(b.birth_year?1:0)-(a.birth_year?1:0)||a.id-b.id;" in text
         assert "const q=PSLUG&&PSLUG.get(c);" in text
         assert "PSLUG.set(u,p); USLUG.set(p.id,u);" in text
         assert "buildPlayerSlugs(); if(typeof refreshPlayerIndexArchive" in text
 
     def test_the_app_reads_the_redirects_after_the_archive_slugs(self):
-        text = APP.read_text(encoding="utf-8")
+        text = web_text()
         assert text.index("const q=PSLUG&&PSLUG.get(c);") < text.index("const to=PREDIR&&PREDIR.slugs[c]")
         assert "history.replaceState(null,'','#jugadores/jugador/'+USLUG.get(r.id)" in text
         assert text.count("[id,name]=survivorOf(id,name);") == 2          # openArchivePlayer and showPlayer

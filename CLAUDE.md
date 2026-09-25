@@ -13,8 +13,10 @@ Precedence: `docs/global.md` → `[CONFLICT_RESOLUTION]`.
 ## Quick orientation
 
 Project: a historical archive of Puerto Rico's Baloncesto Superior Nacional (BSN), 1930–present.
-The interface exists (`app/bsn_archivo.html`). The database behind it is thin.
-Everything in this repo is about **filling the data**, not building UI.
+The interface exists (`web/` — a multi-file static site, `web/index.html` + `web/css/` + `web/js/`;
+see `docs/specs/app_split_spec.md` for the file map. `app/bsn_archivo.html` is an archived pointer,
+not the app). The database behind it is thin. Everything in this repo is about **filling the
+data**, not building UI.
 
 Top priority: `docs/specs/wayback_ingest_spec.md`.
 

@@ -7,15 +7,17 @@ setup:
 	@echo "changes data/clean/ or the app's data-facing files without a fresh,"
 	@echo "fully-staged web/data/ rebuild alongside it."
 
-# Rebuild web/data/ + web/index.html and stage the whole tree in one step —
-# the safe way to close out an identity-pipeline change (see .githooks/
-# pre-commit's own header for why "just re-add the files I touched" isn't).
+# Rebuild web/data/ from data/clean/ and stage it — the safe way to close out
+# an identity-pipeline change (see .githooks/pre-commit's own header for why
+# "just re-add the files I touched" isn't). PHASE_1_SPLIT (docs/specs/
+# app_split_spec.md): web/ is the site's own source now, not a copy of
+# app/bsn_archivo.html (an archived pointer, see that file) — this target no
+# longer touches web/index.html or web/css/js/ at all, only the generated data.
 sync-web-data:
 	.venv/bin/python -m src.build_web_data
-	cp app/bsn_archivo.html web/index.html
 	touch web/.nojekyll
-	git add web/data/ web/index.html
-	@echo "web/data/ + web/index.html rebuilt and staged — review with 'git status' before committing."
+	git add web/data/
+	@echo "web/data/ rebuilt and staged — review with 'git status' before committing."
 
 enumerate:
 	.venv/bin/python -m src.wayback_cdx
@@ -80,10 +82,13 @@ parse-latinbasket:
 build-web-data:
 	.venv/bin/python -m src.build_web_data
 
-# Assemble the GitHub Pages site root (served from main:/web). The shell is a
-# committed byte-copy of app/bsn_archivo.html; `make verify` fails if it drifts.
+# The GitHub Pages site root (served from main:/web). PHASE_1_SPLIT
+# (docs/specs/app_split_spec.md): web/index.html, web/css/, web/js/ ARE the
+# site's own source now — nothing here is generated or copied from anywhere
+# else. This target is just the one idempotent housekeeping bit Pages needs
+# (a static site with a top-level 'data' folder gets swallowed by Jekyll
+# without it) and a readiness echo.
 site:
-	cp app/bsn_archivo.html web/index.html
 	touch web/.nojekyll
 	@echo "web/ ready — Pages source: main branch, /web folder"
 

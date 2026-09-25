@@ -54,9 +54,18 @@ real, committed artifact, not a re-run against a moving target.
   CAT_KEYS/GRID_CLUBS -- data-derivation, not boot machinery; THEME and BOOT -- explicit
   instruction / step 8's bug; see the STEP 9 commit message) / 18 `web/js/data.js` / 23
   `web/js/helpers.js` / 15 `web/js/player.js` / 12 `web/js/data-quality.js` / 58
-  `web/js/games.js` / 263 `web/js/tabs.js` / 7 `web/js/init.js`. Regenerate after any later step
-  moves more code: `python3 tests/harness/inventory.py tests/harness/inventory_web_split.json
-  web/index.html web/js/data.js [<more files as they appear>]`.
+  `web/js/games.js` / 263 `web/js/tabs.js` / 7 `web/js/init.js`. STEP 10 (cleanup): 26
+  `web/index.html` (MVP_YEARS/SEASON_AWARDS/FINALS_BY_YEAR/OWNERS moved into js/tabs.js, since
+  their consumers -- buildMVPYears, buildSeasonAwards, buildFinalsByYear, buildOwners -- already
+  lived there; step 9 had flagged them as misplaced tab data but left them, out of its own
+  authorized scope) / 18 `web/js/data.js` / 23 `web/js/helpers.js` / 15 `web/js/player.js` / 12
+  `web/js/data-quality.js` / 58 `web/js/games.js` / 267 `web/js/tabs.js` (263 + the 4 moved-in
+  declarations) / 7 `web/js/init.js`. 426 total, unchanged, same name set as
+  `inventory_main_HEAD.json` -- the split is done as of this step; regenerate again only if a
+  later phase moves more of what's still inline (docs/specs/app_split_spec.md §3): `python3
+  tests/harness/inventory.py tests/harness/inventory_web_split.json web/index.html web/js/data.js
+  web/js/helpers.js web/js/player.js web/js/data-quality.js web/js/games.js web/js/tabs.js
+  web/js/init.js`.
 
 ## Running it
 

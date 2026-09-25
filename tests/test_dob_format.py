@@ -1,8 +1,9 @@
-"""PHASE_DOB_FORMAT — archive DOBs render unambiguously (app/bsn_archivo.html, fmtArchiveDob/
-_daysInMonth). Render-time only, no data/clean write; the raw M/D/YYYY string stays exactly as stored,
-and every count/span/export elsewhere is untouched. Port of the two JS functions to Python, the same way
-test_route_slugs.py ports slug(), so the real committed data can be checked without a browser; the
-browser itself is checked separately (Playwright, three time zones -- see docs/session.md)."""
+"""PHASE_DOB_FORMAT — archive DOBs render unambiguously (fmtArchiveDob/_daysInMonth, now
+web/js/helpers.js -- see TestAppWiring's own note). Render-time only, no data/clean write; the raw
+M/D/YYYY string stays exactly as stored, and every count/span/export elsewhere is untouched. Port
+of the two JS functions to Python, the same way test_route_slugs.py ports slug(), so the real
+committed data can be checked without a browser; the browser itself is checked separately
+(Playwright, three time zones -- see docs/session.md)."""
 
 import csv
 import re
@@ -10,8 +11,8 @@ import re
 import pytest
 
 from src.wayback_cdx import REPO_ROOT
+from tests._web_text import web_text
 
-APP = REPO_ROOT / "app" / "bsn_archivo.html"
 MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio",
           "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
 
@@ -19,14 +20,14 @@ _PAT = re.compile(r"^(\d{1,2})/(\d{1,2})/(\d{4})$")
 
 
 def _days_in_month(y, m):
-    """Port of _daysInMonth() in app/bsn_archivo.html: pure calendar arithmetic, no Date object."""
+    """Port of _daysInMonth() (web/js/helpers.js): pure calendar arithmetic, no Date object."""
     d = [31, 29 if (y % 4 == 0 and (y % 100 != 0 or y % 400 == 0)) else 28,
          31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     return d[m - 1]
 
 
 def fmt_archive_dob(raw):
-    """Port of fmtArchiveDob() in app/bsn_archivo.html."""
+    """Port of fmtArchiveDob() (web/js/helpers.js)."""
     m = _PAT.match(str(raw or ""))
     if not m:
         return raw
@@ -116,16 +117,24 @@ class TestCommittedData:
 
 class TestAppWiring:
     def test_fmt_archive_dob_and_days_in_month_never_construct_a_date(self):
-        text = APP.read_text(encoding="utf-8")
+        text = web_text()
         block = text[text.index("function _daysInMonth"):text.index("function fmtArchiveDob(raw){") + 400]
         assert "new Date" not in block   # no timezone-dependent operation anywhere in the fix
 
     def test_the_bio_line_calls_fmt_archive_dob_on_b_date(self):
-        text = APP.read_text(encoding="utf-8")
+        text = web_text()
         assert "esc(fmtArchiveDob(b.date))" in text
 
-    def test_the_web_copy_is_a_byte_copy(self):
-        # PHASE_1_SPLIT STEP 2: web/index.html links css/main.css instead of inlining it, so the
-        # reconstructed text (app_text()) is what has to match now, not the raw file.
-        from tests._app_text import app_text
-        assert app_text().encode("utf-8") == APP.read_bytes()
+    def test_web_asset_wiring_is_intact(self):
+        # STEP 10 (cleanup): app/bsn_archivo.html is now an archived pointer (docs/specs/
+        # app_split_spec.md), so a byte-compare against it is retired. What this checks now,
+        # exactly (same three things src.verify_clean.verify_web_data() checks under `make
+        # verify` -- exercised here too so a plain `pytest` run alone still catches drift, the
+        # way the old byte-copy test did): every <link>/<script src> tag in web/index.html
+        # resolves to a real file under web/, each one's ?v= content hash matches that file's
+        # current bytes, and the split's 426-declaration inventory still has exactly the name set
+        # recorded in tests/harness/inventory_main_HEAD.json (the frozen pre-split baseline).
+        from src.verify_clean import Checker, verify_web_data
+        c = Checker()
+        verify_web_data(c)
+        assert not c.failures, c.failures

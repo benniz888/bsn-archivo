@@ -33,6 +33,12 @@ INTERIM = REPO_ROOT / "data" / "interim"
 APP = REPO_ROOT / "app"
 WEB = REPO_ROOT / "web" / "data"
 WEB_IMG = REPO_ROOT / "web" / "img"
+# PHASE_1_SPLIT STEP 10 (cleanup): app/bsn_archivo.html is now an archived pointer (docs/specs/
+# app_split_spec.md), not a copy of the app -- _parse_app_mvp()/diff_app_champions() below used
+# to read its baked `const MVP_YEARS=[...]`/`const F = {...}` blocks directly; MVP_YEARS and F
+# didn't change, only WHERE they live (web/js/tabs.js and web/js/data.js respectively, per the
+# split's file map), so both functions now read those files instead. Same parsing logic either way.
+WEB_JS = REPO_ROOT / "web" / "js"
 
 # extension priority per kind — mirrors the app's old probe chain
 _ASSET_EXT = {"crest": ["png", "svg", "jpg", "webp"], "player": ["jpg", "png", "webp"]}
@@ -690,8 +696,8 @@ def _mvp_name_match(app_name: str, csv_name: str) -> bool:
 
 
 def _parse_app_mvp() -> dict[int, str]:
-    """{year: player} from the app's baked `const MVP_YEARS=[...]` block."""
-    html = (REPO_ROOT / "app" / "bsn_archivo.html").read_text(encoding="utf-8")
+    """{year: player} from the app's baked `const MVP_YEARS=[...]` block (web/js/tabs.js)."""
+    html = (WEB_JS / "tabs.js").read_text(encoding="utf-8")
     blk = html[html.index("const MVP_YEARS=["):html.index("];", html.index("const MVP_YEARS="))]
     return {int(y): n for y, n, _c in re.findall(r"\[(\d{4}),'([^']*)','([^']*)'\]", blk)}
 
@@ -1289,7 +1295,7 @@ def build_games() -> tuple[int, int]:
 def diff_app_champions(app_to_fid) -> list[str]:
     """Every season where the app's F[key].won/ru disagrees with the reconciled
     champions. Printed, not written — a human eyeballs it once."""
-    html = (REPO_ROOT / "app" / "bsn_archivo.html").read_text(encoding="utf-8")
+    html = (WEB_JS / "data.js").read_text(encoding="utf-8")
     block = html[html.index("const F = {"):html.index("\n};", html.index("const F = {"))]
     app_champ: dict[str, str] = {}
     app_ru: dict[str, str] = {}

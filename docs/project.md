@@ -6,7 +6,7 @@
 - NAME: BSN Archivo
 - DOMAIN: Historical statistical archive for Puerto Rico's Baloncesto Superior Nacional (BSN), 1930–present.
 - OWNER: Alejandro "Benniz" — business analyst, San Juan PR. Sports content brand `bennizpr`.
-- CURRENT_STATE: Interface is feature-complete (`app/bsn_archivo.html`, single file, 13 tabs, 3 games). The database behind it is thin — the game pool is 45 players because that is every player currently verifiable.
+- CURRENT_STATE: Interface is feature-complete — `web/` (a conventional multi-file static site: `web/index.html`, `web/css/main.css`, `web/js/*.js`; see `docs/specs/app_split_spec.md` for the file map), 13 tabs, 3 games. `app/bsn_archivo.html` is an archived pointer, not the app — see PC7. The database behind it is thin — the game pool is 45 players because that is every player currently verifiable.
 - THIS_REPO_EXISTS_TO: fill the data. Not to build UI.
 - LANGUAGE: Code and comments in English. User-facing strings in Spanish (Puerto Rican usage).
 
@@ -18,7 +18,7 @@
 - PC4: **Show the gaps, don't hide them.** An archive that conceals its holes is worse than one that displays them. Coverage gaps are a first-class output, not an embarrassment.
 - PC5: **Raw is immutable.** Anything fetched from the network lands in `data/raw/` byte-for-byte and is never edited. All transformation happens raw → interim → clean. Re-running a parse must never require re-fetching.
 - PC6: **Be a polite network citizen.** Wayback Machine and any league endpoint: sequential requests, ≥1s delay, retry with exponential backoff on 429/5xx, descriptive User-Agent, cache every response to disk on first fetch. Never parallelise the archive crawl.
-- PC7: Single-file app stays single-file. `app/bsn_archivo.html` has no build step and no dependencies. Do not introduce a bundler, framework, or npm install to serve it.
+- PC7: No bundler, no framework, no build step, no dependencies; multiple plain files allowed. `web/` (`web/index.html`, `web/css/*.css`, `web/js/*.js`, `web/data/*.json`) is served exactly as written — no compile/transpile/concatenate step, ever. Reworded from "single-file app stays single-file" by `[PROJECT_OVERRIDES] O1` (PHASE_1_SPLIT, 2026-09-25) — see that entry and `docs/specs/app_split_spec.md` for why and what changed.
 
 [DOMAIN_RULES]
 
@@ -68,15 +68,31 @@ docs/global.md         tier 1
 docs/project.md        tier 2 (this file)
 docs/session.md        tier 3
 docs/specs/            architecture decisions, one concern per file
+docs/specs/app_split_spec.md   the web/ file map + PHASE_1_SPLIT history
 docs/research/         README.md, bsn_project_roadmap.md, prior session summary, audit
 data/raw/              immutable network captures (gitignored if large)
 data/interim/          parsed but unvalidated
 data/clean/            validated, provenance-complete — the deliverable
 src/                   snake_case modules
 tests/                 pytest
-app/bsn_archivo.html   the single-file app
+web/                   the site — index.html, css/, js/, data/, sw.js, manifest bits (Pages source)
+app/bsn_archivo.html   archived pointer, not the app — see docs/specs/app_split_spec.md
 ```
 
 [PROJECT_OVERRIDES]
 
-- O1: None yet. Log any deviation from global.md here with justification.
+- O1 (2026-09-25, PHASE_1_SPLIT): Reworded PC7 from "single-file app stays single-file" to "no
+  bundler, no framework, no build step, no dependencies; multiple plain files allowed." What
+  changed: `app/bsn_archivo.html` (one 663 KB file: markup, CSS, and the whole app in one inline
+  `<script>`) was split into a conventional multi-file static site under `web/` — `web/index.html`
+  (structure + the theme-init script, unchanged), `web/css/main.css`, and eight `web/js/*.js`
+  files by concern (`data.js`, `helpers.js`, `player.js`, `data-quality.js`, `games.js`,
+  `tabs.js`, `init.js`, plus what's still inline) — with zero visual or behavioral change,
+  verified at every step (`docs/specs/app_split_spec.md` §5). Why: a single 663 KB file was
+  getting harder to navigate and diff, and the layout needed to let new BSN league data drop into
+  `web/data/` without touching app code; per `docs/global.md` R4, explicit user instruction in the
+  live conversation overrides a Tier-2 constraint. Approved by the owner, in conversation, as
+  "PHASE_1_SPLIT — APPROVED WITH AMENDMENTS," with this exact rewording proposed and confirmed
+  before any file moved (session covering PHASE_1_SPLIT steps 0–10, branch `phase-1-split`).
+  Still true, unchanged: no bundler, no framework, no build step, no npm install, no dependencies
+  — every file under `web/` is served exactly as written.

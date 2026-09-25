@@ -12,10 +12,10 @@ import pytest
 from src import apply_identity_decisions as apply
 from src import build_web_data as bwd
 from src.wayback_cdx import REPO_ROOT
+from tests._web_text import web_text
 
 WEB = REPO_ROOT / "web" / "data"
 DQ = WEB / "index" / "data_quality.json"
-APP = REPO_ROOT / "app" / "bsn_archivo.html"
 
 
 def _csv(folder, name):
@@ -187,7 +187,7 @@ class TestDigest:
 
 class TestTheAppView:
     def _block(self):
-        text = APP.read_text(encoding="utf-8")
+        text = web_text()
         return text, text[text.index("CALIDAD DE DATOS — #archivo/calidad"):text.index("async function loadPlayerExtra(")]
 
     def test_menu_view_and_lede(self):
@@ -220,11 +220,19 @@ class TestTheAppView:
         assert "formato M/D/AAAA" in text and "fmtLongDate(x.decided_at)" in text
         assert "MESES" not in text[text.index("function drawDQ("):text.index("function drawDQTable(")].replace("fmtLongDate", "")
 
-    def test_the_web_copy_is_a_byte_copy(self):
-        # PHASE_1_SPLIT STEP 2: web/index.html links css/main.css instead of inlining it, so the
-        # reconstructed text (app_text()) is what has to match now, not the raw file.
-        from tests._app_text import app_text
-        assert app_text().encode("utf-8") == APP.read_bytes()
+    def test_web_asset_wiring_is_intact(self):
+        # STEP 10 (cleanup): app/bsn_archivo.html is now an archived pointer (docs/specs/
+        # app_split_spec.md), so a byte-compare against it is retired. What this checks now,
+        # exactly (same three things src.verify_clean.verify_web_data() checks under `make
+        # verify` -- exercised here too so a plain `pytest` run alone still catches drift, the
+        # way the old byte-copy test did): every <link>/<script src> tag in web/index.html
+        # resolves to a real file under web/, each one's ?v= content hash matches that file's
+        # current bytes, and the split's 426-declaration inventory still has exactly the name set
+        # recorded in tests/harness/inventory_main_HEAD.json (the frozen pre-split baseline).
+        from src.verify_clean import Checker, verify_web_data
+        c = Checker()
+        verify_web_data(c)
+        assert not c.failures, c.failures
 
 
 class TestSeasonTotalsAndRelabelNotes:
@@ -249,7 +257,7 @@ class TestSeasonTotalsAndRelabelNotes:
         assert [t["id"] for t in dq["season_totals"]] == [151, 193, 284, 763, 777, 808, 870, 932, 985, 1284, 1462, 1995, 2067]
 
     def test_the_two_notes_read_as_approved_and_are_driven_by_the_counts(self):
-        text = APP.read_text(encoding="utf-8")
+        text = web_text()
         assert ("En ${nf(c.season_totals)} casos la fila de jug05 es el total de la temporada de un jugador que cambió de "
                 "equipo. El archivo conserva las filas por equipo y registra el total como corroboración.") in text
         assert ("En las capturas de jug05 a partir de mayo de 2006, la temporada más reciente conserva la etiqueta 2005. "
@@ -291,7 +299,7 @@ class TestForeignRowsNote:
             assert (r["season"], r["games"], r["points"]) in theirs
 
     def test_the_note_reads_as_approved_and_is_driven_by_the_counts(self):
-        text = APP.read_text(encoding="utf-8")
+        text = web_text()
         assert ("En ${nf(c.foreign_rows)} filas de ${nf(new Set((d.foreign_rows||[]).map(x=>x.id)).size)} jugadores, una página de "
                 "jug05 mostraba la línea de otro jugador. Las quitamos de la ficha y de los totales y publicamos el registro. "
                 "No podemos detectar los casos cuyo dueño no tiene captura.") in text
@@ -305,7 +313,7 @@ class TestDisputedCareerRowsNote:
     on the player's page, marked, and only drops out of the totals -- neither datum is called wrong."""
 
     def _block(self):
-        text = APP.read_text(encoding="utf-8")
+        text = web_text()
         return text, text[text.index("CALIDAD DE DATOS — #archivo/calidad"):text.index("async function loadPlayerExtra(")]
 
     def test_the_counts_and_the_published_rows(self, dq):
@@ -342,7 +350,7 @@ class TestDisputedCareerRowsNote:
     def test_the_row_tag_and_tooltip_are_the_approved_wording(self):
         # disputeTag() lives with dqFlag/dqTag, and the season table with loadPlayerExtra -- both outside the
         # drawDQ block this file's _block() slices, so this checks the whole app text, like the JSON-side test
-        text = APP.read_text(encoding="utf-8")
+        text = web_text()
         assert "No concuerda con la ficha" in text
         # disputeTag() writes the tooltip as two concatenated JS string literals -- checked as they appear in
         # source; joined (dropping the trailing/leading quote+plus), they read exactly as the owner approved
@@ -361,7 +369,7 @@ class TestDisputedCareerRowsNote:
         assert not title.startswith("Fechas de nacimiento")   # step 0b #4: must not read as its subsection
 
     def test_the_footnote_clause_and_the_lede_are_count_driven_with_correct_plural(self):
-        text = APP.read_text(encoding="utf-8")   # footnote is in loadPlayerExtra; lede is in drawDQ -- check both via the full file
+        text = web_text()   # footnote is in loadPlayerExtra; lede is in drawDQ -- check both via the full file
         _, block = self._block()
         # the JS ternary itself, pinned so both the singular and the plural branch are covered structurally
         assert "Totales sin ${nDisp} temporada${nDisp===1?'':'s'} con la fecha de nacimiento en conflicto" in text
@@ -393,7 +401,7 @@ class TestDisputedCareerRowsNote:
                 "es el correcto.") in block
 
     def test_the_bio_line_is_unchanged_except_for_the_appended_attribution(self):
-        text = APP.read_text(encoding="utf-8")
+        text = web_text()
         assert "const dobDisputed=DISPUTED_IDS&&DISPUTED_IDS.has(Number(id));" in text
         # J16 DOB_FORMAT (2026-09-24): b.date now goes through fmtArchiveDob() first; the attribution
         # and city clauses are otherwise byte-identical to before that existed.
@@ -401,7 +409,7 @@ class TestDisputedCareerRowsNote:
                 "+(b.city?' · '+esc(b.city):''));") in text
 
     def test_disputed_ids_and_dispute_idx_are_built_alongside_dq_idx(self):
-        text = APP.read_text(encoding="utf-8")
+        text = web_text()
         assert "DISPUTE_IDX=new Map(); DISPUTED_IDS=new Set();" in text
         assert "(d.disputed_rows||[]).forEach(r=>{" in text
 
