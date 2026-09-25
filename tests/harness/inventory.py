@@ -5,11 +5,17 @@ top-level declarations throughout (verified: every named example checked this se
 line-start, no indentation). Run again after the split and diff the two JSON files -- the set of
 names must be identical; only the "line" field is allowed to change (and "file" gains a real value).
 
-Usage: python3 tests/harness/inventory.py <path-to-html> <output.json>
+STEP 3: once code starts living in more than one file (web/index.html's own inline <script> plus
+web/js/*.js), a single-file inventory can't show the whole picture any more -- pass several paths
+and each declaration is tagged with which one it came from. A plain .js file has no <script> tags
+to bound the scan, so the whole file counts as one script region.
+
+Usage: python3 tests/harness/inventory.py <output.json> <path> [<path> ...]
 """
 import json
 import re
 import sys
+from pathlib import Path
 
 FUNC_RE = re.compile(r"^(?:async\s+)?function\s+([A-Za-z_$][\w$]*)\s*\(")
 DECL_RE = re.compile(r"^(const|let|var)\s+(.+?);?\s*$")
@@ -59,11 +65,11 @@ def find_main_script_bounds(lines):
     return starts[-1], ends[-1]
 
 
-def inventory(path):
-    lines = open(path, encoding="utf-8").readlines()
-    start, end = find_main_script_bounds(lines)
+def _scan(lines, start, end):
+    """start/end are 1-indexed, end exclusive-of-the-closing-tag the way find_main_script_bounds
+    returns them (i.e. the scannable region is lines[start..end-2] 0-indexed)."""
     out = []
-    for i in range(start, end - 1):  # 0-indexed slice, exclude the <script>/</script> lines themselves
+    for i in range(start, end - 1):
         line = lines[i]
         lineno = i + 1
         m = FUNC_RE.match(line)
@@ -75,17 +81,48 @@ def inventory(path):
             kind, rest = m.group(1), m.group(2)
             for n in names_in_decl(rest):
                 out.append({"kind": kind, "name": n, "line": lineno})
-    return {"script_bounds": [start, end], "declarations": out}
+    return out
+
+
+def inventory(path):
+    """Single-file form (an .html with the main <script>...</script> block) -- unchanged since
+    STEP 0, still what's used against the untouched app/bsn_archivo.html."""
+    lines = open(path, encoding="utf-8").readlines()
+    start, end = find_main_script_bounds(lines)
+    return {"script_bounds": [start, end], "declarations": _scan(lines, start, end)}
+
+
+def inventory_multi(paths):
+    """STEP 3 form: one or more files, each declaration tagged with which one it came from. An
+    .html file is scanned the same way as inventory() (bounded by its main <script> block); any
+    other file (web/js/*.js) has no <script> tags to bound it, so the whole file is the region."""
+    out = []
+    for path in paths:
+        lines = open(path, encoding="utf-8").readlines()
+        rel = str(Path(path))
+        if path.endswith(".html"):
+            start, end = find_main_script_bounds(lines)
+        else:
+            start, end = 0, len(lines) + 1  # whole file, same [start, end) convention as above
+        for d in _scan(lines, start, end):
+            d["file"] = rel
+            out.append(d)
+    return {"declarations": out}
 
 
 if __name__ == "__main__":
-    src, dst = sys.argv[1], sys.argv[2]
-    result = inventory(src)
+    dst = sys.argv[1]
+    srcs = sys.argv[2:]
+    if len(srcs) == 1 and srcs[0].endswith(".html"):
+        result = inventory(srcs[0])
+    else:
+        result = inventory_multi(srcs)
     json.dump(result, open(dst, "w", encoding="utf-8"), indent=2, ensure_ascii=False)
     names = [d["name"] for d in result["declarations"]]
     dupes = {n for n in names if names.count(n) > 1}
+    bounds = result.get("script_bounds", "n/a (multi-file)")
     print(f"{len(result['declarations'])} declarations, {len(set(names))} unique names, "
-          f"script block {result['script_bounds']}")
+          f"script block {bounds}")
     if dupes:
         print(f"NOTE: names declared more than once at top level (re-declared/reset lower in the "
               f"file, not necessarily a bug): {sorted(dupes)}")

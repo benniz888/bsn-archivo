@@ -18,8 +18,13 @@ real, committed artifact, not a re-run against a moving target.
   the identical, unmodified code now produce identical hashes for all 48 files (see below).
 - `inventory.py` — extracts every top-level `function`/`const`/`let`/`var` name declared at
   column 0 inside the app's main `<script>` block (name, line, kind). Run before and after a
-  structural change; the **set of names** must be identical, only `line` (and eventually `file`)
-  may differ.
+  structural change; the **set of names** must be identical, only `line` (and, once split,
+  `file`) may differ. Single-file form (`inventory(path)`) is unchanged since STEP 0, still what's
+  used against the untouched `app/bsn_archivo.html`. STEP 3 added a multi-file form
+  (`inventory_multi(paths)`, used when the CLI gets more than one source path, or a single
+  non-`.html` one) that tags each declaration with which file it came from -- a plain `.js` file
+  has no `<script>` tags to bound the scan, so the whole file counts as one script region. CLI:
+  `python3 tests/harness/inventory.py <output.json> <path> [<path> ...]`.
 - `baseline/*.json` — one file per `<route>__<engine>__<width>__<label>.json`.
   - `main_27c16a4_det` — **the baseline to compare against.** Deterministic capture (the fixed
     seed above), from `main` at `27c16a4` (`git archive`, no branch switch), before Playwright's
@@ -29,7 +34,13 @@ real, committed artifact, not a re-run against a moving target.
     gave different `tab:juega` DOM (`app/bsn_archivo.html:6826`, a `Math.random()`-seeded preview
     board, unrelated to the split). **Do not use this label as a comparison baseline** — it isn't
     reproducible by construction.
-- `inventory_main_HEAD.json` — the pre-split function/const inventory.
+- `inventory_main_HEAD.json` — the pre-split function/const inventory, from `app/bsn_archivo.html`
+  alone (single-file form). Ground truth: this file never changes, since `app/bsn_archivo.html`
+  doesn't.
+- `inventory_web_split.json` — STEP 3: same 426 declarations, same names, now tagged with `file`
+  (`web/index.html` or `web/js/data.js`) via the multi-file form. Regenerate after any later step
+  moves more code: `python3 tests/harness/inventory.py tests/harness/inventory_web_split.json
+  web/index.html web/js/data.js [<more files as they appear>]`.
 
 ## Running it
 
@@ -46,7 +57,8 @@ NODE_PATH=/private/tmp/bsn_harness/node_modules node tests/harness/capture.mjs \
 there.
 
 ```
-python3 tests/harness/inventory.py app/bsn_archivo.html tests/harness/inventory_main_HEAD.json
+python3 tests/harness/inventory.py tests/harness/inventory_main_HEAD.json app/bsn_archivo.html
+python3 tests/harness/inventory.py tests/harness/inventory_web_split.json web/index.html web/js/data.js
 ```
 
 ## Comparing a new snapshot to the baseline

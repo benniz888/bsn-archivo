@@ -12,8 +12,10 @@ WEB = REPO_ROOT / "web"
 INDEX = WEB / "index.html"
 SW = WEB / "sw.js"
 
-_LINK_RE = re.compile(r'<link\s+rel="stylesheet"\s+href="([^"]+)">')
-_SCRIPT_SRC_RE = re.compile(r'<script\s+src="([^"]+)"[^>]*></script>')
+# PHASE_1_SPLIT caching fix: linked assets carry a ?v=<hash> query string (src/update_asset_hashes.py)
+# so href/src is captured without it -- these checks are about the FILE the tag points at.
+_LINK_RE = re.compile(r'<link\s+rel="stylesheet"\s+href="([^"?]+)(?:\?[^"]*)?">')
+_SCRIPT_SRC_RE = re.compile(r'<script\s+src="([^"?]+)(?:\?[^"]*)?"[^>]*></script>')
 _INLINE_SCRIPT_RE = re.compile(r"<script(?![^>]*\ssrc=)[^>]*>(.*?)</script>", re.S)
 
 
