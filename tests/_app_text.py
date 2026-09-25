@@ -19,6 +19,11 @@ was lost or reordered along the way. Splices happen in this order:
      then separately _daysInMonth+fmtArchiveDob -- and the file's own "SEEDING" section
      (mulberry32, EPOCH, todayStamp, puzzleNo, seededShuffle, pick).
 
+  4. JS player (step 5): web/js/player.js holds 2 blocks -- the "JUGADORES" archive-index run
+     (buildPlayerIndex through renderArchiveCard, minus the shared state those functions read/
+     write, which stayed behind), and the disputed-row tag/tooltip formatters (dqFlag, dqTag,
+     disputeFlag, disputeTag). Both are simple contiguous cuts, no merged/split groups this step.
+
   None of these were contiguous in the original -- steps 3 and 4 both cut blocks out of a script
   that runs ~7000 lines, with everything else (other constants, tab-specific UI code, even a few
   bare statements like F.agu.ru.push(2026) between POOL and VENUES) staying in web/index.html,
@@ -60,6 +65,7 @@ WEB = REPO_ROOT / "web"
 INDEX = WEB / "index.html"
 DATA_JS = WEB / "js" / "data.js"
 HELPERS_JS = WEB / "js" / "helpers.js"
+PLAYER_JS = WEB / "js" / "player.js"
 
 _LINK_RE = re.compile(r'<link\s+rel="stylesheet"\s+href="([^"?]+)(?:\?v=[0-9a-f]+)?">')
 
@@ -70,6 +76,7 @@ def _script_tag_re(src: str) -> re.Pattern:
 
 _DATA_JS_SCRIPT_TAG_RE = _script_tag_re("js/data.js")
 _HELPERS_JS_SCRIPT_TAG_RE = _script_tag_re("js/helpers.js")
+_PLAYER_JS_SCRIPT_TAG_RE = _script_tag_re("js/player.js")
 
 # group_start_marker is the exact PREFIX text (long enough to be unique in its file) each block
 # begins with -- for a block with its own header comment, that's the comment's start, not the
@@ -135,6 +142,20 @@ _JS_HELPERS_GROUPS = {
                 'else if(mq.addListener) mq.addListener(onChange);\n  }\n}\n\n'),
 }
 
+# STEP 5: web/js/player.js's 2 blocks. The "JUGADORES" section's own state (PINDEX, PXWALK,
+# PALL, PSLUG, MVP_ID, MANIFEST, ...) stayed in web/index.html -- loadPlayerExtra, buildMVPYears,
+# hydrate() and others read/write it too, so it isn't archive-player-page-exclusive; only the
+# functions moved. Same for ensureDQ()/DQ_IDX/DISPUTE_IDX (openDQ, the Archivo/calidad tab, needs
+# them too) -- only the pure dqFlag/dqTag/disputeFlag/disputeTag formatters moved.
+_JS_PLAYER_GROUPS = {
+    "JUGADORES-archive": ('function buildPlayerIndex(){',
+                          'to the deployed reality; MANIFEST.counts feeds the numbers. */\n'
+                          'let MANIFEST=null, DATA_TEXT=false;\n'),
+    "DQ-tags": ('/* the conflict a career row belongs to',
+               "if(!DISPUTE_IDX.has(k)) DISPUTE_IDX.set(k,[]);\n    DISPUTE_IDX.get(k).push(r);"
+               "\n  });\n  return DQ;\n}\n"),
+}
+
 # The TRUE original document order, across BOTH files, derived from where each group's marker
 # appears in app/bsn_archivo.html (the one file that never moves). Everything is in data.js order
 # then helpers.js order EXCEPT the one real interleave: fmtLongDate, then MESES+DIAS, then
@@ -150,6 +171,8 @@ _INSERTION_ORDER = [
     (_JS_DATA_GROUPS, DATA_JS, "SEASON_STATE+POOL_2026+POOL_RGM"),
     (_JS_DATA_GROUPS, DATA_JS, "POOL_PATCH"),
     (_JS_DATA_GROUPS, DATA_JS, "PLAYERS_NEW"),
+    (_JS_PLAYER_GROUPS, PLAYER_JS, "JUGADORES-archive"),
+    (_JS_PLAYER_GROUPS, PLAYER_JS, "DQ-tags"),
     (_JS_HELPERS_GROUPS, HELPERS_JS, "HELPERS"),
     (_JS_HELPERS_GROUPS, HELPERS_JS, "showTab"),
     (_JS_HELPERS_GROUPS, HELPERS_JS, "setHash+showView"),
@@ -182,12 +205,14 @@ def app_text() -> str:
 
     html = _LINK_RE.sub(sub_link, html)
 
-    for tag_re, path in ((_DATA_JS_SCRIPT_TAG_RE, DATA_JS), (_HELPERS_JS_SCRIPT_TAG_RE, HELPERS_JS)):
+    for tag_re, path in ((_DATA_JS_SCRIPT_TAG_RE, DATA_JS), (_HELPERS_JS_SCRIPT_TAG_RE, HELPERS_JS),
+                         (_PLAYER_JS_SCRIPT_TAG_RE, PLAYER_JS)):
         html, n = tag_re.subn("", html, count=1)
         assert n == 1, f"{path.name} script tag not found -- did index.html change?"
 
     segments_by_file = {DATA_JS: _js_segments(DATA_JS, _JS_DATA_GROUPS),
-                        HELPERS_JS: _js_segments(HELPERS_JS, _JS_HELPERS_GROUPS)}
+                        HELPERS_JS: _js_segments(HELPERS_JS, _JS_HELPERS_GROUPS),
+                        PLAYER_JS: _js_segments(PLAYER_JS, _JS_PLAYER_GROUPS)}
 
     for groups, path, name in _INSERTION_ORDER:
         _, anchor = groups[name]
