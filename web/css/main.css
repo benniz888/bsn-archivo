@@ -547,6 +547,18 @@ h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
 
 /* ---------- cards ---------- */
 .card{background:var(--deep);border:1px solid var(--line);border-radius:var(--r);padding:var(--sp-4);color:inherit}
+/* PHASE_2_REDESIGN step 4 (owner-approved, redesign-v2): the player page's Resumen/
+   Temporadas tabs. Same tricolor-underline device as nav.tabs's own active-tab mark
+   (background:var(--tri), 3px, the same token bolder blocks use in step 2) -- an
+   accent already established elsewhere, not a new one invented for this component. */
+.ptabs{display:flex;gap:var(--sp-5);border-bottom:1px solid var(--line-soft);margin-top:var(--sp-4_5)}
+.ptabs button{background:none;border:0;color:var(--ink-3);font-weight:700;font:inherit;
+  padding:10px 2px;cursor:pointer;position:relative;font-size:var(--fs-sm)}
+.ptabs button:hover{color:var(--ink)}
+.ptabs button[aria-selected="true"]{color:var(--blanco);font-weight:800}
+.ptabs button[aria-selected="true"]::after{content:"";position:absolute;left:0;right:0;bottom:-1px;
+  height:3px;border-radius:2px 2px 0 0;background:var(--tri)}
+.ptabs button:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:4px}
 /* editorial hero atop a player / team card (PHASE_8.3b) — one defining
    number + a sparkline; the strip / kv-list / roster below stay as they were. */
 .phero{display:flex;gap:var(--sp-4);flex-wrap:wrap;align-items:flex-start}

@@ -1791,12 +1791,48 @@ let MVP_ID=null, MVP_ALSO=null;
    "lo que falta" / coverage / MVP-warning copy from the file:// baseline
    (champions-only) to the deployed reality; MANIFEST.counts feeds the numbers. */
 let MANIFEST=null, DATA_TEXT=false;
+/* PHASE_2_REDESIGN step 4 (owner-approved, redesign-v2): Resumen/Temporadas tabs for the
+   player page. Pure show/hide -- #playerDetail and #playerExtra are never re-rendered or
+   destroyed on a tab switch, only [hidden] toggles here, so anything already inside them
+   (season-compare checkboxes, the /season deep-link card) survives a switch away and back
+   untouched (verified live, not assumed -- see the redesign-v2 PHASE 4 report). Both tabs
+   are always in the DOM (index.html, never built/rebuilt in JS) -- a player who lacks
+   Temporadas-side data still gets that tab, showing loadPlayerExtra()'s own real degraded
+   state ("sin ficha vinculada", empty season table, ...), not a hidden/missing tab.
+   Manual-activation ARIA tablist (WAI-ARIA APG): arrow keys move focus between tabs
+   without activating; Enter/Space activates the focused one. */
+function showPlayerTab(which){
+  const map={resumen:['ptab-resumen','playerDetail'],temporadas:['ptab-temporadas','playerExtra']};
+  const other=which==='resumen'?'temporadas':'resumen';
+  const [onId,onPanel]=map[which], [offId,offPanel]=map[other];
+  const onTab=document.getElementById(onId), offTab=document.getElementById(offId);
+  const onEl=document.getElementById(onPanel), offEl=document.getElementById(offPanel);
+  if(!onTab||!offTab||!onEl||!offEl) return;
+  onTab.setAttribute('aria-selected','true'); onTab.tabIndex=0;
+  offTab.setAttribute('aria-selected','false'); offTab.tabIndex=-1;
+  onEl.hidden=false; offEl.hidden=true;
+}
+function playerTabKeydown(e){
+  const order=['ptab-resumen','ptab-temporadas'];
+  const i=order.indexOf(e.target.id); if(i<0) return;
+  if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+    e.preventDefault();
+    const next=order[(i+(e.key==='ArrowRight'?1:-1)+order.length)%order.length];
+    order.forEach(t=>{ document.getElementById(t).tabIndex=-1; });
+    const nt=document.getElementById(next); nt.tabIndex=0; nt.focus();
+  }else if(e.key==='Enter'||e.key===' '){
+    e.preventDefault();
+    showPlayerTab(e.target.id==='ptab-resumen'?'resumen':'temporadas');
+  }
+}
 function showPlayer(name,id,season){
   [id,name]=survivorOf(id,name);
   showView('jugadores','buscar',{noScroll:true,noHash:true});   /* a player card lives in the Buscar view */
   buildPlayerIndex();   /* before the hash: playerSlug() needs the curated pool */
   setHash('jugadores/jugador/'+playerSlug(name,id)+(season!=null?'/'+season:''));
   loadPlayerExtra(name,id,season);   /* 5D.3b/c — async, fills #playerExtra; season_detail_spec.md §4 */
+  const pt=$('#playerTabs'); if(pt) pt.hidden=false;
+  showPlayerTab(season!=null?'temporadas':'resumen');   /* a /season deep link opens on Temporadas, not Resumen */
   const p=PINDEX.find(x=>norm(x.name)===norm(name));
   const host=$('#playerDetail');
   if(!p){

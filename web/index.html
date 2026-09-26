@@ -54,7 +54,7 @@
      short numerals/titles only -- see main.css's own comment at the --font-display rule
      for the exact selector list and why. Reuses the preconnects above (same two hosts). -->
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css?v=1adaa1866a43">
+<link rel="stylesheet" href="css/main.css?v=1eb73ab60775">
 </head>
 <body>
 <div class="splash" id="splash" role="status" aria-live="polite" aria-label="Cargando el archivo">
@@ -283,8 +283,18 @@
     <div id="jugBuscar">
     <div id="playerSearch"></div>
     <div id="playerIndex"></div>
-    <div id="playerDetail"></div>
-    <div id="playerExtra"></div>
+    <!-- PHASE_2_REDESIGN step 4 (owner-approved, redesign-v2): Resumen/Temporadas tabs.
+         Both always in the DOM (never rebuilt per player); manual-activation ARIA tablist
+         (arrow keys move focus, Enter/Space activates) -- see showPlayerTab()/
+         playerTabKeydown() in tabs.js. Hidden until a player actually loads (showPlayer()
+         un-hides it); the two tabpanels below are #playerDetail/#playerExtra themselves,
+         unchanged ids, so nothing that already targets them by id had to change. -->
+    <div class="ptabs" id="playerTabs" hidden role="tablist" aria-label="Secciones de la ficha del jugador" onkeydown="playerTabKeydown(event)">
+      <button type="button" role="tab" id="ptab-resumen" aria-selected="true" aria-controls="playerDetail" tabindex="0" onclick="showPlayerTab('resumen')">Resumen</button>
+      <button type="button" role="tab" id="ptab-temporadas" aria-selected="false" aria-controls="playerExtra" tabindex="-1" onclick="showPlayerTab('temporadas')">Temporadas</button>
+    </div>
+    <div id="playerDetail" role="tabpanel" aria-labelledby="ptab-resumen" tabindex="0"></div>
+    <div id="playerExtra" role="tabpanel" aria-labelledby="ptab-temporadas" tabindex="0" hidden></div>
 
     <h3 class="sec">Líderes de carrera</h3>
     <p class="lede">Los totales de por vida: puntos, rebotes y asistencias acumulados en toda una carrera.</p>
@@ -442,7 +452,7 @@
 <script src="js/player.js?v=a184c7ce7c97"></script>
 <script src="js/data-quality.js?v=0dbf5b135d19"></script>
 <script src="js/games.js?v=69446642c205"></script>
-<script src="js/tabs.js?v=d5ce8fe889b0"></script>
+<script src="js/tabs.js?v=690cf9742954"></script>
 <script src="js/init.js?v=064004dbc89b"></script>
 <script>
 
