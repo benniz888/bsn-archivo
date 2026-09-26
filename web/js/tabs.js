@@ -1107,7 +1107,7 @@ function buildHero(){
   <div class="hero">
     <div class="ed-eye">BSN · ${esc(eye)}</div>
     <div class="herotop">
-      <div class="clock"><div class="n">${n}</div><div class="u">${esc(u)}</div></div>
+      <div class="clock tri-block tri-block-azul"><div class="n">${n}</div><div class="u">${esc(u)}</div></div>
       <div class="herotext">
         <h2>${esc(h)}</h2>
         <p>${esc(p)}</p>
@@ -1417,13 +1417,18 @@ function showSeason(y,btn){
   const k=champOf[y], r=ruOf[y];
   const host=$('#readout');
   if(!k){
-    host.innerHTML=`<div class="yr">${y}</div><div>
+    host.innerHTML=`<div class="yr tri-block tri-block-azul">${y}</div><div>
       <div class="win">Sin campeón registrado</div>
       <div class="lose">Esta temporada es un hueco del archivo, no un blanco.</div>
       <div class="meta">${esc(NOTES[y]||'Ninguna fuente consultada nombra un campeón para este año.')}</div></div>`;
   }else{
     const f=F[k];
-    host.innerHTML=`<div class="yr" style="color:${f.c1}">${y}</div>
+    /* PHASE_2_REDESIGN step 2: this numeral used to be tinted to the champion's own
+       club color (style="color:${f.c1}"). A solid flag-color block needs a text color
+       verified for contrast against ITS OWN background -- an arbitrary per-club color
+       can't be pre-checked that way, so the tint is dropped here in favor of .tri-block's
+       own white-on-flag-color pairing (WCAG-checked, see the redesign-v2 PHASE 2 report). */
+    host.innerHTML=`<div class="yr tri-block tri-block-azul">${y}</div>
       <div style="min-width:0">
         <div class="win">${esc(f.name)}</div>
         <div class="lose">${r?'venció a '+esc(F[r].name):'subcampeón no registrado'}</div>
@@ -3284,9 +3289,14 @@ function hubAsk(e){
   runAsk(v);
 }
 
-/* one editorial block: eyebrow · headline stat + visual · phrase · context · action */
+/* one editorial block: eyebrow · headline stat + visual · phrase · context · action.
+   PHASE_2_REDESIGN step 2: o.lead's own stat (the one full-width featured card per
+   hub render -- "18 títulos de Bayamón" today) gets the solid tricolor-block treatment;
+   every other (non-lead) stat tile in the grid is untouched, so this stays one real
+   spot, not every card on the page. */
 function edBlock(o){
-  const stat = (o.stat!=null && o.stat!=='') ? `<div class="ed-stat">${esc(String(o.stat))}</div>` : '';
+  const stat = (o.stat!=null && o.stat!=='')
+    ? `<div class="ed-stat${o.lead?' tri-block tri-block-rojo':''}">${esc(String(o.stat))}</div>` : '';
   const viz  = o.viz ? `<span class="ed-viz">${o.viz}</span>` : '';
   return `<button class="ed${o.lead?' ed-lead':''}" onclick="${o.go}">
     <div class="ed-eye">${esc(o.eye)}</div>

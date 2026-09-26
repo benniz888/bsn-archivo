@@ -265,6 +265,40 @@ html.theming input,html.theming select,html.theming textarea{
 [data-theme="light"] .tri,
 [data-theme="light"] .bottombar button[aria-selected="true"]::before{box-shadow:inset 0 0 0 1px rgba(11,23,48,.10)}
 
+/* PHASE_2_REDESIGN step 2 (owner-approved, redesign-v2): the tricolor used
+   more boldly -- a solid flag-color fill behind a stat, additive to (never
+   replacing) .tri/.tri-fade above, which stay exactly as they were. Applied
+   to exactly 3 real spots (see the JS): the home hero's day-count, the home
+   hub's one featured/lead stat, and the Historia decade-readout year.
+
+   Text is always --flag-w (literal #FFFFFF, never flips with theme) -- NOT
+   --blanco ("max contrast text", themed). --blanco was checked and REJECTED:
+   in light theme, --blanco (#08122A, near-black) on light theme's --azul is
+   2.58:1, failing even the 3:1 floor for large bold text. --flag-w passes
+   the 3:1 large-text floor against every rojo/azul x theme combination
+   (computed: white/dark-rojo 4.14:1, white/dark-azul 5.51:1, white/light-
+   rojo 5.90:1, white/light-azul 7.19:1 -- all >=3:1).
+
+   .tri-block-rojo is used ONLY where the block holds nothing but the large
+   bold numeral: white-on-dark-theme-rojo is 4.14:1, which clears 3:1 but
+   falls short of 4.5:1, so rojo is never used where a smaller label shares
+   the block. The one spot with a numeral + small label together (the hero's
+   day-count + its "DÍAS PARA..." unit line) uses azul instead, which clears
+   4.5:1 in both themes (5.51:1 dark, 7.19:1 light) -- see the redesign-v2
+   PHASE 2 report for the full numbers and how this was decided. */
+.tri-block{border-radius:var(--r-sm);padding:var(--sp-2) var(--sp-3)}
+.tri-block-rojo{background:var(--rojo);color:var(--flag-w)}
+.tri-block-azul{background:var(--azul);color:var(--flag-w)}
+/* .clock .u and .readout .yr each declare their OWN color directly (not just
+   inherited) -- .clock .u{color:var(--ink-2)} and .readout .yr{color:var(--ink-3)},
+   both (0,2,0). A same-specificity .tri-block-azul .u rule loses that tie by
+   source order (this block sits before both in the sheet); found empirically via
+   computed styles, not assumed -- see the redesign-v2 PHASE 2 report. Fixed by
+   writing the exact combined selector so it's unambiguously more specific (0,3,0),
+   correct regardless of where in the sheet either rule sits. */
+.clock.tri-block-azul .u{color:var(--flag-w)}
+.readout .yr.tri-block-azul{color:var(--flag-w)}
+
 /* ---------- top bar ---------- */
 header.top{position:sticky;top:0;z-index:60;background:var(--scrim);
   -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);
