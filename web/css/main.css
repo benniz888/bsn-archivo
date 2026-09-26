@@ -202,14 +202,43 @@ body{
   padding-bottom:calc(var(--bar) + env(safe-area-inset-bottom));
 }
 @media(min-width:860px){body{padding-bottom:0}}
-/* one family — the tricolor rule carries the identity, so headings lean on
-   weight + negative tracking rather than a separate display face. */
+/* Through PHASE_1_SPLIT this was one family everywhere — the tricolor rule
+   carried the identity, headings leaned on weight + negative tracking
+   rather than a separate display face. PHASE_2_REDESIGN (branch
+   redesign-v2) step 1, owner-approved, narrows that: Oswald now appears,
+   but ONLY on the short numeral/title selectors in the --font-display
+   rule below, never on body-length text. h1-h4 here stay Inter — this
+   tag-level rule is intentionally left alone (some h4s in this app hold
+   real prose, e.g. "En esta fecha"'s own unclassed <h4>, and nothing
+   distinguishes them from a short title at the tag level), so a heading
+   only gets Oswald if it also matches one of the specific selectors below. */
 h1,h2,h3,h4{font-family:inherit;font-weight:800;
   letter-spacing:-.02em;line-height:var(--lh-head);margin:0}
 /* big numerals — Inter wants tighter tracking and true tabular figures at
    display size, where Barlow Condensed used to give the compression. */
 .clock .n,.strip .n,.seriesrow .sc,.answer .abig,.readout .yr,.ed-stat,.hubhead{
   letter-spacing:-.03em;font-feature-settings:"tnum" 1,"cv05" 1}
+/* PHASE_2_REDESIGN step 1 (owner-approved, redesign-v2): Oswald, condensed
+   display face, for short numerals/titles ONLY. Every selector below was
+   checked against its real call site (grep across web/js/*.js), not
+   assumed from its class name -- each one only ever holds a number, a
+   score, a year, or a short (2-6 word) title/name. `.answer .abig` is
+   deliberately NOT here even though it sits in the shared tracking rule
+   above: it's a free-form "big answer" slot for the Ask feature, and
+   while every current caller happens to pass short text, nothing in the
+   code constrains that going forward -- treated as ambiguous, skipped
+   per the owner's own instruction rather than guessed. Falls back through
+   two more condensed faces, then the system sans, so a slow/failed
+   Google Fonts load never blanks text. Every selector below already
+   carries font-weight:800 from its own rule or from h1-h4 above; Oswald
+   has no 800 weight (only 500/600/700 loaded), so the browser's normal
+   font-weight matching renders these at Oswald 700 -- expected, not a
+   bug, flagged in the redesign-v2 STEP 1 report. */
+:root{--font-display:'Oswald',Impact,'Arial Narrow',sans-serif}
+.clock .n,.strip .n,.seriesrow .sc,.readout .yr,.ed-stat,.hubhead,
+.big,h3.sec,h4.sub,.viewhead,.markname,.splashname,.stagetitle,
+.tiletitle,.primerhead h4,.phero-body h2,.herotext h2{
+  font-family:var(--font-display)}
 a{color:var(--azul-hi);text-decoration-thickness:1px;text-underline-offset:2px}
 a:hover{color:var(--blanco)}
 button{font:inherit;color:inherit}
