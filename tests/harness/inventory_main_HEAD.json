@@ -2133,6 +2133,18 @@
       "kind": "function",
       "name": "hydrate",
       "line": 8420
+    },
+    {
+      "kind": "function",
+      "name": "showPlayerTab",
+      "line": 1804,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "playerTabKeydown",
+      "line": 1815,
+      "file": "web/js/tabs.js"
     }
   ]
 }
