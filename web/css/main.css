@@ -579,8 +579,24 @@ h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
 @media(min-width:960px){.g3{grid-template-columns:repeat(3,1fr)}}
 
 /* ---------- hero: the offseason clock ---------- */
+/* PHASE_2_REDESIGN step 5 (owner-approved, redesign-v2): a decorative basketball-arc
+   motif behind the hero -- concentric ring lines radiating from the top-right corner
+   (repeating-radial-gradient, a second background-image layer stacked over the
+   existing radial gradient below; CSS layer order puts the FIRST-listed image on
+   top, so the arcs sit visually above the gradient, both still behind the real
+   content, which is a separate stacking context entirely). --line is already the
+   app's own subtle hairline/border tone and flips correctly per theme on its own,
+   so this needed no new token and no [data-theme="light"] override. Purely additive:
+   no markup changed, no copy changed, the real dynamic content (day-count, champion
+   line, titleComb() spark) is untouched. Simplified away below 640px (the .hero card
+   itself is much narrower there; dense rings at that size read as clutter, not
+   texture) -- see the max-width rule right after this one. */
 .hero{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
-  background:radial-gradient(130% 130% at 10% -8%,var(--hero-a),var(--hero-c) 78%)}
+  background-image:repeating-radial-gradient(circle at 100% 0%,transparent 0 63px,var(--line) 63px 64.5px),
+    radial-gradient(130% 130% at 10% -8%,var(--hero-a),var(--hero-c) 78%)}
+@media(max-width:639px){
+  .hero{background-image:radial-gradient(130% 130% at 10% -8%,var(--hero-a),var(--hero-c) 78%)}
+}
 .hero .ed-eye{padding:var(--sp-4) var(--sp-4_5) 0}
 .herotop{padding:var(--sp-2) var(--sp-4_5) var(--sp-4);display:flex;gap:var(--sp-4_5);flex-wrap:wrap;align-items:flex-end}
 .clock{flex:none}
