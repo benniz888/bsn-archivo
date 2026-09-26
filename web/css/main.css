@@ -457,7 +457,11 @@ nav.tabs{border-top:1px solid var(--line-soft);position:relative}
 .cmpgrouplab{font-size:var(--fs-3xs);letter-spacing:.1em;text-transform:uppercase;font-weight:700;
   color:var(--ink-3);margin:var(--sp-3) 0 6px}
 .cmpgrouplab:first-child{margin-top:0}
-.cmprow{margin-bottom:9px}
+/* PHASE_2_REDESIGN step 3: the same density pass's closest analog here --
+   Comparar has no <table>/th/td, so its own row rhythm (not a padding
+   value) is what tightened, proportionally to the table's th/td change
+   above. */
+.cmprow{margin-bottom:7px}
 .cmplab{font-size:var(--fs-2xs);color:var(--ink-2);margin-bottom:3px}
 .cmpbarline{display:flex;align-items:center;gap:var(--sp-2);margin-bottom:3px}
 .cmptrack{flex:1;height:9px;border-radius:99px;background:var(--line-soft);overflow:hidden}
@@ -624,17 +628,31 @@ h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
 /* ---------- tables ----------
    Density modelled on basketball-reference: tight rows, a sticky first
    column so the name/rank stays put while the numbers scroll, a sticky
-   header + zebra once a table is long enough to scroll vertically. */
+   header + zebra once a table is long enough to scroll vertically.
+   PHASE_2_REDESIGN step 3 (owner-approved, redesign-v2): a further,
+   Databallr-style density pass -- tighter th/td padding. This is the ONE
+   shared table style every <table> in the app uses (drawDQTable, standings,
+   career leaders, records, ...), not a Calidad/Comparar-only rule -- there's
+   no separate table CSS to scope this to, so every table in the app got
+   denser, not just the two this phase was verified against. Two of the
+   three density characteristics named for this pass were already here and
+   left alone: th's letter-spacing (.06em, uppercase) and the sort-arrow
+   affordance (th .arrow, ▲/▼ on the active sort column, tabs.js buildTable()
+   line ~1015). Header font-size (--fs-3xs, 11px) is also unchanged -- it's
+   already the smallest step in the whole type scale; shrinking it further
+   would mean inventing a new token below the scale's own floor, and risks
+   exactly the 390px-readability regression this phase was told to watch
+   for, not proven safe by anything checked here. */
 .tblwrap{position:relative;overflow:auto;border:1px solid var(--line);border-radius:var(--r);
   margin-top:var(--sp-3);background:var(--deep);-webkit-overflow-scrolling:touch}
 .tblwrap.tall{max-height:min(68vh,600px)}
 table{border-collapse:collapse;width:100%;font-size:var(--fs-xs);min-width:360px}
 th{background:var(--raise);color:var(--ink-2);font-weight:700;font-size:var(--fs-3xs);letter-spacing:.06em;
-  text-transform:uppercase;text-align:left;padding:8px 11px;border-bottom:1px solid var(--line);white-space:nowrap}
+  text-transform:uppercase;text-align:left;padding:6px 9px;border-bottom:1px solid var(--line);white-space:nowrap}
 th.sortable{cursor:pointer;user-select:none}
 th.sortable:hover{color:var(--blanco)}
 th .arrow{opacity:.55;font-size:9px;margin-left:3px}
-td{padding:6px 11px;border-bottom:1px solid var(--line-soft);white-space:nowrap}
+td{padding:4px 9px;border-bottom:1px solid var(--line-soft);white-space:nowrap}
 tr:last-child td{border-bottom:0}
 tbody tr:hover td{background:var(--raise)}
 td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
