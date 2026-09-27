@@ -54,7 +54,7 @@
      short numerals/titles only -- see main.css's own comment at the --font-display rule
      for the exact selector list and why. Reuses the preconnects above (same two hosts). -->
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css?v=8794dcc2ba9d">
+<link rel="stylesheet" href="css/main.css?v=7c6156fce2a5">
 </head>
 <body>
 <div class="splash" id="splash" role="status" aria-live="polite" aria-label="Cargando el archivo">
@@ -114,12 +114,18 @@
       <span id="clubPillCrest"></span><span id="clubPillName">Mi club</span><span class="plus">+</span>
     </button>
   </div>
-  <nav class="tabs" aria-label="Secciones">
-    <div class="tabscroll" id="tabscroll" role="tablist"></div>
-    <div id="megaPanel" class="mega"></div>
-  </nav>
 </header>
 
+<!-- PHASE_2_REDESIGN step 7 (owner-approved, redesign-v2): nav.tabs + the mega-menu
+     retired, replaced by a persistent left rail (.rail, a real flex item so it makes
+     actual layout room, not an overlay -- .shellmain gets the remaining width and does
+     its own centering inside that, same as .wrap always has). header.top stays full-
+     width, outside .shell entirely -- deliberate, the logo/top bar was never
+     rail-relative either. .bottombar stays a sibling of .shell, outside it, exactly
+     where it always was -- untouched, still phone-only. -->
+<div class="shell">
+<nav class="rail" id="rail" role="tablist" aria-orientation="vertical" aria-label="Secciones" onkeydown="railKeydown(event)"></nav>
+<div class="shellmain">
 <main class="wrap">
 
 <!-- ═══════════ INICIO — home + the live "Ahora" view (PHASE_8) ═══════════ -->
@@ -445,6 +451,8 @@
     ¿Ves un error o quieres que retiremos algo? Escríbenos a <a href="mailto:benniz.8008@gmail.com" target="_blank" rel="noopener">benniz.8008@gmail.com</a> o por Instagram <a href="https://www.instagram.com/bennizpr/" target="_blank" rel="noopener">@bennizpr</a>.</p>
   </footer>
 </div>
+</div><!-- /.shellmain -->
+</div><!-- /.shell -->
 
 <div class="bottombar" id="bottombar" role="tablist" aria-label="Navegación principal"></div>
 <script src="js/data.js?v=5a842dfd174e"></script>
@@ -452,7 +460,7 @@
 <script src="js/player.js?v=a184c7ce7c97"></script>
 <script src="js/data-quality.js?v=0dbf5b135d19"></script>
 <script src="js/games.js?v=69446642c205"></script>
-<script src="js/tabs.js?v=690cf9742954"></script>
+<script src="js/tabs.js?v=e1cba8e4b4d4"></script>
 <script src="js/init.js?v=064004dbc89b"></script>
 <script>
 

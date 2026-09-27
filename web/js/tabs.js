@@ -763,23 +763,30 @@ const BOTTOM=TABS.map(t=>t[0]);          /* mobile bottom bar — all 6 */
 const PANELS=[...TABS.map(t=>t[0]),'perfil'];
 let CURRENT='inicio';
 
+/* PHASE_2_REDESIGN step 7 (owner-approved, redesign-v2): rail items, same TABS/NAV
+   data the bottombar loop just below already uses (same icon paths, so the rail and
+   the phone bar always agree visually) -- NAV's own tuples already carry the icon
+   path as their 3rd element, so no TABS.find() lookup is needed here the way the
+   bottombar loop needs one. role="tab"/aria-selected/aria-controls kept exactly as
+   nav.tabs had them; aria-haspopup/aria-expanded dropped (the mega-menu they served
+   is retired -- verified first, live, that every one of its destinations already has
+   an equivalent subnav pill once you're on that section's page). Roving tabindex
+   (0 on the active tab, -1 on the rest) is set here at build time and kept in sync
+   on every later activation by _showPanel()'s own NAV loop, not duplicated here. */
 function buildNav(){
-  const s=$('#tabscroll'); s.innerHTML='';
-  NAV.forEach(([id,label])=>{
+  const s=$('#rail'); s.innerHTML='';
+  NAV.forEach(([id,label,d])=>{
     const b=el('a');
     b.href='#'+id;
-    b.id='tab-'+id; b.textContent=label; b.setAttribute('role','tab');
+    b.id='tab-'+id; b.setAttribute('role','tab');
     b.setAttribute('aria-selected',id===CURRENT?'true':'false');
     b.setAttribute('aria-controls',id);
-    b.setAttribute('aria-haspopup','true'); b.setAttribute('aria-expanded','false');
+    b.tabIndex=id===CURRENT?0:-1;
+    b.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="raillabel">${esc(label)}</span>`;
     b.onclick=(e)=>{
       if(e.ctrlKey||e.metaKey||e.shiftKey||e.button!==0) return;   /* let the browser open a new tab/window natively */
-      e.preventDefault(); closeMega(); showTab(id);
+      e.preventDefault(); showTab(id);
     };
-    b.onkeydown=(e)=>{ if(e.key===' '){ e.preventDefault(); closeMega(); showTab(id); } };
-    b.onmouseenter=()=>openMega(id);
-    b.onmouseleave=scheduleClose;
-    b.onfocus=()=>openMega(id);
     s.appendChild(b);
   });
   const bb=$('#bottombar'); bb.innerHTML='';
@@ -796,6 +803,25 @@ function buildNav(){
     b.onkeydown=(e)=>{ if(e.key===' '){ e.preventDefault(); showTab(id); } };
     bb.appendChild(b);
   });
+}
+/* PHASE_2_REDESIGN step 7: rail keyboard nav, same manual-activation model as
+   Phase 4's showPlayerTab()/playerTabKeydown() (ArrowUp/ArrowDown move focus without
+   activating, wrapping at both ends; Enter/Space activates the focused tab) -- a
+   vertical tablist uses Up/Down per WAI-ARIA APG, not Left/Right. Wired via
+   onkeydown="railKeydown(event)" on #rail itself (index.html), same delegation
+   pattern the player tabs use. */
+function railKeydown(e){
+  const order=NAV.map(([id])=>'tab-'+id);
+  const i=order.indexOf(e.target.id); if(i<0) return;
+  if(e.key==='ArrowDown'||e.key==='ArrowUp'){
+    e.preventDefault();
+    const next=order[(i+(e.key==='ArrowDown'?1:-1)+order.length)%order.length];
+    order.forEach(t=>{ const el=document.getElementById(t); if(el) el.tabIndex=-1; });
+    const nt=document.getElementById(next); if(nt){ nt.tabIndex=0; nt.focus(); }
+  }else if(e.key==='Enter'||e.key===' '){
+    e.preventDefault();
+    showTab(e.target.id.replace(/^tab-/,''));
+  }
 }
 
 /* ============================================================
@@ -834,11 +860,12 @@ const NAV_MENU={
     ['Referencia',[['Glosario','glosario']]]
   ],feat:'gap'}
 };
-let MEGA_TAB=null;
+/* PHASE_2_REDESIGN step 7: MEGA_TAB retired along with the mega-menu it tracked
+   (the hover-dropdown that used to set it) -- megaGo()'s own callers are now only
+   megaFeat()'s buttons on a section's own landing page (paintLandingFeats(), still
+   very much in use), so CURRENT is always the right "from" section. */
 function megaGo(target){
-  const from=MEGA_TAB||CURRENT;
-  closeMega();
-  let s=from, v=target;
+  let s=CURRENT, v=target;
   if(target.indexOf('/')>-1){ const parts=target.split('/'); s=parts[0]; v=parts[1]; }
   showView(s,v);
   if(s==='archivo'&&v==='preguntar'){ const i=$('#askInput'); if(i) setTimeout(()=>i.focus(),50); }
@@ -866,7 +893,7 @@ function megaFeat(k){
       <div class="ft" style="margin-top:2px">Georgie Torres ⇄ Mario Morales</div>
       ${mv?`<div class="mf-viz">${mv}</div>`:''}
       <div class="fd">Dos o tres jugadores lado a lado — las casillas vacías son huecos del archivo, no ceros.</div>
-      <button class="btn" style="padding:6px 12px;font-size:12px" onclick="closeMega();cmpPreset('Georgie Torres','Mario Morales')">Abrir</button>`;
+      <button class="btn" style="padding:6px 12px;font-size:12px" onclick="cmpPreset('Georgie Torres','Mario Morales')">Abrir</button>`;
   }
   if(k==='myteam'){
     const p=prof(), f=p.club&&F[p.club]?F[p.club]:null;
@@ -876,7 +903,7 @@ function megaFeat(k){
         ${f.won.length?`<div class="mf-viz" style="color:${f.c1}">${titleComb(f,{w:180,h:22,gap:1})}</div>`:''}
         <div class="fd">${f.won.length?f.won.length+(f.won.length===1?' título':' títulos'):'sin títulos'} · el archivo se reordena a su alrededor</div>`
       : `<div class="fd" style="margin-top:2px">Escoge un club y el archivo se reordena a su alrededor — tu equipo primero en cada tabla.</div>`}
-      <button class="btn" style="padding:6px 12px;font-size:12px" onclick="closeMega();showTab('perfil')">${f?'Cambiar':'Escoger club'}</button>`;
+      <button class="btn" style="padding:6px 12px;font-size:12px" onclick="showTab('perfil')">${f?'Cambiar':'Escoger club'}</button>`;
   }
   if(k==='daily'){
     const n=(typeof puzzleNo==='function')?puzzleNo():'—';
@@ -907,37 +934,14 @@ function paintLandingFeats(){
   });
 }
 
-let megaCloseT=null;
-function scheduleClose(){ clearTimeout(megaCloseT); megaCloseT=setTimeout(closeMega,140); }
-function cancelClose(){ clearTimeout(megaCloseT); }
-function closeMega(){
-  cancelClose();
-  const p=$('#megaPanel'); if(p){ p.classList.remove('open'); }
-  MEGA_TAB=null;
-  NAV.forEach(([t])=>{ const b=$('#tab-'+t); if(b) b.setAttribute('aria-expanded','false'); });
-}
-function openMega(id){
-  cancelClose();
-  const menu=NAV_MENU[id], p=$('#megaPanel'); if(!menu||!p) return;
-  if(matchMedia('(max-width:859px)').matches) return;
-  MEGA_TAB=id;
-  const cols=menu.cols.map(([h,items])=>
-    `<div class="mega-col"><h4>${esc(h)}</h4>${items.map(([l,tg])=>{
-      const href='#'+(tg.indexOf('/')>-1?tg:id+'/'+tg);
-      const call=`megaGo(${JSON.stringify(tg).replace(/"/g,'&quot;')})`;
-      return `<a href="${href}" onclick="if(event.ctrlKey||event.metaKey||event.shiftKey||event.button!==0)return;event.preventDefault();${call}" onkeydown="if(event.key===' '){event.preventDefault();${call}}">${esc(l)}</a>`;
-    }).join('')}</div>`).join('');
-  p.innerHTML=`<div class="mega-inner">
-    <div class="mega-cols">${cols}</div>
-    <div class="mega-feat">${megaFeat(menu.feat)}</div>
-  </div>`;
-  p.classList.add('open');
-  p.onmouseenter=cancelClose;
-  p.onmouseleave=scheduleClose;
-  NAV.forEach(([t])=>{ const b=$('#tab-'+t); if(b) b.setAttribute('aria-expanded', t===id?'true':'false'); });
-}
-document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeMega(); });
-window.addEventListener('scroll',()=>{ if($('#megaPanel')&&$('#megaPanel').classList.contains('open')) closeMega(); },{passive:true});
+/* PHASE_2_REDESIGN step 7: the mega-menu's own open/close machinery
+   (openMega/closeMega/scheduleClose/cancelClose/megaCloseT, the #megaPanel element,
+   the Escape-key and scroll-close listeners) is retired along with it -- verified
+   first, live, that every destination it offered already has an equivalent subnav
+   pill once you're on that section's page (redesign-v2 PHASE 7 report). megaFeat()/
+   megaGo()/NAV_MENU/paintLandingFeats() all stay: the featured block they build is
+   still very much in use, just on each section's own landing page, never through a
+   hover dropdown. */
 
 /* toggle the <section> panels + nav aria; returns whether the section
    actually changed. The public entry is showTab(); deep links and the
@@ -952,7 +956,7 @@ function _showPanel(id,noScroll){
   }
   NAV.forEach(([t])=>{
     const btn=document.getElementById('tab-'+t);
-    if(btn) btn.setAttribute('aria-selected',t===id?'true':'false');
+    if(btn){ btn.setAttribute('aria-selected',t===id?'true':'false'); btn.tabIndex=t===id?0:-1; }
   });
   document.querySelectorAll('#bottombar button').forEach((b,i)=>{
     b.setAttribute('aria-selected',BOTTOM[i]===id?'true':'false');

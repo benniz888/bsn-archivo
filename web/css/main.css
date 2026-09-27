@@ -42,6 +42,10 @@
      600-900px on desktop doesn't read as three giant color blocks. px stops
      (not %) so this works at any container width without per-instance math. */
   --tri-fade:linear-gradient(90deg,var(--rojo) 0 14px,var(--flag-w) 14px 28px,var(--azul) 28px 42px,var(--line) 60px);
+  /* PHASE_2_REDESIGN step 7: the same three stops, rotated for the rail's vertical
+     active-tab mark (--tri itself stays 90deg -- .tri and the bottombar's own
+     device both still read it horizontally, unchanged). */
+  --tri-v:linear-gradient(180deg,var(--rojo) 0 33.3%,var(--flag-w) 33.3% 66.6%,var(--azul) 66.6% 100%);
 
   /* text */
   --ink:#EEF3FB;
@@ -252,7 +256,7 @@ button{font:inherit;color:inherit}
    janks (worse on desktop, where every folded section is expanded). Everything
    not listed just snaps in one frame; at these sizes that reads as crisp. */
 html.theming,html.theming body,
-html.theming header.top,html.theming nav.tabs,html.theming .bottombar,
+html.theming header.top,html.theming .rail,html.theming .bottombar,
 html.theming .card,html.theming .btn,html.theming .chip,html.theming .tag,
 html.theming input,html.theming select,html.theming textarea{
   transition:background-color var(--dur) linear,border-color var(--dur) linear,
@@ -332,34 +336,33 @@ html.standalone .toprow{padding-top:6px;padding-bottom:12px}
   stroke-linecap:round;stroke-linejoin:round}
 .clubpill .plus{color:var(--rojo);font-weight:700}
 
-/* ---------- nav ---------- */
-/* The nav lives inside the sticky header so the two never
-   overlap at any font size — pinning the nav to a hard-coded
-   top offset breaks the moment the header grows. */
-nav.tabs{border-top:1px solid var(--line-soft);position:relative}
-
-/* ---------- mega-menu (PHASE_8.2) — Apple/Airbnb dropdown ----------
-   Desktop only. Hover or keyboard-focus a top item; the panel drops with
-   grouped link columns + one featured block. Hidden on mobile — there the
-   bottom bar goes straight to the section. */
-.mega{position:absolute;top:100%;left:0;right:0;z-index:55;
-  padding:0 calc(16px + env(safe-area-inset-right)) 0 calc(16px + env(safe-area-inset-left));
-  opacity:0;transform:translateY(-6px);pointer-events:none;
-  transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease)}
-.mega.open{opacity:1;transform:none;pointer-events:auto}
-.mega-inner{max-width:var(--maxw);margin:0 auto;background:var(--deep);
-  border:1px solid var(--line);border-top:0;border-radius:0 0 14px 14px;
-  box-shadow:0 16px 40px var(--shadow);
-  display:grid;grid-template-columns:1fr minmax(220px,300px);gap:var(--sp-5);
-  padding:var(--sp-5) var(--sp-5) var(--sp-6)}
-.mega-cols{display:flex;flex-wrap:wrap;gap:var(--sp-5) var(--sp-6)}
-.mega-col{min-width:150px}
-.mega-col h4{font-size:var(--fs-3xs);letter-spacing:.08em;text-transform:uppercase;
-  color:var(--ink-3);font-weight:700;margin-bottom:var(--sp-2)}
-.mega-col a,.mega-col button{display:block;width:100%;text-align:left;background:none;border:0;
-  color:var(--ink-2);font:inherit;font-size:var(--fs-sm);padding:5px 0;cursor:pointer;
-  border-radius:var(--r-sm);transition:color var(--dur-fast)}
-.mega-col a:hover,.mega-col button:hover{color:var(--blanco)}
+/* ---------- rail (PHASE_2_REDESIGN step 7, owner-approved, redesign-v2) ----------
+   Replaces nav.tabs (formerly inside header.top) AND the mega-menu below (retired
+   outright -- verified first, live, that every mega-menu destination already has an
+   equivalent subnav pill once you're on that section's page; see the redesign-v2
+   PHASE 7 report). .shell/.shellmain make the rail a REAL flex item, not a
+   position:fixed overlay -- .shellmain gets the actual remaining width and .wrap's
+   own max-width/margin:auto centers within THAT, same centering logic .wrap always
+   had, just now relative to a narrower box instead of the full viewport. */
+.shell{display:flex}
+.shellmain{flex:1;min-width:0}
+.rail{flex:none;display:none;flex-direction:column;gap:2px;
+  position:sticky;top:61px;height:calc(100vh - 61px);overflow-y:auto;
+  width:64px;padding:var(--sp-3) 0;background:var(--scrim);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-right:1px solid var(--line)}
+@media(min-width:860px){.rail{display:flex}}
+@media(min-width:1120px){.rail{width:220px;padding:var(--sp-4) var(--sp-2)}}
+.rail a{position:relative;display:flex;align-items:center;justify-content:center;gap:var(--sp-3);
+  color:var(--ink-3);text-decoration:none;font-weight:700;font-size:var(--fs-sm);
+  padding:13px 0;cursor:pointer}
+@media(min-width:1120px){.rail a{justify-content:flex-start;padding:13px var(--sp-4)}}
+.rail a svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;flex:none}
+.rail a .raillabel{display:none}
+@media(min-width:1120px){.rail a .raillabel{display:inline;white-space:nowrap}}
+.rail a:hover{color:var(--ink);background:var(--raise)}
+.rail a[aria-selected="true"]{color:var(--blanco);font-weight:800}
+.rail a[aria-selected="true"]::before{content:"";position:absolute;left:0;top:0;bottom:0;
+  width:3px;background:var(--tri-v)}
 .mega-feat{background:var(--raise);border:1px solid var(--line);border-radius:12px;
   padding:var(--sp-4);display:flex;flex-direction:column;gap:var(--sp-1);align-self:start}
 .mega-feat .fx{font-size:var(--fs-3xs);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
@@ -372,8 +375,6 @@ nav.tabs{border-top:1px solid var(--line-soft);position:relative}
 .mega-feat .mf-dot{color:var(--ink-3)}
 .mega-feat .mf-dot svg{display:block;width:34px;height:34px}
 .mega-feat button.btn,.mega-feat a.btn{margin-top:var(--sp-2)}
-@media(prefers-reduced-motion:reduce){.mega{transition:none}}
-@media(max-width:859px){.mega{display:none}}
 
 /* ── Section view router (PHASE_8.2b) ─────────────────────────────
    Each nav section is a set of focused views, one shown at a time,
@@ -486,20 +487,9 @@ nav.tabs{border-top:1px solid var(--line-soft);position:relative}
    without a mouse. One rule, every interactive element. */
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,
 [tabindex]:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:6px}
-.tabscroll{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;max-width:var(--maxw);margin:0 auto;
-  padding:0 calc(10px + env(safe-area-inset-right)) 0 calc(10px + env(safe-area-inset-left))}
-.tabscroll::-webkit-scrollbar{display:none}
-nav.tabs button,nav.tabs a{background:none;border:0;color:var(--ink-3);font-weight:700;
-  padding:13px 4px 12px;margin:0 9px;white-space:nowrap;cursor:pointer;position:relative;
-  font-size:var(--fs-sm);letter-spacing:-.01em;text-decoration:none}
-nav.tabs button:hover,nav.tabs a:hover{color:var(--ink)}
-nav.tabs button[aria-selected="true"],nav.tabs a[aria-selected="true"]{color:var(--blanco);font-weight:800}
-nav.tabs button[aria-selected="true"]::after,nav.tabs a[aria-selected="true"]::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
-  border-radius:2px 2px 0 0;transform-origin:center;
-  animation:tabink var(--dur) var(--ease) both;
-  background:var(--tri)}
-@keyframes tabink{from{transform:scaleX(.15);opacity:0}to{transform:none;opacity:1}}
-@media(prefers-reduced-motion:reduce){nav.tabs button[aria-selected="true"]::after{animation:none}}
+.rail a[aria-selected="true"]::before{animation:railink var(--dur) var(--ease) both}
+@keyframes railink{from{transform:scaleY(.15);opacity:0}to{transform:none;opacity:1}}
+@media(prefers-reduced-motion:reduce){.rail a[aria-selected="true"]::before{animation:none}}
 
 /* ---------- mobile bottom bar (mirrors the league app) ---------- */
 .bottombar{position:fixed;left:0;right:0;bottom:0;z-index:70;display:flex;
@@ -510,7 +500,7 @@ nav.tabs button[aria-selected="true"]::after,nav.tabs a[aria-selected="true"]::a
 .bottombar button svg,.bottombar a svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.7}
 .bottombar button[aria-selected="true"],.bottombar a[aria-selected="true"]{color:var(--blanco)}
 .bottombar button[aria-selected="true"] svg,.bottombar a[aria-selected="true"] svg{stroke:var(--rojo)}
-/* step B — the bottom bar is a phone's *only* nav (nav.tabs, which already
+/* step B — the bottom bar is a phone's *only* nav (the rail, which already
    carries this mark, is desktop-only), so the active tab gets the same
    device the desktop underline uses, just relocated to the bar's top edge
    instead of the button's own bottom. Icon tint stays — this sits alongside
@@ -519,8 +509,10 @@ nav.tabs button[aria-selected="true"]::after,nav.tabs a[aria-selected="true"]::a
   height:3px;border-radius:0 0 2px 2px;background:var(--tri)}
 @media(min-width:860px){.bottombar{display:none}}
 /* PHASE_8.2 — on a phone the bottom bar is the nav; the top tab row goes.
-   header.top keeps its own bottom border as the separator. */
-@media(max-width:859px){nav.tabs{display:none}}
+   header.top keeps its own bottom border as the separator. PHASE_2_REDESIGN
+   step 7: "the top tab row" is now the rail; its own display:none default
+   plus @media(min-width:860px){.rail{display:flex}} above is the same
+   860px swap, just expressed on the new element -- unchanged. */
 
 /* ---------- sections ---------- */
 section[hidden]{display:none}
