@@ -45,9 +45,13 @@ real, committed artifact, not a re-run against a moving target.
   a `file` tag, since they live in a specific split file, not the original single document) to the
   existing 426 -- not a full regeneration, which would reorder the whole list (the multi-file scan
   walks file-by-file, not the original single-document byte order this list has always preserved)
-  for what's really a 2-name change. Expect the same going forward: a future phase that adds or
-  removes a top-level declaration updates this file the same way, by hand, appended/removed
-  minimally, not regenerated wholesale.
+  for what's really a 2-name change. PHASE 7 did it again the other direction: retiring the
+  mega-menu removed 6 top-level declarations (`MEGA_TAB`, `megaCloseT`, `scheduleClose`,
+  `cancelClose`, `closeMega`, `openMega`) and added 1 (`railKeydown`), 428 -> 423 -- the 6 removed
+  in place (their original single-document positions), the 1 added appended at the end, same
+  hand-edit discipline as before, not a regeneration. Expect the same going forward: a future
+  phase that adds or removes a top-level declaration updates this file the same way, by hand,
+  appended/removed minimally, not regenerated wholesale.
 - `inventory_web_split.json` — same 426 declarations, same names, tagged with `file` via the
   multi-file form. STEP 3: 408 `web/index.html` / 18 `web/js/data.js`. STEP 4: 385
   `web/index.html` / 18 `web/js/data.js` / 23 `web/js/helpers.js`. STEP 5: 370 `web/index.html` /

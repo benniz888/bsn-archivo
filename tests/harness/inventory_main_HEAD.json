@@ -450,11 +450,6 @@
       "line": 3237
     },
     {
-      "kind": "let",
-      "name": "MEGA_TAB",
-      "line": 3264
-    },
-    {
       "kind": "function",
       "name": "megaGo",
       "line": 3265
@@ -473,31 +468,6 @@
       "kind": "function",
       "name": "paintLandingFeats",
       "line": 3330
-    },
-    {
-      "kind": "let",
-      "name": "megaCloseT",
-      "line": 3337
-    },
-    {
-      "kind": "function",
-      "name": "scheduleClose",
-      "line": 3338
-    },
-    {
-      "kind": "function",
-      "name": "cancelClose",
-      "line": 3339
-    },
-    {
-      "kind": "function",
-      "name": "closeMega",
-      "line": 3340
-    },
-    {
-      "kind": "function",
-      "name": "openMega",
-      "line": 3346
     },
     {
       "kind": "function",
@@ -2144,6 +2114,12 @@
       "kind": "function",
       "name": "playerTabKeydown",
       "line": 1815,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "railKeydown",
+      "line": 813,
       "file": "web/js/tabs.js"
     }
   ]
