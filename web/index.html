@@ -201,11 +201,15 @@
       <div id="leaders2026"></div>
     </details>
 
-    <details class="liga">
-      <summary><h4>En esta fecha</h4></summary>
-      <p class="lede">Lo que pasó un día como hoy en la historia de la liga. Cambia todos los días.</p>
-      <div id="onThisDay"></div>
-    </details>
+    <!-- PHASE_9 Diff 1-lite (dead-code cleanup, redesign-v2): the "En esta
+         fecha" accordion is removed from Inicio (owner-approved). Its
+         functions stay dormant, not deleted: buildOnThisDay() (tabs.js),
+         ON_THIS_DAY and OTD_ES (data.js) are untouched, because
+         tests/_web_text.py uses ON_THIS_DAY's own comment header as a
+         splice marker to reconstruct the pre-split app text -- removing
+         that constant broke 32 unrelated tests (see the redesign-v2
+         PHASE_9 cleanup report). A future pass that re-anchors those
+         markers first can remove the dormant code safely. -->
 
     <details class="liga">
       <summary><h4>Canales oficiales</h4></summary>
@@ -1068,7 +1072,10 @@ const BOOT=[
   ['posiciones 2026',buildStandings2026],
   ['líderes 2026',buildLeaders2026],
   ['mi club',()=>{buildClubPicker();buildClubCard();drawClubPill();}],
-  ['en esta fecha',buildOnThisDay],
+  /* PHASE_9 Diff 1-lite (dead-code cleanup, redesign-v2): the boot call to
+     buildOnThisDay() is removed -- its accordion is gone from Inicio (see
+     the comment above the details list). buildOnThisDay() itself is left
+     defined but never called; see that comment for why. */
   ['calendario',buildCalendar],
   ['canales',buildChannels],
   ['ask',buildAsk],
