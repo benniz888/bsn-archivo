@@ -358,6 +358,21 @@ html.standalone .toprow{padding-top:10px;padding-bottom:16px}
   -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-right:1px solid var(--line)}
 @media(min-width:860px){.rail{display:flex}header.top{display:none}}
 @media(min-width:1120px){.rail{width:220px;padding:var(--sp-4) var(--sp-2)}}
+/* PHASE_9 item 1d (owner-approved, redesign-v2): header.top handled the
+   standalone-mode top inset (html.standalone header.top{padding-top:
+   max(env(safe-area-inset-top),44px)}) -- once it's display:none at
+   >=860px that protection is gone too, so .rail needs its own. max()
+   against the SAME base value the plain rule already uses (--sp-3 here,
+   --sp-4 at the labeled tier) means a zero/absent inset computes to
+   exactly today's padding-top, unchanged -- only a real nonzero inset
+   grows it. Scoped to standalone mode only, matching header.top's own
+   scoping; .rail doesn't exist below 860px regardless. */
+@media(min-width:860px){
+  html.standalone .rail{padding-top:max(var(--sp-3),env(safe-area-inset-top,0px))}
+}
+@media(min-width:1120px){
+  html.standalone .rail{padding-top:max(var(--sp-4),env(safe-area-inset-top,0px))}
+}
 /* Logo: a fixed-size badge (mockup's .rail .logo, red circle + basketball
    glyph), NOT a flex item that stretches to the rail's own width like the
    nav/control rows below it -- align-self:center keeps its own 32px
