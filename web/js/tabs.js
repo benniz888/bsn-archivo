@@ -754,7 +754,18 @@ const TABS=[
   ['historia','Historia','M4 5h16M4 12h16M4 19h10'],
   ['jugadores','Jugadores','M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4 21c0-4 4-6 8-6s8 2 8 6'],
   ['equipos','Equipos','M4 5h6v6H4ZM14 5h6v6h-6ZM4 13h6v6H4ZM14 13h6v6h-6'],
-  ['juega','Juega','M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18ZM3 12h18M12 3c3 4 3 14 0 18M12 3c-3 4-3 14 0 18'],
+  /* PHASE_9 item 3b (owner-approved, redesign-v2): the old circle+
+     meridian-lines path (M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18ZM3 12h18M12
+     3c3 4 3 14 0 18M12 3c-3 4-3 14 0 18) was visually indistinguishable
+     from a plain globe icon, confirmed live and zoomed in the redesign-v2
+     PHASE_9 report -- and shared the same circle-based construction as
+     the rail logo right above it, so the two read as near-duplicates in
+     the same rail. Replaced with a game-controller glyph: a rounded-rect
+     body, a "+" d-pad, and two face-button dots (the two "h.01" segments
+     are zero-length lines with round linecap, the standard technique for
+     a filled dot inside a single stroked path). Nothing circular left --
+     can't be confused with the logo or a globe again. */
+  ['juega','Juega','M7 8h10a4 4 0 0 1 4 4v2a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4v-2a4 4 0 0 1 4-4zM8 11v4M6 13h4M16 12.2h.01M18.2 14.4h.01'],
   ['archivo','Archivo','M6 3h9l4 4v14H6ZM15 3v4h4M9 12h7M9 16h7']
 ];
 const NAV=TABS.slice(1);                 /* desktop top strip — inicio is the wordmark */
