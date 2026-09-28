@@ -775,6 +775,13 @@ let CURRENT='inicio';
    on every later activation by _showPanel()'s own NAV loop, not duplicated here. */
 function buildNav(){
   const s=$('#railNav'); s.innerHTML='';
+  /* PHASE_9 item 1c (owner-approved, redesign-v2): Inicio isn't in NAV
+     (it's the rail's own logo, not a tab -- see the comment above NAV's
+     definition), so on Inicio no rail tab matches CURRENT and every one
+     would get tabIndex=-1, making the whole tablist unreachable by Tab.
+     Falls back to the first rail tab whenever CURRENT isn't one of NAV's
+     own ids -- same fallback applied in _showPanel()'s own NAV loop. */
+  const railFallbackFirst=!NAV.some(([navId])=>navId===CURRENT);
   NAV.forEach(([id,label,d])=>{
     const b=el('a');
     b.href='#'+id;
@@ -788,7 +795,7 @@ function buildNav(){
        empty accessible name there (confirmed via the real accessibility
        tree, not assumed). Reuses the SAME `label` string already used for
        .raillabel's own visible text -- no new copy. */
-    b.tabIndex=id===CURRENT?0:-1;
+    b.tabIndex=(id===CURRENT||(railFallbackFirst&&id===NAV[0][0]))?0:-1;
     b.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="raillabel">${esc(label)}</span>`;
     b.onclick=(e)=>{
       if(e.ctrlKey||e.metaKey||e.shiftKey||e.button!==0) return;   /* let the browser open a new tab/window natively */
@@ -961,9 +968,13 @@ function _showPanel(id,noScroll){
   if(shown && changed){   /* re-trigger the enter animation */
     shown.classList.remove('panel-enter'); void shown.offsetWidth; shown.classList.add('panel-enter');
   }
+  /* PHASE_9 item 1c (owner-approved, redesign-v2): same fallback as
+     buildNav() -- id may be 'inicio', which isn't in NAV, so nothing
+     would match and the whole rail tablist would go unreachable by Tab. */
+  const railFallbackFirst=!NAV.some(([navId])=>navId===id);
   NAV.forEach(([t])=>{
     const btn=document.getElementById('tab-'+t);
-    if(btn){ btn.setAttribute('aria-selected',t===id?'true':'false'); btn.tabIndex=t===id?0:-1; }
+    if(btn){ btn.setAttribute('aria-selected',t===id?'true':'false'); btn.tabIndex=(t===id||(railFallbackFirst&&t===NAV[0][0]))?0:-1; }
   });
   document.querySelectorAll('#bottombar button').forEach((b,i)=>{
     b.setAttribute('aria-selected',BOTTOM[i]===id?'true':'false');
