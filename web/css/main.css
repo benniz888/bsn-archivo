@@ -345,20 +345,44 @@ html.standalone .toprow{padding-top:10px;padding-bottom:16px}
    had, just now relative to a narrower box instead of the full viewport. */
 .shell{display:flex}
 .shellmain{flex:1;min-width:0}
+/* PHASE_9 item 1 (owner-approved, redesign-v2): header.top removed >=860px
+   (mockup's rail carries the logo + Mi club itself, no separate top bar
+   at that width) -- the rail's own sticky top/height no longer has a
+   header to offset for there, so top:0/100vh replaces the old 76px
+   coupling outright rather than swapping in a different number. Under
+   860px .rail stays display:none (unchanged) and header.top stays
+   exactly as PHASE_8 left it -- the coupling never applied there anyway. */
 .rail{flex:none;display:none;flex-direction:column;gap:2px;
-  position:sticky;top:76px;height:calc(100vh - 76px);overflow-y:auto;
+  position:sticky;top:0;height:100vh;overflow-y:auto;
   width:64px;padding:var(--sp-3) 0;background:var(--scrim);
   -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-right:1px solid var(--line)}
-@media(min-width:860px){.rail{display:flex}}
+@media(min-width:860px){.rail{display:flex}header.top{display:none}}
 @media(min-width:1120px){.rail{width:220px;padding:var(--sp-4) var(--sp-2)}}
-.rail a{position:relative;display:flex;align-items:center;justify-content:center;gap:var(--sp-3);
-  color:var(--ink-3);text-decoration:none;font-weight:700;font-size:var(--fs-sm);
+/* Logo: a fixed-size badge (mockup's .rail .logo, red circle + basketball
+   glyph), NOT a flex item that stretches to the rail's own width like the
+   nav/control rows below it -- align-self:center keeps its own 32px
+   intrinsic size at both rail widths. */
+.raillogo{align-self:center;flex:none;display:flex;align-items:center;justify-content:center;
+  width:32px;height:32px;border-radius:999px;background:var(--rojo);
+  border:0;padding:0;margin:0 0 var(--sp-3);cursor:pointer;transition:filter var(--dur-fast) var(--ease)}
+.raillogo:hover{filter:brightness(1.12)}
+.railnav{display:flex;flex-direction:column;gap:2px}
+.railbottom{display:flex;flex-direction:column;gap:2px;margin-top:auto}
+.rail a,.rail .railctl{position:relative;display:flex;align-items:center;justify-content:center;gap:var(--sp-3);
+  color:var(--ink-3);background:none;border:0;text-decoration:none;font:inherit;font-weight:700;font-size:var(--fs-sm);
   padding:13px 0;cursor:pointer}
-@media(min-width:1120px){.rail a{justify-content:flex-start;padding:13px var(--sp-4)}}
-.rail a svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;flex:none}
-.rail a .raillabel{display:none}
-@media(min-width:1120px){.rail a .raillabel{display:inline;white-space:nowrap}}
-.rail a:hover{color:var(--ink);background:var(--raise)}
+@media(min-width:1120px){.rail a,.rail .railctl{justify-content:flex-start;padding:13px var(--sp-4)}}
+.rail a svg,.rail .railctl svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;flex:none}
+.railcrest{display:flex;align-items:center;justify-content:center;flex:none}
+/* #railClub's own "+" (matches .clubpill .plus in the header exactly, same
+   meaning: pick/change your club) is NEVER hidden by the icon-only/labeled
+   breakpoint below, unlike .raillabel -- with no club picked, #railClubCrest
+   is empty and .raillabel is display:none at 860-1119px, so without this
+   the button would have zero visible content at that tier. */
+.rail .railctl .plus{color:var(--rojo);font-weight:700;flex:none}
+.rail .raillabel{display:none}
+@media(min-width:1120px){.rail .raillabel{display:inline;white-space:nowrap}}
+.rail a:hover,.rail .railctl:hover{color:var(--ink);background:var(--raise)}
 .rail a[aria-selected="true"]{color:var(--blanco);font-weight:800}
 .rail a[aria-selected="true"]::before{content:"";position:absolute;left:0;top:0;bottom:0;
   width:3px;background:var(--tri-v)}

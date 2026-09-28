@@ -54,7 +54,7 @@
      short numerals/titles only -- see main.css's own comment at the --font-display rule
      for the exact selector list and why. Reuses the preconnects above (same two hosts). -->
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css?v=1d9969d381f6">
+<link rel="stylesheet" href="css/main.css?v=aeac283158aa">
 </head>
 <body>
 <div class="splash" id="splash" role="status" aria-live="polite" aria-label="Cargando el archivo">
@@ -124,7 +124,26 @@
      rail-relative either. .bottombar stays a sibling of .shell, outside it, exactly
      where it always was -- untouched, still phone-only. -->
 <div class="shell">
-<nav class="rail" id="rail" role="tablist" aria-orientation="vertical" aria-label="Secciones" onkeydown="railKeydown(event)"></nav>
+<nav class="rail" id="rail" aria-label="Secciones">
+  <button class="raillogo" onclick="showTab('inicio')" aria-label="Ir a Inicio">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--flag-w)" stroke-width="1.5" aria-hidden="true">
+      <circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3v18"/>
+      <path d="M5.6 5.6c2.6 2.2 2.6 10.6 0 12.8"/><path d="M18.4 5.6c-2.6 2.2-2.6 10.6 0 12.8"/>
+    </svg>
+  </button>
+  <div class="railnav" id="railNav" role="tablist" aria-orientation="vertical" onkeydown="railKeydown(event)"></div>
+  <div class="railbottom">
+    <button class="railctl" id="railTheme" onclick="toggleTheme()" title="Tema: automático / claro / oscuro" aria-label="Cambiar de tema">
+      <svg id="railThemeIcon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"></svg>
+      <span class="raillabel">Tema</span>
+    </button>
+    <button class="railctl" id="railClub" onclick="showTab('perfil')">
+      <span id="railClubCrest" class="railcrest"></span>
+      <span class="raillabel" id="railClubName">Mi club</span>
+      <span class="plus">+</span>
+    </button>
+  </div>
+</nav>
 <div class="shellmain">
 <main class="wrap">
 
@@ -460,7 +479,7 @@
 <script src="js/player.js?v=a184c7ce7c97"></script>
 <script src="js/data-quality.js?v=0dbf5b135d19"></script>
 <script src="js/games.js?v=69446642c205"></script>
-<script src="js/tabs.js?v=e1cba8e4b4d4"></script>
+<script src="js/tabs.js?v=dcd29aed05c7"></script>
 <script src="js/init.js?v=064004dbc89b"></script>
 <script>
 
@@ -989,11 +1008,20 @@ function applyTheme(t){
   /* The header control now cycles auto → light → dark, so it shows the
      *stored preference* — the "auto" disc when following the system. */
   const pref=prof().theme;
+  const label='Tema: '+THEME_ES[pref]+(pref==='auto'?' (sigue el sistema)':'')+' · toca para cambiar a '+THEME_ES[THEME_NEXT[pref]];
   const i=$('#themeIcon');
   if(i) i.innerHTML=THEME_ICON[pref]||THEME_ICON.auto;
   const b=$('#themeBtn');
-  if(b) b.setAttribute('aria-label',
-    'Tema: '+THEME_ES[pref]+(pref==='auto'?' (sigue el sistema)':'')+' · toca para cambiar a '+THEME_ES[THEME_NEXT[pref]]);
+  if(b) b.setAttribute('aria-label',label);
+  /* PHASE_9 item 1 (owner-approved, redesign-v2): header.top is gone at
+     >=860px, so its quick theme toggle moved into the rail -- same icon
+     set, same aria-label logic, just a second real target to keep in
+     sync (no class-based batch update elsewhere in this file, matching
+     the existing #themeIcon/#themeBtn single-id convention). */
+  const ri=$('#railThemeIcon');
+  if(ri) ri.innerHTML=THEME_ICON[pref]||THEME_ICON.auto;
+  const rb=$('#railTheme');
+  if(rb) rb.setAttribute('aria-label',label);
 }
 function setTheme(t){
   setProf('theme',t);

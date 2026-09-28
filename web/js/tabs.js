@@ -774,7 +774,7 @@ let CURRENT='inicio';
    (0 on the active tab, -1 on the rest) is set here at build time and kept in sync
    on every later activation by _showPanel()'s own NAV loop, not duplicated here. */
 function buildNav(){
-  const s=$('#rail'); s.innerHTML='';
+  const s=$('#railNav'); s.innerHTML='';
   NAV.forEach(([id,label,d])=>{
     const b=el('a');
     b.href='#'+id;
@@ -1247,6 +1247,20 @@ function drawClubPill(){
   const k=ST.get('club');
   $('#clubPillName').textContent = k ? F[k].name.split(' de ')[0] : 'Mi club';
   $('#clubPillCrest').innerHTML = k ? crest(k,20,24) : '';
+  /* PHASE_9 item 1 (owner-approved, redesign-v2): rail's own Mi club
+     button (>=860px, header.top's clubpill is gone there) mirrors the
+     same crest/name, same "Mi club" fallback string, no new copy. */
+  const rn=$('#railClubName'); if(rn) rn.textContent = k ? F[k].name.split(' de ')[0] : 'Mi club';
+  const rc=$('#railClubCrest'); if(rc) rc.innerHTML = k ? crest(k,20,24) : '';
+  /* #railClub carries no static aria-label (matching #clubPill, which has
+     none either -- both rely on their own visible text for the accessible
+     name). But .raillabel is display:none at the icon-only rail tier
+     (860-1119px, main.css), unlike #clubPill's text which is never
+     hidden -- so #railClub alone needs an explicit, dynamically-kept-in-
+     sync aria-label to still have a real accessible name at that width.
+     Same live-updated-attribute pattern applyTheme() already uses for
+     #railTheme, just triggered from here instead. */
+  const rb=$('#railClub'); if(rb) rb.setAttribute('aria-label', k ? F[k].name.split(' de ')[0] : 'Mi club');
 }
 function buildClubCard(){
   const host=$('#clubCard');
