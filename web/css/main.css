@@ -219,8 +219,12 @@ body{
 h1,h2,h3,h4{font-family:inherit;font-weight:800;
   letter-spacing:-.02em;line-height:var(--lh-head);margin:0}
 /* big numerals — Inter wants tighter tracking and true tabular figures at
-   display size, where Barlow Condensed used to give the compression. */
-.clock .n,.strip .n,.seriesrow .sc,.answer .abig,.readout .yr,.ed-stat,.hubhead{
+   display size, where Barlow Condensed used to give the compression.
+   PHASE_9 item 4b (dead-code cleanup): .clock .n removed from this list --
+   .clock's own rule is gone (removed earlier in this same cleanup), so
+   this entry matched nothing since that removal. Every other selector
+   below is unchanged. */
+.strip .n,.seriesrow .sc,.answer .abig,.readout .yr,.ed-stat,.hubhead{
   letter-spacing:-.03em;font-feature-settings:"tnum" 1,"cv05" 1}
 a{color:var(--azul-hi);text-decoration-thickness:1px;text-underline-offset:2px}
 a:hover{color:var(--blanco)}
@@ -1275,17 +1279,16 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
    specificity, IT will win instead; that's an ordinary, well-understood
    CSS risk of a last-rule-wins fix, not a hidden one. */
 :root{--font-display:'Oswald',Impact,'Arial Narrow',sans-serif}
-.clock .n,.strip .n,.seriesrow .sc,.readout .yr,.ed-stat,.hubhead,
+.strip .n,.seriesrow .sc,.readout .yr,.ed-stat,.hubhead,
 .big,h3.sec,h4.sub,.viewhead,.markname,.splashname,.stagetitle,
 .tiletitle,.primerhead h4,.phero-body h2,.hero-headline{
   font-family:var(--font-display)}
 /* PHASE_9 item 3 (owner-approved, redesign-v2): .hero-headline added to
    this list -- verified live (getComputedStyle), same discipline as the
    rest of this rule. PHASE_9 dead-code cleanup: .herotext h2 removed
-   from this list -- buildHero() no longer renders that element, and
-   .herotext h2's own rule is gone too (see main.css's hero section).
-   .clock .n is LEFT IN this list deliberately, even though .clock's own
-   rule is also gone and this entry is now equally dead (matches
-   nothing) -- flagged, not removed, per this cleanup's own explicit
-   scope (only .herotext h2 was named for removal from this shared list;
-   every other entry, including this one, stays intact). */
+   from this list first (buildHero() no longer renders that element, and
+   .herotext h2's own rule is gone too -- see main.css's hero section).
+   PHASE_9 item 4b: .clock .n now also removed -- re-grepped and confirmed
+   zero live references anywhere (.clock's own rule was already gone);
+   the prior round had deliberately left it in and flagged it, this round
+   is that flagged follow-up, done. */
