@@ -273,14 +273,16 @@ html.theming input,html.theming select,html.theming textarea{
 .tri-block{border-radius:var(--r-sm);padding:var(--sp-2) var(--sp-3)}
 .tri-block-rojo{background:var(--rojo);color:var(--flag-w)}
 .tri-block-azul{background:var(--azul);color:var(--flag-w)}
-/* .clock .u and .readout .yr each declare their OWN color directly (not just
-   inherited) -- .clock .u{color:var(--ink-2)} and .readout .yr{color:var(--ink-3)},
-   both (0,2,0). A same-specificity .tri-block-azul .u rule loses that tie by
-   source order (this block sits before both in the sheet); found empirically via
-   computed styles, not assumed -- see the redesign-v2 PHASE 2 report. Fixed by
-   writing the exact combined selector so it's unambiguously more specific (0,3,0),
-   correct regardless of where in the sheet either rule sits. */
-.clock.tri-block-azul .u{color:var(--flag-w)}
+/* .readout .yr declares its OWN color directly (not just inherited) --
+   .readout .yr{color:var(--ink-3)}, specificity (0,2,0). A same-
+   specificity .tri-block-azul .yr rule would lose that tie by source
+   order (this block sits before it in the sheet); found empirically via
+   computed styles, not assumed -- see the redesign-v2 PHASE 2 report.
+   Fixed by writing the exact combined selector so it's unambiguously
+   more specific (0,3,0), correct regardless of where in the sheet either
+   rule sits. (PHASE_9 dead-code cleanup: .clock.tri-block-azul .u, the
+   same fix for .clock's own .u, removed here -- .clock's own rule is
+   gone, nothing renders that class combination anymore.) */
 .readout .yr.tri-block-azul{color:var(--flag-w)}
 
 /* ---------- top bar ---------- */
@@ -628,11 +630,6 @@ h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
   .hero{background-image:radial-gradient(130% 130% at 10% -8%,var(--hero-a),var(--hero-c) 78%)}
 }
 .hero .ed-eye{padding:var(--sp-4) var(--sp-4_5) 0}
-/* PHASE_9 item 3 (owner-approved, redesign-v2): new hero headline/dek/
-   status/stat-row, toward the approved mockup's layout. .herotop/.clock/
-   .herotext below are no longer rendered by buildHero() -- dead code,
-   listed (not removed) in the redesign-v2 PHASE_9 report, kept here for
-   now since removing them wasn't this item's scope. */
 /* line-height 1.08 (found, not assumed: zoomed crop at 860px) let the
    tilde over any accented capital -- Ñ in "PUERTORRIQUEÑO" here -- almost
    touch the line above it, tight enough to misread as a stray mark
@@ -771,14 +768,6 @@ h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
   .hero-stat.tri-block-azul{background:#186AE7}
   [data-theme="light"] .hero-stat.tri-block-azul{background:var(--azul)}
 }
-.herotop{padding:var(--sp-2) var(--sp-4_5) var(--sp-4);display:flex;gap:var(--sp-4_5);flex-wrap:wrap;align-items:flex-end}
-.clock{flex:none}
-.clock .n{font-family:inherit;font-weight:800;font-size:var(--fs-hero);
-  line-height:.86;letter-spacing:-.025em}
-.clock .u{font-size:var(--fs-2xs);color:var(--ink-2);letter-spacing:.1em;text-transform:uppercase;margin-top:6px}
-.herotext{flex:1;min-width:230px}
-.herotext h2{font-size:clamp(22px,4.6vw,30px);text-transform:uppercase;letter-spacing:.005em}
-.herotext p{margin:var(--sp-2) 0 0;color:var(--ink-2);font-size:var(--fs-sm);max-width:52ch}
 .herofoot{border-top:1px solid var(--line);padding:var(--sp-3) var(--sp-4_5);display:flex;gap:var(--sp-3_5);flex-wrap:wrap;
   align-items:center;background:var(--wash)}
 /* Round 2 (owner-approved, redesign-v2): flex-wrap:wrap let the crest
@@ -1288,12 +1277,15 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
 :root{--font-display:'Oswald',Impact,'Arial Narrow',sans-serif}
 .clock .n,.strip .n,.seriesrow .sc,.readout .yr,.ed-stat,.hubhead,
 .big,h3.sec,h4.sub,.viewhead,.markname,.splashname,.stagetitle,
-.tiletitle,.primerhead h4,.phero-body h2,.herotext h2,.hero-headline{
+.tiletitle,.primerhead h4,.phero-body h2,.hero-headline{
   font-family:var(--font-display)}
 /* PHASE_9 item 3 (owner-approved, redesign-v2): .hero-headline added to
-   this list -- .hero-headline is verified live (getComputedStyle), same
-   discipline as the rest of this rule. .herotext h2 stays in this list
-   even though buildHero() no longer renders that element -- dead
-   selector, matches nothing, harmless; listed (not removed) in the
-   redesign-v2 PHASE_9 report alongside .clock/.herotop's own now-dead
-   rules, a separate cleanup, not done here. */
+   this list -- verified live (getComputedStyle), same discipline as the
+   rest of this rule. PHASE_9 dead-code cleanup: .herotext h2 removed
+   from this list -- buildHero() no longer renders that element, and
+   .herotext h2's own rule is gone too (see main.css's hero section).
+   .clock .n is LEFT IN this list deliberately, even though .clock's own
+   rule is also gone and this entry is now equally dead (matches
+   nothing) -- flagged, not removed, per this cleanup's own explicit
+   scope (only .herotext h2 was named for removal from this shared list;
+   every other entry, including this one, stays intact). */
