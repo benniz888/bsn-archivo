@@ -246,7 +246,8 @@ html.theming input,html.theming select,html.theming textarea{
 /* On a light ground the flag's white stripe would read as a gap in
    the rule rather than as part of it, so it gets a hairline. */
 [data-theme="light"] .tri,
-[data-theme="light"] .bottombar button[aria-selected="true"]::before{box-shadow:inset 0 0 0 1px rgba(11,23,48,.10)}
+[data-theme="light"] .bottombar button[aria-selected="true"]::before,
+[data-theme="light"] header.top::after{box-shadow:inset 0 0 0 1px rgba(11,23,48,.10)}
 
 /* PHASE_2_REDESIGN step 2 (owner-approved, redesign-v2): the tricolor used
    more boldly -- a solid flag-color fill behind a stat, additive to (never
@@ -311,6 +312,16 @@ html.standalone .toprow{padding-top:10px;padding-bottom:16px}
 .mark svg{display:block;width:44px;height:44px}
 .markname{font-family:inherit;font-weight:800;font-size:22px;letter-spacing:-.02em;line-height:1}
 .marksub{font-size:10px;color:var(--ink-3);letter-spacing:.09em;text-transform:uppercase;line-height:1;margin-top:3px}
+/* PHASE_8 item 1 fix (owner-approved, redesign-v2): the grown masthead
+   overflowed .clubpill off the right edge below 640px (.toprow doesn't
+   wrap) -- scale mark/name/padding back down on phone widths so the row
+   fits with visible margin at 360px; .rail's 76px coupling (>=860px) is
+   untouched, the rail isn't present below 860px anyway. */
+@media(max-width:639px){
+  .toprow{padding-top:10px;padding-bottom:10px}
+  .mark svg{width:24px;height:24px}
+  .markname{font-size:14px}
+}
 .topspace{flex:1}
 .clubpill{display:flex;align-items:center;gap:7px;background:transparent;color:var(--ink);
   border:1.5px solid var(--rojo);border-radius:99px;padding:6px 13px 6px 8px;font-size:13.5px;
