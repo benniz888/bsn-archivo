@@ -781,6 +781,13 @@ function buildNav(){
     b.id='tab-'+id; b.setAttribute('role','tab');
     b.setAttribute('aria-selected',id===CURRENT?'true':'false');
     b.setAttribute('aria-controls',id);
+    b.setAttribute('aria-label',label);
+    /* PHASE_9 item 1b (owner-approved, redesign-v2): .raillabel is
+       display:none at the icon-only rail tier (860-1119px, main.css), so
+       without an explicit aria-label every tab -- active or not -- had an
+       empty accessible name there (confirmed via the real accessibility
+       tree, not assumed). Reuses the SAME `label` string already used for
+       .raillabel's own visible text -- no new copy. */
     b.tabIndex=id===CURRENT?0:-1;
     b.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="raillabel">${esc(label)}</span>`;
     b.onclick=(e)=>{
