@@ -722,6 +722,55 @@ h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
   .hero-stats .hero-stat:nth-child(2) .ed-stat,
   .hero-stats .hero-stat:nth-child(3) .ed-stat{font-size:20px}
 }
+/* PHASE_9 item 3d2 step 1 (owner-approved, redesign-v2): stat 1 (day
+   counter) gets the same smaller phone treatment as stats 2/3 above --
+   the compound selector here (.hero-stats .hero-stat:nth-child(1)
+   .ed-stat) is already higher specificity than the plain .ed-stat{font-
+   size:var(--fs-xl)} rule it overrides, same proven pattern as stats
+   2/3's own identical override just above, not a source-order tie.
+   Numeral stays .ed-stat (Oswald, unchanged class). Colors untouched --
+   only size/padding shrink, so the block's own contrast numbers (already
+   verified: white on --azul, 5.51:1 dark / 7.19:1 light, clears both the
+   3:1 large-text and 4.5:1 small-text floors either way) don't move. */
+@media(max-width:639px){
+  .hero-stats .hero-stat:nth-child(1){padding:var(--sp-3)}
+  .hero-stats .hero-stat:nth-child(1) .ed-stat{font-size:20px}
+}
+/* PHASE_9 item 3d, step 4 (owner-approved, redesign-v2): tightened
+   inter-section spacing, phone only. Placed AFTER every base rule it
+   touches (.hero-headline at :641, .hero-dek at :651, .hero-status
+   at :664, .hero-note at :674, .hero-stats at :676, and even after the
+   phone stat-layout block right above this one) -- same class of
+   specificity tie this file has hit twice already (the Oswald selector
+   list, then .hero-dek's own phone font-size rule last round), so this
+   one is deliberately last among equals rather than trusted to "read
+   like" an override. */
+@media(max-width:639px){
+  .hero-headline{padding-top:6px}
+  .hero-dek{margin-top:6px}
+  .hero-status{margin-top:6px}
+  .hero-note{margin-top:3px}
+  .hero-stats{margin-top:8px;padding-bottom:8px}
+}
+/* PHASE_9 item 3d2 (owner-approved, redesign-v2): stat 1's block-vs-
+   surrounding contrast, checked as part of this item's own verify step
+   (not previously checked at phone width specifically) -- the phone
+   .hero{} uses a SIMPLER single radial-gradient (no repeating-arcs layer,
+   see the max-width:639px override near .hero's own rule), so it sits on
+   a different part of the gradient than the desktop check that passed at
+   3.10:1. Sampled 4 points around the block (above/below/left/right,
+   dark theme): 2.85, 3.07, 2.97, 3.55 -- genuinely borderline, two of
+   four below 3:1. --azul at phone width only, dark theme only: #186AE7
+   (same hue 216.2deg/sat 81.5% as --azul, lightness 0.50 instead of
+   --azul's 0.467) clears all four sampled points (3.19-3.96:1) with
+   white text still at 4.94:1 (>=4.5). Light theme's own phone sample
+   already passed (5.80:1) and is explicitly restored to --azul here,
+   unaffected. Placed after the base .hero-stat.tri-block-azul rule
+   (same equal-specificity-tie discipline as the rest of this file). */
+@media(max-width:639px){
+  .hero-stat.tri-block-azul{background:#186AE7}
+  [data-theme="light"] .hero-stat.tri-block-azul{background:var(--azul)}
+}
 .herotop{padding:var(--sp-2) var(--sp-4_5) var(--sp-4);display:flex;gap:var(--sp-4_5);flex-wrap:wrap;align-items:flex-end}
 .clock{flex:none}
 .clock .n{font-family:inherit;font-weight:800;font-size:var(--fs-hero);
