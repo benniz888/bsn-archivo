@@ -54,7 +54,7 @@
      short numerals/titles only -- see main.css's own comment at the --font-display rule
      for the exact selector list and why. Reuses the preconnects above (same two hosts). -->
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css?v=2432003782d3">
+<link rel="stylesheet" href="css/main.css?v=2db08468244a">
 </head>
 <body>
 <div class="splash" id="splash" role="status" aria-live="polite" aria-label="Cargando el archivo">
@@ -151,12 +151,15 @@
 <section id="inicio" role="tabpanel" aria-labelledby="tab-inicio">
   <div class="panel">
     <div id="heroBox"></div>
-    <div id="hubTop"></div>
+    <!-- PHASE_9 item 3 (owner-approved, redesign-v2): .hubsearch moved up
+         one slot, directly under the hero -- #hubTop's own content/logic
+         is untouched, just repositioned after it now. -->
     <div class="hubsearch">
       <input type="search" id="hubSearch" onkeydown="hubAsk(event)"
              placeholder="Prueba: cuándo murió Piculín · 1971 · títulos de Bayamón"
              aria-label="Buscar en el archivo">
     </div>
+    <div id="hubTop"></div>
     <div id="hubGrid"></div>
     <p class="note" id="hubFoot"></p>
     <div id="hubPrimer"></div>
@@ -479,7 +482,7 @@
 <script src="js/player.js?v=a184c7ce7c97"></script>
 <script src="js/data-quality.js?v=0dbf5b135d19"></script>
 <script src="js/games.js?v=69446642c205"></script>
-<script src="js/tabs.js?v=e102e478b3ec"></script>
+<script src="js/tabs.js?v=8e2d5f154a65"></script>
 <script src="js/init.js?v=064004dbc89b"></script>
 <script>
 

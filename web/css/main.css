@@ -628,6 +628,100 @@ h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
   .hero{background-image:radial-gradient(130% 130% at 10% -8%,var(--hero-a),var(--hero-c) 78%)}
 }
 .hero .ed-eye{padding:var(--sp-4) var(--sp-4_5) 0}
+/* PHASE_9 item 3 (owner-approved, redesign-v2): new hero headline/dek/
+   status/stat-row, toward the approved mockup's layout. .herotop/.clock/
+   .herotext below are no longer rendered by buildHero() -- dead code,
+   listed (not removed) in the redesign-v2 PHASE_9 report, kept here for
+   now since removing them wasn't this item's scope. */
+/* line-height 1.08 (found, not assumed: zoomed crop at 860px) let the
+   tilde over any accented capital -- Ñ in "PUERTORRIQUEÑO" here -- almost
+   touch the line above it, tight enough to misread as a stray mark
+   crossing between the two lines. 1.2 clears it with real headroom,
+   confirmed on the same crop below. */
+.hero-headline{font-weight:800;font-size:clamp(26px,5.2vw,44px);line-height:1.2;
+  letter-spacing:-.005em;text-transform:uppercase;margin:0;padding:var(--sp-3) var(--sp-4_5) 0}
+/* PHASE_9 item 3 phone-compaction (owner-approved, redesign-v2): one
+   sentence in the DOM, no second copy -- display:none on the middle
+   clause below 640px reads as "97 temporadas documentadas" both visually
+   AND to the accessibility tree (display:none is excluded from accessible
+   name computation the same way .raillabel already is at the rail's
+   icon-only tier), confirmed live, not assumed. Desktop (>=640px)
+   unaffected -- this is additive, no rule above changes. */
+@media(max-width:639px){.hero-headline-full{display:none}}
+.hero-dek{color:var(--ink-2);font-size:var(--fs-md);line-height:1.5;
+  max-width:64ch;margin:var(--sp-2_5) var(--sp-4_5) 0;padding:0}
+/* Round 2 phone-target step 1 (owner-approved, redesign-v2): measured
+   option, applied cumulatively -- see the redesign-v2 PHASE_9 report for
+   the exact y after each step. Placed AFTER the base .hero-dek rule
+   deliberately -- same specificity (0,1,0), and this project has hit the
+   source-order tie before (the Oswald selector list, .hero-stat's own
+   background): whichever of two equal-specificity rules sits LATER in
+   the file wins regardless of which one "looks" like the override. My
+   first attempt put this media query BEFORE the base rule and it silently
+   lost the tie -- found live (computed font-size still read 18px at
+   390px), not assumed, fixed by moving it here. */
+@media(max-width:639px){.hero-dek{font-size:15px}}
+.hero-status{font-weight:700;font-size:var(--fs-sm);margin:var(--sp-3) var(--sp-4_5) 0;padding:0}
+/* --ink-3 (the plain .dim/.hero-note default) was tuned against opaque
+   card backgrounds (--raise/--deep) and measured, live, at only 4.27:1 /
+   4.33:1 here in light mode -- the hero's own radial-gradient background
+   (--hero-a/--hero-c) is lighter than those in this region, real pixel-
+   sampled, not assumed. Both fail the 4.5:1 small-text floor. --ink-2
+   (already proven at 6.31:1 two lines up, .hero-dek, same background
+   region) fixes both, re-verified at 6.44:1 / 6.52:1 light, 8.17:1 /
+   8.65:1 dark. */
+.hero-status .dim{font-weight:400;font-size:var(--fs-2xs);color:var(--ink-2)}
+.hero-note{color:var(--ink-2);font-size:var(--fs-2xs);line-height:1.5;
+  max-width:60ch;margin:var(--sp-2) var(--sp-4_5) 0;padding:0}
+.hero-stats{display:flex;gap:var(--sp-3);flex-wrap:wrap;
+  margin:var(--sp-4) var(--sp-4_5) 0;padding-bottom:var(--sp-4)}
+.hero-stat{flex:1 1 160px;background:var(--card);border:1px solid var(--line);
+  border-radius:var(--r);padding:var(--sp-3_5)}
+.hero-stat.tri-block{border-color:transparent}
+/* .hero-stat{background:var(--card)} and .tri-block-rojo/.tri-block-azul's
+   OWN {background:...} are both single-class selectors -- equal
+   specificity, and .hero-stat sits later in the file, so it would win the
+   tie and silently paint every tri-block stat white (found live, not by
+   reading the CSS: color came through correctly since .hero-stat never
+   redeclares it, but background didn't). Same fix as .clock.tri-block-azul
+   .u / .readout .yr.tri-block-azul above -- a combined selector at higher
+   specificity (0,2,0) that wins regardless of source order. */
+.hero-stat.tri-block-azul{background:var(--azul)}
+/* Round 2 (owner-approved, redesign-v2): --rojo-deep (#8E1119, the round-1
+   fix) solved the white-label-vs-block contrast (9.36:1) but a NEW check
+   this round -- the block's OWN contrast against the hero's surrounding
+   gradient, pixel-sampled live, WCAG 1.4.11 non-text 3:1 -- found it fails
+   at only 2.00:1, too close to the dark background to read as a distinct
+   block. Neither --rojo-deep nor --rojo nor the mockup's #B01D29 clears
+   BOTH constraints at once (all three measured and printed in the
+   redesign-v2 PHASE_9 report): moving along --rojo's own hue at
+   lightness/saturation found the two constraints trade off against each
+   other (darker helps white-text, hurts block-vs-surround; lighter is the
+   reverse), but they DO overlap in a real window. #D1101E -- same hue and
+   saturation as --rojo (355.7deg, 86%), lightness 0.44 instead of --rojo's
+   0.553, luminance 0.140 (inside the requested 0.12-0.18 band) -- clears
+   both with real margin: white label 5.52:1 (>=4.5), block vs surrounding
+   3.38:1 (>=3:1). Set here only, not as a new global token -- dark theme
+   only; light theme's --rojo already clears both on its own (5.9:1 text,
+   5.2:1 block-vs-surround) and stays untouched, consistent with every
+   other shipped .tri-block-rojo instance (the hub lead card, etc.). */
+.hero-stat.tri-block-rojo{background:#D1101E}
+[data-theme="light"] .hero-stat.tri-block-rojo{background:var(--rojo)}
+.hero-stat .ed-stat{line-height:.95}
+.hero-stat .u{font-size:var(--fs-3xs);letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink-3);margin-top:6px;line-height:1.35;font-weight:700}
+.hero-stat.tri-block .u{color:var(--flag-w)}
+/* PHASE_9 item 3 phone-compaction (owner-approved, redesign-v2): matches
+   the phone mockup's own stat layout (day counter full width, the other
+   two side by side, smaller) -- desktop (>=640px) untouched, this whole
+   block is additive under the same breakpoint the headline clause uses. */
+@media(max-width:639px){
+  .hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2_5)}
+  .hero-stats .hero-stat:nth-child(1){grid-column:1 / -1}
+  .hero-stats .hero-stat:nth-child(2),.hero-stats .hero-stat:nth-child(3){padding:var(--sp-3)}
+  .hero-stats .hero-stat:nth-child(2) .ed-stat,
+  .hero-stats .hero-stat:nth-child(3) .ed-stat{font-size:20px}
+}
 .herotop{padding:var(--sp-2) var(--sp-4_5) var(--sp-4);display:flex;gap:var(--sp-4_5);flex-wrap:wrap;align-items:flex-end}
 .clock{flex:none}
 .clock .n{font-family:inherit;font-weight:800;font-size:var(--fs-hero);
@@ -638,9 +732,33 @@ h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
 .herotext p{margin:var(--sp-2) 0 0;color:var(--ink-2);font-size:var(--fs-sm);max-width:52ch}
 .herofoot{border-top:1px solid var(--line);padding:var(--sp-3) var(--sp-4_5);display:flex;gap:var(--sp-3_5);flex-wrap:wrap;
   align-items:center;background:var(--wash)}
-.trophy{display:flex;align-items:center;gap:var(--sp-2_5);flex-wrap:wrap}
+/* Round 2 (owner-approved, redesign-v2): flex-wrap:wrap let the crest
+   wrap away from the name/t2 block at <=639px -- measured live: crest
+   sat alone on its own row (bottom 697.7px), the name block started a
+   full row below it (top 707.7px), not beside it. nowrap keeps crest+text
+   on one row always; min-width:0 on the text block (a real flexbox
+   necessity -- without it, a flex item's default min-width:auto stops
+   long text from wrapping/shrinking at all, it would overflow the row
+   instead) lets "Vaqueros de Bayamón — campeón 2026" wrap within its own
+   block if it's ever too long for the space beside the crest, rather
+   than pushing the crest down with it. */
+.trophy{display:flex;align-items:center;gap:var(--sp-2_5);flex-wrap:nowrap}
+.trophy>div{min-width:0}
 .trophy .t1{font-weight:700;font-size:var(--fs-base)}
 .trophy .t2{color:var(--ink-2);font-size:var(--fs-2xs)}
+/* PHASE_9 item 3 phone-compaction (owner-approved, redesign-v2): the
+   ribbon used to be a 3rd child of .trophy, wrapping to its OWN line
+   whenever crest+name already filled the row (measured live at 390px:
+   .herofoot ran 195px tall, three stacked wraps -- crest+name, ribbon
+   alone, then the button alone below that, since it was .herofoot's own
+   3rd flex child with an empty spacer before it). Moving the ribbon out
+   of .trophy and pairing it with the button in one .heroaction group
+   means the two wrap AS A PAIR -- two rows instead of three, nothing
+   dropped (crest still sits beside the name, ribbon and button both
+   still present, unchanged content). margin-left:auto keeps the old
+   spacer's job (push the pair right on wide screens) without a
+   dedicated empty div. */
+.heroaction{display:flex;align-items:center;gap:var(--sp-3);flex-wrap:wrap;margin-left:auto}
 .herospark{display:inline-flex;align-items:flex-end;flex:0 0 auto}
 .herospark svg{display:block;width:150px;height:20px}
 
@@ -1121,5 +1239,12 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
 :root{--font-display:'Oswald',Impact,'Arial Narrow',sans-serif}
 .clock .n,.strip .n,.seriesrow .sc,.readout .yr,.ed-stat,.hubhead,
 .big,h3.sec,h4.sub,.viewhead,.markname,.splashname,.stagetitle,
-.tiletitle,.primerhead h4,.phero-body h2,.herotext h2{
+.tiletitle,.primerhead h4,.phero-body h2,.herotext h2,.hero-headline{
   font-family:var(--font-display)}
+/* PHASE_9 item 3 (owner-approved, redesign-v2): .hero-headline added to
+   this list -- .hero-headline is verified live (getComputedStyle), same
+   discipline as the rest of this rule. .herotext h2 stays in this list
+   even though buildHero() no longer renders that element -- dead
+   selector, matches nothing, harmless; listed (not removed) in the
+   redesign-v2 PHASE_9 report alongside .clock/.herotop's own now-dead
+   rules, a separate cleanup, not done here. */

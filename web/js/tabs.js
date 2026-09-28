@@ -1115,18 +1115,31 @@ function todayISO(){
   const d=new Date();
   return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 }
+/* PHASE_9 item 3 (owner-approved, redesign-v2): hero rebuild toward the
+   approved mockup's headline/dek/stat-row layout. h/p keep the exact same
+   three-way season-state text they always had (dropping p was considered
+   and rejected: A4 in the redesign-v2 PHASE_9 report confirmed the
+   March-August season-shape fact does NOT appear anywhere else on Inicio,
+   only in Archivo's #calShape -- so it stays, now a small caption under
+   .hero-status instead of the old .herotext p). The old typed
+   "21 de marzo de 2027" is gone -- fmtLongDate(SEASON_STATE.nextEstimate)
+   (web/js/helpers.js, already used for player bio dates) computes it for
+   real, so a future SEASON_STATE update can't silently desync the two.
+   .hero-headline is now the page's own <h1> (buildHub()'s own <h1
+   class="hubhead"> is demoted to <h2> in the same commit, below, so
+   Inicio keeps exactly one h1 like every other panel -- see the
+   redesign-v2 PHASE_9 report, item A5). */
 function buildHero(){
   const t=todayISO();
   const since=daysBetween(SEASON_STATE.lastGame,t);
   const until=daysBetween(t,SEASON_STATE.nextEstimate);
   const f=F[SEASON_STATE.champ];
-  const inSeason = until<=0 && since<0;
   let n,u,h,p;
   if(since<0){ n=Math.abs(since); u='días para el juego decisivo'; h='La temporada sigue viva'; p='El archivo se actualiza cuando termine.'; }
   else if(until>0){
     n=until; u=until===1?'día para la 98.ª':'días para la 98.ª temporada';
     h='Temporada muerta, día '+since;
-    p='El BSN corre de finales de marzo a agosto. Los otros siete meses no hay marcador que mirar — hay 97 temporadas que revisar. Para eso es esto.';
+    p='El BSN corre de finales de marzo a agosto. Los otros siete meses no hay marcador que mirar — hay '+YEARS.length+' temporadas que revisar. Para eso es esto.';
   } else {
     n=since; u='días desde el último juego'; h='Debería estar rodando';
     p='La fecha estimada de apertura ya pasó y la liga no ha anunciado la real.';
@@ -1136,24 +1149,30 @@ function buildHero(){
   const backToBack = f.won.indexOf(2025)>-1 && Math.max.apply(null,f.won)===2026;
   const mostEver = FKEYS.every(k=>F[k].won.length<=f.won.length);
   const t2 = 'título '+SEASON_STATE.title+' · '+(backToBack?'bicampeonato':(mostEver?'el máximo de la liga':'récord del club'));
+  /* Stat 3: computed, not hardcoded to Bayamón -- today's real leader,
+     but this stays whoever actually leads if the data ever changes. */
+  const leaderKey = FKEYS.reduce((best,k)=>F[k].won.length>F[best].won.length?k:best, FKEYS[0]);
+  const leader = F[leaderKey];
   $('#heroBox').innerHTML=`
   <div class="hero">
     <div class="ed-eye">BSN · ${esc(eye)}</div>
-    <div class="herotop">
-      <div class="clock tri-block tri-block-azul"><div class="n">${n}</div><div class="u">${esc(u)}</div></div>
-      <div class="herotext">
-        <h2>${esc(h)}</h2>
-        <p>${esc(p)}</p>
-        <p class="dim" style="font-size:var(--fs-2xs);margin-top:var(--sp-2)">Apertura estimada: 21 de marzo de 2027 · ${esc(SEASON_STATE.nextLabel)}</p>
-      </div>
+    <h1 class="hero-headline">${YEARS.length} temporadas <span class="hero-headline-full">de baloncesto puertorriqueño,</span> documentadas</h1>
+    <p class="hero-dek">Campeones, jugadores y récords desde 1930, con las fuentes y los huecos a la vista.</p>
+    <p class="hero-status">${esc(h)} <span class="dim">· Apertura estimada: ${esc(fmtLongDate(SEASON_STATE.nextEstimate))} · ${esc(SEASON_STATE.nextLabel)}</span></p>
+    <p class="hero-note">${esc(p)}</p>
+    <div class="hero-stats">
+      <div class="hero-stat tri-block tri-block-azul"><div class="ed-stat">${n}</div><div class="u">${esc(u)}</div></div>
+      <div class="hero-stat"><div class="ed-stat">${YEARS.length}</div><div class="u">temporadas, de ${YEARS[0]} a ${YEARS[YEARS.length-1]}</div></div>
+      <div class="hero-stat tri-block tri-block-rojo"><div class="ed-stat">${leader.won.length}</div><div class="u">títulos de ${esc(leader.name)}, el club más ganador</div></div>
     </div>
     <div class="herofoot">
       <div class="trophy">${crest(SEASON_STATE.champ,30,36)}
         <div><div class="t1">${esc(f.name)} — campeón 2026</div>
-             <div class="t2">${esc(t2)}</div></div>
-        <span class="herospark" style="color:${f.c1}">${titleComb(f,{w:150,h:20,gap:1})}</span></div>
-      <div style="flex:1"></div>
-      <button class="btn" onclick="showView('historia','cinta')">Ver la cinta</button>
+             <div class="t2">${esc(t2)}</div></div></div>
+      <div class="heroaction">
+        <span class="herospark" style="color:${f.c1}">${titleComb(f,{w:150,h:20,gap:1})}</span>
+        <button class="btn" onclick="showView('historia','cinta')">Ver la cinta</button>
+      </div>
     </div>
   </div>`;
 }
@@ -3406,13 +3425,13 @@ function buildHub(){
   $('#hubTop').innerHTML=`
     <div class="hubtop">
       <div style="flex:1;min-width:240px">
-        <h1 class="hubhead">${pr.name ? 'Hola, '+esc(pr.name)
-          : (f?'El archivo, desde '+esc(cn):'El archivo del BSN')}</h1>
+        <h2 class="hubhead">${pr.name ? 'Hola, '+esc(pr.name)
+          : (f?'El archivo, desde '+esc(cn):'El archivo del BSN')}</h2>
         <p class="hublede">${f
           ? esc(f.won.length?cn+' tiene '+f.won.length+(f.won.length===1?' título':' títulos')+
                 ' en las 97 temporadas que cubre este archivo.'
               : cn+' nunca ha ganado. Está en el archivo igual.')
-          : 'Noventa y siete temporadas, 1930 a 2026. Escoge por dónde entrar, o pregunta directamente.'}</p>
+          : 'Escoge por dónde entrar, o pregunta directamente.'}</p>
       </div>
       ${f?`<div style="display:flex;align-items:center;gap:var(--sp-2_5)">${crest(club,40,48)}</div>`:''}
     </div>`;
