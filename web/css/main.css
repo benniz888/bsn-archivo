@@ -919,6 +919,58 @@ select{cursor:pointer}
 .btn.primary{background:var(--azul);border-color:var(--azul);color:#fff}
 .btn.primary:hover{background:var(--azul-hi);border-color:var(--azul-hi)}
 .btn:disabled{opacity:.45;cursor:not-allowed}
+/* PHASE_9 item 5 (owner-approved, redesign-v2): every standalone .btn on phone was under the
+   44px touch-target floor (measured live: base .btn 39.5px, .primary 41px, the generic
+   "Descargar CSV" button 30px, megaFeat()'s single card-action button 32px -- see the
+   redesign-v2 PHASE 9 item 5 report). Grown to 44px here, phone only, no change at >=640px.
+   EXCLUDED: td.name .btn -- buildTable()'s wide-column render callbacks put a compact .btn
+   inside every <td class="name">, one per dense table row (378 on Jugadores/Buscar alone,
+   plus five more tables found the same way: mvpYears/awTable/scoringTable on Historia/Premios,
+   leadTable on Jugadores/Líderes, three dqX tables on Archivo/Calidad). Tested live: growing
+   those to 44px balloons row height 32px->52px (+62% total table height on Buscar's 378-row
+   list) -- a real break, not a hypothetical one, found by applying this exact rule and
+   measuring before writing it here. td.name .btn is a single structural selector that
+   correctly matches all of them (and only them -- #hofList's card-footer .btn, similarly
+   small, is NOT inside a <td> and safely gets this rule's 44px growth). Two of those tables
+   (Jugadores/Buscar, Archivo/Calidad's three dqX tables) get an invisible expanded tap target
+   instead, below; the other four (mvpYears/awTable/scoringTable/leadTable) are left as they
+   were -- flagged in the item 5 report as a possible follow-up, not done here. */
+@media(max-width:639px){
+  .btn:not(td.name .btn){min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+}
+/* PHASE_9 item 5, STEP B (owner-approved, redesign-v2): the two dense tables named in the item's
+   own scope -- Jugadores/Buscar's #playerIndex, and Archivo/Calidad's three disputed/data-quality
+   tables (#dqTable, the main conflicting-totals list; #dqDob, unresolved birth dates; #dqDisputed,
+   season/team mismatches -- all three share #dqTable's "disputed-player links" description, same
+   #dqBox section) -- get an EXPANDED, INVISIBLE tap target instead of growing the visible row
+   (which STEP A's own exclusion above keeps byte-identical). Per-case geometry measured live
+   (getBoundingClientRect, not assumed): every row in these tables has adjacent TRs touching with
+   ZERO gap (this TD's bottom == the next TD's top), so any expansion has to stay inside the
+   button's OWN row to avoid reaching into the next one.
+   #playerIndex/#dqDob/#dqDisputed: button 24px (42px if the name wraps to 2 lines), centered with
+   only 4px of free space above AND below before the row boundary either way -- max symmetric
+   inset -4px reaches the row's own edge exactly. Empirically, hit-testing right at that shared
+   edge has a ~2px dead zone in both engines (confirmed live, both Chromium and WebKit -- neither
+   row claims that sliver, which is the safe failure mode, never an overlap); backed off to -3px,
+   verified zero overlap AND real reach beyond the button's own box on 3+ adjacent pairs, both
+   engines, both this table and the ones below.
+   #dqTable: same 4px above, but the row also carries a non-interactive club-name caption below
+   the button, leaving 24.5px of real free space below before the next row (same regardless of
+   whether that row's own button wrapped to 42px or not -- measured both). -3px top (matching the
+   other three tables) / -16px bottom reaches the full 44px target on the 24px-button rows (more
+   on the 42px ones), using 16 of the 24.5px available -- an 8.5px buffer kept deliberately, not
+   maxed out. No left/right change -- the button's own width already clears 44px on every row;
+   expanding sideways risked the "Año" column's own separate clickable link in the same row. */
+@media(max-width:639px){
+  #playerIndex td.name .btn,
+  #dqDob td.name .btn,
+  #dqDisputed td.name .btn{position:relative}
+  #playerIndex td.name .btn::after,
+  #dqDob td.name .btn::after,
+  #dqDisputed td.name .btn::after{content:"";position:absolute;inset:-3px;z-index:1}
+  #dqTable td.name .btn{position:relative}
+  #dqTable td.name .btn::after{content:"";position:absolute;inset:-3px 0 -16px 0;z-index:1}
+}
 .btnrow{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin-top:var(--sp-3)}
 .chip{background:var(--raise);border:1px solid var(--line);color:var(--ink-2);border-radius:99px;
   padding:5px var(--sp-3);font-size:var(--fs-2xs);cursor:pointer;font-weight:500}
