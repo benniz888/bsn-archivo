@@ -2702,7 +2702,7 @@ requests**; crests/portraits still render as SVG shields/monograms.
 
 ---
 
-### PHASE_9_HISTORICAL_DEEP_DIVE_2014_2023 — T9.1-T9.3 DONE, committed +
+### PHASE_9_HISTORICAL_DEEP_DIVE_2014_2023 [data pipeline] — T9.1-T9.3 DONE, committed +
 pushed. T9.4/T9.5 queued, unstarted. First archive standings.csv ever,
 5 real seasons (2014-2018), cross-validated against Wikipedia, all
 provenance-complete. Full record below.
@@ -6975,3 +6975,26 @@ reconstruction mechanism used to verify every step are in `docs/specs/app_split_
 - **PHASE_1_SPLIT closes here.** Steps 0-10, branch `phase-1-split`, 14 commits, merged and
   live. `docs/specs/app_split_spec.md` has the full file map, what's still inline and why, the
   reconstruction mechanism, and the verification standard used at every step.
+
+- **PHASE_9 (branch `redesign-v2` — UI restyle; a separate, independently-
+  numbered phase track from this file's own PHASE_9_HISTORICAL_DEEP_DIVE_2014_2023
+  above — data pipeline vs. UI, same number, unrelated work).** 17 commits,
+  `f9bbefe..d3262b6`. Header nav replaced by a left rail (≥860px), full
+  keyboard/a11y support; home hero rebuilt toward an approved mockup, WCAG-checked
+  contrast fixes in both themes; dead CSS/JS from the pre-rebuild hero removed;
+  phone touch targets brought to 44px across every standalone button and 6 dense
+  data tables, all via an invisible expanded tap target (row height byte-identical
+  to before); home hub restyled — rail-icon reuse on its cards (with an invisible
+  placeholder reserving the same space on the one card with no rail icon), a
+  real "Últimos campeones" table built from existing champion data, lead-card
+  wording updated to state the club's own title span instead of repeating the
+  hero's own stat; phone search-placeholder clipping fixed. Full whole-branch
+  review (48-route harness vs. `f9bbefe`, WCAG spot-recheck, click-through,
+  pytest/verify_clean, all clean except the one pre-existing `test_web_text.py`
+  failure) in `~/Desktop/redesign-v2-screenshots/phase9_final_report.md`; every
+  numbered item has its own report in that same directory. One known,
+  deliberately-deferred gap, not done in this arc: `buildOnThisDay()`/
+  `ON_THIS_DAY`/`OTD_ES` (the removed "En esta fecha" accordion's backing code)
+  are dormant, not deleted — `tests/_web_text.py` uses `ON_THIS_DAY`'s own
+  comment header as a splice marker, so removing the constant needs that marker
+  re-anchored first.
