@@ -154,10 +154,19 @@
     <!-- PHASE_9 item 3 (owner-approved, redesign-v2): .hubsearch moved up
          one slot, directly under the hero -- #hubTop's own content/logic
          is untouched, just repositioned after it now. -->
+    <!-- PHASE_9 search-placeholder fix (owner-approved, redesign-v2): the
+         placeholder attribute's own text is swapped by syncSearchPlaceholder()
+         (web/js/init.js) below 640px -- an <input>'s placeholder can't hold a
+         <span>, so the hero-headline-full CSS-hide trick doesn't apply here;
+         confirmed no CSS mechanism can change placeholder TEXT CONTENT at all
+         (only its color/font/etc. via ::placeholder), so this has to be JS.
+         aria-label is static (never toggles) and always carries the complete
+         example, so a screen reader gets the same full text at every width
+         even though sighted phone users see the shorter one. -->
     <div class="hubsearch">
       <input type="search" id="hubSearch" onkeydown="hubAsk(event)"
              placeholder="Prueba: cuándo murió Piculín · 1971 · títulos de Bayamón"
-             aria-label="Buscar en el archivo">
+             aria-label="Buscar en el archivo. Ejemplo: Prueba: cuándo murió Piculín · 1971 · títulos de Bayamón">
     </div>
     <div id="hubTop"></div>
     <div id="hubGrid"></div>
@@ -488,7 +497,7 @@
 <script src="js/data-quality.js?v=0dbf5b135d19"></script>
 <script src="js/games.js?v=69446642c205"></script>
 <script src="js/tabs.js?v=077bffafbb8a"></script>
-<script src="js/init.js?v=064004dbc89b"></script>
+<script src="js/init.js?v=8579952285f9"></script>
 <script>
 
 /* ============================================================

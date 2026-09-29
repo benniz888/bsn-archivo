@@ -63,11 +63,36 @@ if(window.matchMedia){
   else if(_lmq.addListener) _lmq.addListener(ligaFold);
 }
 
+/* PHASE_9 search-placeholder fix (owner-approved, redesign-v2): the full example
+   ("Prueba: cuándo murió Piculín · 1971 · títulos de Bayamón") clips mid-word at
+   phone width (measured live: 390px, 19px font -- the string needs ~492px, the
+   input only has ~312px to give it there). An <input>'s placeholder attribute is
+   a plain string, not markup -- it can't hold a <span> the way hero-headline-full
+   does, and no CSS mechanism changes placeholder TEXT CONTENT (only its color/
+   font/etc via ::placeholder) -- so the text itself is swapped here, in JS, same
+   matchMedia + addEventListener('change', ...) pattern as ligaFold() just above.
+   Below 640px: the same example's own first clause, unchanged, verified live to
+   fit with real margin at both 360px and 390px. aria-label (index.html) is
+   static and always carries the complete example -- this only ever changes
+   what's VISUALLY shown before someone starts typing. */
+function syncSearchPlaceholder(){
+  const el=document.getElementById('hubSearch'); if(!el) return;
+  el.placeholder = matchMedia('(max-width:639px)').matches
+    ? 'Prueba: cuándo murió Piculín'
+    : 'Prueba: cuándo murió Piculín · 1971 · títulos de Bayamón';
+}
+if(window.matchMedia){
+  const _spq=matchMedia('(max-width:639px)');
+  if(_spq.addEventListener) _spq.addEventListener('change',syncSearchPlaceholder);
+  else if(_spq.addListener) _spq.addListener(syncSearchPlaceholder);
+}
+
 function finishBoot(){
   clearTimeout(SPLASH_DEADLINE);
   try{ buildShelf(); }catch(e){ console.error('BSN: falló el estante',e); }
   try{ buildViews(); }catch(e){ console.error('BSN: falló el enrutador de vistas',e); }
   try{ ligaFold(); }catch(e){ console.error('BSN: falló «La liga ahora»',e); }
+  try{ syncSearchPlaceholder(); }catch(e){ console.error('BSN: falló el placeholder de búsqueda',e); }
   if(location.hash){
     try{ applyHash(); }catch(e){ console.error('BSN: falló el enlace directo',e); }
   }else{
