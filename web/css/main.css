@@ -971,6 +971,32 @@ select{cursor:pointer}
   #dqTable td.name .btn{position:relative}
   #dqTable td.name .btn::after{content:"";position:absolute;inset:-3px 0 -16px 0;z-index:1}
 }
+/* PHASE_9 item 5b (owner-approved, redesign-v2): the same invisible expanded tap target,
+   extended to the 4 dense tables item 5 found but didn't touch -- #mvpYears/#awTable/
+   #scoringTable (Historia/Premios) and #leadTable (Jugadores/Líderes). Re-measured live, not
+   assumed to match item 5's tables: every row pair across all four has the SAME tight-case
+   geometry as #playerIndex/#dqDob/#dqDisputed (24px button, 4px free space above and below,
+   zero gap between adjacent rows) -- confirmed by surveying every adjacent-button gap in each
+   table, not just the first pair (some pairs have far more room, 15.5-32.8px, where a row in
+   the middle of a decade/season group sits next to a sub-header or note; the TIGHTEST gap in
+   all four tables is 8px, identical to item 5's proven case). #mvpYears occasionally appends a
+   non-interactive dagger footnote (<span title="...">) after the button in the same cell, when
+   the archive also lists another player for that year -- checked live: it never changes the
+   button's own height (still 24px in every sampled row, with or without the footnote), so it
+   doesn't affect this rule. Same -3px reused deliberately, not assumed -- re-ran the same dead-
+   zone scan from item 5 on each table's own tightest pairs and got the identical result: zero
+   overlap, real reach beyond the button's own box, confirmed via real mouse clicks (not just
+   computed styles) landing on the correct player, 3+ adjacent pairs per table, both engines. */
+@media(max-width:639px){
+  #mvpYears td.name .btn,
+  #awTable td.name .btn,
+  #scoringTable td.name .btn,
+  #leadTable td.name .btn{position:relative}
+  #mvpYears td.name .btn::after,
+  #awTable td.name .btn::after,
+  #scoringTable td.name .btn::after,
+  #leadTable td.name .btn::after{content:"";position:absolute;inset:-3px;z-index:1}
+}
 .btnrow{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin-top:var(--sp-3)}
 .chip{background:var(--raise);border:1px solid var(--line);color:var(--ink-2);border-radius:99px;
   padding:5px var(--sp-3);font-size:var(--fs-2xs);cursor:pointer;font-weight:500}
