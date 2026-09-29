@@ -3400,7 +3400,14 @@ function edBlock(o){
   const stat = (o.stat!=null && o.stat!=='')
     ? `<div class="ed-stat${o.lead?' tri-block tri-block-rojo':''}">${esc(String(o.stat))}</div>` : '';
   const viz  = o.viz ? `<span class="ed-viz">${o.viz}</span>` : '';
+  /* PHASE_9 hub restyle (owner-approved, redesign-v2): o.icon is one of TABS' own path strings
+     (web/js/tabs.js, same array buildNav() reads) -- reusing the rail's own icon set, not new
+     SVGs, so a card's glyph matches the rail tab a visitor already sees for that same section.
+     Optional: the one hub card with no rail equivalent (Comparar, a Jugadores sub-view, not a
+     top-level tab) renders with no icon rather than an invented one. */
+  const icon = o.icon ? `<div class="ed-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${o.icon}" stroke-linecap="round" stroke-linejoin="round"/></svg></div>` : '';
   return `<button class="ed${o.lead?' ed-lead':''}" onclick="${o.go}">
+    ${icon}
     <div class="ed-eye">${esc(o.eye)}</div>
     ${(stat||viz)?`<div class="ed-row">${stat}${viz}</div>`:''}
     <div class="ed-phrase">${esc(o.phrase)}</div>
@@ -3439,19 +3446,36 @@ function buildHub(){
   /* LEAD — the user's club title comb, or Bayamón (the all-time leader) */
   const lf = (f && f.won.length) ? f : F.bay;
   const lead = lf===f ? cn : 'Bayamón';
-  const mostEver = FKEYS.every(k=>F[k].won.length<=lf.won.length);
   const blocks=[];
 
+  /* Icons: TABS' own path strings (web/js/tabs.js, the same array buildNav() reads for the
+     rail) -- historia/jugadores/juega/archivo each find their entry by id. Comparar has none:
+     it's a Jugadores sub-view, never a top-level tab, so no rail icon exists for it -- left
+     icon-less rather than inventing one (owner-approved, redesign-v2). */
+  const iconOf = id => { const t=TABS.find(x=>x[0]===id); return t ? t[2] : null; };
+
+  /* PHASE_9 hub restyle (owner-approved, redesign-v2): lead-card phrase now states the club's
+     first-to-most-recent title span (lf.won[0]/lf.won[lf.won.length-1], never typed literals --
+     stays correct for whichever club is picked, or Bayamón un-picked) instead of "el máximo de
+     la liga", which just repeated the hero's own stat 3 ("18 títulos de Vaqueros de Bayamón, el
+     club más ganador") -- see the redesign-v2 PHASE 9 hub-restyle report, option C. Only shown
+     when there's more than one title: a single-title club's own first and most recent title are
+     the same year, so "de 1998 a 1998" would read as a typo, not a fact -- those clubs fall back
+     to the bare "títulos de X", the same text a non-leader club already got before this change.
+     mostEver (whether lf leads the whole league) was only ever used by the text this replaces --
+     removed with it, not left dangling unused. */
   blocks.push(edBlock({ lead:true, eye:lf===f?'Historia · tu club':'Historia',
+    icon: iconOf('historia'),
     stat: lf.won.length,
     viz: titleComb(lf,{w:220,h:32,gap:1}),
-    phrase:'títulos de '+lead+(mostEver?', el máximo de la liga':''),
+    phrase:'títulos de '+lead+(lf.won.length>1?', de '+lf.won[0]+' a '+lf.won[lf.won.length-1]:''),
     ctx:'La cinta de campeones, 1930 a 2026. Las dinastías se leen como franjas sólidas de color; los años flacos, como huecos.',
     act:'Ver la cinta', go:"showView('historia','cinta')" }));
 
   const nJug = (PALL&&PALL.length) ? PALL.length : (PINDEX?PINDEX.length:0);
   const topPts = PINDEX ? PINDEX.filter(p=>p.pts!=null).map(p=>p.pts).sort((x,y)=>x-y).slice(-7) : [];
   blocks.push(edBlock({ eye:'Jugadores',
+    icon: iconOf('jugadores'),
     stat: nJug ? nJug.toLocaleString('es-PR') : '—',
     viz: topPts.length>=2 ? spark(topPts,{area:true,w:96,h:24}) : '',
     phrase:'jugadores con fuente',
@@ -3466,6 +3490,7 @@ function buildHub(){
 
   const jn = (typeof puzzleNo==='function') ? puzzleNo() : null;
   blocks.push(edBlock({ eye:'Juega',
+    icon: iconOf('juega'),
     stat: jn!=null ? '#'+jn : '',
     viz: dotgrid([0,1,0, 0,0,1, 1,0,0]),
     phrase:'La Cuadrícula de hoy',
@@ -3473,6 +3498,7 @@ function buildHub(){
     act:'Jugar', go:"showView('juega','cuadricula')" }));
 
   blocks.push(edBlock({ eye:'Archivo', stat:'2011',
+    icon: iconOf('archivo'),
     viz: sparkBars(COVERAGE.map(c=>c[1]),{w:110,h:24,scale:100,gap:1.5}),
     phrase:'el muro real',
     ctx:'Antes de 2011 no hay estadística por temporada del BSN. El archivo enseña ese hueco y todos los demás.',
@@ -3481,9 +3507,41 @@ function buildHub(){
   $('#hubGrid').innerHTML='<div class="edhub">'+blocks.join('')+'</div>';
 
   buildPrimer();
+  buildRecentChamps();
   $('#hubFoot').textContent = f
     ? 'Cambia de club desde la píldora de arriba y el archivo se reordena a su alrededor.'
     : 'Escoge un club en Equipos y el archivo se reordena a su alrededor.';
+}
+
+/* PHASE_9 hub restyle (owner-approved, redesign-v2): "Últimos campeones" -- built from real
+   data already used elsewhere (champOf/YEARS, both inline in index.html; the title-number
+   column is the exact same computation showSeason() already does, f.won.indexOf(y)+1 --
+   tabs.js's own showSeason()). The last 3 seasons with a documented champion, most recent
+   first -- YEARS is already sorted ascending, so this walks backward and stops at 3 real
+   entries rather than assuming the last 3 YEARS values all have one (a season with no
+   champion registered would otherwise show as a gap here). */
+function buildRecentChamps(){
+  const host=$('#hubChamps'); if(!host) return;
+  const rows=[];
+  for(let i=YEARS.length-1; i>=0 && rows.length<3; i--){
+    const y=YEARS[i], k=champOf[y];
+    if(!k) continue;
+    const f=F[k];
+    rows.push({y, f, num:f.won.indexOf(y)+1});
+  }
+  if(!rows.length){ host.innerHTML=''; return; }
+  host.innerHTML=`
+    <h2 class="big">Últimos campeones</h2>
+    <div class="hubchamps">
+      <table>
+        <thead><tr><th scope="col">Temporada</th><th scope="col">Campeón</th><th scope="col" class="num">Título Nº</th></tr></thead>
+        <tbody>${rows.map(r=>`<tr>
+          <td class="yr">${r.y}</td>
+          <td class="team"><span class="dot" style="background:${r.f.c1}" aria-hidden="true"></span>${esc(r.f.name)}</td>
+          <td class="num">${r.num}</td>
+        </tr>`).join('')}</tbody>
+      </table>
+    </div>`;
 }
 
 function buildProfile(){
