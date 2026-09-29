@@ -412,6 +412,29 @@ html.standalone .toprow{padding-top:10px;padding-bottom:16px}
 .rail .railctl .plus{color:var(--rojo);font-weight:700;flex:none}
 .rail .raillabel{display:none}
 @media(min-width:1120px){.rail .raillabel{display:inline;white-space:nowrap}}
+/* PHASE_10 item 3 (owner-approved, redesign-v2): bug fix, not a new treatment. Items 1+2 only
+   restyled .railnav a (the 5 nav tabs) for the 76px labeled-tier rail; .railctl (Tema, Mi club)
+   kept the OLD row layout (icon beside label, justify-content:flex-start, 16px side padding)
+   sized for the old 220px rail, so "Tema"/a club name like "Cangrejeros" overflowed past the
+   new 76px edge -- confirmed live before this fix: label right edge at 87.5px/131.7px vs the
+   rail's own 76px. Checked the mockup's actual bottom-group control first, live, per this item's
+   own instruction, rather than inventing a treatment: it has exactly ONE such control (a bare
+   "+" button, matching Mi club) and it is ALWAYS icon-only there -- no visible text, an
+   aria-label only -- and has no theme-toggle equivalent at all, so there's no mockup control to
+   diff against for that piece specifically. What's applied below is not new: it's the exact
+   .raillabel{display:none}-plus-aria-label mechanism this file already uses for BOTH .railctl
+   buttons at the 860-1119px icon-only tier (confirmed live working correctly, unaffected by
+   this bug: 63px wide, fits inside the 64px rail, real aria-label intact) -- reused one tier
+   later, for .railctl only, never touching .railnav a's own icon-above-label treatment from
+   items 1+2. justify-content/padding reverted to the same centered icon-only values too, so the
+   icon centers in the narrower button instead of sitting flush-left with dead space to its
+   right (the layout .railctl already had at 860-1119px, just re-applied at 1120px+). Real
+   accessible name is unaffected either way -- #railTheme/#railClub's aria-labels are dynamically
+   kept in sync regardless of tier (tabs.js applyTheme()/drawClubPill()), same as before. */
+@media(min-width:1120px){
+  .rail .railctl .raillabel{display:none}
+  .rail .railctl{justify-content:center;padding:13px 0}
+}
 .rail a:hover,.rail .railctl:hover{color:var(--ink);background:var(--raise)}
 .rail a[aria-selected="true"]{color:var(--blanco);font-weight:800}
 .rail a[aria-selected="true"]::before{content:"";position:absolute;left:0;top:0;bottom:0;
