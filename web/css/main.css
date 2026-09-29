@@ -1275,6 +1275,19 @@ tr.cut td{border-bottom:1px solid var(--azul)}
   display:flex;align-items:center;justify-content:center;flex:none}
 [data-theme="light"] .ed-icon{background:rgba(200,18,31,.12)}
 .ed-icon svg{width:22px;height:22px;stroke:var(--rojo);fill:none;stroke-width:1.7}
+/* PHASE_9 alignment fix (owner-approved, redesign-v2): Comparar (no rail icon -- see edBlock())
+   still gets a .ed-icon box in the DOM, same 38px/--r-sm/flex:none as every other card's, so its
+   .ed-eye lands at the same y as its row-mates'. This is the ONLY thing that needs to differ --
+   the background, and nothing else, so the box is truly invisible (matches the card background
+   exactly, not a visible empty placeholder) rather than an icon-less badge shape.
+   Found live, not assumed: a first attempt at just `.ed-icon-empty{background:transparent}`
+   (0,1,0) worked in dark theme but NOT light -- [data-theme="light"] .ed-icon{background:...}
+   above is (0,2,0), a strictly higher specificity that wins regardless of source order, so light
+   theme kept showing the rojo wash through the "empty" box. Same specificity-tie class this
+   file has hit before (the .clock.tri-block-azul .u / .readout .yr.tri-block-azul case, PHASE 2)
+   -- fixed the same way, an explicit same-scope override rather than relying on source order. */
+.ed-icon-empty{background:transparent}
+[data-theme="light"] .ed-icon-empty{background:transparent}
 .ed-eye{font-size:var(--fs-3xs);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
 .ed-row{display:flex;align-items:flex-end;gap:var(--sp-3);flex-wrap:wrap;min-height:1px}
 .ed-stat{font-family:inherit;font-weight:800;font-size:var(--fs-xl);line-height:.9;

@@ -3404,8 +3404,17 @@ function edBlock(o){
      (web/js/tabs.js, same array buildNav() reads) -- reusing the rail's own icon set, not new
      SVGs, so a card's glyph matches the rail tab a visitor already sees for that same section.
      Optional: the one hub card with no rail equivalent (Comparar, a Jugadores sub-view, not a
-     top-level tab) renders with no icon rather than an invented one. */
-  const icon = o.icon ? `<div class="ed-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${o.icon}" stroke-linecap="round" stroke-linejoin="round"/></svg></div>` : '';
+     top-level tab) renders with no icon rather than an invented one.
+     PHASE_9 alignment fix (owner-approved, redesign-v2): an icon-less card used to render NO
+     first child at all, so its .ed-eye sat 46px higher than its row-mates' (the icon box's own
+     38px height plus the .ed flex container's 8px gap -- found live, not assumed: measured
+     against the actual .ed-icon height and .ed's own `gap` computed style, and 38+8 is exactly
+     the measured 46px). Fixed by always reserving the same box, empty when there's no icon --
+     .ed-icon-empty overrides only the background (transparent), keeping width/height/radius
+     identical, so the layout footprint matches exactly with nothing painted inside it. */
+  const icon = o.icon
+    ? `<div class="ed-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${o.icon}" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`
+    : '<div class="ed-icon ed-icon-empty" aria-hidden="true"></div>';
   return `<button class="ed${o.lead?' ed-lead':''}" onclick="${o.go}">
     ${icon}
     <div class="ed-eye">${esc(o.eye)}</div>
