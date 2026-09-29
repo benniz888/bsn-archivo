@@ -3,157 +3,157 @@
     {
       "kind": "const",
       "name": "champOf",
-      "line": 740,
+      "line": 749,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "ruOf",
-      "line": 740,
+      "line": 749,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "deriveChampions",
-      "line": 741,
-      "file": "web/index.html"
-    },
-    {
-      "kind": "const",
-      "name": "YEARS",
       "line": 750,
       "file": "web/index.html"
     },
     {
       "kind": "const",
+      "name": "YEARS",
+      "line": 759,
+      "file": "web/index.html"
+    },
+    {
+      "kind": "const",
       "name": "LAST",
-      "line": 751,
+      "line": 760,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "NSEASONS",
-      "line": 751,
+      "line": 760,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "FKEYS",
-      "line": 752,
+      "line": 761,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "ACTIVE",
-      "line": 753,
+      "line": 762,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "NOTES",
-      "line": 755,
+      "line": 764,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "POOL_NAME_ALIAS",
-      "line": 797,
+      "line": 806,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "FAME_W",
-      "line": 972,
+      "line": 981,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "fame",
-      "line": 973,
+      "line": 982,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "THEME_BAR",
-      "line": 988,
+      "line": 997,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "THEME_ICON",
-      "line": 989,
+      "line": 998,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "THEME_NEXT",
-      "line": 996,
+      "line": 1005,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "THEME_ES",
-      "line": 997,
+      "line": 1006,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "osTheme",
-      "line": 998,
+      "line": 1007,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "resolvedTheme",
-      "line": 1004,
+      "line": 1013,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "currentTheme",
-      "line": 1008,
+      "line": 1017,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "applyTheme",
-      "line": 1011,
+      "line": 1020,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "setTheme",
-      "line": 1034,
+      "line": 1043,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "toggleTheme",
-      "line": 1045,
+      "line": 1054,
       "file": "web/index.html"
     },
     {
       "kind": "function",
       "name": "initTheme",
-      "line": 1046,
+      "line": 1055,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "CAT_KEYS",
-      "line": 1059,
+      "line": 1068,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "GRID_CLUBS",
-      "line": 1061,
+      "line": 1070,
       "file": "web/index.html"
     },
     {
       "kind": "const",
       "name": "BOOT",
-      "line": 1066,
+      "line": 1075,
       "file": "web/index.html"
     },
     {
@@ -848,20 +848,26 @@
     },
     {
       "kind": "function",
+      "name": "syncSearchPlaceholder",
+      "line": 78,
+      "file": "web/js/init.js"
+    },
+    {
+      "kind": "function",
       "name": "finishBoot",
-      "line": 66,
+      "line": 90,
       "file": "web/js/init.js"
     },
     {
       "kind": "function",
       "name": "runBoot",
-      "line": 87,
+      "line": 112,
       "file": "web/js/init.js"
     },
     {
       "kind": "function",
       "name": "hydrate",
-      "line": 121,
+      "line": 146,
       "file": "web/js/init.js"
     },
     {
