@@ -363,7 +363,16 @@ html.standalone .toprow{padding-top:10px;padding-bottom:16px}
   width:64px;padding:var(--sp-3) 0;background:var(--scrim);
   -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-right:1px solid var(--line)}
 @media(min-width:860px){.rail{display:flex}header.top{display:none}}
-@media(min-width:1120px){.rail{width:220px;padding:var(--sp-4) var(--sp-2)}}
+/* PHASE_10 item 2 (owner-approved, redesign-v2): labeled-tier rail width matched to the
+   mockup's own measured value (76px, getComputedStyle on the live file, not the earlier 220px
+   guess) -- lifts item 1's own "don't touch rail width" note, per this item's explicit scope.
+   Padding 20px 0px is the mockup's own value too -- no --sp-* token is exactly 20px (--sp-4 is
+   16px, --sp-5 is 24px), used as a literal and flagged here rather than rounded, same discipline
+   as item 1's 9px label font-size. The icon-only tier's own 64px (base rule above) is NOT
+   derived from this value -- two independent literals, confirmed by reading the CSS, not
+   assumed -- so it needs no change and none was made; checked and reported per this item's own
+   instruction to check either way. */
+@media(min-width:1120px){.rail{width:76px;padding:20px 0}}
 /* PHASE_9 item 1d (owner-approved, redesign-v2): header.top handled the
    standalone-mode top inset (html.standalone header.top{padding-top:
    max(env(safe-area-inset-top),44px)}) -- once it's display:none at
@@ -407,6 +416,62 @@ html.standalone .toprow{padding-top:10px;padding-bottom:16px}
 .rail a[aria-selected="true"]{color:var(--blanco);font-weight:800}
 .rail a[aria-selected="true"]::before{content:"";position:absolute;left:0;top:0;bottom:0;
   width:3px;background:var(--tri-v)}
+/* PHASE_10 item 1 (owner-approved, redesign-v2): the labeled tier's nav TABS specifically
+   (not .railctl -- theme toggle/Mi club stay exactly as PHASE_9 item 1 left them, untouched,
+   confirmed by scoping every rule below to .railnav a, never the shared .rail a,.rail .railctl
+   selector) go icon-above-label, matching the mockup's own .rail .item{display:flex;flex-
+   direction:column;align-items:center;gap:4px} -- read live via getComputedStyle on the actual
+   mockup file, not eyeballed. gap:4px is var(--sp-1), an exact existing-token match. The label's
+   own 9px font-size has NO exact match in the --fs-* scale (--fs-3xs, the smallest, is 11px) --
+   flagged here rather than silently rounded up, per this engagement's own literal-token
+   discipline; used as a literal since "matching... font-size... exactly" was explicit. Muted
+   label weight set to 400 (the mockup's own .item span{font-size:9px}, no explicit weight --
+   the browser default for a bare element is 400 -- read live, not assumed) instead of inheriting
+   700 from the shared .rail a rule above. Active color changed from --blanco to --ink, and
+   placed AFTER (not before) .rail a[aria-selected="true"] above deliberately -- .railnav
+   a[aria-selected="true"] and .rail a[aria-selected="true"] are the same (0,2,1) specificity, so
+   source order decides the tie; an earlier draft of this exact rule sat BEFORE line 407 above
+   and silently lost to it, found live (computed color was still #08122A, not --ink's #0B1730)
+   before this was ever reported clean -- same class of tie this file has hit before, fixed the
+   same way. --ink vs --blanco is identical in dark (#EEF3FB both) and a small real difference in
+   light (#08122A vs #0B1730). Active label weight set to 600 (not inherited 800) on the label
+   specifically -- matches the mockup's .item.active span{font-weight:600} without touching the
+   shared aria-selected rule's own font-weight:800 above (harmless dead weight on an SVG, left
+   alone to keep the change scoped to .railnav a only). Padding below is item 2's, not this
+   item's original 10px var(--sp-4) -- see the comment right after this block for why it isn't
+   the mockup's own 0px. */
+@media(min-width:1120px){
+  .railnav a{flex-direction:column;justify-content:center;gap:var(--sp-1);padding:3px 0}
+  .railnav a .raillabel{font-size:9px;font-weight:400}
+  .railnav a[aria-selected="true"]{color:var(--ink)}
+  .railnav a[aria-selected="true"] .raillabel{font-weight:600}
+}
+/* PHASE_10 item 2 (owner-approved, redesign-v2): icon shrunk from the shared 22px
+   (.rail a svg,.rail .railctl svg below) to the mockup's own measured 21px -- scoped to
+   .railnav a svg specifically so .railctl (theme toggle, Mi club) keeps its 22px, untouched,
+   same "don't touch railctl" scoping as item 1. .railnav's own gap (between the 5 nav tabs)
+   tightened from 2px to the mockup's measured 26px, matching how loosely its own flat item list
+   is spaced -- .rail's own top-level gap (2px, between the logo/.railnav/.railbottom GROUPS, a
+   different relationship the mockup doesn't cleanly map to) was left alone, not asked for and
+   not touched.
+   ITEM PADDING -- a real conflict, not resolved silently: the mockup's own item padding is
+   literally 0 (its items rely entirely on content height, ~36-45px there). Tested the exact
+   mockup values on this app's own real font rendering, live, before deciding anything: 0px
+   vertical padding + the new 21px icon measures 38.5px tall -- 5.5px UNDER the PHASE_9 44px
+   touch-target floor. Horizontal padding drops to 0 regardless (a real structural need, not a
+   style choice -- the rail is 76px wide now, items must span its full width or the mockup's own
+   centering has no room to work with). Vertical padding does NOT go to the mockup's 0px:
+   3px is the minimum integer value that clears 44px on this app's own rendering (tested 0/2/3/4px
+   live: 38.5/42.5/44.5/46.5px) -- 44.5px, the smallest size that still passes, not a value chosen
+   to look nicer. Flagging this plainly rather than reporting an exact match that isn't one.
+   Both rules below are scoped to @media(min-width:1120px) deliberately -- the icon-only tier
+   (860-1119px) keeps its existing 22px icon (.rail a svg,.rail .railctl svg above) and its
+   existing .railnav 2px gap untouched; this item's own scope is the labeled tier only, same as
+   item 1. */
+@media(min-width:1120px){
+  .railnav a svg{width:21px;height:21px}
+  .railnav{gap:26px}
+}
 .mega-feat{background:var(--raise);border:1px solid var(--line);border-radius:12px;
   padding:var(--sp-4);display:flex;flex-direction:column;gap:var(--sp-1);align-self:start}
 .mega-feat .fx{font-size:var(--fs-3xs);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
