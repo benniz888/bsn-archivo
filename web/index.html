@@ -54,7 +54,7 @@
      short numerals/titles only -- see main.css's own comment at the --font-display rule
      for the exact selector list and why. Reuses the preconnects above (same two hosts). -->
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css?v=37bdf30a14f2">
+<link rel="stylesheet" href="css/main.css?v=81b622cf2830">
 </head>
 <body>
 <div class="splash" id="splash" role="status" aria-live="polite" aria-label="Cargando el archivo">
@@ -238,8 +238,17 @@
       <h1 class="big">97 temporadas</h1>
       <p class="lede">Cada bloque es una temporada, pintado con el color del campeón. Las dinastías se leen como franjas sólidas. Toca cualquiera.</p>
     </div>
-    <div class="ribbon" id="ribbon"></div>
-    <div class="readout" id="readout" role="status" aria-live="polite"><span class="dim">Toca una temporada.</span></div>
+    <!-- PHASE_11 (owner-approved, redesign-v2): legend + scroll-wrap added to the real
+         static markup -- buildRibbon() (tabs.js) fills #ribbon itself; the legend's 3 items
+         are static since they describe the fixed color/legend meaning, not per-year data. -->
+    <div class="legend">
+      <span><i style="background:linear-gradient(150deg,var(--azul),var(--azul-deep))"></i>Título documentado</span>
+      <span><i style="background:linear-gradient(150deg,var(--rojo),var(--rojo-deep))"></i>Parte de una dinastía (2+ seguidos)</span>
+      <span><i style="background:var(--raise);border:1px solid var(--line)"></i>Sin campeón confirmado</span>
+    </div>
+    <div class="ribbon-wrap"><div class="ribbon" id="ribbon"></div></div>
+    <div class="fixnote">Celdas a 44×44px mínimo en todo ancho de pantalla — el survey encontró las celdas anteriores en 27.6×40px en ancho de teléfono, debajo del piso táctil de la app. Corregido aquí.</div>
+    <div class="readout" id="readout" role="status" aria-live="polite"></div>
     <div id="seasonExtra"></div>
     <div class="strip" id="titleStats"></div>
 
@@ -496,8 +505,8 @@
 <script src="js/player.js?v=a184c7ce7c97"></script>
 <script src="js/data-quality.js?v=0dbf5b135d19"></script>
 <script src="js/games.js?v=69446642c205"></script>
-<script src="js/tabs.js?v=f361f1160527"></script>
-<script src="js/init.js?v=8579952285f9"></script>
+<script src="js/tabs.js?v=736ef6c48937"></script>
+<script src="js/init.js?v=d47d59c96fcc"></script>
 <script>
 
 /* ============================================================

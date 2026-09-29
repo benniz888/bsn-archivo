@@ -91,6 +91,13 @@ function finishBoot(){
   clearTimeout(SPLASH_DEADLINE);
   try{ buildShelf(); }catch(e){ console.error('BSN: falló el estante',e); }
   try{ buildViews(); }catch(e){ console.error('BSN: falló el enrutador de vistas',e); }
+  /* PHASE_11 (owner-approved, redesign-v2): Historia's own hero rewrite -- must run after
+     buildViews() so #historia .phead already exists as buildViews() left it (it only reads
+     phead as an insertion anchor, never touches its content, so ordering relative to
+     buildViews() itself doesn't matter -- placed here just to sit with the rest of the
+     router-level, once-per-boot setup). */
+  try{ buildHistoriaHero(); }catch(e){ console.error('BSN: falló el hero de Historia',e); }
+  try{ restructurePremios(); }catch(e){ console.error('BSN: falló el subtab de Premios',e); }
   try{ ligaFold(); }catch(e){ console.error('BSN: falló «La liga ahora»',e); }
   try{ syncSearchPlaceholder(); }catch(e){ console.error('BSN: falló el placeholder de búsqueda',e); }
   if(location.hash){

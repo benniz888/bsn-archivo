@@ -1133,22 +1133,16 @@ select{cursor:pointer}
 .answer .afoot{padding:var(--sp-2_5) var(--sp-4_5);border-top:1px solid var(--line);color:var(--ink-3);font-size:var(--fs-2xs)}
 
 /* ---------- ribbon ---------- */
-.ribbon{margin-top:var(--sp-4)}
-.decade{display:grid;grid-template-columns:46px 1fr;gap:9px;align-items:start;margin-bottom:6px}
-.decade-label{color:var(--ink-3);font-size:var(--fs-2xs);font-weight:600;padding-top:var(--sp-2)}
-.cells{display:grid;grid-template-columns:repeat(10,1fr);gap:3px}
-.cell{aspect-ratio:1/1.45;border:0;border-radius:3px;cursor:pointer;padding:0;min-height:24px;
-  transition:transform .12s ease}
-.cell:hover,.cell:focus-visible{transform:translateY(-3px);outline:none;box-shadow:0 0 0 2px var(--blanco)}
-.cell.empty{background:repeating-linear-gradient(45deg,var(--empty-a),var(--empty-a) 3px,var(--empty-b) 3px,var(--empty-b) 6px);cursor:default}
-.cell.empty:hover{transform:none;box-shadow:none}
-.cell.sel{box-shadow:0 0 0 2px var(--rojo)}
-.readout{border:1px solid var(--line);border-radius:var(--r);background:var(--deep);margin-top:var(--sp-3_5);
-  padding:var(--sp-4);min-height:96px;display:flex;gap:var(--sp-3_5);align-items:center}
-.readout .yr{font-size:var(--fs-2xl);line-height:1;color:var(--ink-3);flex:none;font-weight:800;letter-spacing:-.03em}
-.readout .win{font-weight:700;font-size:17px}
-.readout .lose{color:var(--ink-2);font-size:var(--fs-xs);margin-top:2px}
-.readout .meta{color:var(--ink-3);font-size:var(--fs-2xs);margin-top:7px;white-space:normal}
+/* PHASE_11 (owner-approved, redesign-v2): the old decade-row grid (.decade/.decade-label/
+   .cells, 10 fixed columns) is gone -- its fixed-column width was the actual cause of the
+   27.6x40px phone touch-target failure the survey found (10 columns can never clear 44px
+   at 390px minus gaps, no matter what min-height says). Replaced by a flat, always-44px
+   ribbon -- see the new .ribbon-wrap/.ribbon/.cell rules in the PHASE_11 block below,
+   after .matrix. .cell's old .empty/.sel modifiers are gone with it (unused now -- the new
+   JS never emits them, replaced by .champ/.dynasty/plain and .active respectively). */
+.readout{border:1px solid var(--line);border-radius:var(--r);background:var(--deep);margin-top:var(--sp-3_5)}
+.readout .yr{font-size:40px;line-height:1;color:var(--ink-3);flex:none;font-weight:700;letter-spacing:-.03em;
+  font-family:var(--font-display)}
 
 /* ---------- bars ---------- */
 .bars{margin-top:var(--sp-3);display:grid;gap:5px}
@@ -1444,6 +1438,207 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 .matrix table{min-width:520px;font-size:var(--fs-2xs)}
 .matrix td{text-align:center;padding:6px var(--sp-1)}
 .matrix td.lbl{text-align:left;font-weight:600;position:sticky;left:0;background:var(--deep)}
+/* PHASE_11 (owner-approved, redesign-v2): matrix visual polish only -- buildMatrix()'s own
+   real row/col computation (every club with a title vs. every club with a runner-up finish,
+   NOT reduced to a top-8) is untouched; only the cell markup gained a weighted color class. */
+.matrix tbody tr:nth-child(even){background:var(--zebra)}
+.matrix td.cellv{font-weight:700;color:var(--flag-w);border-radius:var(--r-sm)}
+.matrix td.cellv.hi{background:var(--rojo)}
+.matrix td.cellv.lo{background:var(--azul)}
+.matrix td.zero{color:var(--ink-3);font-weight:400}
+
+/* ============================================================
+   PHASE_11 -- Historia real build (owner-approved, redesign-v2)
+   Reference: approved Historia mockup v5 (claude.ai/artifact/YKxYor983NEQpnp7ukeUyu).
+   Matches the mockup's visual system, not its markup -- every number/name/year below is
+   rendered from the app's own real data (champOf/ruOf/F's won/ru, SCORING, MVP_YEARS,
+   REF_RULES/REF_TIMELINE/REF_SCORERS), never hardcoded from the mockup's own sample arrays.
+   Scoped entirely to Historia's own ids/classes -- .barrow/.bars (shared with Jugadores'
+   leadBars) and .timeline/.tw (shared with Inicio's "Lo próximo") are never touched; every
+   class below is either brand new (checked against the whole stylesheet first, zero prior
+   uses) or an existing Historia-exclusive class (.cell/.ribbon/.readout/.matrix/.decade,
+   confirmed via the same check -- restyled in place since nothing else references them).
+   Token discipline: reuses real tokens throughout (--card/--line/--ink*/--rojo/--azul/--zebra/
+   --raise/--r/--r-sm/--sp-*/--fs-*); the mockup's own ad hoc --wash (a solid raised chip
+   tint) maps to the real --raise, NOT the real --wash (which is an unrelated translucent
+   scrim color in this app -- reusing it here would have been visually wrong). Medal-badge
+   gold/silver/bronze gradients have no existing token (nothing in this app's palette is a
+   literal medal color) and are used as literals, flagged here per this engagement's own
+   literal-token discipline, same as prior phases' 9px/20px literals. */
+
+/* -- landing hero: eyebrow + Oswald pagehead + the REAL Inicio hero's own arc device,
+   reused exactly (repeating-radial-gradient rings from the top-right corner), not a new
+   SVG -- item 4's own instruction. No hero-a/hero-c color wash behind it (the mockup's own
+   hero has no fill, rings only), so only the ring layer is reused, on the page's own bg. */
+.hhero{position:relative;padding:var(--sp-6) 0 var(--sp-3);overflow:hidden}
+.hhero{background-image:repeating-radial-gradient(circle at 100% 0%,transparent 0 63px,var(--line) 63px 64.5px)}
+@media(max-width:639px){.hhero{background-image:none}}
+.hhero .eyebrow{display:flex;align-items:center;gap:var(--sp-2);font-size:var(--fs-2xs);text-transform:uppercase;
+  letter-spacing:.1em;color:var(--ink-3);font-weight:700;margin-bottom:var(--sp-3)}
+.hhero .eyebrow::before{content:"";width:18px;height:2px;background:var(--tri);border-radius:2px;flex:none}
+.hhero h1{font-family:var(--font-display);font-size:clamp(32px,5vw,52px);text-transform:uppercase;
+  line-height:.98;margin:0 0 var(--sp-3)}
+.hhero .lede{color:var(--ink-2);font-size:var(--fs-md);line-height:1.65;max-width:70ch;margin:0}
+
+/* -- landing: 3 real stat cards -- */
+.stats3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-3);margin-bottom:var(--sp-6)}
+@media(max-width:759px){.stats3{grid-template-columns:1fr}}
+.stat{position:relative;border-radius:16px;padding:var(--sp-5) var(--sp-5) var(--sp-5);overflow:hidden}
+.stat .n{font-family:var(--font-display);font-weight:700;font-size:40px;line-height:1;position:relative}
+.stat .l{font-size:var(--fs-2xs);text-transform:uppercase;letter-spacing:.04em;margin-top:var(--sp-2);
+  max-width:22ch;position:relative}
+.stat:not(.solid){background:var(--card);border:1px solid var(--line)}
+.stat:not(.solid) .l{color:var(--ink-2)}
+/* PHASE_11 contrast fix (owner-approved, redesign-v2): found live, not assumed --
+   linear-gradient(--rojo,--rojo-deep)'s own LIGHTER stop (--rojo) against white label text
+   measured 4.14:1 in dark theme, under the 4.5:1 AA floor for the small .l label (the big
+   .n numeral is large-text-exempt at 3:1 and was never the problem). Both stops now use
+   --rojo-deep (identical dark/light value, #8E1119) -- re-measured live: 9.36:1 both
+   themes, a flat but reliably safe color instead of a two-tone gradient that was unsafe on
+   one side. */
+.stat.solid{background:linear-gradient(135deg,var(--rojo-deep),var(--rojo-deep));color:var(--flag-w)}
+.stat.solid .l{color:var(--flag-w);opacity:.85}
+
+/* -- landing: explore grid to the 7 real sub-views -- */
+.explore{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-3)}
+@media(max-width:899px){.explore{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:519px){.explore{grid-template-columns:1fr}}
+.xcard{border:1px solid var(--line);border-radius:14px;padding:var(--sp-4);background:var(--card);cursor:pointer;
+  display:flex;flex-direction:column;gap:var(--sp-2_5);text-align:left;position:relative;color:inherit;
+  font:inherit;transition:border-color var(--dur-fast) var(--ease),transform var(--dur-fast) var(--ease)}
+.xcard:hover{border-color:var(--azul);transform:translateY(-2px)}
+.xcard:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.xcard .ic{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--rojo),var(--azul));
+  display:flex;align-items:center;justify-content:center;color:var(--flag-w);flex:none}
+.xcard .ic svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8}
+.xcard .t{font-family:var(--font-display);font-weight:600;font-size:15.5px}
+.xcard .d{font-size:var(--fs-xs);color:var(--ink-2);line-height:1.45}
+.xcard .go{position:absolute;top:var(--sp-4);right:var(--sp-4);color:var(--ink-3);font-size:16px;opacity:0;
+  transition:opacity var(--dur-fast)}
+.xcard:hover .go,.xcard:focus-visible .go{opacity:1;color:var(--azul)}
+@media(prefers-reduced-motion:reduce){.xcard,.xcard .go{transition:none}.xcard:hover{transform:none}}
+
+/* -- La cinta: legend + flat, always-44px ribbon (replaces the old decade-row grid, whose
+   fixed 10-column layout could never clear 44px on a phone -- the real cause found in the
+   survey). Every one of the 97 real years renders as its own cell now, not grouped by
+   decade -- horizontally scrollable on desktop, a min-44px 7-column grid on phone. */
+.legend{display:flex;gap:var(--sp-4);flex-wrap:wrap;margin-bottom:var(--sp-3);font-size:var(--fs-2xs);color:var(--ink-3)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:11px;height:11px;border-radius:3px;display:block;flex:none}
+.ribbon-wrap{overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+.ribbon{display:grid;grid-template-columns:repeat(20,1fr);gap:4px;min-width:900px;margin-top:0}
+@media(max-width:639px){.ribbon{grid-template-columns:repeat(7,minmax(44px,1fr));min-width:0}}
+.cell{min-height:44px;border-radius:var(--r-sm);background:var(--raise);border:1px solid var(--line);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ink-3);
+  font-weight:600;position:relative;aspect-ratio:auto;padding:0;transition:transform var(--dur-fast) var(--ease)}
+.cell:hover,.cell:focus-visible{border-color:var(--azul);transform:scale(1.08);z-index:2;outline:none}
+.cell.champ{background:linear-gradient(150deg,var(--azul),var(--azul-deep));border-color:transparent;
+  color:var(--flag-w);font-weight:700}
+.cell.dynasty{background:linear-gradient(150deg,var(--rojo),var(--rojo-deep));border-color:transparent;
+  color:var(--flag-w);font-weight:700}
+.cell.active{outline:2px solid var(--fuego);outline-offset:2px}
+.fixnote{font-size:var(--fs-2xs);color:var(--ink-3);margin-top:var(--sp-2_5);display:flex;gap:6px;align-items:flex-start}
+.fixnote::before{content:"✓";color:var(--ok);font-weight:700;flex:none}
+/* -- readout: same class kept (.readout .yr is already in the shared Oswald selector list),
+   restyled in place, gradient left-bar + real-data badges added. */
+.readout{position:relative;overflow:hidden;padding:var(--sp-5)}
+.readout::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--tri-v)}
+.readout .champ-line{font-size:20px;font-weight:700;margin-top:var(--sp-2_5);font-family:var(--font-display)}
+.readout .vs-line{color:var(--ink-2);font-size:var(--fs-sm);margin-top:4px}
+.readout .xlink{margin-top:var(--sp-4);padding-top:var(--sp-4);border-top:1px solid var(--line);font-size:var(--fs-xs)}
+.readout .xlink a{color:var(--azul-hi);font-weight:600;text-decoration:none}
+.readout .xlink a:hover{text-decoration:underline}
+.hbadge{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;
+  padding:3px 9px;border-radius:99px;margin-left:var(--sp-2);vertical-align:middle}
+.hbadge.note{background:var(--raise);color:var(--ink-3)}
+/* PHASE_11 contrast fix (owner-approved, redesign-v2): --rojo (the lighter dark-theme red)
+   against white measured 4.14:1, under 4.5:1 AA for this badge's own 10px text -- same
+   root cause as .stat.solid just above. --rojo-deep instead: 9.36:1 both themes. */
+.hbadge.missing{background:var(--rojo-deep);color:var(--flag-w)}
+
+/* -- Títulos: medal rank badges + real crest per row. New markup, NOT the shared bars()/
+   .barrow helper (that one is also used by Jugadores' leadBars -- left untouched). */
+.bar-row{display:grid;grid-template-columns:30px 1fr 44px;align-items:center;gap:var(--sp-3_5);padding:11px 0}
+.bar-row+.bar-row{border-top:1px solid var(--line)}
+.bar-row .rk{width:26px;height:26px;border-radius:99px;background:var(--raise);color:var(--ink-3);
+  font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
+/* medal gradients -- literal hex, no token: nothing else in this app's palette is a medal
+   color, flagged per this file's own literal-token discipline. */
+.bar-row.rk1 .rk{background:linear-gradient(135deg,#f4cd6b,#c9962a);color:#3a2a00}
+.bar-row.rk2 .rk{background:linear-gradient(135deg,#dfe4ea,#a9b1bb);color:#1a1e23}
+.bar-row.rk3 .rk{background:linear-gradient(135deg,#e3a165,#a8672f);color:#2c1600}
+.bar-row .who{display:flex;align-items:center;gap:var(--sp-2_5);min-width:0}
+.bar-row .pn{font-weight:600;font-size:var(--fs-xs);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-row .wrap{display:flex;flex-direction:column;gap:6px;min-width:0;flex:1}
+.bar-row .track{height:8px;background:var(--raise);border-radius:99px;overflow:hidden}
+.bar-row .fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--azul),var(--azul-hi))}
+.bar-row .v{font-family:var(--font-display);font-weight:700;font-size:19px;text-align:right}
+.scrollnote{font-size:var(--fs-2xs);color:var(--ink-3);margin-top:var(--sp-3_5)}
+
+/* -- Dinastías: streak cards with real crest + per-year mini-strip, replacing the old flat
+   run cards -- same buildDynasties() streak-walk, new markup. */
+.streaks{display:flex;flex-direction:column;gap:var(--sp-3)}
+.streak-card{border:1px solid var(--line);border-radius:14px;padding:var(--sp-4) var(--sp-4_5);background:var(--card);
+  display:flex;align-items:center;gap:var(--sp-4);flex-wrap:wrap}
+.streak-card .rankbadge{width:44px;height:44px;border-radius:12px;flex:none;display:flex;align-items:center;
+  justify-content:center;font-family:var(--font-display);font-weight:700;font-size:20px;
+  background:var(--raise);color:var(--ink-3)}
+.streak-card.top .rankbadge{background:linear-gradient(135deg,var(--rojo),var(--rojo-deep));color:var(--flag-w)}
+.streak-card .body{flex:1;min-width:200px;display:flex;align-items:center;gap:var(--sp-2_5)}
+.streak-card .who{font-family:var(--font-display);font-weight:600;font-size:16.5px}
+.streak-card .yrs{color:var(--ink-3);font-size:var(--fs-xs);margin-top:2px}
+.streak-card .mini{display:flex;gap:4px;flex:none;flex-wrap:wrap;max-width:220px}
+.streak-card .mini i{width:26px;height:26px;border-radius:6px;background:linear-gradient(150deg,var(--rojo),var(--rojo-deep));
+  display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--flag-w);font-weight:700;
+  font-style:normal}
+@media(max-width:639px){.streak-card .mini{display:none}}
+
+/* -- Premios: subtab toggle (scoring/MVP) + decade-grouped lead-list, real repeat-streak
+   pill computed live by walking SCORING/MVP_YEARS chronologically. */
+.subtab{display:flex;gap:6px;margin-bottom:var(--sp-4);flex-wrap:wrap}
+.subtab button{border:1px solid var(--line);background:var(--card);color:var(--ink-3);font:inherit;
+  font-size:var(--fs-xs);font-weight:600;padding:7px 14px;border-radius:99px;cursor:pointer;
+  transition:all var(--dur-fast) var(--ease)}
+.subtab button:hover{border-color:var(--azul);color:var(--ink)}
+.subtab button[aria-current="true"]{background:var(--ink);color:var(--night);border-color:var(--ink)}
+.lead-list{display:flex;flex-direction:column;gap:var(--sp-2)}
+.lead-row{display:grid;grid-template-columns:56px 1fr auto;align-items:center;gap:var(--sp-4);
+  padding:13px var(--sp-4_5);border-radius:12px;background:var(--card);border:1px solid var(--line);
+  transition:border-color var(--dur-fast) var(--ease),transform var(--dur-fast) var(--ease)}
+.lead-row:hover{border-color:var(--azul);transform:translateX(2px)}
+.lead-row .yrchip{font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--ink-3);
+  background:var(--raise);border-radius:9px;padding:8px 0;text-align:center}
+.lead-row.repeat .yrchip{background:linear-gradient(135deg,var(--rojo),var(--rojo-deep));color:var(--flag-w)}
+.lead-row .who{min-width:0}
+.lead-row .who .pn{font-weight:700;font-size:14.5px;display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap}
+.lead-row .who .cl{font-size:var(--fs-2xs);color:var(--ink-3);margin-top:2px}
+/* PHASE_11 contrast fix (owner-approved, redesign-v2): --rojo text on --tint-rojo measured
+   4.09:1 in dark theme (composited over the real --card background it actually sits on --
+   the app's own --on-rojo/--on-rojo-2 tokens exist for exactly this "text on a rojo tint"
+   pairing, e.g. .tag.gold already uses --on-rojo the same way). Switched to --on-rojo:
+   11.67:1 dark, 7.60:1 light, both re-measured live against the real composited background. */
+.streakpill{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;color:var(--on-rojo);
+  background:var(--tint-rojo);border-radius:99px;padding:2px 8px}
+.lead-row .val{text-align:right}
+.lead-row .val .n{font-family:var(--font-display);font-weight:700;font-size:20px;color:var(--ink)}
+.lead-row .val .u{font-size:10.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.03em}
+.decade-head{font-family:var(--font-display);font-size:var(--fs-2xs);letter-spacing:.08em;color:var(--ink-3);
+  text-transform:uppercase;margin:var(--sp-5) 0 var(--sp-2);padding-left:2px}
+.decade-head:first-child{margin-top:0}
+@media(max-width:639px){
+  .lead-row{grid-template-columns:44px 1fr auto;padding:11px var(--sp-3_5);gap:var(--sp-2_5)}
+  .lead-row .yrchip{font-size:var(--fs-sm);padding:6px 0}
+}
+
+/* -- Refuerzos: real-rule cards. Timeline/scorer table intentionally NOT touched here --
+   .timeline/.tw is shared with Inicio's own "Lo próximo" (out of scope this pass), and
+   the scorer table already gets the shared buildTable()/.tblwrap treatment for free. */
+.rules{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-3);margin-bottom:var(--sp-6)}
+@media(max-width:819px){.rules{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:639px){.rules{grid-template-columns:1fr}}
+.rule{border:1px solid var(--line);border-radius:12px;padding:var(--sp-4);background:var(--card);
+  font-size:var(--fs-xs);line-height:1.5;border-top:3px solid var(--azul)}
+.rule b{display:block;font-family:var(--font-display);font-weight:600;font-size:14px;margin-bottom:6px;color:var(--ink)}
 .pill{display:inline-block;padding:1px 7px;border-radius:99px;font-size:11px;font-weight:600}
 .pill.w{background:var(--tint-ok);color:var(--on-ok)}
 .pill.l{background:var(--tint-rojo);color:var(--on-rojo-2)}

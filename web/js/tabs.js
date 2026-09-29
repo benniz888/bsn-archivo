@@ -1448,61 +1448,91 @@ function buildChannels(){
 /* ============================================================
    HISTORIA
    ============================================================ */
+/* PHASE_11 (owner-approved, redesign-v2): one real streak-walk, shared by buildRibbon()
+   (which years to color as "dynasty") and buildDynasties() (the streak cards themselves) --
+   the exact same run-detection buildDynasties() already did, factored out so both callers
+   compute it identically rather than duplicating the walk. Same rule as before: a run is
+   2+ consecutive seasons won by the same club; single titles are not a "dynasty." */
+function historiaStreaks(){
+  const runs=[]; let cur=null;
+  YEARS.forEach(y=>{
+    const k=champOf[y];
+    if(k && cur && cur.k===k && y===cur.end+1){ cur.end=y; cur.n++; }
+    else { if(cur&&cur.n>1) runs.push(cur); cur = k?{k,start:y,end:y,n:1}:null; }
+  });
+  if(cur&&cur.n>1) runs.push(cur);
+  runs.sort((a,b)=>b.n-a.n||a.start-b.start);
+  return runs;
+}
+/* PHASE_11 (owner-approved, redesign-v2): flat, always-44px ribbon (item 3/7 -- fixes the
+   27.6x40px phone touch-target bug the survey found; the old fixed-10-column decade grid
+   could never clear 44px at phone width, so the whole row/decade grouping is gone, not just
+   the CSS). Every one of the 97 real years (YEARS, not a hardcoded list) gets its own cell,
+   labeled by year. Colors 3 real states: a documented champion that's part of a real 2+
+   dynasty streak (historiaStreaks() above, not hardcoded), a documented champion that isn't,
+   and no champion on record -- matching the new 3-item legend exactly. */
 function buildRibbon(){
-  const host=$('#ribbon'); host.innerHTML='';
-  for(let d=1930;d<=2020;d+=10){
-    const row=el('div','decade');
-    const lab=el('div','decade-label'); lab.textContent=d+'s'; row.appendChild(lab);
-    const cells=el('div','cells');
-    for(let i=0;i<10;i++){
-      const y=d+i;
-      if(y>LAST){ const sp=el('span'); cells.appendChild(sp); continue; }
-      const k=champOf[y];
-      const b=el('button','cell'+(k?'':' empty'));
-      if(k){
-        b.style.background=`linear-gradient(160deg,${F[k].c1},${F[k].c1} 62%,${F[k].c2} 63%)`;
-        b.setAttribute('aria-label',y+' — '+F[k].name);
-        b.onclick=()=>showSeason(y,b);
-      }else{
-        b.setAttribute('aria-label',y+' — sin campeón registrado');
-        b.disabled=false; b.classList.add('empty');
-        b.onclick=()=>showSeason(y,b);
-      }
-      b.dataset.y=y;
-      cells.appendChild(b);
-    }
-    row.appendChild(cells); host.appendChild(row);
-  }
+  const host=$('#ribbon'); if(!host) return;
+  /* Computed fresh on every call, not cached at module-parse time: YEARS/champOf are
+     defined later, in index.html's own inline script (loaded after this file) -- a
+     top-level const evaluated here would hit the exact "used before defined" failure
+     already documented and fixed elsewhere in this file (BOOT/GRID_CLUBS). 97 years is
+     cheap enough that a fresh walk per call needs no caching. */
+  const dynastyYears=new Set();
+  historiaStreaks().forEach(r=>{ for(let y=r.start;y<=r.end;y++) dynastyYears.add(y); });
+  host.innerHTML=YEARS.map(y=>{
+    const k=champOf[y];
+    const cls=k?(dynastyYears.has(y)?'dynasty':'champ'):'';
+    const label=k?(y+' — '+F[k].name):(y+' — sin campeón registrado');
+    return `<button type="button" class="cell ${cls}" data-y="${y}" aria-label="${esc(label)}" onclick="showSeason(${y},this)">${y}</button>`;
+  }).join('');
+  /* PHASE_11 (owner-approved, redesign-v2): the readout used to sit on a static "Toca una
+     temporada" placeholder until a real click -- the mockup's own script always renders a
+     real year by default (2026 there). Shows the real most recent season (LAST, currently
+     2026) here instead, via the pure renderReadout() below -- NOT showSeason(), which also
+     navigates/sets the URL hash; that would rewrite the address bar on every page load
+     regardless of which tab is actually open, a real side effect this avoids. */
+  renderReadout(LAST);
+  loadSeasonExtra(LAST);
+  const b=document.querySelector('.cell[data-y="'+LAST+'"]'); if(b) b.classList.add('active');
 }
 function showSeason(y,btn){
   showView('historia','cinta',{noScroll:true,noHash:true});   /* the ribbon + readout live here */
   setHash('historia/temporada/'+y);
-  document.querySelectorAll('.cell.sel').forEach(c=>c.classList.remove('sel'));
-  if(btn) btn.classList.add('sel');
-  else { const b=document.querySelector('.cell[data-y="'+y+'"]'); if(b) b.classList.add('sel'); }
+  document.querySelectorAll('.cell.active').forEach(c=>c.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  else { const b=document.querySelector('.cell[data-y="'+y+'"]'); if(b) b.classList.add('active'); }
+  renderReadout(y);
+  loadSeasonExtra(y);
+}
+function renderReadout(y){
   const k=champOf[y], r=ruOf[y];
-  const host=$('#readout');
+  const host=$('#readout'); if(!host) return;
+  /* PHASE_11 (owner-approved, redesign-v2): the mockup's own per-row "Fuente única" badge
+     has no real backing data -- NOTES only carries 5 real footnotes (1942/1945/1953/2024/
+     2026), not a source-confidence field for every one of the 97 seasons, so a "single
+     source" pill is never shown here on a year that doesn't actually have one; that would
+     be inventing a claim this app doesn't verify. Only a real NOTES[y] entry gets a badge
+     (labeled with its own real caveat text), and only a genuinely missing champion gets the
+     "missing" badge -- both real, both already-existing data, nothing new fabricated. */
+  const noteBadge = NOTES[y] ? `<span class="hbadge note" title="${esc(NOTES[y])}">Nota del archivo</span>` : '';
   if(!k){
-    host.innerHTML=`<div class="yr tri-block tri-block-azul">${y}</div><div>
-      <div class="win">Sin campeón registrado</div>
-      <div class="lose">Esta temporada es un hueco del archivo, no un blanco.</div>
-      <div class="meta">${esc(NOTES[y]||'Ninguna fuente consultada nombra un campeón para este año.')}</div></div>`;
+    host.innerHTML=`<div class="yr mono">${y}</div>
+      <div class="champ-line">Campeón no documentado<span class="hbadge missing">Dato incompleto</span></div>
+      <div class="vs-line">${esc(NOTES[y]||'Ninguna fuente consultada nombra un campeón para este año.')}</div>`;
   }else{
     const f=F[k];
-    /* PHASE_2_REDESIGN step 2: this numeral used to be tinted to the champion's own
-       club color (style="color:${f.c1}"). A solid flag-color block needs a text color
-       verified for contrast against ITS OWN background -- an arbitrary per-club color
-       can't be pre-checked that way, so the tint is dropped here in favor of .tri-block's
-       own white-on-flag-color pairing (WCAG-checked, see the redesign-v2 PHASE 2 report). */
-    host.innerHTML=`<div class="yr tri-block tri-block-azul">${y}</div>
-      <div style="min-width:0">
-        <div class="win">${esc(f.name)}</div>
-        <div class="lose">${r?'venció a '+esc(F[r].name):'subcampeón no registrado'}</div>
-        <div class="meta">Título ${f.won.indexOf(y)+1} de ${f.won.length} para el club${NOTES[y]?' · '+esc(NOTES[y]):''}</div>
-        <div class="btnrow"><button class="btn" onclick="showTeam('${k}')" style="padding:5px 11px;font-size:var(--fs-2xs)">Ver ${esc(f.name.split(' de ')[0])}</button></div>
-      </div>`;
+    /* PHASE_2_REDESIGN step 2 (kept): a solid flag-color block needs a text color verified
+       against ITS OWN background, so the year numeral is never tinted to the champion's own
+       arbitrary club color -- unrelated to this pass, left exactly as that phase set it. */
+    const sc=SCORING.find(s=>s[0]===y);
+    host.innerHTML=`<div class="yr mono">${y}</div>
+      <div class="champ-line">${esc(f.name)}${noteBadge}</div>
+      <div class="vs-line">${r?'venció a '+esc(F[r].name)+' en la final':'subcampeón no registrado'} · título ${f.won.indexOf(y)+1} de ${f.won.length} para el club</div>
+      <div class="btnrow" style="margin-top:var(--sp-3)"><button class="btn" onclick="showTeam('${k}')" style="padding:5px 11px;font-size:var(--fs-2xs)">Ver ${esc(f.name.split(' de ')[0])}</button></div>
+      ${sc?`<div class="xlink">Campeón de anotación esa temporada: <a href="#" onclick="showView('historia','premios');return false">${esc(sc[1])} (${esc(sc[2])}) →</a></div>`
+        :`<div class="xlink" style="color:var(--ink-3)">Sin campeón de anotación registrado para ${y} — el archivo de premios cubre ${SCORING[0][0]}–${SCORING[SCORING.length-1][0]}.</div>`}`;
   }
-  loadSeasonExtra(y);
 }
 
 /* Per-season detail from web/data/seasons/<y>.json — scoring champion,
@@ -1562,32 +1592,53 @@ function buildTitleStats(){
     <div><div class="n">${F[most].won.length}</div><div class="l">títulos de ${esc(F[most].name.split(' de ')[0])}, el máximo</div></div>
     <div><div class="n">${noTitle}</div><div class="l">clubes activos sin título</div></div>`;
 }
+/* PHASE_11 (owner-approved, redesign-v2): medal rank badges (top 3) + the real crest()
+   helper per franchise, on the exact same 20-franchise/title-count computation this
+   function already did (FKEYS.filter(k=>F[k].won.length), sorted descending) -- only the
+   markup changed, not the data. New .bar-row/.rk/.who/.pn/.track/.fill/.v classes, NOT the
+   shared bars()/.barrow helper (that one is also Jugadores' own leadBars() -- left
+   untouched, out of scope this pass). */
 function buildTitleBars(){
-  const rows=FKEYS.filter(k=>F[k].won.length)
-    .sort((a,b)=>F[b].won.length-F[a].won.length)
-    .map(k=>[F[k].name.split(' de ')[0],F[k].won.length,F[k].c1]);
-  bars($('#titleBars'),rows);
+  const rows=FKEYS.filter(k=>F[k].won.length).sort((a,b)=>F[b].won.length-F[a].won.length);
+  const max=F[rows[0]].won.length;
+  $('#titleBars').innerHTML=rows.map((k,i)=>{
+    const f=F[k], rk=i<3?' rk'+(i+1):'';
+    return `<div class="bar-row${rk}">
+      <div class="rk">${i+1}</div>
+      <div class="who">${crest(k,32,38)}
+        <div class="wrap"><div class="pn">${esc(f.name)}</div>
+          <div class="track"><div class="fill" style="width:${f.won.length/max*100}%"></div></div></div>
+      </div>
+      <div class="v mono">${f.won.length}</div>
+    </div>`;
+  }).join('')
+    +`<p class="scrollnote">${rows.length} franquicias con al menos un título, de ${FKEYS.length} en total.</p>`;
 }
+/* PHASE_11 (owner-approved, redesign-v2): streak cards with real crest + a per-year
+   mini-strip -- same historiaStreaks() walk buildRibbon() uses above (not a second,
+   possibly-drifting computation), re-rendered into the mockup's own card visual. */
 function buildDynasties(){
-  /* A run is consecutive seasons won by the same club. Only runs of
-     two or more are interesting; they are what the ribbon shows. */
-  const runs=[]; let cur=null;
-  YEARS.forEach(y=>{
-    const k=champOf[y];
-    if(k && cur && cur.k===k && y===cur.end+1){ cur.end=y; cur.n++; }
-    else { if(cur&&cur.n>1) runs.push(cur); cur = k?{k,start:y,end:y,n:1}:null; }
-  });
-  if(cur&&cur.n>1) runs.push(cur);
-  runs.sort((a,b)=>b.n-a.n||a.start-b.start);
-  const host=$('#dynasties');
-  host.innerHTML='<div class="cards g3">'+runs.slice(0,9).map(r=>`
-    <div class="card" style="display:flex;gap:var(--sp-3);align-items:center">
-      ${crest(r.k,32,38)}
-      <div><div style="font-family:inherit;font-weight:800;font-size:26px;line-height:1">${r.n} seguidos</div>
-      <div style="font-weight:600;font-size:var(--fs-xs)">${esc(F[r.k].name.split(' de ')[0])}</div>
-      <div class="dim" style="font-size:var(--fs-2xs)">${r.start}–${r.end}</div></div></div>`).join('')+'</div>'+
-    `<p class="note">${runs.length} rachas de dos o más títulos consecutivos en 97 temporadas. Bayamón 2025–26 es la primera desde Ponce en 2014–15.</p>`;
+  const runs=historiaStreaks();
+  const host=$('#dynasties'); if(!host) return;
+  host.innerHTML='<div class="streaks">'+runs.slice(0,9).map((r,i)=>{
+    const years=[]; for(let y=r.start;y<=r.end;y++) years.push(y);
+    return `<div class="streak-card${i<3?' top':''}">
+      <div class="rankbadge">${r.n}×</div>
+      <div class="body">${crest(r.k,32,38)}
+        <div><div class="who">${esc(F[r.k].name)}</div>
+        <div class="yrs">${r.start}–${r.end} · ${r.n} títulos seguidos</div></div>
+      </div>
+      <div class="mini">${years.map(y=>`<i title="${y}">${String(y).slice(2)}</i>`).join('')}</div>
+    </div>`;
+  }).join('')+'</div>'+
+    `<p class="scrollnote">${runs.length} rachas de dos o más títulos consecutivos en 97 temporadas. Bayamón 2025–26 es la primera desde Ponce en 2014–15.</p>`;
 }
+/* PHASE_11 (owner-approved, redesign-v2): visual polish only -- row/column computation
+   (every club with a title vs. every club with a runner-up finish, item 11's own "keep
+   real data/interactivity untouched," NOT reduced to the mockup's top-8 sample) is
+   byte-identical to before. Only the cell markup changed: a solid weighted color
+   (>=3 red, else blue, matching the mockup's own .cellv threshold) instead of a pill,
+   plus the new .matrix CSS's zebra striping (main.css, no markup needed for that part). */
 function buildMatrix(){
   const active=FKEYS.filter(k=>F[k].won.length||F[k].ru.length);
   const pairs={};
@@ -1600,7 +1651,7 @@ function buildMatrix(){
     h+=`<tr><td class="lbl">${esc(F[rk].abbr)} <span class="dim">${esc(F[rk].name.split(' de ')[0])}</span></td>`;
     cols.forEach(ck=>{
       const n=pairs[rk+'|'+ck]||0;
-      h+=`<td>${n?`<span class="pill w">${n}</span>`:'<span class="dim">·</span>'}</td>`;
+      h+=n?`<td class="cellv ${n>=3?'hi':'lo'}">${n}</td>`:'<td class="zero">·</td>';
     });
     h+='</tr>';
   });
@@ -2266,12 +2317,53 @@ function buildScoringChart(){
     ${g}<path d="${path}" fill="none" stroke="var(--rojo)" stroke-width="2"/>${dots}${ticks}</svg></div>
     <p class="note">Hasta 1970 la liga premiaba puntos totales; desde 1971, promedio. Las dos series no son comparables, así que solo se grafica la segunda.</p>`;
 }
+/* PHASE_11 (owner-approved, redesign-v2): consecutive-year, same-player runs, walked live
+   over the real (ascending) SCORING array -- returns {year: runLength}, keyed on the run's
+   OWN most recent year (so rendering most-recent-first shows the 🔥 pill exactly once per
+   run, on its first/newest row, not on every row of the run). Not hardcoded: recomputed
+   from SCORING every call, same discipline as historiaStreaks() above. */
+function scoringStreaksFor(arr,yearIdx,nameIdx){
+  const out={}; let i=0;
+  while(i<arr.length){
+    let j=i;
+    while(j+1<arr.length && arr[j+1][nameIdx]===arr[i][nameIdx] && arr[j+1][yearIdx]===arr[j][yearIdx]+1) j++;
+    if(j>i) out[arr[j][yearIdx]]=j-i+1;
+    i=j+1;
+  }
+  return out;
+}
+/* PHASE_11 (owner-approved, redesign-v2): the old plain sortable table is now the mockup's
+   decade-grouped .lead-list, most-recent-first, real 🔥 repeat-champion pill from
+   scoringStreaksFor() above -- reads the real, LIVE SCORING array, whatever its current
+   state is: 26 rows (1966-1991) is only this file's own baked-in seed for a local/offline
+   open; hydrate() (init.js) replaces it in place with a richer, reconciled 68-row set
+   (1948-2021) whenever web/data is reachable -- confirmed live, not assumed, since this
+   function never caches a row count or year range, only ever reads SCORING fresh. CSV/
+   export button removed here (a lead-list isn't a buildTable() output any more) but the
+   data itself, the "Ver ficha" link, and the total row count are all unchanged. The line
+   chart above (buildScoringChart()) is deliberately kept, not removed -- it's real, working
+   data visualization the mockup simply didn't happen to include, and nothing in this
+   pass's scope asked for it to go. */
 function buildScoringTable(){
-  buildTable($('#scoringTable'),[
-    {label:'Año',num:true},{label:'Jugador',wide:true,
-      render:v=>`<button class="btn" style="padding:2px var(--sp-2);font-size:var(--fs-2xs)" onclick="showPlayer(${JSON.stringify(v).replace(/"/g,'&quot;')})">${esc(v)}</button>`},
-    {label:'Club',wide:true},{label:'Métrica'},{label:'Valor',num:true}
-  ],SCORING.map(s=>[s[0],s[1],s[2],s[3]==='ppg'?'promedio':'total',s[4]]),{file:'campeones_anotacion',sort:0,dir:-1});
+  const streaks=scoringStreaksFor(SCORING,0,1);
+  const rows=SCORING.slice().reverse();
+  let lastDecade=null, html='';
+  rows.forEach(r=>{
+    const [y,player,club,metric,value]=r;
+    const decade=Math.floor(y/10)*10+'s';
+    if(decade!==lastDecade){ html+=`<div class="decade-head">${esc(decade)}</div>`; lastDecade=decade; }
+    const streak=streaks[y];
+    html+=`<div class="lead-row${streak?' repeat':''}">
+      <div class="yrchip mono">${y}</div>
+      <div class="who">
+        <div class="pn"><button class="btn" style="padding:2px var(--sp-2);font-size:var(--fs-2xs)" onclick="showPlayer(${JSON.stringify(player).replace(/"/g,'&quot;')})">${esc(player)}</button>${streak?`<span class="streakpill">🔥 ${streak}×</span>`:''}</div>
+        <div class="cl">${esc(club)}</div>
+      </div>
+      <div class="val"><div class="n mono">${value}</div><div class="u">${metric==='ppg'?'ppj':'pts totales'}</div></div>
+    </div>`;
+  });
+  $('#scoringTable').innerHTML=`<div class="lead-list">${html}</div>
+    <p class="scrollnote">${SCORING.length} temporadas documentadas, ${SCORING[0][0]}–${SCORING[SCORING.length-1][0]}. 🔥 marca rachas de campeonatos consecutivos del mismo jugador.</p>`;
 }
 function buildCoaches(){
   $('#coachList').innerHTML='<div class="cards g2">'+COACHES.map(c=>`
@@ -2294,11 +2386,16 @@ function buildRetiredNums(){
 /* ============================================================
    REFUERZOS
    ============================================================ */
+/* PHASE_11 (owner-approved, redesign-v2): visual polish only -- REF_RULES itself (4 real
+   bylaw cards) is untouched; new .rules/.rule grid (mockup's own class names, no collision)
+   instead of the generic .cards.g2. .timeline (REF_TIMELINE) and the scorer table
+   (REF_SCORERS, already a buildTable()/.tblwrap output) are deliberately left alone --
+   .timeline is shared with Inicio's own "Lo próximo" (out of scope this pass), and the
+   scorer table already gets the shared table treatment for free. */
 function buildRefRules(){
-  $('#refRules').innerHTML='<div class="cards g2">'+REF_RULES.map(r=>`
-    <div class="card"><div class="dim" style="font-size:var(--fs-3xs);letter-spacing:.07em;font-weight:600">${esc(r[0]).toUpperCase()}</div>
-    <div style="font-weight:700;margin-top:3px;font-size:16px">${esc(r[1])}</div>
-    <div class="muted" style="font-size:var(--fs-xs);margin-top:4px">${esc(r[2])}</div></div>`).join('')+'</div>';
+  $('#refRules').innerHTML='<div class="rules">'+REF_RULES.map(r=>
+    `<div class="rule"><b>${esc(r[0])}</b>${esc(r[1])}<br><span class="muted" style="font-size:var(--fs-2xs)">${esc(r[2])}</span></div>`
+  ).join('')+'</div>';
 }
 function buildRefTimeline(){
   $('#refTimeline').innerHTML='<div class="timeline">'+REF_TIMELINE.map(t=>`
@@ -2447,25 +2544,48 @@ function buildSources(){
 /* ============================================================
    PREMIOS, MVP POR AÑO Y FINALES JUEGO A JUEGO
    ============================================================ */
+/* PHASE_11 (owner-approved, redesign-v2): MVP judgment call, reported explicitly per this
+   task's own request -- the referenced mockup's Premios view leaves MVP as an unbuilt
+   "en construcción" placeholder, because whoever built that mockup didn't have MVP data on
+   hand. This app already has real MVP data live today -- MVP_YEARS' own baked-in seed is
+   39 rows (not the "30" an older comment near its declaration claims), and, same discovery
+   as SCORING just above, hydrate() (init.js) fills real gaps in from index/mvp.json
+   whenever reachable -- 63 rows confirmed live, not assumed, once hydrated. Either way,
+   this function only ever reads the current, live MVP_YEARS -- rendering a fake "not
+   available yet" card over data that demonstrably exists would
+   itself misrepresent the archive, the opposite of this app's whole honesty-about-gaps
+   discipline. So MVP gets the SAME real lead-list/decade/🔥-streak treatment as scoring,
+   from the real MVP_YEARS array, with its own real "years missing" note kept verbatim
+   (never fabricating the ~58 years this array doesn't have a source for) -- "not yet
+   available" is honored for what's actually missing (those years), not for the whole tab. */
 function buildMVPYears(){
-  const rows=MVP_YEARS.map(r=>[r[0],r[1],r[2],Math.floor(r[0]/10)*10]);
-  buildTable($('#mvpYears'),[
-    {label:'Año',num:true},
-    {label:'Jugador',wide:true,render:(v,r)=>{
-      const id=MVP_ID&&MVP_ID[r[0]], also=MVP_ALSO&&MVP_ALSO[r[0]];
-      const b=`<button class="btn" style="padding:2px var(--sp-2);font-size:var(--fs-2xs)" onclick="showPlayer(${JSON.stringify(v).replace(/"/g,'&quot;')}${id!=null?','+id:''})">${esc(v)}</button>`;
-      return also ? b+` <span class="muted" style="cursor:help" title="El archivo también registra a ${esc(also)} para este año">†</span>` : b;
-    }},
-    {label:'Club',wide:true},{label:'Década',num:true}
-  ],rows,{file:'mvp_por_ano',sort:0,dir:-1});
+  const streaks=scoringStreaksFor(MVP_YEARS,0,1);
+  const rows=MVP_YEARS.slice().reverse();
+  let lastDecade=null, html='';
+  rows.forEach(r=>{
+    const [y,player,club]=r;
+    const decade=Math.floor(y/10)*10+'s';
+    if(decade!==lastDecade){ html+=`<div class="decade-head">${esc(decade)}</div>`; lastDecade=decade; }
+    const streak=streaks[y];
+    const id=MVP_ID&&MVP_ID[y], also=MVP_ALSO&&MVP_ALSO[y];
+    html+=`<div class="lead-row${streak?' repeat':''}">
+      <div class="yrchip mono">${y}</div>
+      <div class="who">
+        <div class="pn"><button class="btn" style="padding:2px var(--sp-2);font-size:var(--fs-2xs)" onclick="showPlayer(${JSON.stringify(player).replace(/"/g,'&quot;')}${id!=null?','+id:''})">${esc(player)}</button>${streak?`<span class="streakpill">🔥 ${streak}×</span>`:''}${also?` <span class="muted" style="cursor:help" title="El archivo también registra a ${esc(also)} para este año">†</span>`:''}</div>
+        <div class="cl">${esc(club)}</div>
+      </div>
+      <div class="val"><div class="n mono">${y}</div><div class="u">temporada</div></div>
+    </div>`;
+  });
   const missing=[];
   for(let y=1950;y<=LAST;y++){ if(!MVP_YEARS.some(r=>r[0]===y)) missing.push(y); }
-  const n=el('div','warn');
-  n.innerHTML=(DATA_TEXT
+  const note=(DATA_TEXT
     ? `Recuperados ${MVP_YEARS.length} de las ${LAST-1949} temporadas desde 1950. La tabla histórica de bsnpr.com (una sola captura de 2004) cubre 1958–2004; el resto sale de páginas de temporada y de la lista de ganadores repetidos. Faltan ${missing.length}: 1950, 1953 y 1956, más varias temporadas recientes que ninguna fuente pública lista todavía. `
     : `Recuperados ${MVP_YEARS.length} de las ${LAST-1949} temporadas desde 1950. Faltan ${missing.length}, casi todas de ganadores que solo lo lograron una vez: Wikipedia los publica dentro de un widget ordenable que no sobrevive a la extracción de texto. `)
     + `Años sin MVP en el archivo: ${missing.join(', ')}.`;
-  $('#mvpYears').appendChild(n);
+  $('#mvpYears').innerHTML=`<div class="lead-list">${html}</div>
+    <p class="scrollnote">🔥 marca MVP consecutivos del mismo jugador.</p>
+    <div class="warn" style="margin-top:var(--sp-3)">${esc(note)}</div>`;
 }
 
 function buildSeasonAwards(){
@@ -4544,7 +4664,117 @@ const VIEW_DESC={
     glosario:'Las palabras que el archivo usa sin explicar en el resto de la app.'
   }
 };
+/* PHASE_11 (owner-approved, redesign-v2): Historia's own landing (item 1's "Explora
+   Historia" grid + the 3 real stat cards) branches here, ONLY for sec==='historia' --
+   every other section (Jugadores/Equipos/Archivo, explicitly out of scope this pass) keeps
+   the exact generic mega-feat+landgrid path below, untouched. Real icon paths are the
+   mockup's own (generic line icons for a sub-view, not a team/club logo -- no real-data
+   concern the way crest() has one), real descriptions are VIEW_DESC.historia's own existing
+   copy (order already carries the real [slug,label] pairs VIEW_MAP.historia produced, in
+   real order -- cinta/titulos/dinastias/finales/premios/refuerzos/temporadas). */
+const HISTORIA_XICON={
+  cinta:'M4 12h16M4 7h16M4 17h16',
+  titulos:'M4 21h4V11H4ZM10 21h4V4h-4ZM16 21h4v-8h-4Z',
+  dinastias:'M12 2l2.5 6.5L21 9l-5 4.5L17.5 21 12 17l-5.5 4L8 13.5 3 9l6.5-.5Z',
+  finales:'M4 4h16v16H4Z M4 10h16 M10 4v16',
+  premios:'M12 2l2.6 5.9L21 9l-4.5 4.1L17.6 20 12 16.8 6.4 20l1.1-6.9L3 9l6.4-1.1Z',
+  refuerzos:'M4 6h16M4 12h16M4 18h10',
+  temporadas:'M4 5h16v14H4Z M4 10h16 M9 5v14'
+};
+function buildHistoriaLanding(order){
+  const wrap=el('div');
+  const most=FKEYS.slice().sort((a,b)=>F[b].won.length-F[a].won.length)[0];
+  const withTitles=FKEYS.filter(k=>F[k].won.length).length;
+  const stats=el('div','stats3');
+  stats.innerHTML=`
+    <div class="stat solid"><div class="n mono">${F[most].won.length}</div>
+      <div class="l">Títulos de ${esc(F[most].name)}, el club más ganador</div></div>
+    <div class="stat"><div class="n mono">${NSEASONS}</div>
+      <div class="l">Temporadas documentadas, de ${YEARS[0]} a ${YEARS[YEARS.length-1]}</div></div>
+    <div class="stat"><div class="n mono">${withTitles}</div>
+      <div class="l">Franquicias distintas que han sido campeonas</div></div>`;
+  wrap.appendChild(stats);
+  const h2=el('h2','sec'); h2.textContent='Explora Historia'; wrap.appendChild(h2);
+  const grid=el('div','explore');
+  const D=VIEW_DESC.historia||{};
+  order.forEach(([slug,label])=>{
+    const b=el('button','xcard'); b.type='button';
+    b.innerHTML=`<span class="go" aria-hidden="true">→</span>
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="${HISTORIA_XICON[slug]||''}" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="t">${esc(label)}</span>
+      <span class="d">${esc(D[slug]||'')}</span>`;
+    b.onclick=()=>showView('historia',slug);
+    grid.appendChild(b);
+  });
+  wrap.appendChild(grid);
+  return wrap;
+}
+/* PHASE_11 (owner-approved, redesign-v2): rewrites #historia's own .phead in place into
+   the mockup's eyebrow/Oswald-pagehead hero (item 4) -- the class add is scoped to this one
+   element (classList.add, not a global rule change), so every other section's .phead
+   (Inicio/Jugadores/Equipos/Juega/Archivo, all out of scope this pass) is completely
+   unaffected; .hhero's own CSS never touches the bare .phead selector either. The arc
+   device is the REAL Inicio hero's own repeating-radial-gradient rings (main.css's .hhero
+   rule), reused exactly, not a new SVG -- item 4's own instruction. The existing .tri
+   flag-strip (shared across every section's .phead) is dropped ONLY here, in its place the
+   eyebrow's own gradient tick (var(--tri), the same flag gradient) already carries the same
+   red/white/blue accent in miniature -- a deliberate substitution, not an oversight, flagged
+   in this pass's own report. */
+function buildHistoriaHero(){
+  const head=document.querySelector('#historia .phead'); if(!head) return;
+  head.classList.add('hhero');
+  head.innerHTML=`<div class="eyebrow">EL ARCHIVO DEL BSN · ${YEARS[0]}—${YEARS[YEARS.length-1]}</div>
+    <h1>Historia</h1>
+    <p class="lede">Ocho vistas construidas con los datos reales del archivo: la cinta de ${NSEASONS} temporadas, títulos por franquicia, dinastías, finales cara a cara, premios, la regla de refuerzos 2024–2026 y la tabla completa de temporadas.</p>`;
+}
+/* PHASE_11 (owner-approved, redesign-v2): Premios subtab split (item 9) -- real markup
+   surgery on buildViews()'s already-built #historia .view[data-view="premios"] (moves
+   existing element references, appends/creates none of the underlying data containers --
+   #mvpYears/#scoringChart/#scoringTable/#seasonAwards keep their own ids and builders
+   untouched). Grouped by matching each h4.sub's own real text, not by position, so this
+   stays correct even if the real DOM order ever shifts. "Premios por temporada"
+   (SEASON_AWARDS, its own real year-filter + table) is item 11's "leave existing real
+   data/interactivity untouched" case -- not folded into the 2-tab toggle the mockup itself
+   only has for scoring/MVP, kept as its own always-visible block below both tabs, exactly
+   the real content/interactivity it already had, only visually placed under the new
+   subtab area (a deliberate placement call, reported in this pass's own report). */
+function restructurePremios(){
+  const view=document.querySelector('#historia .view[data-view="premios"]'); if(!view) return;
+  const kids=Array.from(view.children);
+  const head=kids.find(n=>n.classList&&n.classList.contains('viewhead'));
+  const groups={mvp:[],temporada:[],scoring:[]};
+  let cur=null;
+  kids.forEach(n=>{
+    if(n===head) return;
+    if(n.tagName==='H4'){
+      const t=norm(n.textContent);
+      cur = t.indexOf('mvp')===0 ? 'mvp' : t.indexOf('premios por temporada')===0 ? 'temporada'
+        : t.indexOf('campeones de anotaci')===0 ? 'scoring' : null;
+      if(cur) groups[cur].push(n); return;
+    }
+    if(cur) groups[cur].push(n);
+  });
+  if(!groups.scoring.length && !groups.mvp.length) return;   /* already restructured, or markup missing */
+  const subtab=el('div','subtab'); subtab.setAttribute('role','tablist');
+  const scoringWrap=el('div'); groups.scoring.forEach(n=>scoringWrap.appendChild(n));
+  const mvpWrap=el('div'); groups.mvp.forEach(n=>mvpWrap.appendChild(n)); mvpWrap.hidden=true;
+  const bScoring=el('button'); bScoring.type='button'; bScoring.textContent='Campeones de anotación';
+  bScoring.setAttribute('aria-current','true');
+  const bMvp=el('button'); bMvp.type='button'; bMvp.textContent='MVP'; bMvp.setAttribute('aria-current','false');
+  const flip=(showScoring)=>{
+    bScoring.setAttribute('aria-current',String(showScoring));
+    bMvp.setAttribute('aria-current',String(!showScoring));
+    scoringWrap.hidden=!showScoring; mvpWrap.hidden=showScoring;
+  };
+  bScoring.onclick=()=>flip(true); bMvp.onclick=()=>flip(false);
+  subtab.appendChild(bScoring); subtab.appendChild(bMvp);
+  const rest=el('div'); groups.temporada.forEach(n=>rest.appendChild(n));
+  view.innerHTML='';
+  if(head) view.appendChild(head);
+  view.appendChild(subtab); view.appendChild(scoringWrap); view.appendChild(mvpWrap); view.appendChild(rest);
+}
 function buildLanding(sec,order){
+  if(sec==='historia') return buildHistoriaLanding(order);
   const wrap=el('div','landing');
   const feat=el('div','mega-feat'); feat.innerHTML=megaFeat(NAV_MENU[sec].feat);
   wrap.appendChild(feat);
