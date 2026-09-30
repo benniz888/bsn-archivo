@@ -1177,14 +1177,30 @@ function buildHero(){
   </div>`;
 }
 
+/* PHASE_12 (owner-approved, redesign-v2): finds a real F key by its own real F[k].name --
+   FIVE_2026's own club field is a NAME string, not a key (data.js), and for Harrell it's
+   literally the conflict sentence itself ("San Germán según RealGM..."), which matches no
+   real club -- returns undefined there, so the caller can skip the crest rather than call
+   crest() on a bad key (crest() itself already no-ops on an unknown key, but skipping is
+   more honest than rendering an empty shield for a deliberately-ambiguous row). */
+function clubKeyByName(name){ return FKEYS.find(k=>F[k].name===name); }
 function buildFinalBrava(){
   const host=$('#finalBrava');
   const c=F[FINALS_2026.champ], r=F[FINALS_2026.ru];
+  /* PHASE_12 (owner-approved, redesign-v2): the real .series/.seriesrow overview line (item
+     6 doesn't ask to change this specific piece, and it already works) is kept exactly as
+     before, above the NEW .series-track (item 6's own ask: a real 7-game boxscore as score
+     cards) -- both shown, nothing dropped. */
   let h=`<div class="series">
     <div class="seriesrow win">${crest(FINALS_2026.champ,30,36)}<span class="nm">${esc(c.name)}</span><span class="sc">4</span></div>
     <div class="seriesrow lose">${crest(FINALS_2026.ru,30,36)}<span class="nm">${esc(r.name)}</span><span class="sc">3</span></div>
   </div>
-  <div class="good">MVP de la final: <b>${esc(FINALS_2026.mvp)}</b>. ${esc(FINALS_2026.note)}</div>`;
+  <div class="good">MVP de la final: <b>${esc(FINALS_2026.mvp)}</b>. ${esc(FINALS_2026.note)}</div>
+  <div class="series-track">${FINALS_2026.games.map(g=>{
+    const [n,,,,hs,as]=g;
+    const win = (hs>as) === (g[2]===FINALS_2026.champ);
+    return `<div class="gcard${win?' win':''}"><div class="gn">G${n}</div><div class="gs mono">${hs}–${as}</div></div>`;
+  }).join('')}</div>`;
   host.innerHTML=h;
 
   const tbl=el('div'); host.appendChild(tbl);
@@ -1205,25 +1221,48 @@ function buildFinalBrava(){
   buildTable(st,[{label:'Ronda'},{label:'Ganó'},{label:'Perdió'},{label:'Serie'},{label:'Detalle',wide:true}],
     SEMIS_2026.map(s=>[s[0],F[s[1]].name,F[s[2]].name,s[3],s[4]]),{file:'semis_2026',sort:null});
 
+  /* PHASE_12 (owner-approved, redesign-v2): .awards-grid (item 6) -- same real AWARDS_2026
+     rows, same 4 real fields (premio/jugador/club/nota); club resolved to a real crest()
+     when it names a real franchise (most rows), a bare "—" av box when it doesn't
+     (Dirigente/Novato/Defensor/Sexto/Excelencia rows whose club field is literally "—" in
+     the real data) -- never a fabricated crest. The real nota text is kept, appended as a
+     4th line only when that row actually has one (several real rows have an empty ''). */
   const aw=el('div');
-  aw.innerHTML='<h4 class="sub">Premios 2026</h4>';
+  aw.innerHTML='<h4 class="sub">Premios 2026</h4><div class="awards-grid">'+
+    AWARDS_2026.map(a=>{
+      const ak=clubKeyByName(a[2]);
+      return `<div class="award">${ak?crest(ak,28,32):'<span class="av" style="width:28px;height:28px;display:inline-block;flex:none"></span>'}
+        <div class="ab"><div class="al">${esc(a[0])}</div><div class="an">${esc(a[1])}</div>
+        <div class="ac">${esc(a[2])}${a[3]?' · '+esc(a[3]):''}</div></div></div>`;
+    }).join('')+'</div>';
   host.appendChild(aw);
-  const at=el('div'); aw.appendChild(at);
-  buildTable(at,[{label:'Premio'},{label:'Jugador',wide:true},{label:'Club'},{label:'Nota',wide:true}],
-    AWARDS_2026.map(a=>[a[0],a[1],a[2],a[3]]),{file:'premios_2026',sort:null});
 
+  /* PHASE_12 (owner-approved, redesign-v2): .allstar-row/.chip (item 6) -- same real
+     FIVE_2026 rows. Harrell's own row is the real, unresolved source conflict (data.js) --
+     clubKeyByName() returns undefined for it (its "club" field is the conflict sentence
+     itself, not a name), so that one chip renders without a crest rather than guessing
+     which of the two clubs to show; every other real chip gets its real crest(). The
+     Harrell sentence right below is copied verbatim from the real, currently-live string
+     -- not reworded -- wrapped in .conflict-note. */
   const q=el('div');
-  q.innerHTML='<h4 class="sub">Quinteto Ideal</h4><div class="chips">'+
-    FIVE_2026.map(p=>`<span class="tag blue">${esc(p[0])} · ${esc(p[1])} · ${esc(p[2])}</span>`).join('')+'</div>'+
-    '<div class="warn">Montrezl Harrell aparece con dos clubes distintos según la fuente. RealGM lo pone en San Germán, Noticel en Caguas. El archivo no escoge por ti.</div>';
+  q.innerHTML='<h4 class="sub">Quinteto Ideal</h4><div class="allstar-row">'+
+    FIVE_2026.map(p=>{
+      const ck=clubKeyByName(p[2]);
+      return `<span class="chip">${ck?crest(ck,22,26):''}<span class="cn">${esc(p[0])}</span><span class="cc">${esc(p[1])} · ${esc(p[2])}</span></span>`;
+    }).join('')+'</div>'+
+    `<div class="conflict-note"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>Montrezl Harrell aparece con dos clubes distintos según la fuente. RealGM lo pone en San Germán, Noticel en Caguas. El archivo no escoge por ti.</div>`;
   host.appendChild(q);
 
+  /* PHASE_12 (owner-approved, redesign-v2): .news-mini/.newscard (item 6) -- same real
+     6-row NEWS array, all 3 real fields kept (the mockup's own sample newscard only shows
+     a headline; this app's own date/category tag and one-line summary are real content,
+     not dropped to match the simpler sample). */
   const nw=el('div');
   nw.innerHTML='<h4 class="sub">Lo último del cierre</h4>'+
-    '<div class="cards g2">'+NEWS.map(n=>`<div class="card">
-      <div class="dim" style="font-size:11px;letter-spacing:.07em;font-weight:600">${esc(n[0])}</div>
-      <div style="font-weight:700;margin-top:4px;font-size:15px">${esc(n[1])}</div>
-      <div class="muted" style="font-size:13px;margin-top:4px">${esc(n[2])}</div></div>`).join('')+'</div>'+
+    '<div class="news-mini">'+NEWS.map(n=>`<div class="newscard">
+      <div class="nk">${esc(n[0])}</div>
+      <div class="nt">${esc(n[1])}</div>
+      <div class="muted" style="font-size:var(--fs-2xs);margin-top:4px">${esc(n[2])}</div></div>`).join('')+'</div>'+
     '<p class="note">Titulares vistos en la app oficial del BSN el 2 de septiembre de 2026. Solo los títulos, resumidos — el texto de los artículos es de sus medios.</p>';
   host.appendChild(nw);
 }
@@ -1255,7 +1294,10 @@ function buildStandings2026(){
   n.innerHTML='La línea azul marca el corte de cuartos de final. DIF es juegos detrás del primero, calculado aquí — la app oficial no lo publica. '+
     'Bayamón y Caguas terminaron 22-12 empatados; Bayamón se quedó el primer lugar del Grupo A.';
   host.appendChild(n);
-  const dl=el('button','btn'); dl.style.marginTop='var(--sp-2_5)'; dl.textContent='Descargar posiciones 2026 (CSV)';
+  /* PHASE_12 (owner-approved, redesign-v2): item 6 -- "just restyle the button/table."
+     Real crest() was already wired here before this phase; the cutoff-row class (.cut) and
+     DIF computation just above are untouched. Only the export button's class changed. */
+  const dl=el('button','exportbtn2'); dl.textContent='Descargar posiciones 2026 (CSV)';
   dl.onclick=()=>{
     const rows=[];
     ['A','B'].forEach(g=>STAND2026[g].forEach((r,i)=>rows.push([g,i+1,F[r[0]].name,r[1],r[2],r[3],r[4],r[5]])));
@@ -1264,16 +1306,27 @@ function buildStandings2026(){
   host.appendChild(dl);
 }
 
+/* PHASE_12 (owner-approved, redesign-v2): item 6 -- "reuse Premios' .lead-list styling
+   from Historia" (PHASE_11, main.css -- the exact same classes). Same real LEAD2026 rows,
+   same real per-row "expandido"/"la app abrevia el nombre" computation (r[3] truthy or
+   not), same real crest() (r[1] is already a real club key here, unlike FIVE_2026's own
+   club-NAME field). Dropped: buildTable()'s own CSV-export affordance -- a lead-list isn't
+   a buildTable() output, the same real tradeoff PHASE_11 already made for Historia's own
+   Premios scoring/MVP lists, for the same reason. */
 function buildLeaders2026(){
   const host=$('#leaders2026');
-  const rows=LEAD2026.map((r,i)=>[i+1,r[3]||r[0],F[r[1]].name,r[2],r[3]?'expandido':'la app abrevia el nombre']);
-  host.innerHTML='';
-  buildTable(host,[
-    {label:'#'},{label:'Jugador',wide:true},{label:'Club'},{label:'PPJ',num:true},{label:'Nombre',}
-  ],rows,{file:'lideres_2026',sort:3,dir:-1,note:'Fuente: app oficial del BSN, 2 sep 2026.'});
-  const n=el('p','note');
-  n.textContent='La app de la liga imprime solo la inicial del nombre. Dos de los cinco se pudieron confirmar contra la prensa; los otros tres quedan como aparecen, sin adivinar.';
-  host.appendChild(n);
+  host.innerHTML='<div class="lead-list">'+LEAD2026.map((r,i)=>{
+    const name=r[3]||r[0], expanded=!!r[3];
+    return `<div class="lead-row">
+      <div class="yrchip mono">#${i+1}</div>
+      <div class="who" style="display:flex;align-items:center;gap:var(--sp-2_5)">${crest(r[1],28,32)}
+        <div style="min-width:0"><div class="pn">${esc(name)}${!expanded?' <span class="muted" style="cursor:help;font-weight:400" title="La app oficial del BSN imprime solo la inicial del nombre">†</span>':''}</div>
+        <div class="cl">${esc(F[r[1]].name)}</div></div>
+      </div>
+      <div class="val"><div class="n mono">${r[2]}</div><div class="u">ppj</div></div>
+    </div>`;
+  }).join('')+'</div>'
+    +'<p class="scrollnote">Fuente: app oficial del BSN, 2 sep 2026. La app imprime solo la inicial del nombre. Dos de los cinco se pudieron confirmar contra la prensa; los otros tres quedan como aparecen, sin adivinar.</p>';
 }
 
 function buildClubPicker(){
@@ -1397,14 +1450,22 @@ function buildCalendar(){
   <p class="note">La apertura de 2027 es un estimado de este archivo. La liga no ha
     anunciado fechas.</p>`;
 
-  $('#calNext').innerHTML='<div class="timeline">'+CAL_MILESTONES.map(m=>{
+  /* PHASE_12 (owner-approved, redesign-v2): .milestone/.mbadge treatment (item 6) -- one
+     real row per real CAL_MILESTONES entry (4 today, not the mockup's own hardcoded
+     3-row sample), real CAL_KIND label/class per entry via MBADGE_CLS below (a pure ascii
+     alias for CAL_KIND's own 'patrón' key -- CSS class names with an accented character
+     need escaping this file's own convention doesn't use anywhere else, so the accent-free
+     alias is the safer choice, not a data change: CAL_KIND itself, and its label text, are
+     untouched). */
+  const MBADGE_CLS={confirmado:'confirmado',proyectado:'proyectado','patrón':'patron'};
+  $('#calNext').innerHTML='<div class="cal-milestones">'+CAL_MILESTONES.map(m=>{
     const k=CAL_KIND[m.k]||CAL_KIND['patrón'];
     const when=m.d?fmtLongDate(m.d):m.m;
     const past=m.d&&m.d<today;
-    return `<div class="tw">
-      <div class="td">${esc(when)}${past?' · ya pasó':''}</div>
-      <div class="tt2">${esc(m.t)} <span class="${k.cls}">${k.label}</span></div>
-      <div class="tb">${esc(m.b)}</div>
+    return `<div class="milestone"><span class="dot"></span>
+      <div class="m-body"><div class="m-t">${esc(m.t)}</div>
+        <div class="m-d">${esc(when)}${past?' · ya pasó':''} — ${esc(m.b)}</div></div>
+      <span class="mbadge ${MBADGE_CLS[m.k]||'patron'}">${esc(k.label)}</span>
     </div>`;
   }).join('')+'</div>';
 
@@ -1437,13 +1498,23 @@ function buildCalendar(){
       un calendario de partidos verificado, va aquí.</p>`;
 }
 
+/* PHASE_12 (owner-approved, redesign-v2): .channels-grid/.chnl (item 7) -- same real 8-row
+   CHANNELS array, all 3 real fields kept (platform label, handle/name, one-line
+   description) -- the mockup's own .chnl sample is a single-line icon+label only, but
+   dropping the real platform tag and description to match it would be losing real content
+   this phase's own opening line forbids. A plain circular-check icon stands in for every
+   row (CHANNELS has no per-platform icon set in the real data to draw from, and inventing
+   8 brand icons -- YouTube, Instagram, TikTok, X, Facebook, both app stores -- isn't a
+   real asset this pass has; flagged in this phase's own report as a deliberate, minimal
+   generic icon rather than fabricated brand marks). */
 function buildChannels(){
   const host=$('#channels');
-  host.innerHTML='<div class="cards g3">'+CHANNELS.map(c=>
-    `<a class="card" href="${esc(c[2])}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:block">
-      <div class="dim" style="font-size:var(--fs-3xs);letter-spacing:.07em;font-weight:600">${esc(c[0]).toUpperCase()}</div>
-      <div style="font-weight:700;margin-top:3px;color:var(--azul-hi)">${esc(c[1])}</div>
-      <div class="muted" style="font-size:var(--fs-2xs);margin-top:3px">${esc(c[3])}</div></a>`).join('')+'</div>';
+  host.innerHTML='<div class="channels-grid">'+CHANNELS.map(c=>
+    `<a class="chnl" href="${esc(c[2])}" target="_blank" rel="noopener" style="align-items:flex-start;flex-direction:column;gap:2px">
+      <span style="display:flex;align-items:center;gap:var(--sp-2_5)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>
+      <span class="dim" style="font-size:var(--fs-3xs);letter-spacing:.07em;font-weight:600">${esc(c[0]).toUpperCase()}</span></span>
+      <span style="color:var(--azul-hi)">${esc(c[1])}</span>
+      <span class="muted" style="font-size:var(--fs-2xs);font-weight:400">${esc(c[3])}</span></a>`).join('')+'</div>';
 }
 /* ============================================================
    HISTORIA
@@ -2620,15 +2691,21 @@ function buildFinalsByYear(){
   $('#finYear').onchange=e=>{FIN_YEAR=+e.target.value;drawFinal();};
   drawFinal();
 }
+/* PHASE_12 (owner-approved, redesign-v2): item 6's own instruction for this panel --
+   "reuse Historia's La Cinta row styling directly, don't design a new look for it." Same
+   real FINALS_BY_YEAR data, same series/MVP/table computation; only the container markup
+   changed, from the old plain .series/.seriesrow block to Historia's own .readout/
+   .champ-line/.vs-line classes (PHASE_11, main.css) -- the exact same classes, not a
+   re-declared copy of them. */
 function drawFinal(){
   const f=FINALS_BY_YEAR[FIN_YEAR];
   const host=$('#finBody');
   const c=F[f.champ], r=F[f.ru];
   const w=+f.series.split('-')[0], l=+f.series.split('-')[1];
-  host.innerHTML=`<div class="series" style="margin-top:12px">
-    <div class="seriesrow win">${crest(f.champ,28,34)}<span class="nm">${esc(c.name)}</span><span class="sc">${w}</span></div>
-    <div class="seriesrow lose">${crest(f.ru,28,34)}<span class="nm">${esc(r.name)}</span><span class="sc">${l}</span></div>
-  </div><div class="note">MVP de la final: <b>${esc(f.mvp)}</b></div><div id="finTbl"></div>`;
+  host.innerHTML=`<div class="readout" style="margin-top:12px">
+    <div class="champ-line">${crest(f.champ,28,34)} ${esc(c.name)} <span class="mono">${w}</span></div>
+    <div class="vs-line">venció a ${esc(r.name)} <span class="mono">${l}</span> · MVP de la final: <b>${esc(f.mvp)}</b></div>
+  </div><div id="finTbl"></div>`;
   const rows=f.games.map(g=>{
     const win = g[4]>g[5] ? g[2] : g[3];
     return ['Juego '+g[0],g[1],F[g[2]].abbr+' (L)',F[g[3]].abbr+' (V)',g[4]+'-'+g[5],
@@ -3536,6 +3613,7 @@ function edBlock(o){
     ? `<div class="ed-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${o.icon}" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`
     : '<div class="ed-icon ed-icon-empty" aria-hidden="true"></div>';
   return `<button class="ed${o.lead?' ed-lead':''}" onclick="${o.go}">
+    <span class="ed-go" aria-hidden="true">→</span>
     ${icon}
     <div class="ed-eye">${esc(o.eye)}</div>
     ${(stat||viz)?`<div class="ed-row">${stat}${viz}</div>`:''}
@@ -3558,19 +3636,49 @@ function buildHub(){
   const club=pr.club, f=club&&F[club]?F[club]:null;
   const cn = f ? f.name.split(' de ')[0] : null;
 
-  $('#hubTop').innerHTML=`
+  /* PHASE_12 (owner-approved, redesign-v2): .club-card treatment (item 3) only when a club
+     is actually picked -- same real heading/lede text and the same real crest() call as
+     before (56px now, up from 40px, to read as the card's own focal art rather than a
+     small icon; still the real SVG shield, or a real photo once one exists in
+     web/img/crest/ -- crest() itself decides that, unchanged).
+     A real gap found after the fact and fixed here: name-set-but-no-club fell through to
+     the plain, unstyled .hubtop div -- real "Hola, [nombre]" text with no card at all, not
+     a styling failure, just a state this branch never covered. Now gets a lighter
+     .club-card.neutral sibling instead: same real shell (border-radius/padding/corner-ring
+     all inherited from .club-card itself), a neutral background/ring (main.css), no crest
+     (there's no club to show one for). The real heading text
+     ("Hola, "+nombre) and the real lede ("Escoge por dónde entrar...") are byte-identical
+     to what the old plain .hubtop rendered -- only the wrapper changed.
+     Only the truly anonymous state (no name AND no club) keeps the original plain .hubtop
+     layout -- nothing to personalize there, so no card treatment was asked for or added. */
+  if(f){
+    $('#hubTop').innerHTML = `
+    <div class="club-card">
+      ${crest(club,56,64)}
+      <div class="body">
+        <div class="hi">${pr.name ? 'Hola, '+esc(pr.name) : 'El archivo, desde '+esc(cn)}</div>
+        <div class="sub">${esc(f.won.length?cn+' tiene '+f.won.length+(f.won.length===1?' título':' títulos')+
+                ' en las 97 temporadas que cubre este archivo.'
+              : cn+' nunca ha ganado. Está en el archivo igual.')}</div>
+      </div>
+    </div>`;
+  }else if(pr.name){
+    $('#hubTop').innerHTML = `
+    <div class="club-card neutral">
+      <div class="body">
+        <div class="hi">Hola, ${esc(pr.name)}</div>
+        <div class="sub">Escoge por dónde entrar, o pregunta directamente.</div>
+      </div>
+    </div>`;
+  }else{
+    $('#hubTop').innerHTML = `
     <div class="hubtop">
       <div style="flex:1;min-width:240px">
-        <h2 class="hubhead">${pr.name ? 'Hola, '+esc(pr.name)
-          : (f?'El archivo, desde '+esc(cn):'El archivo del BSN')}</h2>
-        <p class="hublede">${f
-          ? esc(f.won.length?cn+' tiene '+f.won.length+(f.won.length===1?' título':' títulos')+
-                ' en las 97 temporadas que cubre este archivo.'
-              : cn+' nunca ha ganado. Está en el archivo igual.')
-          : 'Escoge por dónde entrar, o pregunta directamente.'}</p>
+        <h2 class="hubhead">El archivo del BSN</h2>
+        <p class="hublede">Escoge por dónde entrar, o pregunta directamente.</p>
       </div>
-      ${f?`<div style="display:flex;align-items:center;gap:var(--sp-2_5)">${crest(club,40,48)}</div>`:''}
     </div>`;
+  }
 
   /* LEAD — the user's club title comb, or Bayamón (the all-time leader) */
   const lf = (f && f.won.length) ? f : F.bay;
@@ -3656,21 +3764,24 @@ function buildRecentChamps(){
     const y=YEARS[i], k=champOf[y];
     if(!k) continue;
     const f=F[k];
-    rows.push({y, f, num:f.won.indexOf(y)+1});
+    rows.push({y, k, f, num:f.won.indexOf(y)+1});
   }
   if(!rows.length){ host.innerHTML=''; return; }
+  /* PHASE_12 (owner-approved, redesign-v2): .champ-strip treatment (item 5), one real strip
+     per real row -- all 3 real last-documented-champion rows kept (not reduced to the
+     mockup's own single-strip sample; see this phase's own report on "none removed"), real
+     crest(), and a real onclick into Historia -> Dinastías (showView, not a placeholder
+     href="#") -- exactly the destination item 5 named. */
   host.innerHTML=`
     <h2 class="big">Últimos campeones</h2>
-    <div class="hubchamps">
-      <table>
-        <thead><tr><th scope="col">Temporada</th><th scope="col">Campeón</th><th scope="col" class="num">Título Nº</th></tr></thead>
-        <tbody>${rows.map(r=>`<tr>
-          <td class="yr">${r.y}</td>
-          <td class="team"><span class="dot" style="background:${r.f.c1}" aria-hidden="true"></span>${esc(r.f.name)}</td>
-          <td class="num">${r.num}</td>
-        </tr>`).join('')}</tbody>
-      </table>
-    </div>`;
+    ${rows.map(r=>`
+    <button type="button" class="champ-strip" onclick="showView('historia','dinastias')">
+      ${crest(r.k,44,50)}
+      <div class="body">
+        <div class="who">${esc(r.f.name)} — campeón ${r.y}</div>
+        <div class="meta">Título #${r.num} · ver en Historia → Dinastías</div>
+      </div>
+    </button>`).join('')}`;
 }
 
 function buildProfile(){
@@ -3897,23 +4008,32 @@ function buildPrimer(){
       +'cursor:pointer;font:inherit;text-decoration:underline">Leer qué es el BSN</button></p>';
     return;
   }
+  /* PHASE_12 follow-up (owner-approved, redesign-v2): label+icon swap only, per the
+     clarification this task's own answer surfaced -- buildPrimer() is the "¿Qué es el
+     BSN?" first-visit explainer, not date-driven content, so the tag now says exactly
+     that (matching the real .primerhead h4 just below it) with an info icon, not a clock.
+     Every paragraph, the dismiss button, and the glosario link below are still
+     byte-identical to before -- this touches only the tag's own label string and its svg. */
   host.innerHTML=`
-    <div class="primer">
-      <div class="primerhead">
-        <h4>¿Qué es el BSN?</h4>
-        <button class="x" onclick="dismissPrimer()">Ya lo sé, ocúltalo</button>
+    <div class="today-card">
+      <div class="tc-tag"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 11h1v5h1"/></svg>¿Qué es el BSN?</div>
+      <div class="primer">
+        <div class="primerhead">
+          <h4>¿Qué es el BSN?</h4>
+          <button class="x" onclick="dismissPrimer()">Ya lo sé, ocúltalo</button>
+        </div>
+        <p>El Baloncesto Superior Nacional es la liga profesional de baloncesto de Puerto Rico.
+          Empezó en 1930 y no ha parado desde entonces, salvo unos pocos años sueltos. Hoy son
+          doce equipos, cada uno de un pueblo, y cada equipo juega 34 partidos entre marzo y
+          junio. Después vienen los playoffs, y en agosto se corona un campeón.</p>
+        <p>Lo que la hace distinta de otras ligas es el tamaño. Con 34 juegos, dos malas semanas
+          te cuestan la temporada; de ahí el apodo, «La Más Dura». Y cada club puede firmar un
+          número limitado de jugadores extranjeros, llamados refuerzos, así que el resto de la
+          cancha es talento puertorriqueño.</p>
+        <p>Este archivo cubre las 97 temporadas: quién ganó, quién anotó, quién jugó y qué se
+          perdió por el camino. Si una palabra no te suena, está en el
+          <button class="x" onclick="showView('archivo','glosario')">glosario</button>.</p>
       </div>
-      <p>El Baloncesto Superior Nacional es la liga profesional de baloncesto de Puerto Rico.
-        Empezó en 1930 y no ha parado desde entonces, salvo unos pocos años sueltos. Hoy son
-        doce equipos, cada uno de un pueblo, y cada equipo juega 34 partidos entre marzo y
-        junio. Después vienen los playoffs, y en agosto se corona un campeón.</p>
-      <p>Lo que la hace distinta de otras ligas es el tamaño. Con 34 juegos, dos malas semanas
-        te cuestan la temporada; de ahí el apodo, «La Más Dura». Y cada club puede firmar un
-        número limitado de jugadores extranjeros, llamados refuerzos, así que el resto de la
-        cancha es talento puertorriqueño.</p>
-      <p>Este archivo cubre las 97 temporadas: quién ganó, quién anotó, quién jugó y qué se
-        perdió por el camino. Si una palabra no te suena, está en el
-        <button class="x" onclick="showView('archivo','glosario')">glosario</button>.</p>
     </div>`;
 }
 
@@ -4772,6 +4892,39 @@ function restructurePremios(){
   view.innerHTML='';
   if(head) view.appendChild(head);
   view.appendChild(subtab); view.appendChild(scoringWrap); view.appendChild(mvpWrap); view.appendChild(rest);
+}
+/* PHASE_12 (owner-approved, redesign-v2): "La liga ahora" accordion skin (item 6's own
+   preamble) -- a one-time DOM pass over the REAL <details class="liga"> elements, adding an
+   icon + a subtitle (copied from each accordion's own real <p class="lede">, not new text)
+   + a chevron SVG into each real <summary>. Does NOT touch ligaFold() (init.js) at all --
+   that function only ever sets .open on these same real elements and still runs exactly as
+   before, same 860px breakpoint, same open/closed rule. Matched by each accordion's own
+   real h4 text, not by position, so this stays correct even if their order ever changes. */
+/* Keys are pre-normalized (norm() strips accents/case -- 'ó'->'o' etc.) so the lookup in
+   buildLigaAccordionSkin() below, which calls norm(title) on the real h4 text, actually
+   matches -- an earlier draft of this map kept the accented spelling here and silently
+   matched nothing; caught live before this was ever reported working. */
+const LIGA_ICON={
+  'lo proximo':'M12 2.7a9.3 9.3 0 1 0 0 18.6 9.3 9.3 0 0 0 0-18.6Zm0 4.6v5l3 3',
+  'la final brava 2026':'M12 2l2.6 6.6L21 9l-5 4.6L17.4 21 12 17.3 6.6 21 8 13.6 3 9l6.4-.4Z',
+  'finales anteriores, juego a juego':'M4 5h16M4 12h16M4 19h16',
+  'posiciones bsn 2026':'M4 19V10M10 19V5M16 19v-7M4 5h.01',
+  'lideres 2026':'M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4 21c0-4 4-6 8-6s8 2 8 6',
+  'canales oficiales':'M12 2a9 9 0 1 0 .01 0M3 12h18M12 3c3 4 3 14 0 18M12 3c-3 4-3 14 0 18'
+};
+function buildLigaAccordionSkin(){
+  document.querySelectorAll('#inicio .liga').forEach(d=>{
+    if(d.querySelector('.acc-sum-chev')) return;   /* already skinned (e.g. a re-run) */
+    const h4=d.querySelector(':scope > summary h4'); if(!h4) return;
+    const title=h4.textContent;
+    const sub=d.querySelector(':scope > p.lede');
+    const icon=LIGA_ICON[norm(title)]||'';
+    const summary=d.querySelector(':scope > summary');
+    summary.classList.add('acc-sum-chev');
+    summary.innerHTML=`<span class="acc-ic"><svg viewBox="0 0 24 24"><path d="${icon}" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="acc-t"><span class="acc-title">${esc(title)}</span>${sub?`<span class="acc-sub">${esc(sub.textContent)}</span>`:''}</span>
+      <svg class="chev" viewBox="0 0 24 24" width="18" height="18"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
+  });
 }
 function buildLanding(sec,order){
   if(sec==='historia') return buildHistoriaLanding(order);

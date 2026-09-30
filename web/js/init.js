@@ -98,6 +98,12 @@ function finishBoot(){
      router-level, once-per-boot setup). */
   try{ buildHistoriaHero(); }catch(e){ console.error('BSN: falló el hero de Historia',e); }
   try{ restructurePremios(); }catch(e){ console.error('BSN: falló el subtab de Premios',e); }
+  /* PHASE_12 (owner-approved, redesign-v2): skins the real "La liga ahora" accordions
+     (item 6) -- run before ligaFold() so the real .liga elements' summary content is
+     already in its final form by the time ligaFold() reads/sets their .open state (order
+     doesn't actually matter to ligaFold() itself, which never inspects summary content,
+     but this keeps the "build markup, then apply fold state" sequence in a sensible order). */
+  try{ buildLigaAccordionSkin(); }catch(e){ console.error('BSN: falló el look de "La liga ahora"',e); }
   try{ ligaFold(); }catch(e){ console.error('BSN: falló «La liga ahora»',e); }
   try{ syncSearchPlaceholder(); }catch(e){ console.error('BSN: falló el placeholder de búsqueda',e); }
   if(location.hash){

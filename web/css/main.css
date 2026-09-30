@@ -1336,12 +1336,23 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 /* ── Editorial blocks (PHASE_8.3) — a headline stat + a phrase + one line
    of context + a supporting visual, not a number in a box. Inicio hub,
    the player/team heros, the mega-menu featured blocks. */
-.ed{display:flex;flex-direction:column;gap:var(--sp-2);text-align:left;width:100%;
+.ed{position:relative;display:flex;flex-direction:column;gap:var(--sp-2);text-align:left;width:100%;
   background:var(--card);border:1px solid var(--line);border-radius:14px;padding:var(--sp-4);
   color:var(--ink);font:inherit;cursor:pointer;
   transition:transform var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease),box-shadow var(--dur-fast) var(--ease)}
-.ed:hover{transform:translateY(-2px);border-color:var(--ink-3);box-shadow:0 6px 18px var(--shadow)}
+.ed:hover{transform:translateY(-2px);border-color:var(--azul-hi);box-shadow:0 6px 18px var(--shadow)}
 .ed:active{transform:none}
+/* PHASE_12 follow-up (owner-approved, redesign-v2): the .xcard reveal-arrow, ported onto
+   these real cards instead of keeping a second, duplicate explore grid -- removed
+   buildInicioExplore()/#hubExplore entirely (index.html/tabs.js); this is now the one and
+   only explore grid, real live data unchanged (edBlock()'s own stat/viz/phrase/ctx/act are
+   untouched below). .ed-act's own inline "→" (the visible "Ver la cinta →" link text) stays
+   exactly as it was -- this is a second, purely decorative corner arrow, hidden until
+   hover, same as Historia's .xcard .go. */
+.ed-go{position:absolute;top:var(--sp-4);right:var(--sp-4);color:var(--ink-3);font-size:16px;
+  opacity:0;transition:opacity var(--dur-fast) var(--ease)}
+.ed:hover .ed-go,.ed:focus-visible .ed-go{opacity:1;color:var(--azul-hi)}
+@media(prefers-reduced-motion:reduce){.ed-go{transition:none}}
 /* PHASE_9 hub restyle (owner-approved, redesign-v2): reuses the rail's own icon size/weight
    (22px, stroke-width 1.7 -- main.css ".rail a svg,.rail .railctl svg") so a hub card's glyph
    reads as the same visual language as the rail tab it links to, not a new icon style. Box
@@ -1353,10 +1364,14 @@ tr.cut td{border-bottom:1px solid var(--azul)}
    flag/tricolor red, no such restriction, and the color already used for this card's own
    tri-block-rojo stat number) is the more correct match, not just cosmetic. Contrast checked
    live, both themes -- see the redesign-v2 PHASE 9 hub-restyle-build report. */
-.ed-icon{width:38px;height:38px;border-radius:var(--r-sm);background:rgba(239,43,57,.14);
+/* PHASE_12 follow-up (owner-approved, redesign-v2): gradient icon chip, matching Historia's
+   own .xcard .ic exactly (same gradient, same white icon) -- replaces the flat rojo-wash
+   box PHASE_9 originally gave these cards. Kept var(--r-sm) (this app's own smaller-nested-
+   element radius token, not xcard's own literal 10px) since that choice was never about the
+   fill color and nothing here asked to change it. */
+.ed-icon{width:38px;height:38px;border-radius:var(--r-sm);background:linear-gradient(135deg,var(--rojo),var(--azul));
   display:flex;align-items:center;justify-content:center;flex:none}
-[data-theme="light"] .ed-icon{background:rgba(200,18,31,.12)}
-.ed-icon svg{width:22px;height:22px;stroke:var(--rojo);fill:none;stroke-width:1.7}
+.ed-icon svg{width:22px;height:22px;stroke:var(--flag-w);fill:none;stroke-width:1.7}
 /* PHASE_9 alignment fix (owner-approved, redesign-v2): Comparar (no rail icon -- see edBlock())
    still gets a .ed-icon box in the DOM, same 38px/--r-sm/flex:none as every other card's, so its
    .ed-eye lands at the same y as its row-mates'. This is the ONLY thing that needs to differ --
@@ -1704,3 +1719,202 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
    zero live references anywhere (.clock's own rule was already gone);
    the prior round had deliberately left it in and flagged it, this round
    is that flagged follow-up, done. */
+
+/* ============================================================
+   PHASE_12 -- Inicio real build (owner-approved, redesign-v2)
+   Reference: approved Inicio mockup (claude.ai/artifact/TpoqBE7ifnm7n4DZ5oBKLe).
+   Same discipline as PHASE_11's Historia build: every class below either reuses an
+   Historia-proven token/class verbatim (--rojo-deep/--on-rojo already fixed for dark-theme
+   contrast there; .explore/.xcard/.lead-list/.lead-row/.decade-head/.streakpill/.readout/
+   .champ-line/.vs-line/.hbadge are the exact same classes, not re-declared) or is new and
+   checked first against the whole stylesheet for zero prior uses. No real function's data
+   or computation changed for this -- every id below is still written by the same real
+   builder named in this phase's own task text. */
+
+/* -- hero: reuses the REAL existing .hero/.ed-eye/.hero-headline (already Oswald, already
+   has its own repeating-radial-gradient arc device from PHASE_2_REDESIGN step 5 -- NOT a
+   second copy of that device). Only addition: the eyebrow gradient-tick, scoped to
+   .hero .ed-eye specifically so edBlock()'s OWN .ed-eye (the hub cards' small label,
+   tabs.js) is never affected -- confirmed via grep, .ed-eye has exactly these 2 real call
+   sites and only one of them is the hero. .hero-headline is NOT forced uppercase here,
+   unlike Historia's short one-word pagehead -- the real headline is a full dynamic
+   sentence (day-count copy, changes with today's date), and forcing caps on a full
+   sentence hurts readability in a way a single word doesn't; a deliberate, reported
+   deviation from Historia's own literal treatment, not an oversight. */
+.hero .ed-eye{display:flex;align-items:center;gap:var(--sp-2)}
+.hero .ed-eye::before{content:"";width:18px;height:2px;background:var(--tri);border-radius:2px;flex:none}
+/* -- hero-stats: light decorative pass only, no markup change -- same corner-ring accent
+   Historia's .stat card uses, added to the REAL existing .hero-stat blocks so the "stat
+   row" gets the new system's visual language without moving or renaming any of buildHero()'s
+   own 3 real stat blocks (day-count, season count, leader-club title count). */
+.hero-stat{position:relative;overflow:hidden}
+.hero-stat::after{content:"";position:absolute;right:-14px;bottom:-18px;width:64px;height:64px;border-radius:999px;
+  border:8px solid rgba(255,255,255,.10);opacity:.6;pointer-events:none}
+.hero-stat:not(.tri-block)::after{border-color:var(--raise)}
+
+/* -- today card (buildPrimer's real "¿Qué es el BSN?" card -- see this phase's own report
+   for why "En esta fecha" in the task text maps to buildPrimer and not the dormant
+   buildOnThisDay(), which stays untouched/dormant exactly as PHASE_9 left it). Left accent
+   bar + clock tag, real copy (both the full primer and its collapsed one-liner state)
+   completely unchanged -- only a wrapper class added around the existing #hubPrimer
+   output, no text rewritten. */
+/* PHASE_12 fix (owner-approved, redesign-v2): --sp-5_5 was never a real token (the scale's
+   only half-steps are --sp-2_5/--sp-3_5/--sp-4_5 -- confirmed by reading the token block
+   itself) -- an undefined var() with no fallback invalidates the WHOLE padding declaration
+   at compute time, not just its own half, so this silently computed to padding:0. Uniform
+   var(--sp-5) instead, matching Historia's own .stat card padding exactly (main.css,
+   same real token, same uniform-not-asymmetric pattern), not a new literal. */
+.today-card{position:relative;border:1px solid var(--line);border-radius:16px;padding:var(--sp-5);
+  background:var(--card);margin:var(--sp-5) 0;overflow:hidden}
+.today-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--tri-v)}
+.today-card .tc-tag{display:inline-flex;align-items:center;gap:6px;font-size:var(--fs-2xs);font-weight:700;
+  text-transform:uppercase;letter-spacing:.05em;color:var(--rojo);margin-bottom:var(--sp-2_5)}
+.today-card .tc-tag svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;flex:none}
+[data-theme="light"] .today-card .tc-tag{color:var(--rojo)}
+
+/* -- club card: replaces the plain .hubtop row when a club is picked. Real crest() (not an
+   initials placeholder -- item 8), real gradient fill, corner-ring decoration. The
+   no-club-picked state keeps the exact real fallback copy, just without the card
+   treatment (a gradient card with no crest and a generic "escoge por dónde entrar" line
+   would look like a broken/empty state, not a feature -- so the plain .hubtop layout is
+   kept for that state, unchanged from before this phase). */
+/* PHASE_12 fix (owner-approved, redesign-v2): same --sp-5_5 typo as .today-card above, same
+   fix -- uniform var(--sp-5), matching Historia's own .stat card padding. */
+.club-card{position:relative;border-radius:16px;padding:var(--sp-5);margin:var(--sp-5) 0;overflow:hidden;
+  background:linear-gradient(135deg,var(--azul),var(--azul-deep));color:var(--flag-w);
+  display:flex;align-items:center;gap:var(--sp-4_5);flex-wrap:wrap}
+[data-theme="light"] .club-card{background:linear-gradient(135deg,var(--azul),var(--azul-hi))}
+.club-card::after{content:"";position:absolute;right:-30px;top:-30px;width:160px;height:160px;border-radius:999px;
+  border:14px solid rgba(255,255,255,.14)}
+.club-card .crest{position:relative;z-index:1;flex:none}
+.club-card .body{flex:1;min-width:200px;position:relative;z-index:1}
+.club-card .hi{font-family:var(--font-display);font-size:22px;font-weight:600;margin-bottom:4px}
+.club-card .sub{font-size:var(--fs-sm);opacity:.92;line-height:1.5}
+/* PHASE_12 (owner-approved, redesign-v2): a lighter sibling for the name-set/no-club state
+   -- same real shell (border-radius/padding/corner-ring, all inherited from .club-card
+   itself, nothing redeclared), neutral background instead of a club color since there's no
+   club to represent. The ring's own border color switches from the base rule's
+   rgba(255,255,255,.14) (tuned for a colored gradient) to var(--raise) -- the same real
+   token/pattern .hero-stat:not(.tri-block)::after already uses for its own neutral variant,
+   not a new invented value. .sub drops the base rule's opacity:.92 (tuned for white-on-
+   color) in favor of --ink-2, matching how .stat:not(.solid) .l does the same swap for its
+   own neutral case. No crest -- the markup itself never renders one here (buildHub()). */
+.club-card.neutral{background:var(--card);border:1px solid var(--line);color:var(--ink)}
+.club-card.neutral::after{border-color:var(--raise)}
+.club-card.neutral .sub{opacity:1;color:var(--ink-2)}
+
+/* -- champion strip: buildRecentChamps()'s real 3 rows (year/champion/title-number,
+   YEARS/champOf-derived), one .champ-strip per row -- item 5 describes a single strip
+   matching the mockup's own single-champion sample, but this app's own real function
+   already surfaces the real last 3 documented champions, and dropping 2 of them to match
+   the mockup's simpler sample would be removing real content this phase's own opening
+   line forbids ("none get removed or simplified"). Real crest(), real link into Historia
+   -> Dinastías (not a placeholder anchor). */
+.champ-strip{display:flex;align-items:center;gap:var(--sp-4);border:1px solid var(--line);border-radius:16px;
+  padding:var(--sp-4) var(--sp-4_5);background:var(--card);margin-bottom:var(--sp-2_5);cursor:pointer;
+  text-align:left;width:100%;font:inherit;color:inherit}
+.champ-strip:hover{border-color:var(--oro-cs,var(--azul))}
+.champ-strip .body{flex:1;min-width:200px}
+.champ-strip .who{font-family:var(--font-display);font-weight:600;font-size:16.5px}
+.champ-strip .meta{color:var(--ink-3);font-size:var(--fs-xs);margin-top:2px}
+
+/* -- explore grid: a NEW, second grid -- .edhub (buildHub()'s own 5 personalized cards:
+   Historia/Jugadores/Comparar/Juega/Archivo, each with a real live stat+sparkline) is
+   UNTOUCHED, its own data/logic never simplified, per this phase's own instruction that
+   buildHub's data/logic must not be replaced. This is the mockup's OWN, simpler, literal
+   5-real-tab explore grid (Historia/Jugadores/Equipos/Juega/Archivo) the task explicitly
+   asked for in addition -- Juega included (the mockup's own sample dropped it; not
+   repeated here), reuses Historia's .explore/.xcard classes byte-for-byte (zero new CSS
+   needed for this component, confirmed already in the stylesheet from PHASE_11). */
+
+/* -- La liga ahora accordion skin: restyles the REAL <details class="liga"> elements
+   ligaFold() (init.js) already manages -- same class, same open/close JS, same 860px
+   breakpoint, only the CSS (and a light one-time DOM pass adding an icon+chevron to each
+   real summary, see buildLigaAccordionSkin() in tabs.js) changed. */
+#inicio .liga{border:1px solid var(--line);border-radius:14px;background:var(--card);
+  margin-bottom:var(--sp-3);overflow:hidden;border-top:1px solid var(--line)}
+#inicio .liga:first-of-type{border-top:1px solid var(--line)}
+#inicio .liga[open]{border-color:var(--azul-hi)}
+#inicio .liga>summary{padding:var(--sp-4) var(--sp-4_5);gap:var(--sp-3_5)}
+#inicio .liga>summary::before{display:none}
+/* PHASE_12 contrast fix (owner-approved, redesign-v2): --rojo on --raise measured 3.99:1 in
+   dark theme, under 4.5:1 AA -- --raise is dark there, so (unlike PHASE_11's rojo-on-rojo-
+   tint bugs) the fix needs a LIGHTER icon color, not --rojo-deep (which measured even worse,
+   1.77:1, confirmed before ruling it out). --on-rojo is already this app's own token for
+   exactly this pairing -- re-measured live: 11.40:1 dark, 7.65:1 light. */
+#inicio .liga .acc-ic{width:34px;height:34px;border-radius:10px;background:var(--raise);display:flex;
+  align-items:center;justify-content:center;flex:none;color:var(--on-rojo)}
+#inicio .liga .acc-ic svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.9}
+#inicio .liga .acc-t{flex:1;min-width:0}
+#inicio .liga .acc-t .acc-title{font-family:var(--font-display);font-weight:600;font-size:15.5px}
+#inicio .liga .acc-t .acc-sub{color:var(--ink-3);font-size:var(--fs-2xs);margin-top:2px;font-weight:400}
+#inicio .liga .chev{color:var(--ink-3);transition:transform var(--dur-fast) var(--ease);flex:none}
+#inicio .liga[open] .acc-sum-chev .chev{transform:rotate(180deg)}
+#inicio .liga>.lede:first-of-type{display:none}   /* real lede text now duplicated into .acc-sub, hidden here to avoid repeating it twice */
+@media(min-width:860px){
+  #inicio .liga>summary{padding:var(--sp-4) var(--sp-4_5)}
+  #inicio .liga:first-of-type>summary{padding-top:var(--sp-4)}
+}
+
+/* -- calendar milestones: real CAL_MILESTONES/CAL_KIND, per-entry (not the mockup's own
+   hardcoded 3-row sample) -- #calCount's own .strip stat row is untouched. */
+.milestone{display:flex;align-items:flex-start;gap:var(--sp-3_5);padding:var(--sp-3) 0;border-bottom:1px solid var(--line)}
+.milestone:last-child{border-bottom:none}
+.milestone .dot{width:9px;height:9px;border-radius:999px;background:var(--ink-3);margin-top:6px;flex:none}
+.milestone .m-body{flex:1;min-width:0}
+.milestone .m-t{font-size:var(--fs-sm);font-weight:600}
+.milestone .m-d{color:var(--ink-3);font-size:var(--fs-2xs);margin-top:2px}
+.mbadge{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.04em;padding:3px 9px;border-radius:999px;flex:none}
+.mbadge.confirmado{background:var(--tint-ok);color:var(--on-ok)}
+.mbadge.proyectado{background:var(--tint-azul);color:var(--on-azul)}
+.mbadge.patron{background:var(--raise);color:var(--ink-2)}
+
+/* -- Final Brava: real 7-game boxscore as score cards, real AWARDS_2026 as a card grid
+   (each with real crest), real FIVE_2026 as chips (real crest), real Harrell sentence
+   wrapped, not rewritten. */
+.series-track{display:grid;grid-template-columns:repeat(7,1fr);gap:var(--sp-2);margin:var(--sp-2) 0 var(--sp-4_5)}
+@media(max-width:759px){.series-track{grid-template-columns:repeat(4,1fr)}}
+.gcard{border:1px solid var(--line);border-radius:10px;padding:10px 8px;text-align:center}
+.gcard.win{border-color:var(--rojo);background:var(--tint-rojo-soft)}
+.gcard .gn{font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em}
+.gcard .gs{font-family:var(--font-display);font-weight:700;font-size:16px;margin:3px 0}
+.awards-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--sp-2_5);margin:var(--sp-4) 0}
+@media(max-width:639px){.awards-grid{grid-template-columns:1fr}}
+.award{display:flex;align-items:center;gap:var(--sp-3);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.award .ab{min-width:0}
+.award .al{font-size:10.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.03em}
+.award .an{font-family:var(--font-display);font-weight:600;font-size:14px;margin-top:1px}
+.award .ac{font-size:var(--fs-2xs);color:var(--ink-3)}
+.allstar-row{display:flex;flex-wrap:wrap;gap:var(--sp-2);margin:var(--sp-3_5) 0 var(--sp-1)}
+.chip{border:1px solid var(--line);border-radius:999px;padding:6px 13px 6px 6px;font-size:var(--fs-xs);
+  display:flex;align-items:center;gap:var(--sp-2)}
+.chip .cn{font-weight:600}
+.chip .cc{color:var(--ink-3)}
+.conflict-note{display:flex;gap:var(--sp-2_5);border:1px solid var(--line);border-left:3px solid var(--azul-hi);
+  border-radius:10px;padding:12px 14px;background:var(--raise);font-size:var(--fs-xs);color:var(--ink-2);
+  line-height:1.5;margin-top:var(--sp-2_5)}
+.conflict-note svg{width:15px;height:15px;stroke:var(--azul-hi);fill:none;stroke-width:2;flex:none;margin-top:1px}
+.news-mini{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-2_5);margin-top:var(--sp-4)}
+@media(max-width:759px){.news-mini{grid-template-columns:1fr 1fr}}
+@media(max-width:519px){.news-mini{grid-template-columns:1fr}}
+.newscard{border:1px solid var(--line);border-radius:10px;padding:12px 13px}
+.newscard .nk{font-size:10px;letter-spacing:.07em;color:var(--ink-3);text-transform:uppercase;font-weight:600}
+.newscard .nt{font-size:var(--fs-xs);font-weight:600;line-height:1.35;margin-top:3px}
+
+/* -- standings: STAND2026 already used real crest() before this phase -- only the group
+   header/export-button styling is new; cutoff-row/DIF/downloadCSV logic untouched. */
+.exportbtn2{margin-top:var(--sp-2_5);border:1px solid var(--line);background:var(--raise);color:var(--ink);
+  border-radius:8px;padding:7px 13px;font:inherit;font-size:var(--fs-xs);font-weight:600;cursor:pointer;
+  transition:border-color var(--dur-fast) var(--ease)}
+.exportbtn2:hover{border-color:var(--azul-hi)}
+
+/* -- channels: real 8-row CHANNELS, unchanged -- new grid replacing .cards.g3 for this id
+   only (buildChannels() is the only caller of this class combination). */
+.channels-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-2_5)}
+@media(max-width:759px){.channels-grid{grid-template-columns:repeat(2,1fr)}}
+.chnl{display:flex;align-items:center;gap:var(--sp-2_5);border:1px solid var(--line);border-radius:10px;
+  padding:12px 14px;font-size:var(--fs-xs);font-weight:600;text-decoration:none;color:inherit;
+  transition:border-color var(--dur-fast) var(--ease)}
+.chnl:hover{border-color:var(--azul-hi)}
+.chnl svg{width:16px;height:16px;stroke:var(--ink-3);fill:none;stroke-width:1.8;flex:none}
