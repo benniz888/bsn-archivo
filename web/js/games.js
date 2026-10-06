@@ -203,9 +203,21 @@ function checkRollover(){
     $('#gMsg').textContent='Cambió el día. Cuadrícula nueva; lo de ayer quedó guardado.';
   }
 }
+/* PHASE_44 (owner-approved, redesign-v2): the `streak` object is written ONLY by
+   saveDaily() below -- Draft/Quiz/HL never touch it (confirmed, PHASE_43 survey) -- so
+   this strip is really La Cuadrícula's own stats, not a Juega-wide summary, even though
+   it used to render on the Juega LANDING, above the shelf, before any game was picked.
+   A fresh profile saw "0 racha actual / 0 mejor racha / ... / — aciertos por día" before
+   ever opening a game, which read as the whole section being broken rather than as
+   "you haven't played today's Cuadrícula yet." Hidden entirely until st.played>0 (not
+   just visually collapsed -- empty innerHTML, same as drawStorageNote()'s own pattern
+   right below); once there IS a real streak to show, a heading now says whose stats
+   these are. Storage key/write logic/saveDaily() itself untouched -- rendering only. */
 function drawStreak(){
   const st=ST.json('streak')||{cur:0,best:0,played:0,totalScore:0,immaculate:0};
-  $('#streakStrip').innerHTML=`<div class="strip">
+  const host=$('#streakStrip');
+  if(!st.played){ host.innerHTML=''; return; }
+  host.innerHTML=`<h4 class="sub">Tu racha en La Cuadrícula</h4><div class="strip">
     <div><div class="n">#${puzzleNo()}</div><div class="l">cuadrícula de hoy</div></div>
     <div><div class="n">${st.cur||0}</div><div class="l">racha actual</div></div>
     <div><div class="n">${st.best||0}</div><div class="l">mejor racha</div></div>

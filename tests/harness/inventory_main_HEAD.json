@@ -2819,6 +2819,12 @@
       "name": "sfFit",
       "line": 2088,
       "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "buildJuegaHero",
+      "line": 5810,
+      "file": "web/js/tabs.js"
     }
   ]
 }

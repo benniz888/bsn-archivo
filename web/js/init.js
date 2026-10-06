@@ -99,6 +99,7 @@ function finishBoot(){
   try{ buildHistoriaHero(); }catch(e){ console.error('BSN: falló el hero de Historia',e); }
   try{ buildJugadoresHero(); }catch(e){ console.error('BSN: falló el hero de Jugadores',e); }
   try{ buildEquiposHero(); }catch(e){ console.error('BSN: falló el hero de Equipos',e); }
+  try{ buildJuegaHero(); }catch(e){ console.error('BSN: falló el hero de Juega',e); }
   try{ restructurePremios(); }catch(e){ console.error('BSN: falló el subtab de Premios',e); }
   /* PHASE_12 (owner-approved, redesign-v2): skins the real "La liga ahora" accordions
      (item 6) -- run before ligaFold() so the real .liga elements' summary content is

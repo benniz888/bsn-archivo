@@ -5798,6 +5798,25 @@ function buildEquiposLanding(order){
   wrap.appendChild(grid);
   return wrap;
 }
+/* PHASE_44 (owner-approved, redesign-v2): Juega's own hero, same mechanism as
+   buildHistoriaHero()/buildJugadoresHero()/buildEquiposHero() above -- the PHASE_43
+   survey's own finding was that Juega never got this pass at all (no buildJuegaHero()
+   existed, no buildJuegaLanding() either -- out of scope this phase, the existing
+   .shelf/.tile gameShelf stays as Juega's own equivalent component, untouched). The
+   lede's own meaning is unchanged from the static fallback (web/index.html's own
+   .phead, also unchanged this phase since it already reads identically) -- only the
+   count word is now computed from GAMES.length via numWordsEs() instead of the literal
+   "Cuatro", so it can't silently go stale the way Equipos' own "veinte" bug did. */
+function buildJuegaHero(){
+  const head=document.querySelector('#juega .phead'); if(!head) return;
+  head.classList.add('hhero');
+  const wn=numWordsEs(GAMES.length);
+  const lede=wn[0].toUpperCase()+wn.slice(1)+' juegos sobre el archivo. Todos usan la'
+    +' misma nómina verificada de jugadores, así que ninguno inventa una respuesta.';
+  head.innerHTML=`<div class="eyebrow">EL ARCHIVO DEL BSN</div>
+    <h1>Juega</h1>
+    <p class="lede">${lede}</p>`;
+}
 function buildEquiposHero(){
   const head=document.querySelector('#equipos .phead'); if(!head) return;
   head.classList.add('hhero');
@@ -5920,6 +5939,16 @@ function buildJuegaViews(panel){
     s.classList.add('view'); s.dataset.view=s.id.replace('stage-',''); s.dataset.sec='juega'; s.hidden=true;
     const g=GAMES.find(x=>x.id===s.dataset.view);
     order.push([s.dataset.view, g?g.t:s.dataset.view]);
+    /* PHASE_44 (owner-approved, redesign-v2): the "‹ Juegos" stagebar used to be typed
+       out byte-for-byte 4 times in web/index.html (once per <div class="stage">) --
+       same label, class and onclick="closeGame()" every time, a pure drift risk (one
+       edited without the other three) with no behavior depending on the static markup
+       itself (closeGame()/the Escape handler both only ever touch GAME_OPEN/showView(),
+       never query .stagebar) -- confirmed before doing this. Generated here once instead,
+       same label/class/behavior, title straight from GAMES' own real [id,t] pair. */
+    const bar=el('div','stagebar');
+    bar.innerHTML=`<button class="btn" onclick="closeGame()">‹ Juegos</button><span class="stagetitle">${esc(g?g.t:s.dataset.view)}</span>`;
+    s.insertBefore(bar,s.firstChild);
   });
   panel.insertBefore(_subnavEl('juega',order,'Juegos'), phead?phead.nextSibling:panel.firstChild);
   panel.insertBefore(land, panel.querySelector(':scope > .subnav').nextSibling);

@@ -8097,3 +8097,52 @@ reconstruction mechanism used to verify every step are in `docs/specs/app_split_
   pre-existing `test_web_text` byte-diff, unrelated). `web/index.html`
   `?v=` hashes regenerated. Strings in `/tmp/p42_strings.txt`, pending
   owner approval before commit.
+
+- **PHASE_44 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Three items, all scoped from the PHASE_43 read-only survey
+  (`/tmp/p43_juega_survey.md`). (A) New `buildJuegaHero()`, mirroring
+  `buildEquiposHero()`/`buildJugadoresHero()` exactly — same `.hhero`/
+  eyebrow/h1/lede shape, wired into `finishBoot()` (init.js) alongside
+  the other three. The lede's own meaning is unchanged; only the count
+  word is now computed via `numWordsEs(GAMES.length)` instead of the
+  literal "Cuatro" — the static fallback in `web/index.html`'s own
+  `.phead` already read byte-identical to the target text, so it needed
+  no edit (confirmed, not assumed). (B) `drawStreak()` (games.js) no
+  longer renders on the Juega *landing* before any game has been played
+  — the `streak` object is written only by Grid's own `saveDaily()`
+  (PHASE_43's own finding), so a fresh profile used to see "0 racha
+  actual / ... / — aciertos por día" before picking a game, reading as
+  the whole section being broken. Now hidden entirely (`host.innerHTML=
+  ''`, same pattern `drawStorageNote()` already uses) until
+  `streak.played>0`; once shown, a new heading ("Tu racha en La
+  Cuadrícula") makes clear whose stats they are.
+  `#storageNote`/`ST`/the `streak` write path/storage key are
+  untouched — rendering only. Verified both states live: a clean
+  `browser.newContext()` (strip empty, no zeros visible) and a seeded
+  context (`page.addInitScript()` writing `bsn:streak` to
+  `localStorage` before the app's own boot runs, so `drawStreak()`'s
+  real BOOT-time call sees it — strip shows with the heading). (C) The
+  "‹ Juegos" back button, previously typed out identically 4 times
+  (once per `<div class="stage">`, `web/index.html`) is now generated
+  once inside `buildJuegaViews()` (tabs.js) from `GAMES`' own real
+  `[id,t]` pairs — confirmed safe first (`closeGame()`/the Escape
+  handler only ever touch `GAME_OPEN`/`showView()`, never query
+  `.stagebar`; no test referenced the static markup). Same label,
+  class, `onclick="closeGame()"` — verified live that both the back
+  button and Escape still return to the landing from an open game.
+  `crest()`/`crestSVG()`/`crestPlate()`/`.shelf`/`.tile`/`GAMES`' own
+  art, Comparar, `renderSeasonCmp()`, flag-accent tokens, and
+  `tests/_web_text.py`'s splice anchors all untouched. New
+  `tests/test_juega_landing.py` (8 tests): hero lede word sourced from
+  `GAMES.length` (not hardcoded), `drawStreak()`'s own hide/show-with-
+  heading branches, `drawStorageNote()` confirmed independent of
+  `streak`, and the stagebar confirmed generated exactly once (a naive
+  whole-file string count of the bare label text would have also
+  matched this phase's own explanatory code comment — caught before
+  shipping, the test instead counts the real button markup). Baseline:
+  1 new declaration (`buildJuegaHero`), 470 → 471. Verified live,
+  Chromium + WebKit, dark + light, 1000px + 390px, zero console/page
+  errors. `pytest`: 542 passed, 1 xfailed, 1 failed (same pre-existing
+  `test_web_text` byte-diff, unrelated). `web/index.html` `?v=` hashes
+  regenerated. Strings in `/tmp/p44_strings.txt`, pending owner approval
+  before commit.
