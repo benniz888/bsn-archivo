@@ -2801,6 +2801,12 @@
       "name": "buildEquiposHero",
       "line": 5637,
       "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "crestPlate",
+      "line": 762,
+      "file": "web/js/tabs.js"
     }
   ]
 }

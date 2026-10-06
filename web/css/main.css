@@ -825,6 +825,40 @@ h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
 @media(min-width:640px){.g3{grid-template-columns:1fr 1fr}}
 @media(min-width:960px){.g3{grid-template-columns:repeat(3,1fr)}}
 
+/* PHASE_41 (owner-approved, redesign-v2): Apoderados/Retirados redesign -- scoped
+   classes only, no new :root tokens; reuses --raise, --line, --card, the --ink steps,
+   --r, the --sp- steps, --rojo and --flag-w, the real crest()/crestSVG() markup, and
+   Historia's .streak-card
+   .mini i as the visual precedent for a small bold numeral badge. .crest-plate's own
+   --plate is set inline per club by crestPlate() (tabs.js) -- picked per club, but
+   checked live, always the SAME one in both themes, so there's no per-theme override
+   here the way --cmp-fd/--cmp-fl (PHASE_26) needs one -- that pair genuinely differs
+   by theme; this one doesn't. .owners-grid/.retired-grid's own margin-top (not a
+   change to the shared .cards/.lede rules) fixes the flush gap between the view's
+   lede line and its first card -- the PHASE_41 task's own reported bug, confirmed
+   live at 1000px before this existed.
+   PHASE_41B: a fixed 52x52 square, not the padding-hugs-content box this was before
+   -- that version stretched to the full card height inside buildOwners()' own
+   inline `style="display:flex"` card (no align-items set there, so flex defaulted
+   to stretch), a real bug reported live, not caught by PHASE_41's own screenshots
+   because .retired-head (the other .crest-plate context) already had its own
+   align-items:center and never showed it. align-self:flex-start fixes this from the
+   plate's own side instead of patching every parent that happens to hold one. */
+.crest-plate{display:inline-flex;align-items:center;justify-content:center;border-radius:12px;
+  width:52px;height:52px;flex:none;align-self:flex-start;background:var(--plate)}
+.owners-grid{margin-top:var(--sp-4)}
+.retired-grid{display:flex;flex-direction:column;gap:var(--sp-3);margin-top:var(--sp-4)}
+.retired-card{display:flex;flex-direction:column;gap:var(--sp-3)}
+.retired-head{display:flex;align-items:center;gap:var(--sp-3)}
+.retired-name{font-weight:700}
+.jersey-row{display:flex;gap:var(--sp-2);flex-wrap:wrap}
+.jersey-chip{position:relative;min-width:38px;height:38px;padding:0 6px;border-radius:9px;
+  background:var(--raise);border:1px solid var(--line);color:var(--ink);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-weight:700;font-size:16px}
+.jersey-chip .x2{position:absolute;top:-7px;right:-7px;background:var(--rojo);color:var(--flag-w);
+  border-radius:99px;font-size:9px;font-weight:700;padding:2px 5px;line-height:1.3;font-style:normal}
+
 /* ---------- hero: the offseason clock ---------- */
 /* PHASE_2_REDESIGN step 5 (owner-approved, redesign-v2): a decorative basketball-arc
    motif behind the hero -- concentric ring lines radiating from the top-right corner

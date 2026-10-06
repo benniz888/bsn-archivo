@@ -7940,3 +7940,109 @@ reconstruction mechanism used to verify every step are in `docs/specs/app_split_
   xfailed, 1 failed (same pre-existing `test_web_text` byte-diff,
   unrelated). `web/index.html` `?v=` hashes regenerated. Strings in
   `/tmp/p40b_strings.txt`, pending owner approval before commit.
+
+- **PHASE_41A (branch `redesign-v2` — UI restyle).** Read-only source
+  check, no files changed. Traced Bayamón's duplicate retired `17`
+  (`RETIRED`, web/js/data.js:233-236) back through `git log -L`/pickaxe
+  search: present since this repo's very first commit (195fc2a,
+  2026-09-07, "inherited research corpus"), never edited since, no
+  authoring commit exists in this repo's own history. No doc, CSV, or
+  test cites a source for the digit list or explains the repeat — the
+  one relevant doc hit (`docs/research/summary.md:108`) only documents
+  the separate "digits only, no names" policy. No test validates
+  `RETIRED`'s content at all (count or distinctness), so a duplicate
+  would pass silently either way. Conclusion: undeterminable from repo
+  evidence whether it's a typo or a real double-retirement — left
+  exactly as recorded, not guessed at. Full findings:
+  `/tmp/p41a_retired.md`.
+
+- **PHASE_41 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Redesigned Apoderados (`buildOwners()`) and Retirados
+  (`buildRetiredNums()`, both web/js/tabs.js) to match the finished
+  sections — `OWNERS`/`RETIRED` themselves untouched (PHASE_41A's own
+  conclusion on the Bayamón `17` duplicate still holds: left exactly as
+  recorded). Apoderados now renders all 12 active clubs (computed from
+  `F`), `OWNERS`' own 5 first in `OWNERS`' own existing order, then the
+  other 7 in a muted "—" / "Sin apoderado confirmado en el archivo"
+  state — PC4 ("show the gaps") now actually holds here, matching the
+  `tile()` "—" convention already used elsewhere in Equipos. Intro line
+  computed via `numWordsEs()`: "Cinco de los doce clubes tienen
+  apoderado confirmado en el archivo." Retirados now groups `RETIRED`'s
+  own digit list by occurrence at RENDER time (a `Map` over
+  `r[2].split(' · ')`, never a splice/dedupe on `RETIRED` itself) —
+  Bayamón's repeated `17` renders once with an "×2" mark instead of
+  twice, 8 total / 7 distinct chips, count line spells out the repeat:
+  "8 números retirados — el 17 se retiró dos veces." Guaynabo: "3
+  números retirados." "La liga los publica como dígitos, sin nombres…"
+  kept verbatim. Fixed the real contrast bug PHASE_39 hadn't flagged but
+  the owner had: Cangrejeros' crest was invisible on its card in the
+  dark theme, Vaqueros/Criollos/Santeros' crests had faint outlines in
+  the light theme. New `crestPlate(k)` (tabs.js) wraps `crest()` in a
+  `.crest-plate` backdrop (new scoped CSS class only, no new `:root`
+  tokens) — found live that `crestSVG()`'s shield is one closed path
+  with the STROKE (`c2`) straddling its own edge, so the stroke, not the
+  fill (`c1`), is the only color that actually touches the plate;
+  `contrastRatio()` is monotonic away from a fixed color's own
+  luminance, so the single backdrop that maximizes contrast against any
+  one real club's stroke is always pure black or pure white, confirmed
+  by an exhaustive 0-255 grey-ramp scan; the SAME shade turned out
+  correct in both themes every time (checked live, `c2` doesn't change
+  per theme, so neither does its ideal backdrop), so `.crest-plate` uses
+  one `--plate` custom property, not a `--plate-d`/`--plate-l` pair.
+  Full 12-club contrast table (both themes identical): worst case 4.69:1
+  (Indios de Mayagüez), every other club 10:1-19:1 — all 12 clear the
+  3:1 non-text floor. Real bug found and fixed mid-build, not in the
+  final code: an early CSS comment accidentally contained a literal
+  `--ink*/--r` shorthand, whose `*/`closed the comment early — everything
+  after silently became "parsed as CSS," corrupting roughly a third of
+  the whole stylesheet (529 of the real 814 top-level rules were
+  loading) in a way that looked, in a screenshot, like my own new
+  classes simply weren't applying (plain unstyled text instead of
+  chips). Found by comparing `document.styleSheets`' own loaded rule
+  count against a direct `fetch()` of the same file (which had the full
+  text), not by guessing; first suspected (and ruled out, confirmed via
+  `serviceWorkers:'block'`/`Network.setCacheDisabled`) the app's own
+  service worker before finding the real cause. Fixed by rewording the
+  comment to remove the stray `*/`; rules jumped from 529 to the correct
+  814 once fixed. Also fixed the flush-gap bug between each view's lede
+  line and its first card at 1000px (`.owners-grid`/`.retired-grid`'s
+  own `margin-top`, not a change to the shared `.cards`/`.lede` rules).
+  `F`/`VENUES`/`showTeam()`/`buildTiles()`/starting-five/Equipos hero-
+  landing/Historia/Jugadores/Comparar all untouched. New
+  `tests/test_owners_retired.py` (7 tests): every active club appears in
+  Apoderados with owned-first ordering: confirmed at the JS-source level
+  (`ownedCards` rendered before `unownedCards`), not by re-deriving a
+  second ordering; intro counts computed from `F`/`OWNERS`; Bayamón's
+  8-total/7-distinct/one-×2 shape and Guaynabo's plain 3; `RETIRED`'s
+  own values confirmed byte-for-byte unchanged. Baseline: 1 new
+  declaration (`crestPlate`), 467 → 468. Verified live, Chromium +
+  WebKit, dark + light, 1000px + 390px, zero console/page errors.
+  `pytest`: 528 passed, 1 xfailed, 1 failed (same pre-existing
+  `test_web_text` byte-diff, unrelated). `web/index.html` `?v=` hashes
+  regenerated. Strings in `/tmp/p41_strings.txt`, pending owner approval
+  before commit.
+
+- **PHASE_41B (branch `redesign-v2` — UI restyle).** Polish on top of
+  uncommitted PHASE_41, not committed. Fixed a real layout bug PHASE_41's
+  own screenshots missed: `.crest-plate` had no fixed size, so inside
+  `buildOwners()`'s own inline `style="display:flex"` card (no
+  `align-items` set there, defaulting to `stretch`) it stretched to the
+  full height of the text block next to it — a tall pill, not a badge.
+  `.retired-head` never showed this because it already had its own
+  `align-items:center`. Now a fixed 52×52 square, `border-radius:12px`,
+  `align-self:flex-start` set on `.crest-plate` itself (fixes it from the
+  plate's own side, not by patching every parent that happens to hold
+  one) — same at 1000px and 390px, no media query needed. Crest scaled
+  from 32×38 to 31×36 inside it (~70% of the 52px plate on the shield's
+  own taller dimension, same 112:130 aspect ratio crestSVG() already
+  draws). Softened the plate tone: `#0B1020`/`#F4F6FA` (near `--card`'s
+  own real hex in each theme) tried first, pure `#000000`/`#FFFFFF`
+  (PHASE_41's own choice) only as a per-club fallback if softening would
+  drop that specific club under 3:1 — checked for all 12, none needed
+  it. Full 12-club table: worst case 4.34:1 (Indios de Mayagüez), rest
+  9:1–17:1. No data changes, no new strings, `crest()`/`crestSVG()`
+  untouched, no other views touched. No new top-level declarations —
+  baseline stays 468. Verified live, Chromium + WebKit, dark + light,
+  1000px + 390px, zero console/page errors. `pytest`: 528 passed, 1
+  xfailed, 1 failed (same pre-existing `test_web_text` byte-diff,
+  unrelated). `web/index.html` `?v=` hashes regenerated.

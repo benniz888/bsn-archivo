@@ -746,6 +746,60 @@ function cmpFillSafe(hex,bgA,bgB,minRatio){
 function cmpFillPair(hex){
   return { dark: cmpFillSafe(hex,'#131E38','#16203A',3), light: cmpFillSafe(hex,'#E1E9F5','#DDE6F3',3) };
 }
+/* PHASE_41 (owner-approved, redesign-v2): owner-reported bug -- the Cangrejeros
+   crest is invisible on its card in the dark theme, and the Vaqueros/Criollos/
+   Santeros crests' yellow outlines are faint in the light theme. crest()/
+   crestSVG() draw f.c1 (fill) and f.c2 (stroke/icon/text) directly, with no
+   backdrop of their own -- whatever card background sits behind them is
+   whatever it is. The inverse of cmpFillSafe() above: that one nudges a FILL
+   until it clears 3:1 against a FIXED background; this nudges a neutral
+   BACKDROP (starting from --raise's own real hex, the same "small plate under
+   an element" idea --card/--raise already serve app-wide) until BOTH of a
+   club's own fixed colors clear 3:1 against it, in each theme. Used only by
+   the new .crest-plate wrapper (Apoderados/Retirados), never by crest()
+   itself -- every other crest() call site (Equipos tiles, Historia bars,
+   showTeam()) is untouched. */
+function crestPlate(k){
+  const f=F[k];
+  /* crestSVG()'s shield is one closed path: fill=c1 (gradient), stroke=c2,
+     stroke-width 3 -- an SVG stroke straddles its path's own edge, so the
+     OUTERMOST pixels touching whatever sits behind the shield are entirely
+     c2's own color; c1 (the fill) is enclosed strictly inside that stroke
+     band and never directly borders the plate at all. The crest's own
+     internal legibility (icon/abbr on the fill) is a c1-vs-c2 question,
+     already fixed by the crest's own original color choice, nothing to do
+     with the plate. So only c2 has to clear 3:1 against the plate -- this
+     matches every one of the 4 owner-reported cases exactly (Cangrejeros'
+     near-black stroke on the dark card, Vaqueros/Criollos/Santeros' gold
+     stroke on the light card all failed on c2, not c1 -- checked live
+     before this existed).
+     contrastRatio() is monotonic moving away from a color's own luminance
+     in either direction, so the single backdrop that maximizes contrast
+     against any one fixed color is always pure black or pure white --
+     confirmed by an earlier, slower version of this function that scanned
+     the full 0-255 grey ramp per club and converged on exactly one or the
+     other every time, never anything in between. c2 doesn't change per
+     theme, so neither does its ideal backdrop -- the plate is a dedicated
+     contrast-insurance chip, not a decoration that has to lean dark/light
+     with the surrounding card, so the SAME single plate color is correct
+     for both themes -- returned as one hex, not a {dark,light} pair the
+     way cmpColorPair()/cmpFillPair() return (those two genuinely differ by
+     theme; this one, checked live, never does). Full 12-club x 2-theme
+     numbers printed by PHASE_41/41B's own report, not assumed. */
+  const pure=contrastRatio(f.c2,'#000000')>=contrastRatio(f.c2,'#FFFFFF')?'#000000':'#FFFFFF';
+  /* PHASE_41B (owner-approved, redesign-v2): pure black/white glares,
+     especially the white plates against the dark theme's own near-black
+     page. #0B1020 (near-black, close to --card's own dark hex) and #F4F6FA
+     (off-white, close to --card's own light hex) read as part of the app's
+     real palette instead of a stark print-poster cutout. Tries the soft
+     tone on whichever side (dark/light) the pure check already picked --
+     keeps the same direction, just softer -- and only falls back to the
+     actual pure color for a club where softening itself would drop that
+     club's own real c2 below 3:1 (checked per club below, not assumed to
+     always hold just because it held for most). */
+  const soft=pure==='#000000'?'#0B1020':'#F4F6FA';
+  return contrastRatio(f.c2,soft)>=3?soft:pure;
+}
 /* no known club (archive-only with no linked team) -- a literal hex, not a
    theme token: the avatar fill has to stay fixed regardless of the site's
    own light/dark toggle, same as every real club color does. Checked live
@@ -2847,11 +2901,38 @@ function buildNBA(){
     `<span class="tag blue" title="${esc(p[1])}">${esc(p[0])}</span>`).join('')+'</div>'+
     '<p class="note">'+NBA_PLAYERS.map(p=>esc(p[0])+': '+esc(p[1])).join(' · ')+'</p>';
 }
+/* PHASE_41 (owner-approved, redesign-v2): RETIRED itself is NOT edited -- still
+   [4,5,9,15,16,17,17,54] / [5,9,15], the exact literal PHASE_41A's own read-only
+   source check left in place (undeterminable from repo evidence whether Bayamón's
+   duplicate 17 is a typo or a real double-retirement; kept exactly as recorded,
+   not guessed at either way). Rendering counts occurrences at render time -- a
+   Map over r[2].split(' · '), never a splice/dedupe on RETIRED -- so a repeated
+   number shows once with an "×N" mark instead of twice, and r[1] (the total,
+   still 8 for Bayamón) stays the honest total-slots count while the chip count
+   (7 distinct) and the dupe itself both stay visible and spelled out in the
+   count line. "La liga los publica como dígitos, sin nombres…" kept verbatim. */
 function buildRetiredNums(){
-  $('#retiredList').innerHTML='<div class="cards g2">'+RETIRED.map(r=>`
-    <div class="card"><div style="font-weight:700">${esc(r[0])}</div>
-    <div style="font-weight:800;letter-spacing:-.02em;font-size:22px;margin-top:4px">${esc(r[2])}</div>
-    <div class="note">${r[1]} números. La liga los publica como dígitos, sin nombres — y el archivo no los adivina.</div></div>`).join('')+'</div>';
+  $('#retiredList').innerHTML='<div class="retired-grid">'+RETIRED.map(r=>{
+    const k=FKEYS.find(x=>F[x].name===r[0]);
+    const counts=new Map();
+    r[2].split(' · ').forEach(n=>counts.set(n,(counts.get(n)||0)+1));
+    const dupes=[...counts.entries()].filter(([,c])=>c>1);
+    const chips=[...counts.entries()].map(([n,c])=>
+      `<span class="jersey-chip">${esc(n)}${c>1?`<i class="x2">×${c}</i>`:''}</span>`).join('');
+    const countLine = dupes.length===1
+      ? r[1]+' números retirados — el '+esc(dupes[0][0])+' se retiró '
+        +(dupes[0][1]===2?'dos veces':dupes[0][1]+' veces')+'.'
+      : dupes.length>1
+      ? r[1]+' números retirados, con '+dupes.length+' repetidos.'
+      : r[1]+' números retirados.';
+    const plate=k?crestPlate(k):null;
+    const crestHtml=k?`<span class="crest-plate" style="--plate:${plate}">${crest(k,31,36)}</span>`:'';
+    return `<div class="card retired-card">
+      <div class="retired-head">${crestHtml}<div class="retired-name">${esc(r[0])}</div></div>
+      <div class="jersey-row">${chips}</div>
+      <div class="note">${countLine} La liga los publica como dígitos, sin nombres — y el archivo no los adivina.</div>
+    </div>`;
+  }).join('')+'</div>';
 }
 
 /* ============================================================
@@ -3117,13 +3198,41 @@ function drawFinal(){
   ],rows,{file:'final_'+FIN_YEAR,sort:null});
 }
 
+/* PHASE_41 (owner-approved, redesign-v2): OWNERS itself is NOT edited -- it still only
+   covers 5 of the 12 real active clubs. This now renders all 12 (FKEYS.filter(active)),
+   OWNERS' own 5 first in OWNERS' own existing order, then the other 7 in a muted state
+   -- "—" where the owner name would sit, "Sin apoderado confirmado en el archivo" where
+   the optional note would sit, same card shape both ways, so the gap reads as a real
+   archive gap (PC4) rather than as missing content. Intro line computed from F/OWNERS,
+   spelled out via numWordsEs() -- cannot say the wrong count the way Equipos' own
+   lede used to (PHASE_39/40). Each crest wrapped in the new .crest-plate (crestPlate()
+   above) for the dark-theme Cangrejeros / light-theme Vaqueros-Criollos-Santeros
+   contrast bug -- crest() itself is untouched. */
 function buildOwners(){
-  $('#owners').innerHTML='<div class="cards g2">'+OWNERS.map(o=>`
-    <div class="card" style="display:flex;gap:var(--sp-3)">
-      ${crest(o[0],32,38)}
+  const activeKeys=FKEYS.filter(k=>F[k].active);
+  const ownedKeys=OWNERS.map(o=>o[0]);
+  const unownedKeys=activeKeys.filter(k=>!ownedKeys.includes(k));
+  const wOwned=numWordsEs(OWNERS.length), wActive=numWordsEs(activeKeys.length);
+  const intro=wOwned[0].toUpperCase()+wOwned.slice(1)+' de los '+wActive
+    +' clubes tienen apoderado confirmado en el archivo.';
+  const ownedCards=OWNERS.map(o=>{
+    const plate=crestPlate(o[0]);
+    return `<div class="card" style="display:flex;gap:var(--sp-3)">
+      <span class="crest-plate" style="--plate:${plate}">${crest(o[0],31,36)}</span>
       <div><div style="font-weight:700">${esc(F[o[0]].name)}</div>
       <div class="muted" style="font-size:var(--fs-xs)">${esc(o[1])}</div>
-      ${o[2]?`<div class="note">${esc(o[2])}</div>`:''}</div></div>`).join('')+'</div>';
+      ${o[2]?`<div class="note">${esc(o[2])}</div>`:''}</div></div>`;
+  }).join('');
+  const unownedCards=unownedKeys.map(k=>{
+    const plate=crestPlate(k);
+    return `<div class="card muted" style="display:flex;gap:var(--sp-3)">
+      <span class="crest-plate" style="--plate:${plate}">${crest(k,31,36)}</span>
+      <div><div style="font-weight:700">${esc(F[k].name)}</div>
+      <div class="muted" style="font-size:var(--fs-xs)">—</div>
+      <div class="note">Sin apoderado confirmado en el archivo</div></div></div>`;
+  }).join('');
+  $('#owners').innerHTML=`<p class="lede owners-intro">${esc(intro)}</p>`
+    +`<div class="cards g2 owners-grid">${ownedCards}${unownedCards}</div>`;
 }
 /* ============================================================
    CONSULTA — the reason this archive exists rather than a wiki page
