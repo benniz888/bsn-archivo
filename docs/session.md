@@ -7685,3 +7685,88 @@ reconstruction mechanism used to verify every step are in `docs/specs/app_split_
   failed, 513 passed, 1 xfailed** — only the byte-diff test, and only
   because it also fails at clean HEAD. The 4 asset-wiring tests PHASE_27
   couldn't finish are now clean.
+
+- **PHASE_31 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Applied the approved PHASE_30 Option A design to the real tricolor
+  device. New dedicated tokens `--tri-red`/`--tri-blue`/`--tri-white` (not
+  `--rojo`/`--azul`, which stay untouched everywhere else they're used —
+  buttons, badges, live markers) — `--tri-white` auto-flips to `--line` in
+  light theme, so `--tri`/`--tri-v`/`--tri-fade` need zero light-theme
+  redeclaration of their own (the OLD `--tri-fade`'s separate light
+  override, which did the white→line swap by hand with a full second
+  copy of the gradient, is retired as part of this). Light theme uses the
+  real official hexes (#CE1126/#0038A8, cited PHASE_30); dark theme uses
+  lightened same-hue variants — caught a real near-miss while re-verifying
+  for this phase: PHASE_30's own 3:1 check only covered 3 of the 4 real
+  dark grounds these sit on, and red landed 0.02 short (2.98:1) against
+  the 4th, `--line-soft` — nudged `#D01B2F`→`#D11F33` before shipping,
+  worst case now 3.01–3.04:1 across all four (`--card`/`--night`/
+  `--raise`/`--line-soft`), confirmed visually unchanged at 4x zoom.
+  Geometry: `--tri-notch` (10px) is the fixed lead-in length regardless of
+  bar width, used both in the gradient's `calc()` color stops AND in a
+  separate `--tri-clip`/`--tri-clip-v` `clip-path` polygon applied
+  per-selector (a flat gradient can taper color but not an element's own
+  silhouette — the actual point needs clip-path, which can't live inside
+  a `background`-held custom property the way color stops can). Visually
+  supersedes `border-radius` at this 3-4px scale everywhere it's applied
+  (judged live, not just assumed — a 2px radius on a 3px bar was barely
+  visible rounding to begin with, next to the far more visible flag
+  shape). Simplified `--tri-tick`/`--tri-tick-clip` (blue+red only, no
+  white, 5px notch) for the two 18px eyebrow ticks specifically, per
+  spec. `h3.sec::after` gets the new `--tri-fade` colors but no
+  clip-path — 1px tall, a notch can't show at that height either way.
+  Updated every real use-site found by the PHASE_30 inventory grep: `.tri`
+  (covers `.phero-tri`/the footer instance too, same class), `header.top
+  ::after`, `.bottombar [aria-selected]::before`, `.ptabs [aria-selected]
+  ::after`, `.rail [aria-selected]::before`, `.readout::before`,
+  `.today-card::before`, `.salon-card::before`, `.splashfill` (clip-path
+  included — confirmed live the triangle stays anchored to the start as
+  the bar animates wider, since the gradient/clip-path both recompute
+  against the element's own current width every frame, nothing JS-side
+  needed), `.hhero .eyebrow::before`, `.hero .ed-eye::before`. Finding
+  `.phero-tri`'s real page (the team detail page, `#equipos/equipo/<key>`
+  — not Comparar, not the player page, both initially tried and empty)
+  and a real, non-collapsed `h3.sec` instance (`#archivo/cobertura`'s
+  "Conflictos entre fuentes" — Historia's own `<h3 class="sec">` markup
+  turns out to be legacy/unused; `buildViews()` rewrites those same
+  headings as `<h2 class="viewhead">` at runtime, a live, verified finding
+  not assumed from the static HTML) took real trial and error, logged
+  here in case it comes up again. `.tri-block-rojo`/`-azul`, the header/
+  splash logo SVG, the favicon, club colors, avatars, and Comparar are
+  all untouched — confirmed via `src.verify_clean`'s declaration-baseline
+  check staying at 459 (no JS touched this phase at all, CSS only).
+  Verified live, Chromium + WebKit, dark + light, 1000px + 390px, zero
+  console/page errors across 6 different routes × 2 engines × 2 themes ×
+  2 widths. `pytest`: 513 passed, 1 xfailed, 1 failed (the same
+  pre-existing `test_web_text` byte-diff from PHASE_28, confirmed
+  unrelated). `web/index.html` `?v=` hashes regenerated.
+
+- **PHASE_32 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Flag accent tweak, CSS + one inline-style edit only (no JS — declaration
+  baseline reconfirmed at 459). (1) New `--tri-wide` token, not a `--tri`
+  rewrite — `.tri`/`.bottombar`/`.ptabs` are explicitly staying on plain
+  `--tri`'s equal-thirds-of-the-remainder stretch (confirmed live before
+  touching anything: `.ptabs` tops out at 86px, `.bottombar`'s active mark
+  at ~65px, both comfortably under the ~120px point where that stretch
+  starts turning each stripe into an oversized block). `--tri-wide` is a
+  fixed px cluster instead — same 10px triangle notch, same 21/20/21px
+  stripe rhythm `--tri-fade` already established — then solid flag red for
+  whatever width remains (the cluster's 3rd stripe and the solid tail are
+  the same color, so they're one continuous gradient stop, not two).
+  Applied to `header.top::after` (full viewport width) and `.splashfill`
+  (`.splashbar` runs up to 260px) — the only two real `--tri` use-sites
+  that are ever actually wider than ~120px. Confirmed live the cluster
+  stays pinned to the start as `.splashfill` animates wider (gradient +
+  clip-path both recompute against the fill's own current width every
+  frame, nothing JS-side needed — same mechanism PHASE_31 already relied
+  on, still holds). (2) Footer's own `.tri` instance (not `.phero-tri`/
+  `.phead .tri`, confirmed untouched at 74×3px) sized up via a new `footer
+  .tri{height:5px}` rule (specificity beats the bare `.tri` rule via the
+  extra type selector) + the inline `width:60px`→`90px` edit in
+  `web/index.html` — confirmed live at exactly 90×5px. The clip-path
+  notch's own "0 50%"/"100%" anchors are relative to the element's own
+  box, so it scales to the taller height automatically, no separate value
+  needed. Verified live, Chromium + WebKit, dark + light, 1000px + 390px,
+  zero console/page errors. `pytest`: 513 passed, 1 xfailed, 1 failed
+  (same pre-existing `test_web_text` byte-diff, unrelated).
+  `web/index.html` `?v=` hashes regenerated.
