@@ -584,8 +584,6 @@ html.standalone .toprow{padding-top:10px;padding-bottom:16px}
 .cmpname{font-weight:700;font-size:14.5px}
 .cmpx{padding:1px var(--sp-2);font-size:var(--fs-3xs)}
 .cmpverdict{margin:var(--sp-3) 0 var(--sp-1);font-size:14.5px;color:var(--ink-2)}
-.cmpsplit{display:flex;gap:var(--sp-4_5);flex-wrap:wrap;align-items:flex-start;margin-top:var(--sp-2_5)}
-.cmpradar{flex:0 0 auto;margin:0 auto}
 .cmprows{flex:1 1 260px;min-width:240px}
 .cmpgrouplab{font-size:var(--fs-3xs);letter-spacing:.1em;text-transform:uppercase;font-weight:700;
   color:var(--ink-3);margin:var(--sp-3) 0 6px}
@@ -603,11 +601,17 @@ html.standalone .toprow{padding-top:10px;padding-bottom:16px}
 .cmpval{flex:0 0 60px;text-align:right;font-variant-numeric:tabular-nums;font-size:var(--fs-2xs)}
 .cmpval.lead{color:var(--ok);font-weight:700}
 .cmpval.hole{color:var(--ink-3)}
-.cmpspoke{animation:cmppop .45s cubic-bezier(.22,.8,.3,1) both}
+/* PHASE_26 item 1: fill/stroke now come from the CSS custom props cmpRadar()
+   sets inline (--cmp-fd/--cmp-fl, a real >=3:1-against-panel pair) instead
+   of the old fill=/stroke= XML attributes, so the [data-theme] override
+   below can pick the right one live -- same mechanism every other
+   theme-reactive Comparar color in this file already uses. */
+.cmpspoke{animation:cmppop .45s cubic-bezier(.22,.8,.3,1) both;fill:var(--cmp-fd);stroke:var(--cmp-fd)}
+[data-theme="light"] .cmpspoke{fill:var(--cmp-fl);stroke:var(--cmp-fl)}
 @keyframes cmppop{from{opacity:0;transform:scale(.86);transform-origin:88px 80px}to{opacity:1;transform:none}}
 .cmpfoot{display:flex;gap:var(--sp-4_5);flex-wrap:wrap;margin-top:var(--sp-3_5);padding-top:var(--sp-3);border-top:1px solid var(--line)}
 .cmpfootcol{flex:1 1 140px;min-width:130px}
-.cmpempty{margin-top:var(--sp-3_5);border-style:dashed}
+.cmpempty{margin-top:var(--sp-3_5)}
 @media (prefers-reduced-motion:reduce){
   .cmpfill,.cmpspoke,.stage{animation:none}
   .cmpfill{width:var(--w)}
@@ -666,6 +670,19 @@ h3.sec{font-size:var(--fs-lg);margin:var(--sp-6) 0 var(--sp-3);text-transform:up
 h3.sec::after{content:"";flex:1;height:1px;background:var(--tri-fade)}
 h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
 .note{color:var(--ink-3);font-size:var(--fs-2xs);line-height:1.5;margin-top:var(--sp-3)}
+/* PHASE_26 item 2: investigated word-spacing/letter-spacing/font-feature-
+   settings/text-rendering on this element and every ancestor up to <main>
+   -- all computed to the plain browser default (word-spacing:0px,
+   letter-spacing:normal, font-feature-settings:normal, font-kerning:auto),
+   nothing overridden. The rendered gap (measured live via
+   Range.getClientRects(), both before and after this rule) is genuinely a
+   real space, pixel-identical to every other inter-word gap in the same
+   sentence -- at --fs-2xs (12px) a single Inter space is only ~3.2px wide,
+   which reads as tight right after an em dash into a 2-letter word even
+   though nothing is actually broken. Scoped word-spacing nudge (buildCompare()'s
+   own #cmpPick is the only real caller of this exact helper line) rather
+   than changing the shared .note rule everywhere else in the app uses. */
+#jugadores #cmpPick .note{word-spacing:.12em}
 .muted{color:var(--ink-2)}
 .dim{color:var(--ink-3)}
 
@@ -1918,3 +1935,550 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
   transition:border-color var(--dur-fast) var(--ease)}
 .chnl:hover{border-color:var(--azul-hi)}
 .chnl svg{width:16px;height:16px;stroke:var(--ink-3);fill:none;stroke-width:1.8;flex:none}
+
+/* ============================================================
+   PHASE_14 -- Jugadores real build (owner-approved, redesign-v2)
+   Same discipline as PHASE_11/12: a markup/visual pass only, no data or JS
+   behavior change. .phero/.strip/.card/.cards/.g2/.tag/.chips/buildTable()/
+   .tblwrap/.filters/.field are all SHARED across the app -- Equipos' own team
+   page reuses .phero/.card with the identical structure, buildTable()/
+   .tblwrap backs every dense table in the app, .cards/.g2 backs Equipos' and
+   Archivo's own grids too, .filters/.field backs every other control bar
+   (HOF/Leader/DQ controls) -- none of those shared rules are redefined here.
+   Every new rule below is either scoped under #jugadores (so it only ever
+   touches Jugadores' own instances of a shared class -- same precedent as
+   #inicio .liga in the PHASE_12 block above; confirmed by grep that crest()
+   -- team logos -- is never called from Jugadores, only portrait() is, so
+   #jugadores .crest only ever matches a player silhouette) or a brand-new
+   class used only by Jugadores' own builders (buildJugadoresLanding/
+   buildHOF/buildRecords/buildCoaches/buildStone), checked against the whole
+   stylesheet first for zero prior uses, same as every phase before this. */
+
+/* -- landing hero: identical mechanism to Historia's own buildHistoriaHero()
+   (tabs.js) -- rewrites #jugadores's real .phead in place, scoped class add,
+   the REAL Inicio/Historia arc device reused exactly, no new SVG. */
+#jugadores .hhero{background-image:repeating-radial-gradient(circle at 100% 0%,transparent 0 63px,var(--line) 63px 64.5px)}
+@media(max-width:639px){#jugadores .hhero{background-image:none}}
+
+/* -- landing: 3 real stat cards + an explore grid to the 8 real sub-views --
+   reuses .stats3/.stat/.explore/.xcard byte-for-byte (defined above, PHASE_11),
+   zero new card-shell CSS needed; only buildJugadoresLanding() (tabs.js) is new. */
+
+/* -- player / archive card: a real wrapper class added ALONGSIDE .card (never
+   replacing it) in showPlayer()/renderArchiveCard()/loadPlayerExtra()/
+   renderSeasonDetail(). Corner-ring decoration matches .club-card's/
+   .hero-stat's own motif, reusing the same --raise token -- scoped so
+   Equipos' identical .phero/.card markup (a different #section, never
+   carries .pcard) is unaffected. */
+#jugadores .pcard{position:relative;overflow:hidden}
+#jugadores .pcard::after{content:"";position:absolute;right:-28px;top:-28px;width:130px;height:130px;
+  border-radius:999px;border:13px solid var(--raise);opacity:.55;pointer-events:none}
+/* .strip corner-ring, same motif as .hero-stat:not(.tri-block)::after, scoped so
+   Inicio's own #titleStats/#calCount strips and the team page's strip are unaffected. */
+#jugadores .strip>div{position:relative;overflow:hidden}
+#jugadores .strip>div::after{content:"";position:absolute;right:-12px;bottom:-16px;width:50px;height:50px;
+  border-radius:999px;border:8px solid var(--raise);opacity:.5;pointer-events:none}
+
+/* -- player index search bar: a new shell around the existing real .filters block
+   (buildPlayerIndex(), player.js) -- #pq/#pmode/#pf/#pfField and their own ids/
+   handlers are untouched; .filters/.field themselves stay shared/unscoped. */
+.search-card{border:1px solid var(--line);border-radius:14px;padding:var(--sp-4);background:var(--card);
+  margin-top:var(--sp-3);box-shadow:0 1px 3px var(--shadow)}
+.search-card .filters{margin-top:0}
+
+/* -- Salón: real HOF cards, new .salon-grid/.salon-card (buildHOF() only -- checked,
+   .salon-* has zero prior uses in this file). portrait()/chips/tags/"Ficha" button
+   are unchanged real fields; this is additive styling + a plain rank chip around them. */
+.salon-grid{display:grid;grid-template-columns:1fr;gap:var(--sp-3)}
+@media(min-width:720px){.salon-grid{grid-template-columns:1fr 1fr}}
+.salon-card{position:relative;overflow:hidden;display:flex;gap:var(--sp-3_5);align-items:flex-start;
+  border:1px solid var(--line);border-radius:14px;padding:var(--sp-4);background:var(--card)}
+.salon-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--tri-v)}
+.salon-card .rankbadge{width:24px;height:24px;border-radius:99px;background:var(--raise);color:var(--ink-3);
+  font-family:var(--font-display);font-weight:700;font-size:11.5px;display:flex;align-items:center;
+  justify-content:center;flex:none;margin-top:2px}
+.salon-card .body{min-width:0;flex:1}
+.salon-card .who{font-family:var(--font-display);font-weight:600;font-size:16.5px}
+
+/* -- Récords: new .rec-grid/.rec-card, replacing the plain .cards.g2 (buildRecords()
+   only, same "new grid replacing .cards.gN for this id only" pattern as
+   .channels-grid above). Numeral's own font-family switches (inline, in the JS)
+   from inherit to var(--font-display) -- the same treatment every other big
+   numeral in this system already gets (.stat .n/.lead-row .val .n/.bar-row .v);
+   color is unchanged, --rojo on --card already shipped and isn't a contrast
+   issue this pass found. */
+.rec-grid{display:grid;grid-template-columns:1fr;gap:var(--sp-3)}
+@media(min-width:720px){.rec-grid{grid-template-columns:1fr 1fr}}
+.rec-card{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:14px;
+  padding:var(--sp-4);background:var(--card)}
+.rec-card::after{content:"";position:absolute;right:-24px;bottom:-24px;width:96px;height:96px;
+  border-radius:999px;border:10px solid var(--raise);opacity:.5;pointer-events:none}
+
+/* -- Dirigentes / Honrados en concreto: new .coach-grid/.coach-card, replacing the
+   plain .cards.g2 (buildCoaches()/buildStone() -- two call sites, same shape of
+   content: a name/title + one or two lines, no numeral, no portrait). Top accent
+   reuses --azul exactly as Historia's own .rule{border-top:3px solid var(--azul)}
+   (Refuerzos) already does -- not a new color. */
+.coach-grid{display:grid;grid-template-columns:1fr;gap:var(--sp-3)}
+@media(min-width:640px){.coach-grid{grid-template-columns:1fr 1fr}}
+.coach-card{border:1px solid var(--line);border-top:3px solid var(--azul);border-radius:12px;
+  padding:var(--sp-4);background:var(--card)}
+.coach-card .ct{font-family:var(--font-display);font-weight:600;font-size:15.5px}
+.coach-card .cs{color:var(--ink-2);font-size:var(--fs-xs);margin-top:3px}
+
+/* ============================================================
+   PHASE_15 -- Jugadores polish (owner-approved, redesign-v2)
+   Structural inspiration only (separated panels, small-caps group labels,
+   label-over-value hierarchy) from a reference screenshot of this app's own
+   archive player card -- not a theme change. Both themes (already handled
+   site-wide by the existing toggle) are untouched; every color below is an
+   existing token, nothing new. No data/JS behavior changed -- see each
+   builder's own PHASE_15 comment for what moved vs. what stayed identical.
+   td/th padding on #playerIndex/#leadTable is never touched anywhere in
+   this block -- both carry PHASE_9's own calibrated invisible-tap-target
+   insets (td.name .btn::after), which are sized against TODAY's exact row
+   geometry and would silently go wrong under a padding change. */
+
+/* -- dropdowns: a custom chevron on every real filter <select> in Jugadores
+   (#pmode/#pf/#lcat/#lmode/#hs), replacing each browser's own native arrow.
+   Scoped to .field select (every one of those lives inside a real .field)
+   so Comparar's own small inline season-selects (cmpSeasonSelect(),
+   standalone, never inside .field) are untouched -- those are sized for a
+   12px/3px-padding compact control the chevron's own 34px right-padding
+   would crowd. Two data-URIs, one per theme, both the literal --ink-3 hex
+   already used elsewhere at this weight (not a new color) -- a data-URI
+   can't read a CSS custom property, so the per-theme swap has to be a
+   second rule, same mechanism --tri-fade's own light-mode override uses. */
+#jugadores .field select{appearance:none;-webkit-appearance:none;padding-right:34px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' fill='none' stroke='%237C90B2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;background-size:16px 16px}
+[data-theme="light"] #jugadores .field select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' fill='none' stroke='%235A6C8E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+
+/* -- player card (Resumen): the stat strip becomes separated rounded tiles
+   instead of the shared grid-with-1px-gutter-lines look (.strip's own base
+   rule, unchanged, still backs Inicio's #titleStats/#calCount and the team
+   page's own strip -- this only overrides the Jugadores player-card
+   instance). Scoped #jugadores .pcard .strip, so Buscar's search/filter
+   markup and every other section keep the original look. */
+#jugadores .pcard .strip{background:transparent;border:0;border-radius:0;gap:var(--sp-2_5);overflow:visible}
+#jugadores .pcard .strip>div{border:1px solid var(--line);border-radius:12px;text-align:center}
+/* the "lo que no sabe" / disputed-assist callouts: fuller rounded panel
+   instead of the shared left-accent-only .warn (still a warning -- PC4's
+   own "show the gaps" signal stays, just given the same panel treatment
+   as everything else on this pass). */
+#jugadores .pcard .warn{border-radius:var(--r);border:1px solid var(--rojo-deep);
+  border-left:3px solid var(--fuego);padding:var(--sp-3_5) var(--sp-4)}
+
+/* -- season-vs-season compare (Temporadas tab, renderSeasonCmp()): each
+   season's own .cmphead becomes its own bordered slot panel (a real grid,
+   not a wrapped flex row), top accent in that season's own --cmp-c (set
+   inline, same pattern .cmpfill's own --w already uses in this file).
+   PHASE_22 note: drawCompare() (Comparar itself) no longer emits .cmphead/
+   .cmpheads/.cmprows -- it has its own .cmp2* system below -- so these
+   three rules are now exclusive to renderSeasonCmp() (grep-confirmed). */
+.cmpheads{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:var(--sp-3);padding-bottom:0;border-bottom:0;margin-bottom:var(--sp-3)}
+.cmphead{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:12px;
+  padding:var(--sp-3) var(--sp-3_5);background:var(--card)}
+.cmphead::before{content:"";position:absolute;left:0;top:0;right:0;height:3px;background:var(--cmp-c,var(--azul))}
+.cmprows{border:1px solid var(--line);border-radius:12px;padding:var(--sp-3_5) var(--sp-4);background:var(--card)}
+
+/* -- Líderes: .bars (the bars() helper's own wrapper, exclusive to
+   buildLeaders() -- confirmed by grep, Líderes is its only real call site)
+   becomes a bordered panel around the existing real rows, same idea as
+   Comparar's .cmprows just above. */
+.bars{border:1px solid var(--line);border-radius:12px;padding:var(--sp-4);background:var(--card)}
+
+/* ============================================================
+   PHASE_19 -- the real "jugador" page (owner-approved, redesign-v2)
+   Source of truth: ~/Desktop/mockup 2/jugador.html + movil-jugador.html
+   (read, not modified). PHASE_14-17 restyled the inline card inside
+   Jugadores -> Buscar; PHASE_18's survey found that card was the only
+   player UI that has ever existed in this repo -- the mockup's back-link/
+   avatar/eyebrow/name/3-tab chrome and 3-panel grid were never built.
+   This phase builds them for real, as a detail-only view
+   (VIEW_MAP.jugadores's own detail:['jugador','#playerPage'], the same
+   mechanism Equipos' #teamDetail already uses), not a sub-state of Buscar.
+   PHASE_16/17's .rp-panel/.rp-stats/.strip tile rules are reused verbatim
+   below; .rp-id/.rp-honors are retired (nothing references them once
+   showPlayer() no longer builds that 4-panel shape -- grep-confirmed
+   before removal) in favor of .rp-info, matching the mockup's own 3-box
+   split (Información/Resumen/Ficha) instead.
+   Breakpoint: measured live, not guessed -- #jugadores .panel's own real
+   content width (not the bare viewport) at the rail's icon-only tier is
+   viewport-96px (rail 64px + .wrap's 2x16px padding, confirmed live:
+   860->764px, 900->804px, 1000->904px). Fixed column widths below total
+   540px + 2x16px gaps = 572px, so the brief's own "~1000px viewport, rail
+   showing" target (904px real content width) leaves a real 332px middle
+   column -- room for 2 stat tiles per row, not a guess-and-hope number.
+   940px (viewport) was picked with real margin under 1000px while staying
+   clear of the cramped 860-900px range (middle column 192-232px there). */
+#jugadores #playerPage{padding-top:var(--sp-2)}
+#jugadores .pback{margin-bottom:var(--sp-3)}
+#jugadores .pback a{font-size:var(--fs-xs);color:var(--ink-3);font-weight:500;
+  display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+#jugadores .pback a:hover{color:var(--ink)}
+/* page head: avatar + eyebrow + name + subline, shown above all 3 tabs
+   (unlike .phead/.subnav, which showView() hides for this one view only --
+   see helpers.js). Mirrors the mockup's own .phead/.avatar/.note/h1/.meta,
+   real tokens throughout. */
+#jugadores .phero-head{display:flex;align-items:flex-start;gap:var(--sp-4_5);flex-wrap:wrap;
+  padding-bottom:var(--sp-5);border-bottom:1px solid var(--line)}
+#jugadores .phero-head .pavatar{border:2px solid var(--pc,var(--line));flex:none}
+#jugadores .phero-head-body{flex:1;min-width:200px}
+#jugadores .phero-head-body .ed-eye{margin-bottom:var(--sp-1)}
+#jugadores .phero-head-body h1{font-family:var(--font-display);font-weight:700;
+  font-size:clamp(22px,3vw,30px);text-transform:none;letter-spacing:-.005em;margin:0}
+#jugadores .phero-head-body .phero-sub{margin-top:4px}
+/* item 2: "Comparar con otro jugador" relocated here from the Ficha panel --
+   a real action, not a 4th info field, so it sits level with the name on
+   the right instead of buried at the bottom of a narrower column. */
+#jugadores .phero-head-action{margin-left:auto;align-self:center}
+@media(max-width:519px){#jugadores .phero-head-action{margin-left:0;align-self:stretch}
+  #jugadores .phero-head-action .btn{width:100%}}
+/* 3-tab bar: the real manual-activation ARIA tablist (#playerTabs,
+   playerTabKeydown()/showPlayerTab() in tabs.js, now a real 3-entry map)
+   -- reuses .ptabs byte-for-byte (PHASE_2_REDESIGN step 4), full-width
+   under the new head instead of mid-card. */
+#jugadores #playerTabs{margin-top:var(--sp-4)}
+#jugadores .presumen{display:grid;grid-template-columns:1fr;gap:var(--sp-4);margin-top:var(--sp-4_5)}
+/* PHASE_22 item 1: align-items:stretch (grid's own default once unset) so
+   all 3 panels fill the row's tallest height instead of each sizing to its
+   own content -- content itself stays top-anchored (.rp-panel is a plain
+   block, not a flex column, so a taller box never re-centers what's
+   inside it). Single-column mobile stack is unaffected -- align-items
+   only matters once there's more than one item per grid row. */
+@media(min-width:940px){#jugadores .presumen{grid-template-columns:260px 1fr 280px}}
+#jugadores .rp-panel{border:1px solid var(--line);border-radius:var(--r);padding:var(--sp-4);
+  box-shadow:0 1px 3px var(--shadow)}
+/* Información + Ficha: the "about this player" cluster -- --card, one step
+   up from the page (--night), same relationship every other .card in this
+   app already has. */
+#jugadores .rp-info,#jugadores .rp-context{background:var(--card)}
+#jugadores .rp-context .chips{margin-top:var(--sp-2)}
+/* Resumen: one shade further up (--raise), distinct from the other two --
+   same token this file already uses for "a raised block inside a card". */
+#jugadores .rp-stats{background:var(--raise)}
+#jugadores .rp-info h3,#jugadores .rp-stats .ed-eye,#jugadores .rp-context .ed-eye{margin-bottom:var(--sp-2)}
+#jugadores .rp-info h3{font-size:var(--fs-3xs);letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:700;margin-top:0}
+/* Información: label/value rows, mirrors the mockup's own .info/.row/.k/.v. */
+#jugadores .rp-info .row{display:flex;justify-content:space-between;gap:var(--sp-3);
+  padding:var(--sp-2_5) 0;border-bottom:1px solid var(--line-soft);font-size:13.5px}
+#jugadores .rp-info .row:last-child{border-bottom:none}
+#jugadores .rp-info .row .k{color:var(--ink-3)}
+#jugadores .rp-info .row .v{font-weight:600;color:var(--ink);text-align:right}
+/* stat tiles: --card again, one step back down from the --raise panel they
+   sit in -- a real third tier (page < panel < tile). .strip>div's own
+   position/overflow + the corner-ring ::after (PHASE_14, #jugadores
+   .strip>div / #jugadores .strip>div::after, unscoped to any one
+   container) already apply here for free. */
+#jugadores .rp-stats .strip{background:transparent;border:0;border-radius:0;gap:var(--sp-2_5);overflow:visible;margin-top:0}
+#jugadores .rp-stats .strip>div{background:var(--card);border:1px solid var(--line);border-radius:12px;text-align:center}
+/* Ficha's own gap-callout: same fuller rounded-panel treatment PHASE_15
+   gave the Temporadas card's own .pcard .warn, restated here since this is
+   a different, non-.pcard ancestor -- written separately rather than
+   widening PHASE_15's own selector, which would otherwise also catch
+   Comparar's "Casillas sin registrar" .warn (out of scope that pass, still
+   out of scope here). */
+#jugadores .rp-context .warn{border-radius:var(--r);border:1px solid var(--rojo-deep);
+  border-left:3px solid var(--fuego);padding:var(--sp-3_5) var(--sp-4)}
+#jugadores .rp-context .btnrow{margin-top:var(--sp-3)}
+/* Temporada por temporada: unchanged real table (loadPlayerExtra, tabs.js),
+   now its own card under the Temporadas tab instead of sharing a card with
+   identity/bio text that moved out to Información/Ficha above. */
+#jugadores #playerExtra .pcard{margin-top:0}
+/* Fuentes tab: consolidated provenance -- "Aparece en" (curated), the
+   Wayback attribution line, "Mismo nombre en el archivo", and the full
+   per-row conflict list (archive-only), all real text relocated here, not
+   new facts. Reuses .rp-panel for the shell, --card (matches Información/
+   Ficha's own "about this record" tier). */
+#jugadores .rp-fuentes{margin-top:var(--sp-4_5);background:var(--card)}
+#jugadores .rp-fuentes .ed-eye{margin-bottom:var(--sp-2)}
+#jugadores .rp-fuentes .fsrc+.fsrc{margin-top:var(--sp-3);padding-top:var(--sp-3);border-top:1px solid var(--line-soft)}
+
+/* ============================================================
+   PHASE_20 -- curated player page rebalance (owner-approved, redesign-v2)
+   a) Honores moved out of the narrow Ficha column into its own real,
+      full-width panel below the 3-panel grid (same --card tier as
+      Información/Ficha), so chips get the whole page width to wrap in
+      instead of the ~280px Ficha column -- the real cause of the big dead
+      space under the left/middle panels the owner flagged (a chip wall
+      that long only looks "balanced" at full width). */
+#jugadores .rp-panel-honors{margin-top:var(--sp-4)}
+/* d) a long Información value ("21 de septiembre de 1957") wrapping mid-
+   phrase next to its label -- .row-stack is added by renderPlayerInfo()
+   (tabs.js) only on rows where the real rendered .v actually wrapped
+   (getClientRects().length>1, measured live after paint, not a guessed
+   character-count cutoff), so every normal short row is untouched. */
+#jugadores .rp-info .row.row-stack{flex-direction:column;align-items:flex-start;gap:3px}
+#jugadores .rp-info .row.row-stack .v{text-align:left}
+
+/* ============================================================
+   PHASE_21 -- player page polish 2 (owner-approved, redesign-v2)
+   ============================================================ */
+
+/* item 6: .pavatar, direction "B -- Gradiente" (PHASE_20 Part 2) -- global,
+   not #jugadores-scoped, since portrait()'s own .pavatar class is exclusive
+   to it (grep-confirmed before using a global selector, same discipline as
+   every other site-wide class in this file). Fill/text color are both set
+   inline per avatar (portraitFill(), tabs.js, real contrast math), so only
+   shape + the corner-ring decoration live here. No tricolor -- the owner
+   said it reads as the French flag on an avatar; corner-ring only. */
+.pavatar{position:relative;display:inline-flex;align-items:center;justify-content:center;
+  border-radius:var(--r);overflow:hidden}
+.pavatar::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:radial-gradient(circle at 78% 22%,transparent 0 54%,rgba(255,255,255,.18) 54% 66%,transparent 66%)}
+.pavatar .pini{font-family:var(--font-display);font-weight:700;line-height:1;position:relative;z-index:1}
+
+/* item 1: Resumen panel tiles -- flex, not grid, so a non-full last row
+   (5 tiles -> 2+2+1, or the archive-only 3-tile panel -> 2+1) stretches to
+   fill the row instead of leaving an empty orphan track. Grid's own
+   repeat(auto-fit,...) fixes the SAME column count for every row once
+   content determines it, so a lone last-row item never grows to fill its
+   row; flex redistributes remaining width per row independently, which is
+   exactly "no empty slot, last row fills." Scoped to .rp-stats .strip only
+   -- #jugadores .rp-stats also classes the archive-only panel
+   (#playerArchiveStats), so this one rule covers both real cases; every
+   other .strip in the app (Inicio's #titleStats/#calCount, the Temporadas-
+   tab stat strip) is untouched. */
+#jugadores .rp-stats .strip{display:flex;flex-wrap:wrap}
+#jugadores .rp-stats .strip>div{flex:1 1 140px}
+
+/* item 2: "Leyenda por: ..." relocated into the Honores panel as a small
+   footer note (it explains the Leyenda chip, which lives in this panel
+   now) -- same .note styling the rest of the app already uses for this
+   exact kind of aside. */
+#jugadores .rp-panel-honors .legend-note{margin-top:var(--sp-3);padding-top:var(--sp-3);
+  border-top:1px solid var(--line-soft)}
+
+/* item 4: archive-only "Rango en la ficha" tile -- the compact "1965–69"
+   form (JS, archiveFichaParagraph's own sibling logic in loadPlayerExtra)
+   is the primary fix; this is a second, belt-and-suspenders safety net so
+   even a same-century 9-character range never wraps inside a tile that can
+   get as narrow as ~140px (item 1's own flex-basis floor). */
+#jugadores .rp-stats .strip>div .n{white-space:nowrap}
+
+/* item 5: the read-only "Temporada por temporada" table under the 3 panels
+   on Resumen (renderResumenSeasons(), tabs.js) -- same real car[]/dqTag()/
+   disputeTag() data the Temporadas tab's own table uses, deliberately NOT
+   the same markup: no checkboxes, no per-season drill-in link -- those stay
+   exclusive to the Temporadas tab, per the owner's own "keep the drill-in
+   and compare tools as they are [there]" instruction. .tblwrap/table reuse
+   the app's one real dense-table look; only the wrapper + heading are new. */
+#jugadores .seasons-resumen{margin-top:var(--sp-4_5)}
+#jugadores .seasons-resumen h2{font-family:var(--font-display);font-weight:600;font-size:17px;
+  text-transform:none;letter-spacing:0;margin:0 0 var(--sp-3)}
+
+/* ============================================================
+   PHASE_22 Part 1 -- small fixes (owner-approved, redesign-v2)
+   ============================================================ */
+
+/* item 3: the season-compare checkboxes (Temporadas tab's own season
+   table, tabs.js) rendered as the browser's bare native box -- bright
+   white regardless of theme. appearance:none + a custom box/check mark,
+   pure CSS, keeps the real <input type=checkbox> element and its own
+   keyboard/label/onchange behavior completely intact (only the paint
+   changes, same technique focus-visible already relies on sitewide). */
+#jugadores #playerExtra input[type=checkbox]{appearance:none;-webkit-appearance:none;
+  width:16px;height:16px;border:1.5px solid var(--line);border-radius:4px;
+  background:var(--card);cursor:pointer;position:relative;flex:none;vertical-align:middle;margin:0}
+#jugadores #playerExtra input[type=checkbox]:hover{border-color:var(--azul)}
+#jugadores #playerExtra input[type=checkbox]:checked{background:var(--azul);border-color:var(--azul)}
+#jugadores #playerExtra input[type=checkbox]:checked::after{content:"";position:absolute;left:4px;top:1px;
+  width:4px;height:8px;border:solid var(--flag-w);border-width:0 2px 2px 0;transform:rotate(45deg)}
+
+/* ============================================================
+   PHASE_22 Part 2 -- Comparar redesign (owner-approved, redesign-v2)
+   datos.html in ~/Desktop/mockup 2 only mocks the bare head-to-head
+   slot cards (no scoreboard/rows/radar/add-player-bar) -- everything
+   below the heads is built to spec, in the player page's own visual
+   language (.rp-panel/--card//--raise tiers, portrait()'s real avatars,
+   no tricolor -- same owner instruction PHASE_21's avatars already
+   follow). .cmp2* is a brand-new namespace: nothing here is shared with
+   renderSeasonCmp()'s own .cmphead/.cmpheads/.cmprows system above, or
+   with cmpBarRow()'s unmirrored .cmprow/.cmpbarline/.cmptrack/.cmpfill/
+   .cmpval output (still used verbatim by renderSeasonCmp() and by
+   Comparar's own 3-player case, which keeps the grouped-bar look per
+   item c -- only the 2-player case switches to mirrored .cmp2row). */
+#jugadores #cmpOut{margin-top:var(--sp-3_5)}
+#jugadores #cmpOut>.rp-panel+.rp-panel{margin-top:var(--sp-3_5)}
+/* PHASE_24 item 2: the rule above only ever matched .rp-panel following
+   another .rp-panel -- .cmp2heads itself is a grid of .cmp2head cards,
+   not an .rp-panel, so the gap before the very first panel (scoreboard or
+   the 1-player prompt) was silently 0 while every later panel-to-panel
+   gap was already correct. One more rule for that one specific case. */
+#jugadores .cmp2heads+.rp-panel{margin-top:var(--sp-3_5)}
+
+/* a. head-to-head cards: a real grid (2 cards + VS, or 3 cards, never a
+   wrapped flex row), top accent bar in that player's own --cmp-c, same
+   corner-ring/avatar system the player page itself uses via portrait(). */
+#jugadores .cmp2heads{display:grid;gap:var(--sp-3);align-items:stretch}
+#jugadores .cmp2heads.n2{grid-template-columns:1fr auto 1fr}
+#jugadores .cmp2heads.n3{grid-template-columns:repeat(3,1fr)}
+#jugadores .cmp2head{position:relative;overflow:hidden;border:1px solid var(--line);
+  border-radius:var(--r);padding:var(--sp-4);background:var(--card);box-shadow:0 1px 3px var(--shadow);
+  display:flex;flex-direction:column;align-items:center;text-align:center;gap:var(--sp-1)}
+#jugadores .cmp2head::before{content:"";position:absolute;left:0;top:0;right:0;height:4px;
+  background:var(--cmp-c,var(--azul))}
+#jugadores .cmp2head .pavatar{margin-bottom:var(--sp-2)}
+#jugadores .cmp2name{font-family:var(--font-display);font-weight:700;font-size:16.5px}
+#jugadores .cmp2meta{font-size:var(--fs-2xs);color:var(--ink-3)}
+/* width:100% alone did nothing here -- .cmp2select is a <span> (inline by
+   default), and width has no effect on a non-replaced inline box, so the
+   select inside it was still sizing to its own content regardless of the
+   width:100% written below. display:block + align-self:stretch (flex
+   cross-axis, overriding .cmp2head's own align-items:center for just this
+   child) is what actually makes it a real block box the size of the card,
+   for the select's own width:100% to then resolve against. */
+#jugadores .cmp2select{margin-top:var(--sp-2_5);display:block;align-self:stretch}
+/* compact chevron for cmpSeasonSelect()'s own 12px/3px-padding control --
+   a scaled-down version of #jugadores .field select's chevron (that rule
+   stays untouched; its own comment already calls out this select as a
+   different sizing case, never routed through .field).
+   PHASE_24 item 6: width:100% (was auto, so a short "Carrera" select and
+   a long "Sin datos vinculados" disabled one on neighboring cards used to
+   size to their own content and visibly not line up) -- the cards
+   themselves are already equal-width grid tracks, so 100% of each card
+   now also makes every select in the row match. */
+#jugadores .cmp2select select{appearance:none;-webkit-appearance:none;padding-right:22px!important;
+  font-size:12px;padding:3px 8px;width:100%;box-sizing:border-box;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' fill='none' stroke='%237C90B2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 4px center;background-size:13px 13px;
+  border-radius:7px;border:1px solid var(--line);color:var(--ink-2)}
+[data-theme="light"] #jugadores .cmp2select select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' fill='none' stroke='%235A6C8E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+#jugadores .cmp2x{margin-top:var(--sp-2)}
+#jugadores .cmp2vs{display:flex;align-items:center;justify-content:center;font-family:var(--font-display);
+  font-weight:700;font-size:var(--fs-2xs);letter-spacing:.08em;color:var(--ink-3);padding:0 var(--sp-1)}
+
+/* b. scoreboard: large mirrored numerals in each player's own text-safe
+   color (cmpColorPair() -- the same real contrast-checked pair the
+   mirrored rows' lead value uses), the exact preserved verdict sentence
+   kept underneath, unstyled beyond what .cmpverdict already does. */
+#jugadores .cmp2score{text-align:center;background:var(--card)}
+#jugadores .cmp2score-row{display:flex;align-items:center;justify-content:center;gap:var(--sp-3)}
+#jugadores .cmp2score-n{font-family:var(--font-display);font-weight:700;font-size:clamp(40px,7vw,64px);
+  line-height:1;color:var(--cmp-cd,var(--ink))}
+[data-theme="light"] #jugadores .cmp2score-n{color:var(--cmp-cl,var(--ink))}
+#jugadores .cmp2score-dash{font-family:var(--font-display);font-size:clamp(24px,4vw,36px);color:var(--ink-3)}
+#jugadores .cmp2score .cmpverdict{text-align:center;margin-bottom:0}
+/* PHASE_25 item 2: the verdict's own leader name, same --cmp-cd/--cmp-cl
+   contrast-safe pattern every other player-colored text in Comparar
+   uses -- was a flat inline color with no contrast check. */
+#jugadores .cmp2verdict-lead{color:var(--cmp-cd,var(--ink))}
+[data-theme="light"] #jugadores .cmp2verdict-lead{color:var(--cmp-cl,var(--ink))}
+
+/* d. radar: its own panel, legend by player name/color instead of the
+   old bare dot-less list, no more empty space under a narrow sidebar
+   column (the old .cmpsplit two-column layout is retired -- this panel
+   is full-width, stacked above the rows panel like the rest of the
+   page's own top-to-bottom panel rhythm).
+   PHASE_24 item 1: the radar+legend pair wasn't actually centering as a
+   group -- .cmp2radar-svg's own `margin:0 auto` (meant for the no-legend
+   case, back when this was the only child) grabs ALL the flex row's free
+   space as its own auto margins once a sibling exists, shoving the
+   legend out near the panel's right edge instead of sitting centered
+   next to the radar. Fix: move the centering flex context to a new inner
+   .cmp2radar-group (real content, not a left/right flex item with its
+   own competing auto-margins), capped at ~720px and centered as a block;
+   the panel itself is back to a plain block (only the background stays).
+   Legend drops below the radar under 700px viewport width (same
+   viewport-breakpoint convention this file already uses elsewhere, e.g.
+   the 940px rail breakpoint) instead of squeezing sideways. */
+#jugadores .cmp2radar-panel{background:var(--card)}
+#jugadores .cmp2radar-group{display:flex;flex-wrap:wrap;gap:var(--sp-4);align-items:center;
+  justify-content:center;max-width:720px;margin:0 auto}
+#jugadores .cmp2radar-svg{flex:0 0 auto}
+#jugadores .cmp2legend{display:flex;flex-direction:column;gap:6px;min-width:160px}
+@media(max-width:700px){#jugadores .cmp2radar-group{flex-direction:column}}
+#jugadores .cmp2legend-item{display:flex;align-items:center;gap:var(--sp-2);font-size:var(--fs-2xs);font-weight:600}
+#jugadores .cmp2legend-dot{width:11px;height:11px;border-radius:3px;flex:0 0 auto}
+
+/* c. mirrored "tale of the tape" rows (2-player only -- cmpBarRow()'s
+   mode='mirrored' branch). Bars grow from the centre line outward so the
+   two players read as opposing forces, not a top/bottom pair. The
+   3-player case now has its own mode='grouped' branch just below (PHASE_24
+   item 4) -- same per-row grouped-bars shape as the legacy branch
+   renderSeasonCmp() still uses untouched, but with its own classes so the
+   lead color isn't the shared .cmpval.lead's flat var(--ok) green. */
+#jugadores .cmp2rows-panel{background:var(--raise)}
+#jugadores .cmp2row{margin-bottom:9px}
+#jugadores .cmp2lab{text-align:center;font-size:var(--fs-2xs);color:var(--ink-2);margin-bottom:3px}
+#jugadores .cmp2line{display:flex;align-items:center;gap:var(--sp-2)}
+#jugadores .cmp2val{flex:0 0 56px;font-variant-numeric:tabular-nums;font-size:var(--fs-2xs)}
+#jugadores .cmp2val.l{text-align:right}
+#jugadores .cmp2val.r{text-align:left}
+#jugadores .cmp2val.lead{font-weight:700;color:var(--cmp-cd,var(--ink))}
+[data-theme="light"] #jugadores .cmp2val.lead{color:var(--cmp-cl,var(--ink))}
+#jugadores .cmp2val.hole{color:var(--ink-3)}
+#jugadores .cmp2track{flex:1;display:flex;height:9px;border-radius:99px;background:var(--line-soft);overflow:hidden}
+#jugadores .cmp2half{flex:1;display:flex;height:100%}
+#jugadores .cmp2half.l{justify-content:flex-end}
+#jugadores .cmp2half.r{justify-content:flex-start}
+/* PHASE_26 item 1: background now reads the >=3:1-safe pair cmpBarRow()
+   sets inline per cell, same [data-theme] mechanism as everything else. */
+#jugadores .cmp2fill{height:100%;width:0;animation:cmpgrow .42s cubic-bezier(.22,.8,.3,1) forwards;
+  background:var(--cmp-fd)}
+[data-theme="light"] #jugadores .cmp2fill{background:var(--cmp-fl)}
+
+/* 3-player grouped rows (mode='grouped') -- same shape as the legacy
+   .cmprow/.cmpbarline (label above, one bar line per player), new classes
+   throughout so this never touches the legacy rule renderSeasonCmp()
+   still depends on. .cmp3owner is the new per-bar name cue (item 4b). */
+#jugadores .cmp3row{margin-bottom:9px}
+#jugadores .cmp3lab{font-size:var(--fs-2xs);color:var(--ink-2);margin-bottom:3px}
+#jugadores .cmp3barline{display:flex;align-items:center;gap:var(--sp-2);margin-bottom:3px}
+/* PHASE_25 item 2: contrast-safe color via the same --cmp-cd/--cmp-cl
+   custom-prop pattern the lead value already used -- was a flat inline
+   color with no contrast check at all. */
+#jugadores .cmp3owner{flex:0 0 64px;font-size:var(--fs-3xs);font-weight:700;letter-spacing:.02em;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--cmp-cd,var(--ink))}
+[data-theme="light"] #jugadores .cmp3owner{color:var(--cmp-cl,var(--ink))}
+#jugadores .cmp3track{flex:1;height:9px;border-radius:99px;background:var(--line-soft);overflow:hidden}
+#jugadores .cmp3fill{height:100%;border-radius:99px;width:0;animation:cmpgrow .42s cubic-bezier(.22,.8,.3,1) forwards;
+  background:var(--cmp-fd)}
+[data-theme="light"] #jugadores .cmp3fill{background:var(--cmp-fl)}
+#jugadores .cmp3val{flex:0 0 60px;text-align:right;font-variant-numeric:tabular-nums;font-size:var(--fs-2xs)}
+#jugadores .cmp3val.lead{font-weight:700;color:var(--cmp-cd,var(--ink))}
+[data-theme="light"] #jugadores .cmp3val.lead{color:var(--cmp-cl,var(--ink))}
+#jugadores .cmp3val.hole{color:var(--ink-3)}
+
+/* item 3: one compact muted line for every row where NOBODY in the
+   comparison has a value, at the bottom of the rows panel, instead of a
+   label and empty tracks for each -- reuses the existing "sin datos en
+   común" wording from the verdict line, no new Spanish phrase. */
+#jugadores .cmp2skip{font-size:var(--fs-2xs);margin-top:var(--sp-3);padding-top:var(--sp-3);
+  border-top:1px solid var(--line-soft)}
+
+/* e. the foot strip (per-player tags/best-stat) and the empty/pending
+   states are each their own real .rp-panel now -- --card tier, matching
+   Información/Ficha. The foot's own .cmpfoot/.cmpfootcol keep their exact
+   markup; only the top border+padding that used to separate it from the
+   rest of one shared .cmpcard is zeroed here, since the panel's own
+   border now does that job. */
+#jugadores .cmp2foot-panel{background:var(--card)}
+#jugadores .cmp2foot-panel .cmpfoot{margin-top:0;padding-top:0;border-top:0}
+#jugadores .rp-panel.cmpempty{background:var(--card)}
+
+/* f. add-player bar: .search-card already gets a box-shadow now (added
+   to the shared rule above, item f) -- Comparar's #cmpPick instance
+   needs nothing further scoped here. */
+
+/* g. mobile: cards stack, VS becomes a horizontal divider, mirrored rows
+   fall back to stacked full-width values (still readable at 390px --
+   a 56px fixed value column plus a real track doesn't fit three-across). */
+@media(max-width:759px){
+  #jugadores .cmp2heads.n2{grid-template-columns:1fr}
+  #jugadores .cmp2vs{padding:var(--sp-2) 0}
+  #jugadores .cmp2vs::before,#jugadores .cmp2vs::after{content:"";flex:1;height:1px;background:var(--line);margin:0 var(--sp-2)}
+  #jugadores .cmp2heads.n3{grid-template-columns:1fr}
+  #jugadores .cmp2score-n{font-size:clamp(36px,12vw,48px)}
+  #jugadores .cmp2line{flex-wrap:wrap}
+  #jugadores .cmp2val{flex:0 0 auto}
+  #jugadores .cmp2track{flex:1 1 100%;order:3;margin-top:3px}
+  #jugadores .cmp2val.l{order:1;text-align:left}
+  #jugadores .cmp2val.r{order:2;text-align:right;margin-left:auto}
+}
+@media (prefers-reduced-motion:reduce){#jugadores .cmp2fill{animation:none;width:var(--w)}}

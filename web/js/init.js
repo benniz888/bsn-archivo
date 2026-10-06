@@ -97,6 +97,7 @@ function finishBoot(){
      buildViews() itself doesn't matter -- placed here just to sit with the rest of the
      router-level, once-per-boot setup). */
   try{ buildHistoriaHero(); }catch(e){ console.error('BSN: falló el hero de Historia',e); }
+  try{ buildJugadoresHero(); }catch(e){ console.error('BSN: falló el hero de Jugadores',e); }
   try{ restructurePremios(); }catch(e){ console.error('BSN: falló el subtab de Premios',e); }
   /* PHASE_12 (owner-approved, redesign-v2): skins the real "La liga ahora" accordions
      (item 6) -- run before ligaFold() so the real .liga elements' summary content is

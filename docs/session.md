@@ -6998,3 +6998,690 @@ reconstruction mechanism used to verify every step are in `docs/specs/app_split_
   are dormant, not deleted — `tests/_web_text.py` uses `ON_THIS_DAY`'s own
   comment header as a splice marker, so removing the constant needs that marker
   re-anchored first.
+
+- **PHASE_10 (branch `redesign-v2` — UI restyle).** 2 commits, `e8cb353..83dbaef`.
+  Labeled rail tier (≥1120px) restyled icon-above-label per mockup measurements
+  (76px width, down from 220px; 26px item gap, 21px icons, 9px labels); 3px item
+  padding is a documented deviation from the mockup's literal 0px, to keep touch
+  targets ≥44px. Same-phase follow-up: `.railctl` (Tema/Mi club) made icon-only
+  at that width — the width change had overflowed "Cangrejeros" (55.67px) and
+  "Tema" (11.5px) past the 76px edge. Icon-only tier (860–1119px), nav tabs,
+  logo, theme toggle untouched; WCAG AA and keyboard nav reverified.
+
+- **PHASE_11 (branch `redesign-v2` — UI restyle).** 1 commit, `6a57358`.
+  Historia's full visual redesign across all 8 views (Resumen, La cinta,
+  Títulos, Dinastías, Finales, Premios, Refuerzos, Todas las temporadas): hero
+  reusing Inicio's arc device, gradient stat cards, explore-card grid,
+  medal-rank title bars with real crests, Dinastías streak cards, decade-grouped
+  Premios lead-list, weighted Finales matrix, Campeones de anotación/MVP subtab
+  toggle. Fixed a real touch-target bug in La Cinta (10-col decade grid's
+  27.6×40px cells → a flat always-≥44px ribbon, 47.7×44px at 390px). Fixed 3
+  dark-theme AA contrast failures (`.stat.solid`, `.hbadge.missing`,
+  `.streakpill`) by switching to existing `--rojo-deep`/`--on-rojo` tokens. All
+  data wired to real live sources, no placeholders. 7 new top-level
+  declarations (HISTORIA_XICON, buildHistoriaHero, buildHistoriaLanding,
+  historiaStreaks, renderReadout, restructurePremios, scoringStreaksFor) —
+  declaration baseline not yet updated.
+
+- **PHASE_12 (branch `redesign-v2` — UI restyle).** 1 commit, `ce59c89`
+  (current HEAD). Inicio's full visual redesign: hero eyebrow/arc reuse (no
+  second arc device), gradient stat row, hubGrid cards restyled with
+  Historia's own gradient icon chip + hover-reveal arrow (ported onto the real
+  live-data cards, no duplicate grid), "Últimos campeones" as `.champ-strip`
+  rows linking into Historia → Dinastías, "La liga ahora" wrapped in the `.acc`
+  accordion skin over the existing `<details>`/`ligaFold()` markup (logic
+  untouched), real `crest()` wired throughout (Final Brava, awards, Quinteto
+  Ideal, posiciones, líderes) with SVG-shield fallback, three real
+  personalization states in `buildHub()` (full club / name-only / anonymous).
+  Session fixes folded in: today-card label/icon corrected, duplicate `.xcard`
+  explore grid removed in favor of restyling the one real hubGrid, an invalid
+  `--sp-5_5` token (silently collapsing `.club-card`/`.today-card` padding to 0)
+  fixed to `--sp-5`. 10 new top-level declarations (LIGA_ICON, clubKeyByName,
+  + 7 shared with the Historia pass) — declaration baseline not yet updated.
+
+- **PHASE_14 (branch `redesign-v2` — UI restyle).** Built, not committed. Jugadores'
+  own hero + landing (`buildJugadoresHero`/`buildJugadoresLanding`, same mechanism as
+  Historia's: rewrites `#jugadores .phead` into `.hhero`, 3 real stat cards — curated-
+  index/Salón/NBA counts — plus an `.explore`/`.xcard` grid to the 8 real sub-views).
+  `.cards.g2` retired from Jugadores' three plain-grid builders: `buildHOF()` →
+  `.salon-grid`/`.salon-card` (portrait + a plain rank chip, no gold/silver/bronze —
+  this sort order has no ranking semantics), `buildRecords()` → `.rec-grid`/`.rec-card`
+  (numeral switched to `var(--font-display)`, matching every other big numeral in the
+  system), `buildCoaches()`/`buildStone()` → a shared `.coach-grid`/`.coach-card` (top
+  accent reuses `.rule`'s own `--azul`, not a new color). Player/archive card, season
+  detail, and the player-index search bar get a new `.pcard`/`.search-card` wrapper
+  class alongside (never replacing) the real `.card`/`.phero`/`.filters` — scoped
+  under `#jugadores` so Equipos' identical `.phero`/`.card` team-page markup and every
+  other section's `.filters`/`.strip` are unaffected; confirmed by grep that `crest()`
+  (team logos) is never called from Jugadores, only `portrait()` is, so `#jugadores
+  .crest` only ever matches a player silhouette. No data/JS behavior changed — sort/
+  filter/search/CSV export, the `#pfField` display toggle, the `td.name .btn` invisible
+  tap-target expansion, and the `#playerTabs` manual-activation ARIA tablist all
+  reverified unchanged, live, in both Chromium and WebKit at 1400px/390px, both themes
+  (zero console errors either engine). 3 new top-level declarations (JUGADORES_XICON,
+  buildJugadoresHero, buildJugadoresLanding) — declaration baseline not yet updated
+  (same already-deferred gap PHASE_11/12 left open, not widened in kind, only in
+  count — see those entries above).
+
+- **PHASE_15 (branch `redesign-v2` — UI restyle).** Built, not committed. Jugadores
+  polish pass, structural inspiration from a reference screenshot of this app's own
+  archive player card (separated panels, small-caps group labels, label-over-value
+  hierarchy) — not a theme change, both themes untouched/unforked. Buscar/Comparar/
+  Líderes filter bars (`#pmode`/`#pf`/`#lcat`/`#lmode`/`#hs`) get a custom chevron
+  (`#jugadores .field select`, two data-URIs — one per theme, both the literal
+  `--ink-3` hex already used elsewhere — scoped to `.field` so Comparar's own small
+  inline season-selects, never inside `.field`, are untouched). `buildCompare()`'s
+  and `buildLeaderControls()`'s filter bars wrapped in the real `.search-card` shell
+  (PHASE_14). Player card (Resumen): tag wall split into "Honores"/"Clubes" groups
+  (`.ed-eye` labels, only rendered when that group is non-empty — `p.tags.size`/
+  `p.clubs.size` guards); the stat strip becomes separated bordered tiles
+  (`#jugadores .pcard .strip`, scoped so Inicio's/the team page's own `.strip` stay
+  untouched); the "lo que no sabe"/disputed-assist `.warn` callouts get a fuller
+  rounded panel (still visually a warning — PC4's gap-signal is unchanged). Comparar:
+  each `.cmphead` is now its own bordered slot panel with a top accent in that
+  player's own real `cmpColor()` (`--cmp-c`, set inline per instance, same pattern
+  `.cmpfill`'s own `--w` already uses); `.cmpradar`/`.cmprows` get a bordered-panel
+  treatment. `.cmphead`/`.cmpheads`/`.cmpradar`/`.cmprows`/`.bars` were restyled
+  directly, unscoped — confirmed by grep each is exclusive to Comparar/season-compare
+  (`drawCompare()`, `renderSeasonCmp()`) or Líderes (`buildLeaders()``s `bars()` call),
+  same reasoning PHASE_11 used retiring `.barrow` from Historia. No data/JS behavior
+  changed — sort/filter/search/CSV export, `#pfField` display toggle, the
+  `td.name .btn` invisible tap-target expansion (still 24px row height, live-measured),
+  and the `#playerTabs` ARIA tablist all reverified unchanged, live, Chromium +
+  WebKit, dark + light, 1400px/390px (zero console errors either engine); screenshot
+  spot-check (both themes) confirmed the panels render as intended, not just present
+  in the DOM. Zero new top-level declarations — the frozen-baseline drift is
+  unchanged from PHASE_14 (still 438 vs. 426, not widened).
+
+- **PHASE_16 (branch `redesign-v2` — UI restyle).** Built, not committed. PHASE_15
+  was judged too subtle on re-review against the reference — same single stacked
+  `.pcard`, just bordered/labeled internally. This phase replaces `showPlayer()`'s
+  Resumen-tab card with real sibling panels in a CSS grid: `.rp-id` (identity —
+  portrait, name, headline stat, Honores/Clubes groups, bio; keeps the real
+  team-color border + tricolor lead-in this card always had), `.rp-stats`
+  ("Resumen" — the 6-tile stat strip), `.rp-context` ("Ficha" — the gap/dagger
+  `.warn` callouts, the Leyenda note, the Comparar button, the "Aparece en" line).
+  `#jugadores .presumen{grid-template-columns:320px 1fr}` at ≥900px, one column
+  below that (real stack, not a width squeeze). Three-tier real depth, no new
+  colors: page (`--night`) → `.rp-id` (`--card`) and `.rp-stats`/`.rp-context`
+  (`--raise`, a visibly different shade from `.rp-id`, same token this app already
+  uses for "a raised surface inside a card") → each stat tile back to `--card`
+  (one step back down, a real third tier). Scope held strictly to `showPlayer()`
+  only — Buscar/Comparar/Líderes untouched this pass, and the *other* three real
+  `.pcard` call sites (`loadPlayerExtra`'s Temporadas card, `renderSeasonDetail`'s
+  season-detail card, `renderArchiveCard`'s stripped card) keep today's single-
+  panel look on purpose, out of scope; PHASE_14/15's own `.pcard`-scoped rules are
+  untouched and still correctly serve those three. A new `.rp-context .warn` rule
+  was written separately from PHASE_15's `.pcard .warn` rather than widening that
+  selector, since broadening it would have also caught Comparar's own "Casillas
+  sin registrar" `.warn` — explicitly out of scope this phase. Verified live,
+  Chromium + WebKit, dark + light, 1400px/390px: 2-column grid confirmed at
+  1400px (`320px 752px`, panels measured side by side), real single-column stack
+  confirmed at 390px, all three panel backgrounds measured distinct from each
+  other and from the page background in both themes, 6 tiles render, zero console
+  errors either engine; the `td.name .btn` tap-target height (24px) and the
+  `#playerTabs` ARIA tablist state (`tabIndex`/`aria-selected`) both reverified
+  unchanged. Screenshot spot-check both themes, desktop and phone.
+
+- **PHASE_17 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Owner reported PHASE_16's 2-column grid rendering as one stacked column live
+  at ~2000px. Investigated before changing anything: re-ran a fresh
+  getComputedStyle check against the already-committed-to-disk PHASE_16 state
+  at exactly 1400px, Chromium — `display:grid`, `gridTemplateColumns:"320px
+  752px"`, matching what PHASE_16's own report claimed. `web/index.html`'s
+  `?v=` hash matched `main.css`'s real sha256. `sw.js`'s own CSS/JS route is
+  genuinely network-first (fetch-then-cache, cache only read on a network
+  *failure* — read the file to confirm, not assumed), so a stale service-
+  worker cache serving an old `main.css` under the new `?v=` query doesn't fit
+  the code either. No code-side cause found — logged as likely a stale tab/
+  cache on the reviewing side, not a regression in this file, and moved on to
+  the requested rebuild (which also directly resolves it, being a visibly
+  different layout either way). Split `.rp-id`'s own Honores/Clubes/bio out
+  into a real third sibling panel (`.rp-honors`) — `.presumen` is now a real
+  3-column grid (`260px 320px 1fr`) at ≥1100px (breakpoint moved up from
+  900px), single column below that, same real content, same order (identity →
+  honores/clubes/bio → stats/context) stacked. `.rp-id`/`.rp-honors` share
+  `--card` (the "about this player" cluster); `.rp-stats`/`.rp-context` share
+  `--raise` (the "the record" cluster) — same 2-tier token scheme as PHASE_16,
+  now mapped onto 3 top-level panels instead of 2. Added a resting
+  `box-shadow:0 1px 3px var(--shadow)` to every `.rp-panel` so same-shade
+  adjacent panels (`.rp-id`/`.rp-honors`) still read as separate surfaces via
+  gap+border+shadow, not fill alone — same approach the reference's own 3
+  same-white panels use. Proved it for real this time: live getComputedStyle
+  at exactly 1400px, both engines, both themes — `gridTemplateColumns:"260px
+  320px 476px"`, real `getBoundingClientRect()` on all 3 panels confirming
+  non-overlapping left-to-right positions (x=194/470/806), `sideBySide3Panels`
+  boolean computed from those rects. 390px confirmed single-column
+  (`sideBySide3Panels:false`). `td.name .btn` height (24px) and `#playerTabs`
+  ARIA state reverified unchanged. Zero console errors either engine, either
+  theme. Screenshots: `/tmp/p17_player_dark_1400.png`,
+  `/tmp/p17_player_light_1400.png`, `/tmp/p17_player_dark_390.png`,
+  `/tmp/p17_player_light_390.png`.
+
+- **PHASE_18 (branch `redesign-v2` — survey, read-only, no code changed).**
+  Premise check: `~/Desktop/jugadores-ref.png` ("Llovet Ayala, Francisco" —
+  back link, Resumen/Temporadas/Fuentes tabs, 3-panel Información/Resumen/
+  Ficha, Temporada-por-temporada table) does **not** exist as a dedicated
+  page/route anywhere in this repo — confirmed by exhaustive grep across
+  `web/`, `app/bsn_archivo.html`, `docs/`, and all branches/stashes (only
+  `main`/`phase-1-split`/`redesign-v2`, no stash). The player it depicts is
+  real — archive id 721, "Llovet Ayala, Francisco," the A05 disputed-
+  birth-date identity case documented in `docs/specs/cluster_evidence_a05.md`
+  / `cluster_evidence_batch2.md` / `identity_triage_audit_spec.md` — but the
+  page chrome around it (back link, 3-tab bar with a "Fuentes" tab, the
+  3-panel grid) was never built; it's a design mockup using this app's own
+  real data, not a screenshot of shipped code. Today ALL players (curated
+  and archive-only alike) render inline inside Jugadores → Buscar via
+  `showPlayer()`/`renderArchiveCard()`/`openArchivePlayer()` — confirmed via
+  `applyHash()`'s own routing, which sends `#jugadores/jugador/<slug>`
+  through `showView('jugadores','buscar',...)` first, always. Full proposal
+  (data mapping per panel, every real call site, routing/back-forward/
+  declaration-count risks, and disposition of PHASE_14-17's uncommitted
+  work) delivered in conversation, not written to a file per this phase's
+  own instruction — awaiting the owner's approval before any build phase.
+
+- **PHASE_19 (branch `redesign-v2` — UI restyle).** Built, not committed. The real
+  "jugador" page, per PHASE_18's approved proposal and `~/Desktop/mockup 2/
+  jugador.html`/`movil-jugador.html` (read-only source of truth). A real detail-only
+  view (`VIEW_MAP.jugadores`'s own `detail:['jugador','#playerPage']`, same
+  mechanism Equipos' `#teamDetail` already uses for `showTeam()`) — not a sub-state
+  of Buscar any more. `showPlayer()`/`openArchivePlayer()`/`renderArchiveCard()`
+  changed; the ~15 real call sites (Buscar/Líderes/Salón/Premios/Equipos
+  roster/Inicio search/"Quién soy"/`applyHash()`) did not. Page chrome: a real
+  "← Jugadores" back link (static HTML, no JS needed — native `href="#jugadores"`),
+  `buildPlayerHead()` (avatar/eyebrow/name/subline, shared by both player types),
+  a real 3-tab Resumen/Temporadas/Fuentes bar (`showPlayerTab()`/`PLAYER_TAB_MAP`
+  generalized from a hardcoded 2-tab pair, same manual-activation ARIA pattern).
+  Resumen tab: 3 real side-by-side panels (`.rp-info`/`.rp-stats`/`.rp-context` —
+  Información/Resumen/Ficha) at ≥940px, measured live before picking that number
+  (not guessed — `#jugadores .panel`'s own real content width at a 1000px viewport
+  is 904px, confirmed via `getBoundingClientRect`), single column below it.
+  Información paints sync (PINDEX/archive-row fields) then rebuilds with
+  Nacimiento/Lugar/Nacionalidad once `loadPlayerExtra()`'s own fetch lands
+  (`renderPlayerInfo()`, a full rebuild each time, never an append). Resumen:
+  curated keeps the real 6-tile stat strip; archive-only gets 3 tiles (temporadas
+  documentadas / con conflicto de fuente / rango en la ficha) computed from the
+  exact same `dqFlag`/`disputeFlag` aggregates the season table already produces —
+  found and fixed a real bug here before reporting: the "rango" tile was computed
+  from the totals-line's own non-flagged-only year range, which is `null` whenever
+  *every* row is flagged (Llovet's actual case, all 5 rows disputed) — added a
+  second, unfiltered `allLo`/`allHi` for "what years does the ficha claim at all,"
+  which is a real, always-answerable question distinct from "what counts toward
+  the totals." Ficha: curated keeps honors/clubs/bio/"lo que no sabe"/Leyenda/
+  Comparar/dagger; archive-only gets `archiveFichaParagraph()`, a 3-case template
+  (disputed DOB / figures-only conflict / clean) driven by real aggregates, never
+  hand-written per player. Fuentes: consolidates "Aparece en," the Wayback
+  attribution line, and "Mismo nombre en el archivo" — all real text relocated,
+  nothing new invented. Temporadas tab (season drill-in, season-vs-season compare,
+  `dqTag`/`disputeTag` row flags) is byte-for-byte the same real logic, just
+  re-targeted at `#playerExtra` without the identity/bio lines that moved out.
+  `.rp-id`/`.rp-honors` (PHASE_16/17) retired — grep-confirmed nothing else
+  referenced them before removing their CSS. One real bug found and fixed before
+  reporting done: `.subnav{display:flex}` outranks the `[hidden]` attribute (same
+  specificity gotcha `#pfField`'s own toggle already had to work around) — the
+  pill row stayed visible over the new page until this was checked against a real
+  screenshot, not just DOM state; fixed via `style.display`, matching the
+  `#pfField` precedent (`helpers.js`, `showView()`). One test updated
+  (`tests/test_data_quality.py`'s own literal-source regression guard for the DOB
+  line) to match the intentional relocation of that line into a labelled row —
+  same real `fmtArchiveDob()`/`dobDisputed` composition, different shape of line.
+  Verified live, Chromium + WebKit, dark + light, 1000/1280/390px, for both
+  Georgie Torres (curated) and Llovet Ayala, Francisco (archive-only): real 3-panel
+  grid confirmed via `getComputedStyle`/`getBoundingClientRect` (not just a
+  screenshot) at 1000px (`260px 332px 280px`, matching the live-measured
+  calibration almost exactly) and 1280px, single column at 390px; `td.name .btn`
+  tap-target (24px, invisible-expand intact), the 3-tab ARIA state, and `#pfField`
+  display toggle all reverified unchanged; zero console errors either engine, any
+  theme/width. `pytest`/`make verify` unchanged from the pre-existing baseline
+  (509 passed, same 5 known-stale declaration-count-drift failures; drift itself
+  now 442 vs. 426 — 4 new real declarations, not widened in kind).
+
+- **PHASE_20 (branch `redesign-v2` — UI restyle).** Part 1 built into the repo, not
+  committed; Part 2 is a standalone `/tmp` exploration, no site file touched.
+  Part 1 rebalances the curated Resumen tab: Honores moved out of the narrow Ficha
+  column into its own real full-width panel below the 3-panel grid (`groupHonorChips()`
+  collapses every chip shaped exactly "<label> <year>" into one chip per label once
+  2+ years exist — "Campeón de anotación 1977/78/79/84-87" → one chip, consecutive
+  years as a range, non-consecutive kept separate; a label with only one year is left
+  exactly as it was; every other tag untouched; order-preserving). Fixed the duplicate
+  headline number (`bigKey` now names which strip tile the big Resumen number restates,
+  that one tile is dropped from the 6-tile strip instead of printing the same real
+  value twice). Fixed long Información values ("21 de septiembre de 1957") wrapping
+  mid-phrase next to their label — `renderPlayerInfo()` now measures each rendered
+  `.v` live (`getClientRects().length>1`) and adds `.row-stack` only on rows that
+  actually wrapped, never a guessed character count. Verified: PHASE_19's curated +
+  archive-only variants, 3 tabs, routing, tap targets (24px), ARIA tablist, `#pfField`
+  all still work, Chromium + WebKit, both themes, 1000/1280/390px, zero console
+  errors — archive-only untouched by this pass (confirmed, since none of its own
+  builders were touched). Chip before/after printed for Georgie Torres (20→12),
+  Rubén Rodríguez (7→7, unchanged — his one MVP year has nothing to compress), and
+  Adolfo Porrata (2→2, unchanged).
+  Part 2: surveyed every real `portrait()` call site (exactly 3 — `showPlayer()`,
+  `renderArchiveCard()`, `buildHOF()`; Comparar/tables/rosters/search render no
+  avatar at all today, confirmed by grep, not assumed) and built
+  `/tmp/avatar_directions.html` + `/tmp/avatar_directions_composite.png`: 3
+  illustrated/typographic-only directions (Escudo — solid club-color fill;
+  Gradiente — diagonal club-color gradient; Contorno — tinted ground + club-color
+  outline and initials), 8 real sample players (real club colors from `F`/PINDEX,
+  Llovet Ayala Francisco as the no-club neutral-navy case), 28/44/64/96px, both
+  themes, real WCAG contrast ratios computed via the actual relative-luminance
+  formula (not eyeballed) and printed inline. Real finding: Direction A (Escudo)
+  clears 4.5:1 for all 8 sample players in both themes; Direction B (Gradiente)
+  clears 4.5:1 for 6/8, drops to the 3:1-large-text-only floor for the two
+  orange-club players (Cangrejeros, San Germán); Direction C (Contorno) is the
+  weakest as drafted — fails even 3:1 for 4/8 players in dark theme (Georgie Torres
+  1.74:1, Llovet 1.38:1, Santeros 2.07:1, Capitalinos 1.97:1) and 2/8 in light —
+  would need a stronger tint or a contrast-aware text-color fallback (same
+  mechanism Direction A already has) before it's shippable. Not wired into the
+  site; no file in the repo changed for this part.
+
+- **PHASE_21 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Direction B ("Gradiente") landed for real at all 3 `portrait()` call sites
+  (`showPlayer`, `renderArchiveCard`, `buildHOF` — the latter now resolves a
+  real club via a PINDEX lookup it didn't have before, instead of defaulting
+  every Salón portrait to neutral). Silhouette/`posPose()`/`POSE_ICON` removed
+  outright (dead code, confirmed by grep before deleting). `portraitFill()`
+  computes real WCAG contrast live (`relLum`/`hexRgb`/`contrastRatio`, the
+  same relative-luminance formula as PHASE_20's own mockup) and falls back
+  from a gradient to a flat, further-darkened solid fill for any club where
+  white initials would dip under 4.5:1 — checked against all 33 real clubs +
+  the neutral navy, **0 failures** (Cangrejeros 8.18:1, San Germán 7.52:1,
+  both solid-fallback; everyone else gradient, 4.88–17.40:1). No tricolor on
+  avatars (owner: reads as the French flag) — corner-ring only, confirmed
+  zero `--tri*` references in the new `.pavatar` CSS. `playerInitials()` is
+  given+first-surname (comma format "Surname, Given" vs. plain "Given ...
+  Surname" both handled; "Llovet Ayala, Francisco" → "FL" exactly, "Georgie
+  Torres" → "GT"). Resumen tiles switched grid→flex (`#jugadores .rp-stats
+  .strip`) so a non-full last row stretches instead of leaving an orphan gap
+  — live-measured, not assumed (5 tiles: 1000px → last row 1 tile fills
+  100%; 1280px → last row 2 tiles sum to the full row width minus the real
+  gap). "Comparar con otro jugador" relocated to the page header (level with
+  the name); "Leyenda por" relocated into the Honores panel as a footer
+  note — panel heights now land much closer together (Resumen still runs
+  tallest, from its own headline-stat block, honestly reported as "closer,
+  not exact"). Honores de-duplication (`groupHonorChips()`, case-insensitive
+  label matching) now also folds in the counted chip and drops the covered
+  generic one — Georgie Torres: 20 → 8 chips (`"7× campeón de anotación ·
+  1977–1979 · 1984–1987"`, `"3× MVP · 1984–1986"`); Rubén Rodríguez: 7 → 7
+  unchanged (singleton `MVP 1979`, nothing to compress); Adolfo Porrata
+  (few-honors case): 2 → 2 unchanged. Display-only, confirmed `p.tags` the
+  Set is never mutated. Archive-only "Rango en la ficha" tile now prints the
+  mockup's own compact form ("1965–69"), live-confirmed un-wrapped at
+  1000/1280/390px in both engines. "Temporada por temporada" now renders
+  under the 3 panels on Resumen too (`renderResumenSeasons()` — read-only,
+  no checkboxes/drill-in, those stay exclusive to the Temporadas tab per
+  instruction), for archive-only players (Llovet: 5 real rows) and curated
+  players with real season data (Raymond Dalmau: 20 real rows, real totals
+  footer) — confirmed `seasonTotalsNote()` is the one real computation
+  shared by both the Temporadas tab's own line and this new table's footer,
+  never a second count that could disagree. "Aparece en" reconfirmed still
+  showing for curated players. Full tricolor inventory (item 7, read-only,
+  nothing changed) delivered in conversation. Verified live, Chromium +
+  WebKit, dark + light, 1000/1280/390px — zero console errors either
+  engine (an initial WebKit run hit the app's own documented ≥3s minimum
+  splash duration because the check script under-waited; re-run at the
+  correct wait came back clean, not a site regression). `td.name .btn`
+  tap-target (24px) and the 3-tab ARIA state both reverified unchanged.
+  `pytest` unchanged at the pre-existing 5-failure baseline, 509 passed.
+
+- **PHASE_22 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Part 1 (small fixes): (1) Resumen's 3-panel grid now stretches to equal
+  height at the 940px+ breakpoint (`align-items:stretch`, grid's own
+  default once the prior `align-items:start` was dropped) — content stays
+  top-anchored, mobile single-column stack unaffected. (2) `groupHonorChips`
+  extended to also drop a bare generic chip when a YEAR-grouped chip (not
+  just a counted chip) covers the same label — Raymond Dalmau's bare
+  "Campeón de anotación" (no counted chip on record, but year chips 1968/
+  1970 exist) now correctly drops; Georgie Torres unchanged (already
+  covered by the counted-chip path from PHASE_21). Display-only, `p.tags`
+  Set confirmed untouched. (3) Season-compare checkboxes (`#playerExtra`)
+  restyled with `appearance:none` + a custom box/check, real keyboard/
+  label/onchange behavior untouched.
+
+  Part 2 (Comparar redesign, visual/markup only — compare logic, data,
+  season pinning, routing, URL/hash state and the honesty rules all
+  untouched). `~/Desktop/mockup 2/datos.html` only mocks the bare
+  head-to-head slot cards (avatar placeholder, name, no scoreboard/rows/
+  radar/add-player-bar) — everything below the heads was built to spec in
+  the player page's own visual language. New `.cmp2*` namespace throughout
+  `drawCompare()`/`cmpHead()`/`cmpRadar()` — confirmed by grep to be
+  entirely separate from `renderSeasonCmp()`'s own `.cmphead`/`.cmpheads`/
+  `.cmprows` (Temporadas tab's season-vs-season panel), which is untouched
+  and still renders byte-identical to before. `cmpBarRow()` gained a 4th
+  `mirrored` parameter (default falsy, so `renderSeasonCmp()` and the
+  3-player Comparar case are unaffected) — mirrored=true draws the new
+  "tale of the tape" row (label centered, each player's value on the
+  outside, bar growing from the center line outward in that player's own
+  color, winner's value emphasized, ties/missing values neutral/undrawn).
+  Head-to-head cards: real `portrait()` avatar, name, pos·years, club,
+  Carrera/season `<select>` (new compact chevron, scoped to `.cmp2select
+  select` so the existing `.field select` chevron is untouched), Quitar —
+  2 players get a VS mark between cards (`.cmp2heads.n2`, 3-column grid),
+  3 players get a plain 3-up grid (`.cmp2heads.n3`), real top accent bar in
+  each player's own comparison color. Scoreboard: large mirrored numerals
+  (`.cmp2score-n`) in each player's own contrast-safe color, the exact
+  preserved win-count sentence (`verdict`, same a/b/shared computation as
+  before this phase, byte-for-byte) kept underneath. Radar: enlarged
+  (R 64→90, viewBox 176×168→254×240) and moved into its own panel with a
+  name+color legend, replacing the old narrow two-column `.cmpsplit` layout
+  that left dead space under it. Found and fixed a real contrast bug before
+  shipping: `cmpColorPair()` only ever computed safe text against `--card`'s
+  two real hexes, but the mirrored rows' lead-value color sits on `--raise`
+  (`#131E38` dark / `#E1E9F5` light — a real, if close, different
+  background in each theme) — `cmpColorPair()` now takes optional
+  `bgDark`/`bgLight` args, and `cmpBarRow()`'s mirrored branch passes the
+  real `--raise` hexes instead of silently reusing the `--card`-tuned
+  default. All `.cmp2*` panels without an explicit tier now get `--card`
+  (scoreboard/radar/foot/empty states) or `--raise` (rows — matches
+  `.rp-stats`'s own "the record" tier), after confirming live that
+  `.rp-panel` itself carries no background (border+shadow only — the
+  existing Honores panel already relies on this, discovered while checking
+  it) so a bare `.cmp2*` panel would've shown as a hollow outline over
+  `--night` otherwise. Two now-dead rules retired (`.cmpsplit`, `.cmpradar`
+  — confirmed by grep, zero remaining call sites now that `drawCompare()`
+  no longer emits them); `.cmpheads`/`.cmphead`/`.cmprows`'s own comment
+  updated to say they're exclusive to `renderSeasonCmp()` now. `.search-card`
+  (shared by the player-index search bar, the Temporadas-tab season-select
+  panel, and Comparar's own add-player bar) gained the same `box-shadow` as
+  `.rp-panel`, for one consistent panel look across all three. Mobile
+  (max-width:759px): both `.cmp2heads.n2`/`.n3` collapse to a single column
+  (cards stack), `.cmp2vs` becomes a horizontal rule on each side of "VS"
+  (confirmed live via computed style — `::before`/`::after` render as real
+  155px lines either side, not just text, even though they read faint at
+  screenshot scale), mirrored rows fall back to a 2-row stacked layout
+  (value-left / value-right on one line, the track below, full width) since
+  a 56px value column plus a real center-anchored track doesn't fit
+  three-across at 390px. Verified live, Chromium + WebKit, dark + light,
+  1000/1280/390px, zero console/page errors across all 92 state captures:
+  Georgie Torres vs Mario Morales (both pre-2012 legends — archive `career[]`
+  empty for both, confirmed by reading `players/788.json`/`players/1584.json`
+  directly, so this case also exercises the "no linked season data, Carrera
+  only" disabled-select path); A.D. Vassallo vs Admiral Schofield (real
+  partial data, 6 of 7 comparable rows); a 3-player compare (Georgie +
+  Mario + Raymond Dalmau — confirmed unmirrored `.cmprow` path, same visual
+  style as before, Raymond's select is enabled since his archive career[]
+  genuinely isn't empty, unlike the other two); a season-pinned compare
+  (A.D. Vassallo pinned to a specific season via `cmpSetMode`, Schofield
+  left in career mode — confirmed `anySeason` suppresses the radar panel
+  and switches the group labels to "De la temporada", 2 of 2 comparable
+  rows); a pair with no common data (no real archive pair reliably has zero
+  overlapping categories, since games/points are near-universal fields —
+  verified instead via a direct, documented state construction, confirming
+  the empty-verdict branch and the no-bar/no-numerals rendering). Also
+  reverified empty-CMP and 1-player states. Contrast-checked the two
+  genuinely new computed-color pairings (scoreboard numerals vs `--card`,
+  mirrored-row lead value vs `--raise`) against real club hexes from both
+  test pairs in both themes — all ≥4.5:1 (worst case 4.56:1, Admiral
+  Schofield's blue on dark `--card`); every other new/relocated color here
+  reuses an existing design token already proven elsewhere in the app, not
+  a new computed pairing. `node --check` clean, `pytest` unchanged at the
+  pre-existing 5-failure baseline, 509 passed.
+
+- **PHASE_24 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Comparar polish, six display-only fixes to PHASE_22's redesign; `.cmp2*`
+  namespace only, `renderSeasonCmp()`/Temporadas reverified byte-identical
+  (still only ever calls `cmpBarRow(r,ps,bool)`, 3 args — the new 4th
+  `mode` param is never passed, so it's always `undefined` there and the
+  function falls through to the exact original `.cmprow`/`.cmpbarline`
+  branch, untouched). (1) Radar's top "PTS" label was clipped by the SVG's
+  own viewport — the top axis landed at y=5.7 with a 12.5px font, above
+  the `viewBox`'s own y=0 edge; fixed by shifting `cy` down 16px (112→128)
+  and growing the `viewBox`/height to match (240→256), confirmed live
+  (`firstTextY` now 21.7, comfortably inside). Also found the radar+legend
+  pair wasn't actually centering as a group — `.cmp2radar-svg`'s own
+  `margin:0 auto` (a leftover from when it had no sibling) was absorbing
+  the flex row's entire free space as its own auto-margins once the
+  legend existed, shoving the legend toward the panel's right edge
+  (measured: group center 633px vs. panel center 532px on a 904px-wide
+  panel). Fixed by moving the centering context to a new inner
+  `.cmp2radar-group` (block, `max-width:720px`, `margin:0 auto`), legend
+  drops below under 700px viewport width. (2) `.cmp2heads` (a grid of
+  cards) was never itself an `.rp-panel`, so the existing `.rp-panel +
+  .rp-panel` gap rule never matched the first real gap (heads→scoreboard
+  or heads→radar) — measured 0px live before the fix. One more rule,
+  `.cmp2heads + .rp-panel`, closes it (confirmed 14px, matching every
+  other panel gap, in both the 2-player scoreboard case and the 3-player
+  no-scoreboard case where the radar panel directly follows heads).
+  (3) Rows where every player is missing now collapse into one muted line
+  reusing the existing "sin datos en común" wording (capitalized as a
+  sentence lead-in — `Sin datos en común — <row names>`, the one new
+  string this phase adds, flagged below) at the bottom of the rows panel,
+  instead of a label and empty tracks each; a group left with nothing
+  real to show (e.g. "Tiro y carga" for two players with no 2012+ box
+  scores at all) now also skips its own label. (4) 3-player rows get a
+  new `mode='grouped'` `cmpBarRow()` branch (own `.cmp3*` classes) instead
+  of silently reusing the legacy branch: the lead value is now that
+  player's own real contrast-safe color (`cmpColorPair()` against
+  `--raise`, same mechanism the 2-player mirrored rows already use)
+  instead of a flat `var(--ok)` green that could collide with a teal club
+  color, and each bar gets an owner cue (first name, in that player's
+  color) beside the value. Contrast re-checked against the real `--raise`
+  row background for both test pairs' colors in both themes — worst case
+  4.74:1 (Mario's orange, dark), same floor as PHASE_22's mirrored-row
+  check, nothing new introduced by the lead-color change. (5) A true zero
+  used to hit the same `Math.max(2, …)` width floor as a small positive
+  value, rendering identically — fixed in both new branches (`widthOf()`)
+  so `v===0` draws no fill at all, same as a missing value's bar; only the
+  value text ("0" vs "—") and the row still being drawn tell them apart.
+  The legacy branch's own identical quirk is left untouched (same
+  byte-identical constraint as the lead color). (6) Carrera/season
+  `<select>`s now match width across cards — root cause wasn't the
+  `width:100%` itself but two inline styles set directly on the
+  `<select>` elements in `cmpSeasonSelect()`/`cmpSeasonSelectDisabled()`
+  (`width:auto;min-width:0`, pre-PHASE_22, inline so it outranks any
+  external rule) still overriding it, plus `.cmp2select` being a bare
+  `<span>` (inline, so `width` on it was a no-op). Fixed by making
+  `.cmp2select` `display:block;align-self:stretch` (a real block box the
+  size of the card) and dropping the two conflicting inline styles,
+  moving their `font-size`/`padding` into the external rule instead —
+  confirmed live, all three cards' selects now exactly match their own
+  card's width (259px/395px/487px/324px across the tested viewports,
+  never mismatched). Verified live, Chromium + WebKit, dark + light,
+  1000/1280/390px, zero console/page errors across every capture: Georgie
+  Torres vs Mario Morales, A.D. Vassallo vs Admiral Schofield, a 3-player
+  compare (+ Dalmau), a season-pinned compare, 1-player, and empty — all
+  six re-run in both engines. `node --check` clean, `pytest` unchanged at
+  the pre-existing 5-failure baseline, 509 passed.
+
+- **PHASE_25 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Comparar color/contrast fixes. (1) Real club colors can collide (same
+  hue family + similar lightness) -- measured live against this league's
+  real palette before picking thresholds: hueDist<=20° AND |Ldiff|<=15
+  (HSL). `cmpAssignColors(ps)` (new) computes one final color per player,
+  first player keeps their real club color, each later player's real
+  color is swapped for the first non-colliding pick from a new fixed
+  `CMP_DISTINCT` set (`#5B8C1F` olive, `#7A3FD1` violet, `#C9960C` amber,
+  `#0E8FA6` cyan -- chosen to sit in this league's real hue gaps; 2 of the
+  4 still land inside the threshold of one specific club each, Osos de
+  Manatí/amber and Capitanes de Arecibo/cyan, left in deliberately since
+  the loop already skips a candidate that collides with whatever's
+  actually in play) only when a real collision is detected -- confirmed
+  live on the owner's own two examples: Fajardo maroon `#7A1F3D` vs
+  Quebradillas red `#B3141F` (Georgie vs Raymond Dalmau) swaps Raymond to
+  olive; A.D. Vassallo pinned to his 2012 season (Mets de Guaynabo navy
+  `#122E5C`) vs Admiral Schofield (Santeros blue `#0C4DA2`, hueDist 3.3°/
+  Ldiff 12.5) swaps Schofield to olive too. The one assigned color per
+  player is now threaded through every place that used to call
+  `cmpColor()` independently -- `cmpHead()`/`cmpRadar()`/`cmpBarRow()`
+  all take it as a param instead of recomputing -- confirmed live
+  identical across avatar fill, card top bar, scoreboard numeral, bar
+  fill, radar polygon and legend dot in every tested case.
+  `renderSeasonCmp()` untouched (never calls any of the changed
+  functions with a color array; `cmpColor()` itself is unmodified).
+  (2) Every place player-colored TEXT sits on a real background now gets
+  the existing `cmpColorPair()` treatment instead of a flat, unchecked
+  inline color: the verdict's leader name (new `.cmp2verdict-lead`, was
+  literally unreadable-dark for A.D./Georgie in at least one theme) and
+  the 3-player owner cue (new, same `--raise` background the lead value
+  already used). Worst-case contrast re-checked against the real
+  `--card`/`--raise` hexes for every color in play, including the new
+  `CMP_DISTINCT` set, both themes: 4.56:1 (unchanged from PHASE_22/24's
+  own floor). (3) The reported "esas temporadasno aparecen" join does not
+  exist -- live sub-pixel measurement (`Range.getClientRects()`) of the
+  actual rendered gap between "temporadas" and "no" measures 3.22px,
+  pixel-identical to every other normal inter-word space in the same
+  sentence (jugador→se, carrera→o, aparecen→para, all 3.22px); a 3x
+  zoomed crop confirms it by eye too. The source's multi-line template
+  literal collapses to one normal space exactly per HTML whitespace
+  rules; nothing was missing in the source and nothing is lost in
+  rendering. No edit made -- OLD and NEW are identical. (4) A season-
+  pinned card had no real position/years to show and rendered zero meta
+  lines there (career cards always had one, falling back to "años sin
+  registrar" when both are unknown) -- one fewer line shifted that
+  card's own select/Quitar up relative to its neighbor's, confirmed live
+  (0px gap before the fix). Season mode now shows the one real fact it
+  does have in that slot ("Temporada {season}", from the same `p._season`
+  `cmpResolved()` already sets) instead of leaving it blank; the line is
+  always rendered now, never conditional. Confirmed live: identical
+  select/Quitar Y-position between a season-pinned and a career card
+  side by side. (5) `web/js/tabs.js:2209`: `"${nConf} temporada${...} de
+  este jugador tienen cifras distintas..."` used "tienen" even when
+  `nConf===1` ("1 temporada ... tienen" — wrong number agreement). Fixed
+  to `${nConf===1?'tiene':'tienen'}`. OLD: `${nConf} temporada${nConf===1
+  ?'':'s'} de este jugador tienen cifras distintas entre dos páginas de
+  bsnpr.com. ` NEW: `${nConf} temporada${nConf===1?'':'s'} de este
+  jugador ${nConf===1?'tiene':'tienen'} cifras distintas entre dos
+  páginas de bsnpr.com. ` (6) READ-ONLY finding: yes, a real duplicate —
+  `norm()` strips the `«»` punctuation but not the word "quijote" itself,
+  so "Mario «Quijote» Morales" (key `mario quijote morales`) and "Mario
+  Morales" (key `mario morales`) never merge in `buildPlayerIndex()`'s
+  Map, producing two separate PINDEX cards for the same real person
+  (same career pts/gp/ppg/years/pos, confirmed live: 15,293 pts, 675 gp,
+  22.7 ppg, 1975–1998, SF, both entries) with different honors split
+  across them — the "Quijote" entry carries Salón + 4×MVP + the MVP-year
+  tags (`src:['Salón','MVP por año']`), the plain entry carries Líderes
+  de carrera + both scoring-championship years + Nativo/Leyenda/10.000+
+  (`src:['Líderes de carrera','Campeones de anotación','Grupo de
+  juego']`) — neither is a subset of the other. `cmpAdd('Mario Morales')`/
+  `cmpResolveName('Mario Morales')` resolves to the plain entry
+  (mvp:0, no Salón tags); typing the literal nickname resolves to the
+  "Quijote" entry instead. The add-player candidate list
+  (`cmpCandidateNames()`) already lists both as separate options. Nothing
+  changed — read-only per instruction; a real `norm()` fix would be a
+  separate, larger identity-resolution phase (D1), not a Comparar-polish
+  one. Verified live, Chromium + WebKit, dark + light, 1000/390px, zero
+  console/page errors across every capture: Georgie vs Mario «Quijote»
+  Morales, A.D. Vassallo (2012 pinned) vs Admiral Schofield, a 3-player
+  compare (Georgie + Mario + Dalmau), and the dedicated color-collision
+  pair (Georgie vs Raymond Dalmau). `node --check` clean, `pytest`
+  unchanged at the pre-existing 5-failure baseline, 509 passed.
+
+- **PHASE_26 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Comparar bar contrast + text spacing. (1) Real measured failures before
+  this: Fajardo maroon `#7A1F3D` at 1.65:1 and Mets de Guaynabo navy
+  `#122E5C` at 1.24:1 against dark `--raise` — both the owner's own
+  examples, both well under the 3:1 WCAG 1.4.11 non-text floor; a full
+  sweep of all 33 real club `c1` hexes + the 4 `CMP_DISTINCT` fallbacks
+  found 28 of 37 failing in at least one theme (dark club colors read
+  fine on light `--raise`/`--line-soft` but fail dark; light club colors
+  like Santurce orange are the mirror case — fail light, pass dark — so a
+  single static hex genuinely cannot satisfy both themes at once). New
+  `cmpFillSafe()`/`cmpFillPair()` (`cmpTextSafe()`'s own lighten/darken-
+  until-it-clears loop, same keep-the-hue approach, checked against the
+  worse of two real backgrounds at once so the result is safe against
+  both — `--raise`+`--line-soft` for bars, `--card` for the radar, which
+  has no track) computes a real dark/light pair per fill, emitted as
+  `--cmp-fd`/`--cmp-fl` CSS custom props on `.cmp2fill`/`.cmp3fill`/
+  `.cmpspoke` (moved off the old `fill=`/`stroke=` XML attributes so the
+  `[data-theme]` override can pick the right one live, same mechanism
+  every other theme-reactive Comparar color already uses) — confirmed
+  live, worst case across every re-run test 3.20:1 (radar stroke, dark),
+  every other measured value 3.26–10.04:1. Scoping decision, stated
+  explicitly: only bars and the radar polygon get this new pair — avatar/
+  top bar/legend dot keep the plain assigned color from PHASE_25
+  (`COLORS[i]`), since neither is a flat fill sitting directly against a
+  bare track/panel the way WCAG 1.4.11 is about; confirmed live they
+  still carry the same hue/identity as the (now correctly lightened only
+  where it was actually failing) bars and radar. `renderSeasonCmp()`'s
+  own `.cmpfill`/`.cmpspoke` instances are untouched — `cmpFillSafe()`/
+  `cmpFillPair()` are new functions, nothing shared was modified.
+  (2) Investigated word-spacing/letter-spacing/font-feature-settings/
+  font-kerning/text-rendering on the "esas temporadas no aparecen" note
+  and every ancestor up to `<main>`: all computed to the plain browser
+  default (`word-spacing:0px`, `letter-spacing:normal`, `font-feature-
+  settings:normal`, `font-kerning:auto`) — nothing was overridden or
+  broken. The rendered gap (re-measured live via `Range.getClientRects()`
+  both before and after) was a real, normal space the whole time — at
+  `--fs-2xs` (12px) a single Inter space is only ~3.2px wide, which reads
+  tight right after an em dash into a 2-letter word even though nothing
+  is technically wrong. Applied `word-spacing:.12em` scoped to `#cmpPick
+  .note` only (not the shared `.note` rule used elsewhere in the app) —
+  confirmed live: computed `word-spacing` 0px → 1.44px, rendered gap
+  3.22px → 4.66px, same ratio increase in every tested state. (3) "TIRO"
+  is not new — `git show HEAD:web/js/tabs.js` has the identical ternary
+  at line 4585 (`${anySeason?'Tiro':'Tiro y carga'}`), carried over
+  byte-for-byte when PHASE_22 rewrote `drawCompare()` (only the wrapper
+  class changed, `.cmpgrouplab` → `.ed-eye`). It shows specifically when
+  `anySeason` is true — i.e. the season-pinned test case — which is why
+  it was only now visible in a re-run. No owner approval needed; nothing
+  changed. Verified live, Chromium + WebKit, dark + light, 1000/390px,
+  zero console/page errors across every capture: A.D. Vassallo (2012
+  pinned) vs Admiral Schofield, Georgie vs Mario «Quijote» Morales, a
+  3-player compare (Georgie + Mario + Dalmau), and Georgie vs Raymond
+  Dalmau. `node --check` clean, `pytest` unchanged at the pre-existing
+  5-failure baseline, 509 passed.
+
+- **PHASE_27 (branch `redesign-v2` — UI restyle).** Baseline maintenance,
+  not a UI phase, not committed. `tests/harness/inventory_main_HEAD.json`
+  (the frozen pre-split declaration-name baseline, `src/verify_clean.py`'s
+  own `declaration name set`/`declaration count` checks) hand-appended
+  with the 36 real top-level declarations PHASE_11/12/14/19/20/21/22/25/26
+  added to `web/js/tabs.js` this session (every one individually verified
+  against its own real preceding `PHASE_N` comment in the source, not
+  guessed from memory — see the PHASE_27 report for the full name→phase→
+  file:line table). Pure append: 425 → 461 declarations, `git diff` shows
+  216 insertions, 0 deletions, every pre-existing entry byte-identical.
+  This does NOT reach the 5→0 failures the task expected, and per its own
+  "if anything else fails, stop and report" instruction, nothing further
+  was changed: PHASE_21 also deleted two real declarations this session
+  (`POSE_ICON`/`posPose`, the retired silhouette-icon dead code) that are
+  still recorded in the baseline — append-only cannot clear "missing"
+  baseline entries, only "extra" ones, so `declaration name set` still
+  fails (`missing ['POSE_ICON', 'posPose'], extra []` — confirms the
+  append fully accounts for every genuinely-new name, zero unexplained
+  drift) and `declaration count` still fails (459 live vs 461 baseline,
+  off by exactly those same 2). The standing "no removals" instruction
+  for this task is why they weren't also dropped from the baseline here;
+  that's a real, separate decision for the owner, not folded into this
+  pass. `tests/test_data_quality.py`'s own diff (the PHASE_19 DOB-line
+  literal-source-text guard update) is unrelated to this baseline file,
+  untouched by this phase, reprinted in the PHASE_27 report for the
+  record per the task's own request. `pytest`: still 5 failed / 509
+  passed / 1 xfailed — same 4 asset-wiring tests (now failing on the
+  `POSE_ICON`/`posPose` mismatch specifically, not the declaration-count
+  drift this phase fixed) plus the unrelated byte-identical frozen-HTML
+  test, still failing at its own pre-existing single-byte diff.
+
+- **PHASE_28 (branch `redesign-v2` — UI restyle).** Baseline maintenance,
+  not committed. (1) `POSE_ICON`/`posPose` removed from
+  `tests/harness/inventory_main_HEAD.json` (PHASE_21's own deliberate dead-
+  code deletion this session — confirmed, no longer disputed) — 461 → 459
+  declarations, `git diff --stat` now 216 insertions / 12 deletions
+  against the real git-HEAD baseline (combining PHASE_27's append and this
+  phase's removal, neither ever committed). `src.verify_clean.Checker`
+  confirms zero failures on both the name-set and count checks: 459 live
+  == 459 baseline. (2) Checked whether the 5th failure (`test_web_text.py`
+  byte-diff, index 68811) is pre-existing at clean HEAD: `git worktree add
+  /tmp/bsn_head_wt ce59c89`, ran that one test there (no untracked inputs
+  needed — `web_text()` only reads checked-in `web/index.html`+`web/js/
+  *.js`, `_frozen_app_html()` reads a frozen git blob via `git show`, both
+  fully available in a fresh worktree) — **FAILS at HEAD too**, identical
+  signature (index 68811, `!` vs `s`), confirming this is not something
+  this session's work caused. Worktree removed after
+  (`git worktree remove --force`), our own tree never touched. (3) The
+  actual cause, found by diffing ±40 bytes of context on both sides: the
+  live reconstructed text has `...stylesheet">\n<!-- PHASE_2_REDESIGN
+  (branch redesign-v2) step 1: Oswald...` where the frozen pre-split
+  original (commit 714849f, predating the whole redesign-v2 branch) has
+  `...stylesheet">\n<style>\n/* ===...` — a real 3-line HTML comment at
+  `web/index.html:53-55` (the Oswald-font `<link>`'s own explanation,
+  added by `PHASE_2_REDESIGN`, an early redesign-v2 commit, well before
+  this session's PHASE_11-28 work) that the frozen original never had.
+  This test's own premise — the live site reconstructs byte-for-byte to
+  the pre-split, pre-redesign original — became structurally impossible
+  the moment `PHASE_2_REDESIGN` made its first real visual change (a new
+  font); nothing past that point in the file can ever match again, by
+  design, regardless of what this session did. (4) Full `pytest`: **1
+  failed, 513 passed, 1 xfailed** — only the byte-diff test, and only
+  because it also fails at clean HEAD. The 4 asset-wiring tests PHASE_27
+  couldn't finish are now clean.

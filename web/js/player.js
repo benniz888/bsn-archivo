@@ -94,7 +94,7 @@ function buildPlayerIndex(){
   const host=$('#playerSearch');
   if(!host.dataset.built){
     host.dataset.built='1';
-    host.innerHTML=`<div class="filters">
+    host.innerHTML=`<div class="search-card"><div class="filters">
       <div class="field" style="min-width:220px"><label for="pq">Buscar jugador</label>
         <input type="search" id="pq" placeholder="Nombre, club, honor…"></div>
       <div class="field"><label for="pmode">Índice</label><select id="pmode">
@@ -106,7 +106,7 @@ function buildPlayerIndex(){
         <option value="MVP">MVP</option><option value="Campeón de anotación">Campeones de anotación</option>
         <option value="10.000">10.000+ puntos</option><option value="NBA">Pasaron por la NBA</option>
         <option value="Refuerzo">Refuerzos</option><option value="Nativo">Nativos</option>
-      </select></div></div>`;
+      </select></div></div></div>`;
     $('#pq').oninput=renderPlayerIndex;
     $('#pf').onchange=renderPlayerIndex;
     $('#pmode').onchange=e=>{ PMODE=e.target.value; renderPlayerIndex(); };
@@ -215,20 +215,42 @@ function openArchivePlayer(id,name,season){
   if(XWALK_REV && XWALK_REV[id]!=null){ showPlayer(XWALK_REV[id],null,season); return; }  /* is a curated player -> rich card */
   showPlayer(name,id,season);
 }
+/* PHASE_19 (owner-approved, redesign-v2): the archive-only variant of the real
+   "jugador" page -- same #playerHead/#playerInfo/.presumen structure showPlayer()
+   builds for curated players, sized down to what an archive-only row actually has.
+   Resumen's 3 tiles and Ficha's paragraph are both async (they need the same
+   players/<id>.json fetch loadPlayerExtra() already makes for the Temporadas tab),
+   so they start as a real loading state here and are filled in by loadPlayerExtra
+   once that fetch resolves -- #playerArchiveStats/#playerArchiveFicha are the
+   exact ids it targets. */
 function renderArchiveCard(name,id,host){
   const r=(PALL||[]).find(x=>x.id===id)||{};
   const span=(r.first_season&&r.last_season)
     ? (r.first_season===r.last_season?''+r.first_season:r.first_season+'–'+r.last_season) : '';
-  const meta=[r.position,span,(r.nationality&&r.nationality!=='Puerto Rico')?r.nationality:''].filter(Boolean).join(' · ');
-  host.innerHTML=`<div class="card" style="margin-top:var(--sp-4_5)">
-    <div style="display:flex;gap:16px;flex-wrap:wrap">
-      ${portrait(name,'var(--azul)','var(--blanco)',60,74,r.position)}
-      <div style="flex:1;min-width:230px">
-        <h2 style="font-size:24px">${esc(name)}</h2>
-        <div class="muted" style="font-size:var(--fs-xs)">${esc(meta||'sin datos de posición o años')}</div>
-      </div>
+  buildPlayerHead({
+    eyebrow:'Del índice del archivo — no es ficha curada',
+    name, c1:null,
+    meta:[r.position,span].filter(Boolean).join(' · ')||'posición y años sin registrar',
+    portraitHtml:portrait(name,null,null,72,88,r.position)
+  });
+  host.innerHTML=`<div class="presumen">
+    <div class="rp-panel rp-info" id="playerInfo"></div>
+    <div class="rp-panel rp-stats" id="playerArchiveStats">
+      <div class="ed-eye">Resumen</div>
+      <p class="note" style="margin-top:0">Cargando…</p>
     </div>
-    <div class="note">Del índice del archivo — no es uno de los jugadores destacados con ficha curada. Lo que sigue es solo lo que registra el archivo de bsnpr.com.</div>
+    <div class="rp-panel rp-context" id="playerArchiveFicha">
+      <div class="ed-eye">Ficha</div>
+      <p class="note" style="margin-top:0">Cargando…</p>
+    </div>
+  </div>
+  <div id="playerResumenSeasons"></div>`;
+  renderPlayerInfo([['Nombre',name],['Posición',r.position],['Años',span],['Fuente','bsnpr.com']]);
+  const fh=$('#playerFuentes');
+  if(fh) fh.innerHTML=`<div class="rp-panel rp-fuentes">
+    <div class="ed-eye">Fuentes</div>
+    <div class="fsrc"><div class="note" style="margin-top:0">Ficha del archivo de bsnpr.com (jugador #${id}) vía Wayback Machine.</div></div>
+    <div class="fsrc" id="playerFuentesAsync"></div>
   </div>`;
   revealNode(host); host.scrollIntoView({block:'start',behavior:'smooth'});
 }

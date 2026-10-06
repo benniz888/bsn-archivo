@@ -54,7 +54,7 @@
      short numerals/titles only -- see main.css's own comment at the --font-display rule
      for the exact selector list and why. Reuses the preconnects above (same two hosts). -->
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css?v=bb4e760b0faa">
+<link rel="stylesheet" href="css/main.css?v=8e48b248337c">
 </head>
 <body>
 <div class="splash" id="splash" role="status" aria-live="polite" aria-label="Cargando el archivo">
@@ -334,18 +334,6 @@
     <div id="jugBuscar">
     <div id="playerSearch"></div>
     <div id="playerIndex"></div>
-    <!-- PHASE_2_REDESIGN step 4 (owner-approved, redesign-v2): Resumen/Temporadas tabs.
-         Both always in the DOM (never rebuilt per player); manual-activation ARIA tablist
-         (arrow keys move focus, Enter/Space activates) -- see showPlayerTab()/
-         playerTabKeydown() in tabs.js. Hidden until a player actually loads (showPlayer()
-         un-hides it); the two tabpanels below are #playerDetail/#playerExtra themselves,
-         unchanged ids, so nothing that already targets them by id had to change. -->
-    <div class="ptabs" id="playerTabs" hidden role="tablist" aria-label="Secciones de la ficha del jugador" onkeydown="playerTabKeydown(event)">
-      <button type="button" role="tab" id="ptab-resumen" aria-selected="true" aria-controls="playerDetail" tabindex="0" onclick="showPlayerTab('resumen')">Resumen</button>
-      <button type="button" role="tab" id="ptab-temporadas" aria-selected="false" aria-controls="playerExtra" tabindex="-1" onclick="showPlayerTab('temporadas')">Temporadas</button>
-    </div>
-    <div id="playerDetail" role="tabpanel" aria-labelledby="ptab-resumen" tabindex="0"></div>
-    <div id="playerExtra" role="tabpanel" aria-labelledby="ptab-temporadas" tabindex="0" hidden></div>
 
     <h3 class="sec">Líderes de carrera</h3>
     <p class="lede">Los totales de por vida: puntos, rebotes y asistencias acumulados en toda una carrera.</p>
@@ -374,6 +362,28 @@
     <p class="lede">Canchas y coliseos de Puerto Rico que llevan el nombre de un jugador.</p>
     <div id="stone"></div>
     </div><!-- /jugBuscar -->
+
+    <!-- PHASE_19 (owner-approved, redesign-v2): the real "jugador" page -- a detail-only
+         view (VIEW_MAP.jugadores's own detail:['jugador','#playerPage'] entry, same
+         mechanism Equipos' #teamDetail already uses for showTeam()), not a sub-state of
+         Buscar any more. #playerTabs/#playerDetail/#playerExtra are the exact same real
+         ids this used to have inside #jugBuscar (PHASE_2_REDESIGN step 4) -- moved here
+         unchanged, so loadPlayerExtra()/renderSeasonDetail()/renderSeasonCmp()/
+         playerTabKeydown() needed zero changes. #ptab-fuentes/#playerFuentes are new
+         (the mockup's 3rd tab); showPlayerTab() (tabs.js) is now a real 3-entry map
+         instead of a hardcoded resumen/temporadas pair. -->
+    <div id="playerPage">
+      <div class="pback"><a href="#jugadores" id="playerBack">&larr; Jugadores</a></div>
+      <div id="playerHead"></div>
+      <div class="ptabs" id="playerTabs" hidden role="tablist" aria-label="Secciones de la ficha del jugador" onkeydown="playerTabKeydown(event)">
+        <button type="button" role="tab" id="ptab-resumen" aria-selected="true" aria-controls="playerDetail" tabindex="0" onclick="showPlayerTab('resumen')">Resumen</button>
+        <button type="button" role="tab" id="ptab-temporadas" aria-selected="false" aria-controls="playerExtra" tabindex="-1" onclick="showPlayerTab('temporadas')">Temporadas</button>
+        <button type="button" role="tab" id="ptab-fuentes" aria-selected="false" aria-controls="playerFuentes" tabindex="-1" onclick="showPlayerTab('fuentes')">Fuentes</button>
+      </div>
+      <div id="playerDetail" role="tabpanel" aria-labelledby="ptab-resumen" tabindex="0"></div>
+      <div id="playerExtra" role="tabpanel" aria-labelledby="ptab-temporadas" tabindex="0" hidden></div>
+      <div id="playerFuentes" role="tabpanel" aria-labelledby="ptab-fuentes" tabindex="0" hidden></div>
+    </div>
   </div>
 </section>
 
@@ -501,12 +511,12 @@
 
 <div class="bottombar" id="bottombar" role="tablist" aria-label="Navegación principal"></div>
 <script src="js/data.js?v=5a842dfd174e"></script>
-<script src="js/helpers.js?v=fa5b989d9435"></script>
-<script src="js/player.js?v=a184c7ce7c97"></script>
+<script src="js/helpers.js?v=d7d1a22254ec"></script>
+<script src="js/player.js?v=268f380b729f"></script>
 <script src="js/data-quality.js?v=0dbf5b135d19"></script>
 <script src="js/games.js?v=69446642c205"></script>
-<script src="js/tabs.js?v=20fb8b95c1c7"></script>
-<script src="js/init.js?v=27e64cc11785"></script>
+<script src="js/tabs.js?v=654b40f94a70"></script>
+<script src="js/init.js?v=0b1c55da1834"></script>
 <script>
 
 /* ============================================================

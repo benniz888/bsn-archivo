@@ -1190,18 +1190,6 @@
     },
     {
       "kind": "function",
-      "name": "posPose",
-      "line": 655,
-      "file": "web/js/tabs.js"
-    },
-    {
-      "kind": "const",
-      "name": "POSE_ICON",
-      "line": 663,
-      "file": "web/js/tabs.js"
-    },
-    {
-      "kind": "function",
       "name": "portrait",
       "line": 674,
       "file": "web/js/tabs.js"
@@ -2548,6 +2536,222 @@
       "kind": "const",
       "name": "OWNERS",
       "line": 4845,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "relLum",
+      "line": 656,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "hexRgb",
+      "line": 660,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "contrastRatio",
+      "line": 661,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "darkenHex",
+      "line": 665,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "lightenHex",
+      "line": 669,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "cmpTextSafe",
+      "line": 688,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "cmpColorPair",
+      "line": 711,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "cmpFillSafe",
+      "line": 725,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "cmpFillPair",
+      "line": 746,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "const",
+      "name": "PORTRAIT_NEUTRAL",
+      "line": 754,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "portraitFill",
+      "line": 755,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "playerInitials",
+      "line": 767,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "clubKeyByName",
+      "line": 1279,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "historiaStreaks",
+      "line": 1620,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "renderReadout",
+      "line": 1672,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "const",
+      "name": "PLAYER_TAB_MAP",
+      "line": 2090,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "buildPlayerHead",
+      "line": 2121,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "renderPlayerInfo",
+      "line": 2140,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "groupHonorChips",
+      "line": 2176,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "archiveFichaParagraph",
+      "line": 2234,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "seasonTotalsNote",
+      "line": 2647,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "renderResumenSeasons",
+      "line": 2657,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "scoringStreaksFor",
+      "line": 2790,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "const",
+      "name": "CMP_DISTINCT",
+      "line": 4632,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "hexHsl",
+      "line": 4633,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "cmpColorsCollide",
+      "line": 4643,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "cmpAssignColors",
+      "line": 4656,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "const",
+      "name": "HISTORIA_XICON",
+      "line": 5452,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "buildHistoriaLanding",
+      "line": 5461,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "buildHistoriaHero",
+      "line": 5500,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "const",
+      "name": "JUGADORES_XICON",
+      "line": 5515,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "buildJugadoresLanding",
+      "line": 5525,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "buildJugadoresHero",
+      "line": 5551,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "restructurePremios",
+      "line": 5569,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "const",
+      "name": "LIGA_ICON",
+      "line": 5615,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "buildLigaAccordionSkin",
+      "line": 5623,
       "file": "web/js/tabs.js"
     }
   ]

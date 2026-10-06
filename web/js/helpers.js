@@ -65,6 +65,22 @@ function showView(sec,view,opts){
   }
   VIEW_NOW[sec]=now;
   if(sec==='archivo'&&now==='calidad') openDQ();   /* index/data_quality.json is fetched only here and on a player page */
+  /* PHASE_19 (owner-approved, redesign-v2): the real "jugador" page (a detail-only
+     view, VIEW_MAP.jugadores's own detail:['jugador','#playerPage']) gets its own
+     back-link/avatar/name header (tabs.js buildPlayerHead()) instead of the
+     section's shared "JUGADORES" .phead/.subnav every other Jugadores view shows --
+     hidden only for this one view, restored for every other (buscar/lideres/salon/
+     .../comparar), same two elements every other section still always shows. */
+  if(sec==='jugadores'){
+    const ph=panel.querySelector(':scope > .phead'), sn=panel.querySelector(':scope > .subnav'), inPlayer=now==='jugador';
+    if(ph) ph.hidden=inPlayer;
+    /* .subnav{display:flex} in the stylesheet outranks the [hidden] attribute
+       (same real specificity-vs-[hidden] gotcha #pfField's own display toggle
+       already works around, player.js renderPlayerIndex()) -- found live, not
+       assumed: the pill row stayed visible with .hidden=true until this was
+       checked against a real screenshot. style.display, not the attribute. */
+    if(sn) sn.style.display = inPlayer ? 'none' : '';
+  }
   syncSubnav(sec,now);
   if(!opts.fromHash && !opts.noHash) setHash(now==='__landing'?sec:sec+'/'+now);
   if(!opts.noScroll){
