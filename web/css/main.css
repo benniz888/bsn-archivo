@@ -1324,6 +1324,11 @@ select{cursor:pointer}
 .teamtile[aria-pressed="true"]{border-color:var(--rojo);box-shadow:0 0 0 1px var(--rojo) inset}
 .teamtile .tn{font-size:var(--fs-2xs);font-weight:600;text-align:center;line-height:1.2}
 .teamtile .tt{font-size:var(--fs-3xs);color:var(--ink-3)}
+/* PHASE_42 (owner-approved, redesign-v2): Desaparecidas-only disambiguation line (city +
+   active years, computed from F) -- same small/muted treatment as .tt right above, own
+   class so Activos' own tile() output (unchanged, no .tts span at all) is never affected
+   by this rule existing. */
+.teamtile .tts{font-size:var(--fs-3xs);color:var(--ink-3);text-align:center;line-height:1.2}
 
 /* ---------- standings ---------- */
 .standhead{display:flex;align-items:baseline;gap:10px;margin:18px 0 6px}

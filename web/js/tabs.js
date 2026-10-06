@@ -1922,10 +1922,39 @@ function tile(k){
     ${crest(k,40,48)}<span class="tn">${esc(f.name.split(' de ')[0])}</span>
     <span class="tt">${f.won.length?f.won.length+'×':'—'}</span></button>`;
 }
+/* PHASE_42 (owner-approved, redesign-v2): Desaparecidas-only, a separate function from
+   tile() rather than an optional flag on it -- tile() stays byte-for-byte what Activos
+   already renders (task's own "do not change... the Activos tiles"), no shared branch
+   that could regress it later. Fixes a real disambiguation gap: tile()'s own name line
+   is f.name.split(' de ')[0], the mascot word only ("Gallitos de la UPR" and "Gallitos
+   de Isabela" both render as just "Gallitos") -- the one real collision among the 21
+   defunct clubs, confirmed by scanning every short name before writing this. City +
+   active years, both straight from F, nothing hardcoded per club -- so this stays
+   correct if F's founded/end ever change (hydrate(), init.js, can overwrite them from
+   franchises.json). founded/end are both "first season"/"last season" is a judgment
+   call, not a literal F field name, but matches how showTeam()'s own phero-sub already
+   phrases the exact same two fields ("fundado {founded} ... desaparecido en {end}") --
+   not a new interpretation invented here. */
+function tileGone(k){
+  const f=F[k];
+  const bits=[];
+  if(f.city) bits.push(esc(f.city));
+  const start=f.founded, end=f.end;
+  let yrs='';
+  if(start!=null&&end!=null) yrs = start===end ? String(start) : start+'–'+end;
+  else if(start!=null) yrs=String(start);
+  else if(end!=null) yrs=String(end);
+  if(yrs) bits.push(yrs);
+  const sub=bits.join(' · ');
+  return `<button class="teamtile" onclick="showTeam('${k}')" aria-pressed="false">
+    ${crest(k,40,48)}<span class="tn">${esc(f.name.split(' de ')[0])}</span>
+    ${sub?`<span class="tts">${sub}</span>`:''}
+    <span class="tt">${f.won.length?f.won.length+'×':'—'}</span></button>`;
+}
 function buildTiles(){
   $('#tilesActive').innerHTML=ACTIVE.slice().sort((a,b)=>F[a].name.localeCompare(F[b].name,'es')).map(tile).join('');
   $('#tilesGone').innerHTML=FKEYS.filter(k=>!F[k].active)
-    .sort((a,b)=>F[a].name.localeCompare(F[b].name,'es')).map(tile).join('');
+    .sort((a,b)=>F[a].name.localeCompare(F[b].name,'es')).map(tileGone).join('');
 }
 function showTeam(k){
   showView('equipos','equipo',{noScroll:true,noHash:true});
@@ -2047,7 +2076,21 @@ function sfAssignZones(players){
 function sfInitials(name){
   return name.replace(/[«»]/g,'').split(/\s+/).filter(Boolean).slice(0,2).map(s=>s[0]).join('').toUpperCase();
 }
+/* PHASE_42 (owner-approved, redesign-v2): owner-reported collision/clipping on this
+   court at 1000px -- SVG <text> has no built-in wrap/truncate, so a long name (e.g.
+   "Alvarado Sierra, Omar J.", "Mojica Izquierdo, Javier") just kept drawing past its
+   own backing rect, bleeding into whatever sat nearby. A hard character budget (fit to
+   the real rect width now used for every zone, not the old 84/92px binary split) plus
+   an ellipsis is the fix; the full name is never actually lost -- kept in a <title> on
+   the group so a screen reader or a hover tooltip still gets it whenever truncation
+   actually fires. Layout only: still the same 5 real players, same real zone/position
+   data, same ppg -- sfAssignZones()/the data this draws from is untouched. */
+function sfFit(name,maxChars){
+  if(name.length<=maxChars) return {text:name,truncated:false};
+  return {text:name.slice(0,maxChars-1).trimEnd()+'…',truncated:true};
+}
 function sfCourtSvg(f,players){
+  const w=96;
   const groups=sfAssignZones(players).map(p=>{
     const [cx,cy]=SF_ZONE[p.zone];
     const gap=p.bsnpr_id==null;
@@ -2055,14 +2098,14 @@ function sfCourtSvg(f,players){
     const posLabel=gap?'sin confirmar':esc(p.position||p.zone);
     const posColor=gap?'var(--rojo)':'var(--ink-3)';
     const dash=gap?' stroke="var(--court-line)" stroke-width="1.5" stroke-dasharray="3,2"':'';
-    const w=p.name.length>15?92:84;
+    const fit=sfFit(p.name,17);
     return `<g>
+      ${fit.truncated?`<title>${esc(p.name)}</title>`:''}
       <circle cx="${cx}" cy="${cy}" r="16" fill="${fill}"${dash}/>
       <text x="${cx}" y="${cy+5}" text-anchor="middle" font-family="Inter,sans-serif" font-weight="800" font-size="11" fill="${ink}">${esc(sfInitials(p.name))}</text>
-      <rect x="${cx-w/2}" y="${cy+20}" width="${w}" height="40" rx="6" fill="var(--deep)" opacity=".94"/>
-      <text x="${cx}" y="${cy+33}" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700" font-size="9.5" fill="var(--ink)">${esc(p.name)}</text>
-      <text x="${cx}" y="${cy+45}" text-anchor="middle" font-family="Inter,sans-serif" font-weight="${gap?700:400}" font-size="8" fill="${posColor}">${posLabel}</text>
-      <text x="${cx}" y="${cy+57}" text-anchor="middle" font-family="Inter,sans-serif" font-weight="800" font-size="9" fill="var(--flag-ink)">${p.ppg} pts</text>
+      <rect x="${cx-w/2}" y="${cy+20}" width="${w}" height="32" rx="6" fill="var(--deep)" opacity=".94"/>
+      <text x="${cx}" y="${cy+33}" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700" font-size="9" fill="var(--ink)">${esc(fit.text)}</text>
+      <text x="${cx}" y="${cy+45}" text-anchor="middle" font-family="Inter,sans-serif" font-weight="${gap?700:400}" font-size="7.5" fill="${posColor}">${posLabel} · <tspan fill="var(--flag-ink)" font-weight="800">${p.ppg} pts</tspan></text>
     </g>`;
   }).join('');
   return `<svg viewBox="0 0 300 260" aria-hidden="true">

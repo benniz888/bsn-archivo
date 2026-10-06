@@ -8046,3 +8046,54 @@ reconstruction mechanism used to verify every step are in `docs/specs/app_split_
   1000px + 390px, zero console/page errors. `pytest`: 528 passed, 1
   xfailed, 1 failed (same pre-existing `test_web_text` byte-diff,
   unrelated). `web/index.html` `?v=` hashes regenerated.
+
+- **PHASE_42 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Two unrelated fixes, both layout-only. (A) Desaparecidas tile
+  disambiguation: `tile()`'s own name line (`f.name.split(' de ')[0]`,
+  the mascot word only) made "Gallitos de la UPR" and "Gallitos de
+  Isabela" both render as plain "Gallitos" — the one real collision
+  among the 21 defunct clubs (confirmed by scanning every short name
+  before writing anything). New `tileGone(k)`, a separate function from
+  `tile()` rather than a shared flag — `tile()` itself, and therefore
+  every Activos tile, is byte-for-byte unchanged — adds a computed city
+  + active-years line (`F`'s own `city`/`founded`/`end` fields, nothing
+  hardcoded per club; `founded`/`end` is a judgment call for "first/last
+  season," matching how `showTeam()`'s own `phero-sub` already phrases
+  the same two fields). All 21 real current secondary lines confirmed
+  live, zero collisions. (B) Starting-five court label fix: SVG `<text>`
+  has no native wrap/truncate, so a long name (the task's own reported
+  "Alvarado Sierra, Omar J." vs "Shannon Dogan, Terrence",  "Mojica
+  Izquierdo, Javier" clipped — all three found together on the SAME
+  real roster, Bayamón 2013) just kept drawing past its backing rect.
+  New `sfFit()`: a character-budget truncation (17 chars, fit to a
+  single consistent 96px rect width replacing the old binary 84/92px
+  split) with an ellipsis; the untruncated name is never lost — kept
+  verbatim in a new `<title>` on the SVG group whenever truncation
+  actually fires. Combined the old separate position-line and points-
+  line into one ("Delantero · 17.3 pts"), which also reduced total
+  label height instead of growing it. `sfAssignZones()`/the real
+  per-player data this draws from (`SF_DATA`, which player, which
+  position, which ppg) is untouched — layout only. Verified two ways:
+  (1) geometry — `getBBox()` on every rendered name `<text>` vs its own
+  backing `<rect>`, and a full pairwise rect-overlap check, across 4
+  real rosters (Bayamón 2013 and Quebradillas 2012 — both reported
+  names; San Germán 2009 — the other reported name; Ponce 2001 — the
+  single longest real name in any starting-five file, 31 characters) —
+  zero text-exceeds-rect, zero rect-overlap, confirmed device-
+  independent since the court is one fixed 300×260 viewBox scaled by
+  CSS, not re-laid-out per width; (2) live screenshots + zero console/
+  page errors, Chromium + WebKit, dark + light, 390/768/1000/1280px, all
+  4 teams. New `tests/test_equipos_gone_tiles.py` (6 tests): all 21
+  defunct tiles get a non-empty secondary line, no two collide, the
+  known Gallitos pair is confirmed now-distinguished, and the computed-
+  not-hardcoded source shape is pinned. `OWNERS`/`RETIRED`/`crest()`/
+  `crestSVG()`/`sfAssignZones()`/Comparar/`renderSeasonCmp()`/flag-
+  accent tokens/`tests/_web_text.py`'s own splice anchors all untouched
+  (both new functions landed inside the SEG4 region near the end of
+  tabs.js, the same safe spot PHASE_41/41B already used). Baseline: 2
+  new declarations (`tileGone`, `sfFit`), 468 → 470. Verified live,
+  Chromium + WebKit, dark + light, 390/768/1000/1280px, zero console/
+  page errors. `pytest`: 534 passed, 1 xfailed, 1 failed (same
+  pre-existing `test_web_text` byte-diff, unrelated). `web/index.html`
+  `?v=` hashes regenerated. Strings in `/tmp/p42_strings.txt`, pending
+  owner approval before commit.

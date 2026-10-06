@@ -2807,6 +2807,18 @@
       "name": "crestPlate",
       "line": 762,
       "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "tileGone",
+      "line": 1938,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "sfFit",
+      "line": 2088,
+      "file": "web/js/tabs.js"
     }
   ]
 }
