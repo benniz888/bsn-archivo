@@ -7770,3 +7770,76 @@ reconstruction mechanism used to verify every step are in `docs/specs/app_split_
   zero console/page errors. `pytest`: 513 passed, 1 xfailed, 1 failed
   (same pre-existing `test_web_text` byte-diff, unrelated).
   `web/index.html` `?v=` hashes regenerated.
+
+- **PHASE_35 (branch `redesign-v2` — UI restyle).** Read-only duplicate-
+  player survey, no files changed. Ran the real `nickKey()`-shaped
+  nickname-drop signal live against the full 378-entry PINDEX and
+  3,326-row archive, plus 3 other signals (accent/suffix, identical
+  career totals, same-name-different-id). Found exactly 2 high-confidence
+  PINDEX pairs — the known Mario Morales / Mario «Quijote» Morales, and
+  a second real instance of the same bug, Federico López / Federico
+  «Fico» López (identical `gp=446`, years 1981–1997) — both already
+  unified at the archive layer (PXWALK: both naming forms map to the same
+  bsnpr_id, 1584 and 660 respectively, confirmed live) and both entirely
+  uncovered by `player_redirects.json` (wrong layer in principle — that
+  file merges archive ids, not curated PINDEX names; its own source CSV
+  lives under `data/clean/`, off limits). 56 archive-level same-name-
+  different-id groups found too, mostly low-precision common-surname
+  noise (confirmed by year-range overlap, not just name match). Full
+  table + recommendation (a scoped `nickKey()` merge key, not a global
+  `norm()` change) written to `/tmp/p35_dupes.txt`.
+
+- **PHASE_36 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Applied PHASE_35's recommendation: merged the two real nickname-split
+  PINDEX pairs, nickname form winning as the canonical display name
+  (owner-approved default). New `stripNick()`/`nickKey()` (web/js/
+  helpers.js) — `norm()`/`slug()` themselves untouched, confirmed via the
+  declaration baseline. `buildPlayerIndex()`'s `get()` (web/js/player.js)
+  now keys its Map by `nickKey()` and upgrades an already-stored plain
+  name to a later-arriving nickname form (never the reverse) — needed
+  because LEADERS, not HOF, is the first real source array to touch
+  either key in the actual call order, so without an explicit upgrade
+  rule the plain form would have "won" by default, the opposite of the
+  owner's decision. `getIf()` keys by `nickKey()` too. GUARD (live, before
+  any edit): grouped the real PINDEX by the exact `nickKey()` formula —
+  exactly the same 2 groups PHASE_35 found, nothing else, confirmed
+  before touching any file. Four more real lookup sites needed the same
+  key to keep working, found and fixed one at a time by testing the live
+  app rather than assuming: `renderPlayerIndex()`'s search filter
+  (player.js) — a plain-name query no longer substring-matches a merged
+  nickname-form `p.name`; `cmpFind()` and the `#jugadores/jugador/<slug>`
+  route (tabs.js) — same gap, exact-match/exact-slug alone can't bridge a
+  nickname sitting in the middle of the merged name; `playerSlug()`
+  (player.js) — the OLD plain-name URL must still resolve, AND must
+  rewrite itself to the new canonical slug, not silently keep serving the
+  stale one. A fifth, real regression surfaced only by reading the actual
+  screenshots, not just checking for console errors: `cmpPreset()` (the
+  Comparar quick-start chips) kept the RAW preset string in `CMP` instead
+  of resolving it first the way `cmpAdd()` already did — once `cmpFind()`
+  could resolve a name to a *different* canonical form, `CMP_DATA` ended
+  up written under one key and read under another, and the season
+  `<select>` silently stuck on "Cargando…" forever (no thrown error).
+  Fixed by resolving `CMP` entries up front in `cmpPreset()` too, matching
+  `cmpAdd()`'s own established pattern. Confirmed live end to end: PINDEX
+  378 → 376 entries; Buscar finds the one merged card for "Mario Morales",
+  "Quijote", "Federico Lopez", and "Fico" alike; `cmpFind('Mario Morales')`
+  and `cmpFind('Mario «Quijote» Morales')` return the same object (4×MVP,
+  Salón, 14 combined tags); Salón lists 18 entries, not 20; both
+  `mario-morales` and `mario-quijote-morales` (same for Federico) open the
+  identical player page and the URL rewrites itself to the canonical
+  nickname slug. Declaration baseline: 2 new real declarations
+  (`stripNick`, `nickKey`, both `web/js/helpers.js` — the task's own count
+  named only `nickKey`, but `stripNick` is a separate top-level `const`
+  the inventory tool detects independently, so both were hand-appended or
+  the count check would have failed again) — 459 → 461, not 459 → 460.
+  New `tests/test_nick_key.py`: a Python port of `stripNick()`/`nickKey()`
+  (same convention `test_route_slugs.py` already uses for `slug()`),
+  confirming the exact 2 PHASE_35 pairs merge, confirming `Anza, Froilan`
+  vs `Froilan jr.` do NOT (a suffix is evidence of two different real
+  people, not a duplicate), confirming every other PINDEX name is
+  byte-identical under `nickKey()` and plain `norm()`, and pinning the
+  Python port against the real JS source text via `web_text()`. Verified
+  live, Chromium + WebKit, dark + light, 1000px + 390px, zero console/
+  page errors. `pytest`: 518 passed (509 + 5 new + 4 already added since
+  PHASE_27), 1 xfailed, 1 failed (same pre-existing `test_web_text`
+  byte-diff, unrelated). `web/index.html` `?v=` hashes regenerated.

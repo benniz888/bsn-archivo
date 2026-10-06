@@ -2753,6 +2753,18 @@
       "name": "buildLigaAccordionSkin",
       "line": 5623,
       "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "const",
+      "name": "stripNick",
+      "line": 48,
+      "file": "web/js/helpers.js"
+    },
+    {
+      "kind": "const",
+      "name": "nickKey",
+      "line": 49,
+      "file": "web/js/helpers.js"
     }
   ]
 }

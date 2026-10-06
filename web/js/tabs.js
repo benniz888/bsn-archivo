@@ -2257,7 +2257,11 @@ function showPlayer(name,id,season){
   const pt=$('#playerTabs'); if(pt) pt.hidden=false;
   showPlayerTab(season!=null?'temporadas':'resumen');   /* a /season deep link opens on Temporadas, not Resumen */
   loadPlayerExtra(name,id,season);   /* 5D.3b/c — async, fills #playerExtra + the Información/Fuentes panels; season_detail_spec.md §4 */
-  const p=PINDEX.find(x=>norm(x.name)===norm(name));
+  /* PHASE_36: nickKey() fallback -- a caller that still has the old
+     plain-name string (a roster chip built from a data.js array that was
+     never updated to the nickname form, e.g.) needs to land on the same
+     merged card norm() alone would now miss. */
+  const p=PINDEX.find(x=>norm(x.name)===norm(name)) || PINDEX.find(x=>nickKey(x.name)===nickKey(name));
   const host=$('#playerDetail');
   const fh=$('#playerFuentes');
   if(!p){
@@ -4603,8 +4607,14 @@ const CMP_FALLBACK=['var(--azul)','var(--rojo)','var(--ok)'];
 
 function cmpFind(name){
   if(!PINDEX) return null;
+  /* PHASE_36: the nickKey() fallback is what lets cmpAdd('Mario Morales')
+     (the plain form, e.g. CMP_PRESETS' own literal string) still resolve
+     to the merged "Mario «Quijote» Morales" card once that's his only
+     PINDEX entry -- norm() equality/startsWith alone can't, since neither
+     is a substring/prefix of the other once the nickname sits in between. */
   return PINDEX.find(x=>norm(x.name)===norm(name)) ||
-         PINDEX.find(x=>norm(x.name).startsWith(norm(name)));
+         PINDEX.find(x=>norm(x.name).startsWith(norm(name))) ||
+         PINDEX.find(x=>nickKey(x.name)===nickKey(name));
 }
 function cmpColor(p,i){
   const c=Array.from(p.clubs).find(k=>F[k]);
@@ -4764,7 +4774,19 @@ function cmpFromPlayer(name){
 function cmpPreset(a,b){
   showView('jugadores','comparar',{noScroll:true,noHash:true});
   try{ buildCompare(); }catch(e){}
-  CMP=[a,b].filter(n=>cmpFind(n));
+  /* PHASE_36: resolve each preset name FIRST (cmpResolveName(), the same
+     call cmpAdd() already makes) instead of keeping the raw literal string
+     CMP_PRESETS carries -- a real bug this merge exposed: CMP_PRESETS[0]'s
+     own 'Mario Morales' resolves (via cmpFind()'s new nickKey fallback) to
+     the merged "Mario «Quijote» Morales" card, but CMP itself used to keep
+     'Mario Morales' verbatim, so cmpEnsureData()/CMP_DATA got written
+     under THAT key while cmpSeasonSelect() -- reading cmpResolved(name).name,
+     the RESOLVED player's own canonical name -- looked the data up under
+     the nickname key instead. Two different keys for the same real fetch
+     meant the season select never saw its own data land and stayed on
+     "Cargando…" forever. Resolving upfront, the same way cmpAdd() always
+     has, keeps CMP/CMP_DATA/CMP_MODE on one consistent key throughout. */
+  CMP=[a,b].map(n=>cmpResolveName(n)||n).filter(n=>cmpFind(n));
   CMP.forEach(n=>{ CMP_MODE[n]='career'; cmpEnsureData(n).then(drawCompare); });
   if(CMP.length===2) setHash('jugadores/comparar/'+slug(a)+'/'+slug(b));
   drawCompare();
@@ -5780,7 +5802,13 @@ function applyHash(){
        An unknown/mistyped season is silently ignored (normal card, no
        per-season block) — never an error state for a bad deep link. */
     const season = p[3] && /^\d{4}$/.test(p[3]) ? +p[3] : null;
-    const pl=PINDEX&&PINDEX.find(x=>slug(x.name)===c);
+    /* PHASE_36: a merged nickname-form card changes its own canonical slug
+       (mario-quijote-morales, not mario-morales) -- the second clause keeps
+       the OLD plain-name URL resolving to that same card, by comparing c
+       against the slug of the nickname-STRIPPED name instead of a second
+       real property read (stripNick() is already a pure function of
+       x.name, nothing new to look up). */
+    const pl=PINDEX&&(PINDEX.find(x=>slug(x.name)===c) || PINDEX.find(x=>slug(stripNick(x.name))===c));
     if(pl) showPlayer(pl.name,null,season);
     else {
       const q=PSLUG&&PSLUG.get(c);

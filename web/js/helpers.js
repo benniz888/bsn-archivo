@@ -29,6 +29,24 @@ const slug=s=>String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/
   .replace(/[«»"'.]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 const norm=s=>String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
   .replace(/[«»"'.]/g,'').trim();
+/* PHASE_36 (owner-approved, redesign-v2): norm()/slug() strip the «»""''
+   PUNCTUATION a quoted nickname sits in, never the nickname WORD itself --
+   "Mario «Quijote» Morales" and "Mario Morales" normalize to two different
+   strings (confirmed PHASE_35 survey: exactly 2 real PINDEX pairs affected,
+   Mario Morales and Federico "Fico" López, both the SAME real archive
+   person split into two curated cards by this gap). stripNick() drops the
+   whole quoted segment, guillemets or straight quotes, before norm()'s own
+   fold runs; nickKey() is the merge key built on top of it. Used ONLY as
+   buildPlayerIndex()'s own Map key (player.js) -- norm()/slug() themselves,
+   and every other one of their ~50 call sites (search/filter matching, URL
+   slugs, PXWALK lookups, ARIA labels), are completely unchanged. A few
+   lookups that search or route BY NAME still need to find a now-merged
+   entry under its old plain-name form too -- those call stripNick()/
+   nickKey() directly at their own call site (player.js's renderPlayerIndex
+   search filter, tabs.js's cmpFind() and the #jugadores/jugador/<slug>
+   route) rather than this function growing hidden side effects. */
+const stripNick=s=>String(s).replace(/«[^»]*»|"[^"]*"|'[^']*'/g,' ').replace(/\s+/g,' ').trim();
+const nickKey=s=>norm(stripNick(s));
 const num=v=>v==null?'—':(typeof v==='number'?v.toLocaleString('es-PR'):v);
 const dash=v=>(v==null||v==='')?'—':v;
 const pct=v=>v==null?'—':('.'+String(Math.round(v*1000)).padStart(3,'0'));
