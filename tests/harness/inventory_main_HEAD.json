@@ -2765,6 +2765,42 @@
       "name": "nickKey",
       "line": 49,
       "file": "web/js/helpers.js"
+    },
+    {
+      "kind": "const",
+      "name": "NUM_WORDS_ES",
+      "line": 63,
+      "file": "web/js/helpers.js"
+    },
+    {
+      "kind": "const",
+      "name": "NUM_WORDS_ES_APOCOPE",
+      "line": 67,
+      "file": "web/js/helpers.js"
+    },
+    {
+      "kind": "const",
+      "name": "numWordsEs",
+      "line": 68,
+      "file": "web/js/helpers.js"
+    },
+    {
+      "kind": "const",
+      "name": "EQUIPOS_XICON",
+      "line": 5603,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "buildEquiposLanding",
+      "line": 5609,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "buildEquiposHero",
+      "line": 5637,
+      "file": "web/js/tabs.js"
     }
   ]
 }

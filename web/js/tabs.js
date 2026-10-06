@@ -5451,7 +5451,20 @@ const VIEW_DESC={
   equipos:{
     activos:'Los doce clubes que juegan hoy.',
     duenos:'Quién es el apoderado de cada franquicia.',
-    desaparecidos:'Veinte clubes que ya no existen, con su historial de finales.',
+    /* PHASE_40 (owner-approved, redesign-v2): a getter, not a plain string -- VIEW_DESC
+       is a top-level object literal, evaluated the instant tabs.js runs, well before
+       web/index.html's own inline script defines FKEYS (the exact GRID_CLUBS/FKEYS
+       timing trap games.js's own comment documents) and before hydrate() (init.js) has
+       had a chance to overwrite any F[k].active flag from web/data/index/franchises.json.
+       A getter defers the count to each real read, which only ever happens from inside
+       buildEquiposLanding() at full-boot time (post-hydration) -- so this reads Object.
+       values(F) directly rather than FKEYS, sidestepping the trap instead of relying on
+       call-order luck. */
+    get desaparecidos(){
+      const n=Object.values(F).filter(x=>!x.active).length;
+      const w=numWordsEs(n,true);
+      return w[0].toUpperCase()+w.slice(1)+' clubes que ya no existen, con su historial de finales.';
+    },
     retirados:'Camisetas que ningún otro jugador del club volverá a usar.'
   },
   archivo:{
@@ -5577,6 +5590,73 @@ function buildJugadoresHero(){
     <h1>Jugadores</h1>
     <p class="lede">El índice reúne a todos los jugadores que este archivo puede nombrar con fuente. Cada ficha dice también qué no se sabe de él.</p>`;
 }
+/* PHASE_40 (owner-approved, redesign-v2): Equipos' own landing, same mechanism as
+   buildHistoriaLanding()/buildJugadoresLanding() above -- branches in buildLanding()
+   below ONLY for sec==='equipos'; Archivo (out of scope this pass) keeps the generic
+   mega-feat+landgrid path. Real icon paths are generic line icons for a sub-view (not
+   a club crest -- no real-data concern the way crest() has one); real descriptions are
+   VIEW_DESC.equipos's own existing copy (its own desaparecidos entry is a getter, see
+   above); order already carries the real [slug,label] pairs VIEW_MAP.equipos produced
+   (activos/duenos/desaparecidos/retirados). All 3 stat numbers are FKEYS/F-derived,
+   none typed in -- the PHASE_39 survey's own GAPS#1 finding (copy said "veinte", real
+   count is 21) is exactly the class of bug a hardcoded number here would repeat. */
+const EQUIPOS_XICON={
+  activos:'M4 21V10l8-6 8 6v11M9 21v-7h6v7',
+  duenos:'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4 20c0-4 3.5-7 8-7s8 3 8 7',
+  desaparecidos:'M3 7l9-4 9 4-9 4-9-4ZM3 7v10l9 4 9-4V7M12 11v10',
+  retirados:'M8 4h8l1 3-2 2v12H9V9L7 7Z'
+};
+function buildEquiposLanding(order){
+  const wrap=el('div');
+  const activeN=FKEYS.filter(k=>F[k].active).length, goneN=FKEYS.length-activeN;
+  /* PHASE_40B (owner-approved, redesign-v2): the #3 stat's number AND its own
+     gap clause both come from champOf (web/index.html's DERIVED section) --
+     the real per-year "who won" map every YEARS entry gets checked against
+     when a champion is recorded, not a second, separately-derived count that
+     could silently drift from it. missingYears is the same YEARS/champOf
+     pair as champOf's own build; the clause text is 0/1/N-driven, never
+     hardcoded -- today that's exactly [1953] (no source consulted records a
+     1953 champion, per NOTES[1953] above), the ONE already-known case. */
+  const titlesN=Object.keys(champOf).length;
+  const missingYears=YEARS.filter(y=>!(y in champOf));
+  const titlesGap = missingYears.length===0 ? ''
+    : missingYears.length===1 ? ' — falta el de '+missingYears[0]
+    : ' — faltan '+missingYears.length;
+  const stats=el('div','stats3');
+  stats.innerHTML=`
+    <div class="stat solid"><div class="n mono">${activeN}</div>
+      <div class="l">Clubes activos en el BSN hoy</div></div>
+    <div class="stat"><div class="n mono">${goneN}</div>
+      <div class="l">Franquicias que ya no existen, con su historial de finales</div></div>
+    <div class="stat"><div class="n mono">${titlesN}</div>
+      <div class="l">Campeonatos en el archivo${esc(titlesGap)}</div></div>`;
+  wrap.appendChild(stats);
+  const h2=el('h2','sec'); h2.textContent='Explora Equipos'; wrap.appendChild(h2);
+  const grid=el('div','explore');
+  const D=VIEW_DESC.equipos||{};
+  order.forEach(([slug,label])=>{
+    const b=el('button','xcard'); b.type='button';
+    b.innerHTML=`<span class="go" aria-hidden="true">→</span>
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="${EQUIPOS_XICON[slug]||''}" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="t">${esc(label)}</span>
+      <span class="d">${esc(D[slug]||'')}</span>`;
+    b.onclick=()=>showView('equipos',slug);
+    grid.appendChild(b);
+  });
+  wrap.appendChild(grid);
+  return wrap;
+}
+function buildEquiposHero(){
+  const head=document.querySelector('#equipos .phead'); if(!head) return;
+  head.classList.add('hhero');
+  const activeN=FKEYS.filter(k=>F[k].active).length, goneN=FKEYS.length-activeN;
+  const wa=numWordsEs(activeN), wg=numWordsEs(goneN);
+  const lede=wa[0].toUpperCase()+wa.slice(1)+' clubes activos y '+wg
+    +' que ya no existen. Cada uno con su historial de finales.';
+  head.innerHTML=`<div class="eyebrow">EL ARCHIVO DEL BSN</div>
+    <h1>Equipos</h1>
+    <p class="lede">${lede}</p>`;
+}
 /* PHASE_11 (owner-approved, redesign-v2): Premios subtab split (item 9) -- real markup
    surgery on buildViews()'s already-built #historia .view[data-view="premios"] (moves
    existing element references, appends/creates none of the underlying data containers --
@@ -5659,6 +5739,7 @@ function buildLigaAccordionSkin(){
 function buildLanding(sec,order){
   if(sec==='historia') return buildHistoriaLanding(order);
   if(sec==='jugadores') return buildJugadoresLanding(order);
+  if(sec==='equipos') return buildEquiposLanding(order);
   const wrap=el('div','landing');
   const feat=el('div','mega-feat'); feat.innerHTML=megaFeat(NAV_MENU[sec].feat);
   wrap.appendChild(feat);

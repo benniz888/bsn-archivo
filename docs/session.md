@@ -7843,3 +7843,100 @@ reconstruction mechanism used to verify every step are in `docs/specs/app_split_
   page errors. `pytest`: 518 passed (509 + 5 new + 4 already added since
   PHASE_27), 1 xfailed, 1 failed (same pre-existing `test_web_text`
   byte-diff, unrelated). `web/index.html` `?v=` hashes regenerated.
+
+- **PHASE_37 (branch `redesign-v2` — UI restyle).** Committed PHASE_36
+  (`c4dd90d`, "Merge nickname-form duplicate players into one entry") —
+  the 5 expected files plus `tests/test_nick_key.py`, `docs/session.md`
+  modified as allowed. Pre-commit hook refreshed `web/index.html`'s `?v=`
+  hashes only. Not pushed.
+
+- **PHASE_39 (branch `redesign-v2` — UI restyle).** Read-only Equipos
+  survey, no files changed. Mapped the section's 4 subviews + team
+  detail (builders/lines/hashes/CSS), traced the data layer (F/VENUES/
+  TEAM_LORE/OWNERS/RETIRED, real coverage counts), and found 5 GAPS —
+  loudest: Equipos' own copy said "veinte" (20) defunct clubs, the real
+  `F` count is 21. 5 MISMATCHES against the finished Historia/Jugadores
+  redesign — the biggest: Equipos' landing never got the `.hhero`+
+  `.explore`/`.xcard` treatment those two sections did (`buildLanding()`
+  still fell through to the pre-redesign generic `.mega-feat`+`.landgrid`
+  path for `sec==='equipos'`), confirmed by that code's own PHASE_11/14
+  comments explicitly naming Equipos as out of scope at the time. Ran the
+  PHASE_35 player-duplicate methodology against all 33 franchises: 0
+  accidental splits; 4 same-city candidate pairs, every one already
+  explained by a known lineage/relocation (one, Grises/Caciques de
+  Humacao, already flagged unresolved in-code as D-045). Proposed
+  PHASE_40-43, ordered by impact. Full report `/tmp/p39_equipos_survey.md`,
+  strings `/tmp/p39_equipos_strings.txt`, 20 screenshots, zero console
+  errors.
+
+- **PHASE_40 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Gave Equipos the hero+landing treatment PHASE_39 flagged as its
+  biggest gap, mirroring `buildHistoriaHero()`/`buildHistoriaLanding()`
+  and `buildJugadoresHero()`/`buildJugadoresLanding()` exactly — new
+  `buildEquiposHero()`/`buildEquiposLanding()`/`EQUIPOS_XICON` (web/js/
+  tabs.js), wired into `buildLanding()`'s existing branch pattern. Zero
+  new CSS: `.hhero`/`.stats3`/`.explore`/`.xcard` were already generic,
+  unscoped classes. `buildEquiposHero()` called from `finishBoot()`
+  (web/js/init.js), same place as the other two. Fixed GAPS#1 (the
+  "veinte"/21 copy bug) as part of the same pass, computed, not
+  hardcoded: new `numWordsEs()`/`NUM_WORDS_ES`/`NUM_WORDS_ES_APOCOPE`
+  (web/js/helpers.js), a tiny 0-39 Spanish number-words lookup with the
+  one masculine-apocope case this page's own copy actually needs
+  (veintiuno → veintiún before "clubes"). `VIEW_DESC.equipos.
+  desaparecidos` is now a getter, not a plain string — it has to be:
+  `VIEW_DESC` is a top-level object literal evaluated the instant
+  tabs.js runs, before `web/index.html`'s own inline script defines
+  `FKEYS` (the exact timing trap `games.js`'s own GRID_CLUBS comment
+  already documents) and before `hydrate()` (init.js) can overwrite any
+  `F[k].active` flag from `franchises.json` — a getter defers the read
+  to buildEquiposLanding()'s own call, well after both. Real bug found
+  and fixed during this same pass, not anticipated going in: my first
+  attempt inserted the new helpers.js code immediately after `pct()`,
+  which broke `tests/_web_text.py`'s page-reconstruction splice — `pct()`
+  own exact trailing text is the literal anchor the splice uses to find
+  where the next original segment gets re-inserted, so anything appended
+  right after it shifts that boundary. Surfaced as 31 unrelated-looking
+  pytest failures (every test that calls `web_text()`, not just the one
+  frozen byte-diff test everyone expects to fail) — diagnosed by reading
+  `tests/_web_text.py`'s `_js_segments()`/`_INSERTION_ORDER` machinery
+  directly, confirmed pre-existing-only via a disposable `git worktree`
+  at clean HEAD, fixed by moving the new block earlier (before `num`/
+  `dash`/`pct`, right after `nickKey()`), which leaves `pct()` as the
+  segment's exact tail again. 3 stats on the landing (active clubs,
+  defunct franchises, total championships — 12/21/96), all FKEYS/F-
+  derived, none typed in. Baseline: 6 new declarations (`NUM_WORDS_ES`,
+  `NUM_WORDS_ES_APOCOPE`, `numWordsEs`, `EQUIPOS_XICON`,
+  `buildEquiposLanding`, `buildEquiposHero`) hand-appended, 461 → 467.
+  `showTeam()`/`buildTiles()`/`buildOwners()`/`buildRetiredNums()`/
+  `crest()`/data.js/Historia/Jugadores/Comparar untouched; team detail
+  (`#equipos/equipo/<key>`) re-verified working unchanged underneath the
+  new hero. Verified live, Chromium + WebKit, dark + light, 1000px +
+  390px, zero console/page errors. `pytest`: 518 passed, 1 xfailed, 1
+  failed (same pre-existing `test_web_text` byte-diff, unrelated).
+  `web/index.html` `?v=` hashes regenerated. Strings in
+  `/tmp/p40_strings.txt`, pending owner approval before commit. Not
+  committed.
+
+- **PHASE_40B (branch `redesign-v2` — UI restyle).** Copy fix on top of
+  uncommitted PHASE_40, not committed. Dropped "completo" from Equipos'
+  lede and stats3 label #2. Stat #3's number and its own gap clause now
+  both come from `champOf` (web/index.html's DERIVED section) instead of
+  a separate `won.length` sum — the same per-year "who won" map every
+  `YEARS` entry gets checked against, so the count and the "missing"
+  list can't drift apart. Computed missing-season list: exactly `[1953]`
+  (matches `NOTES[1953]`, already known), so no stop was needed. Label
+  changed to "Campeonatos en el archivo — falta el de 1953" (0/1/N-
+  branched, not hardcoded). New `tests/test_equipos_copy.py`: ports the
+  champion-year computation from `web/js/data.js`'s own `won:[...]`
+  literals (confirming the static baked-in data alone already gives
+  `[1953]` — live `hydrate()` only ever unions more won-years in, never
+  removes any, re-confirmed live this phase), asserts the real gap-
+  clause source lines are present verbatim, and asserts no Equipos copy
+  (static `.phead`, `buildEquiposHero()`, `buildEquiposLanding()`,
+  `VIEW_DESC.equipos`) contains "completo" or "veinte". No new top-level
+  declarations — baseline stays 467. Verified live, Chromium + WebKit,
+  dark + light, 1000px + 390px, zero console/page errors; stat #3's
+  longer label confirmed non-clipping at 390px. `pytest`: 521 passed, 1
+  xfailed, 1 failed (same pre-existing `test_web_text` byte-diff,
+  unrelated). `web/index.html` `?v=` hashes regenerated. Strings in
+  `/tmp/p40b_strings.txt`, pending owner approval before commit.

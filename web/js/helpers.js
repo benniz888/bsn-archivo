@@ -47,6 +47,26 @@ const norm=s=>String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/
    route) rather than this function growing hidden side effects. */
 const stripNick=s=>String(s).replace(/«[^»]*»|"[^"]*"|'[^']*'/g,' ').replace(/\s+/g,' ').trim();
 const nickKey=s=>norm(stripNick(s));
+/* PHASE_40 (owner-approved, redesign-v2): Equipos' own computed lede ("Doce clubes
+   activos y veintiuno que ya no existen...") needs its counts spelled out in Spanish
+   words, not digits -- a tiny 0-39 lookup (falls back to the digit above that) rather
+   than a general number-to-words algorithm, since nothing in this archive ever counts
+   past the 30s. beforeNoun=true asks for the masculine-apocope form (veintiuno ->
+   veintiún) needed only when the number directly modifies a plural noun like "clubes"
+   (VIEW_DESC.equipos.desaparecidos, tabs.js) -- the lede itself uses the number as a
+   standalone pronoun ("y veintiuno que ya no existen"), where no apocope applies.
+   Placed here, before num/dash/pct, rather than after them: tests/_web_text.py
+   splices web/index.html back together using pct()'s own exact trailing text as the
+   anchor for the next original segment -- inserting after pct() breaks that anchor,
+   found live the first time this landed there (every test that calls web_text(),
+   not just the frozen byte-diff one, failed). */
+const NUM_WORDS_ES=['cero','uno','dos','tres','cuatro','cinco','seis','siete','ocho','nueve','diez',
+  'once','doce','trece','catorce','quince','dieciséis','diecisiete','dieciocho','diecinueve','veinte',
+  'veintiuno','veintidós','veintitrés','veinticuatro','veinticinco','veintiséis','veintisiete','veintiocho','veintinueve','treinta',
+  'treinta y uno','treinta y dos','treinta y tres','treinta y cuatro','treinta y cinco','treinta y seis','treinta y siete','treinta y ocho','treinta y nueve'];
+const NUM_WORDS_ES_APOCOPE={1:'un',21:'veintiún',31:'treinta y un'};
+const numWordsEs=(n,beforeNoun)=>(!Number.isInteger(n)||n<0||n>39) ? String(n)
+  : (beforeNoun && NUM_WORDS_ES_APOCOPE[n]) || NUM_WORDS_ES[n];
 const num=v=>v==null?'—':(typeof v==='number'?v.toLocaleString('es-PR'):v);
 const dash=v=>(v==null||v==='')?'—':v;
 const pct=v=>v==null?'—':('.'+String(Math.round(v*1000)).padStart(3,'0'));
