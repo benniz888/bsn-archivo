@@ -1137,6 +1137,38 @@ h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
 .tblwrap{position:relative;overflow:auto;border:1px solid var(--line);border-radius:var(--r);
   margin-top:var(--sp-3);background:var(--deep);-webkit-overflow-scrolling:touch}
 .tblwrap.tall{max-height:min(68vh,600px)}
+/* PHASE_52A (owner-approved, redesign-v2): Calendario's own scroll affordance
+   (calScrollAffordance(), tabs.js) -- scoped to #calendarBox so every other table's
+   .tblwrap in the app (buildTable() is shared) keeps its current, unchanged behavior.
+   The fade is an empty ::after (never read as content by a screen reader, no aria-
+   hidden needed), the same --deep the wrapper's own background already uses so it
+   blends rather than introducing a new color; it only shows while has-more-right is
+   toggled on (there IS more to scroll to, checked live, not fixed at build time). The
+   focus ring only appears when the wrapper is actually tabbable -- tabIndex is -1,
+   not 0, whenever the table fits without scrolling (set in JS), so this rule alone
+   can't make an unscrollable table keyboard-stoppable. */
+#calendarBox .tblwrap.has-more-right::after{content:"";position:absolute;top:0;right:0;bottom:0;
+  width:28px;background:linear-gradient(to right,transparent,var(--deep));pointer-events:none}
+#calendarBox .tblwrap:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
+/* PHASE_52B (owner-approved, redesign-v2): at 390px the Formato column's own real
+   text (up to 91 characters, "Desempate y repechaje del 10 al 12 de julio...") wrapped
+   inside the shared td.name's 150px min-width -- up to 6 lines (measured live, line-
+   counted via Range.getClientRects(), not guessed from row height: 5/3/6 lines for the
+   table's 3 real rows), inflating that row far past its neighbors and leaving the
+   other, single-line cells in the same row looking stranded in empty vertical space.
+   Scoped to #calendarBox (buildTable()'s own shared td.name min-width:150px, used by
+   every other table in the app, is untouched) -- a wider min-width so the real longest
+   Formato string (measured live, 564px at this table's own font/weight) wraps to at
+   most 2 lines (confirmed 2/2/2, same line-counting method, after widening to 350px --
+   300px was tried first and left 2 of the 3 rows at 3 lines); text-overflow
+   is never set here, so no word is ever clipped, only wrapped, same as the shared
+   rule's own white-space:normal. vertical-align:top on every cell in this table (not
+   just Formato) so a short single-line cell in the same row as a 2-line Formato cell
+   sits flush with its own row's top instead of floating centered in now-taller rows --
+   this is the "align cells sensibly" fix: the row is still exactly as tall as its own
+   tallest cell needs (Formato), nothing shrinks, but nothing else floats either. */
+#calendarBox td.name{min-width:350px}
+#calendarBox td{vertical-align:top}
 table{border-collapse:collapse;width:100%;font-size:var(--fs-xs);min-width:360px}
 th{background:var(--raise);color:var(--ink-2);font-weight:700;font-size:var(--fs-3xs);letter-spacing:.06em;
   text-transform:uppercase;text-align:left;padding:6px 9px;border-bottom:1px solid var(--line);white-space:nowrap}
@@ -1225,6 +1257,30 @@ select{cursor:pointer}
 .filters>*{flex:0 1 auto;width:auto;min-width:120px}
 .field{display:flex;flex-direction:column;gap:4px}
 .field label{font-size:var(--fs-3xs);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+/* PHASE_52A (owner-approved, redesign-v2): A la medida's own Desde/Hasta pair
+   (#qbControls, buildQB() in tabs.js) used to be two separate .field children of
+   .filters -- at 390px Contiene+Desde fit one row but Hasta, alone, had nothing left
+   to pair with and wrapped to its own row by itself (found live: Desde/Hasta both
+   rendered at 120px, not their own inline max-width:104px, since .filters>* 's
+   min-width:120px above wins that conflict -- a min-width/max-width mismatch, not
+   really a layout bug on its own, but worth clearing up while this is already being
+   restructured). Wrapping them in one .qb-range div makes them ONE flex item from
+   .filters' own point of view, so they always wrap together, never split; each input
+   also gets a 44px floor, matching this engagement's own tap-target discipline. */
+#qbControls .qb-range{display:flex;gap:8px;flex:0 0 auto}
+#qbControls .qb-range .field{flex:1 1 90px;min-width:90px;max-width:130px}
+#qbControls .qb-range input{min-height:44px}
+/* PHASE_52A: the real cause of A la medida's uneven result-table row heights -- any
+   wide ("name") column wraps onto several lines when its content is long enough
+   (white-space:normal, set generically by buildTable() for every c.wide column); the
+   temporadas dataset's own Nota column is the worst offender, long enough on some
+   years to wrap 2-3 lines while sitting scrolled out of view at phone width, inflating
+   just that one row with no visible cause. Capped to a single line here, scoped to
+   #qbResult only (buildTable()'s own shared td.name rule, used by every other table
+   in the app, is untouched) -- the full text is never removed from the DOM (still
+   selectable, still in the unchanged CSV export); a native title tooltip is added in
+   JS (qbApplyTruncationTitles(), tabs.js) only on cells that actually truncate. */
+#qbResult td.name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}
 .btn{background:var(--raise);border:1px solid var(--line);color:var(--ink);padding:9px var(--sp-3_5);
   border-radius:var(--r-sm);font-size:var(--fs-xs);font-weight:600;cursor:pointer;white-space:nowrap}
 .btn:hover{border-color:var(--azul);color:var(--blanco)}
@@ -2018,7 +2074,15 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padding:1px 5px;
   font-size:12.5px;overflow-wrap:anywhere;word-break:break-word}
 .foot{border-top:1px solid var(--line);margin-top:40px;padding:22px 0 40px;color:var(--ink-3);font-size:12.5px}
-.covergrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:var(--sp-2);margin-top:var(--sp-3)}
+/* PHASE_52A (owner-approved, redesign-v2): column counts come from buildCoverage()
+   (tabs.js) via the 2 custom properties it sets inline on this element, computed from
+   COVERAGE.length itself (never a literal column count baked in here) -- see that
+   function's own comment for why. The :not([style*="--cov-cols"]) fallback keeps the
+   original auto-fit behavior if this element is ever rendered without that inline
+   style (defensive only; buildCoverage() always sets it today). */
+.covergrid{display:grid;grid-template-columns:repeat(var(--cov-cols-narrow),1fr);gap:var(--sp-2);margin-top:var(--sp-3)}
+.covergrid:not([style*="--cov-cols"]){grid-template-columns:repeat(auto-fit,minmax(112px,1fr))}
+@media(min-width:900px){.covergrid{grid-template-columns:repeat(var(--cov-cols-wide),1fr)}}
 .cov{background:var(--deep);border:1px solid var(--line);border-radius:var(--r-sm);padding:10px}
 .cov .cy{font-size:12px;color:var(--ink-3);font-weight:600}
 .cov .cb{height:6px;border-radius:3px;margin-top:7px;background:var(--line-soft);overflow:hidden}

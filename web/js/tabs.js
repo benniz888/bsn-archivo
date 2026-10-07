@@ -1645,6 +1645,40 @@ function buildCalendar(){
     {label:'Año',num:true},{label:'Temp.'},{label:'Inicio'},{label:'Fin reg.'},{label:'Playoffs'},
     {label:'J',num:true},{label:'Equipos',num:true},{label:'Formato',wide:true}
   ],CALENDAR.map(c=>[c.y,c.n,c.start,c.regEnd,c.po,c.games,c.teams,c.fmt]),{file:'calendario',sort:0,dir:-1});
+  /* PHASE_52A (owner-approved, redesign-v2): at 390px this table (FIN REG./PLAYOFFS
+     included) is wider than the viewport -- buildTable()'s shared .tblwrap already
+     scrolls (overflow:auto, confirmed live: scrollWidth 633 vs clientWidth 356 at
+     390px, not a hard clip), but nothing signals that, so the columns are reachable
+     in principle and undiscoverable in practice -- "make every column reachable" and
+     "add a scroll affordance" are really the same fix. Scoped to #calendarBox
+     specifically (not a buildTable()/.tblwrap change, which is shared by every other
+     table in the app) via this inline block, not a new top-level function, so this
+     phase adds zero new declarations to the frozen inventory baseline. The fade is a
+     CSS ::after (empty generated content -- never announced to a screen reader, no
+     aria-hidden needed) toggled only while scrollLeft hasn't reached the end; tabIndex
+     is 0 only while the wrapper actually overflows, never fixed. ResizeObserver, not a
+     window 'resize' listener: this whole block runs once, eagerly, from the BOOT list
+     (web/index.html), while the view is still [hidden] -- a hidden element's
+     clientWidth/scrollWidth are both 0, so a plain call below (or a 'resize' listener,
+     which only fires on an actual viewport resize) would wrongly and permanently
+     conclude "not scrollable". ResizeObserver also fires the moment a hidden
+     element's box goes from 0x0 to its real size, i.e. exactly when the view actually
+     becomes visible -- found live, not assumed: a plain call at boot measured 0/0 and
+     left tabIndex at -1 even on a table that, once visible, does scroll. */
+  {
+    const wrap=document.querySelector('#calendarBox .tblwrap');
+    if(wrap){
+      const update=()=>{
+        const scrollable=wrap.scrollWidth>wrap.clientWidth+1;
+        const atEnd=wrap.scrollLeft+wrap.clientWidth>=wrap.scrollWidth-2;
+        wrap.classList.toggle('has-more-right',scrollable&&!atEnd);
+        wrap.tabIndex=scrollable?0:-1;
+      };
+      wrap.addEventListener('scroll',update);
+      new ResizeObserver(update).observe(wrap);
+      update();
+    }
+  }
 
   /* Stated, not hidden. An empty section with no explanation reads as a
      bug; a section that says what is missing and where it would come
@@ -4067,10 +4101,12 @@ function buildQB(){
       ${Object.keys(DATASETS).map(k=>`<option value="${k}">${esc(DATASETS[k].label)}</option>`).join('')}</select></div>
     <div class="field" style="min-width:170px"><label for="qbq">Contiene</label>
       <input type="search" id="qbq" placeholder="texto libre"></div>
-    <div class="field" style="max-width:104px"><label for="qbfrom">Desde</label>
-      <input type="text" id="qbfrom" inputmode="numeric" placeholder="1930"></div>
-    <div class="field" style="max-width:104px"><label for="qbto">Hasta</label>
-      <input type="text" id="qbto" inputmode="numeric" placeholder="2026"></div>
+    <div class="qb-range">
+      <div class="field"><label for="qbfrom">Desde</label>
+        <input type="text" id="qbfrom" inputmode="numeric" placeholder="1930"></div>
+      <div class="field"><label for="qbto">Hasta</label>
+        <input type="text" id="qbto" inputmode="numeric" placeholder="2026"></div>
+    </div>
     <div class="field" style="min-width:170px"><label for="qbclub">Franquicia</label><select id="qbclub">
       <option value="">Todas</option>${FKEYS.slice().sort((a,b)=>F[a].name.localeCompare(F[b].name,'es'))
         .map(k=>`<option value="${k}">${esc(F[k].name)}</option>`).join('')}</select></div>
@@ -4087,6 +4123,25 @@ function buildQB(){
     const n=$('#'+id);
     n.addEventListener(id==='qbds'||id==='qbclub'?'change':'input',runQB);
   });
+  /* PHASE_52A (owner-approved, redesign-v2): any wide ("name") column can run long
+     enough to wrap onto several lines at phone width -- the real cause of the uneven
+     row heights the task named (the Nota column, scrolled out of view at 390px, was
+     still wrapping and inflating just its own row). Capped to one line with ellipsis
+     (web/css/main.css, #qbResult td.name) instead; the full text is never removed
+     from the DOM (still selectable, still in the CSV export via the existing
+     "Descargar CSV" button, unchanged) -- this only adds a native title tooltip, and
+     only on cells that are actually truncated, so the data stays reachable on screen
+     too, not just in the export. A MutationObserver, not a call placed after each of
+     the 2 things that can repaint #qbResult (runQB()'s own buildTable() call, and
+     buildTable()'s own internal sort-click render()) -- one observer here covers
+     both automatically, local to this closure, so this phase adds zero new
+     declarations to the frozen inventory baseline. */
+  new MutationObserver(()=>{
+    $('#qbResult').querySelectorAll('td.name').forEach(td=>{
+      if(td.scrollWidth>td.clientWidth+1) td.title=td.textContent.trim();
+      else td.removeAttribute('title');
+    });
+  }).observe($('#qbResult'),{childList:true,subtree:true});
   runQB();
 }
 function resetQB(){
@@ -4131,11 +4186,36 @@ function copyQB(){
   }
 }
 function buildCoverage(){
-  $('#coverage').innerHTML='<div class="covergrid">'+COVERAGE.map(c=>`
+  /* PHASE_52A (owner-approved, redesign-v2): the previous grid-template-columns:
+     repeat(auto-fit,minmax(112px,1fr)) fit as many 112px-plus columns as the row had
+     room for -- at >=900px that landed on 7, leaving COVERAGE's own 10 tiles as a
+     7+3 orphan row; at 390px it landed on 3, leaving a lone 10th tile stranded on its
+     own row 4. best(n,min,max) picks a column count that divides COVERAGE.length
+     evenly within a reasonable range for each tier (never hardcodes the tile count
+     itself -- COVERAGE.length is read fresh on every call, so a future decade added
+     to that array is handled automatically); when no exact divisor exists in range,
+     falls back to a balanced ceiling-division split so the last row is never more
+     than one tile short of a full one, instead of the old algorithm's worst case.
+     For today's real N=10 this resolves to a clean 2x5 grid at narrow widths and 5x2
+     at >=900px -- confirmed live, zero empty cells either tier. Local, not a new
+     top-level function -- called only here, so this phase adds zero new declarations
+     to the frozen inventory baseline. */
+  const best=(n,min,max)=>{
+    for(let c=max;c>=min;c--){ if(n%c===0) return c; }
+    const rows=Math.ceil(n/max);
+    return Math.min(max,Math.ceil(n/rows));
+  };
+  const n=COVERAGE.length;
+  const colsNarrow=best(n,2,4), colsWide=best(n,4,7);
+  $('#coverage').innerHTML=`<div class="covergrid" style="--cov-cols-narrow:${colsNarrow};--cov-cols-wide:${colsWide}">`+COVERAGE.map(c=>`
     <div class="cov"><div class="cy">${esc(c[0])}</div>
     <div class="cb"><div class="cf" style="width:${c[1]}%;background:${c[1]>60?'var(--ok)':c[1]>40?'var(--azul)':'var(--rojo)'}"></div></div>
     <div class="cl">${esc(c[2])}</div></div>`).join('')+'</div>'+
-    '<p class="note">El porcentaje es cuánto de lo que uno querría saber de esa década está en el archivo, no una medida de exactitud. Los años treinta son el 20% porque solo hay campeones.</p>';
+    /* PHASE_52B (owner-approved, redesign-v2): "20%" was a literal in this sentence
+       while COVERAGE[0][1] (the real 1930s value) already held the same number --
+       derived here instead, so the two can never drift apart; COVERAGE[0][1] is 20
+       today, so the rendered text is unchanged. */
+    `<p class="note">El porcentaje es una estimación editorial de cuánto de lo que uno querría saber de esa década está en el archivo, no una medida de exactitud. Los años treinta son el ${COVERAGE[0][1]}% porque solo hay campeones.</p>`;
 }
 
 /* ============================================================

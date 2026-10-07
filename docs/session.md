@@ -8888,3 +8888,195 @@ reconstruction mechanism used to verify every step are in `docs/specs/app_split_
   phase's own tests. `web/index.html` `?v=` hashes regenerated. No new
   strings. Preview server stopped at the end of this phase. Not
   committed, not pushed, pending owner approval.
+
+- **PHASE_52A (branch `redesign-v2` — UI restyle).** Built, not
+  committed, on top of committed `cbe7109` (PHASE_51/51D/51E). Layout
+  only, zero new user-facing strings (confirmed by grepping the full
+  diff for any added line containing a Spanish-accented character —
+  zero matches). 3 named fixes. (1) A la medida (`#archivo/
+  constructor`): Desde/Hasta used to be 2 separate `.field` children of
+  `.filters` — at 390px Contiene+Desde paired up but Hasta, alone, had
+  nothing left to wrap beside and landed on its own row (found live:
+  both rendered at 120px, not their own inline `max-width:104px`, since
+  `.filters>*`'s `min-width:120px` won that conflict). Wrapped in one
+  new `.qb-range` div (`buildQB()`) so they're one flex item from
+  `.filters`' own point of view — confirmed live, always wrap together
+  now, at 320/390/1000/1280px; each input also got a 44px floor while
+  already being restructured. The result table's uneven row heights
+  (a representative 15-row sample ranged 27.5–125px) were any wide
+  column wrapping onto several lines when its content ran long — the
+  `temporadas` dataset's own Nota column is the worst offender, long
+  enough on some years to wrap while sitting scrolled out of view at
+  phone width, inflating just that one row with no visible on-screen
+  cause. Capped to a single line (`#qbResult td.name`, scoped —
+  `buildTable()`'s own shared rule used by every other table in the app
+  is untouched); the full text is never removed from the DOM (still
+  selectable, still in the unchanged CSV export) and a native `title`
+  tooltip is added via a `MutationObserver` set up once in `buildQB()`
+  — one observer covers both `runQB()`'s own re-renders and
+  `buildTable()`'s internal sort-click re-render. Re-measured live:
+  every row is now 27.5px, at every checked width/theme. (2) Calendario
+  (`#archivo/calendario`): the table (FIN REG./PLAYOFFS included) is
+  wider than the 390px viewport — `buildTable()`'s own `.tblwrap`
+  already scrolls (`overflow:auto`, confirmed live: `scrollWidth` 633
+  vs `clientWidth` 356 at 390px, not a hard clip), but nothing signalled
+  that, so the columns were reachable in principle and undiscoverable
+  in practice — "make every column reachable" and "add a scroll
+  affordance" turned out to be the same fix. An inline block added
+  right after `buildCalendar()`'s own `buildTable()` call toggles a
+  scoped (`#calendarBox` only) CSS fade (an empty `::after`, never
+  announced to a screen reader) and a conditional `tabIndex`/focus
+  ring. A real bug surfaced and was fixed in the same pass:
+  `buildCalendar()` runs once, eagerly, from the `BOOT` list (`web/
+  index.html`), while the view is still `[hidden]` — a hidden element's
+  `scrollWidth`/`clientWidth` are both 0, so the first implementation
+  (a plain call, falling back to a `window` `'resize'` listener)
+  permanently concluded "not scrollable" even once the view was later
+  shown, since nothing ever re-fires just because a hidden element
+  becomes visible. Fixed with a `ResizeObserver` on the wrapper itself,
+  which does fire the moment a hidden element's box goes from 0×0 to
+  its real size — confirmed live: `tabIndex` was `-1` on first real
+  page load before this fix, `0` after. (3) Cobertura (`#archivo/
+  cobertura`): the decade-tile grid (`auto-fit`, `minmax(112px,1fr)`)
+  landed on whatever column count fit the available row width, with no
+  regard for `COVERAGE`'s own real length — a 7+3 orphan row at
+  ≥900px, and (found live while checking "mobile unchanged unless also
+  broken" — it was) a 3+3+3+1 orphan row at 390px too. A local `best(n,
+  min,max)` helper inside `buildCoverage()` picks the largest divisor
+  of `n` within `[min,max]` if one exists, else falls back to a
+  balanced ceiling-division split so the last row is never more than
+  one tile short of a full one; `buildCoverage()` computes it fresh
+  from `COVERAGE.length` on every call (never a literal tile count
+  anywhere in the CSS) and sets 2 custom properties inline on
+  `.covergrid`. For today's real `n=10` this resolves to a clean 2×5
+  grid at narrow widths and 5×2 at ≥900px — confirmed live, zero empty
+  cells either tier, at 320/390/900/1000/1280px. Mid-phase correction:
+  all 3 fixes were first written as new top-level functions
+  (`bestColumnCount`, `calScrollAffordance`, `qbApplyTruncationTitles`)
+  — broke `test_web_asset_wiring_is_intact` and 2 other baseline-
+  dependent tests the moment `pytest` ran, since the task's own
+  explicit instruction this phase was "do not touch `tests/harness/
+  inventory_main_HEAD.json`," and 3 new top-level declarations pushed
+  the real count to 479 against a frozen baseline of 476. Refactored
+  all 3 into local consts/inline blocks/closures (none are top-level
+  declarations any more) — re-ran the inventory tool (output to `/tmp`,
+  correct arg order) and confirmed 476, unchanged, matching the
+  untouched baseline file exactly; re-verified all 3 fixes still work
+  identically live after the refactor (same row heights, same grid
+  shape, same scroll-affordance behavior). `tests/test_archivo_
+  polish.py` added (24 tests): the 3 fixes' own scoped CSS/JS shape,
+  a direct check against the baseline JSON that none of the 3 removed
+  function names leaked back in as top-level declarations, a `git
+  diff` check that the baseline file itself was never touched, and the
+  standing `*/`-in-comment regression guard. Re-ran PHASE_51's own
+  scoped `#dqBox`/`#sourcesBox` tap-target check — still 0/0 at every
+  width/theme, confirming this phase's unrelated changes didn't
+  regress it. `pytest`: 661 passed, 1 xfailed, 1 failed (same
+  pre-existing `test_web_text` byte-diff, unrelated). Verified live,
+  Playwright/Chromium, `serviceWorkers:'block'`, 320/390/1000/1280px,
+  light+dark, all 3 views: zero console errors, zero page-level
+  horizontal overflow (24 checks, all clean). Item 4 (report only, no
+  implementation): Preguntar's `#askInput` placeholder (71 chars) —
+  only 36/71 chars fit at 320px, 43/71 at 390px, both mid-sentence,
+  hard-clipped (no ellipsis on a plain input); Cobertura's decade tiles
+  render no percentage text anywhere today (only an inline bar-fill
+  width), and have no existing dead space for one without adding tile
+  height — full measurements and the 2 realistic placement options in
+  `/tmp/p52_item4_findings.txt`, owner to approve wording separately.
+  `web/index.html` `?v=` hashes regenerated. `tests/harness/
+  inventory_main_HEAD.json` deliberately NOT touched, per this phase's
+  own explicit instruction — confirmed absent from `git diff --name-
+  only`. Not committed, not pushed, pending owner approval.
+
+- **PHASE_52B (branch `redesign-v2` — UI restyle).** Built, not
+  committed, on top of uncommitted PHASE_52A (both still sit on top of
+  committed `cbe7109`). Exactly 2 approved Spanish-string changes, plus
+  a layout-only Calendario fix — confirmed by grepping the full diff
+  for every added/removed line containing a Spanish-accented character
+  across `web/js/tabs.js`/`web/css/main.css`/`web/index.html`: exactly
+  the 2 approved changes, nothing else. (1) `#askInput`'s placeholder
+  shortened from the 3-clause example to just `"¿Quién ganó en 1971?"`
+  — the other 2 clauses ("títulos de Bayamón", "líder de anotación
+  1987") are unaffected, still present as 2 of the 14 `ASK_EXAMPLES`
+  chips rendered below the input. (2) Cobertura's note under the
+  decade grid gained the clause "una estimación editorial de", and its
+  own "20%" — found to be a hardcoded literal, typed independently of
+  `COVERAGE[0][1]` which already held the same number — is now derived
+  (`` `...el ${COVERAGE[0][1]}% porque...` ``), so the two can never
+  drift apart; `COVERAGE[0][1]` is still `20` today, so the rendered
+  text is unchanged on that count, only the new clause is visibly
+  different. (3) Calendario's Formato column (`#calendarBox`): the
+  shared `td.name` rule's own `min-width:150px` let the real Formato
+  text (up to 91 characters) wrap onto as many as 6 lines at 390px
+  (line-counted live via `Range.getClientRects()`, not guessed from
+  row height — 5/3/6 lines across the table's 3 real rows), inflating
+  that row far past its single-line neighbors and leaving them looking
+  stranded in dead vertical space. Scoped to `#calendarBox` (the
+  shared rule itself, used by every other table in the app, is
+  untouched) and widened — `300px` was tried first and still left 2 of
+  3 rows at 3 lines; `350px` gets all 3 down to at most 2 lines (2/2/2
+  at 320/390px, confirmed live, same line-counting method), with rows
+  now uniform (47px each) and no word ever clipped (`text-overflow` is
+  never set on this rule). `vertical-align:top` added on every cell in
+  this table (also `#calendarBox`-scoped) so a short single-line cell
+  sitting in the same row as a 2-line Formato cell sits flush with its
+  own row's top instead of floating centered in the now-taller row.
+  PHASE_52A's own scroll-fade/conditional-`tabIndex` mechanism
+  (`scrollWidth` grew from 633 to 833px at 390px, since the column is
+  now wider) re-verified working after the width change at every
+  checked width: correctly active (fade visible, `tabIndex=0`, focus
+  ring confirmed live) at 320/390px where the table still overflows,
+  correctly inactive at 1000/1280px where it now fits without
+  scrolling (unchanged from before this phase at those 2 widths — the
+  fix only mattered at the 2 narrow ones). Mid-phase incident, caught
+  by the test suite itself: the note-text edit broke a splice-anchor
+  in `tests/_web_text.py` (`"STORAGE+DATA"` segment group, anchored on
+  the OLD note's own closing text) — 29 tests across 7 unrelated-
+  looking files (`test_site_notices.py`, `test_route_slugs.py`,
+  `test_dob_format.py`, etc., all of which depend on the shared
+  `web_text()` reconstruction helper) failed simultaneously the moment
+  `pytest` ran, exactly the class of failure this session's own
+  "splice-anchor discipline" lesson (PHASE_41) warned about. Fixed by
+  updating that one anchor string to the new source's own exact ending
+  (template-literal backtick + the `${COVERAGE[0][1]}%` expression, in
+  place of the old literal `'...20%...'` string) — confirmed the fix by
+  re-running the full suite: 676 passed, 1 xfailed, 1 failed (back to
+  only the known pre-existing `test_web_text` byte-diff). Re-ran the
+  PHASE_51 scoped `#dqBox`/`#sourcesBox` tap-target check — still 0/0
+  at every width/theme. Re-ran the inventory tool (output to `/tmp`,
+  correct arg order) — confirmed 476, unchanged; `tests/harness/
+  inventory_main_HEAD.json` itself untouched, per this phase's own
+  explicit instruction, since zero new top-level declarations were
+  added. `tests/test_archivo_polish.py` updated (one PHASE_52A test
+  that asserted the OLD note text verbatim, now split into a narrower
+  "tile template is unchanged" check, since the note itself is this
+  phase's own approved change — 24 tests, net 0 change in count).
+  `tests/test_archivo_polish_b.py` added (15 tests): both new strings
+  present and the old ones gone, the dropped placeholder clauses
+  confirmed still reachable as `ASK_EXAMPLES` chips, the `aria-label`
+  confirmed untouched, the `20%` derivation and its source cell, the
+  Calendario `min-width`/`vertical-align` rules' own scoping and the
+  explicit absence of `text-overflow`, and a no-new-Spanish scan of
+  this phase's own CSS block. Verified live, Playwright/Chromium,
+  `serviceWorkers:'block'`, 320/390/1000/1280px, light+dark, before
+  (HEAD `cbe7109`) vs. after: zero console errors either state, zero
+  page-level horizontal overflow either state;
+  `/tmp/p52b_matrix.json`. Item 4 (report only, no implementation):
+  the task's own description of `#hubSearch` as "the Archivo landing
+  search" was corrected — it actually lives in `<section id="inicio">`
+  (confirmed directly against the DOM, not assumed), not `#archivo`.
+  Also found, before measuring, that its placeholder is not a single
+  fixed string — an existing fix (`init.js`'s `syncSearchPlaceholder()`,
+  dated PHASE_9) already shortens it below 640px width. At the real
+  shown text ("Prueba: cuándo murió Piculín", 28 characters): fits
+  fully at 390px, but hard-clips to 26/28 characters at 320px (losing
+  "ín") — the existing fix's own comment claims verification only at
+  360/390px, never 320px, and indeed doesn't fully hold there. Full
+  writeup in `/tmp/p52b_hubsearch.txt`. **Known limitation, accepted**:
+  in A la medida on phones, PHASE_52A's row-height fix means truncated
+  cells (Temporadas' Nota/Campeón/Subcampeón, Records' Contexto) are
+  readable in full only via "Descargar CSV" or "Copiar como tabla", not
+  by reading the cell in place without hovering — accepted for a
+  power-user tool, per owner instruction this phase. `web/index.html`
+  `?v=` hashes regenerated. Not committed, not pushed, pending owner
+  approval.
