@@ -1159,7 +1159,23 @@ let VIEW_NOW={};
 let HASH_ECHO=null;
 function syncSubnav(sec,view){
   const nav=document.querySelector('#'+sec+' .subnav'); if(!nav) return;
-  Array.from(nav.children).forEach(b=>b.setAttribute('aria-current',String(b.dataset.view===view)));
+  let active=null;
+  Array.from(nav.children).forEach(b=>{
+    const on=b.dataset.view===view;
+    b.setAttribute('aria-current',String(on));
+    if(on) active=b;
+  });
+  /* PHASE_49: keep the active pill in view on every change (initial load,
+     deep-link/hash entry, back/forward) -- scrollLeft only, never
+     scrollIntoView() (that can move the whole page vertically too). */
+  if(active && nav.scrollWidth>nav.clientWidth){
+    const target=Math.max(0,Math.min(
+      active.offsetLeft-(nav.clientWidth-active.offsetWidth)/2,
+      nav.scrollWidth-nav.clientWidth
+    ));
+    const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    nav.scrollTo({left:target,behavior:reduced?'auto':'smooth'});
+  }
 }
 
 /* ============================================================
@@ -5879,6 +5895,26 @@ function buildEquiposHero(){
   head.innerHTML=`<div class="eyebrow">EL ARCHIVO DEL BSN</div>
     <h1>Equipos</h1>
     <p class="lede">${lede}</p>`;
+}
+/* PHASE_49 (owner-approved, redesign-v2): Archivo's own hero, same mechanism as the
+   4 above -- the PHASE_48 survey's own finding was that Archivo never got this pass
+   at all (no buildArchivoHero() existed, the exact "one section still looks like the
+   old app" gap that survey flagged as its #2 finding). h1/lede reused verbatim from
+   the existing static .phead (web/index.html:444-448) -- no new copy, task's own
+   explicit "NO new Spanish strings" instruction.
+   No eyebrow here, unlike the other 4: the only candidate text that "already covers"
+   an eyebrow slot is the literal "EL ARCHIVO DEL BSN" every other hero already uses
+   -- but Archivo's own h1 is "El archivo", so that eyebrow would read as "EL ARCHIVO
+   DEL BSN" directly above "El archivo", repeating the word immediately. Reusing it
+   here isn't really reuse in spirit, it's a worse result from the same bytes; the
+   task's own wording ("no eyebrow unless an existing string already covers it")
+   reads as permission to omit, not a mandate to force a fit. No new eyebrow string
+   proposed either -- omission needs none. */
+function buildArchivoHero(){
+  const head=document.querySelector('#archivo .phead'); if(!head) return;
+  head.classList.add('hhero');
+  head.innerHTML=`<h1>El archivo</h1>
+    <p class="lede">Pregúntale directamente, o mira qué tiene, qué le falta y de dónde sale cada dato. Un archivo que esconde sus huecos vale menos que uno que los enseña.</p>`;
 }
 /* PHASE_11 (owner-approved, redesign-v2): Premios subtab split (item 9) -- real markup
    surgery on buildViews()'s already-built #historia .view[data-view="premios"] (moves

@@ -8498,3 +8498,129 @@ reconstruction mechanism used to verify every step are in `docs/specs/app_split_
   proposal needs explicit owner approval before commit; `G`/`F/C` are
   reuses of already-established app wording, not new), pending owner
   approval before commit.
+
+- **PHASE_49 (branch `redesign-v2` — UI restyle).** Built, not
+  committed. Two scope items, both on top of uncommitted PHASE_47/47B.
+  (1) Archivo's own hero: the PHASE_48 survey's own #2 finding was that
+  Archivo never got the hero pass the other 4 sections (Historia/
+  Jugadores/Equipos/Juega) already have — no `buildArchivoHero()`
+  existed. Added it (`web/js/tabs.js`), same mechanism as the 4 above —
+  `document.querySelector('#archivo .phead')`, `classList.add('hhero')`,
+  `innerHTML` rewrite — wired into `finishBoot()` (`init.js`) in its own
+  try/catch, right after `buildJuegaHero()`. h1 ("El archivo") and lede
+  are reused **verbatim** from the pre-existing static `.phead`
+  (`web/index.html:444-448`) — no new copy, per the task's own explicit
+  "no new Spanish strings" instruction. No eyebrow: every other hero's
+  eyebrow is the literal "EL ARCHIVO DEL BSN", which directly above an
+  "El archivo" h1 would repeat the word immediately — a worse result
+  from the same bytes, not real reuse. Read as permission to omit (task
+  wording: "no eyebrow unless an existing string already covers it"),
+  not a mandate to force a fit; no new eyebrow string proposed either,
+  since omission needs none. (2) Active-subnav-pill-into-view: at 390px
+  the pill row (`.subnav`, `overflow-x:auto`) scrolls horizontally, and
+  the active pill was clipped or off-screen on deeper Archivo views
+  (Cobertura/Calidad/Calendario/Glosario/A la medida). Fixed inside
+  `syncSubnav(sec,view)` (tabs.js:1160) — confirmed the single, shared
+  implementation used by all 5 `VIEW_SECS` sections (historia/
+  jugadores/equipos/juega/archivo), so the fix applies generically, not
+  per-section. Computes `active.offsetLeft-(nav.clientWidth-
+  active.offsetWidth)/2`, clamped to `[0, nav.scrollWidth-
+  nav.clientWidth]`, and calls `nav.scrollTo({left,behavior})` —
+  `scrollIntoView()` deliberately not used (would risk moving the whole
+  page vertically too). `behavior` is `'auto'` under
+  `prefers-reduced-motion:reduce`, `'smooth'` otherwise. Mid-phase
+  incident: the first `tests/harness/inventory.py` invocation this
+  phase was called with only one argument (`web/js/tabs.js`), but the
+  tool's own signature is `<output.json> <path>...` — the single arg
+  was read as the *output* destination, writing an empty
+  `{"declarations": []}` over the real 6295-line file. Caught
+  immediately via `git diff --stat` (6298 lines changed) before any
+  further work compounded it; nothing of value was lost since the only
+  uncommitted edits on top of HEAD (`51c1ce2`) were this same phase's
+  two changes, still held in-session — owner confirmed, `git checkout
+  -- web/js/tabs.js` restored HEAD's copy, both edits (`buildArchivoHero`
+  + the `syncSubnav` scrollLeft logic) were reapplied by hand, and the
+  full live verification was re-run afterward to confirm the restore was
+  clean. Verified live, Playwright/Chromium, `serviceWorkers:'block'`,
+  dark+light, 320/390/1000px: active pill is fully visible
+  (`btnRect` within `navRect`, computed via `getBoundingClientRect()`,
+  not just eyeballed) on `__landing` and all 6 Archivo views at 390
+  dark, on `__landing`/Cobertura at 320 and 1000 in both themes, and on
+  a `prefers-reduced-motion:reduce` context (Calidad, 390 dark) — 16 of
+  16 pill checks passed, zero failures. Regression screenshots
+  confirmed no change to Historia/Jugadores/Equipos/Juega's own subnav
+  behavior. Zero console/page errors in every context; no page-level
+  horizontal overflow at any width. `tests/test_archivo_hero.py` added
+  (13 tests): hero builder exists, targets the real `.phead`, called
+  from `finishBoot` in its own try/catch; h1/lede byte-match the
+  original static markup; no eyebrow added; static `.phead` has no
+  hardcoded `hhero` class; `syncSubnav`'s scroll fix uses `scrollTo`/
+  `scrollLeft` math (never `scrollIntoView`, comment-stripped before the
+  assertion since the explanatory comment names it), respects
+  `prefers-reduced-motion`, is scoped to the nav element's own
+  `clientWidth`/`scrollWidth`, and is the one shared definition used by
+  all 5 `VIEW_SECS` sections; baseline confirms exactly one new
+  top-level declaration. Baseline: 1 new declaration
+  (`buildArchivoHero`), 474 → 475, hand-appended (not regenerated),
+  `src.verify_clean.Checker().failures == []`. `pytest`: 596 passed, 1
+  xfailed, 1 failed (same pre-existing `test_web_text` byte-diff,
+  unrelated) — up from 583+1+1 in PHASE_47B, net +13 for this phase's
+  own file. `web/index.html` `?v=` hashes regenerated (confirmed
+  unchanged/idempotent after the restore, since the reapplied edits were
+  byte-identical to the pre-corruption versions). No new strings —
+  `/tmp/p49_strings.txt` documents the verbatim reuse and the eyebrow-
+  omission reasoning explicitly. Not committed, not pushed, pending
+  owner approval.
+
+- **PHASE_49B (branch `redesign-v2` — UI restyle).** Fix on top of
+  uncommitted PHASE_49, not committed. The shared `.hhero` decorative
+  ring background (`repeating-radial-gradient` from the top-right
+  corner, `web/css/main.css`) crossed behind Archivo's own lede and
+  grazed the h1 at 1000-1280px — Archivo's lede runs close to the
+  hero's full width (no eyebrow row above it the way Historia/
+  Jugadores/Equipos/Juega have, to shorten the box), confirmed live:
+  Historia's own hero has the identical ring-crosses-lede defect at
+  1280px, but it's a pre-existing, shared condition out of this phase's
+  scope — the fix here is `#archivo`-scoped only, the base `.hhero`
+  rule other 4 sections use is untouched (confirmed live: their own
+  `background-image` computed style is unchanged). `#archivo
+  .hhero{background-image:none}` disables the full-width rings for
+  Archivo specifically; a new `#archivo .hhero::before` layer
+  (`position:absolute;inset:0;z-index:-1`, behind the real text, not on
+  top of it) carries the same ring pattern with a px-based (not
+  percent) mask — `820px` fully transparent, fading to opaque by
+  `920px`. Px, not `%`, because the lede's rendered width is fixed near
+  790px (capped by its own `max-width:70ch`) regardless of hero box
+  width, so a px cutoff keeps the same real text-clearance margin at
+  every breakpoint instead of drifting the way a percentage cutoff
+  would. Net effect, confirmed via `getBoundingClientRect()` on the
+  real h1/lede/hero boxes at both widths: at 1000px (hero ≈904px wide)
+  the rings are reduced to a faint corner sliver (904 only barely
+  clears the 820px floor); at 1280px (hero ≈1088px wide) a clean ~170px
+  ring strip remains, fully clear of the text column. `@media(max-
+  width:899px)` turns the `::before` off entirely — mobile (390px) is
+  pixel-identical to before this fix (the base rule already dropped
+  `background-image` under 640px; between 640-899px rings are now off
+  rather than left unmasked, since no task-specified width in that
+  range needed them and leaving them off there is strictly safer than
+  guessing at an untested in-between mask). `tests/test_archivo_hero.py`
+  gained `TestArchivoHeroArcsConfined` (5 tests): the override disables
+  the shared background for Archivo, the masked `::before` layer exists
+  with the right stacking (`z-index:-1`, `position:absolute`) and mask
+  properties, mobile keeps the old off-state, and the shared `.hhero`
+  rule itself is byte-unchanged (guards against a future edit
+  regressing the other 4 sections) — 18 tests total in the file, up
+  from 13. CSS-only change, no new JS declarations: baseline stays at
+  475, confirmed by rerunning the inventory tool (output path
+  deliberately passed as a `/tmp` file this time, not a repo path,
+  after PHASE_49's own output-path incident). Verified live, Chromium,
+  light+dark, 1000/1280px: zero ring pixels fall within the h1/lede
+  bounding boxes at either width or theme; zero console/page errors.
+  Regression-checked Historia/Jugadores/Equipos/Juega at 1280px dark —
+  their own `.hhero` `background-image` computed style is still the
+  full unscoped `repeating-radial-gradient`, byte-identical to pre-
+  phase. `pytest`: 601 passed, 1 xfailed, 1 failed (same pre-existing
+  `test_web_text` byte-diff, unrelated) — up from 596+1+1, net +5 for
+  this phase's own test additions. `web/index.html` `?v=` hashes
+  regenerated. No new strings (CSS-only). Not committed, not pushed,
+  pending owner approval.

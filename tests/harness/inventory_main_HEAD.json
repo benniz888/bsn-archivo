@@ -2843,6 +2843,12 @@
       "name": "posEs",
       "line": 4703,
       "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "buildArchivoHero",
+      "line": 5913,
+      "file": "web/js/tabs.js"
     }
   ]
 }

@@ -1749,6 +1749,23 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 .hhero{position:relative;padding:var(--sp-6) 0 var(--sp-3);overflow:hidden}
 .hhero{background-image:repeating-radial-gradient(circle at 100% 0%,transparent 0 63px,var(--line) 63px 64.5px)}
 @media(max-width:639px){.hhero{background-image:none}}
+/* PHASE_49B (owner-approved, redesign-v2): Archivo-only -- its lede runs close to the
+   hero's full width (no eyebrow row above it to shorten the box, and the text itself
+   is near the 70ch cap), so the shared ring pattern above crossed behind the lede and
+   even grazed the h1 at 1000-1280px. Scoped to #archivo rather than changing .hhero
+   itself, which the other 4 hero sections still use unmodified. The rings move to a
+   ::before layer (own stacking, z-index:-1, behind the real text) with a px-based (not
+   %) mask: the lede's rendered width is fixed near 790px regardless of hero width, so
+   a px cutoff keeps the same real margin at every breakpoint instead of drifting with
+   viewport width the way a percentage cutoff would. Below 820px of box width nothing
+   shows (900-1000px hero boxes leave too little genuine clearance for a tasteful
+   sliver); at 1280px (hero ~1088px wide) a clean ~170px strip remains on the right. */
+#archivo .hhero{background-image:none}
+#archivo .hhero::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background-image:repeating-radial-gradient(circle at 100% 0%,transparent 0 63px,var(--line) 63px 64.5px);
+  -webkit-mask-image:linear-gradient(to right,transparent 0 820px,#000 920px);
+  mask-image:linear-gradient(to right,transparent 0 820px,#000 920px)}
+@media(max-width:899px){#archivo .hhero::before{display:none}}
 .hhero .eyebrow{display:flex;align-items:center;gap:var(--sp-2);font-size:var(--fs-2xs);text-transform:uppercase;
   letter-spacing:.1em;color:var(--ink-3);font-weight:700;margin-bottom:var(--sp-3)}
 /* PHASE_31: --tri-tick, not --tri -- at 18px there's no room for a
