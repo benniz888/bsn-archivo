@@ -603,7 +603,16 @@ html.standalone .toprow{padding-top:10px;padding-bottom:16px}
 }
 .mega-feat{background:var(--raise);border:1px solid var(--line);border-radius:12px;
   padding:var(--sp-4);display:flex;flex-direction:column;gap:var(--sp-1);align-self:start}
-.mega-feat .fx{font-size:var(--fs-3xs);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+/* PHASE_50 (owner-approved, redesign-v2): --ink-3 measured 4.33:1 on --raise in light
+   theme (below the 4.5:1 floor for this small 11px text) -- found live on Archivo's own
+   landing, the only section currently rendering a real .mega-feat .fx (Historia/
+   Jugadores/Equipos replaced their own mega-feat with .stats3, Juega's landing never
+   had one). Fixed at this shared selector, not a new #archivo-scoped override and not
+   the --ink-3 token itself (used in dozens of other places this phase doesn't audit) --
+   same --ink-2 swap already established by .stat:not(.solid) .l right below in this
+   file, which solved the identical "muted small-caps label on a card background"
+   problem. Re-measured: 8.57:1 dark, 6.52:1 light (matches .fd exactly, same token). */
+.mega-feat .fx{font-size:var(--fs-3xs);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);font-weight:700}
 .mega-feat .fn{font-weight:800;font-size:var(--fs-num);line-height:1;letter-spacing:-.03em;margin-top:2px}
 .mega-feat .ft{font-weight:700;font-size:var(--fs-sm)}
 .mega-feat .fd{color:var(--ink-2);font-size:var(--fs-2xs);line-height:1.4}
@@ -643,6 +652,25 @@ html.standalone .toprow{padding-top:10px;padding-bottom:16px}
 .landcard:hover .lc-t i{transform:translateX(3px)}
 .landcard .lc-d{color:var(--ink-2);font-size:var(--fs-2xs);line-height:1.45}
 @media(prefers-reduced-motion:reduce){.landcard,.landcard .lc-t i{transition:none}.landcard:hover{transform:none}}
+/* PHASE_50 (owner-approved, redesign-v2): Archivo landing's 3 groups (buildArchivoLanding(),
+   tabs.js) -- .archl-label reuses .mega-feat .fx's own token values (same font-size/
+   letter-spacing/weight), just not scoped under .mega-feat since these headings sit
+   outside it; --ink-2 from the start (not --ink-3), so this new text never repeats the
+   contrast failure fixed above. .archl-primary/.archl-compact are plain modifiers on the
+   existing .landcard (no .ic gradient tile -- task's own explicit "reads purple" call-
+   out) -- a top accent in --azul, the same token Refuerzos' .rule and Dirigentes'
+   .coach-card already use for this exact purpose, not a new color. */
+.archl-group{margin-top:var(--sp-5)}
+.archl-label{font-size:var(--fs-3xs);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);font-weight:700;margin:0 0 var(--sp-2)}
+.archl-grid{display:grid;grid-template-columns:1fr;gap:var(--sp-3)}
+@media(min-width:900px){
+  .archl-grid.g2{grid-template-columns:repeat(2,1fr)}
+  .archl-grid.g3{grid-template-columns:repeat(3,1fr)}
+}
+.landcard.archl-primary{border-top:3px solid var(--azul)}
+.landcard.archl-primary .lc-t{font-size:var(--fs-md)}
+.landcard.archl-compact{padding:var(--sp-3)}
+.landcard.archl-compact .lc-t{font-size:var(--fs-xs)}
 
 /* ── Plegado ──────────────────────────────────────────────────────
    Every tab had grown to five or six full sections stacked end to

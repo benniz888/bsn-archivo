@@ -5995,9 +5995,51 @@ function buildLigaAccordionSkin(){
       <svg class="chev" viewBox="0 0 24 24" width="18" height="18"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
   });
 }
+/* PHASE_50 (owner-approved, redesign-v2): Archivo's own landing, same mechanism as the
+   3 above -- branches in buildLanding() below ONLY for sec==='archivo', leaving the
+   generic mega-feat+landgrid path (below) as what Juega's own landing still falls
+   through to, untouched. Keeps the lead megaFeat('gap') panel byte-identical to what
+   the generic path already rendered for Archivo ("Lo que este archivo no sabe", task's
+   own scope A.1), then groups the same 6 real routes VIEW_MAP.archivo/order already
+   carries into 3 groups by NAV_MENU.archivo.cols -- reused verbatim for both the group
+   labels ("Preguntar"/"El estado del archivo"/"Referencia") and the slug membership of
+   each group, not re-typed. Card titles/blurbs are order's own label (the same string
+   already live today as each view's subnav pill text, see _subnavEl()) and
+   VIEW_DESC.archivo[slug] (same convention every other landing builder's order.forEach
+   already uses) -- no new copy anywhere. No icon tiles (.xcard's gradient reads purple,
+   task's own explicit call-out) -- reuses the plain .landcard (no .ic) the generic
+   Juega path already renders today, with 2 new modifier classes (archl-primary/
+   archl-compact) for the visual-hierarchy split the task asks for, see main.css. */
+function buildArchivoLanding(order){
+  const wrap=el('div','landing');
+  const feat=el('div','mega-feat'); feat.innerHTML=megaFeat(NAV_MENU.archivo.feat);
+  wrap.appendChild(feat);
+  const D=VIEW_DESC.archivo||{};
+  const bySlug={}; order.forEach(([slug,label])=>{ bySlug[slug]={slug,label}; });
+  NAV_MENU.archivo.cols.forEach(([groupLabel,items],gi)=>{
+    const slugs=items.map(it=>it[1]).filter(s=>bySlug[s]);
+    if(!slugs.length) return;
+    const group=el('div','archl-group');
+    const h=el('h2','archl-label'); h.textContent=groupLabel; group.appendChild(h);
+    const grid=el('div','archl-grid '+(slugs.length===2?'g2':slugs.length===3?'g3':'g1'));
+    slugs.forEach(slug=>{
+      const o=bySlug[slug];
+      const a=el('a','landcard '+(gi===0?'archl-primary':'archl-compact'));
+      a.href='#archivo/'+slug;
+      a.innerHTML=`<span class="lc-t">${esc(o.label)}<i aria-hidden="true">→</i></span>`
+        + (D[slug]?`<span class="lc-d">${esc(D[slug])}</span>`:'');
+      a.onclick=e=>{ e.preventDefault(); showView('archivo',slug); };
+      grid.appendChild(a);
+    });
+    group.appendChild(grid);
+    wrap.appendChild(group);
+  });
+  return wrap;
+}
 function buildLanding(sec,order){
   if(sec==='historia') return buildHistoriaLanding(order);
   if(sec==='jugadores') return buildJugadoresLanding(order);
+  if(sec==='archivo') return buildArchivoLanding(order);
   if(sec==='equipos') return buildEquiposLanding(order);
   const wrap=el('div','landing');
   const feat=el('div','mega-feat'); feat.innerHTML=megaFeat(NAV_MENU[sec].feat);

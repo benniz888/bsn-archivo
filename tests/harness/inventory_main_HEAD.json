@@ -2849,6 +2849,12 @@
       "name": "buildArchivoHero",
       "line": 5913,
       "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "buildArchivoLanding",
+      "line": 6013,
+      "file": "web/js/tabs.js"
     }
   ]
 }

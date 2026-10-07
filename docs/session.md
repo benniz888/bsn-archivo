@@ -8624,3 +8624,90 @@ reconstruction mechanism used to verify every step are in `docs/specs/app_split_
   this phase's own test additions. `web/index.html` `?v=` hashes
   regenerated. No new strings (CSS-only). Not committed, not pushed,
   pending owner approval.
+
+- **PHASE_50 (branch `redesign-v2` — UI restyle).** Built, not
+  committed, on top of committed `5b85dfa` (PHASE_49/49B). Two scope
+  items. (1) Archivo's own landing: Archivo was the last section still
+  on the generic `mega-feat`+`landgrid` fallback inside `buildLanding()`
+  (tabs.js). Added `buildArchivoLanding(order)`, dispatched from
+  `buildLanding()` for `sec==='archivo'`, same wiring convention as
+  `buildHistoriaLanding`/`buildJugadoresLanding`/`buildEquiposLanding`.
+  Keeps the existing `megaFeat('gap')` lead panel byte-identical ("Lo
+  que este archivo no sabe", its bars, "Ver los huecos"), then groups
+  the 6 real routes `order` already carries (from `VIEW_MAP.archivo`)
+  into 3 groups using `NAV_MENU.archivo.cols` verbatim — both the group
+  labels ("Preguntar"/"El estado del archivo"/"Referencia") and the
+  slug membership of each group, looked up by slug via a `bySlug` map
+  rather than assumed by position. Card titles are `order`'s own
+  `label` (the same string already live today as each view's subnav
+  pill text) — deliberately **not** `NAV_MENU.archivo`'s own longer
+  per-item labels ("Consulta en español" etc.), confirmed live
+  (`grep`) that those strings aren't rendered as visible UI text
+  anywhere any more (their only consumer, the mega-menu dropdown, was
+  retired in `PHASE_2_REDESIGN`) — reusing the pill labels instead
+  keeps every card byte-identical to text a user can already see
+  elsewhere in the app. Blurbs are `VIEW_DESC.archivo[slug]`, unchanged.
+  No gradient icon tiles (task's own "the old icon-tile red→blue
+  gradient reads purple" call-out, confirmed by reading `.xcard .ic`'s
+  own `linear-gradient(135deg,var(--rojo),var(--azul))`) — plain
+  `.landcard` (no `.ic`), the same component the generic fallback
+  already rendered for Juega, with 2 new modifier classes:
+  `.archl-primary` (the 2 Preguntar cards — larger title, `border-top:
+  3px solid var(--azul)`, the same accent token Refuerzos' `.rule` and
+  Dirigentes' `.coach-card` already use for this exact purpose, not a
+  new color) and `.archl-compact` (the other 4 — smaller title,
+  tighter padding). Layout: 1 column on mobile; desktop (`≥900px`)
+  Preguntar 2-up, Estado 3-up, Referencia's single card unconstrained.
+  Tap targets inherit `.landcard`'s own existing sizing (already
+  comfortably `≥44px`); focus rings come free from the pre-existing
+  global `:focus-visible` rule (main.css:321), no new rule needed,
+  confirmed live. (2) Light-theme contrast: measured `.fx`/`.ft`/`.fd`
+  and the landcard arrow on every section's own landing feature panel
+  at 390px, both themes, before any change
+  (`/tmp/p50_contrast_before.json`) — found live, not assumed, that
+  only Archivo currently renders a real `.mega-feat .fx` at all:
+  Historia/Jugadores/Equipos replaced their own `mega-feat` with
+  `.stats3` (PHASE_11/14/40), and Juega's own landing
+  (`buildJuegaViews()`) never built one in the first place. Archivo's
+  `.fx` measured 4.33:1 in light (below the 4.5:1 floor), 5.11:1 dark
+  (passing). Fixed at the shared `.mega-feat .fx` selector (not a new
+  `#archivo`-scoped override, and not the global `--ink-3` token, used
+  in dozens of other places this phase doesn't audit) — swapped
+  `color:var(--ink-3)` for `var(--ink-2)`, the exact fix
+  `.stat:not(.solid) .l` already established for the identical "muted
+  small-caps label on a card background" problem. Re-measured
+  (`/tmp/p50_contrast_after.json`): 8.57:1 dark, 6.52:1 light (now
+  matches `.fd` exactly, same token). The new `.archl-label` group
+  headings use `--ink-2` from the start, never `--ink-3`, so they never
+  repeat the failure; re-measured live at 10.13:1 dark / 7.23:1 light.
+  Card blurbs (`.landcard .lc-d`, pre-existing, unchanged) were already
+  on `--ink-2` — 9.50:1 dark / 7.97:1 light. The arrow icon (`.lc-t i`,
+  `var(--fuego)`) measured 6.39:1 dark / 4.91:1 light — both already
+  past the 3:1 floor for a non-text icon, no change needed.
+  `tests/test_archivo_landing.py` added (15 tests): dispatch, the lead
+  panel's own content untouched, the 3 group labels sourced from
+  `NAV_MENU.archivo.cols` verbatim, all 6 `VIEW_MAP` slugs covered
+  exactly once, no `.xcard`/gradient-tile usage anywhere in the new
+  builder or its 2 modifier classes, no new quoted Spanish literal
+  inside the function body (regex-scanned for accented characters/¿¡,
+  the one reliable signal distinguishing real copy from a CSS
+  class-name token), and both contrast fixes (`.mega-feat .fx` and
+  `.archl-label` on `--ink-2`, `.lc-d` confirmed already-passing).
+  Baseline: 1 new declaration (`buildArchivoLanding`), 475 → 476,
+  hand-appended, `src.verify_clean.Checker().failures == []`. `pytest`:
+  616 passed, 1 xfailed, 1 failed (same pre-existing `test_web_text`
+  byte-diff, unrelated) — up from 601+1+1, net +15 for this phase's own
+  file. Verified live, Playwright/Chromium, `serviceWorkers:'block'`,
+  light+dark, 320/390/1000/1280px: zero console/page errors, zero
+  page-level horizontal overflow at any combination. Click-through: all
+  6 cards route correctly by mouse click (`href`/`location.hash`
+  confirmed, active pill `aria-current="true"` and fully visible via
+  the PHASE_49 `syncSubnav()` fix) and the 2 primary cards also route
+  correctly via keyboard `Enter`; "Ver los huecos" still routes to
+  Cobertura. Regression-checked Historia/Jugadores/Equipos/Juega at
+  390px, both themes — all 4 render exactly as before (Historia's own
+  `.xcard` gradient tiles confirmed still present and unaffected,
+  screenshot-verified). `web/index.html` `?v=` hashes regenerated. No
+  new strings — `/tmp/p50_strings.txt` documents every string's exact
+  source and the deliberate pill-label-over-`NAV_MENU`-label choice.
+  Not committed, not pushed, pending owner approval.
