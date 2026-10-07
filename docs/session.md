@@ -8146,3 +8146,130 @@ reconstruction mechanism used to verify every step are in `docs/specs/app_split_
   `test_web_text` byte-diff, unrelated). `web/index.html` `?v=` hashes
   regenerated. Strings in `/tmp/p44_strings.txt`, pending owner approval
   before commit.
+
+- **PHASE_45 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Four La Cuadrícula layout fixes, all scoped from the PHASE_43 survey.
+  (A) Mobile overflow: `.gridtable`'s own `min-width:410px` forced the
+  board wider than a 390px/320px viewport's real content width (`.wrap`'s
+  16px+16px gutter), clipping the 3rd column — `.gridwrap`'s
+  `overflow-x:auto` was the only thing keeping it reachable, a horizontal
+  scroller, the task's own explicit non-goal. New `@media(max-width:639px)`
+  override: header column 92px→56px, data columns' floor 90px→44px,
+  `min-width:0` so the table can actually shrink. Verified live via real
+  `getBoundingClientRect()`: zero overflowing elements and zero page
+  horizontal scroll at 320/360/390/414px, cells never under 44px (72.3px
+  even at the narrowest, 320px). Desktop (≥640px) untouched — confirmed
+  live, exact same `92px`/`minmax(90px,1fr)`/`410-540px` values. (B)
+  Header mid-word breaks: `overflow-wrap:anywhere` (main.css) — the
+  literal cause of "Caridur/os"/"Atlético/s" — replaced with a 2-line
+  `-webkit-line-clamp` on a new `.glabel` span: normal word-boundary
+  wrapping for the common case, degrading to an ellipsis only once 2
+  lines genuinely isn't enough room for a single unbreakable word
+  (`Conquistadores`/`Maratonistas`, 14/12 characters, confirmed the two
+  real worst cases in `F`). Every `.ghead` also gets a `title` (real
+  `axFull()` text, games.js's own existing helper) so the full name is
+  always reachable. Real bug found and fixed mid-build: `width:100%`
+  alone let a single unbreakable word's layout box balloon past its own
+  grid cell (checked live via nested `getBoundingClientRect()` — the
+  label's own right edge was past its header cell's right edge, even
+  though neither crossed the page edge, so the earlier page-level
+  overflow check alone had missed it) — fixed by constraining
+  `.ghead:not(.row) .glabel{width:100%}` (crest stacked above, nothing
+  competing for the width) separately from `.ghead.row .glabel{flex:1}`
+  (crest beside the label, shares the row's main axis — `flex:1` lets it
+  claim only what `crest-plate`'s own `flex:none` sibling leaves,
+  `width:100%` was fighting it for the same space). A second real
+  finding, not a bug: desktop's existing 92px row-header column still
+  truncates long single-word club names to e.g. "Can…" — confirmed this
+  is strictly correct per the task's own rules (an unbreakable word has
+  nowhere to wrap to with `overflow-wrap:normal`, and ellipsis is the
+  explicitly sanctioned alternative), not a regression — the prior
+  behavior (`anywhere`) would have mid-word-split the same name across
+  several lines instead, worse, not better. (C) `crestPlate()` wrapped
+  onto Grid's 2 `crest()` call sites (now a local `gHead()` helper inside
+  `drawBoard()`, one place for both row/column headers, same drift-risk
+  reasoning PHASE_44 already applied to the back button) via a new
+  Grid-scoped `.ghead .crest-plate{width:32px;height:32px}` override —
+  the base `.crest-plate` (52px, Equipos) and `crestPlate()`/`crest()`/
+  `crestSVG()` themselves are completely untouched; crestPlate() already
+  only returns a hex, no size concept to change. All 33 real franchises
+  (not just the 12 active ones PHASE_41 checked) now clear 3:1 — worst
+  case 4.34:1 (Indios de Mayagüez, the same club/ratio PHASE_41B already
+  found, since crestPlate()'s own color logic is unchanged). (D) Diaria/
+  Práctica toggle: measured live at 390px, 60×28/74×28, both under the
+  44px floor — `min-height:44px;min-width:44px` plus flex-centering.
+  Real scope-creep caught before shipping: `.modebtns` is shared with
+  the theme/profile pickers (tabs.js's own settings panel) — a bare
+  `.modebtns button` rule would have resized those too; rescoped to
+  `.gamehead .modebtns button` (Grid's own instance only), confirmed
+  live the other pickers are unaffected. `newBoard`/`boardFor`/
+  `solutions`/`submitGuess`/`saveDaily`/scoring/share text/every storage
+  key, Comparar, `renderSeasonCmp()`, flag-accent tokens, and
+  `tests/_web_text.py`'s splice anchors all untouched — confirmed live
+  the game still plays end to end (select a cell, submit a real name,
+  correct answer renders `.gcell.ok`; a wrong one renders the real error
+  message and burns an attempt, unchanged). New
+  `tests/test_juega_grid_layout.py` (11 tests): both `crest()` call
+  sites confirmed wrapped, `crestPlate()`/`crest()`/`crestSVG()`
+  confirmed byte-unchanged, all 33 franchises' real contrast ported and
+  checked (worst case pinned at 4.34), `overflow-wrap:anywhere` confirmed
+  gone, the line-clamp/title wiring confirmed, the mobile breakpoint's
+  real column values confirmed alongside desktop's untouched values, and
+  the toggle's 44px floor confirmed scoped to `.gamehead` specifically
+  (not the bare shared class). No new top-level declarations (`gHead` is
+  a local closure inside `drawBoard()`) — baseline stays 471. Verified
+  live, Chromium + WebKit, dark + light, 320/360/390/414/1000px, zero
+  console/page errors. `pytest`: 553 passed, 1 xfailed, 1 failed (same
+  pre-existing `test_web_text` byte-diff, unrelated). `web/index.html`
+  `?v=` hashes regenerated. Strings in `/tmp/p45_strings.txt` (one new
+  `title` attribute, real existing text, not new copy), pending owner
+  approval before commit.
+
+- **PHASE_45B (branch `redesign-v2` — UI restyle).** Polish on top of
+  uncommitted PHASE_45, not committed. The task's own instruction ("crest
+  above the label, centered... not top-left with the label at bottom-
+  right") removed PHASE_45's row-vs-column header split entirely — every
+  `.ghead` (row or column) now shares ONE layout, at every width: crest-
+  plate stacked above a centered label. `.ghead.row` no longer carries
+  its own `flex-direction`/alignment CSS at all (kept as a class in
+  `gHead()`, games.js, for any future need, but nothing targets it
+  anymore). Both header columns widened: desktop 92px→132px (`min-width`
+  410→420px to match the real new natural minimum,
+  132+90×3+5×3=417, `max-width:540px` — the board's own overall size cap
+  — unchanged), mobile 56px→84px (56px, PHASE_45's own first pass,
+  truncated every club name to ~6 characters). Real bug found and fixed
+  mid-build: the base `.crest-plate` rule carries `align-self:flex-start`
+  (PHASE_41B, written for Equipos' own `.card` layout) — without an
+  override, that same `align-self` leaked into Grid's `.ghead` and
+  pinned the plate to the header's left edge instead of letting
+  `.ghead`'s own `align-items:center` apply; confirmed live via nested
+  `getBoundingClientRect()` (plate center ≠ header center, 39 vs 58),
+  fixed with a Grid-scoped `.ghead .crest-plate{align-self:center}` —
+  the base Equipos rule untouched. Full 33-franchise acceptance check,
+  `axLabel()` vs its real header cell, both via real
+  `getBoundingClientRect()`/`scrollWidth`: **0 ellipsize and 0 spill at
+  1000px** (every club's short name now shows in full — "Cariduros",
+  "Atléticos", "Criollos", "Cangrejeros" all fit, confirmed live, where
+  they used to truncate to "Cari…"/"Atlét…"/"Criol…"/"Can…"); **1
+  ellipsizes at 390px** ("Conquistadores de Aguada", the one real 14-
+  character unbreakable word — down from 2 under PHASE_45's narrower
+  56px header, since "Maratonistas" now fits at 84px) and **0 spill**.
+  Contrast re-confirmed for all 33 franchises after the recenter —
+  unchanged, worst case still 4.34:1 (Mayagüez), since `crestPlate()`'s
+  own color logic was never touched. Cell floor (44px), the Diaria/
+  Práctica toggle's 44px floor (still `.gamehead`-scoped, untouched), and
+  `title=axFull()` all re-verified live, unchanged. Checked and reported,
+  not fixed, per the task's own explicit instruction: the global "Mi
+  club" header button still clips at 320px (right edge 347.6px vs a
+  320px viewport) — out of scope, the owner's own call to make. No game
+  logic touched — confirmed live the board still plays end to end
+  (select a cell, submit a real name, `.gcell.ok` renders). `tests/
+  test_juega_grid_layout.py` updated for the new column widths and a new
+  `TestRowAndColumnHeadersShareOneLayout` class (2 new tests: the row/
+  column split is confirmed gone from the CSS, the recenter fix is
+  confirmed present) — 13 tests total, up from 11. No new top-level
+  declarations — baseline stays 471. No new user-visible strings.
+  Verified live, Chromium + WebKit, dark + light, 320/360/390/414/1000px,
+  zero console/page errors. `pytest`: 555 passed, 1 xfailed, 1 failed
+  (same pre-existing `test_web_text` byte-diff, unrelated).
+  `web/index.html` `?v=` hashes regenerated.

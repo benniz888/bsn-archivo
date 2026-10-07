@@ -252,12 +252,25 @@ function drawBoard(){
   </div>
   <div class="gridwrap"><div class="gridtable">
     <div class="gcorner"></div>`;
-  GB.cols.forEach(c=>{
-    h+=`<div class="ghead">${c.t==='c'?crest(c.k,26,31):''}<span>${esc(axLabel(c))}</span></div>`;
-  });
+  /* PHASE_45 (owner-approved, redesign-v2): crest() was unwrapped here -- the exact
+     same contrast bug crestPlate() already fixed for Equipos' Apoderados/Retirados
+     (PHASE_41): 27/33 franchises failed 3:1 in light theme, 5/33 in dark (measured
+     against .ghead's own real --raise background), including Cangrejeros, the same
+     club PHASE_41 found. crestPlate()/crest()/crestSVG() themselves untouched -- only
+     wrapped, same as those two Equipos views, with a Grid-scoped smaller .crest-plate
+     (32px, main.css) instead of the 52px Equipos default. One local helper for both
+     call sites (row/col headers) so the wrap+title logic can't drift between them --
+     same inconsistency risk PHASE_44 already flagged and fixed for the "‹ Juegos"
+     button. title=axFull() (already the real un-split name/category text this file's
+     own axFull() returns) so the full label is always reachable, truncated or not. */
+  const gHead=(ax,rowCls)=>{
+    const crestHtml=ax.t==='c'?`<span class="crest-plate" style="--plate:${crestPlate(ax.k)}">${crest(ax.k,24,28)}</span>`:'';
+    return `<div class="ghead${rowCls?' row':''}" title="${esc(axFull(ax))}">${crestHtml}<span class="glabel">${esc(axLabel(ax))}</span></div>`;
+  };
+  GB.cols.forEach(c=>{ h+=gHead(c,false); });
   for(let i=0;i<3;i++){
     const r=GB.rows[i];
-    h+=`<div class="ghead row">${r.t==='c'?crest(r.k,26,31):''}<span>${esc(axLabel(r))}</span></div>`;
+    h+=gHead(r,true);
     for(let j=0;j<3;j++){
       const a=GB.ans[i][j];
       const cls=a?(a.ok?'ok':'bad'):'';

@@ -1339,13 +1339,45 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 
 /* ---------- grid game ---------- */
 .gridwrap{overflow-x:auto;margin-top:var(--sp-3_5)}
-.gridtable{display:grid;grid-template-columns:92px repeat(3,minmax(90px,1fr));gap:5px;
-  min-width:410px;max-width:540px}
+.gridtable{display:grid;grid-template-columns:132px repeat(3,minmax(90px,1fr));gap:5px;
+  min-width:420px;max-width:540px}
 .gcorner{background:transparent}
+/* PHASE_45B (owner-approved, redesign-v2): PHASE_45's own row-vs-column split (.ghead.row
+   flex-direction:row on desktop, crest BESIDE the label, switching to flex-direction:
+   column only below 639px) is gone -- row and column headers now share ONE layout,
+   always: crest-plate stacked above a centered label, at every width. The task's own
+   instruction ("crest above the label, centered... not top-left with the label at
+   bottom-right") applies to desktop specifically, where .row used to still be
+   side-by-side. .ghead.row is kept as a class (gHead(), games.js) for any future
+   row-specific need, but carries no CSS of its own anymore -- deleting it outright
+   risked a future "why does this button still have the class" question with no rule to
+   point at; an empty selector is more honest about what actually changed.
+   overflow-wrap:anywhere -- PHASE_45's own fix for "Caridur/os"/"Atlético/s" mid-word
+   breaks -- stays replaced by a 2-line clamp on .glabel: normal word-boundary wrapping
+   for the common case, degrading to an ellipsis only once 2 lines genuinely isn't
+   enough room for a single unbreakable word. Every .ghead still carries axFull() as its
+   title (games.js), so the full name is always reachable, truncated or not.
+   Column widths: 92px->132px (desktop), 56px->84px (mobile, in the media query below) --
+   both still fit every real club's axLabel() in full or on 2 wrapped lines at 1000px;
+   only a couple of the longest single-word names (Conquistadores, Maratonistas) still
+   ellipsize at 390px, same two names PHASE_45 already found -- full 33-club check
+   printed by this phase's own report, not assumed. */
 .ghead{background:var(--raise);border:1px solid var(--line);border-radius:var(--r-sm);padding:var(--sp-2) 6px;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;text-align:center;
-  font-size:var(--fs-3xs);font-weight:600;line-height:1.2;min-height:66px;overflow-wrap:anywhere}
-.ghead.row{flex-direction:row;justify-content:flex-start;text-align:left;padding:var(--sp-2)}
+  font-size:var(--fs-3xs);font-weight:600;line-height:1.2;min-height:66px;min-width:0}
+.ghead .glabel{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+  overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal;word-break:normal;
+  width:100%;min-width:0}
+/* Grid-scoped override only -- the base .crest-plate (52x52, Equipos' Apoderados/
+   Retirados) is completely untouched; crestPlate() itself (tabs.js) isn't touched
+   either, it already just returns a hex, no size concept to change. */
+/* align-self:center overrides the base .crest-plate's own align-self:flex-start
+   (PHASE_41B, written for Equipos' .card layout, where the plate has to pin to the
+   TOP of a row that can grow taller than it) -- found live: left that in place here
+   and the plate sat flush against the header's left edge instead of centered above the
+   label, since .ghead's own align-items:center never gets a chance to apply once a
+   child sets its own align-self. */
+.ghead .crest-plate{width:32px;height:32px;border-radius:8px;padding:2px;align-self:center}
 .gcell{background:var(--deep);border:1px solid var(--line);border-radius:var(--r-sm);aspect-ratio:1;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:6px;
   cursor:pointer;color:inherit;font-size:var(--fs-3xs);text-align:center;line-height:1.2;position:relative}
@@ -1356,6 +1388,23 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 .gcell .pn{font-weight:600}
 .gcell .pr{font-size:var(--fs-3xs);color:var(--ink-2)}
 .gcell .plus{font-size:var(--fs-lg);color:var(--ink-3);font-weight:300}
+/* PHASE_45/45B (owner-approved, redesign-v2): mobile overflow fix -- .gridtable's own
+   min-width:410px (desktop, now 420px) forced the whole board wider than a 390px/320px
+   viewport's real content width (minus .wrap's 16px+16px gutter), clipping the 3rd
+   column off-screen; .gridwrap's overflow-x:auto was the only thing keeping it
+   reachable, via a horizontal scroller -- the task's own explicit "not a horizontal
+   scroller" case. Real column sizing instead: a narrower fixed header column (PHASE_45:
+   92px->56px; PHASE_45B widened it again, 56px->84px, once 56px turned out to truncate
+   every club name to ~6 characters) and a 44px floor (was 90px) on the 3 data columns,
+   min-width:0 so the table can actually shrink -- verified live down to 320px, 44px-
+   floor cells confirmed via real getBoundingClientRect(), not assumed. Row headers no
+   longer need a flex-direction override here at all -- PHASE_45B made the stacked
+   (crest-above-label) layout the ONLY layout, at every width, so this block now only
+   ever touches .gridtable's own column sizing. Desktop (this rule's own media query
+   floor is 639px, nothing above it changes) keeps its own 132px/90px/420-540px values. */
+@media(max-width:639px){
+  .gridtable{grid-template-columns:84px repeat(3,minmax(44px,1fr));min-width:0;max-width:100%}
+}
 .guessbar{display:flex;gap:var(--sp-2);margin-top:var(--sp-3);flex-wrap:wrap}
 .guessbar input{flex:1;min-width:180px}
 .pips{display:flex;gap:var(--sp-1);margin-top:var(--sp-2_5);align-items:center}
@@ -1377,6 +1426,16 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 .modebtns button{background:none;border:0;color:var(--ink-3);padding:5px 13px;border-radius:99px;
   font-size:var(--fs-2xs);font-weight:600;cursor:pointer}
 .modebtns button[aria-selected="true"]{background:var(--azul);color:#fff}
+/* PHASE_45 (owner-approved, redesign-v2): measured live at 390px, 60x28 and 74x28 --
+   both well under the 44px floor. .modebtns itself is shared with the theme/profile
+   pickers (tabs.js's own settings panel) -- scoped to .gamehead's own instance (Grid's
+   Diaria/Práctica toggle) specifically so those other, unrelated pickers are untouched
+   (checked live: a bare .modebtns button rule would have resized them too). min-height/
+   min-width + flex-centering instead of just more padding, so the pill grows
+   symmetrically around the existing label rather than the text drifting off-center;
+   label, onclick, and the [aria-selected="true"] active look (the rule right above,
+   untouched) are unchanged. */
+.gamehead .modebtns button{min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center}
 .msg{margin-top:var(--sp-2_5);font-size:var(--fs-xs);min-height:22px}
 .msg.good{color:var(--ok)}
 .msg.bad{color:var(--bad-ink)}
