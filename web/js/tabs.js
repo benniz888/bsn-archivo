@@ -4653,23 +4653,66 @@ let QZ=null;
    the final fallback text is honest, not currently reachable (every
    bio-less player has at least one of the four), kept for whenever that
    stops being true. */
+/* PHASE_47 (owner-approved, redesign-v2): two real bugs found going through this
+   function for the position/terminology pass item 4 asked for, not anticipated
+   going in. (a) "N rebotes"/"N asistencias"/"N robos"/"N tapones" glued a hardcoded
+   plural straight onto the real per-game average -- reachable the moment any of
+   those four equals exactly 1 (confirmed live, PHASE_47's own screenshot: a real
+   player with ppg=1 showed "Promedió 1 puntos por juego." before the matching fix
+   below). plural() (helpers.js) fixes all four here; "tapón"/"tapones" is the one
+   genuinely irregular pair in this set (not a plain +s), passed explicitly rather
+   than guessed. (b) none of this -- the player-facing text never showed "1 puntos"
+   before this phase either, since the bug was below in clueList() for ppg, not here
+   -- this function's own rpg/apg/spg/bpg concatenation had the exact same bug,
+   just never confirmed with a real low-average player until this pass checked it
+   directly. */
 function statClue(p){
   const parts=[];
-  if(p.rpg!=null) parts.push(p.rpg+' rebotes');
-  if(p.apg!=null) parts.push(p.apg+' asistencias');
+  if(p.rpg!=null) parts.push(p.rpg+' '+plural(p.rpg,'rebote'));
+  if(p.apg!=null) parts.push(p.apg+' '+plural(p.apg,'asistencia'));
   if(parts.length) return `Promedió ${parts.join(' y ')} por juego.`;
   const parts2=[];
-  if(p.spg!=null) parts2.push(p.spg+' robos');
-  if(p.bpg!=null) parts2.push(p.bpg+' tapones');
+  if(p.spg!=null) parts2.push(p.spg+' '+plural(p.spg,'robo'));
+  if(p.bpg!=null) parts2.push(p.bpg+' '+plural(p.bpg,'tapón','tapones'));
   if(parts2.length) return `Promedió ${parts2.join(' y ')} por juego.`;
   return 'Su producción más allá de los puntos nunca se registró.';
+}
+/* PHASE_47B (owner-approved, redesign-v2): PHASE_47's own fix only covered SLOT_ES's
+   5 standard codes (PG/SG/SF/PF/C) -- "G"/"F"/"F/C" still fell back to the raw code,
+   confirmed live, a real and regularly-reachable gap (52 of 376 POOL players, 13.8%,
+   /tmp/p47b_pos_values.txt). POS_ES is this one new table the task asked for ("a
+   single mapping table so changing them is a one-line edit") -- Quiz-only, kept
+   separate from SLOT_ES (games.js, Draft's own, not duplicated) rather than merged
+   into it. G->"Base o escolta" and "F/C"->"Poste" are NOT new wording -- Grid's own
+   CATS categories (data.js) already treat bare "G" as part of 'guard' and "F/C" as
+   part of 'big' via their own real regexes (/G|PG|SG/ and /C|PF|F\/C/); reused
+   directly. "F"->"Alero o ala-pívot" has no existing precedent anywhere in the app
+   (confirmed: neither CATS regex matches bare "F") -- a genuine new proposal,
+   printed in /tmp/p47b_strings.txt for approval before commit, not assumed. */
+const POS_ES={G:'Base o escolta',F:'Alero o ala-pívot','F/C':'Poste'};
+/* posEs(p) tries SLOT_ES then POS_ES on the full code first (so "F/C" resolves to
+   the single clean "Poste" rather than a clunkier token-by-token join); only a code
+   NEITHER table recognizes falls through to posTokens() (games.js, already exists --
+   reused rather than re-implementing compound-splitting here), translating each
+   token separately and joining with " o ". Not exercised by any of today's real
+   players (all 8 real codes resolve on the first branch), but in place so a future,
+   genuinely novel compound code still translates instead of leaking a raw one. If
+   nothing translates at all, returns null -- the clue is OMITTED (clueList() below
+   falls back to the same "no está registrada" line already used for a missing pos),
+   never a raw code shown to the player. */
+function posEs(p){
+  const direct=SLOT_ES[p.pos]||POS_ES[p.pos];
+  if(direct) return direct;
+  const toks=posTokens(p).map(t=>SLOT_ES[t]||POS_ES[t]).filter(Boolean);
+  return toks.length?[...new Set(toks)].join(' o '):null;
 }
 function clueList(p){
   const cl=[];
   cl.push(p.d.length>1?`Jugó en los ${p.d[0]}s y los ${p.d[p.d.length-1]}s.`:`Jugó en los ${p.d[0]}s.`);
   cl.push(p.t.includes('import')?'Llegó a la liga como refuerzo.':p.t.includes('native')?'Es nativo o nativizado.':'Su estatus no está registrado.');
-  cl.push(p.pos?`Jugaba de ${p.pos}.`:'Su posición no está registrada.');
-  if(p.ppg!=null) cl.push(`Promedió ${p.ppg} puntos por juego.`);
+  const pEs=p.pos?posEs(p):null;
+  cl.push(pEs?`Jugaba de ${pEs}.`:'Su posición no está registrada.');
+  if(p.ppg!=null) cl.push(`Promedió ${p.ppg} ${plural(p.ppg,'punto')} por juego.`);
   else cl.push('Su promedio de anotación nunca se registró.');
   cl.push(p.c.length?`Vistió el uniforme de ${p.c.map(c=>F[c].name).join(', ')}.`:'Su club no está registrado en el archivo.');
   cl.push(p.b || statClue(p));
@@ -4681,6 +4724,15 @@ function newQuiz(){
   QZ={p,clues:clueList(p),shown:1,guesses:3,done:false};
   drawQuiz();
 }
+/* PHASE_47 (owner-approved, redesign-v2): visual pass (item 1) -- "Otra pista" used
+   to share .guessbar with the input+"Adivinar" button, wrapping to its own awkward
+   second row at 390px (confirmed live, not assumed) since 3 flex items rarely fit
+   one line at that width. Moved into its own .btnrow underneath, the same
+   separation Draft already uses between its own primary action (court tap) and
+   secondary ones (spin/reset) -- the answer bar now reads as one action, "reveal
+   another clue" as a clearly separate one, matching the other 3 games' own
+   hierarchy instead of Quiz's own flatter layout. No change to clue text, point
+   math, or guess matching -- rendering only. */
 function drawQuiz(){
   const host=$('#quizGame');
   if(!QZ){ host.innerHTML=''; return; }
@@ -4692,8 +4744,8 @@ function drawQuiz(){
     QZ.clues.slice(0,QZ.shown).map(c=>'<li>'+esc(c)+'</li>').join('')+'</ol></div>';
   if(!QZ.done){
     h+=`<div class="guessbar"><input type="text" id="qGuess" placeholder="¿Quién es?" autocomplete="off" list="poolNames">
-      <button class="btn primary" onclick="guessQuiz()">Adivinar</button>
-      <button class="btn" onclick="revealClue()" ${QZ.shown>=6?'disabled':''}>Otra pista</button></div>`;
+      <button class="btn primary" onclick="guessQuiz()">Adivinar</button></div>
+      <div class="btnrow"><button class="btn" onclick="revealClue()" ${QZ.shown>=6?'disabled':''}>Otra pista</button></div>`;
   } else {
     h+=`<div class="btnrow"><button class="btn primary" onclick="newQuiz()">Otro jugador</button>
       <button class="btn" onclick="showPlayer(${JSON.stringify(QZ.p.n).replace(/"/g,'&quot;')})">Ver su ficha</button></div>`;

@@ -67,6 +67,23 @@ const NUM_WORDS_ES=['cero','uno','dos','tres','cuatro','cinco','seis','siete','o
 const NUM_WORDS_ES_APOCOPE={1:'un',21:'veintiún',31:'treinta y un'};
 const numWordsEs=(n,beforeNoun)=>(!Number.isInteger(n)||n<0||n>39) ? String(n)
   : (beforeNoun && NUM_WORDS_ES_APOCOPE[n]) || NUM_WORDS_ES[n];
+/* PHASE_47 (owner-approved, redesign-v2): "1 títulos"/"1 disponibles"-shaped bugs --
+   a count glued to a hardcoded plural noun, same root cause this whole session has
+   already fixed for other hardcoded-count bugs (Equipos' own "veinte" defunct-club
+   count, PHASE_39/40). The house convention elsewhere in this codebase is an inline
+   `${n}word${n===1?'':'s'}` ternary (dozens of call sites, tabs.js/games.js) --
+   left alone, out of scope to retrofit wholesale. This is only for the specific
+   PHASE_47 fixes (HL's unit label, Draft's "disponible", Quiz's own clue counts),
+   where a real function reads better than three more inline ternaries, and where an
+   explicit pluralForm is needed anyway for a genuinely irregular case (tapón ->
+   tapones, not a plain +s). Takes the plural form explicitly rather than guessing
+   it (never "+s" by assumption) -- every call site already has its own real plural
+   string on hand (HL_SETS' own unit field, or a literal already used elsewhere).
+   Returns the WORD only, not "n word" -- HL's own count needs toLocaleString('es-PR')
+   thousands separators (a real career total, e.g. "6,178"), so the caller formats
+   and concatenates the number itself rather than this helper assuming raw String(n)
+   is always the right display form. */
+const plural=(n,singular,pluralForm)=>n===1?singular:(pluralForm||singular+'s');
 const num=v=>v==null?'—':(typeof v==='number'?v.toLocaleString('es-PR'):v);
 const dash=v=>(v==null||v==='')?'—':v;
 const pct=v=>v==null?'—':('.'+String(Math.round(v*1000)).padStart(3,'0'));

@@ -8341,3 +8341,160 @@ reconstruction mechanism used to verify every step are in `docs/specs/app_split_
   pre-existing `test_web_text` byte-diff, unrelated). `web/index.html`
   `?v=` hashes regenerated. Strings in `/tmp/p46_strings.txt`, pending
   owner approval before commit.
+
+- **PHASE_47 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  ¿Quién soy? (Quiz — logic stays in `web/js/tabs.js`, not moved to
+  games.js, per the task's own explicit instruction) visual/tap-target/
+  terminology pass, plus three string fixes in HL/Draft. New shared
+  `plural(n,singular,pluralForm)` (helpers.js, inserted before `num`/
+  `dash`/`pct` — never after `pct()`, PHASE_41's own hard-won lesson
+  about `tests/_web_text.py`'s splice anchor) — the house convention
+  elsewhere is an inline `${n}word${n===1?'':'s'}` ternary (dozens of
+  call sites, left alone, out of scope to retrofit); this is only for
+  the new PHASE_47 fixes, where a real function reads better and one
+  case (tapón→tapones) is genuinely irregular, not a plain +s. (1/2)
+  Quiz's "Otra pista" moved out of `.guessbar` into its own `.btnrow`
+  below — confirmed live it used to wrap awkwardly to a cramped second
+  row at 390px sharing space with the input+"Adivinar", now a clean
+  separation matching Draft's own primary/secondary action split. New
+  `#quizGame .btn,#quizGame input[type=text]{min-height:44px}` (scoped,
+  unmedia-queried — the shared `.btn` 44px floor, PHASE_9, only applies
+  below 640px; Quiz's own controls measured 41px at 1000px+ live).
+  Keyboard focus needed no CSS change — no `all:unset` anywhere in
+  Quiz's markup (unlike Draft's PHASE_46 fix), so the app's own global
+  `:focus-visible` rule already applied; confirmed live rather than
+  assumed, properly alpha-compositing the real backdrop an
+  `outline-offset:2px` ring actually sits over (a first attempt
+  measured against the BUTTON's own blue fill and got a false 1.46-1.92;
+  the ring is drawn OUTSIDE the border edge, over the PARENT's
+  background, not the button's own — recomputed correctly: 6.82:1 dark,
+  4.46:1 light). No overflow found at 320/390/1000px in either state,
+  before or after this phase's own changes — confirmed live, not
+  assumed. (3) No hardcoded "PERFECTA" or other all-caps string exists
+  anywhere in Quiz's own output — read directly rather than guessed; the
+  only "PERFECTA" in the whole codebase is Grid's own `drawBoard()`
+  (games.js:301), explicitly out of scope ("do not touch... the Grid
+  code") and left untouched. Draft's own "EQUIPO"/"DÉCADA" (games.js)
+  ARE real hardcoded all-caps text, found going through the files, but
+  outside this phase's own explicit Draft-fix list (items 5b/5c only) —
+  left alone, flagged here rather than silently fixed or silently
+  ignored. (4) One real terminology break: Quiz's own position clue
+  showed the archive's raw code verbatim ("Jugaba de PG.") instead of
+  going through `SLOT_ES` (games.js), the same Spanish mapping Draft's
+  own court labels already use (Base/Escolta/Alero/Ala-pívot/Pívot) —
+  fixed via `SLOT_ES[p.pos]||p.pos`; the 3 POOL position codes with no
+  established Spanish form anywhere else in the app (`G`/`F`/`F/C`)
+  intentionally fall back to the raw code rather than inventing new
+  terminology unreviewed. Clue #2's "Nativo"/"Refuerzo" wording already
+  matched Draft's own tags — no change needed there, confirmed rather
+  than assumed. (5) Three plural fixes, all confirmed live against real
+  data producing the singular case: (a) HL's unit label — "1 títulos"
+  was real and reachable (a franchise with exactly one title); the
+  singular is derived from `HL.set.unit`'s own real plural string
+  (stripping the trailing "s" — correct for all 5 real units: puntos/
+  rebotes/asistencias/juegos/títulos, checked against every `HL_SETS`
+  entry, not just the one that was actually reachable) since `data.js`
+  was out of scope to edit this phase. (b) Draft's "1 disponibles" — a
+  real 1-player club/decade spin — now `${avail} ${plural(avail,
+  'disponible')}`, both reading the same computed value instead of two
+  separate `poolFor()` calls that could drift. (c) "· vacío" → "·
+  sin opciones" — every open slot starts empty, so "vacío" described a
+  state EVERY slot shares; the label only ever appears on the subset
+  that's additionally dead (no eligible player this spin), so "sin
+  opciones" names the real reason. No test asserted the old "vacío"
+  text, so no existing test needed updating. A 4th plural bug, found
+  going through Quiz's own clue functions for the item-4 pass, not
+  originally listed: `statClue()`'s rpg/apg/spg/bpg concatenation and
+  `clueList()`'s own ppg clue had the identical bug ("Promedió 1 puntos
+  por juego.", confirmed live on a real ppg=1 player) — fixed the same
+  way, `plural()` for all four stats, with `tapón`/`tapones` passed as
+  the one genuinely irregular pair in this set. New
+  `tests/test_juega_quiz_polish.py` (10 tests): the `plural()` helper's
+  own singular/irregular behavior; no `PERFECTA` and no real all-caps
+  HTML text content (`>WORD<`, the actual shape Draft's own bug takes)
+  anywhere in Quiz's source — two of these assertions originally also
+  matched this phase's own explanatory comments and a `.replace(/"/g,…)`
+  regex literal on a naive scan, caught and fixed (comments stripped
+  first; the all-caps check narrowed to the real `>WORD<` HTML-text
+  shape instead of a generic, regex-confusable quote scan) before
+  shipping; Quiz's tap-target CSS confirmed present and NOT confined to
+  a mobile media query; the position fix confirmed via source; `vacío`
+  confirmed fully gone from games.js (comments stripped first, since
+  PHASE_46's own comment still accurately quotes the old text while
+  describing an unrelated fix); Draft's `avail`/`plural()` pairing
+  confirmed. Baseline: 1 new declaration (`plural`), 471 → 472. Verified
+  live, Chromium, dark + light, 320/390/1000px, zero console/page
+  errors; also captured the Juega landing with the streak strip visible
+  (`localStorage` seeded via `page.addInitScript()` in a throwaway
+  context, before the app's own boot runs, so the real BOOT-time
+  `drawStreak()` call sees it — never touches a real profile).
+  `pytest`: 576 passed, 1 xfailed, 1 failed (same pre-existing
+  `test_web_text` byte-diff, unrelated). `web/index.html` `?v=` hashes
+  regenerated. Strings in `/tmp/p47_strings.txt`, pending owner approval
+  before commit.
+
+- **PHASE_47B (branch `redesign-v2` — UI restyle).** Fixes on top of
+  uncommitted PHASE_47, not committed. (1) Investigated a reported
+  accent bug ("1 titulo"/"18 titulos", no accent on título/títulos) and
+  found no actual bug exists: `data.js`'s own `HL_SETS` unit string
+  already carries the accent (`unit:'títulos'`, í = U+00ED), and
+  PHASE_47's `unitSingular=HL.set.unit.replace(/s$/,'')` only strips the
+  trailing "s" — it cannot touch the í. Confirmed two independent ways
+  live, not assumed: `document.querySelector(...).textContent
+  .codePointAt()` on the real rendered card (both "título" and
+  "títulos" carry the correct í codepoint) and a 4x-`deviceScaleFactor`
+  zoomed screenshot, where the accent mark is clearly visible — the
+  small, muted (`--ink-3`) 12px text made it easy to misread the accent
+  as absent in a normal screenshot, but the string and the render were
+  always correct. No code change made for this item; `data.js` was not
+  touched. A regression-guard test was still added, per the task's own
+  item 3. (2) Quiz's position clue: PHASE_47's own fix only covered
+  `SLOT_ES`'s 5 standard codes — 3 real, regularly-reachable codes
+  (`G`/`F`/`F/C`, 52 of 376 real POOL players, 13.8%, confirmed by
+  enumerating every distinct `p.pos` value,
+  `/tmp/p47b_pos_values.txt`) still fell back to the raw code. New
+  `POS_ES` table (tabs.js, Quiz-only, kept separate from `SLOT_ES` —
+  games.js, Draft's own, not duplicated) and `posEs(p)`: tries
+  `SLOT_ES`/`POS_ES` on the full code first, falls back to
+  `posTokens()` (games.js, already existed, reused rather than
+  reimplemented) splitting any genuinely novel compound code and
+  joining each token's own translation with " o ", and returns `null`
+  (clue omitted, never a raw code) if nothing resolves at all. `G`→"Base
+  o escolta" and `F/C`→"Poste" are **not** new wording — Grid's own
+  `CATS` categories (`data.js`) already treat bare `G` as part of
+  `guard` and `F/C` as part of `big` via their own real regexes
+  (confirmed by reading them directly); reused, not invented. `F`→"Alero
+  o ala-pívot" has no existing precedent anywhere in the app (confirmed:
+  neither CATS regex matches bare `F`) — a genuine new proposal, printed
+  to `/tmp/p47b_strings.txt` and clearly flagged as such, pending owner
+  approval. Verified live: all 8 real position codes resolve correctly,
+  zero of the real 376 POOL players leak a raw code, and the
+  `posTokens()` fallback path (not exercised by any of today's real
+  data, since all 8 real codes resolve on the direct-lookup branch)
+  correctly handles a synthetic future compound (`'PG/SF'` →
+  `"Base o Alero"`) and correctly returns `null` for a wholly unknown
+  code (`'ZZZ'`). Confirmed live on real players: "Jim Maldonado"
+  (pos=`F`) → "Jugaba de Alero o ala-pívot."; "Neftali Acevedo Diaz"
+  (ppg=1, the one real player confirming PHASE_47's own plural fix is
+  genuinely exercised by real data) → "Promedió 1 punto por juego."
+  `tests/test_juega_quiz_polish.py` updated: the stale PHASE_47
+  assertion (`SLOT_ES[p.pos]||p.pos`, no longer in the source) replaced
+  with one confirming `posEs(p)` is called; new
+  `TestPosEsCoversEveryRealPosition` (ports `posEs()`'s own resolution
+  order to Python, the same convention `test_owners_retired.py` already
+  uses, confirming all 8 real codes resolve, `G`/`F/C` reuse the real
+  CATS wording, `F` is flagged as new in the strings file, and no real
+  code resolves to another raw code) and `TestHLUnitAccentIsPresent` (3
+  tests guarding the accent stays in `data.js`'s source and that
+  `unitSingular` stays derived, never hardcoded, so it can't silently
+  lose it) — 17 tests total, up from 10. Baseline: 2 new declarations
+  (`POS_ES`, `posEs`), 472 → 474. No game logic touched. Verified live,
+  Chromium, dark, 390/1000px (plus the earlier full width/theme sweep
+  from PHASE_47, unaffected by this phase's own changes), zero console/
+  page errors across the Juega landing and all 4 games. `pytest`: 583
+  passed, 1 xfailed, 1 failed (same pre-existing `test_web_text`
+  byte-diff, unrelated). `web/index.html` `?v=` hashes regenerated.
+  Strings in `/tmp/p47b_strings.txt` (the `F`→"Alero o ala-pívot"
+  proposal needs explicit owner approval before commit; `G`/`F/C` are
+  reuses of already-established app wording, not new), pending owner
+  approval before commit.

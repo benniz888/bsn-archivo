@@ -2825,6 +2825,24 @@
       "name": "buildJuegaHero",
       "line": 5810,
       "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "const",
+      "name": "plural",
+      "line": 86,
+      "file": "web/js/helpers.js"
+    },
+    {
+      "kind": "const",
+      "name": "POS_ES",
+      "line": 4692,
+      "file": "web/js/tabs.js"
+    },
+    {
+      "kind": "function",
+      "name": "posEs",
+      "line": 4703,
+      "file": "web/js/tabs.js"
     }
   ]
 }

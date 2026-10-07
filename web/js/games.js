@@ -553,7 +553,11 @@ function courtHTML(){
       <div style="font-size:var(--fs-3xs);letter-spacing:.08em;font-weight:700;color:${open?'var(--ink-3)':'var(--ink-2)'}">${s}</div>
       ${p?`<div style="font-weight:700;font-size:var(--fs-xs);margin-top:3px;line-height:1.2">${esc(p.n)}</div>
            <div class="dim" style="font-size:var(--fs-3xs)">${p.c.map(c=>F[c]?F[c].abbr:c).join(' ')}</div>`
-        :`<div class="court-empty" style="margin-top:3px">${SLOT_ES[s]}${dead?' · vacío':''}</div>`}
+        /* PHASE_47: "vacío" (empty) was misleading -- EVERY open slot starts empty,
+           this label only ever appears on the subset that's additionally dead (no
+           eligible player for the current club/decade spin); "sin opciones" names
+           the real reason, not the state every other open slot also shares. */
+        :`<div class="court-empty" style="margin-top:3px">${SLOT_ES[s]}${dead?' · sin opciones':''}</div>`}
     </button>`;
   };
   return `<div style="border:1px solid var(--line);border-radius:14px;padding:var(--sp-3_5);
@@ -579,6 +583,11 @@ function drawPicks(){
   </div>`;
 
   if(!DR.done){
+    /* PHASE_47 (owner-approved, redesign-v2): "1 disponibles" was a real, reachable
+       bug (a club-decade spin with exactly one eligible player left) -- computed once
+       here so both the number and plural() read the same real value, never two
+       separate poolFor() calls that could drift. */
+    const avail=poolFor(DR.club,DR.dec).length;
     h+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2_5);margin:var(--sp-3) 0">
       <div class="card" style="text-align:center;border-color:#E8B23A;padding:var(--sp-2_5)">
         <div style="font-size:var(--fs-3xs);letter-spacing:.1em;font-weight:700;color:#E8B23A">EQUIPO</div>
@@ -587,7 +596,7 @@ function drawPicks(){
       <div class="card" style="text-align:center;border-color:#9B6BE0;padding:var(--sp-2_5)">
         <div style="font-size:var(--fs-3xs);letter-spacing:.1em;font-weight:700;color:#9B6BE0">DÉCADA</div>
         <div style="font-family:inherit;font-weight:800;font-size:30px;line-height:1.1">${DR.dec}s</div>
-        <div class="dim" style="font-size:var(--fs-3xs)">${poolFor(DR.club,DR.dec).length} disponibles</div></div>
+        <div class="dim" style="font-size:var(--fs-3xs)">${avail} ${plural(avail,'disponible')}</div></div>
     </div>
     <div class="btnrow" style="margin-bottom:var(--sp-3)">
       <button class="btn primary" onclick="skipSpin()" ${DR.skips?'':'disabled'}>Girar de nuevo (${DR.skips})</button>
@@ -702,10 +711,19 @@ function drawHL(){
      never sits above an already-answered pair. */
   h+=!HL.done?'<p class="note" style="margin-top:var(--sp-2)">Toca uno para responder.</p>':'';
   h+='<div class="cards g2" style="margin-top:var(--sp-2_5)">';
+  /* PHASE_47 (owner-approved, redesign-v2): "1 títulos" (a franchise with exactly one
+     title) was a real, reachable bug -- HL.set.unit is always the PLURAL noun (data.js's
+     own HL_SETS, out of scope to edit this phase), glued to the real count with no
+     singular check at all. The singular is derived from that same real plural string
+     (stripping the trailing "s") rather than hardcoded separately -- every one of the 5
+     real units (puntos/rebotes/asistencias/juegos/títulos) is a regular +s plural, so
+     this is correct for all of them, checked against every HL_SETS entry, not just the
+     one ("títulos") that was actually reachable in practice. */
+  const unitSingular=HL.set.unit.replace(/s$/,'');
   [HL.a,HL.b].forEach((x,i)=>{
     h+=`<button class="card" style="cursor:pointer;text-align:left" ${HL.done?'disabled':''} onclick="answerHL(${i})">
       <div style="font-weight:700;font-size:17px">${esc(x[0])}</div>
-      <div class="dim" style="font-size:var(--fs-2xs)">${HL.done?x[1].toLocaleString('es-PR')+' '+esc(HL.set.unit):'?'}</div></button>`;
+      <div class="dim" style="font-size:var(--fs-2xs)">${HL.done?x[1].toLocaleString('es-PR')+' '+esc(plural(x[1],unitSingular,HL.set.unit)):'?'}</div></button>`;
   });
   h+='</div><div class="msg" id="hMsg" role="status" aria-live="polite"></div>';
   if(HL.done) h+='<div class="btnrow"><button class="btn primary" onclick="newHL(true)">Siguiente</button></div>';

@@ -1457,6 +1457,20 @@ tr.cut td{border-bottom:1px solid var(--azul)}
    --line-soft vs --line, both unchanged) without also pushing the TEXT past a
    readable contrast floor. */
 .court-empty{font-size:var(--fs-2xs);color:var(--ink-2)}
+/* PHASE_47 (owner-approved, redesign-v2): .btn and the text input are only >=44px
+   under the shared @media(max-width:639px) rule (PHASE_9) -- fine for most of the
+   app, but Quiz's own controls measured 41px at 1000px+ (checked live), and this
+   task asked for >=44px at every required width including desktop. Scoped to
+   #quizGame specifically, the same "add a size floor under the section that needs
+   it, leave the shared rule alone for everything else" pattern PHASE_45/46 already
+   used for .gamehead .modebtns button and .gamehead .modebtns button. No change to
+   the shared .btn/input rules themselves, so nothing else in the app grows. Real
+   keyboard focus: no all:unset anywhere in Quiz's own markup, so the app's own
+   global :focus-visible{outline:2px solid var(--focus);outline-offset:2px} rule
+   already applies with no override needed -- confirmed live, not assumed (see
+   PHASE_47's own report for the measured contrast). */
+#quizGame .btn,#quizGame input[type=text]{min-height:44px}
+#quizGame .btn{display:inline-flex;align-items:center;justify-content:center}
 .msg{margin-top:var(--sp-2_5);font-size:var(--fs-xs);min-height:22px}
 .msg.good{color:var(--ok)}
 .msg.bad{color:var(--bad-ink)}
