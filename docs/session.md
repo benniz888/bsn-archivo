@@ -8711,3 +8711,180 @@ reconstruction mechanism used to verify every step are in `docs/specs/app_split_
   new strings — `/tmp/p50_strings.txt` documents every string's exact
   source and the deliberate pill-label-over-`NAV_MENU`-label choice.
   Not committed, not pushed, pending owner approval.
+
+- **PHASE_51 (branch `redesign-v2` — UI restyle).** Built, not
+  committed, on top of committed `0457eff` (PHASE_50). Two scope
+  items, both CSS-only. (1) Calidad de datos tap targets: the survey's
+  own count was ~393-413 controls under 44px on `#archivo/calidad` —
+  per-row player-name buttons, year chips, Ficha/jug05 ratio links,
+  CSV buttons, the filter input/select and the "filas idénticas"
+  disclosure (`drawDQ()`/`drawDQTable()`, `web/js/data-quality.js`),
+  plus the inline "Calidad de datos" link on Cobertura (`#sourcesBox`,
+  `buildSources()` in tabs.js). Owner decision: bigger controls, not a
+  new interaction — same tables/columns/data/sort/filter/copy. Fixed
+  entirely via new CSS scoped to `#dqBox` (the real, unique container
+  `drawDQ()` always targets) and to the one named Cobertura link by its
+  own `href` — no JS or markup touched, confirmed the shared
+  `buildTable()`/`.tblwrap`/`.btn`/`.filters` base rules are
+  byte-unchanged so every other section's tables are unaffected. Sized
+  the CONTROL itself (`display:inline-flex`/`flex`,
+  `align-items:center`, `min-height:44px`, `min-width:44px` where
+  standalone — the Año buttons and the Ficha/jug05 ratio links, whose
+  own text is as short as "4 / 42") rather than the table cell's own
+  padding, per the task's own explicit preference — a row's height is
+  always its tallest cell, so a plain-text cell sharing a row with a
+  resized control grows for free. Ratio links keep `justify-content:
+  flex-end` so the digits stay right-aligned inside their now-wider
+  box, matching the column's existing `text-align:right`. Sort headers
+  (`th.sortable`) got taller padding (`16px` top/bottom, relying on a
+  table cell's own default `vertical-align:middle`) plus a
+  `min-width:44px` floor — 2 of them (Año/JJ-style narrow numeric
+  headers) were still under 44px wide after the padding pass, found
+  live by the same measurement script, not assumed fixed. The
+  Cobertura link uses `display:inline-flex` + `min-height:44px`
+  directly on the `<a>` (the task's own suggested technique) so it's
+  directly bounding-box-measurable, not a pseudo-element trick that a
+  script couldn't see. The 2 similar "ver Calidad de datos" links on a
+  player's own Resumen/Temporadas tab (`seasonTotalsNote()`, tabs.js) —
+  a different view, never named in this task's scope — were
+  deliberately left alone, noted in both the test file and here.
+  Measured live with a real bounding-box script, scoped to `#dqBox`/
+  `#sourcesBox` specifically (an unscoped first pass also picked up
+  global chrome — the top header buttons, the subnav pills — which
+  isn't this phase's scope and was correctly excluded once caught):
+  406–416 offenders before (close to the survey's own 393–413/403–413,
+  different exact methodology, same scale) at 320/390/1000px, light +
+  dark; 0 after, same matrix.
+  `/tmp/p51_targets_before.json`/`/tmp/p51_targets_after.json`.
+  (2) Hero arcs: live measurement while investigating the reported
+  "arcs sweep past the hero, as far as Glosario" bug found the REAL
+  root cause wasn't the PHASE_49B mask at all — a pre-existing PHASE_11
+  comment in `main.css` (`--card/--line/--ink*/--rojo/--azul/...`, a
+  token list using `*` as an "any variant" wildcard suffix) contained
+  the literal substring `*/` where `--ink*` was immediately followed by
+  `/--rojo`. That closes a CSS comment early, with no error thrown
+  anywhere — confirmed live via the real parsed CSSOM
+  (`document.styleSheets`), not assumed: the very next rule,
+  `.hhero{overflow:hidden}`, was silently absent from every browser's
+  parsed stylesheet, site-wide, on every section that uses `.hhero`,
+  not just Archivo. A second instance of the same pattern
+  (`--sp-*/--fs-*`) sat right behind it in the same comment and
+  would have reopened the identical bug as soon as the first was
+  fixed — found and fixed together. With `overflow` never actually
+  `hidden`, the hero's own `::before` ring layer (PHASE_49B) was never
+  being clipped to the hero's box on any section — Archivo's own longer
+  lede made the leak visible enough to get reported as a bug; Historia/
+  Jugadores/Equipos/Juega had the identical defect, just less visible
+  behind shorter lede text, confirmed live (regression screenshots,
+  `/tmp/p51_hero_regress_*.png`) once the fix went in. The fix itself
+  is a single inserted space in each of the 2 comment occurrences —
+  once the real `.hhero{overflow:hidden}` rule is parsed again, the
+  existing PHASE_49B clip-to-box behavior the CSS already asked for
+  simply starts working; no new clip-path, no duplicate containment
+  rule, no change to the existing px-based horizontal mask. Verified
+  live: total parsed CSS rule count went from 834 to 835 (the
+  previously-dropped rule recovered); `#archivo .hhero`'s own computed
+  `overflow` is `hidden` in all 18 checked combinations (1000/1280/
+  1440px × light/dark × landing/preguntar/calidad); zero console
+  errors; regression screenshots confirm Historia/Jugadores/Equipos/
+  Juega's own heroes render correctly post-fix, no visual regression,
+  arguably a quiet improvement for all 4 (their rings are now also
+  correctly contained, just less previously noticeable). `tests/
+  test_archivo_calidad_targets.py` added (16 tests): a `*/`-in-comment
+  regression guard (counts every real comment the same way a
+  tokenizer does and asserts the total `*/` count matches exactly —
+  would have caught this bug on its own), the 2 specific literals
+  confirmed gone, the real `.hhero{overflow:hidden}` rule's presence
+  confirmed, every PHASE_51 CSS selector confirmed `#dqBox`-/
+  `#sourcesBox`-scoped (none of the shared base selectors appear bare
+  in the new block), each control type's own min-height/min-width
+  pair, the Cobertura link's fix and the 2 deliberately-untouched
+  player-page links, and a no-new-Spanish-literal scan of the new CSS
+  block's code (comments stripped first). CSS-only phase — baseline
+  stays at 476, confirmed by rerunning the inventory tool (output path
+  correctly passed as `/tmp` first, source files after, per the
+  standing house rule after PHASE_49's own incident). `pytest`: 632
+  passed, 1 xfailed, 1 failed (same pre-existing `test_web_text`
+  byte-diff, unrelated) — up from 616+1+1, net +16 for this phase's own
+  file. Verified live, Playwright/Chromium, `serviceWorkers:'block'`,
+  320/390/1000px (Calidad/Cobertura) and 1000/1280/1440px (arcs),
+  light+dark: zero console/page errors, zero page-level horizontal
+  overflow anywhere. Tabbed through the first 15 focusable Calidad
+  controls — every one shows a visible `:focus-visible` outline (the
+  pre-existing global rule, no new focus CSS needed). Confirmed sort
+  (clicking Año re-orders), filter (typing a real surname narrows the
+  row count; a surname absent from this particular 94-row conflicts
+  list correctly returns zero, re-verified against a name confirmed
+  present before concluding that), and that a Ficha/jug05 ratio link's
+  `href` still points to the same Wayback Machine capture URL as
+  before. `web/index.html` `?v=` hashes regenerated. No new strings —
+  `/tmp/p51_strings.txt` notes the one-character code-comment edit for
+  transparency even though it renders nowhere. Not committed, not
+  pushed, pending owner approval.
+
+- **PHASE_51D (branch `redesign-v2` — UI restyle).** Fix on top of
+  uncommitted PHASE_51, not committed. The Cobertura inline-link fix's
+  first pass (`display:inline-flex;min-height:44px` on the `<a>`) grew
+  the surrounding `<p>`'s own line box — found live: 36px → 62px at
+  320/390px, 18px → 44px at 1000px, both themes, since a taller
+  inline-flex child always pushes its own line taller. Replaced with
+  `display:inline-block;padding:13px 0;margin:-13px 0` — padding is
+  part of the element's own border box (what `getBoundingClientRect`
+  measures and what clicks hit-test against) regardless of margin, but
+  an equal negative margin cancels its contribution to the surrounding
+  line's height. Re-measured live: paragraph height now matches the
+  pre-PHASE_51 baseline exactly (36/36px at 320 and 390, 18/18px at
+  1000, both themes) while the link's own box stays 44×95px. Re-ran the
+  scoped `#dqBox`/`#sourcesBox` offender check — still 0/0 at every
+  width/theme (`/tmp/p51_targets_after.json` updated in place).
+  `tests/test_archivo_calidad_targets.py` gained 2 tests (replacing the
+  one that asserted the old inline-flex technique): the rule now uses
+  `inline-block`+padding+an exactly-canceling negative margin, and
+  `2×padding + 18px line-height ≥ 44px` — 17 tests total in the file,
+  up from 16. Also produced, on request, a `.hhero` height/padding-top/
+  padding-bottom/position table for all 5 sections at 390 and 1000px,
+  before/after the PHASE_51 `*/`-in-comment fix (no `.hhero` change
+  made this phase) — owner to decide whether the 4 older sections keep
+  the restored `32px`/`12px` padding. `pytest`: 633 passed, 1 xfailed,
+  1 failed (same pre-existing `test_web_text` byte-diff, unrelated).
+  `web/index.html` `?v=` hashes regenerated. No new strings. Not
+  committed, not pushed, pending owner approval.
+
+- **PHASE_51E (branch `redesign-v2` — UI restyle).** Fix on top of
+  uncommitted PHASE_51D, not committed. Owner decision (delegated,
+  PHASE_51D's own table): keep every one of the 5 `.hhero` sections at
+  its pre-`*/`-fix height. Added `.hhero{padding:0}` as a later
+  override rule right after the original `.hhero{position:relative;
+  padding:var(--sp-6) 0 var(--sp-3);overflow:hidden}` — the original
+  rule is byte-unchanged (task's own explicit instruction not to edit
+  it in place); the override only resets `padding`, leaving
+  `position:relative`/`overflow:hidden` to keep coming from the
+  original rule, since the Archivo arc layer (`::before`,
+  `position:absolute`) and its clipping both depend on them. Re-ran the
+  hero table (390/1000/1280px, plus 320px, dark): heights at 390/1000
+  match the PHASE_51D "before" column exactly (0.00px delta, well under
+  the 0.5px tolerance) for all 5 sections — Historia 251.48/180.06,
+  Jugadores 192.11/150.38, Equipos 162.42/120.69, Juega 192.11/150.38,
+  Archivo 162.11/120.38 — `paddingTop`/`paddingBottom` both `0px`
+  everywhere, `position:relative` and `overflow:hidden` both intact,
+  confirmed live (`/tmp/p51e_hero_table.out`). Archivo arcs re-verified
+  at 1000/1280/1440px, light+dark: `overflow:hidden` and `::before`'s
+  own `position:absolute` both still in effect, zero console errors,
+  zero ring pixels overlapping the h1/lede (screenshot-confirmed,
+  `/tmp/p51e_archivo_{dark,light}_{1000,1280}.png`). Re-ran the scoped
+  `#dqBox`/`#sourcesBox` offender check from PHASE_51/51D — still 0/0
+  at every width/theme, confirming this phase's padding-only change
+  didn't disturb the Calidad/Cobertura tap-target fixes (different
+  selectors entirely, but verified rather than assumed).
+  `tests/test_archivo_calidad_targets.py` gained
+  `TestHeroPaddingNeutralizedPositionAndOverflowKept` (4 tests): the
+  original rule is byte-unchanged and still declares `position`/
+  `overflow`, a `padding:0` override exists strictly AFTER it in file
+  order (so it wins the cascade), the override rule declares nothing
+  but `padding` (doesn't duplicate `position`/`overflow`), and the new
+  comment itself contains no premature `*/` — 21 tests total in the
+  file, up from 17. `pytest`: 637 passed, 1 xfailed, 1 failed (same
+  pre-existing `test_web_text` byte-diff, unrelated) — net +4 for this
+  phase's own tests. `web/index.html` `?v=` hashes regenerated. No new
+  strings. Preview server stopped at the end of this phase. Not
+  committed, not pushed, pending owner approval.

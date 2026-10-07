@@ -1176,6 +1176,45 @@ td.rank{color:var(--ink-3);width:32px}
 .tblwrap.scrolled th:first-child::after,.tblwrap.scrolled td:first-child::after{opacity:1}
 .tbl-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:var(--sp-3);font-size:var(--fs-2xs);color:var(--ink-3)}
 
+/* PHASE_51 (owner-approved, redesign-v2): Calidad de datos tap targets -- the survey's
+   own finding was ~393-413 controls under 44px on #archivo/calidad (drawDQ/drawDQTable,
+   web/js/data-quality.js): per-row player-name .btn links, year chips, Ficha/jug05
+   ratio links, CSV buttons, the filter inputs/select and the "filas idénticas"
+   disclosure. Decision (owner-approved): bigger controls, not a new interaction -- same
+   tables/columns/data/sort/filter/copy, every rule below only adds sizing, nothing that
+   changes what's rendered. Scoped to #dqBox (the real, unique container drawDQ() always
+   targets) so buildTable()/.tblwrap/.btn/.filters stay byte-identical everywhere else in
+   the app (Historia/Jugadores/Equipos tables, Jugadores' own Comparar, etc., all
+   confirmed unaffected live) -- none of the shared selectors themselves are touched,
+   only new #dqBox-prefixed overrides. Sizing the CONTROL (display:flex/inline-flex +
+   min-height:44px), not the table cell's own padding, per the task's own explicit
+   preference -- the row grows to match automatically (a table row's height is always
+   its tallest cell), so a plain-text cell sharing a row with a resized control gets the
+   same ~44px row height for free, no separate padding rule needed for it. th/select/
+   input aren't flex containers; those get padding/min-height instead, relying on the
+   browser's own default vertical-align:middle for table cells. */
+#dqBox .btn{display:inline-flex;align-items:center;min-height:44px;margin:2px 6px 2px 0}
+#dqBox td.num button{display:inline-flex;align-items:center;justify-content:center;
+  min-height:44px;min-width:44px;padding:0 6px}
+#dqBox td.num a{display:inline-flex;align-items:center;justify-content:flex-end;min-height:44px;min-width:44px}
+#dqBox th.sortable{padding-top:16px;padding-bottom:16px;min-width:44px}
+#dqBox .filters input,#dqBox .filters select{min-height:44px}
+#dqBox details>summary{display:flex;align-items:center;min-height:44px;cursor:pointer}
+/* the one inline prose link on Cobertura the task names explicitly (web/js/tabs.js
+   buildSources(), #sourcesBox). PHASE_51D: the first inline-flex/min-height:44px pass
+   grew the surrounding <p>'s own line box (found live -- 36px to 62px at 320/390px, 18px
+   to 44px at 1000px, since a taller inline-flex child always pushes its own line taller).
+   inline-block + 13px top/bottom padding + an equal NEGATIVE margin instead: padding is
+   part of the element's own border box (what getBoundingClientRect measures, and what
+   the browser hit-tests clicks against) regardless of margin, but a negative margin
+   exactly cancelling that padding removes the element's contribution to the surrounding
+   line's height -- the <p> is back to its original 18px-per-line box, the link's own hit
+   area is still the full 13+13+18=44px tall (confirmed live, not assumed -- see the
+   phase's own before/after paragraph-height table). The two similar "ver Calidad de
+   datos" links on a player's Resumen/Temporadas tab (seasonTotalsNote(), tabs.js) are a
+   different view, out of this task's named scope, deliberately left alone. */
+#sourcesBox p.muted a[href="#archivo/calidad"]{display:inline-block;padding:13px 0;margin:-13px 0}
+
 /* ---------- controls ---------- */
 input[type=search],input[type=text],select,textarea{
   background:var(--deep);border:1px solid var(--line);color:var(--ink);
@@ -1762,8 +1801,8 @@ tr.cut td{border-bottom:1px solid var(--azul)}
    class below is either brand new (checked against the whole stylesheet first, zero prior
    uses) or an existing Historia-exclusive class (.cell/.ribbon/.readout/.matrix/.decade,
    confirmed via the same check -- restyled in place since nothing else references them).
-   Token discipline: reuses real tokens throughout (--card/--line/--ink*/--rojo/--azul/--zebra/
-   --raise/--r/--r-sm/--sp-*/--fs-*); the mockup's own ad hoc --wash (a solid raised chip
+   Token discipline: reuses real tokens throughout (--card/--line/--ink* /--rojo/--azul/--zebra/
+   --raise/--r/--r-sm/--sp-* /--fs-*); the mockup's own ad hoc --wash (a solid raised chip
    tint) maps to the real --raise, NOT the real --wash (which is an unrelated translucent
    scrim color in this app -- reusing it here would have been visually wrong). Medal-badge
    gold/silver/bronze gradients have no existing token (nothing in this app's palette is a
@@ -1775,6 +1814,15 @@ tr.cut td{border-bottom:1px solid var(--azul)}
    SVG -- item 4's own instruction. No hero-a/hero-c color wash behind it (the mockup's own
    hero has no fill, rings only), so only the ring layer is reused, on the page's own bg. */
 .hhero{position:relative;padding:var(--sp-6) 0 var(--sp-3);overflow:hidden}
+/* PHASE_51E (owner-approved, redesign-v2): the PHASE_51 comment fix above restored
+   this rule's own padding, which had been silently dropped since PHASE_11 by an
+   unrelated comment bug elsewhere in this file (full writeup in the PHASE_51/51D
+   session log entries). Owner reviewed the now-taller heroes this produced on all 5
+   sections and asked to keep every one at its pre-fix height -- position:relative and
+   overflow:hidden stay (the Archivo arc layer and its clipping both depend on them),
+   only the padding is zeroed back out, here, as its own override, so the original rule
+   above is left intact and legible rather than edited in place. */
+.hhero{padding:0}
 .hhero{background-image:repeating-radial-gradient(circle at 100% 0%,transparent 0 63px,var(--line) 63px 64.5px)}
 @media(max-width:639px){.hhero{background-image:none}}
 /* PHASE_49B (owner-approved, redesign-v2): Archivo-only -- its lede runs close to the
