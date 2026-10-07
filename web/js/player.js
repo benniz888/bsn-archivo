@@ -24,17 +24,32 @@
 function buildPlayerIndex(){
   if(!PINDEX){
     const map=new Map();
+    /* PHASE_36 (owner-approved, redesign-v2): nickKey(), not norm() -- merges
+       a plain-name row and a nickname-bearing row for the same real person
+       (e.g. LEADERS' "Mario Morales" and HOF's "Mario «Quijote» Morales")
+       into ONE map entry instead of two. Owner-approved default: the
+       nickname form wins as the display name whenever one exists. Since
+       the FIRST caller to touch a key normally sets p.name permanently
+       (LEADERS runs before HOF in the real call order below, so it would
+       otherwise "win" with the plain form), a later call carrying a
+       nickname explicitly upgrades an already-plain stored name here --
+       never the reverse, so nothing downgrades a name that's already
+       richer. HAS_NICK matches the exact same quoted-segment shape
+       stripNick()/nickKey() (helpers.js) strip. */
+    const HAS_NICK=/«[^»]*»|"[^"]*"|'[^']*'/;
     const get=n=>{
-      const key=norm(n);
+      const key=nickKey(n);
       if(!map.has(key)) map.set(key,{name:n,src:new Set(),tags:new Set(),clubs:new Set(),
         pts:null,reb:null,ast:null,gp:null,ppg:null,years:null,pos:null,bio:null,mvp:0});
-      return map.get(key);
+      const p=map.get(key);
+      if(HAS_NICK.test(n) && !HAS_NICK.test(p.name)) p.name=n;
+      return p;
     };
     /* SCORING / MVP_YEARS / SEASON_AWARDS hold raw source names (and grow when
        hydrate() swaps in the full tables). Only enrich a player already curated
        from POOL/LEADERS/HOF — a bare scoring-champ name belongs in "Todo el
        archivo", not "Destacados". Keeps the count stable across file:// / http. */
-    const getIf=n=>map.get(norm(n));
+    const getIf=n=>map.get(nickKey(n));
     ['points','rebounds','assists'].forEach(cat=>{
       LEADERS[cat].forEach(r=>{
         const p=get(r[1]); p.src.add('Líderes de carrera'); p.pos=p.pos||r[2]; p.years=p.years||r[3];
@@ -94,7 +109,7 @@ function buildPlayerIndex(){
   const host=$('#playerSearch');
   if(!host.dataset.built){
     host.dataset.built='1';
-    host.innerHTML=`<div class="filters">
+    host.innerHTML=`<div class="search-card"><div class="filters">
       <div class="field" style="min-width:220px"><label for="pq">Buscar jugador</label>
         <input type="search" id="pq" placeholder="Nombre, club, honor…"></div>
       <div class="field"><label for="pmode">Índice</label><select id="pmode">
@@ -106,7 +121,7 @@ function buildPlayerIndex(){
         <option value="MVP">MVP</option><option value="Campeón de anotación">Campeones de anotación</option>
         <option value="10.000">10.000+ puntos</option><option value="NBA">Pasaron por la NBA</option>
         <option value="Refuerzo">Refuerzos</option><option value="Nativo">Nativos</option>
-      </select></div></div>`;
+      </select></div></div></div>`;
     $('#pq').oninput=renderPlayerIndex;
     $('#pf').onchange=renderPlayerIndex;
     $('#pmode').onchange=e=>{ PMODE=e.target.value; renderPlayerIndex(); };
@@ -152,8 +167,14 @@ function survivorOf(id,name){
 /* The hash for a player card: curated (pool) names keep slug(name); an archive player gets
    its unique slug. Needs PINDEX built, so showPlayer() calls buildPlayerIndex() first. */
 function playerSlug(name,id){
-  const pooled=PINDEX&&PINDEX.some(x=>norm(x.name)===norm(name));
-  return (!pooled && id!=null && USLUG && USLUG.has(id)) ? USLUG.get(id) : slug(name);
+  /* PHASE_36: the nickKey() OR-clause is what keeps a URL built from the
+     OLD plain name (e.g. showPlayer('Mario Morales')) landing on slug(name)
+     -- itself the stale plain slug -- recognizing the caller meant the now-
+     merged, nickname-named curated entry instead. find(), not some(), since
+     the matched entry's OWN name (not the raw input) is what the URL
+     should actually reflect. */
+  const pooled=PINDEX&&PINDEX.find(x=>norm(x.name)===norm(name)||nickKey(x.name)===nickKey(name));
+  return (!pooled && id!=null && USLUG && USLUG.has(id)) ? USLUG.get(id) : slug(pooled?pooled.name:name);
 }
 /* "Mismo nombre" line: the other archive players with this exact name, as slug-id links. */
 function sameNameLine(id){
@@ -172,7 +193,12 @@ function renderPlayerIndex(){
     if(f && !tags.includes(f)) return false;
     if(!q) return true;
     const clubs=Array.from(p.clubs).map(c=>F[c].name).join(' ');
-    return norm(p.name+' '+tags+' '+clubs+' '+(p.bio||'')).includes(q);
+    /* PHASE_36: a merged nickname-form card (p.name now e.g. "Mario «Quijote»
+       Morales") still needs to turn up for the plain-name query that used to
+       be its own separate card ("Mario Morales") -- nickKey(p.name) is that
+       same name with the quoted segment dropped, so it matches q the same
+       way the nickname itself already does via the line above. */
+    return norm(p.name+' '+tags+' '+clubs+' '+(p.bio||'')).includes(q) || nickKey(p.name).includes(q);
   });
   const rows=list.map(p=>[
     p.name, p.pos, p.years, Array.from(p.clubs).map(c=>F[c].abbr).join(' '), p.pts, p.reb, p.ast, p.gp,
@@ -215,20 +241,42 @@ function openArchivePlayer(id,name,season){
   if(XWALK_REV && XWALK_REV[id]!=null){ showPlayer(XWALK_REV[id],null,season); return; }  /* is a curated player -> rich card */
   showPlayer(name,id,season);
 }
+/* PHASE_19 (owner-approved, redesign-v2): the archive-only variant of the real
+   "jugador" page -- same #playerHead/#playerInfo/.presumen structure showPlayer()
+   builds for curated players, sized down to what an archive-only row actually has.
+   Resumen's 3 tiles and Ficha's paragraph are both async (they need the same
+   players/<id>.json fetch loadPlayerExtra() already makes for the Temporadas tab),
+   so they start as a real loading state here and are filled in by loadPlayerExtra
+   once that fetch resolves -- #playerArchiveStats/#playerArchiveFicha are the
+   exact ids it targets. */
 function renderArchiveCard(name,id,host){
   const r=(PALL||[]).find(x=>x.id===id)||{};
   const span=(r.first_season&&r.last_season)
     ? (r.first_season===r.last_season?''+r.first_season:r.first_season+'–'+r.last_season) : '';
-  const meta=[r.position,span,(r.nationality&&r.nationality!=='Puerto Rico')?r.nationality:''].filter(Boolean).join(' · ');
-  host.innerHTML=`<div class="card" style="margin-top:var(--sp-4_5)">
-    <div style="display:flex;gap:16px;flex-wrap:wrap">
-      ${portrait(name,'var(--azul)','var(--blanco)',60,74,r.position)}
-      <div style="flex:1;min-width:230px">
-        <h2 style="font-size:24px">${esc(name)}</h2>
-        <div class="muted" style="font-size:var(--fs-xs)">${esc(meta||'sin datos de posición o años')}</div>
-      </div>
+  buildPlayerHead({
+    eyebrow:'Del índice del archivo — no es ficha curada',
+    name, c1:null,
+    meta:[r.position,span].filter(Boolean).join(' · ')||'posición y años sin registrar',
+    portraitHtml:portrait(name,null,null,72,88,r.position)
+  });
+  host.innerHTML=`<div class="presumen">
+    <div class="rp-panel rp-info" id="playerInfo"></div>
+    <div class="rp-panel rp-stats" id="playerArchiveStats">
+      <div class="ed-eye">Resumen</div>
+      <p class="note" style="margin-top:0">Cargando…</p>
     </div>
-    <div class="note">Del índice del archivo — no es uno de los jugadores destacados con ficha curada. Lo que sigue es solo lo que registra el archivo de bsnpr.com.</div>
+    <div class="rp-panel rp-context" id="playerArchiveFicha">
+      <div class="ed-eye">Ficha</div>
+      <p class="note" style="margin-top:0">Cargando…</p>
+    </div>
+  </div>
+  <div id="playerResumenSeasons"></div>`;
+  renderPlayerInfo([['Nombre',name],['Posición',r.position],['Años',span],['Fuente','bsnpr.com']]);
+  const fh=$('#playerFuentes');
+  if(fh) fh.innerHTML=`<div class="rp-panel rp-fuentes">
+    <div class="ed-eye">Fuentes</div>
+    <div class="fsrc"><div class="note" style="margin-top:0">Ficha del archivo de bsnpr.com (jugador #${id}) vía Wayback Machine.</div></div>
+    <div class="fsrc" id="playerFuentesAsync"></div>
   </div>`;
   revealNode(host); host.scrollIntoView({block:'start',behavior:'smooth'});
 }

@@ -2702,7 +2702,7 @@ requests**; crests/portraits still render as SVG shields/monograms.
 
 ---
 
-### PHASE_9_HISTORICAL_DEEP_DIVE_2014_2023 — T9.1-T9.3 DONE, committed +
+### PHASE_9_HISTORICAL_DEEP_DIVE_2014_2023 [data pipeline] — T9.1-T9.3 DONE, committed +
 pushed. T9.4/T9.5 queued, unstarted. First archive standings.csv ever,
 5 real seasons (2014-2018), cross-validated against Wikipedia, all
 provenance-complete. Full record below.
@@ -6975,3 +6975,2108 @@ reconstruction mechanism used to verify every step are in `docs/specs/app_split_
 - **PHASE_1_SPLIT closes here.** Steps 0-10, branch `phase-1-split`, 14 commits, merged and
   live. `docs/specs/app_split_spec.md` has the full file map, what's still inline and why, the
   reconstruction mechanism, and the verification standard used at every step.
+
+- **PHASE_9 (branch `redesign-v2` — UI restyle; a separate, independently-
+  numbered phase track from this file's own PHASE_9_HISTORICAL_DEEP_DIVE_2014_2023
+  above — data pipeline vs. UI, same number, unrelated work).** 17 commits,
+  `f9bbefe..d3262b6`. Header nav replaced by a left rail (≥860px), full
+  keyboard/a11y support; home hero rebuilt toward an approved mockup, WCAG-checked
+  contrast fixes in both themes; dead CSS/JS from the pre-rebuild hero removed;
+  phone touch targets brought to 44px across every standalone button and 6 dense
+  data tables, all via an invisible expanded tap target (row height byte-identical
+  to before); home hub restyled — rail-icon reuse on its cards (with an invisible
+  placeholder reserving the same space on the one card with no rail icon), a
+  real "Últimos campeones" table built from existing champion data, lead-card
+  wording updated to state the club's own title span instead of repeating the
+  hero's own stat; phone search-placeholder clipping fixed. Full whole-branch
+  review (48-route harness vs. `f9bbefe`, WCAG spot-recheck, click-through,
+  pytest/verify_clean, all clean except the one pre-existing `test_web_text.py`
+  failure) in `~/Desktop/redesign-v2-screenshots/phase9_final_report.md`; every
+  numbered item has its own report in that same directory. One known,
+  deliberately-deferred gap, not done in this arc: `buildOnThisDay()`/
+  `ON_THIS_DAY`/`OTD_ES` (the removed "En esta fecha" accordion's backing code)
+  are dormant, not deleted — `tests/_web_text.py` uses `ON_THIS_DAY`'s own
+  comment header as a splice marker, so removing the constant needs that marker
+  re-anchored first.
+
+- **PHASE_10 (branch `redesign-v2` — UI restyle).** 2 commits, `e8cb353..83dbaef`.
+  Labeled rail tier (≥1120px) restyled icon-above-label per mockup measurements
+  (76px width, down from 220px; 26px item gap, 21px icons, 9px labels); 3px item
+  padding is a documented deviation from the mockup's literal 0px, to keep touch
+  targets ≥44px. Same-phase follow-up: `.railctl` (Tema/Mi club) made icon-only
+  at that width — the width change had overflowed "Cangrejeros" (55.67px) and
+  "Tema" (11.5px) past the 76px edge. Icon-only tier (860–1119px), nav tabs,
+  logo, theme toggle untouched; WCAG AA and keyboard nav reverified.
+
+- **PHASE_11 (branch `redesign-v2` — UI restyle).** 1 commit, `6a57358`.
+  Historia's full visual redesign across all 8 views (Resumen, La cinta,
+  Títulos, Dinastías, Finales, Premios, Refuerzos, Todas las temporadas): hero
+  reusing Inicio's arc device, gradient stat cards, explore-card grid,
+  medal-rank title bars with real crests, Dinastías streak cards, decade-grouped
+  Premios lead-list, weighted Finales matrix, Campeones de anotación/MVP subtab
+  toggle. Fixed a real touch-target bug in La Cinta (10-col decade grid's
+  27.6×40px cells → a flat always-≥44px ribbon, 47.7×44px at 390px). Fixed 3
+  dark-theme AA contrast failures (`.stat.solid`, `.hbadge.missing`,
+  `.streakpill`) by switching to existing `--rojo-deep`/`--on-rojo` tokens. All
+  data wired to real live sources, no placeholders. 7 new top-level
+  declarations (HISTORIA_XICON, buildHistoriaHero, buildHistoriaLanding,
+  historiaStreaks, renderReadout, restructurePremios, scoringStreaksFor) —
+  declaration baseline not yet updated.
+
+- **PHASE_12 (branch `redesign-v2` — UI restyle).** 1 commit, `ce59c89`
+  (current HEAD). Inicio's full visual redesign: hero eyebrow/arc reuse (no
+  second arc device), gradient stat row, hubGrid cards restyled with
+  Historia's own gradient icon chip + hover-reveal arrow (ported onto the real
+  live-data cards, no duplicate grid), "Últimos campeones" as `.champ-strip`
+  rows linking into Historia → Dinastías, "La liga ahora" wrapped in the `.acc`
+  accordion skin over the existing `<details>`/`ligaFold()` markup (logic
+  untouched), real `crest()` wired throughout (Final Brava, awards, Quinteto
+  Ideal, posiciones, líderes) with SVG-shield fallback, three real
+  personalization states in `buildHub()` (full club / name-only / anonymous).
+  Session fixes folded in: today-card label/icon corrected, duplicate `.xcard`
+  explore grid removed in favor of restyling the one real hubGrid, an invalid
+  `--sp-5_5` token (silently collapsing `.club-card`/`.today-card` padding to 0)
+  fixed to `--sp-5`. 10 new top-level declarations (LIGA_ICON, clubKeyByName,
+  + 7 shared with the Historia pass) — declaration baseline not yet updated.
+
+- **PHASE_14 (branch `redesign-v2` — UI restyle).** Built, not committed. Jugadores'
+  own hero + landing (`buildJugadoresHero`/`buildJugadoresLanding`, same mechanism as
+  Historia's: rewrites `#jugadores .phead` into `.hhero`, 3 real stat cards — curated-
+  index/Salón/NBA counts — plus an `.explore`/`.xcard` grid to the 8 real sub-views).
+  `.cards.g2` retired from Jugadores' three plain-grid builders: `buildHOF()` →
+  `.salon-grid`/`.salon-card` (portrait + a plain rank chip, no gold/silver/bronze —
+  this sort order has no ranking semantics), `buildRecords()` → `.rec-grid`/`.rec-card`
+  (numeral switched to `var(--font-display)`, matching every other big numeral in the
+  system), `buildCoaches()`/`buildStone()` → a shared `.coach-grid`/`.coach-card` (top
+  accent reuses `.rule`'s own `--azul`, not a new color). Player/archive card, season
+  detail, and the player-index search bar get a new `.pcard`/`.search-card` wrapper
+  class alongside (never replacing) the real `.card`/`.phero`/`.filters` — scoped
+  under `#jugadores` so Equipos' identical `.phero`/`.card` team-page markup and every
+  other section's `.filters`/`.strip` are unaffected; confirmed by grep that `crest()`
+  (team logos) is never called from Jugadores, only `portrait()` is, so `#jugadores
+  .crest` only ever matches a player silhouette. No data/JS behavior changed — sort/
+  filter/search/CSV export, the `#pfField` display toggle, the `td.name .btn` invisible
+  tap-target expansion, and the `#playerTabs` manual-activation ARIA tablist all
+  reverified unchanged, live, in both Chromium and WebKit at 1400px/390px, both themes
+  (zero console errors either engine). 3 new top-level declarations (JUGADORES_XICON,
+  buildJugadoresHero, buildJugadoresLanding) — declaration baseline not yet updated
+  (same already-deferred gap PHASE_11/12 left open, not widened in kind, only in
+  count — see those entries above).
+
+- **PHASE_15 (branch `redesign-v2` — UI restyle).** Built, not committed. Jugadores
+  polish pass, structural inspiration from a reference screenshot of this app's own
+  archive player card (separated panels, small-caps group labels, label-over-value
+  hierarchy) — not a theme change, both themes untouched/unforked. Buscar/Comparar/
+  Líderes filter bars (`#pmode`/`#pf`/`#lcat`/`#lmode`/`#hs`) get a custom chevron
+  (`#jugadores .field select`, two data-URIs — one per theme, both the literal
+  `--ink-3` hex already used elsewhere — scoped to `.field` so Comparar's own small
+  inline season-selects, never inside `.field`, are untouched). `buildCompare()`'s
+  and `buildLeaderControls()`'s filter bars wrapped in the real `.search-card` shell
+  (PHASE_14). Player card (Resumen): tag wall split into "Honores"/"Clubes" groups
+  (`.ed-eye` labels, only rendered when that group is non-empty — `p.tags.size`/
+  `p.clubs.size` guards); the stat strip becomes separated bordered tiles
+  (`#jugadores .pcard .strip`, scoped so Inicio's/the team page's own `.strip` stay
+  untouched); the "lo que no sabe"/disputed-assist `.warn` callouts get a fuller
+  rounded panel (still visually a warning — PC4's gap-signal is unchanged). Comparar:
+  each `.cmphead` is now its own bordered slot panel with a top accent in that
+  player's own real `cmpColor()` (`--cmp-c`, set inline per instance, same pattern
+  `.cmpfill`'s own `--w` already uses); `.cmpradar`/`.cmprows` get a bordered-panel
+  treatment. `.cmphead`/`.cmpheads`/`.cmpradar`/`.cmprows`/`.bars` were restyled
+  directly, unscoped — confirmed by grep each is exclusive to Comparar/season-compare
+  (`drawCompare()`, `renderSeasonCmp()`) or Líderes (`buildLeaders()``s `bars()` call),
+  same reasoning PHASE_11 used retiring `.barrow` from Historia. No data/JS behavior
+  changed — sort/filter/search/CSV export, `#pfField` display toggle, the
+  `td.name .btn` invisible tap-target expansion (still 24px row height, live-measured),
+  and the `#playerTabs` ARIA tablist all reverified unchanged, live, Chromium +
+  WebKit, dark + light, 1400px/390px (zero console errors either engine); screenshot
+  spot-check (both themes) confirmed the panels render as intended, not just present
+  in the DOM. Zero new top-level declarations — the frozen-baseline drift is
+  unchanged from PHASE_14 (still 438 vs. 426, not widened).
+
+- **PHASE_16 (branch `redesign-v2` — UI restyle).** Built, not committed. PHASE_15
+  was judged too subtle on re-review against the reference — same single stacked
+  `.pcard`, just bordered/labeled internally. This phase replaces `showPlayer()`'s
+  Resumen-tab card with real sibling panels in a CSS grid: `.rp-id` (identity —
+  portrait, name, headline stat, Honores/Clubes groups, bio; keeps the real
+  team-color border + tricolor lead-in this card always had), `.rp-stats`
+  ("Resumen" — the 6-tile stat strip), `.rp-context` ("Ficha" — the gap/dagger
+  `.warn` callouts, the Leyenda note, the Comparar button, the "Aparece en" line).
+  `#jugadores .presumen{grid-template-columns:320px 1fr}` at ≥900px, one column
+  below that (real stack, not a width squeeze). Three-tier real depth, no new
+  colors: page (`--night`) → `.rp-id` (`--card`) and `.rp-stats`/`.rp-context`
+  (`--raise`, a visibly different shade from `.rp-id`, same token this app already
+  uses for "a raised surface inside a card") → each stat tile back to `--card`
+  (one step back down, a real third tier). Scope held strictly to `showPlayer()`
+  only — Buscar/Comparar/Líderes untouched this pass, and the *other* three real
+  `.pcard` call sites (`loadPlayerExtra`'s Temporadas card, `renderSeasonDetail`'s
+  season-detail card, `renderArchiveCard`'s stripped card) keep today's single-
+  panel look on purpose, out of scope; PHASE_14/15's own `.pcard`-scoped rules are
+  untouched and still correctly serve those three. A new `.rp-context .warn` rule
+  was written separately from PHASE_15's `.pcard .warn` rather than widening that
+  selector, since broadening it would have also caught Comparar's own "Casillas
+  sin registrar" `.warn` — explicitly out of scope this phase. Verified live,
+  Chromium + WebKit, dark + light, 1400px/390px: 2-column grid confirmed at
+  1400px (`320px 752px`, panels measured side by side), real single-column stack
+  confirmed at 390px, all three panel backgrounds measured distinct from each
+  other and from the page background in both themes, 6 tiles render, zero console
+  errors either engine; the `td.name .btn` tap-target height (24px) and the
+  `#playerTabs` ARIA tablist state (`tabIndex`/`aria-selected`) both reverified
+  unchanged. Screenshot spot-check both themes, desktop and phone.
+
+- **PHASE_17 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Owner reported PHASE_16's 2-column grid rendering as one stacked column live
+  at ~2000px. Investigated before changing anything: re-ran a fresh
+  getComputedStyle check against the already-committed-to-disk PHASE_16 state
+  at exactly 1400px, Chromium — `display:grid`, `gridTemplateColumns:"320px
+  752px"`, matching what PHASE_16's own report claimed. `web/index.html`'s
+  `?v=` hash matched `main.css`'s real sha256. `sw.js`'s own CSS/JS route is
+  genuinely network-first (fetch-then-cache, cache only read on a network
+  *failure* — read the file to confirm, not assumed), so a stale service-
+  worker cache serving an old `main.css` under the new `?v=` query doesn't fit
+  the code either. No code-side cause found — logged as likely a stale tab/
+  cache on the reviewing side, not a regression in this file, and moved on to
+  the requested rebuild (which also directly resolves it, being a visibly
+  different layout either way). Split `.rp-id`'s own Honores/Clubes/bio out
+  into a real third sibling panel (`.rp-honors`) — `.presumen` is now a real
+  3-column grid (`260px 320px 1fr`) at ≥1100px (breakpoint moved up from
+  900px), single column below that, same real content, same order (identity →
+  honores/clubes/bio → stats/context) stacked. `.rp-id`/`.rp-honors` share
+  `--card` (the "about this player" cluster); `.rp-stats`/`.rp-context` share
+  `--raise` (the "the record" cluster) — same 2-tier token scheme as PHASE_16,
+  now mapped onto 3 top-level panels instead of 2. Added a resting
+  `box-shadow:0 1px 3px var(--shadow)` to every `.rp-panel` so same-shade
+  adjacent panels (`.rp-id`/`.rp-honors`) still read as separate surfaces via
+  gap+border+shadow, not fill alone — same approach the reference's own 3
+  same-white panels use. Proved it for real this time: live getComputedStyle
+  at exactly 1400px, both engines, both themes — `gridTemplateColumns:"260px
+  320px 476px"`, real `getBoundingClientRect()` on all 3 panels confirming
+  non-overlapping left-to-right positions (x=194/470/806), `sideBySide3Panels`
+  boolean computed from those rects. 390px confirmed single-column
+  (`sideBySide3Panels:false`). `td.name .btn` height (24px) and `#playerTabs`
+  ARIA state reverified unchanged. Zero console errors either engine, either
+  theme. Screenshots: `/tmp/p17_player_dark_1400.png`,
+  `/tmp/p17_player_light_1400.png`, `/tmp/p17_player_dark_390.png`,
+  `/tmp/p17_player_light_390.png`.
+
+- **PHASE_18 (branch `redesign-v2` — survey, read-only, no code changed).**
+  Premise check: `~/Desktop/jugadores-ref.png` ("Llovet Ayala, Francisco" —
+  back link, Resumen/Temporadas/Fuentes tabs, 3-panel Información/Resumen/
+  Ficha, Temporada-por-temporada table) does **not** exist as a dedicated
+  page/route anywhere in this repo — confirmed by exhaustive grep across
+  `web/`, `app/bsn_archivo.html`, `docs/`, and all branches/stashes (only
+  `main`/`phase-1-split`/`redesign-v2`, no stash). The player it depicts is
+  real — archive id 721, "Llovet Ayala, Francisco," the A05 disputed-
+  birth-date identity case documented in `docs/specs/cluster_evidence_a05.md`
+  / `cluster_evidence_batch2.md` / `identity_triage_audit_spec.md` — but the
+  page chrome around it (back link, 3-tab bar with a "Fuentes" tab, the
+  3-panel grid) was never built; it's a design mockup using this app's own
+  real data, not a screenshot of shipped code. Today ALL players (curated
+  and archive-only alike) render inline inside Jugadores → Buscar via
+  `showPlayer()`/`renderArchiveCard()`/`openArchivePlayer()` — confirmed via
+  `applyHash()`'s own routing, which sends `#jugadores/jugador/<slug>`
+  through `showView('jugadores','buscar',...)` first, always. Full proposal
+  (data mapping per panel, every real call site, routing/back-forward/
+  declaration-count risks, and disposition of PHASE_14-17's uncommitted
+  work) delivered in conversation, not written to a file per this phase's
+  own instruction — awaiting the owner's approval before any build phase.
+
+- **PHASE_19 (branch `redesign-v2` — UI restyle).** Built, not committed. The real
+  "jugador" page, per PHASE_18's approved proposal and `~/Desktop/mockup 2/
+  jugador.html`/`movil-jugador.html` (read-only source of truth). A real detail-only
+  view (`VIEW_MAP.jugadores`'s own `detail:['jugador','#playerPage']`, same
+  mechanism Equipos' `#teamDetail` already uses for `showTeam()`) — not a sub-state
+  of Buscar any more. `showPlayer()`/`openArchivePlayer()`/`renderArchiveCard()`
+  changed; the ~15 real call sites (Buscar/Líderes/Salón/Premios/Equipos
+  roster/Inicio search/"Quién soy"/`applyHash()`) did not. Page chrome: a real
+  "← Jugadores" back link (static HTML, no JS needed — native `href="#jugadores"`),
+  `buildPlayerHead()` (avatar/eyebrow/name/subline, shared by both player types),
+  a real 3-tab Resumen/Temporadas/Fuentes bar (`showPlayerTab()`/`PLAYER_TAB_MAP`
+  generalized from a hardcoded 2-tab pair, same manual-activation ARIA pattern).
+  Resumen tab: 3 real side-by-side panels (`.rp-info`/`.rp-stats`/`.rp-context` —
+  Información/Resumen/Ficha) at ≥940px, measured live before picking that number
+  (not guessed — `#jugadores .panel`'s own real content width at a 1000px viewport
+  is 904px, confirmed via `getBoundingClientRect`), single column below it.
+  Información paints sync (PINDEX/archive-row fields) then rebuilds with
+  Nacimiento/Lugar/Nacionalidad once `loadPlayerExtra()`'s own fetch lands
+  (`renderPlayerInfo()`, a full rebuild each time, never an append). Resumen:
+  curated keeps the real 6-tile stat strip; archive-only gets 3 tiles (temporadas
+  documentadas / con conflicto de fuente / rango en la ficha) computed from the
+  exact same `dqFlag`/`disputeFlag` aggregates the season table already produces —
+  found and fixed a real bug here before reporting: the "rango" tile was computed
+  from the totals-line's own non-flagged-only year range, which is `null` whenever
+  *every* row is flagged (Llovet's actual case, all 5 rows disputed) — added a
+  second, unfiltered `allLo`/`allHi` for "what years does the ficha claim at all,"
+  which is a real, always-answerable question distinct from "what counts toward
+  the totals." Ficha: curated keeps honors/clubs/bio/"lo que no sabe"/Leyenda/
+  Comparar/dagger; archive-only gets `archiveFichaParagraph()`, a 3-case template
+  (disputed DOB / figures-only conflict / clean) driven by real aggregates, never
+  hand-written per player. Fuentes: consolidates "Aparece en," the Wayback
+  attribution line, and "Mismo nombre en el archivo" — all real text relocated,
+  nothing new invented. Temporadas tab (season drill-in, season-vs-season compare,
+  `dqTag`/`disputeTag` row flags) is byte-for-byte the same real logic, just
+  re-targeted at `#playerExtra` without the identity/bio lines that moved out.
+  `.rp-id`/`.rp-honors` (PHASE_16/17) retired — grep-confirmed nothing else
+  referenced them before removing their CSS. One real bug found and fixed before
+  reporting done: `.subnav{display:flex}` outranks the `[hidden]` attribute (same
+  specificity gotcha `#pfField`'s own toggle already had to work around) — the
+  pill row stayed visible over the new page until this was checked against a real
+  screenshot, not just DOM state; fixed via `style.display`, matching the
+  `#pfField` precedent (`helpers.js`, `showView()`). One test updated
+  (`tests/test_data_quality.py`'s own literal-source regression guard for the DOB
+  line) to match the intentional relocation of that line into a labelled row —
+  same real `fmtArchiveDob()`/`dobDisputed` composition, different shape of line.
+  Verified live, Chromium + WebKit, dark + light, 1000/1280/390px, for both
+  Georgie Torres (curated) and Llovet Ayala, Francisco (archive-only): real 3-panel
+  grid confirmed via `getComputedStyle`/`getBoundingClientRect` (not just a
+  screenshot) at 1000px (`260px 332px 280px`, matching the live-measured
+  calibration almost exactly) and 1280px, single column at 390px; `td.name .btn`
+  tap-target (24px, invisible-expand intact), the 3-tab ARIA state, and `#pfField`
+  display toggle all reverified unchanged; zero console errors either engine, any
+  theme/width. `pytest`/`make verify` unchanged from the pre-existing baseline
+  (509 passed, same 5 known-stale declaration-count-drift failures; drift itself
+  now 442 vs. 426 — 4 new real declarations, not widened in kind).
+
+- **PHASE_20 (branch `redesign-v2` — UI restyle).** Part 1 built into the repo, not
+  committed; Part 2 is a standalone `/tmp` exploration, no site file touched.
+  Part 1 rebalances the curated Resumen tab: Honores moved out of the narrow Ficha
+  column into its own real full-width panel below the 3-panel grid (`groupHonorChips()`
+  collapses every chip shaped exactly "<label> <year>" into one chip per label once
+  2+ years exist — "Campeón de anotación 1977/78/79/84-87" → one chip, consecutive
+  years as a range, non-consecutive kept separate; a label with only one year is left
+  exactly as it was; every other tag untouched; order-preserving). Fixed the duplicate
+  headline number (`bigKey` now names which strip tile the big Resumen number restates,
+  that one tile is dropped from the 6-tile strip instead of printing the same real
+  value twice). Fixed long Información values ("21 de septiembre de 1957") wrapping
+  mid-phrase next to their label — `renderPlayerInfo()` now measures each rendered
+  `.v` live (`getClientRects().length>1`) and adds `.row-stack` only on rows that
+  actually wrapped, never a guessed character count. Verified: PHASE_19's curated +
+  archive-only variants, 3 tabs, routing, tap targets (24px), ARIA tablist, `#pfField`
+  all still work, Chromium + WebKit, both themes, 1000/1280/390px, zero console
+  errors — archive-only untouched by this pass (confirmed, since none of its own
+  builders were touched). Chip before/after printed for Georgie Torres (20→12),
+  Rubén Rodríguez (7→7, unchanged — his one MVP year has nothing to compress), and
+  Adolfo Porrata (2→2, unchanged).
+  Part 2: surveyed every real `portrait()` call site (exactly 3 — `showPlayer()`,
+  `renderArchiveCard()`, `buildHOF()`; Comparar/tables/rosters/search render no
+  avatar at all today, confirmed by grep, not assumed) and built
+  `/tmp/avatar_directions.html` + `/tmp/avatar_directions_composite.png`: 3
+  illustrated/typographic-only directions (Escudo — solid club-color fill;
+  Gradiente — diagonal club-color gradient; Contorno — tinted ground + club-color
+  outline and initials), 8 real sample players (real club colors from `F`/PINDEX,
+  Llovet Ayala Francisco as the no-club neutral-navy case), 28/44/64/96px, both
+  themes, real WCAG contrast ratios computed via the actual relative-luminance
+  formula (not eyeballed) and printed inline. Real finding: Direction A (Escudo)
+  clears 4.5:1 for all 8 sample players in both themes; Direction B (Gradiente)
+  clears 4.5:1 for 6/8, drops to the 3:1-large-text-only floor for the two
+  orange-club players (Cangrejeros, San Germán); Direction C (Contorno) is the
+  weakest as drafted — fails even 3:1 for 4/8 players in dark theme (Georgie Torres
+  1.74:1, Llovet 1.38:1, Santeros 2.07:1, Capitalinos 1.97:1) and 2/8 in light —
+  would need a stronger tint or a contrast-aware text-color fallback (same
+  mechanism Direction A already has) before it's shippable. Not wired into the
+  site; no file in the repo changed for this part.
+
+- **PHASE_21 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Direction B ("Gradiente") landed for real at all 3 `portrait()` call sites
+  (`showPlayer`, `renderArchiveCard`, `buildHOF` — the latter now resolves a
+  real club via a PINDEX lookup it didn't have before, instead of defaulting
+  every Salón portrait to neutral). Silhouette/`posPose()`/`POSE_ICON` removed
+  outright (dead code, confirmed by grep before deleting). `portraitFill()`
+  computes real WCAG contrast live (`relLum`/`hexRgb`/`contrastRatio`, the
+  same relative-luminance formula as PHASE_20's own mockup) and falls back
+  from a gradient to a flat, further-darkened solid fill for any club where
+  white initials would dip under 4.5:1 — checked against all 33 real clubs +
+  the neutral navy, **0 failures** (Cangrejeros 8.18:1, San Germán 7.52:1,
+  both solid-fallback; everyone else gradient, 4.88–17.40:1). No tricolor on
+  avatars (owner: reads as the French flag) — corner-ring only, confirmed
+  zero `--tri*` references in the new `.pavatar` CSS. `playerInitials()` is
+  given+first-surname (comma format "Surname, Given" vs. plain "Given ...
+  Surname" both handled; "Llovet Ayala, Francisco" → "FL" exactly, "Georgie
+  Torres" → "GT"). Resumen tiles switched grid→flex (`#jugadores .rp-stats
+  .strip`) so a non-full last row stretches instead of leaving an orphan gap
+  — live-measured, not assumed (5 tiles: 1000px → last row 1 tile fills
+  100%; 1280px → last row 2 tiles sum to the full row width minus the real
+  gap). "Comparar con otro jugador" relocated to the page header (level with
+  the name); "Leyenda por" relocated into the Honores panel as a footer
+  note — panel heights now land much closer together (Resumen still runs
+  tallest, from its own headline-stat block, honestly reported as "closer,
+  not exact"). Honores de-duplication (`groupHonorChips()`, case-insensitive
+  label matching) now also folds in the counted chip and drops the covered
+  generic one — Georgie Torres: 20 → 8 chips (`"7× campeón de anotación ·
+  1977–1979 · 1984–1987"`, `"3× MVP · 1984–1986"`); Rubén Rodríguez: 7 → 7
+  unchanged (singleton `MVP 1979`, nothing to compress); Adolfo Porrata
+  (few-honors case): 2 → 2 unchanged. Display-only, confirmed `p.tags` the
+  Set is never mutated. Archive-only "Rango en la ficha" tile now prints the
+  mockup's own compact form ("1965–69"), live-confirmed un-wrapped at
+  1000/1280/390px in both engines. "Temporada por temporada" now renders
+  under the 3 panels on Resumen too (`renderResumenSeasons()` — read-only,
+  no checkboxes/drill-in, those stay exclusive to the Temporadas tab per
+  instruction), for archive-only players (Llovet: 5 real rows) and curated
+  players with real season data (Raymond Dalmau: 20 real rows, real totals
+  footer) — confirmed `seasonTotalsNote()` is the one real computation
+  shared by both the Temporadas tab's own line and this new table's footer,
+  never a second count that could disagree. "Aparece en" reconfirmed still
+  showing for curated players. Full tricolor inventory (item 7, read-only,
+  nothing changed) delivered in conversation. Verified live, Chromium +
+  WebKit, dark + light, 1000/1280/390px — zero console errors either
+  engine (an initial WebKit run hit the app's own documented ≥3s minimum
+  splash duration because the check script under-waited; re-run at the
+  correct wait came back clean, not a site regression). `td.name .btn`
+  tap-target (24px) and the 3-tab ARIA state both reverified unchanged.
+  `pytest` unchanged at the pre-existing 5-failure baseline, 509 passed.
+
+- **PHASE_22 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Part 1 (small fixes): (1) Resumen's 3-panel grid now stretches to equal
+  height at the 940px+ breakpoint (`align-items:stretch`, grid's own
+  default once the prior `align-items:start` was dropped) — content stays
+  top-anchored, mobile single-column stack unaffected. (2) `groupHonorChips`
+  extended to also drop a bare generic chip when a YEAR-grouped chip (not
+  just a counted chip) covers the same label — Raymond Dalmau's bare
+  "Campeón de anotación" (no counted chip on record, but year chips 1968/
+  1970 exist) now correctly drops; Georgie Torres unchanged (already
+  covered by the counted-chip path from PHASE_21). Display-only, `p.tags`
+  Set confirmed untouched. (3) Season-compare checkboxes (`#playerExtra`)
+  restyled with `appearance:none` + a custom box/check, real keyboard/
+  label/onchange behavior untouched.
+
+  Part 2 (Comparar redesign, visual/markup only — compare logic, data,
+  season pinning, routing, URL/hash state and the honesty rules all
+  untouched). `~/Desktop/mockup 2/datos.html` only mocks the bare
+  head-to-head slot cards (avatar placeholder, name, no scoreboard/rows/
+  radar/add-player-bar) — everything below the heads was built to spec in
+  the player page's own visual language. New `.cmp2*` namespace throughout
+  `drawCompare()`/`cmpHead()`/`cmpRadar()` — confirmed by grep to be
+  entirely separate from `renderSeasonCmp()`'s own `.cmphead`/`.cmpheads`/
+  `.cmprows` (Temporadas tab's season-vs-season panel), which is untouched
+  and still renders byte-identical to before. `cmpBarRow()` gained a 4th
+  `mirrored` parameter (default falsy, so `renderSeasonCmp()` and the
+  3-player Comparar case are unaffected) — mirrored=true draws the new
+  "tale of the tape" row (label centered, each player's value on the
+  outside, bar growing from the center line outward in that player's own
+  color, winner's value emphasized, ties/missing values neutral/undrawn).
+  Head-to-head cards: real `portrait()` avatar, name, pos·years, club,
+  Carrera/season `<select>` (new compact chevron, scoped to `.cmp2select
+  select` so the existing `.field select` chevron is untouched), Quitar —
+  2 players get a VS mark between cards (`.cmp2heads.n2`, 3-column grid),
+  3 players get a plain 3-up grid (`.cmp2heads.n3`), real top accent bar in
+  each player's own comparison color. Scoreboard: large mirrored numerals
+  (`.cmp2score-n`) in each player's own contrast-safe color, the exact
+  preserved win-count sentence (`verdict`, same a/b/shared computation as
+  before this phase, byte-for-byte) kept underneath. Radar: enlarged
+  (R 64→90, viewBox 176×168→254×240) and moved into its own panel with a
+  name+color legend, replacing the old narrow two-column `.cmpsplit` layout
+  that left dead space under it. Found and fixed a real contrast bug before
+  shipping: `cmpColorPair()` only ever computed safe text against `--card`'s
+  two real hexes, but the mirrored rows' lead-value color sits on `--raise`
+  (`#131E38` dark / `#E1E9F5` light — a real, if close, different
+  background in each theme) — `cmpColorPair()` now takes optional
+  `bgDark`/`bgLight` args, and `cmpBarRow()`'s mirrored branch passes the
+  real `--raise` hexes instead of silently reusing the `--card`-tuned
+  default. All `.cmp2*` panels without an explicit tier now get `--card`
+  (scoreboard/radar/foot/empty states) or `--raise` (rows — matches
+  `.rp-stats`'s own "the record" tier), after confirming live that
+  `.rp-panel` itself carries no background (border+shadow only — the
+  existing Honores panel already relies on this, discovered while checking
+  it) so a bare `.cmp2*` panel would've shown as a hollow outline over
+  `--night` otherwise. Two now-dead rules retired (`.cmpsplit`, `.cmpradar`
+  — confirmed by grep, zero remaining call sites now that `drawCompare()`
+  no longer emits them); `.cmpheads`/`.cmphead`/`.cmprows`'s own comment
+  updated to say they're exclusive to `renderSeasonCmp()` now. `.search-card`
+  (shared by the player-index search bar, the Temporadas-tab season-select
+  panel, and Comparar's own add-player bar) gained the same `box-shadow` as
+  `.rp-panel`, for one consistent panel look across all three. Mobile
+  (max-width:759px): both `.cmp2heads.n2`/`.n3` collapse to a single column
+  (cards stack), `.cmp2vs` becomes a horizontal rule on each side of "VS"
+  (confirmed live via computed style — `::before`/`::after` render as real
+  155px lines either side, not just text, even though they read faint at
+  screenshot scale), mirrored rows fall back to a 2-row stacked layout
+  (value-left / value-right on one line, the track below, full width) since
+  a 56px value column plus a real center-anchored track doesn't fit
+  three-across at 390px. Verified live, Chromium + WebKit, dark + light,
+  1000/1280/390px, zero console/page errors across all 92 state captures:
+  Georgie Torres vs Mario Morales (both pre-2012 legends — archive `career[]`
+  empty for both, confirmed by reading `players/788.json`/`players/1584.json`
+  directly, so this case also exercises the "no linked season data, Carrera
+  only" disabled-select path); A.D. Vassallo vs Admiral Schofield (real
+  partial data, 6 of 7 comparable rows); a 3-player compare (Georgie +
+  Mario + Raymond Dalmau — confirmed unmirrored `.cmprow` path, same visual
+  style as before, Raymond's select is enabled since his archive career[]
+  genuinely isn't empty, unlike the other two); a season-pinned compare
+  (A.D. Vassallo pinned to a specific season via `cmpSetMode`, Schofield
+  left in career mode — confirmed `anySeason` suppresses the radar panel
+  and switches the group labels to "De la temporada", 2 of 2 comparable
+  rows); a pair with no common data (no real archive pair reliably has zero
+  overlapping categories, since games/points are near-universal fields —
+  verified instead via a direct, documented state construction, confirming
+  the empty-verdict branch and the no-bar/no-numerals rendering). Also
+  reverified empty-CMP and 1-player states. Contrast-checked the two
+  genuinely new computed-color pairings (scoreboard numerals vs `--card`,
+  mirrored-row lead value vs `--raise`) against real club hexes from both
+  test pairs in both themes — all ≥4.5:1 (worst case 4.56:1, Admiral
+  Schofield's blue on dark `--card`); every other new/relocated color here
+  reuses an existing design token already proven elsewhere in the app, not
+  a new computed pairing. `node --check` clean, `pytest` unchanged at the
+  pre-existing 5-failure baseline, 509 passed.
+
+- **PHASE_24 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Comparar polish, six display-only fixes to PHASE_22's redesign; `.cmp2*`
+  namespace only, `renderSeasonCmp()`/Temporadas reverified byte-identical
+  (still only ever calls `cmpBarRow(r,ps,bool)`, 3 args — the new 4th
+  `mode` param is never passed, so it's always `undefined` there and the
+  function falls through to the exact original `.cmprow`/`.cmpbarline`
+  branch, untouched). (1) Radar's top "PTS" label was clipped by the SVG's
+  own viewport — the top axis landed at y=5.7 with a 12.5px font, above
+  the `viewBox`'s own y=0 edge; fixed by shifting `cy` down 16px (112→128)
+  and growing the `viewBox`/height to match (240→256), confirmed live
+  (`firstTextY` now 21.7, comfortably inside). Also found the radar+legend
+  pair wasn't actually centering as a group — `.cmp2radar-svg`'s own
+  `margin:0 auto` (a leftover from when it had no sibling) was absorbing
+  the flex row's entire free space as its own auto-margins once the
+  legend existed, shoving the legend toward the panel's right edge
+  (measured: group center 633px vs. panel center 532px on a 904px-wide
+  panel). Fixed by moving the centering context to a new inner
+  `.cmp2radar-group` (block, `max-width:720px`, `margin:0 auto`), legend
+  drops below under 700px viewport width. (2) `.cmp2heads` (a grid of
+  cards) was never itself an `.rp-panel`, so the existing `.rp-panel +
+  .rp-panel` gap rule never matched the first real gap (heads→scoreboard
+  or heads→radar) — measured 0px live before the fix. One more rule,
+  `.cmp2heads + .rp-panel`, closes it (confirmed 14px, matching every
+  other panel gap, in both the 2-player scoreboard case and the 3-player
+  no-scoreboard case where the radar panel directly follows heads).
+  (3) Rows where every player is missing now collapse into one muted line
+  reusing the existing "sin datos en común" wording (capitalized as a
+  sentence lead-in — `Sin datos en común — <row names>`, the one new
+  string this phase adds, flagged below) at the bottom of the rows panel,
+  instead of a label and empty tracks each; a group left with nothing
+  real to show (e.g. "Tiro y carga" for two players with no 2012+ box
+  scores at all) now also skips its own label. (4) 3-player rows get a
+  new `mode='grouped'` `cmpBarRow()` branch (own `.cmp3*` classes) instead
+  of silently reusing the legacy branch: the lead value is now that
+  player's own real contrast-safe color (`cmpColorPair()` against
+  `--raise`, same mechanism the 2-player mirrored rows already use)
+  instead of a flat `var(--ok)` green that could collide with a teal club
+  color, and each bar gets an owner cue (first name, in that player's
+  color) beside the value. Contrast re-checked against the real `--raise`
+  row background for both test pairs' colors in both themes — worst case
+  4.74:1 (Mario's orange, dark), same floor as PHASE_22's mirrored-row
+  check, nothing new introduced by the lead-color change. (5) A true zero
+  used to hit the same `Math.max(2, …)` width floor as a small positive
+  value, rendering identically — fixed in both new branches (`widthOf()`)
+  so `v===0` draws no fill at all, same as a missing value's bar; only the
+  value text ("0" vs "—") and the row still being drawn tell them apart.
+  The legacy branch's own identical quirk is left untouched (same
+  byte-identical constraint as the lead color). (6) Carrera/season
+  `<select>`s now match width across cards — root cause wasn't the
+  `width:100%` itself but two inline styles set directly on the
+  `<select>` elements in `cmpSeasonSelect()`/`cmpSeasonSelectDisabled()`
+  (`width:auto;min-width:0`, pre-PHASE_22, inline so it outranks any
+  external rule) still overriding it, plus `.cmp2select` being a bare
+  `<span>` (inline, so `width` on it was a no-op). Fixed by making
+  `.cmp2select` `display:block;align-self:stretch` (a real block box the
+  size of the card) and dropping the two conflicting inline styles,
+  moving their `font-size`/`padding` into the external rule instead —
+  confirmed live, all three cards' selects now exactly match their own
+  card's width (259px/395px/487px/324px across the tested viewports,
+  never mismatched). Verified live, Chromium + WebKit, dark + light,
+  1000/1280/390px, zero console/page errors across every capture: Georgie
+  Torres vs Mario Morales, A.D. Vassallo vs Admiral Schofield, a 3-player
+  compare (+ Dalmau), a season-pinned compare, 1-player, and empty — all
+  six re-run in both engines. `node --check` clean, `pytest` unchanged at
+  the pre-existing 5-failure baseline, 509 passed.
+
+- **PHASE_25 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Comparar color/contrast fixes. (1) Real club colors can collide (same
+  hue family + similar lightness) -- measured live against this league's
+  real palette before picking thresholds: hueDist<=20° AND |Ldiff|<=15
+  (HSL). `cmpAssignColors(ps)` (new) computes one final color per player,
+  first player keeps their real club color, each later player's real
+  color is swapped for the first non-colliding pick from a new fixed
+  `CMP_DISTINCT` set (`#5B8C1F` olive, `#7A3FD1` violet, `#C9960C` amber,
+  `#0E8FA6` cyan -- chosen to sit in this league's real hue gaps; 2 of the
+  4 still land inside the threshold of one specific club each, Osos de
+  Manatí/amber and Capitanes de Arecibo/cyan, left in deliberately since
+  the loop already skips a candidate that collides with whatever's
+  actually in play) only when a real collision is detected -- confirmed
+  live on the owner's own two examples: Fajardo maroon `#7A1F3D` vs
+  Quebradillas red `#B3141F` (Georgie vs Raymond Dalmau) swaps Raymond to
+  olive; A.D. Vassallo pinned to his 2012 season (Mets de Guaynabo navy
+  `#122E5C`) vs Admiral Schofield (Santeros blue `#0C4DA2`, hueDist 3.3°/
+  Ldiff 12.5) swaps Schofield to olive too. The one assigned color per
+  player is now threaded through every place that used to call
+  `cmpColor()` independently -- `cmpHead()`/`cmpRadar()`/`cmpBarRow()`
+  all take it as a param instead of recomputing -- confirmed live
+  identical across avatar fill, card top bar, scoreboard numeral, bar
+  fill, radar polygon and legend dot in every tested case.
+  `renderSeasonCmp()` untouched (never calls any of the changed
+  functions with a color array; `cmpColor()` itself is unmodified).
+  (2) Every place player-colored TEXT sits on a real background now gets
+  the existing `cmpColorPair()` treatment instead of a flat, unchecked
+  inline color: the verdict's leader name (new `.cmp2verdict-lead`, was
+  literally unreadable-dark for A.D./Georgie in at least one theme) and
+  the 3-player owner cue (new, same `--raise` background the lead value
+  already used). Worst-case contrast re-checked against the real
+  `--card`/`--raise` hexes for every color in play, including the new
+  `CMP_DISTINCT` set, both themes: 4.56:1 (unchanged from PHASE_22/24's
+  own floor). (3) The reported "esas temporadasno aparecen" join does not
+  exist -- live sub-pixel measurement (`Range.getClientRects()`) of the
+  actual rendered gap between "temporadas" and "no" measures 3.22px,
+  pixel-identical to every other normal inter-word space in the same
+  sentence (jugador→se, carrera→o, aparecen→para, all 3.22px); a 3x
+  zoomed crop confirms it by eye too. The source's multi-line template
+  literal collapses to one normal space exactly per HTML whitespace
+  rules; nothing was missing in the source and nothing is lost in
+  rendering. No edit made -- OLD and NEW are identical. (4) A season-
+  pinned card had no real position/years to show and rendered zero meta
+  lines there (career cards always had one, falling back to "años sin
+  registrar" when both are unknown) -- one fewer line shifted that
+  card's own select/Quitar up relative to its neighbor's, confirmed live
+  (0px gap before the fix). Season mode now shows the one real fact it
+  does have in that slot ("Temporada {season}", from the same `p._season`
+  `cmpResolved()` already sets) instead of leaving it blank; the line is
+  always rendered now, never conditional. Confirmed live: identical
+  select/Quitar Y-position between a season-pinned and a career card
+  side by side. (5) `web/js/tabs.js:2209`: `"${nConf} temporada${...} de
+  este jugador tienen cifras distintas..."` used "tienen" even when
+  `nConf===1` ("1 temporada ... tienen" — wrong number agreement). Fixed
+  to `${nConf===1?'tiene':'tienen'}`. OLD: `${nConf} temporada${nConf===1
+  ?'':'s'} de este jugador tienen cifras distintas entre dos páginas de
+  bsnpr.com. ` NEW: `${nConf} temporada${nConf===1?'':'s'} de este
+  jugador ${nConf===1?'tiene':'tienen'} cifras distintas entre dos
+  páginas de bsnpr.com. ` (6) READ-ONLY finding: yes, a real duplicate —
+  `norm()` strips the `«»` punctuation but not the word "quijote" itself,
+  so "Mario «Quijote» Morales" (key `mario quijote morales`) and "Mario
+  Morales" (key `mario morales`) never merge in `buildPlayerIndex()`'s
+  Map, producing two separate PINDEX cards for the same real person
+  (same career pts/gp/ppg/years/pos, confirmed live: 15,293 pts, 675 gp,
+  22.7 ppg, 1975–1998, SF, both entries) with different honors split
+  across them — the "Quijote" entry carries Salón + 4×MVP + the MVP-year
+  tags (`src:['Salón','MVP por año']`), the plain entry carries Líderes
+  de carrera + both scoring-championship years + Nativo/Leyenda/10.000+
+  (`src:['Líderes de carrera','Campeones de anotación','Grupo de
+  juego']`) — neither is a subset of the other. `cmpAdd('Mario Morales')`/
+  `cmpResolveName('Mario Morales')` resolves to the plain entry
+  (mvp:0, no Salón tags); typing the literal nickname resolves to the
+  "Quijote" entry instead. The add-player candidate list
+  (`cmpCandidateNames()`) already lists both as separate options. Nothing
+  changed — read-only per instruction; a real `norm()` fix would be a
+  separate, larger identity-resolution phase (D1), not a Comparar-polish
+  one. Verified live, Chromium + WebKit, dark + light, 1000/390px, zero
+  console/page errors across every capture: Georgie vs Mario «Quijote»
+  Morales, A.D. Vassallo (2012 pinned) vs Admiral Schofield, a 3-player
+  compare (Georgie + Mario + Dalmau), and the dedicated color-collision
+  pair (Georgie vs Raymond Dalmau). `node --check` clean, `pytest`
+  unchanged at the pre-existing 5-failure baseline, 509 passed.
+
+- **PHASE_26 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Comparar bar contrast + text spacing. (1) Real measured failures before
+  this: Fajardo maroon `#7A1F3D` at 1.65:1 and Mets de Guaynabo navy
+  `#122E5C` at 1.24:1 against dark `--raise` — both the owner's own
+  examples, both well under the 3:1 WCAG 1.4.11 non-text floor; a full
+  sweep of all 33 real club `c1` hexes + the 4 `CMP_DISTINCT` fallbacks
+  found 28 of 37 failing in at least one theme (dark club colors read
+  fine on light `--raise`/`--line-soft` but fail dark; light club colors
+  like Santurce orange are the mirror case — fail light, pass dark — so a
+  single static hex genuinely cannot satisfy both themes at once). New
+  `cmpFillSafe()`/`cmpFillPair()` (`cmpTextSafe()`'s own lighten/darken-
+  until-it-clears loop, same keep-the-hue approach, checked against the
+  worse of two real backgrounds at once so the result is safe against
+  both — `--raise`+`--line-soft` for bars, `--card` for the radar, which
+  has no track) computes a real dark/light pair per fill, emitted as
+  `--cmp-fd`/`--cmp-fl` CSS custom props on `.cmp2fill`/`.cmp3fill`/
+  `.cmpspoke` (moved off the old `fill=`/`stroke=` XML attributes so the
+  `[data-theme]` override can pick the right one live, same mechanism
+  every other theme-reactive Comparar color already uses) — confirmed
+  live, worst case across every re-run test 3.20:1 (radar stroke, dark),
+  every other measured value 3.26–10.04:1. Scoping decision, stated
+  explicitly: only bars and the radar polygon get this new pair — avatar/
+  top bar/legend dot keep the plain assigned color from PHASE_25
+  (`COLORS[i]`), since neither is a flat fill sitting directly against a
+  bare track/panel the way WCAG 1.4.11 is about; confirmed live they
+  still carry the same hue/identity as the (now correctly lightened only
+  where it was actually failing) bars and radar. `renderSeasonCmp()`'s
+  own `.cmpfill`/`.cmpspoke` instances are untouched — `cmpFillSafe()`/
+  `cmpFillPair()` are new functions, nothing shared was modified.
+  (2) Investigated word-spacing/letter-spacing/font-feature-settings/
+  font-kerning/text-rendering on the "esas temporadas no aparecen" note
+  and every ancestor up to `<main>`: all computed to the plain browser
+  default (`word-spacing:0px`, `letter-spacing:normal`, `font-feature-
+  settings:normal`, `font-kerning:auto`) — nothing was overridden or
+  broken. The rendered gap (re-measured live via `Range.getClientRects()`
+  both before and after) was a real, normal space the whole time — at
+  `--fs-2xs` (12px) a single Inter space is only ~3.2px wide, which reads
+  tight right after an em dash into a 2-letter word even though nothing
+  is technically wrong. Applied `word-spacing:.12em` scoped to `#cmpPick
+  .note` only (not the shared `.note` rule used elsewhere in the app) —
+  confirmed live: computed `word-spacing` 0px → 1.44px, rendered gap
+  3.22px → 4.66px, same ratio increase in every tested state. (3) "TIRO"
+  is not new — `git show HEAD:web/js/tabs.js` has the identical ternary
+  at line 4585 (`${anySeason?'Tiro':'Tiro y carga'}`), carried over
+  byte-for-byte when PHASE_22 rewrote `drawCompare()` (only the wrapper
+  class changed, `.cmpgrouplab` → `.ed-eye`). It shows specifically when
+  `anySeason` is true — i.e. the season-pinned test case — which is why
+  it was only now visible in a re-run. No owner approval needed; nothing
+  changed. Verified live, Chromium + WebKit, dark + light, 1000/390px,
+  zero console/page errors across every capture: A.D. Vassallo (2012
+  pinned) vs Admiral Schofield, Georgie vs Mario «Quijote» Morales, a
+  3-player compare (Georgie + Mario + Dalmau), and Georgie vs Raymond
+  Dalmau. `node --check` clean, `pytest` unchanged at the pre-existing
+  5-failure baseline, 509 passed.
+
+- **PHASE_27 (branch `redesign-v2` — UI restyle).** Baseline maintenance,
+  not a UI phase, not committed. `tests/harness/inventory_main_HEAD.json`
+  (the frozen pre-split declaration-name baseline, `src/verify_clean.py`'s
+  own `declaration name set`/`declaration count` checks) hand-appended
+  with the 36 real top-level declarations PHASE_11/12/14/19/20/21/22/25/26
+  added to `web/js/tabs.js` this session (every one individually verified
+  against its own real preceding `PHASE_N` comment in the source, not
+  guessed from memory — see the PHASE_27 report for the full name→phase→
+  file:line table). Pure append: 425 → 461 declarations, `git diff` shows
+  216 insertions, 0 deletions, every pre-existing entry byte-identical.
+  This does NOT reach the 5→0 failures the task expected, and per its own
+  "if anything else fails, stop and report" instruction, nothing further
+  was changed: PHASE_21 also deleted two real declarations this session
+  (`POSE_ICON`/`posPose`, the retired silhouette-icon dead code) that are
+  still recorded in the baseline — append-only cannot clear "missing"
+  baseline entries, only "extra" ones, so `declaration name set` still
+  fails (`missing ['POSE_ICON', 'posPose'], extra []` — confirms the
+  append fully accounts for every genuinely-new name, zero unexplained
+  drift) and `declaration count` still fails (459 live vs 461 baseline,
+  off by exactly those same 2). The standing "no removals" instruction
+  for this task is why they weren't also dropped from the baseline here;
+  that's a real, separate decision for the owner, not folded into this
+  pass. `tests/test_data_quality.py`'s own diff (the PHASE_19 DOB-line
+  literal-source-text guard update) is unrelated to this baseline file,
+  untouched by this phase, reprinted in the PHASE_27 report for the
+  record per the task's own request. `pytest`: still 5 failed / 509
+  passed / 1 xfailed — same 4 asset-wiring tests (now failing on the
+  `POSE_ICON`/`posPose` mismatch specifically, not the declaration-count
+  drift this phase fixed) plus the unrelated byte-identical frozen-HTML
+  test, still failing at its own pre-existing single-byte diff.
+
+- **PHASE_28 (branch `redesign-v2` — UI restyle).** Baseline maintenance,
+  not committed. (1) `POSE_ICON`/`posPose` removed from
+  `tests/harness/inventory_main_HEAD.json` (PHASE_21's own deliberate dead-
+  code deletion this session — confirmed, no longer disputed) — 461 → 459
+  declarations, `git diff --stat` now 216 insertions / 12 deletions
+  against the real git-HEAD baseline (combining PHASE_27's append and this
+  phase's removal, neither ever committed). `src.verify_clean.Checker`
+  confirms zero failures on both the name-set and count checks: 459 live
+  == 459 baseline. (2) Checked whether the 5th failure (`test_web_text.py`
+  byte-diff, index 68811) is pre-existing at clean HEAD: `git worktree add
+  /tmp/bsn_head_wt ce59c89`, ran that one test there (no untracked inputs
+  needed — `web_text()` only reads checked-in `web/index.html`+`web/js/
+  *.js`, `_frozen_app_html()` reads a frozen git blob via `git show`, both
+  fully available in a fresh worktree) — **FAILS at HEAD too**, identical
+  signature (index 68811, `!` vs `s`), confirming this is not something
+  this session's work caused. Worktree removed after
+  (`git worktree remove --force`), our own tree never touched. (3) The
+  actual cause, found by diffing ±40 bytes of context on both sides: the
+  live reconstructed text has `...stylesheet">\n<!-- PHASE_2_REDESIGN
+  (branch redesign-v2) step 1: Oswald...` where the frozen pre-split
+  original (commit 714849f, predating the whole redesign-v2 branch) has
+  `...stylesheet">\n<style>\n/* ===...` — a real 3-line HTML comment at
+  `web/index.html:53-55` (the Oswald-font `<link>`'s own explanation,
+  added by `PHASE_2_REDESIGN`, an early redesign-v2 commit, well before
+  this session's PHASE_11-28 work) that the frozen original never had.
+  This test's own premise — the live site reconstructs byte-for-byte to
+  the pre-split, pre-redesign original — became structurally impossible
+  the moment `PHASE_2_REDESIGN` made its first real visual change (a new
+  font); nothing past that point in the file can ever match again, by
+  design, regardless of what this session did. (4) Full `pytest`: **1
+  failed, 513 passed, 1 xfailed** — only the byte-diff test, and only
+  because it also fails at clean HEAD. The 4 asset-wiring tests PHASE_27
+  couldn't finish are now clean.
+
+- **PHASE_31 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Applied the approved PHASE_30 Option A design to the real tricolor
+  device. New dedicated tokens `--tri-red`/`--tri-blue`/`--tri-white` (not
+  `--rojo`/`--azul`, which stay untouched everywhere else they're used —
+  buttons, badges, live markers) — `--tri-white` auto-flips to `--line` in
+  light theme, so `--tri`/`--tri-v`/`--tri-fade` need zero light-theme
+  redeclaration of their own (the OLD `--tri-fade`'s separate light
+  override, which did the white→line swap by hand with a full second
+  copy of the gradient, is retired as part of this). Light theme uses the
+  real official hexes (#CE1126/#0038A8, cited PHASE_30); dark theme uses
+  lightened same-hue variants — caught a real near-miss while re-verifying
+  for this phase: PHASE_30's own 3:1 check only covered 3 of the 4 real
+  dark grounds these sit on, and red landed 0.02 short (2.98:1) against
+  the 4th, `--line-soft` — nudged `#D01B2F`→`#D11F33` before shipping,
+  worst case now 3.01–3.04:1 across all four (`--card`/`--night`/
+  `--raise`/`--line-soft`), confirmed visually unchanged at 4x zoom.
+  Geometry: `--tri-notch` (10px) is the fixed lead-in length regardless of
+  bar width, used both in the gradient's `calc()` color stops AND in a
+  separate `--tri-clip`/`--tri-clip-v` `clip-path` polygon applied
+  per-selector (a flat gradient can taper color but not an element's own
+  silhouette — the actual point needs clip-path, which can't live inside
+  a `background`-held custom property the way color stops can). Visually
+  supersedes `border-radius` at this 3-4px scale everywhere it's applied
+  (judged live, not just assumed — a 2px radius on a 3px bar was barely
+  visible rounding to begin with, next to the far more visible flag
+  shape). Simplified `--tri-tick`/`--tri-tick-clip` (blue+red only, no
+  white, 5px notch) for the two 18px eyebrow ticks specifically, per
+  spec. `h3.sec::after` gets the new `--tri-fade` colors but no
+  clip-path — 1px tall, a notch can't show at that height either way.
+  Updated every real use-site found by the PHASE_30 inventory grep: `.tri`
+  (covers `.phero-tri`/the footer instance too, same class), `header.top
+  ::after`, `.bottombar [aria-selected]::before`, `.ptabs [aria-selected]
+  ::after`, `.rail [aria-selected]::before`, `.readout::before`,
+  `.today-card::before`, `.salon-card::before`, `.splashfill` (clip-path
+  included — confirmed live the triangle stays anchored to the start as
+  the bar animates wider, since the gradient/clip-path both recompute
+  against the element's own current width every frame, nothing JS-side
+  needed), `.hhero .eyebrow::before`, `.hero .ed-eye::before`. Finding
+  `.phero-tri`'s real page (the team detail page, `#equipos/equipo/<key>`
+  — not Comparar, not the player page, both initially tried and empty)
+  and a real, non-collapsed `h3.sec` instance (`#archivo/cobertura`'s
+  "Conflictos entre fuentes" — Historia's own `<h3 class="sec">` markup
+  turns out to be legacy/unused; `buildViews()` rewrites those same
+  headings as `<h2 class="viewhead">` at runtime, a live, verified finding
+  not assumed from the static HTML) took real trial and error, logged
+  here in case it comes up again. `.tri-block-rojo`/`-azul`, the header/
+  splash logo SVG, the favicon, club colors, avatars, and Comparar are
+  all untouched — confirmed via `src.verify_clean`'s declaration-baseline
+  check staying at 459 (no JS touched this phase at all, CSS only).
+  Verified live, Chromium + WebKit, dark + light, 1000px + 390px, zero
+  console/page errors across 6 different routes × 2 engines × 2 themes ×
+  2 widths. `pytest`: 513 passed, 1 xfailed, 1 failed (the same
+  pre-existing `test_web_text` byte-diff from PHASE_28, confirmed
+  unrelated). `web/index.html` `?v=` hashes regenerated.
+
+- **PHASE_32 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Flag accent tweak, CSS + one inline-style edit only (no JS — declaration
+  baseline reconfirmed at 459). (1) New `--tri-wide` token, not a `--tri`
+  rewrite — `.tri`/`.bottombar`/`.ptabs` are explicitly staying on plain
+  `--tri`'s equal-thirds-of-the-remainder stretch (confirmed live before
+  touching anything: `.ptabs` tops out at 86px, `.bottombar`'s active mark
+  at ~65px, both comfortably under the ~120px point where that stretch
+  starts turning each stripe into an oversized block). `--tri-wide` is a
+  fixed px cluster instead — same 10px triangle notch, same 21/20/21px
+  stripe rhythm `--tri-fade` already established — then solid flag red for
+  whatever width remains (the cluster's 3rd stripe and the solid tail are
+  the same color, so they're one continuous gradient stop, not two).
+  Applied to `header.top::after` (full viewport width) and `.splashfill`
+  (`.splashbar` runs up to 260px) — the only two real `--tri` use-sites
+  that are ever actually wider than ~120px. Confirmed live the cluster
+  stays pinned to the start as `.splashfill` animates wider (gradient +
+  clip-path both recompute against the fill's own current width every
+  frame, nothing JS-side needed — same mechanism PHASE_31 already relied
+  on, still holds). (2) Footer's own `.tri` instance (not `.phero-tri`/
+  `.phead .tri`, confirmed untouched at 74×3px) sized up via a new `footer
+  .tri{height:5px}` rule (specificity beats the bare `.tri` rule via the
+  extra type selector) + the inline `width:60px`→`90px` edit in
+  `web/index.html` — confirmed live at exactly 90×5px. The clip-path
+  notch's own "0 50%"/"100%" anchors are relative to the element's own
+  box, so it scales to the taller height automatically, no separate value
+  needed. Verified live, Chromium + WebKit, dark + light, 1000px + 390px,
+  zero console/page errors. `pytest`: 513 passed, 1 xfailed, 1 failed
+  (same pre-existing `test_web_text` byte-diff, unrelated).
+  `web/index.html` `?v=` hashes regenerated.
+
+- **PHASE_35 (branch `redesign-v2` — UI restyle).** Read-only duplicate-
+  player survey, no files changed. Ran the real `nickKey()`-shaped
+  nickname-drop signal live against the full 378-entry PINDEX and
+  3,326-row archive, plus 3 other signals (accent/suffix, identical
+  career totals, same-name-different-id). Found exactly 2 high-confidence
+  PINDEX pairs — the known Mario Morales / Mario «Quijote» Morales, and
+  a second real instance of the same bug, Federico López / Federico
+  «Fico» López (identical `gp=446`, years 1981–1997) — both already
+  unified at the archive layer (PXWALK: both naming forms map to the same
+  bsnpr_id, 1584 and 660 respectively, confirmed live) and both entirely
+  uncovered by `player_redirects.json` (wrong layer in principle — that
+  file merges archive ids, not curated PINDEX names; its own source CSV
+  lives under `data/clean/`, off limits). 56 archive-level same-name-
+  different-id groups found too, mostly low-precision common-surname
+  noise (confirmed by year-range overlap, not just name match). Full
+  table + recommendation (a scoped `nickKey()` merge key, not a global
+  `norm()` change) written to `/tmp/p35_dupes.txt`.
+
+- **PHASE_36 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Applied PHASE_35's recommendation: merged the two real nickname-split
+  PINDEX pairs, nickname form winning as the canonical display name
+  (owner-approved default). New `stripNick()`/`nickKey()` (web/js/
+  helpers.js) — `norm()`/`slug()` themselves untouched, confirmed via the
+  declaration baseline. `buildPlayerIndex()`'s `get()` (web/js/player.js)
+  now keys its Map by `nickKey()` and upgrades an already-stored plain
+  name to a later-arriving nickname form (never the reverse) — needed
+  because LEADERS, not HOF, is the first real source array to touch
+  either key in the actual call order, so without an explicit upgrade
+  rule the plain form would have "won" by default, the opposite of the
+  owner's decision. `getIf()` keys by `nickKey()` too. GUARD (live, before
+  any edit): grouped the real PINDEX by the exact `nickKey()` formula —
+  exactly the same 2 groups PHASE_35 found, nothing else, confirmed
+  before touching any file. Four more real lookup sites needed the same
+  key to keep working, found and fixed one at a time by testing the live
+  app rather than assuming: `renderPlayerIndex()`'s search filter
+  (player.js) — a plain-name query no longer substring-matches a merged
+  nickname-form `p.name`; `cmpFind()` and the `#jugadores/jugador/<slug>`
+  route (tabs.js) — same gap, exact-match/exact-slug alone can't bridge a
+  nickname sitting in the middle of the merged name; `playerSlug()`
+  (player.js) — the OLD plain-name URL must still resolve, AND must
+  rewrite itself to the new canonical slug, not silently keep serving the
+  stale one. A fifth, real regression surfaced only by reading the actual
+  screenshots, not just checking for console errors: `cmpPreset()` (the
+  Comparar quick-start chips) kept the RAW preset string in `CMP` instead
+  of resolving it first the way `cmpAdd()` already did — once `cmpFind()`
+  could resolve a name to a *different* canonical form, `CMP_DATA` ended
+  up written under one key and read under another, and the season
+  `<select>` silently stuck on "Cargando…" forever (no thrown error).
+  Fixed by resolving `CMP` entries up front in `cmpPreset()` too, matching
+  `cmpAdd()`'s own established pattern. Confirmed live end to end: PINDEX
+  378 → 376 entries; Buscar finds the one merged card for "Mario Morales",
+  "Quijote", "Federico Lopez", and "Fico" alike; `cmpFind('Mario Morales')`
+  and `cmpFind('Mario «Quijote» Morales')` return the same object (4×MVP,
+  Salón, 14 combined tags); Salón lists 18 entries, not 20; both
+  `mario-morales` and `mario-quijote-morales` (same for Federico) open the
+  identical player page and the URL rewrites itself to the canonical
+  nickname slug. Declaration baseline: 2 new real declarations
+  (`stripNick`, `nickKey`, both `web/js/helpers.js` — the task's own count
+  named only `nickKey`, but `stripNick` is a separate top-level `const`
+  the inventory tool detects independently, so both were hand-appended or
+  the count check would have failed again) — 459 → 461, not 459 → 460.
+  New `tests/test_nick_key.py`: a Python port of `stripNick()`/`nickKey()`
+  (same convention `test_route_slugs.py` already uses for `slug()`),
+  confirming the exact 2 PHASE_35 pairs merge, confirming `Anza, Froilan`
+  vs `Froilan jr.` do NOT (a suffix is evidence of two different real
+  people, not a duplicate), confirming every other PINDEX name is
+  byte-identical under `nickKey()` and plain `norm()`, and pinning the
+  Python port against the real JS source text via `web_text()`. Verified
+  live, Chromium + WebKit, dark + light, 1000px + 390px, zero console/
+  page errors. `pytest`: 518 passed (509 + 5 new + 4 already added since
+  PHASE_27), 1 xfailed, 1 failed (same pre-existing `test_web_text`
+  byte-diff, unrelated). `web/index.html` `?v=` hashes regenerated.
+
+- **PHASE_37 (branch `redesign-v2` — UI restyle).** Committed PHASE_36
+  (`c4dd90d`, "Merge nickname-form duplicate players into one entry") —
+  the 5 expected files plus `tests/test_nick_key.py`, `docs/session.md`
+  modified as allowed. Pre-commit hook refreshed `web/index.html`'s `?v=`
+  hashes only. Not pushed.
+
+- **PHASE_39 (branch `redesign-v2` — UI restyle).** Read-only Equipos
+  survey, no files changed. Mapped the section's 4 subviews + team
+  detail (builders/lines/hashes/CSS), traced the data layer (F/VENUES/
+  TEAM_LORE/OWNERS/RETIRED, real coverage counts), and found 5 GAPS —
+  loudest: Equipos' own copy said "veinte" (20) defunct clubs, the real
+  `F` count is 21. 5 MISMATCHES against the finished Historia/Jugadores
+  redesign — the biggest: Equipos' landing never got the `.hhero`+
+  `.explore`/`.xcard` treatment those two sections did (`buildLanding()`
+  still fell through to the pre-redesign generic `.mega-feat`+`.landgrid`
+  path for `sec==='equipos'`), confirmed by that code's own PHASE_11/14
+  comments explicitly naming Equipos as out of scope at the time. Ran the
+  PHASE_35 player-duplicate methodology against all 33 franchises: 0
+  accidental splits; 4 same-city candidate pairs, every one already
+  explained by a known lineage/relocation (one, Grises/Caciques de
+  Humacao, already flagged unresolved in-code as D-045). Proposed
+  PHASE_40-43, ordered by impact. Full report `/tmp/p39_equipos_survey.md`,
+  strings `/tmp/p39_equipos_strings.txt`, 20 screenshots, zero console
+  errors.
+
+- **PHASE_40 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Gave Equipos the hero+landing treatment PHASE_39 flagged as its
+  biggest gap, mirroring `buildHistoriaHero()`/`buildHistoriaLanding()`
+  and `buildJugadoresHero()`/`buildJugadoresLanding()` exactly — new
+  `buildEquiposHero()`/`buildEquiposLanding()`/`EQUIPOS_XICON` (web/js/
+  tabs.js), wired into `buildLanding()`'s existing branch pattern. Zero
+  new CSS: `.hhero`/`.stats3`/`.explore`/`.xcard` were already generic,
+  unscoped classes. `buildEquiposHero()` called from `finishBoot()`
+  (web/js/init.js), same place as the other two. Fixed GAPS#1 (the
+  "veinte"/21 copy bug) as part of the same pass, computed, not
+  hardcoded: new `numWordsEs()`/`NUM_WORDS_ES`/`NUM_WORDS_ES_APOCOPE`
+  (web/js/helpers.js), a tiny 0-39 Spanish number-words lookup with the
+  one masculine-apocope case this page's own copy actually needs
+  (veintiuno → veintiún before "clubes"). `VIEW_DESC.equipos.
+  desaparecidos` is now a getter, not a plain string — it has to be:
+  `VIEW_DESC` is a top-level object literal evaluated the instant
+  tabs.js runs, before `web/index.html`'s own inline script defines
+  `FKEYS` (the exact timing trap `games.js`'s own GRID_CLUBS comment
+  already documents) and before `hydrate()` (init.js) can overwrite any
+  `F[k].active` flag from `franchises.json` — a getter defers the read
+  to buildEquiposLanding()'s own call, well after both. Real bug found
+  and fixed during this same pass, not anticipated going in: my first
+  attempt inserted the new helpers.js code immediately after `pct()`,
+  which broke `tests/_web_text.py`'s page-reconstruction splice — `pct()`
+  own exact trailing text is the literal anchor the splice uses to find
+  where the next original segment gets re-inserted, so anything appended
+  right after it shifts that boundary. Surfaced as 31 unrelated-looking
+  pytest failures (every test that calls `web_text()`, not just the one
+  frozen byte-diff test everyone expects to fail) — diagnosed by reading
+  `tests/_web_text.py`'s `_js_segments()`/`_INSERTION_ORDER` machinery
+  directly, confirmed pre-existing-only via a disposable `git worktree`
+  at clean HEAD, fixed by moving the new block earlier (before `num`/
+  `dash`/`pct`, right after `nickKey()`), which leaves `pct()` as the
+  segment's exact tail again. 3 stats on the landing (active clubs,
+  defunct franchises, total championships — 12/21/96), all FKEYS/F-
+  derived, none typed in. Baseline: 6 new declarations (`NUM_WORDS_ES`,
+  `NUM_WORDS_ES_APOCOPE`, `numWordsEs`, `EQUIPOS_XICON`,
+  `buildEquiposLanding`, `buildEquiposHero`) hand-appended, 461 → 467.
+  `showTeam()`/`buildTiles()`/`buildOwners()`/`buildRetiredNums()`/
+  `crest()`/data.js/Historia/Jugadores/Comparar untouched; team detail
+  (`#equipos/equipo/<key>`) re-verified working unchanged underneath the
+  new hero. Verified live, Chromium + WebKit, dark + light, 1000px +
+  390px, zero console/page errors. `pytest`: 518 passed, 1 xfailed, 1
+  failed (same pre-existing `test_web_text` byte-diff, unrelated).
+  `web/index.html` `?v=` hashes regenerated. Strings in
+  `/tmp/p40_strings.txt`, pending owner approval before commit. Not
+  committed.
+
+- **PHASE_40B (branch `redesign-v2` — UI restyle).** Copy fix on top of
+  uncommitted PHASE_40, not committed. Dropped "completo" from Equipos'
+  lede and stats3 label #2. Stat #3's number and its own gap clause now
+  both come from `champOf` (web/index.html's DERIVED section) instead of
+  a separate `won.length` sum — the same per-year "who won" map every
+  `YEARS` entry gets checked against, so the count and the "missing"
+  list can't drift apart. Computed missing-season list: exactly `[1953]`
+  (matches `NOTES[1953]`, already known), so no stop was needed. Label
+  changed to "Campeonatos en el archivo — falta el de 1953" (0/1/N-
+  branched, not hardcoded). New `tests/test_equipos_copy.py`: ports the
+  champion-year computation from `web/js/data.js`'s own `won:[...]`
+  literals (confirming the static baked-in data alone already gives
+  `[1953]` — live `hydrate()` only ever unions more won-years in, never
+  removes any, re-confirmed live this phase), asserts the real gap-
+  clause source lines are present verbatim, and asserts no Equipos copy
+  (static `.phead`, `buildEquiposHero()`, `buildEquiposLanding()`,
+  `VIEW_DESC.equipos`) contains "completo" or "veinte". No new top-level
+  declarations — baseline stays 467. Verified live, Chromium + WebKit,
+  dark + light, 1000px + 390px, zero console/page errors; stat #3's
+  longer label confirmed non-clipping at 390px. `pytest`: 521 passed, 1
+  xfailed, 1 failed (same pre-existing `test_web_text` byte-diff,
+  unrelated). `web/index.html` `?v=` hashes regenerated. Strings in
+  `/tmp/p40b_strings.txt`, pending owner approval before commit.
+
+- **PHASE_41A (branch `redesign-v2` — UI restyle).** Read-only source
+  check, no files changed. Traced Bayamón's duplicate retired `17`
+  (`RETIRED`, web/js/data.js:233-236) back through `git log -L`/pickaxe
+  search: present since this repo's very first commit (195fc2a,
+  2026-09-07, "inherited research corpus"), never edited since, no
+  authoring commit exists in this repo's own history. No doc, CSV, or
+  test cites a source for the digit list or explains the repeat — the
+  one relevant doc hit (`docs/research/summary.md:108`) only documents
+  the separate "digits only, no names" policy. No test validates
+  `RETIRED`'s content at all (count or distinctness), so a duplicate
+  would pass silently either way. Conclusion: undeterminable from repo
+  evidence whether it's a typo or a real double-retirement — left
+  exactly as recorded, not guessed at. Full findings:
+  `/tmp/p41a_retired.md`.
+
+- **PHASE_41 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Redesigned Apoderados (`buildOwners()`) and Retirados
+  (`buildRetiredNums()`, both web/js/tabs.js) to match the finished
+  sections — `OWNERS`/`RETIRED` themselves untouched (PHASE_41A's own
+  conclusion on the Bayamón `17` duplicate still holds: left exactly as
+  recorded). Apoderados now renders all 12 active clubs (computed from
+  `F`), `OWNERS`' own 5 first in `OWNERS`' own existing order, then the
+  other 7 in a muted "—" / "Sin apoderado confirmado en el archivo"
+  state — PC4 ("show the gaps") now actually holds here, matching the
+  `tile()` "—" convention already used elsewhere in Equipos. Intro line
+  computed via `numWordsEs()`: "Cinco de los doce clubes tienen
+  apoderado confirmado en el archivo." Retirados now groups `RETIRED`'s
+  own digit list by occurrence at RENDER time (a `Map` over
+  `r[2].split(' · ')`, never a splice/dedupe on `RETIRED` itself) —
+  Bayamón's repeated `17` renders once with an "×2" mark instead of
+  twice, 8 total / 7 distinct chips, count line spells out the repeat:
+  "8 números retirados — el 17 se retiró dos veces." Guaynabo: "3
+  números retirados." "La liga los publica como dígitos, sin nombres…"
+  kept verbatim. Fixed the real contrast bug PHASE_39 hadn't flagged but
+  the owner had: Cangrejeros' crest was invisible on its card in the
+  dark theme, Vaqueros/Criollos/Santeros' crests had faint outlines in
+  the light theme. New `crestPlate(k)` (tabs.js) wraps `crest()` in a
+  `.crest-plate` backdrop (new scoped CSS class only, no new `:root`
+  tokens) — found live that `crestSVG()`'s shield is one closed path
+  with the STROKE (`c2`) straddling its own edge, so the stroke, not the
+  fill (`c1`), is the only color that actually touches the plate;
+  `contrastRatio()` is monotonic away from a fixed color's own
+  luminance, so the single backdrop that maximizes contrast against any
+  one real club's stroke is always pure black or pure white, confirmed
+  by an exhaustive 0-255 grey-ramp scan; the SAME shade turned out
+  correct in both themes every time (checked live, `c2` doesn't change
+  per theme, so neither does its ideal backdrop), so `.crest-plate` uses
+  one `--plate` custom property, not a `--plate-d`/`--plate-l` pair.
+  Full 12-club contrast table (both themes identical): worst case 4.69:1
+  (Indios de Mayagüez), every other club 10:1-19:1 — all 12 clear the
+  3:1 non-text floor. Real bug found and fixed mid-build, not in the
+  final code: an early CSS comment accidentally contained a literal
+  `--ink*/--r` shorthand, whose `*/`closed the comment early — everything
+  after silently became "parsed as CSS," corrupting roughly a third of
+  the whole stylesheet (529 of the real 814 top-level rules were
+  loading) in a way that looked, in a screenshot, like my own new
+  classes simply weren't applying (plain unstyled text instead of
+  chips). Found by comparing `document.styleSheets`' own loaded rule
+  count against a direct `fetch()` of the same file (which had the full
+  text), not by guessing; first suspected (and ruled out, confirmed via
+  `serviceWorkers:'block'`/`Network.setCacheDisabled`) the app's own
+  service worker before finding the real cause. Fixed by rewording the
+  comment to remove the stray `*/`; rules jumped from 529 to the correct
+  814 once fixed. Also fixed the flush-gap bug between each view's lede
+  line and its first card at 1000px (`.owners-grid`/`.retired-grid`'s
+  own `margin-top`, not a change to the shared `.cards`/`.lede` rules).
+  `F`/`VENUES`/`showTeam()`/`buildTiles()`/starting-five/Equipos hero-
+  landing/Historia/Jugadores/Comparar all untouched. New
+  `tests/test_owners_retired.py` (7 tests): every active club appears in
+  Apoderados with owned-first ordering: confirmed at the JS-source level
+  (`ownedCards` rendered before `unownedCards`), not by re-deriving a
+  second ordering; intro counts computed from `F`/`OWNERS`; Bayamón's
+  8-total/7-distinct/one-×2 shape and Guaynabo's plain 3; `RETIRED`'s
+  own values confirmed byte-for-byte unchanged. Baseline: 1 new
+  declaration (`crestPlate`), 467 → 468. Verified live, Chromium +
+  WebKit, dark + light, 1000px + 390px, zero console/page errors.
+  `pytest`: 528 passed, 1 xfailed, 1 failed (same pre-existing
+  `test_web_text` byte-diff, unrelated). `web/index.html` `?v=` hashes
+  regenerated. Strings in `/tmp/p41_strings.txt`, pending owner approval
+  before commit.
+
+- **PHASE_41B (branch `redesign-v2` — UI restyle).** Polish on top of
+  uncommitted PHASE_41, not committed. Fixed a real layout bug PHASE_41's
+  own screenshots missed: `.crest-plate` had no fixed size, so inside
+  `buildOwners()`'s own inline `style="display:flex"` card (no
+  `align-items` set there, defaulting to `stretch`) it stretched to the
+  full height of the text block next to it — a tall pill, not a badge.
+  `.retired-head` never showed this because it already had its own
+  `align-items:center`. Now a fixed 52×52 square, `border-radius:12px`,
+  `align-self:flex-start` set on `.crest-plate` itself (fixes it from the
+  plate's own side, not by patching every parent that happens to hold
+  one) — same at 1000px and 390px, no media query needed. Crest scaled
+  from 32×38 to 31×36 inside it (~70% of the 52px plate on the shield's
+  own taller dimension, same 112:130 aspect ratio crestSVG() already
+  draws). Softened the plate tone: `#0B1020`/`#F4F6FA` (near `--card`'s
+  own real hex in each theme) tried first, pure `#000000`/`#FFFFFF`
+  (PHASE_41's own choice) only as a per-club fallback if softening would
+  drop that specific club under 3:1 — checked for all 12, none needed
+  it. Full 12-club table: worst case 4.34:1 (Indios de Mayagüez), rest
+  9:1–17:1. No data changes, no new strings, `crest()`/`crestSVG()`
+  untouched, no other views touched. No new top-level declarations —
+  baseline stays 468. Verified live, Chromium + WebKit, dark + light,
+  1000px + 390px, zero console/page errors. `pytest`: 528 passed, 1
+  xfailed, 1 failed (same pre-existing `test_web_text` byte-diff,
+  unrelated). `web/index.html` `?v=` hashes regenerated.
+
+- **PHASE_42 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Two unrelated fixes, both layout-only. (A) Desaparecidas tile
+  disambiguation: `tile()`'s own name line (`f.name.split(' de ')[0]`,
+  the mascot word only) made "Gallitos de la UPR" and "Gallitos de
+  Isabela" both render as plain "Gallitos" — the one real collision
+  among the 21 defunct clubs (confirmed by scanning every short name
+  before writing anything). New `tileGone(k)`, a separate function from
+  `tile()` rather than a shared flag — `tile()` itself, and therefore
+  every Activos tile, is byte-for-byte unchanged — adds a computed city
+  + active-years line (`F`'s own `city`/`founded`/`end` fields, nothing
+  hardcoded per club; `founded`/`end` is a judgment call for "first/last
+  season," matching how `showTeam()`'s own `phero-sub` already phrases
+  the same two fields). All 21 real current secondary lines confirmed
+  live, zero collisions. (B) Starting-five court label fix: SVG `<text>`
+  has no native wrap/truncate, so a long name (the task's own reported
+  "Alvarado Sierra, Omar J." vs "Shannon Dogan, Terrence",  "Mojica
+  Izquierdo, Javier" clipped — all three found together on the SAME
+  real roster, Bayamón 2013) just kept drawing past its backing rect.
+  New `sfFit()`: a character-budget truncation (17 chars, fit to a
+  single consistent 96px rect width replacing the old binary 84/92px
+  split) with an ellipsis; the untruncated name is never lost — kept
+  verbatim in a new `<title>` on the SVG group whenever truncation
+  actually fires. Combined the old separate position-line and points-
+  line into one ("Delantero · 17.3 pts"), which also reduced total
+  label height instead of growing it. `sfAssignZones()`/the real
+  per-player data this draws from (`SF_DATA`, which player, which
+  position, which ppg) is untouched — layout only. Verified two ways:
+  (1) geometry — `getBBox()` on every rendered name `<text>` vs its own
+  backing `<rect>`, and a full pairwise rect-overlap check, across 4
+  real rosters (Bayamón 2013 and Quebradillas 2012 — both reported
+  names; San Germán 2009 — the other reported name; Ponce 2001 — the
+  single longest real name in any starting-five file, 31 characters) —
+  zero text-exceeds-rect, zero rect-overlap, confirmed device-
+  independent since the court is one fixed 300×260 viewBox scaled by
+  CSS, not re-laid-out per width; (2) live screenshots + zero console/
+  page errors, Chromium + WebKit, dark + light, 390/768/1000/1280px, all
+  4 teams. New `tests/test_equipos_gone_tiles.py` (6 tests): all 21
+  defunct tiles get a non-empty secondary line, no two collide, the
+  known Gallitos pair is confirmed now-distinguished, and the computed-
+  not-hardcoded source shape is pinned. `OWNERS`/`RETIRED`/`crest()`/
+  `crestSVG()`/`sfAssignZones()`/Comparar/`renderSeasonCmp()`/flag-
+  accent tokens/`tests/_web_text.py`'s own splice anchors all untouched
+  (both new functions landed inside the SEG4 region near the end of
+  tabs.js, the same safe spot PHASE_41/41B already used). Baseline: 2
+  new declarations (`tileGone`, `sfFit`), 468 → 470. Verified live,
+  Chromium + WebKit, dark + light, 390/768/1000/1280px, zero console/
+  page errors. `pytest`: 534 passed, 1 xfailed, 1 failed (same
+  pre-existing `test_web_text` byte-diff, unrelated). `web/index.html`
+  `?v=` hashes regenerated. Strings in `/tmp/p42_strings.txt`, pending
+  owner approval before commit.
+
+- **PHASE_44 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Three items, all scoped from the PHASE_43 read-only survey
+  (`/tmp/p43_juega_survey.md`). (A) New `buildJuegaHero()`, mirroring
+  `buildEquiposHero()`/`buildJugadoresHero()` exactly — same `.hhero`/
+  eyebrow/h1/lede shape, wired into `finishBoot()` (init.js) alongside
+  the other three. The lede's own meaning is unchanged; only the count
+  word is now computed via `numWordsEs(GAMES.length)` instead of the
+  literal "Cuatro" — the static fallback in `web/index.html`'s own
+  `.phead` already read byte-identical to the target text, so it needed
+  no edit (confirmed, not assumed). (B) `drawStreak()` (games.js) no
+  longer renders on the Juega *landing* before any game has been played
+  — the `streak` object is written only by Grid's own `saveDaily()`
+  (PHASE_43's own finding), so a fresh profile used to see "0 racha
+  actual / ... / — aciertos por día" before picking a game, reading as
+  the whole section being broken. Now hidden entirely (`host.innerHTML=
+  ''`, same pattern `drawStorageNote()` already uses) until
+  `streak.played>0`; once shown, a new heading ("Tu racha en La
+  Cuadrícula") makes clear whose stats they are.
+  `#storageNote`/`ST`/the `streak` write path/storage key are
+  untouched — rendering only. Verified both states live: a clean
+  `browser.newContext()` (strip empty, no zeros visible) and a seeded
+  context (`page.addInitScript()` writing `bsn:streak` to
+  `localStorage` before the app's own boot runs, so `drawStreak()`'s
+  real BOOT-time call sees it — strip shows with the heading). (C) The
+  "‹ Juegos" back button, previously typed out identically 4 times
+  (once per `<div class="stage">`, `web/index.html`) is now generated
+  once inside `buildJuegaViews()` (tabs.js) from `GAMES`' own real
+  `[id,t]` pairs — confirmed safe first (`closeGame()`/the Escape
+  handler only ever touch `GAME_OPEN`/`showView()`, never query
+  `.stagebar`; no test referenced the static markup). Same label,
+  class, `onclick="closeGame()"` — verified live that both the back
+  button and Escape still return to the landing from an open game.
+  `crest()`/`crestSVG()`/`crestPlate()`/`.shelf`/`.tile`/`GAMES`' own
+  art, Comparar, `renderSeasonCmp()`, flag-accent tokens, and
+  `tests/_web_text.py`'s splice anchors all untouched. New
+  `tests/test_juega_landing.py` (8 tests): hero lede word sourced from
+  `GAMES.length` (not hardcoded), `drawStreak()`'s own hide/show-with-
+  heading branches, `drawStorageNote()` confirmed independent of
+  `streak`, and the stagebar confirmed generated exactly once (a naive
+  whole-file string count of the bare label text would have also
+  matched this phase's own explanatory code comment — caught before
+  shipping, the test instead counts the real button markup). Baseline:
+  1 new declaration (`buildJuegaHero`), 470 → 471. Verified live,
+  Chromium + WebKit, dark + light, 1000px + 390px, zero console/page
+  errors. `pytest`: 542 passed, 1 xfailed, 1 failed (same pre-existing
+  `test_web_text` byte-diff, unrelated). `web/index.html` `?v=` hashes
+  regenerated. Strings in `/tmp/p44_strings.txt`, pending owner approval
+  before commit.
+
+- **PHASE_45 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Four La Cuadrícula layout fixes, all scoped from the PHASE_43 survey.
+  (A) Mobile overflow: `.gridtable`'s own `min-width:410px` forced the
+  board wider than a 390px/320px viewport's real content width (`.wrap`'s
+  16px+16px gutter), clipping the 3rd column — `.gridwrap`'s
+  `overflow-x:auto` was the only thing keeping it reachable, a horizontal
+  scroller, the task's own explicit non-goal. New `@media(max-width:639px)`
+  override: header column 92px→56px, data columns' floor 90px→44px,
+  `min-width:0` so the table can actually shrink. Verified live via real
+  `getBoundingClientRect()`: zero overflowing elements and zero page
+  horizontal scroll at 320/360/390/414px, cells never under 44px (72.3px
+  even at the narrowest, 320px). Desktop (≥640px) untouched — confirmed
+  live, exact same `92px`/`minmax(90px,1fr)`/`410-540px` values. (B)
+  Header mid-word breaks: `overflow-wrap:anywhere` (main.css) — the
+  literal cause of "Caridur/os"/"Atlético/s" — replaced with a 2-line
+  `-webkit-line-clamp` on a new `.glabel` span: normal word-boundary
+  wrapping for the common case, degrading to an ellipsis only once 2
+  lines genuinely isn't enough room for a single unbreakable word
+  (`Conquistadores`/`Maratonistas`, 14/12 characters, confirmed the two
+  real worst cases in `F`). Every `.ghead` also gets a `title` (real
+  `axFull()` text, games.js's own existing helper) so the full name is
+  always reachable. Real bug found and fixed mid-build: `width:100%`
+  alone let a single unbreakable word's layout box balloon past its own
+  grid cell (checked live via nested `getBoundingClientRect()` — the
+  label's own right edge was past its header cell's right edge, even
+  though neither crossed the page edge, so the earlier page-level
+  overflow check alone had missed it) — fixed by constraining
+  `.ghead:not(.row) .glabel{width:100%}` (crest stacked above, nothing
+  competing for the width) separately from `.ghead.row .glabel{flex:1}`
+  (crest beside the label, shares the row's main axis — `flex:1` lets it
+  claim only what `crest-plate`'s own `flex:none` sibling leaves,
+  `width:100%` was fighting it for the same space). A second real
+  finding, not a bug: desktop's existing 92px row-header column still
+  truncates long single-word club names to e.g. "Can…" — confirmed this
+  is strictly correct per the task's own rules (an unbreakable word has
+  nowhere to wrap to with `overflow-wrap:normal`, and ellipsis is the
+  explicitly sanctioned alternative), not a regression — the prior
+  behavior (`anywhere`) would have mid-word-split the same name across
+  several lines instead, worse, not better. (C) `crestPlate()` wrapped
+  onto Grid's 2 `crest()` call sites (now a local `gHead()` helper inside
+  `drawBoard()`, one place for both row/column headers, same drift-risk
+  reasoning PHASE_44 already applied to the back button) via a new
+  Grid-scoped `.ghead .crest-plate{width:32px;height:32px}` override —
+  the base `.crest-plate` (52px, Equipos) and `crestPlate()`/`crest()`/
+  `crestSVG()` themselves are completely untouched; crestPlate() already
+  only returns a hex, no size concept to change. All 33 real franchises
+  (not just the 12 active ones PHASE_41 checked) now clear 3:1 — worst
+  case 4.34:1 (Indios de Mayagüez, the same club/ratio PHASE_41B already
+  found, since crestPlate()'s own color logic is unchanged). (D) Diaria/
+  Práctica toggle: measured live at 390px, 60×28/74×28, both under the
+  44px floor — `min-height:44px;min-width:44px` plus flex-centering.
+  Real scope-creep caught before shipping: `.modebtns` is shared with
+  the theme/profile pickers (tabs.js's own settings panel) — a bare
+  `.modebtns button` rule would have resized those too; rescoped to
+  `.gamehead .modebtns button` (Grid's own instance only), confirmed
+  live the other pickers are unaffected. `newBoard`/`boardFor`/
+  `solutions`/`submitGuess`/`saveDaily`/scoring/share text/every storage
+  key, Comparar, `renderSeasonCmp()`, flag-accent tokens, and
+  `tests/_web_text.py`'s splice anchors all untouched — confirmed live
+  the game still plays end to end (select a cell, submit a real name,
+  correct answer renders `.gcell.ok`; a wrong one renders the real error
+  message and burns an attempt, unchanged). New
+  `tests/test_juega_grid_layout.py` (11 tests): both `crest()` call
+  sites confirmed wrapped, `crestPlate()`/`crest()`/`crestSVG()`
+  confirmed byte-unchanged, all 33 franchises' real contrast ported and
+  checked (worst case pinned at 4.34), `overflow-wrap:anywhere` confirmed
+  gone, the line-clamp/title wiring confirmed, the mobile breakpoint's
+  real column values confirmed alongside desktop's untouched values, and
+  the toggle's 44px floor confirmed scoped to `.gamehead` specifically
+  (not the bare shared class). No new top-level declarations (`gHead` is
+  a local closure inside `drawBoard()`) — baseline stays 471. Verified
+  live, Chromium + WebKit, dark + light, 320/360/390/414/1000px, zero
+  console/page errors. `pytest`: 553 passed, 1 xfailed, 1 failed (same
+  pre-existing `test_web_text` byte-diff, unrelated). `web/index.html`
+  `?v=` hashes regenerated. Strings in `/tmp/p45_strings.txt` (one new
+  `title` attribute, real existing text, not new copy), pending owner
+  approval before commit.
+
+- **PHASE_45B (branch `redesign-v2` — UI restyle).** Polish on top of
+  uncommitted PHASE_45, not committed. The task's own instruction ("crest
+  above the label, centered... not top-left with the label at bottom-
+  right") removed PHASE_45's row-vs-column header split entirely — every
+  `.ghead` (row or column) now shares ONE layout, at every width: crest-
+  plate stacked above a centered label. `.ghead.row` no longer carries
+  its own `flex-direction`/alignment CSS at all (kept as a class in
+  `gHead()`, games.js, for any future need, but nothing targets it
+  anymore). Both header columns widened: desktop 92px→132px (`min-width`
+  410→420px to match the real new natural minimum,
+  132+90×3+5×3=417, `max-width:540px` — the board's own overall size cap
+  — unchanged), mobile 56px→84px (56px, PHASE_45's own first pass,
+  truncated every club name to ~6 characters). Real bug found and fixed
+  mid-build: the base `.crest-plate` rule carries `align-self:flex-start`
+  (PHASE_41B, written for Equipos' own `.card` layout) — without an
+  override, that same `align-self` leaked into Grid's `.ghead` and
+  pinned the plate to the header's left edge instead of letting
+  `.ghead`'s own `align-items:center` apply; confirmed live via nested
+  `getBoundingClientRect()` (plate center ≠ header center, 39 vs 58),
+  fixed with a Grid-scoped `.ghead .crest-plate{align-self:center}` —
+  the base Equipos rule untouched. Full 33-franchise acceptance check,
+  `axLabel()` vs its real header cell, both via real
+  `getBoundingClientRect()`/`scrollWidth`: **0 ellipsize and 0 spill at
+  1000px** (every club's short name now shows in full — "Cariduros",
+  "Atléticos", "Criollos", "Cangrejeros" all fit, confirmed live, where
+  they used to truncate to "Cari…"/"Atlét…"/"Criol…"/"Can…"); **1
+  ellipsizes at 390px** ("Conquistadores de Aguada", the one real 14-
+  character unbreakable word — down from 2 under PHASE_45's narrower
+  56px header, since "Maratonistas" now fits at 84px) and **0 spill**.
+  Contrast re-confirmed for all 33 franchises after the recenter —
+  unchanged, worst case still 4.34:1 (Mayagüez), since `crestPlate()`'s
+  own color logic was never touched. Cell floor (44px), the Diaria/
+  Práctica toggle's 44px floor (still `.gamehead`-scoped, untouched), and
+  `title=axFull()` all re-verified live, unchanged. Checked and reported,
+  not fixed, per the task's own explicit instruction: the global "Mi
+  club" header button still clips at 320px (right edge 347.6px vs a
+  320px viewport) — out of scope, the owner's own call to make. No game
+  logic touched — confirmed live the board still plays end to end
+  (select a cell, submit a real name, `.gcell.ok` renders). `tests/
+  test_juega_grid_layout.py` updated for the new column widths and a new
+  `TestRowAndColumnHeadersShareOneLayout` class (2 new tests: the row/
+  column split is confirmed gone from the CSS, the recenter fix is
+  confirmed present) — 13 tests total, up from 11. No new top-level
+  declarations — baseline stays 471. No new user-visible strings.
+  Verified live, Chromium + WebKit, dark + light, 320/360/390/414/1000px,
+  zero console/page errors. `pytest`: 555 passed, 1 xfailed, 1 failed
+  (same pre-existing `test_web_text` byte-diff, unrelated).
+  `web/index.html` `?v=` hashes regenerated.
+
+- **PHASE_46 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Visual/string polish on Sube y Baja (HL) and La Temporada Perfecta
+  (Draft), web/js/games.js — no game logic, scoring, pool selection,
+  storage keys, or share text touched; `crest()`/`crestSVG()` and the
+  Grid code (PHASE_45/45B) untouched. (1) HL: neither card hinted that
+  it was tappable — new "Toca uno para responder." line (`.note`,
+  matching Draft's own existing hint-line treatment) shown only while
+  `!HL.done`, gone once answered — confirmed live, present before/absent
+  after. Both cards are plain `.card` buttons; the app's own GLOBAL
+  `:focus-visible{outline:2px solid var(--focus);outline-offset:2px}`
+  rule already covers them (nothing scopes an override onto `#hlGame`) —
+  confirmed live: real contrast 6.39:1 (dark) / 4.91:1 (light), tap
+  target 446×77.5px, both comfortably clear 3:1/44px, no CSS change
+  needed for this part, confirmed rather than assumed. (2) Draft's court
+  cells (`courtHTML()`) used an inline `style="all:unset;..."` — an
+  inline declaration beats ANY stylesheet selector for the same
+  property, so a `:focus-visible` outline could never have shown
+  through it regardless of how it was written (PHASE_43's own survey
+  already found this: real keyboard focus, zero visible indicator).
+  Fixed by moving the reset's STATIC parts (the unset itself, display,
+  border-radius, padding, text-align, the 58px min-height — cell size
+  unchanged) into a new `.court-cell` class; the per-render dynamic
+  values (cursor/border-color/background) stay inline as before, so
+  `outline` is never inline-set anymore and a new
+  `.court-cell:focus-visible{outline:2px solid var(--focus);outline-
+  offset:2px}` applies cleanly. Contrast computed by properly
+  alpha-compositing every semi-transparent background layer up the DOM
+  (an earlier, naive version of this check stopped at the first
+  non-fully-transparent layer — `--hair-2`, ~2% opacity — and
+  under-reported 2.87:1/N/A; the real composited result is 6.59:1 dark /
+  4.29:1 light, both clear 3:1). (3) The "· vacío" empty-slot label was
+  `.dim` (`--ink-3`) at 11px, with an extra `opacity:.45` on dead
+  (unavailable-this-spin) slots stacked on top — measured under 4.5:1
+  live. New `.court-empty{font-size:var(--fs-2xs);color:var(--ink-2)}`
+  (12px, fixed legible color, no further dimming) — the dead/open visual
+  distinction is still real via the existing dashed-vs-solid border and
+  `--line-soft`-vs-`--line` colors, just no longer also pushing the TEXT
+  under a readable floor. Checked at 320/390/1000px, both themes: no
+  clipping or overlap on any label, including boards with multiple
+  simultaneous "· vacío" cells. (4) The one real "10k"-shaped
+  abbreviation in Draft/HL player-facing text: a candidate card's tag
+  chip (games.js, the inline tag-label dictionary) displayed the literal
+  string "10k" for the real 10,000-career-points milestone — changed to
+  "10 mil puntos" (the task's own example wording); the `'10k'` TAG KEY
+  itself (data.js's `t:[...]` arrays, `TAGV`'s scoring weights) is an
+  internal identifier, never displayed on its own, left unchanged.
+  HL_SETS (data.js) was checked too — already clean, no abbreviations
+  there. Confirmed live on a real 10k-tagged player (Georgie Torres):
+  the chip row now reads "MVP · Anotación · Nativo · Leyenda · 10 mil
+  puntos". New `tests/test_juega_hl_draft.py` (11 tests): HL's hint
+  shown/hidden and ordered before the cards; the global focus-visible
+  rule confirmed present and unsuppressed for HL; Draft's `all:unset`
+  confirmed moved out of the inline style, the new `.court-cell`/
+  `.court-cell:focus-visible` rules confirmed present with the cell size
+  unchanged; the empty-slot label's new color/size confirmed and the old
+  `opacity:.45` confirmed gone; the "10k"→"10 mil puntos" tag fix
+  confirmed (two of these assertions originally also matched this
+  phase's own explanatory code comments on a naive substring search —
+  caught and tightened to check the real code pattern specifically
+  before shipping). No new top-level declarations — baseline stays 471.
+  Verified live, Chromium + WebKit, dark + light, 320/390/1000px, zero
+  console/page errors; the game confirmed still playable in both
+  (answering HL updates the real streak/best, a real Draft pick still
+  places correctly). `pytest`: 566 passed, 1 xfailed, 1 failed (same
+  pre-existing `test_web_text` byte-diff, unrelated). `web/index.html`
+  `?v=` hashes regenerated. Strings in `/tmp/p46_strings.txt`, pending
+  owner approval before commit.
+
+- **PHASE_47 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  ¿Quién soy? (Quiz — logic stays in `web/js/tabs.js`, not moved to
+  games.js, per the task's own explicit instruction) visual/tap-target/
+  terminology pass, plus three string fixes in HL/Draft. New shared
+  `plural(n,singular,pluralForm)` (helpers.js, inserted before `num`/
+  `dash`/`pct` — never after `pct()`, PHASE_41's own hard-won lesson
+  about `tests/_web_text.py`'s splice anchor) — the house convention
+  elsewhere is an inline `${n}word${n===1?'':'s'}` ternary (dozens of
+  call sites, left alone, out of scope to retrofit); this is only for
+  the new PHASE_47 fixes, where a real function reads better and one
+  case (tapón→tapones) is genuinely irregular, not a plain +s. (1/2)
+  Quiz's "Otra pista" moved out of `.guessbar` into its own `.btnrow`
+  below — confirmed live it used to wrap awkwardly to a cramped second
+  row at 390px sharing space with the input+"Adivinar", now a clean
+  separation matching Draft's own primary/secondary action split. New
+  `#quizGame .btn,#quizGame input[type=text]{min-height:44px}` (scoped,
+  unmedia-queried — the shared `.btn` 44px floor, PHASE_9, only applies
+  below 640px; Quiz's own controls measured 41px at 1000px+ live).
+  Keyboard focus needed no CSS change — no `all:unset` anywhere in
+  Quiz's markup (unlike Draft's PHASE_46 fix), so the app's own global
+  `:focus-visible` rule already applied; confirmed live rather than
+  assumed, properly alpha-compositing the real backdrop an
+  `outline-offset:2px` ring actually sits over (a first attempt
+  measured against the BUTTON's own blue fill and got a false 1.46-1.92;
+  the ring is drawn OUTSIDE the border edge, over the PARENT's
+  background, not the button's own — recomputed correctly: 6.82:1 dark,
+  4.46:1 light). No overflow found at 320/390/1000px in either state,
+  before or after this phase's own changes — confirmed live, not
+  assumed. (3) No hardcoded "PERFECTA" or other all-caps string exists
+  anywhere in Quiz's own output — read directly rather than guessed; the
+  only "PERFECTA" in the whole codebase is Grid's own `drawBoard()`
+  (games.js:301), explicitly out of scope ("do not touch... the Grid
+  code") and left untouched. Draft's own "EQUIPO"/"DÉCADA" (games.js)
+  ARE real hardcoded all-caps text, found going through the files, but
+  outside this phase's own explicit Draft-fix list (items 5b/5c only) —
+  left alone, flagged here rather than silently fixed or silently
+  ignored. (4) One real terminology break: Quiz's own position clue
+  showed the archive's raw code verbatim ("Jugaba de PG.") instead of
+  going through `SLOT_ES` (games.js), the same Spanish mapping Draft's
+  own court labels already use (Base/Escolta/Alero/Ala-pívot/Pívot) —
+  fixed via `SLOT_ES[p.pos]||p.pos`; the 3 POOL position codes with no
+  established Spanish form anywhere else in the app (`G`/`F`/`F/C`)
+  intentionally fall back to the raw code rather than inventing new
+  terminology unreviewed. Clue #2's "Nativo"/"Refuerzo" wording already
+  matched Draft's own tags — no change needed there, confirmed rather
+  than assumed. (5) Three plural fixes, all confirmed live against real
+  data producing the singular case: (a) HL's unit label — "1 títulos"
+  was real and reachable (a franchise with exactly one title); the
+  singular is derived from `HL.set.unit`'s own real plural string
+  (stripping the trailing "s" — correct for all 5 real units: puntos/
+  rebotes/asistencias/juegos/títulos, checked against every `HL_SETS`
+  entry, not just the one that was actually reachable) since `data.js`
+  was out of scope to edit this phase. (b) Draft's "1 disponibles" — a
+  real 1-player club/decade spin — now `${avail} ${plural(avail,
+  'disponible')}`, both reading the same computed value instead of two
+  separate `poolFor()` calls that could drift. (c) "· vacío" → "·
+  sin opciones" — every open slot starts empty, so "vacío" described a
+  state EVERY slot shares; the label only ever appears on the subset
+  that's additionally dead (no eligible player this spin), so "sin
+  opciones" names the real reason. No test asserted the old "vacío"
+  text, so no existing test needed updating. A 4th plural bug, found
+  going through Quiz's own clue functions for the item-4 pass, not
+  originally listed: `statClue()`'s rpg/apg/spg/bpg concatenation and
+  `clueList()`'s own ppg clue had the identical bug ("Promedió 1 puntos
+  por juego.", confirmed live on a real ppg=1 player) — fixed the same
+  way, `plural()` for all four stats, with `tapón`/`tapones` passed as
+  the one genuinely irregular pair in this set. New
+  `tests/test_juega_quiz_polish.py` (10 tests): the `plural()` helper's
+  own singular/irregular behavior; no `PERFECTA` and no real all-caps
+  HTML text content (`>WORD<`, the actual shape Draft's own bug takes)
+  anywhere in Quiz's source — two of these assertions originally also
+  matched this phase's own explanatory comments and a `.replace(/"/g,…)`
+  regex literal on a naive scan, caught and fixed (comments stripped
+  first; the all-caps check narrowed to the real `>WORD<` HTML-text
+  shape instead of a generic, regex-confusable quote scan) before
+  shipping; Quiz's tap-target CSS confirmed present and NOT confined to
+  a mobile media query; the position fix confirmed via source; `vacío`
+  confirmed fully gone from games.js (comments stripped first, since
+  PHASE_46's own comment still accurately quotes the old text while
+  describing an unrelated fix); Draft's `avail`/`plural()` pairing
+  confirmed. Baseline: 1 new declaration (`plural`), 471 → 472. Verified
+  live, Chromium, dark + light, 320/390/1000px, zero console/page
+  errors; also captured the Juega landing with the streak strip visible
+  (`localStorage` seeded via `page.addInitScript()` in a throwaway
+  context, before the app's own boot runs, so the real BOOT-time
+  `drawStreak()` call sees it — never touches a real profile).
+  `pytest`: 576 passed, 1 xfailed, 1 failed (same pre-existing
+  `test_web_text` byte-diff, unrelated). `web/index.html` `?v=` hashes
+  regenerated. Strings in `/tmp/p47_strings.txt`, pending owner approval
+  before commit.
+
+- **PHASE_47B (branch `redesign-v2` — UI restyle).** Fixes on top of
+  uncommitted PHASE_47, not committed. (1) Investigated a reported
+  accent bug ("1 titulo"/"18 titulos", no accent on título/títulos) and
+  found no actual bug exists: `data.js`'s own `HL_SETS` unit string
+  already carries the accent (`unit:'títulos'`, í = U+00ED), and
+  PHASE_47's `unitSingular=HL.set.unit.replace(/s$/,'')` only strips the
+  trailing "s" — it cannot touch the í. Confirmed two independent ways
+  live, not assumed: `document.querySelector(...).textContent
+  .codePointAt()` on the real rendered card (both "título" and
+  "títulos" carry the correct í codepoint) and a 4x-`deviceScaleFactor`
+  zoomed screenshot, where the accent mark is clearly visible — the
+  small, muted (`--ink-3`) 12px text made it easy to misread the accent
+  as absent in a normal screenshot, but the string and the render were
+  always correct. No code change made for this item; `data.js` was not
+  touched. A regression-guard test was still added, per the task's own
+  item 3. (2) Quiz's position clue: PHASE_47's own fix only covered
+  `SLOT_ES`'s 5 standard codes — 3 real, regularly-reachable codes
+  (`G`/`F`/`F/C`, 52 of 376 real POOL players, 13.8%, confirmed by
+  enumerating every distinct `p.pos` value,
+  `/tmp/p47b_pos_values.txt`) still fell back to the raw code. New
+  `POS_ES` table (tabs.js, Quiz-only, kept separate from `SLOT_ES` —
+  games.js, Draft's own, not duplicated) and `posEs(p)`: tries
+  `SLOT_ES`/`POS_ES` on the full code first, falls back to
+  `posTokens()` (games.js, already existed, reused rather than
+  reimplemented) splitting any genuinely novel compound code and
+  joining each token's own translation with " o ", and returns `null`
+  (clue omitted, never a raw code) if nothing resolves at all. `G`→"Base
+  o escolta" and `F/C`→"Poste" are **not** new wording — Grid's own
+  `CATS` categories (`data.js`) already treat bare `G` as part of
+  `guard` and `F/C` as part of `big` via their own real regexes
+  (confirmed by reading them directly); reused, not invented. `F`→"Alero
+  o ala-pívot" has no existing precedent anywhere in the app (confirmed:
+  neither CATS regex matches bare `F`) — a genuine new proposal, printed
+  to `/tmp/p47b_strings.txt` and clearly flagged as such, pending owner
+  approval. Verified live: all 8 real position codes resolve correctly,
+  zero of the real 376 POOL players leak a raw code, and the
+  `posTokens()` fallback path (not exercised by any of today's real
+  data, since all 8 real codes resolve on the direct-lookup branch)
+  correctly handles a synthetic future compound (`'PG/SF'` →
+  `"Base o Alero"`) and correctly returns `null` for a wholly unknown
+  code (`'ZZZ'`). Confirmed live on real players: "Jim Maldonado"
+  (pos=`F`) → "Jugaba de Alero o ala-pívot."; "Neftali Acevedo Diaz"
+  (ppg=1, the one real player confirming PHASE_47's own plural fix is
+  genuinely exercised by real data) → "Promedió 1 punto por juego."
+  `tests/test_juega_quiz_polish.py` updated: the stale PHASE_47
+  assertion (`SLOT_ES[p.pos]||p.pos`, no longer in the source) replaced
+  with one confirming `posEs(p)` is called; new
+  `TestPosEsCoversEveryRealPosition` (ports `posEs()`'s own resolution
+  order to Python, the same convention `test_owners_retired.py` already
+  uses, confirming all 8 real codes resolve, `G`/`F/C` reuse the real
+  CATS wording, `F` is flagged as new in the strings file, and no real
+  code resolves to another raw code) and `TestHLUnitAccentIsPresent` (3
+  tests guarding the accent stays in `data.js`'s source and that
+  `unitSingular` stays derived, never hardcoded, so it can't silently
+  lose it) — 17 tests total, up from 10. Baseline: 2 new declarations
+  (`POS_ES`, `posEs`), 472 → 474. No game logic touched. Verified live,
+  Chromium, dark, 390/1000px (plus the earlier full width/theme sweep
+  from PHASE_47, unaffected by this phase's own changes), zero console/
+  page errors across the Juega landing and all 4 games. `pytest`: 583
+  passed, 1 xfailed, 1 failed (same pre-existing `test_web_text`
+  byte-diff, unrelated). `web/index.html` `?v=` hashes regenerated.
+  Strings in `/tmp/p47b_strings.txt` (the `F`→"Alero o ala-pívot"
+  proposal needs explicit owner approval before commit; `G`/`F/C` are
+  reuses of already-established app wording, not new), pending owner
+  approval before commit.
+
+- **PHASE_49 (branch `redesign-v2` — UI restyle).** Built, not
+  committed. Two scope items, both on top of uncommitted PHASE_47/47B.
+  (1) Archivo's own hero: the PHASE_48 survey's own #2 finding was that
+  Archivo never got the hero pass the other 4 sections (Historia/
+  Jugadores/Equipos/Juega) already have — no `buildArchivoHero()`
+  existed. Added it (`web/js/tabs.js`), same mechanism as the 4 above —
+  `document.querySelector('#archivo .phead')`, `classList.add('hhero')`,
+  `innerHTML` rewrite — wired into `finishBoot()` (`init.js`) in its own
+  try/catch, right after `buildJuegaHero()`. h1 ("El archivo") and lede
+  are reused **verbatim** from the pre-existing static `.phead`
+  (`web/index.html:444-448`) — no new copy, per the task's own explicit
+  "no new Spanish strings" instruction. No eyebrow: every other hero's
+  eyebrow is the literal "EL ARCHIVO DEL BSN", which directly above an
+  "El archivo" h1 would repeat the word immediately — a worse result
+  from the same bytes, not real reuse. Read as permission to omit (task
+  wording: "no eyebrow unless an existing string already covers it"),
+  not a mandate to force a fit; no new eyebrow string proposed either,
+  since omission needs none. (2) Active-subnav-pill-into-view: at 390px
+  the pill row (`.subnav`, `overflow-x:auto`) scrolls horizontally, and
+  the active pill was clipped or off-screen on deeper Archivo views
+  (Cobertura/Calidad/Calendario/Glosario/A la medida). Fixed inside
+  `syncSubnav(sec,view)` (tabs.js:1160) — confirmed the single, shared
+  implementation used by all 5 `VIEW_SECS` sections (historia/
+  jugadores/equipos/juega/archivo), so the fix applies generically, not
+  per-section. Computes `active.offsetLeft-(nav.clientWidth-
+  active.offsetWidth)/2`, clamped to `[0, nav.scrollWidth-
+  nav.clientWidth]`, and calls `nav.scrollTo({left,behavior})` —
+  `scrollIntoView()` deliberately not used (would risk moving the whole
+  page vertically too). `behavior` is `'auto'` under
+  `prefers-reduced-motion:reduce`, `'smooth'` otherwise. Mid-phase
+  incident: the first `tests/harness/inventory.py` invocation this
+  phase was called with only one argument (`web/js/tabs.js`), but the
+  tool's own signature is `<output.json> <path>...` — the single arg
+  was read as the *output* destination, writing an empty
+  `{"declarations": []}` over the real 6295-line file. Caught
+  immediately via `git diff --stat` (6298 lines changed) before any
+  further work compounded it; nothing of value was lost since the only
+  uncommitted edits on top of HEAD (`51c1ce2`) were this same phase's
+  two changes, still held in-session — owner confirmed, `git checkout
+  -- web/js/tabs.js` restored HEAD's copy, both edits (`buildArchivoHero`
+  + the `syncSubnav` scrollLeft logic) were reapplied by hand, and the
+  full live verification was re-run afterward to confirm the restore was
+  clean. Verified live, Playwright/Chromium, `serviceWorkers:'block'`,
+  dark+light, 320/390/1000px: active pill is fully visible
+  (`btnRect` within `navRect`, computed via `getBoundingClientRect()`,
+  not just eyeballed) on `__landing` and all 6 Archivo views at 390
+  dark, on `__landing`/Cobertura at 320 and 1000 in both themes, and on
+  a `prefers-reduced-motion:reduce` context (Calidad, 390 dark) — 16 of
+  16 pill checks passed, zero failures. Regression screenshots
+  confirmed no change to Historia/Jugadores/Equipos/Juega's own subnav
+  behavior. Zero console/page errors in every context; no page-level
+  horizontal overflow at any width. `tests/test_archivo_hero.py` added
+  (13 tests): hero builder exists, targets the real `.phead`, called
+  from `finishBoot` in its own try/catch; h1/lede byte-match the
+  original static markup; no eyebrow added; static `.phead` has no
+  hardcoded `hhero` class; `syncSubnav`'s scroll fix uses `scrollTo`/
+  `scrollLeft` math (never `scrollIntoView`, comment-stripped before the
+  assertion since the explanatory comment names it), respects
+  `prefers-reduced-motion`, is scoped to the nav element's own
+  `clientWidth`/`scrollWidth`, and is the one shared definition used by
+  all 5 `VIEW_SECS` sections; baseline confirms exactly one new
+  top-level declaration. Baseline: 1 new declaration
+  (`buildArchivoHero`), 474 → 475, hand-appended (not regenerated),
+  `src.verify_clean.Checker().failures == []`. `pytest`: 596 passed, 1
+  xfailed, 1 failed (same pre-existing `test_web_text` byte-diff,
+  unrelated) — up from 583+1+1 in PHASE_47B, net +13 for this phase's
+  own file. `web/index.html` `?v=` hashes regenerated (confirmed
+  unchanged/idempotent after the restore, since the reapplied edits were
+  byte-identical to the pre-corruption versions). No new strings —
+  `/tmp/p49_strings.txt` documents the verbatim reuse and the eyebrow-
+  omission reasoning explicitly. Not committed, not pushed, pending
+  owner approval.
+
+- **PHASE_49B (branch `redesign-v2` — UI restyle).** Fix on top of
+  uncommitted PHASE_49, not committed. The shared `.hhero` decorative
+  ring background (`repeating-radial-gradient` from the top-right
+  corner, `web/css/main.css`) crossed behind Archivo's own lede and
+  grazed the h1 at 1000-1280px — Archivo's lede runs close to the
+  hero's full width (no eyebrow row above it the way Historia/
+  Jugadores/Equipos/Juega have, to shorten the box), confirmed live:
+  Historia's own hero has the identical ring-crosses-lede defect at
+  1280px, but it's a pre-existing, shared condition out of this phase's
+  scope — the fix here is `#archivo`-scoped only, the base `.hhero`
+  rule other 4 sections use is untouched (confirmed live: their own
+  `background-image` computed style is unchanged). `#archivo
+  .hhero{background-image:none}` disables the full-width rings for
+  Archivo specifically; a new `#archivo .hhero::before` layer
+  (`position:absolute;inset:0;z-index:-1`, behind the real text, not on
+  top of it) carries the same ring pattern with a px-based (not
+  percent) mask — `820px` fully transparent, fading to opaque by
+  `920px`. Px, not `%`, because the lede's rendered width is fixed near
+  790px (capped by its own `max-width:70ch`) regardless of hero box
+  width, so a px cutoff keeps the same real text-clearance margin at
+  every breakpoint instead of drifting the way a percentage cutoff
+  would. Net effect, confirmed via `getBoundingClientRect()` on the
+  real h1/lede/hero boxes at both widths: at 1000px (hero ≈904px wide)
+  the rings are reduced to a faint corner sliver (904 only barely
+  clears the 820px floor); at 1280px (hero ≈1088px wide) a clean ~170px
+  ring strip remains, fully clear of the text column. `@media(max-
+  width:899px)` turns the `::before` off entirely — mobile (390px) is
+  pixel-identical to before this fix (the base rule already dropped
+  `background-image` under 640px; between 640-899px rings are now off
+  rather than left unmasked, since no task-specified width in that
+  range needed them and leaving them off there is strictly safer than
+  guessing at an untested in-between mask). `tests/test_archivo_hero.py`
+  gained `TestArchivoHeroArcsConfined` (5 tests): the override disables
+  the shared background for Archivo, the masked `::before` layer exists
+  with the right stacking (`z-index:-1`, `position:absolute`) and mask
+  properties, mobile keeps the old off-state, and the shared `.hhero`
+  rule itself is byte-unchanged (guards against a future edit
+  regressing the other 4 sections) — 18 tests total in the file, up
+  from 13. CSS-only change, no new JS declarations: baseline stays at
+  475, confirmed by rerunning the inventory tool (output path
+  deliberately passed as a `/tmp` file this time, not a repo path,
+  after PHASE_49's own output-path incident). Verified live, Chromium,
+  light+dark, 1000/1280px: zero ring pixels fall within the h1/lede
+  bounding boxes at either width or theme; zero console/page errors.
+  Regression-checked Historia/Jugadores/Equipos/Juega at 1280px dark —
+  their own `.hhero` `background-image` computed style is still the
+  full unscoped `repeating-radial-gradient`, byte-identical to pre-
+  phase. `pytest`: 601 passed, 1 xfailed, 1 failed (same pre-existing
+  `test_web_text` byte-diff, unrelated) — up from 596+1+1, net +5 for
+  this phase's own test additions. `web/index.html` `?v=` hashes
+  regenerated. No new strings (CSS-only). Not committed, not pushed,
+  pending owner approval.
+
+- **PHASE_50 (branch `redesign-v2` — UI restyle).** Built, not
+  committed, on top of committed `5b85dfa` (PHASE_49/49B). Two scope
+  items. (1) Archivo's own landing: Archivo was the last section still
+  on the generic `mega-feat`+`landgrid` fallback inside `buildLanding()`
+  (tabs.js). Added `buildArchivoLanding(order)`, dispatched from
+  `buildLanding()` for `sec==='archivo'`, same wiring convention as
+  `buildHistoriaLanding`/`buildJugadoresLanding`/`buildEquiposLanding`.
+  Keeps the existing `megaFeat('gap')` lead panel byte-identical ("Lo
+  que este archivo no sabe", its bars, "Ver los huecos"), then groups
+  the 6 real routes `order` already carries (from `VIEW_MAP.archivo`)
+  into 3 groups using `NAV_MENU.archivo.cols` verbatim — both the group
+  labels ("Preguntar"/"El estado del archivo"/"Referencia") and the
+  slug membership of each group, looked up by slug via a `bySlug` map
+  rather than assumed by position. Card titles are `order`'s own
+  `label` (the same string already live today as each view's subnav
+  pill text) — deliberately **not** `NAV_MENU.archivo`'s own longer
+  per-item labels ("Consulta en español" etc.), confirmed live
+  (`grep`) that those strings aren't rendered as visible UI text
+  anywhere any more (their only consumer, the mega-menu dropdown, was
+  retired in `PHASE_2_REDESIGN`) — reusing the pill labels instead
+  keeps every card byte-identical to text a user can already see
+  elsewhere in the app. Blurbs are `VIEW_DESC.archivo[slug]`, unchanged.
+  No gradient icon tiles (task's own "the old icon-tile red→blue
+  gradient reads purple" call-out, confirmed by reading `.xcard .ic`'s
+  own `linear-gradient(135deg,var(--rojo),var(--azul))`) — plain
+  `.landcard` (no `.ic`), the same component the generic fallback
+  already rendered for Juega, with 2 new modifier classes:
+  `.archl-primary` (the 2 Preguntar cards — larger title, `border-top:
+  3px solid var(--azul)`, the same accent token Refuerzos' `.rule` and
+  Dirigentes' `.coach-card` already use for this exact purpose, not a
+  new color) and `.archl-compact` (the other 4 — smaller title,
+  tighter padding). Layout: 1 column on mobile; desktop (`≥900px`)
+  Preguntar 2-up, Estado 3-up, Referencia's single card unconstrained.
+  Tap targets inherit `.landcard`'s own existing sizing (already
+  comfortably `≥44px`); focus rings come free from the pre-existing
+  global `:focus-visible` rule (main.css:321), no new rule needed,
+  confirmed live. (2) Light-theme contrast: measured `.fx`/`.ft`/`.fd`
+  and the landcard arrow on every section's own landing feature panel
+  at 390px, both themes, before any change
+  (`/tmp/p50_contrast_before.json`) — found live, not assumed, that
+  only Archivo currently renders a real `.mega-feat .fx` at all:
+  Historia/Jugadores/Equipos replaced their own `mega-feat` with
+  `.stats3` (PHASE_11/14/40), and Juega's own landing
+  (`buildJuegaViews()`) never built one in the first place. Archivo's
+  `.fx` measured 4.33:1 in light (below the 4.5:1 floor), 5.11:1 dark
+  (passing). Fixed at the shared `.mega-feat .fx` selector (not a new
+  `#archivo`-scoped override, and not the global `--ink-3` token, used
+  in dozens of other places this phase doesn't audit) — swapped
+  `color:var(--ink-3)` for `var(--ink-2)`, the exact fix
+  `.stat:not(.solid) .l` already established for the identical "muted
+  small-caps label on a card background" problem. Re-measured
+  (`/tmp/p50_contrast_after.json`): 8.57:1 dark, 6.52:1 light (now
+  matches `.fd` exactly, same token). The new `.archl-label` group
+  headings use `--ink-2` from the start, never `--ink-3`, so they never
+  repeat the failure; re-measured live at 10.13:1 dark / 7.23:1 light.
+  Card blurbs (`.landcard .lc-d`, pre-existing, unchanged) were already
+  on `--ink-2` — 9.50:1 dark / 7.97:1 light. The arrow icon (`.lc-t i`,
+  `var(--fuego)`) measured 6.39:1 dark / 4.91:1 light — both already
+  past the 3:1 floor for a non-text icon, no change needed.
+  `tests/test_archivo_landing.py` added (15 tests): dispatch, the lead
+  panel's own content untouched, the 3 group labels sourced from
+  `NAV_MENU.archivo.cols` verbatim, all 6 `VIEW_MAP` slugs covered
+  exactly once, no `.xcard`/gradient-tile usage anywhere in the new
+  builder or its 2 modifier classes, no new quoted Spanish literal
+  inside the function body (regex-scanned for accented characters/¿¡,
+  the one reliable signal distinguishing real copy from a CSS
+  class-name token), and both contrast fixes (`.mega-feat .fx` and
+  `.archl-label` on `--ink-2`, `.lc-d` confirmed already-passing).
+  Baseline: 1 new declaration (`buildArchivoLanding`), 475 → 476,
+  hand-appended, `src.verify_clean.Checker().failures == []`. `pytest`:
+  616 passed, 1 xfailed, 1 failed (same pre-existing `test_web_text`
+  byte-diff, unrelated) — up from 601+1+1, net +15 for this phase's own
+  file. Verified live, Playwright/Chromium, `serviceWorkers:'block'`,
+  light+dark, 320/390/1000/1280px: zero console/page errors, zero
+  page-level horizontal overflow at any combination. Click-through: all
+  6 cards route correctly by mouse click (`href`/`location.hash`
+  confirmed, active pill `aria-current="true"` and fully visible via
+  the PHASE_49 `syncSubnav()` fix) and the 2 primary cards also route
+  correctly via keyboard `Enter`; "Ver los huecos" still routes to
+  Cobertura. Regression-checked Historia/Jugadores/Equipos/Juega at
+  390px, both themes — all 4 render exactly as before (Historia's own
+  `.xcard` gradient tiles confirmed still present and unaffected,
+  screenshot-verified). `web/index.html` `?v=` hashes regenerated. No
+  new strings — `/tmp/p50_strings.txt` documents every string's exact
+  source and the deliberate pill-label-over-`NAV_MENU`-label choice.
+  Not committed, not pushed, pending owner approval.
+
+- **PHASE_51 (branch `redesign-v2` — UI restyle).** Built, not
+  committed, on top of committed `0457eff` (PHASE_50). Two scope
+  items, both CSS-only. (1) Calidad de datos tap targets: the survey's
+  own count was ~393-413 controls under 44px on `#archivo/calidad` —
+  per-row player-name buttons, year chips, Ficha/jug05 ratio links,
+  CSV buttons, the filter input/select and the "filas idénticas"
+  disclosure (`drawDQ()`/`drawDQTable()`, `web/js/data-quality.js`),
+  plus the inline "Calidad de datos" link on Cobertura (`#sourcesBox`,
+  `buildSources()` in tabs.js). Owner decision: bigger controls, not a
+  new interaction — same tables/columns/data/sort/filter/copy. Fixed
+  entirely via new CSS scoped to `#dqBox` (the real, unique container
+  `drawDQ()` always targets) and to the one named Cobertura link by its
+  own `href` — no JS or markup touched, confirmed the shared
+  `buildTable()`/`.tblwrap`/`.btn`/`.filters` base rules are
+  byte-unchanged so every other section's tables are unaffected. Sized
+  the CONTROL itself (`display:inline-flex`/`flex`,
+  `align-items:center`, `min-height:44px`, `min-width:44px` where
+  standalone — the Año buttons and the Ficha/jug05 ratio links, whose
+  own text is as short as "4 / 42") rather than the table cell's own
+  padding, per the task's own explicit preference — a row's height is
+  always its tallest cell, so a plain-text cell sharing a row with a
+  resized control grows for free. Ratio links keep `justify-content:
+  flex-end` so the digits stay right-aligned inside their now-wider
+  box, matching the column's existing `text-align:right`. Sort headers
+  (`th.sortable`) got taller padding (`16px` top/bottom, relying on a
+  table cell's own default `vertical-align:middle`) plus a
+  `min-width:44px` floor — 2 of them (Año/JJ-style narrow numeric
+  headers) were still under 44px wide after the padding pass, found
+  live by the same measurement script, not assumed fixed. The
+  Cobertura link uses `display:inline-flex` + `min-height:44px`
+  directly on the `<a>` (the task's own suggested technique) so it's
+  directly bounding-box-measurable, not a pseudo-element trick that a
+  script couldn't see. The 2 similar "ver Calidad de datos" links on a
+  player's own Resumen/Temporadas tab (`seasonTotalsNote()`, tabs.js) —
+  a different view, never named in this task's scope — were
+  deliberately left alone, noted in both the test file and here.
+  Measured live with a real bounding-box script, scoped to `#dqBox`/
+  `#sourcesBox` specifically (an unscoped first pass also picked up
+  global chrome — the top header buttons, the subnav pills — which
+  isn't this phase's scope and was correctly excluded once caught):
+  406–416 offenders before (close to the survey's own 393–413/403–413,
+  different exact methodology, same scale) at 320/390/1000px, light +
+  dark; 0 after, same matrix.
+  `/tmp/p51_targets_before.json`/`/tmp/p51_targets_after.json`.
+  (2) Hero arcs: live measurement while investigating the reported
+  "arcs sweep past the hero, as far as Glosario" bug found the REAL
+  root cause wasn't the PHASE_49B mask at all — a pre-existing PHASE_11
+  comment in `main.css` (`--card/--line/--ink*/--rojo/--azul/...`, a
+  token list using `*` as an "any variant" wildcard suffix) contained
+  the literal substring `*/` where `--ink*` was immediately followed by
+  `/--rojo`. That closes a CSS comment early, with no error thrown
+  anywhere — confirmed live via the real parsed CSSOM
+  (`document.styleSheets`), not assumed: the very next rule,
+  `.hhero{overflow:hidden}`, was silently absent from every browser's
+  parsed stylesheet, site-wide, on every section that uses `.hhero`,
+  not just Archivo. A second instance of the same pattern
+  (`--sp-*/--fs-*`) sat right behind it in the same comment and
+  would have reopened the identical bug as soon as the first was
+  fixed — found and fixed together. With `overflow` never actually
+  `hidden`, the hero's own `::before` ring layer (PHASE_49B) was never
+  being clipped to the hero's box on any section — Archivo's own longer
+  lede made the leak visible enough to get reported as a bug; Historia/
+  Jugadores/Equipos/Juega had the identical defect, just less visible
+  behind shorter lede text, confirmed live (regression screenshots,
+  `/tmp/p51_hero_regress_*.png`) once the fix went in. The fix itself
+  is a single inserted space in each of the 2 comment occurrences —
+  once the real `.hhero{overflow:hidden}` rule is parsed again, the
+  existing PHASE_49B clip-to-box behavior the CSS already asked for
+  simply starts working; no new clip-path, no duplicate containment
+  rule, no change to the existing px-based horizontal mask. Verified
+  live: total parsed CSS rule count went from 834 to 835 (the
+  previously-dropped rule recovered); `#archivo .hhero`'s own computed
+  `overflow` is `hidden` in all 18 checked combinations (1000/1280/
+  1440px × light/dark × landing/preguntar/calidad); zero console
+  errors; regression screenshots confirm Historia/Jugadores/Equipos/
+  Juega's own heroes render correctly post-fix, no visual regression,
+  arguably a quiet improvement for all 4 (their rings are now also
+  correctly contained, just less previously noticeable). `tests/
+  test_archivo_calidad_targets.py` added (16 tests): a `*/`-in-comment
+  regression guard (counts every real comment the same way a
+  tokenizer does and asserts the total `*/` count matches exactly —
+  would have caught this bug on its own), the 2 specific literals
+  confirmed gone, the real `.hhero{overflow:hidden}` rule's presence
+  confirmed, every PHASE_51 CSS selector confirmed `#dqBox`-/
+  `#sourcesBox`-scoped (none of the shared base selectors appear bare
+  in the new block), each control type's own min-height/min-width
+  pair, the Cobertura link's fix and the 2 deliberately-untouched
+  player-page links, and a no-new-Spanish-literal scan of the new CSS
+  block's code (comments stripped first). CSS-only phase — baseline
+  stays at 476, confirmed by rerunning the inventory tool (output path
+  correctly passed as `/tmp` first, source files after, per the
+  standing house rule after PHASE_49's own incident). `pytest`: 632
+  passed, 1 xfailed, 1 failed (same pre-existing `test_web_text`
+  byte-diff, unrelated) — up from 616+1+1, net +16 for this phase's own
+  file. Verified live, Playwright/Chromium, `serviceWorkers:'block'`,
+  320/390/1000px (Calidad/Cobertura) and 1000/1280/1440px (arcs),
+  light+dark: zero console/page errors, zero page-level horizontal
+  overflow anywhere. Tabbed through the first 15 focusable Calidad
+  controls — every one shows a visible `:focus-visible` outline (the
+  pre-existing global rule, no new focus CSS needed). Confirmed sort
+  (clicking Año re-orders), filter (typing a real surname narrows the
+  row count; a surname absent from this particular 94-row conflicts
+  list correctly returns zero, re-verified against a name confirmed
+  present before concluding that), and that a Ficha/jug05 ratio link's
+  `href` still points to the same Wayback Machine capture URL as
+  before. `web/index.html` `?v=` hashes regenerated. No new strings —
+  `/tmp/p51_strings.txt` notes the one-character code-comment edit for
+  transparency even though it renders nowhere. Not committed, not
+  pushed, pending owner approval.
+
+- **PHASE_51D (branch `redesign-v2` — UI restyle).** Fix on top of
+  uncommitted PHASE_51, not committed. The Cobertura inline-link fix's
+  first pass (`display:inline-flex;min-height:44px` on the `<a>`) grew
+  the surrounding `<p>`'s own line box — found live: 36px → 62px at
+  320/390px, 18px → 44px at 1000px, both themes, since a taller
+  inline-flex child always pushes its own line taller. Replaced with
+  `display:inline-block;padding:13px 0;margin:-13px 0` — padding is
+  part of the element's own border box (what `getBoundingClientRect`
+  measures and what clicks hit-test against) regardless of margin, but
+  an equal negative margin cancels its contribution to the surrounding
+  line's height. Re-measured live: paragraph height now matches the
+  pre-PHASE_51 baseline exactly (36/36px at 320 and 390, 18/18px at
+  1000, both themes) while the link's own box stays 44×95px. Re-ran the
+  scoped `#dqBox`/`#sourcesBox` offender check — still 0/0 at every
+  width/theme (`/tmp/p51_targets_after.json` updated in place).
+  `tests/test_archivo_calidad_targets.py` gained 2 tests (replacing the
+  one that asserted the old inline-flex technique): the rule now uses
+  `inline-block`+padding+an exactly-canceling negative margin, and
+  `2×padding + 18px line-height ≥ 44px` — 17 tests total in the file,
+  up from 16. Also produced, on request, a `.hhero` height/padding-top/
+  padding-bottom/position table for all 5 sections at 390 and 1000px,
+  before/after the PHASE_51 `*/`-in-comment fix (no `.hhero` change
+  made this phase) — owner to decide whether the 4 older sections keep
+  the restored `32px`/`12px` padding. `pytest`: 633 passed, 1 xfailed,
+  1 failed (same pre-existing `test_web_text` byte-diff, unrelated).
+  `web/index.html` `?v=` hashes regenerated. No new strings. Not
+  committed, not pushed, pending owner approval.
+
+- **PHASE_51E (branch `redesign-v2` — UI restyle).** Fix on top of
+  uncommitted PHASE_51D, not committed. Owner decision (delegated,
+  PHASE_51D's own table): keep every one of the 5 `.hhero` sections at
+  its pre-`*/`-fix height. Added `.hhero{padding:0}` as a later
+  override rule right after the original `.hhero{position:relative;
+  padding:var(--sp-6) 0 var(--sp-3);overflow:hidden}` — the original
+  rule is byte-unchanged (task's own explicit instruction not to edit
+  it in place); the override only resets `padding`, leaving
+  `position:relative`/`overflow:hidden` to keep coming from the
+  original rule, since the Archivo arc layer (`::before`,
+  `position:absolute`) and its clipping both depend on them. Re-ran the
+  hero table (390/1000/1280px, plus 320px, dark): heights at 390/1000
+  match the PHASE_51D "before" column exactly (0.00px delta, well under
+  the 0.5px tolerance) for all 5 sections — Historia 251.48/180.06,
+  Jugadores 192.11/150.38, Equipos 162.42/120.69, Juega 192.11/150.38,
+  Archivo 162.11/120.38 — `paddingTop`/`paddingBottom` both `0px`
+  everywhere, `position:relative` and `overflow:hidden` both intact,
+  confirmed live (`/tmp/p51e_hero_table.out`). Archivo arcs re-verified
+  at 1000/1280/1440px, light+dark: `overflow:hidden` and `::before`'s
+  own `position:absolute` both still in effect, zero console errors,
+  zero ring pixels overlapping the h1/lede (screenshot-confirmed,
+  `/tmp/p51e_archivo_{dark,light}_{1000,1280}.png`). Re-ran the scoped
+  `#dqBox`/`#sourcesBox` offender check from PHASE_51/51D — still 0/0
+  at every width/theme, confirming this phase's padding-only change
+  didn't disturb the Calidad/Cobertura tap-target fixes (different
+  selectors entirely, but verified rather than assumed).
+  `tests/test_archivo_calidad_targets.py` gained
+  `TestHeroPaddingNeutralizedPositionAndOverflowKept` (4 tests): the
+  original rule is byte-unchanged and still declares `position`/
+  `overflow`, a `padding:0` override exists strictly AFTER it in file
+  order (so it wins the cascade), the override rule declares nothing
+  but `padding` (doesn't duplicate `position`/`overflow`), and the new
+  comment itself contains no premature `*/` — 21 tests total in the
+  file, up from 17. `pytest`: 637 passed, 1 xfailed, 1 failed (same
+  pre-existing `test_web_text` byte-diff, unrelated) — net +4 for this
+  phase's own tests. `web/index.html` `?v=` hashes regenerated. No new
+  strings. Preview server stopped at the end of this phase. Not
+  committed, not pushed, pending owner approval.
+
+- **PHASE_52A (branch `redesign-v2` — UI restyle).** Built, not
+  committed, on top of committed `cbe7109` (PHASE_51/51D/51E). Layout
+  only, zero new user-facing strings (confirmed by grepping the full
+  diff for any added line containing a Spanish-accented character —
+  zero matches). 3 named fixes. (1) A la medida (`#archivo/
+  constructor`): Desde/Hasta used to be 2 separate `.field` children of
+  `.filters` — at 390px Contiene+Desde paired up but Hasta, alone, had
+  nothing left to wrap beside and landed on its own row (found live:
+  both rendered at 120px, not their own inline `max-width:104px`, since
+  `.filters>*`'s `min-width:120px` won that conflict). Wrapped in one
+  new `.qb-range` div (`buildQB()`) so they're one flex item from
+  `.filters`' own point of view — confirmed live, always wrap together
+  now, at 320/390/1000/1280px; each input also got a 44px floor while
+  already being restructured. The result table's uneven row heights
+  (a representative 15-row sample ranged 27.5–125px) were any wide
+  column wrapping onto several lines when its content ran long — the
+  `temporadas` dataset's own Nota column is the worst offender, long
+  enough on some years to wrap while sitting scrolled out of view at
+  phone width, inflating just that one row with no visible on-screen
+  cause. Capped to a single line (`#qbResult td.name`, scoped —
+  `buildTable()`'s own shared rule used by every other table in the app
+  is untouched); the full text is never removed from the DOM (still
+  selectable, still in the unchanged CSV export) and a native `title`
+  tooltip is added via a `MutationObserver` set up once in `buildQB()`
+  — one observer covers both `runQB()`'s own re-renders and
+  `buildTable()`'s internal sort-click re-render. Re-measured live:
+  every row is now 27.5px, at every checked width/theme. (2) Calendario
+  (`#archivo/calendario`): the table (FIN REG./PLAYOFFS included) is
+  wider than the 390px viewport — `buildTable()`'s own `.tblwrap`
+  already scrolls (`overflow:auto`, confirmed live: `scrollWidth` 633
+  vs `clientWidth` 356 at 390px, not a hard clip), but nothing signalled
+  that, so the columns were reachable in principle and undiscoverable
+  in practice — "make every column reachable" and "add a scroll
+  affordance" turned out to be the same fix. An inline block added
+  right after `buildCalendar()`'s own `buildTable()` call toggles a
+  scoped (`#calendarBox` only) CSS fade (an empty `::after`, never
+  announced to a screen reader) and a conditional `tabIndex`/focus
+  ring. A real bug surfaced and was fixed in the same pass:
+  `buildCalendar()` runs once, eagerly, from the `BOOT` list (`web/
+  index.html`), while the view is still `[hidden]` — a hidden element's
+  `scrollWidth`/`clientWidth` are both 0, so the first implementation
+  (a plain call, falling back to a `window` `'resize'` listener)
+  permanently concluded "not scrollable" even once the view was later
+  shown, since nothing ever re-fires just because a hidden element
+  becomes visible. Fixed with a `ResizeObserver` on the wrapper itself,
+  which does fire the moment a hidden element's box goes from 0×0 to
+  its real size — confirmed live: `tabIndex` was `-1` on first real
+  page load before this fix, `0` after. (3) Cobertura (`#archivo/
+  cobertura`): the decade-tile grid (`auto-fit`, `minmax(112px,1fr)`)
+  landed on whatever column count fit the available row width, with no
+  regard for `COVERAGE`'s own real length — a 7+3 orphan row at
+  ≥900px, and (found live while checking "mobile unchanged unless also
+  broken" — it was) a 3+3+3+1 orphan row at 390px too. A local `best(n,
+  min,max)` helper inside `buildCoverage()` picks the largest divisor
+  of `n` within `[min,max]` if one exists, else falls back to a
+  balanced ceiling-division split so the last row is never more than
+  one tile short of a full one; `buildCoverage()` computes it fresh
+  from `COVERAGE.length` on every call (never a literal tile count
+  anywhere in the CSS) and sets 2 custom properties inline on
+  `.covergrid`. For today's real `n=10` this resolves to a clean 2×5
+  grid at narrow widths and 5×2 at ≥900px — confirmed live, zero empty
+  cells either tier, at 320/390/900/1000/1280px. Mid-phase correction:
+  all 3 fixes were first written as new top-level functions
+  (`bestColumnCount`, `calScrollAffordance`, `qbApplyTruncationTitles`)
+  — broke `test_web_asset_wiring_is_intact` and 2 other baseline-
+  dependent tests the moment `pytest` ran, since the task's own
+  explicit instruction this phase was "do not touch `tests/harness/
+  inventory_main_HEAD.json`," and 3 new top-level declarations pushed
+  the real count to 479 against a frozen baseline of 476. Refactored
+  all 3 into local consts/inline blocks/closures (none are top-level
+  declarations any more) — re-ran the inventory tool (output to `/tmp`,
+  correct arg order) and confirmed 476, unchanged, matching the
+  untouched baseline file exactly; re-verified all 3 fixes still work
+  identically live after the refactor (same row heights, same grid
+  shape, same scroll-affordance behavior). `tests/test_archivo_
+  polish.py` added (24 tests): the 3 fixes' own scoped CSS/JS shape,
+  a direct check against the baseline JSON that none of the 3 removed
+  function names leaked back in as top-level declarations, a `git
+  diff` check that the baseline file itself was never touched, and the
+  standing `*/`-in-comment regression guard. Re-ran PHASE_51's own
+  scoped `#dqBox`/`#sourcesBox` tap-target check — still 0/0 at every
+  width/theme, confirming this phase's unrelated changes didn't
+  regress it. `pytest`: 661 passed, 1 xfailed, 1 failed (same
+  pre-existing `test_web_text` byte-diff, unrelated). Verified live,
+  Playwright/Chromium, `serviceWorkers:'block'`, 320/390/1000/1280px,
+  light+dark, all 3 views: zero console errors, zero page-level
+  horizontal overflow (24 checks, all clean). Item 4 (report only, no
+  implementation): Preguntar's `#askInput` placeholder (71 chars) —
+  only 36/71 chars fit at 320px, 43/71 at 390px, both mid-sentence,
+  hard-clipped (no ellipsis on a plain input); Cobertura's decade tiles
+  render no percentage text anywhere today (only an inline bar-fill
+  width), and have no existing dead space for one without adding tile
+  height — full measurements and the 2 realistic placement options in
+  `/tmp/p52_item4_findings.txt`, owner to approve wording separately.
+  `web/index.html` `?v=` hashes regenerated. `tests/harness/
+  inventory_main_HEAD.json` deliberately NOT touched, per this phase's
+  own explicit instruction — confirmed absent from `git diff --name-
+  only`. Not committed, not pushed, pending owner approval.
+
+- **PHASE_52B (branch `redesign-v2` — UI restyle).** Built, not
+  committed, on top of uncommitted PHASE_52A (both still sit on top of
+  committed `cbe7109`). Exactly 2 approved Spanish-string changes, plus
+  a layout-only Calendario fix — confirmed by grepping the full diff
+  for every added/removed line containing a Spanish-accented character
+  across `web/js/tabs.js`/`web/css/main.css`/`web/index.html`: exactly
+  the 2 approved changes, nothing else. (1) `#askInput`'s placeholder
+  shortened from the 3-clause example to just `"¿Quién ganó en 1971?"`
+  — the other 2 clauses ("títulos de Bayamón", "líder de anotación
+  1987") are unaffected, still present as 2 of the 14 `ASK_EXAMPLES`
+  chips rendered below the input. (2) Cobertura's note under the
+  decade grid gained the clause "una estimación editorial de", and its
+  own "20%" — found to be a hardcoded literal, typed independently of
+  `COVERAGE[0][1]` which already held the same number — is now derived
+  (`` `...el ${COVERAGE[0][1]}% porque...` ``), so the two can never
+  drift apart; `COVERAGE[0][1]` is still `20` today, so the rendered
+  text is unchanged on that count, only the new clause is visibly
+  different. (3) Calendario's Formato column (`#calendarBox`): the
+  shared `td.name` rule's own `min-width:150px` let the real Formato
+  text (up to 91 characters) wrap onto as many as 6 lines at 390px
+  (line-counted live via `Range.getClientRects()`, not guessed from
+  row height — 5/3/6 lines across the table's 3 real rows), inflating
+  that row far past its single-line neighbors and leaving them looking
+  stranded in dead vertical space. Scoped to `#calendarBox` (the
+  shared rule itself, used by every other table in the app, is
+  untouched) and widened — `300px` was tried first and still left 2 of
+  3 rows at 3 lines; `350px` gets all 3 down to at most 2 lines (2/2/2
+  at 320/390px, confirmed live, same line-counting method), with rows
+  now uniform (47px each) and no word ever clipped (`text-overflow` is
+  never set on this rule). `vertical-align:top` added on every cell in
+  this table (also `#calendarBox`-scoped) so a short single-line cell
+  sitting in the same row as a 2-line Formato cell sits flush with its
+  own row's top instead of floating centered in the now-taller row.
+  PHASE_52A's own scroll-fade/conditional-`tabIndex` mechanism
+  (`scrollWidth` grew from 633 to 833px at 390px, since the column is
+  now wider) re-verified working after the width change at every
+  checked width: correctly active (fade visible, `tabIndex=0`, focus
+  ring confirmed live) at 320/390px where the table still overflows,
+  correctly inactive at 1000/1280px where it now fits without
+  scrolling (unchanged from before this phase at those 2 widths — the
+  fix only mattered at the 2 narrow ones). Mid-phase incident, caught
+  by the test suite itself: the note-text edit broke a splice-anchor
+  in `tests/_web_text.py` (`"STORAGE+DATA"` segment group, anchored on
+  the OLD note's own closing text) — 29 tests across 7 unrelated-
+  looking files (`test_site_notices.py`, `test_route_slugs.py`,
+  `test_dob_format.py`, etc., all of which depend on the shared
+  `web_text()` reconstruction helper) failed simultaneously the moment
+  `pytest` ran, exactly the class of failure this session's own
+  "splice-anchor discipline" lesson (PHASE_41) warned about. Fixed by
+  updating that one anchor string to the new source's own exact ending
+  (template-literal backtick + the `${COVERAGE[0][1]}%` expression, in
+  place of the old literal `'...20%...'` string) — confirmed the fix by
+  re-running the full suite: 676 passed, 1 xfailed, 1 failed (back to
+  only the known pre-existing `test_web_text` byte-diff). Re-ran the
+  PHASE_51 scoped `#dqBox`/`#sourcesBox` tap-target check — still 0/0
+  at every width/theme. Re-ran the inventory tool (output to `/tmp`,
+  correct arg order) — confirmed 476, unchanged; `tests/harness/
+  inventory_main_HEAD.json` itself untouched, per this phase's own
+  explicit instruction, since zero new top-level declarations were
+  added. `tests/test_archivo_polish.py` updated (one PHASE_52A test
+  that asserted the OLD note text verbatim, now split into a narrower
+  "tile template is unchanged" check, since the note itself is this
+  phase's own approved change — 24 tests, net 0 change in count).
+  `tests/test_archivo_polish_b.py` added (15 tests): both new strings
+  present and the old ones gone, the dropped placeholder clauses
+  confirmed still reachable as `ASK_EXAMPLES` chips, the `aria-label`
+  confirmed untouched, the `20%` derivation and its source cell, the
+  Calendario `min-width`/`vertical-align` rules' own scoping and the
+  explicit absence of `text-overflow`, and a no-new-Spanish scan of
+  this phase's own CSS block. Verified live, Playwright/Chromium,
+  `serviceWorkers:'block'`, 320/390/1000/1280px, light+dark, before
+  (HEAD `cbe7109`) vs. after: zero console errors either state, zero
+  page-level horizontal overflow either state;
+  `/tmp/p52b_matrix.json`. Item 4 (report only, no implementation):
+  the task's own description of `#hubSearch` as "the Archivo landing
+  search" was corrected — it actually lives in `<section id="inicio">`
+  (confirmed directly against the DOM, not assumed), not `#archivo`.
+  Also found, before measuring, that its placeholder is not a single
+  fixed string — an existing fix (`init.js`'s `syncSearchPlaceholder()`,
+  dated PHASE_9) already shortens it below 640px width. At the real
+  shown text ("Prueba: cuándo murió Piculín", 28 characters): fits
+  fully at 390px, but hard-clips to 26/28 characters at 320px (losing
+  "ín") — the existing fix's own comment claims verification only at
+  360/390px, never 320px, and indeed doesn't fully hold there. Full
+  writeup in `/tmp/p52b_hubsearch.txt`. **Known limitation, accepted**:
+  in A la medida on phones, PHASE_52A's row-height fix means truncated
+  cells (Temporadas' Nota/Campeón/Subcampeón, Records' Contexto) are
+  readable in full only via "Descargar CSV" or "Copiar como tabla", not
+  by reading the cell in place without hovering — accepted for a
+  power-user tool, per owner instruction this phase. `web/index.html`
+  `?v=` hashes regenerated. Not committed, not pushed, pending owner
+  approval.

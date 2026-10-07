@@ -404,9 +404,13 @@ class TestDisputedCareerRowsNote:
         text = web_text()
         assert "const dobDisputed=DISPUTED_IDS&&DISPUTED_IDS.has(Number(id));" in text
         # J16 DOB_FORMAT (2026-09-24): b.date now goes through fmtArchiveDob() first; the attribution
-        # and city clauses are otherwise byte-identical to before that existed.
-        assert ("if(b.date) top.push('n. '+esc(fmtArchiveDob(b.date))+(dobDisputed?' (según bsnpr.com)':'')"
-                "+(b.city?' · '+esc(b.city):''));") in text
+        # clause is otherwise byte-identical to before that existed.
+        # PHASE_19 (2026-10-04): the real "jugador" page moved this out of an inline
+        # top.push() prose line into a labelled "Nacimiento" row in the Información
+        # panel (renderPlayerInfo(), tabs.js) -- same fmtArchiveDob()/dobDisputed
+        # composition, same real value, different shape of the line it feeds. City
+        # is now its own "Lugar" row (b.city||null), not concatenated onto the date.
+        assert "const dobStr=b.date?(fmtArchiveDob(b.date)+(dobDisputed?' (según bsnpr.com)':'')):null;" in text
 
     def test_disputed_ids_and_dispute_idx_are_built_alongside_dq_idx(self):
         text = web_text()

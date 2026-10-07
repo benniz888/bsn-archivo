@@ -29,6 +29,61 @@ const slug=s=>String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/
   .replace(/[«»"'.]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 const norm=s=>String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
   .replace(/[«»"'.]/g,'').trim();
+/* PHASE_36 (owner-approved, redesign-v2): norm()/slug() strip the «»""''
+   PUNCTUATION a quoted nickname sits in, never the nickname WORD itself --
+   "Mario «Quijote» Morales" and "Mario Morales" normalize to two different
+   strings (confirmed PHASE_35 survey: exactly 2 real PINDEX pairs affected,
+   Mario Morales and Federico "Fico" López, both the SAME real archive
+   person split into two curated cards by this gap). stripNick() drops the
+   whole quoted segment, guillemets or straight quotes, before norm()'s own
+   fold runs; nickKey() is the merge key built on top of it. Used ONLY as
+   buildPlayerIndex()'s own Map key (player.js) -- norm()/slug() themselves,
+   and every other one of their ~50 call sites (search/filter matching, URL
+   slugs, PXWALK lookups, ARIA labels), are completely unchanged. A few
+   lookups that search or route BY NAME still need to find a now-merged
+   entry under its old plain-name form too -- those call stripNick()/
+   nickKey() directly at their own call site (player.js's renderPlayerIndex
+   search filter, tabs.js's cmpFind() and the #jugadores/jugador/<slug>
+   route) rather than this function growing hidden side effects. */
+const stripNick=s=>String(s).replace(/«[^»]*»|"[^"]*"|'[^']*'/g,' ').replace(/\s+/g,' ').trim();
+const nickKey=s=>norm(stripNick(s));
+/* PHASE_40 (owner-approved, redesign-v2): Equipos' own computed lede ("Doce clubes
+   activos y veintiuno que ya no existen...") needs its counts spelled out in Spanish
+   words, not digits -- a tiny 0-39 lookup (falls back to the digit above that) rather
+   than a general number-to-words algorithm, since nothing in this archive ever counts
+   past the 30s. beforeNoun=true asks for the masculine-apocope form (veintiuno ->
+   veintiún) needed only when the number directly modifies a plural noun like "clubes"
+   (VIEW_DESC.equipos.desaparecidos, tabs.js) -- the lede itself uses the number as a
+   standalone pronoun ("y veintiuno que ya no existen"), where no apocope applies.
+   Placed here, before num/dash/pct, rather than after them: tests/_web_text.py
+   splices web/index.html back together using pct()'s own exact trailing text as the
+   anchor for the next original segment -- inserting after pct() breaks that anchor,
+   found live the first time this landed there (every test that calls web_text(),
+   not just the frozen byte-diff one, failed). */
+const NUM_WORDS_ES=['cero','uno','dos','tres','cuatro','cinco','seis','siete','ocho','nueve','diez',
+  'once','doce','trece','catorce','quince','dieciséis','diecisiete','dieciocho','diecinueve','veinte',
+  'veintiuno','veintidós','veintitrés','veinticuatro','veinticinco','veintiséis','veintisiete','veintiocho','veintinueve','treinta',
+  'treinta y uno','treinta y dos','treinta y tres','treinta y cuatro','treinta y cinco','treinta y seis','treinta y siete','treinta y ocho','treinta y nueve'];
+const NUM_WORDS_ES_APOCOPE={1:'un',21:'veintiún',31:'treinta y un'};
+const numWordsEs=(n,beforeNoun)=>(!Number.isInteger(n)||n<0||n>39) ? String(n)
+  : (beforeNoun && NUM_WORDS_ES_APOCOPE[n]) || NUM_WORDS_ES[n];
+/* PHASE_47 (owner-approved, redesign-v2): "1 títulos"/"1 disponibles"-shaped bugs --
+   a count glued to a hardcoded plural noun, same root cause this whole session has
+   already fixed for other hardcoded-count bugs (Equipos' own "veinte" defunct-club
+   count, PHASE_39/40). The house convention elsewhere in this codebase is an inline
+   `${n}word${n===1?'':'s'}` ternary (dozens of call sites, tabs.js/games.js) --
+   left alone, out of scope to retrofit wholesale. This is only for the specific
+   PHASE_47 fixes (HL's unit label, Draft's "disponible", Quiz's own clue counts),
+   where a real function reads better than three more inline ternaries, and where an
+   explicit pluralForm is needed anyway for a genuinely irregular case (tapón ->
+   tapones, not a plain +s). Takes the plural form explicitly rather than guessing
+   it (never "+s" by assumption) -- every call site already has its own real plural
+   string on hand (HL_SETS' own unit field, or a literal already used elsewhere).
+   Returns the WORD only, not "n word" -- HL's own count needs toLocaleString('es-PR')
+   thousands separators (a real career total, e.g. "6,178"), so the caller formats
+   and concatenates the number itself rather than this helper assuming raw String(n)
+   is always the right display form. */
+const plural=(n,singular,pluralForm)=>n===1?singular:(pluralForm||singular+'s');
 const num=v=>v==null?'—':(typeof v==='number'?v.toLocaleString('es-PR'):v);
 const dash=v=>(v==null||v==='')?'—':v;
 const pct=v=>v==null?'—':('.'+String(Math.round(v*1000)).padStart(3,'0'));
@@ -65,6 +120,22 @@ function showView(sec,view,opts){
   }
   VIEW_NOW[sec]=now;
   if(sec==='archivo'&&now==='calidad') openDQ();   /* index/data_quality.json is fetched only here and on a player page */
+  /* PHASE_19 (owner-approved, redesign-v2): the real "jugador" page (a detail-only
+     view, VIEW_MAP.jugadores's own detail:['jugador','#playerPage']) gets its own
+     back-link/avatar/name header (tabs.js buildPlayerHead()) instead of the
+     section's shared "JUGADORES" .phead/.subnav every other Jugadores view shows --
+     hidden only for this one view, restored for every other (buscar/lideres/salon/
+     .../comparar), same two elements every other section still always shows. */
+  if(sec==='jugadores'){
+    const ph=panel.querySelector(':scope > .phead'), sn=panel.querySelector(':scope > .subnav'), inPlayer=now==='jugador';
+    if(ph) ph.hidden=inPlayer;
+    /* .subnav{display:flex} in the stylesheet outranks the [hidden] attribute
+       (same real specificity-vs-[hidden] gotcha #pfField's own display toggle
+       already works around, player.js renderPlayerIndex()) -- found live, not
+       assumed: the pill row stayed visible with .hidden=true until this was
+       checked against a real screenshot. style.display, not the attribute. */
+    if(sn) sn.style.display = inPlayer ? 'none' : '';
+  }
   syncSubnav(sec,now);
   if(!opts.fromHash && !opts.noHash) setHash(now==='__landing'?sec:sec+'/'+now);
   if(!opts.noScroll){

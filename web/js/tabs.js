@@ -642,59 +642,206 @@ function crest(k,w=34,h=41){
   const img=USE_IMAGES?imgTry(CREST_DIR+k,CREST_EXT,'',f.name+' escudo'):'';
   return `<span class="crest" style="width:${w}px;height:${h}px">${crestSVG(k,w,h)}${img}</span>`;
 }
-/* illustrated-figures pass (Phase 1) — players: a position-varied silhouette,
-   never a likeness. Two vocabularies show up in real position data: Spanish
-   long-form (players_canonical.csv / archive JSON — Armador, Escolta, Alero,
-   Delantero, Centro, plus 4 slash-combo forms) and English short-form (the
-   curated HOF array — PG/SG/SF/PF/C/G/F/F-C). posPose() takes the primary
-   term before any "/" and maps both vocabularies to one of 3 poses; anything
-   it doesn't recognize (including the ~80% of players with no position on
-   record at all) falls back to null -> the plain neutral silhouette, same
-   shape this function always used. No pose is ever invented for a player
-   the archive doesn't have position data for. */
-function posPose(pos){
-  if(!pos) return null;
-  const p=String(pos).split('/')[0].trim();
-  const M={Armador:'guard',Escolta:'guard',PG:'guard',SG:'guard',G:'guard',
-    Alero:'forward',Delantero:'forward',SF:'forward',PF:'forward',F:'forward',
-    Centro:'center',C:'center'};
-  return M[p] || null;
+/* PHASE_21 (owner-approved, redesign-v2): player avatars -- direction "B,
+   Gradiente" from the /tmp avatar-directions exploration (PHASE_20 Part 2):
+   a diagonal club-color gradient with initials, no silhouette (the owner's
+   own instruction: "remove the silhouette/crescent figure entirely").
+   Real WCAG contrast, computed live via the actual relative-luminance
+   formula, not eyeballed -- portraitFill() below falls back from a gradient
+   to a flat, further-darkened fill for the two real clubs (Cangrejeros,
+   San Germán) whose bright orange would otherwise put white initials under
+   4.5:1, the exact pair PHASE_20's own printed ratios already flagged.
+   No tricolor on avatars (owner: reads as the French flag) -- the corner-
+   ring decoration (CSS, .pavatar::after) is the only accent. */
+function relLum(rgb){
+  const f=v=>{ v/=255; return v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4); };
+  return 0.2126*f(rgb[0])+0.7152*f(rgb[1])+0.0722*f(rgb[2]);
 }
-const POSE_ICON={
-  guard:(c1,c2)=>`<circle cx="45" cy="24" r="15" fill="${c1}" opacity=".9"/>
-    <path d="M20 118c1-24 10-34 25-34s24 10 25 34Z" fill="${c1}" opacity=".9"/>
-    <path d="M55 66c14-4 22-14 24-26" fill="none" stroke="${c2}" stroke-width="7" stroke-linecap="round"/>`,
-  center:(c1,c2)=>`<circle cx="45" cy="22" r="15" fill="${c1}" opacity=".9"/>
-    <path d="M12 118c0-28 14-40 33-40s33 12 33 40Z" fill="${c1}" opacity=".9"/>
-    <path d="M26 58c-8-10-10-20-8-30M64 58c8-10 10-20 8-30" fill="none" stroke="${c2}" stroke-width="7" stroke-linecap="round"/>`,
-  forward:(c1,c2)=>`<circle cx="45" cy="23" r="15" fill="${c1}" opacity=".9"/>
-    <path d="M17 118c1-26 12-36 28-36s27 10 28 36Z" fill="${c1}" opacity=".9"/>
-    <path d="M52 60c4-16 4-28-2-40" fill="none" stroke="${c2}" stroke-width="7" stroke-linecap="round"/>`,
-};
+function hexRgb(hex){ const h=String(hex).replace('#',''); return [0,2,4].map(i=>parseInt(h.slice(i,i+2),16)); }
+function contrastRatio(hexA,hexB){
+  const L1=relLum(hexRgb(hexA)), L2=relLum(hexRgb(hexB));
+  const [hi,lo]=L1>L2?[L1,L2]:[L2,L1]; return (hi+0.05)/(lo+0.05);
+}
+function darkenHex(hex,amt){
+  const [r,g,b]=hexRgb(hex); const d=v=>Math.max(0,Math.round(v*(1-amt)));
+  return '#'+[d(r),d(g),d(b)].map(v=>v.toString(16).padStart(2,'0')).join('');
+}
+function lightenHex(hex,amt){
+  const [r,g,b]=hexRgb(hex); const l=v=>Math.min(255,Math.round(v+(255-v)*amt));
+  return '#'+[l(r),l(g),l(b)].map(v=>v.toString(16).padStart(2,'0')).join('');
+}
+/* PHASE_22 (owner-approved, redesign-v2): Comparar's new head-to-head cards
+   put a real club color directly on TEXT (scoreboard numerals, the winning
+   value in a mirrored stat row) for the first time -- every earlier use of
+   a club hex (avatar fills, bar fills, accent bars, dots) was either white-
+   on-color or a non-text graphical element, 3:1, not 4.5:1. A raw club
+   color as small text can fail outright (a pale club color on a light
+   theme's white card, or a dark club color on a near-black dark card).
+   cmpTextSafe() nudges the real color toward white or black -- whichever
+   direction the real background needs -- only as far as it has to, real
+   contrast math each step, never a flat "always darken" assumption. A
+   CMP_FALLBACK token (the var(--azul)/var(--rojo)/var(--ok) literal
+   strings cmpColor() returns for an unclubbed compare slot) is already a
+   real, already-proven app token -- returned as-is, both directions,
+   since it isn't a hex this function can run math on and doesn't need to
+   be, it already flips correctly per theme on its own. */
+function cmpTextSafe(hex,bgHex){
+  if(!hex||!/^#/.test(hex)) return hex;
+  if(contrastRatio(hex,bgHex)>=4.5) return hex;
+  const bgDark=relLum(hexRgb(bgHex))<0.4;
+  let amt=0.12, adj=hex;
+  for(let i=0;i<12;i++){
+    adj=bgDark?lightenHex(hex,amt):darkenHex(hex,amt);
+    if(contrastRatio(adj,bgHex)>=4.5) break;
+    amt=Math.min(0.96,amt+0.1);
+  }
+  return adj;
+}
+/* one real color computed two ways -- against the real background hex of
+   each theme -- so a CSS [data-theme="light"] override (the same
+   mechanism every other theme-reactive value in this file already uses)
+   can pick the right one live, without re-running any builder on a theme
+   switch (drawCompare() only runs when the comparison itself changes, not
+   on every theme toggle -- a single baked-in color would go wrong the
+   moment someone switched themes without touching Comparar again).
+   bgDark/bgLight default to --card's own two real hexes; PHASE_22 Part 2's
+   mirrored rows live on --raise instead (#131E38 dark / #E1E9F5 light --
+   a real, if close, different background in each theme), so cmpBarRow()
+   passes those explicitly rather than reusing the --card-tuned default. */
+function cmpColorPair(hex,bgDark,bgLight){
+  return { dark: cmpTextSafe(hex,bgDark||'#0C1428'), light: cmpTextSafe(hex,bgLight||'#FFFFFF') };
+}
+/* PHASE_26 item 1: a WCAG 1.4.11 check (>=3:1, non-text) for a FILL sitting
+   directly against a neutral track/panel, not a text check -- a sibling of
+   cmpTextSafe()'s own loop (same lighten/darken-until-it-clears technique,
+   same keep-the-hue approach), checked against the worse of two real
+   backgrounds at once (the track itself, --line-soft, and the row panel
+   around it, --raise -- close but not identical in each theme) so the
+   result is genuinely safe against both, not just whichever one happened
+   to be passed in. Real measured failures before this existed: Fajardo
+   maroon #7A1F3D on dark --raise was 1.65:1; Mets de Guaynabo navy
+   #122E5C was 1.24:1 -- both well under 3:1, and both the user's own
+   reported examples. */
+function cmpFillSafe(hex,bgA,bgB,minRatio){
+  if(!hex||!/^#/.test(hex)) return hex;
+  minRatio=minRatio||3;
+  const worst=c=>Math.min(contrastRatio(c,bgA),contrastRatio(c,bgB));
+  if(worst(hex)>=minRatio) return hex;
+  const bgDark=relLum(hexRgb(bgA))<0.4;
+  let amt=0.12, adj=hex;
+  for(let i=0;i<12;i++){
+    adj=bgDark?lightenHex(hex,amt):darkenHex(hex,amt);
+    if(worst(adj)>=minRatio) break;
+    amt=Math.min(0.96,amt+0.1);
+  }
+  return adj;
+}
+/* Same dark/light-pair pattern as cmpColorPair() -- CSS (not a theme-
+   toggle re-render) picks the right one live. Only bars and the radar
+   polygon use this: the two places a fill sits directly against a track/
+   panel background with no border of its own. Avatar/top bar/legend keep
+   the plain assigned color (COLORS[i], PHASE_25) -- same hue, still the
+   same player identity -- since neither is the flat "fill against a bare
+   track" case this specific WCAG criterion is about. */
+function cmpFillPair(hex){
+  return { dark: cmpFillSafe(hex,'#131E38','#16203A',3), light: cmpFillSafe(hex,'#E1E9F5','#DDE6F3',3) };
+}
+/* PHASE_41 (owner-approved, redesign-v2): owner-reported bug -- the Cangrejeros
+   crest is invisible on its card in the dark theme, and the Vaqueros/Criollos/
+   Santeros crests' yellow outlines are faint in the light theme. crest()/
+   crestSVG() draw f.c1 (fill) and f.c2 (stroke/icon/text) directly, with no
+   backdrop of their own -- whatever card background sits behind them is
+   whatever it is. The inverse of cmpFillSafe() above: that one nudges a FILL
+   until it clears 3:1 against a FIXED background; this nudges a neutral
+   BACKDROP (starting from --raise's own real hex, the same "small plate under
+   an element" idea --card/--raise already serve app-wide) until BOTH of a
+   club's own fixed colors clear 3:1 against it, in each theme. Used only by
+   the new .crest-plate wrapper (Apoderados/Retirados), never by crest()
+   itself -- every other crest() call site (Equipos tiles, Historia bars,
+   showTeam()) is untouched. */
+function crestPlate(k){
+  const f=F[k];
+  /* crestSVG()'s shield is one closed path: fill=c1 (gradient), stroke=c2,
+     stroke-width 3 -- an SVG stroke straddles its path's own edge, so the
+     OUTERMOST pixels touching whatever sits behind the shield are entirely
+     c2's own color; c1 (the fill) is enclosed strictly inside that stroke
+     band and never directly borders the plate at all. The crest's own
+     internal legibility (icon/abbr on the fill) is a c1-vs-c2 question,
+     already fixed by the crest's own original color choice, nothing to do
+     with the plate. So only c2 has to clear 3:1 against the plate -- this
+     matches every one of the 4 owner-reported cases exactly (Cangrejeros'
+     near-black stroke on the dark card, Vaqueros/Criollos/Santeros' gold
+     stroke on the light card all failed on c2, not c1 -- checked live
+     before this existed).
+     contrastRatio() is monotonic moving away from a color's own luminance
+     in either direction, so the single backdrop that maximizes contrast
+     against any one fixed color is always pure black or pure white --
+     confirmed by an earlier, slower version of this function that scanned
+     the full 0-255 grey ramp per club and converged on exactly one or the
+     other every time, never anything in between. c2 doesn't change per
+     theme, so neither does its ideal backdrop -- the plate is a dedicated
+     contrast-insurance chip, not a decoration that has to lean dark/light
+     with the surrounding card, so the SAME single plate color is correct
+     for both themes -- returned as one hex, not a {dark,light} pair the
+     way cmpColorPair()/cmpFillPair() return (those two genuinely differ by
+     theme; this one, checked live, never does). Full 12-club x 2-theme
+     numbers printed by PHASE_41/41B's own report, not assumed. */
+  const pure=contrastRatio(f.c2,'#000000')>=contrastRatio(f.c2,'#FFFFFF')?'#000000':'#FFFFFF';
+  /* PHASE_41B (owner-approved, redesign-v2): pure black/white glares,
+     especially the white plates against the dark theme's own near-black
+     page. #0B1020 (near-black, close to --card's own dark hex) and #F4F6FA
+     (off-white, close to --card's own light hex) read as part of the app's
+     real palette instead of a stark print-poster cutout. Tries the soft
+     tone on whichever side (dark/light) the pure check already picked --
+     keeps the same direction, just softer -- and only falls back to the
+     actual pure color for a club where softening itself would drop that
+     club's own real c2 below 3:1 (checked per club below, not assumed to
+     always hold just because it held for most). */
+  const soft=pure==='#000000'?'#0B1020':'#F4F6FA';
+  return contrastRatio(f.c2,soft)>=3?soft:pure;
+}
+/* no known club (archive-only with no linked team) -- a literal hex, not a
+   theme token: the avatar fill has to stay fixed regardless of the site's
+   own light/dark toggle, same as every real club color does. Checked live
+   against white text: 12.65:1, comfortably clears 4.5:1 -- never implies a
+   real club. */
+const PORTRAIT_NEUTRAL='#15335C';
+function portraitFill(hex){
+  const base=(hex&&/^#/.test(hex))?hex:PORTRAIT_NEUTRAL;
+  if(contrastRatio('#FFFFFF',base)>=4.5) return {bg:`linear-gradient(135deg,${base},${darkenHex(base,0.42)})`,fg:'#FFFFFF'};
+  let amt=0.42, dark=darkenHex(base,amt);
+  while(contrastRatio('#FFFFFF',dark)<4.5 && amt<0.85){ amt+=0.08; dark=darkenHex(base,amt); }
+  return {bg:dark,fg:'#FFFFFF'};
+}
+/* given name + first surname -- "Surname(s), Given(s)" (the archive's own
+   format: "Llovet Ayala, Francisco" -> given "Francisco" + surname "Llovet"
+   -> "FL") vs. "Given [Middle] Surname" (curated display names: "Georgie
+   Torres" -> "GT"; a 3-word name takes the FIRST and LAST word, not the
+   first two, so a middle name is never mistaken for the surname). */
+function playerInitials(name){
+  const clean=String(name).replace(/[«»]/g,'').trim();
+  const comma=clean.indexOf(',');
+  if(comma>-1){
+    const given=(clean.slice(comma+1).trim().split(/\s+/)[0]||'');
+    const sur=(clean.slice(0,comma).trim().split(/\s+/)[0]||'');
+    return ((given[0]||'')+(sur[0]||'')).toUpperCase();
+  }
+  const words=clean.split(/\s+/).filter(Boolean);
+  if(!words.length) return '';
+  if(words.length===1) return words[0][0].toUpperCase();
+  return (words[0][0]+words[words.length-1][0]).toUpperCase();
+}
 function portrait(name,c1,c2,w=54,h=66,pos){
   const id='pt'+slug(name);
-  const ini=name.replace(/[«»]/g,'').split(/\s+/).filter(Boolean).slice(0,2).map(s=>s[0]).join('');
-  const pose=posPose(pos);
-  /* the circle/body opacity used to be .55 — low enough that its visible
-     color is actually a blend with whatever's behind it (the page ground,
-     which flips light/dark with the theme), while the initials drawn on
-     top use a fixed team hex (c2). A team whose c2 happens to be dark
-     (San Germán #141414, Santurce #191919, ...) reads fine over the light-
-     theme blend and goes dark-on-dark over the dark-theme blend. Only the
-     shapes the text actually sits on need to be near-opaque to stop
-     depending on theme; the backdrop rect stays translucent for the
-     layered look, since no text sits on it. */
-  const body=pose ? POSE_ICON[pose](c1,c2)
-    : `<rect x="18" y="8" width="54" height="66" rx="5" fill="${c1}" opacity=".22"/>
-       <circle cx="45" cy="33" r="12" fill="${c1}" opacity=".92"/>
-       <path d="M24 74c2-14 10-20 21-20s19 6 21 20Z" fill="${c1}" opacity=".92"/>`;
-  const ty=pose ? 29 : 38;
-  const svg=`<svg width="${w}" height="${h}" viewBox="0 0 90 118" aria-hidden="true">
-    ${body}
-    <text x="45" y="${ty}" text-anchor="middle" font-family="Inter,sans-serif" font-weight="800"
-      font-size="15" fill="${c2}">${esc(ini)}</text></svg>`;
+  const {bg,fg}=portraitFill(c1);
+  const ini=playerInitials(name);
+  const fs=Math.round(Math.min(w,h)*0.36);
   const img=USE_IMAGES?imgTry(PLAYER_DIR+slug(name),PLAYER_EXT,'',name):'';
-  return `<span class="crest" style="width:${w}px;height:${h}px" id="${id}">${svg}${img}</span>`;
+  /* aria-hidden, unchanged from before this phase -- purely decorative, the
+     real accessible name is always the adjacent heading/button text, never
+     this element alone. */
+  return `<span class="crest pavatar" style="width:${w}px;height:${h}px;background:${bg}" id="${id}" aria-hidden="true">`
+    + `<span class="pini" style="font-size:${fs}px;color:${fg}">${esc(ini)}</span>${img}</span>`;
 }
 
 /* ============================================================
@@ -754,7 +901,18 @@ const TABS=[
   ['historia','Historia','M4 5h16M4 12h16M4 19h10'],
   ['jugadores','Jugadores','M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4 21c0-4 4-6 8-6s8 2 8 6'],
   ['equipos','Equipos','M4 5h6v6H4ZM14 5h6v6h-6ZM4 13h6v6H4ZM14 13h6v6h-6'],
-  ['juega','Juega','M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18ZM3 12h18M12 3c3 4 3 14 0 18M12 3c-3 4-3 14 0 18'],
+  /* PHASE_9 item 3b (owner-approved, redesign-v2): the old circle+
+     meridian-lines path (M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18ZM3 12h18M12
+     3c3 4 3 14 0 18M12 3c-3 4-3 14 0 18) was visually indistinguishable
+     from a plain globe icon, confirmed live and zoomed in the redesign-v2
+     PHASE_9 report -- and shared the same circle-based construction as
+     the rail logo right above it, so the two read as near-duplicates in
+     the same rail. Replaced with a game-controller glyph: a rounded-rect
+     body, a "+" d-pad, and two face-button dots (the two "h.01" segments
+     are zero-length lines with round linecap, the standard technique for
+     a filled dot inside a single stroked path). Nothing circular left --
+     can't be confused with the logo or a globe again. */
+  ['juega','Juega','M7 8h10a4 4 0 0 1 4 4v2a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4v-2a4 4 0 0 1 4-4zM8 11v4M6 13h4M16 12.2h.01M18.2 14.4h.01'],
   ['archivo','Archivo','M6 3h9l4 4v14H6ZM15 3v4h4M9 12h7M9 16h7']
 ];
 const NAV=TABS.slice(1);                 /* desktop top strip — inicio is the wordmark */
@@ -763,23 +921,44 @@ const BOTTOM=TABS.map(t=>t[0]);          /* mobile bottom bar — all 6 */
 const PANELS=[...TABS.map(t=>t[0]),'perfil'];
 let CURRENT='inicio';
 
+/* PHASE_2_REDESIGN step 7 (owner-approved, redesign-v2): rail items, same TABS/NAV
+   data the bottombar loop just below already uses (same icon paths, so the rail and
+   the phone bar always agree visually) -- NAV's own tuples already carry the icon
+   path as their 3rd element, so no TABS.find() lookup is needed here the way the
+   bottombar loop needs one. role="tab"/aria-selected/aria-controls kept exactly as
+   nav.tabs had them; aria-haspopup/aria-expanded dropped (the mega-menu they served
+   is retired -- verified first, live, that every one of its destinations already has
+   an equivalent subnav pill once you're on that section's page). Roving tabindex
+   (0 on the active tab, -1 on the rest) is set here at build time and kept in sync
+   on every later activation by _showPanel()'s own NAV loop, not duplicated here. */
 function buildNav(){
-  const s=$('#tabscroll'); s.innerHTML='';
-  NAV.forEach(([id,label])=>{
+  const s=$('#railNav'); s.innerHTML='';
+  /* PHASE_9 item 1c (owner-approved, redesign-v2): Inicio isn't in NAV
+     (it's the rail's own logo, not a tab -- see the comment above NAV's
+     definition), so on Inicio no rail tab matches CURRENT and every one
+     would get tabIndex=-1, making the whole tablist unreachable by Tab.
+     Falls back to the first rail tab whenever CURRENT isn't one of NAV's
+     own ids -- same fallback applied in _showPanel()'s own NAV loop. */
+  const railFallbackFirst=!NAV.some(([navId])=>navId===CURRENT);
+  NAV.forEach(([id,label,d])=>{
     const b=el('a');
     b.href='#'+id;
-    b.id='tab-'+id; b.textContent=label; b.setAttribute('role','tab');
+    b.id='tab-'+id; b.setAttribute('role','tab');
     b.setAttribute('aria-selected',id===CURRENT?'true':'false');
     b.setAttribute('aria-controls',id);
-    b.setAttribute('aria-haspopup','true'); b.setAttribute('aria-expanded','false');
+    b.setAttribute('aria-label',label);
+    /* PHASE_9 item 1b (owner-approved, redesign-v2): .raillabel is
+       display:none at the icon-only rail tier (860-1119px, main.css), so
+       without an explicit aria-label every tab -- active or not -- had an
+       empty accessible name there (confirmed via the real accessibility
+       tree, not assumed). Reuses the SAME `label` string already used for
+       .raillabel's own visible text -- no new copy. */
+    b.tabIndex=(id===CURRENT||(railFallbackFirst&&id===NAV[0][0]))?0:-1;
+    b.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="raillabel">${esc(label)}</span>`;
     b.onclick=(e)=>{
       if(e.ctrlKey||e.metaKey||e.shiftKey||e.button!==0) return;   /* let the browser open a new tab/window natively */
-      e.preventDefault(); closeMega(); showTab(id);
+      e.preventDefault(); showTab(id);
     };
-    b.onkeydown=(e)=>{ if(e.key===' '){ e.preventDefault(); closeMega(); showTab(id); } };
-    b.onmouseenter=()=>openMega(id);
-    b.onmouseleave=scheduleClose;
-    b.onfocus=()=>openMega(id);
     s.appendChild(b);
   });
   const bb=$('#bottombar'); bb.innerHTML='';
@@ -796,6 +975,25 @@ function buildNav(){
     b.onkeydown=(e)=>{ if(e.key===' '){ e.preventDefault(); showTab(id); } };
     bb.appendChild(b);
   });
+}
+/* PHASE_2_REDESIGN step 7: rail keyboard nav, same manual-activation model as
+   Phase 4's showPlayerTab()/playerTabKeydown() (ArrowUp/ArrowDown move focus without
+   activating, wrapping at both ends; Enter/Space activates the focused tab) -- a
+   vertical tablist uses Up/Down per WAI-ARIA APG, not Left/Right. Wired via
+   onkeydown="railKeydown(event)" on #rail itself (index.html), same delegation
+   pattern the player tabs use. */
+function railKeydown(e){
+  const order=NAV.map(([id])=>'tab-'+id);
+  const i=order.indexOf(e.target.id); if(i<0) return;
+  if(e.key==='ArrowDown'||e.key==='ArrowUp'){
+    e.preventDefault();
+    const next=order[(i+(e.key==='ArrowDown'?1:-1)+order.length)%order.length];
+    order.forEach(t=>{ const el=document.getElementById(t); if(el) el.tabIndex=-1; });
+    const nt=document.getElementById(next); if(nt){ nt.tabIndex=0; nt.focus(); }
+  }else if(e.key==='Enter'||e.key===' '){
+    e.preventDefault();
+    showTab(e.target.id.replace(/^tab-/,''));
+  }
 }
 
 /* ============================================================
@@ -834,11 +1032,12 @@ const NAV_MENU={
     ['Referencia',[['Glosario','glosario']]]
   ],feat:'gap'}
 };
-let MEGA_TAB=null;
+/* PHASE_2_REDESIGN step 7: MEGA_TAB retired along with the mega-menu it tracked
+   (the hover-dropdown that used to set it) -- megaGo()'s own callers are now only
+   megaFeat()'s buttons on a section's own landing page (paintLandingFeats(), still
+   very much in use), so CURRENT is always the right "from" section. */
 function megaGo(target){
-  const from=MEGA_TAB||CURRENT;
-  closeMega();
-  let s=from, v=target;
+  let s=CURRENT, v=target;
   if(target.indexOf('/')>-1){ const parts=target.split('/'); s=parts[0]; v=parts[1]; }
   showView(s,v);
   if(s==='archivo'&&v==='preguntar'){ const i=$('#askInput'); if(i) setTimeout(()=>i.focus(),50); }
@@ -866,7 +1065,7 @@ function megaFeat(k){
       <div class="ft" style="margin-top:2px">Georgie Torres ⇄ Mario Morales</div>
       ${mv?`<div class="mf-viz">${mv}</div>`:''}
       <div class="fd">Dos o tres jugadores lado a lado — las casillas vacías son huecos del archivo, no ceros.</div>
-      <button class="btn" style="padding:6px 12px;font-size:12px" onclick="closeMega();cmpPreset('Georgie Torres','Mario Morales')">Abrir</button>`;
+      <button class="btn" style="padding:6px 12px;font-size:12px" onclick="cmpPreset('Georgie Torres','Mario Morales')">Abrir</button>`;
   }
   if(k==='myteam'){
     const p=prof(), f=p.club&&F[p.club]?F[p.club]:null;
@@ -876,7 +1075,7 @@ function megaFeat(k){
         ${f.won.length?`<div class="mf-viz" style="color:${f.c1}">${titleComb(f,{w:180,h:22,gap:1})}</div>`:''}
         <div class="fd">${f.won.length?f.won.length+(f.won.length===1?' título':' títulos'):'sin títulos'} · el archivo se reordena a su alrededor</div>`
       : `<div class="fd" style="margin-top:2px">Escoge un club y el archivo se reordena a su alrededor — tu equipo primero en cada tabla.</div>`}
-      <button class="btn" style="padding:6px 12px;font-size:12px" onclick="closeMega();showTab('perfil')">${f?'Cambiar':'Escoger club'}</button>`;
+      <button class="btn" style="padding:6px 12px;font-size:12px" onclick="showTab('perfil')">${f?'Cambiar':'Escoger club'}</button>`;
   }
   if(k==='daily'){
     const n=(typeof puzzleNo==='function')?puzzleNo():'—';
@@ -907,37 +1106,14 @@ function paintLandingFeats(){
   });
 }
 
-let megaCloseT=null;
-function scheduleClose(){ clearTimeout(megaCloseT); megaCloseT=setTimeout(closeMega,140); }
-function cancelClose(){ clearTimeout(megaCloseT); }
-function closeMega(){
-  cancelClose();
-  const p=$('#megaPanel'); if(p){ p.classList.remove('open'); }
-  MEGA_TAB=null;
-  NAV.forEach(([t])=>{ const b=$('#tab-'+t); if(b) b.setAttribute('aria-expanded','false'); });
-}
-function openMega(id){
-  cancelClose();
-  const menu=NAV_MENU[id], p=$('#megaPanel'); if(!menu||!p) return;
-  if(matchMedia('(max-width:859px)').matches) return;
-  MEGA_TAB=id;
-  const cols=menu.cols.map(([h,items])=>
-    `<div class="mega-col"><h4>${esc(h)}</h4>${items.map(([l,tg])=>{
-      const href='#'+(tg.indexOf('/')>-1?tg:id+'/'+tg);
-      const call=`megaGo(${JSON.stringify(tg).replace(/"/g,'&quot;')})`;
-      return `<a href="${href}" onclick="if(event.ctrlKey||event.metaKey||event.shiftKey||event.button!==0)return;event.preventDefault();${call}" onkeydown="if(event.key===' '){event.preventDefault();${call}}">${esc(l)}</a>`;
-    }).join('')}</div>`).join('');
-  p.innerHTML=`<div class="mega-inner">
-    <div class="mega-cols">${cols}</div>
-    <div class="mega-feat">${megaFeat(menu.feat)}</div>
-  </div>`;
-  p.classList.add('open');
-  p.onmouseenter=cancelClose;
-  p.onmouseleave=scheduleClose;
-  NAV.forEach(([t])=>{ const b=$('#tab-'+t); if(b) b.setAttribute('aria-expanded', t===id?'true':'false'); });
-}
-document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeMega(); });
-window.addEventListener('scroll',()=>{ if($('#megaPanel')&&$('#megaPanel').classList.contains('open')) closeMega(); },{passive:true});
+/* PHASE_2_REDESIGN step 7: the mega-menu's own open/close machinery
+   (openMega/closeMega/scheduleClose/cancelClose/megaCloseT, the #megaPanel element,
+   the Escape-key and scroll-close listeners) is retired along with it -- verified
+   first, live, that every destination it offered already has an equivalent subnav
+   pill once you're on that section's page (redesign-v2 PHASE 7 report). megaFeat()/
+   megaGo()/NAV_MENU/paintLandingFeats() all stay: the featured block they build is
+   still very much in use, just on each section's own landing page, never through a
+   hover dropdown. */
 
 /* toggle the <section> panels + nav aria; returns whether the section
    actually changed. The public entry is showTab(); deep links and the
@@ -950,9 +1126,13 @@ function _showPanel(id,noScroll){
   if(shown && changed){   /* re-trigger the enter animation */
     shown.classList.remove('panel-enter'); void shown.offsetWidth; shown.classList.add('panel-enter');
   }
+  /* PHASE_9 item 1c (owner-approved, redesign-v2): same fallback as
+     buildNav() -- id may be 'inicio', which isn't in NAV, so nothing
+     would match and the whole rail tablist would go unreachable by Tab. */
+  const railFallbackFirst=!NAV.some(([navId])=>navId===id);
   NAV.forEach(([t])=>{
     const btn=document.getElementById('tab-'+t);
-    if(btn) btn.setAttribute('aria-selected',t===id?'true':'false');
+    if(btn){ btn.setAttribute('aria-selected',t===id?'true':'false'); btn.tabIndex=(t===id||(railFallbackFirst&&t===NAV[0][0]))?0:-1; }
   });
   document.querySelectorAll('#bottombar button').forEach((b,i)=>{
     b.setAttribute('aria-selected',BOTTOM[i]===id?'true':'false');
@@ -979,7 +1159,23 @@ let VIEW_NOW={};
 let HASH_ECHO=null;
 function syncSubnav(sec,view){
   const nav=document.querySelector('#'+sec+' .subnav'); if(!nav) return;
-  Array.from(nav.children).forEach(b=>b.setAttribute('aria-current',String(b.dataset.view===view)));
+  let active=null;
+  Array.from(nav.children).forEach(b=>{
+    const on=b.dataset.view===view;
+    b.setAttribute('aria-current',String(on));
+    if(on) active=b;
+  });
+  /* PHASE_49: keep the active pill in view on every change (initial load,
+     deep-link/hash entry, back/forward) -- scrollLeft only, never
+     scrollIntoView() (that can move the whole page vertically too). */
+  if(active && nav.scrollWidth>nav.clientWidth){
+    const target=Math.max(0,Math.min(
+      active.offsetLeft-(nav.clientWidth-active.offsetWidth)/2,
+      nav.scrollWidth-nav.clientWidth
+    ));
+    const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    nav.scrollTo({left:target,behavior:reduced?'auto':'smooth'});
+  }
 }
 
 /* ============================================================
@@ -1082,18 +1278,31 @@ function todayISO(){
   const d=new Date();
   return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 }
+/* PHASE_9 item 3 (owner-approved, redesign-v2): hero rebuild toward the
+   approved mockup's headline/dek/stat-row layout. h/p keep the exact same
+   three-way season-state text they always had (dropping p was considered
+   and rejected: A4 in the redesign-v2 PHASE_9 report confirmed the
+   March-August season-shape fact does NOT appear anywhere else on Inicio,
+   only in Archivo's #calShape -- so it stays, now a small caption under
+   .hero-status instead of the old .herotext p). The old typed
+   "21 de marzo de 2027" is gone -- fmtLongDate(SEASON_STATE.nextEstimate)
+   (web/js/helpers.js, already used for player bio dates) computes it for
+   real, so a future SEASON_STATE update can't silently desync the two.
+   .hero-headline is now the page's own <h1> (buildHub()'s own <h1
+   class="hubhead"> is demoted to <h2> in the same commit, below, so
+   Inicio keeps exactly one h1 like every other panel -- see the
+   redesign-v2 PHASE_9 report, item A5). */
 function buildHero(){
   const t=todayISO();
   const since=daysBetween(SEASON_STATE.lastGame,t);
   const until=daysBetween(t,SEASON_STATE.nextEstimate);
   const f=F[SEASON_STATE.champ];
-  const inSeason = until<=0 && since<0;
   let n,u,h,p;
   if(since<0){ n=Math.abs(since); u='días para el juego decisivo'; h='La temporada sigue viva'; p='El archivo se actualiza cuando termine.'; }
   else if(until>0){
     n=until; u=until===1?'día para la 98.ª':'días para la 98.ª temporada';
     h='Temporada muerta, día '+since;
-    p='El BSN corre de finales de marzo a agosto. Los otros siete meses no hay marcador que mirar — hay 97 temporadas que revisar. Para eso es esto.';
+    p='El BSN corre de finales de marzo a agosto. Los otros siete meses no hay marcador que mirar — hay '+YEARS.length+' temporadas que revisar. Para eso es esto.';
   } else {
     n=since; u='días desde el último juego'; h='Debería estar rodando';
     p='La fecha estimada de apertura ya pasó y la liga no ha anunciado la real.';
@@ -1103,36 +1312,58 @@ function buildHero(){
   const backToBack = f.won.indexOf(2025)>-1 && Math.max.apply(null,f.won)===2026;
   const mostEver = FKEYS.every(k=>F[k].won.length<=f.won.length);
   const t2 = 'título '+SEASON_STATE.title+' · '+(backToBack?'bicampeonato':(mostEver?'el máximo de la liga':'récord del club'));
+  /* Stat 3: computed, not hardcoded to Bayamón -- today's real leader,
+     but this stays whoever actually leads if the data ever changes. */
+  const leaderKey = FKEYS.reduce((best,k)=>F[k].won.length>F[best].won.length?k:best, FKEYS[0]);
+  const leader = F[leaderKey];
   $('#heroBox').innerHTML=`
   <div class="hero">
     <div class="ed-eye">BSN · ${esc(eye)}</div>
-    <div class="herotop">
-      <div class="clock"><div class="n">${n}</div><div class="u">${esc(u)}</div></div>
-      <div class="herotext">
-        <h2>${esc(h)}</h2>
-        <p>${esc(p)}</p>
-        <p class="dim" style="font-size:var(--fs-2xs);margin-top:var(--sp-2)">Apertura estimada: 21 de marzo de 2027 · ${esc(SEASON_STATE.nextLabel)}</p>
-      </div>
+    <h1 class="hero-headline">${YEARS.length} temporadas <span class="hero-headline-full">de baloncesto puertorriqueño,</span> documentadas</h1>
+    <p class="hero-dek">Campeones, jugadores y récords desde 1930, con las fuentes y los huecos a la vista.</p>
+    <p class="hero-status">${esc(h)} <span class="dim">· Apertura estimada: ${esc(fmtLongDate(SEASON_STATE.nextEstimate))} · ${esc(SEASON_STATE.nextLabel)}</span></p>
+    <p class="hero-note">${esc(p)}</p>
+    <div class="hero-stats">
+      <div class="hero-stat tri-block tri-block-azul"><div class="ed-stat">${n}</div><div class="u">${esc(u)}</div></div>
+      <div class="hero-stat"><div class="ed-stat">${YEARS.length}</div><div class="u">temporadas, de ${YEARS[0]} a ${YEARS[YEARS.length-1]}</div></div>
+      <div class="hero-stat tri-block tri-block-rojo"><div class="ed-stat">${leader.won.length}</div><div class="u">títulos de ${esc(leader.name)}, el club más ganador</div></div>
     </div>
     <div class="herofoot">
       <div class="trophy">${crest(SEASON_STATE.champ,30,36)}
         <div><div class="t1">${esc(f.name)} — campeón 2026</div>
-             <div class="t2">${esc(t2)}</div></div>
-        <span class="herospark" style="color:${f.c1}">${titleComb(f,{w:150,h:20,gap:1})}</span></div>
-      <div style="flex:1"></div>
-      <button class="btn" onclick="showView('historia','cinta')">Ver la cinta</button>
+             <div class="t2">${esc(t2)}</div></div></div>
+      <div class="heroaction">
+        <span class="herospark" style="color:${f.c1}">${titleComb(f,{w:150,h:20,gap:1})}</span>
+        <button class="btn" onclick="showView('historia','cinta')">Ver la cinta</button>
+      </div>
     </div>
   </div>`;
 }
 
+/* PHASE_12 (owner-approved, redesign-v2): finds a real F key by its own real F[k].name --
+   FIVE_2026's own club field is a NAME string, not a key (data.js), and for Harrell it's
+   literally the conflict sentence itself ("San Germán según RealGM..."), which matches no
+   real club -- returns undefined there, so the caller can skip the crest rather than call
+   crest() on a bad key (crest() itself already no-ops on an unknown key, but skipping is
+   more honest than rendering an empty shield for a deliberately-ambiguous row). */
+function clubKeyByName(name){ return FKEYS.find(k=>F[k].name===name); }
 function buildFinalBrava(){
   const host=$('#finalBrava');
   const c=F[FINALS_2026.champ], r=F[FINALS_2026.ru];
+  /* PHASE_12 (owner-approved, redesign-v2): the real .series/.seriesrow overview line (item
+     6 doesn't ask to change this specific piece, and it already works) is kept exactly as
+     before, above the NEW .series-track (item 6's own ask: a real 7-game boxscore as score
+     cards) -- both shown, nothing dropped. */
   let h=`<div class="series">
     <div class="seriesrow win">${crest(FINALS_2026.champ,30,36)}<span class="nm">${esc(c.name)}</span><span class="sc">4</span></div>
     <div class="seriesrow lose">${crest(FINALS_2026.ru,30,36)}<span class="nm">${esc(r.name)}</span><span class="sc">3</span></div>
   </div>
-  <div class="good">MVP de la final: <b>${esc(FINALS_2026.mvp)}</b>. ${esc(FINALS_2026.note)}</div>`;
+  <div class="good">MVP de la final: <b>${esc(FINALS_2026.mvp)}</b>. ${esc(FINALS_2026.note)}</div>
+  <div class="series-track">${FINALS_2026.games.map(g=>{
+    const [n,,,,hs,as]=g;
+    const win = (hs>as) === (g[2]===FINALS_2026.champ);
+    return `<div class="gcard${win?' win':''}"><div class="gn">G${n}</div><div class="gs mono">${hs}–${as}</div></div>`;
+  }).join('')}</div>`;
   host.innerHTML=h;
 
   const tbl=el('div'); host.appendChild(tbl);
@@ -1153,25 +1384,48 @@ function buildFinalBrava(){
   buildTable(st,[{label:'Ronda'},{label:'Ganó'},{label:'Perdió'},{label:'Serie'},{label:'Detalle',wide:true}],
     SEMIS_2026.map(s=>[s[0],F[s[1]].name,F[s[2]].name,s[3],s[4]]),{file:'semis_2026',sort:null});
 
+  /* PHASE_12 (owner-approved, redesign-v2): .awards-grid (item 6) -- same real AWARDS_2026
+     rows, same 4 real fields (premio/jugador/club/nota); club resolved to a real crest()
+     when it names a real franchise (most rows), a bare "—" av box when it doesn't
+     (Dirigente/Novato/Defensor/Sexto/Excelencia rows whose club field is literally "—" in
+     the real data) -- never a fabricated crest. The real nota text is kept, appended as a
+     4th line only when that row actually has one (several real rows have an empty ''). */
   const aw=el('div');
-  aw.innerHTML='<h4 class="sub">Premios 2026</h4>';
+  aw.innerHTML='<h4 class="sub">Premios 2026</h4><div class="awards-grid">'+
+    AWARDS_2026.map(a=>{
+      const ak=clubKeyByName(a[2]);
+      return `<div class="award">${ak?crest(ak,28,32):'<span class="av" style="width:28px;height:28px;display:inline-block;flex:none"></span>'}
+        <div class="ab"><div class="al">${esc(a[0])}</div><div class="an">${esc(a[1])}</div>
+        <div class="ac">${esc(a[2])}${a[3]?' · '+esc(a[3]):''}</div></div></div>`;
+    }).join('')+'</div>';
   host.appendChild(aw);
-  const at=el('div'); aw.appendChild(at);
-  buildTable(at,[{label:'Premio'},{label:'Jugador',wide:true},{label:'Club'},{label:'Nota',wide:true}],
-    AWARDS_2026.map(a=>[a[0],a[1],a[2],a[3]]),{file:'premios_2026',sort:null});
 
+  /* PHASE_12 (owner-approved, redesign-v2): .allstar-row/.chip (item 6) -- same real
+     FIVE_2026 rows. Harrell's own row is the real, unresolved source conflict (data.js) --
+     clubKeyByName() returns undefined for it (its "club" field is the conflict sentence
+     itself, not a name), so that one chip renders without a crest rather than guessing
+     which of the two clubs to show; every other real chip gets its real crest(). The
+     Harrell sentence right below is copied verbatim from the real, currently-live string
+     -- not reworded -- wrapped in .conflict-note. */
   const q=el('div');
-  q.innerHTML='<h4 class="sub">Quinteto Ideal</h4><div class="chips">'+
-    FIVE_2026.map(p=>`<span class="tag blue">${esc(p[0])} · ${esc(p[1])} · ${esc(p[2])}</span>`).join('')+'</div>'+
-    '<div class="warn">Montrezl Harrell aparece con dos clubes distintos según la fuente. RealGM lo pone en San Germán, Noticel en Caguas. El archivo no escoge por ti.</div>';
+  q.innerHTML='<h4 class="sub">Quinteto Ideal</h4><div class="allstar-row">'+
+    FIVE_2026.map(p=>{
+      const ck=clubKeyByName(p[2]);
+      return `<span class="chip">${ck?crest(ck,22,26):''}<span class="cn">${esc(p[0])}</span><span class="cc">${esc(p[1])} · ${esc(p[2])}</span></span>`;
+    }).join('')+'</div>'+
+    `<div class="conflict-note"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>Montrezl Harrell aparece con dos clubes distintos según la fuente. RealGM lo pone en San Germán, Noticel en Caguas. El archivo no escoge por ti.</div>`;
   host.appendChild(q);
 
+  /* PHASE_12 (owner-approved, redesign-v2): .news-mini/.newscard (item 6) -- same real
+     6-row NEWS array, all 3 real fields kept (the mockup's own sample newscard only shows
+     a headline; this app's own date/category tag and one-line summary are real content,
+     not dropped to match the simpler sample). */
   const nw=el('div');
   nw.innerHTML='<h4 class="sub">Lo último del cierre</h4>'+
-    '<div class="cards g2">'+NEWS.map(n=>`<div class="card">
-      <div class="dim" style="font-size:11px;letter-spacing:.07em;font-weight:600">${esc(n[0])}</div>
-      <div style="font-weight:700;margin-top:4px;font-size:15px">${esc(n[1])}</div>
-      <div class="muted" style="font-size:13px;margin-top:4px">${esc(n[2])}</div></div>`).join('')+'</div>'+
+    '<div class="news-mini">'+NEWS.map(n=>`<div class="newscard">
+      <div class="nk">${esc(n[0])}</div>
+      <div class="nt">${esc(n[1])}</div>
+      <div class="muted" style="font-size:var(--fs-2xs);margin-top:4px">${esc(n[2])}</div></div>`).join('')+'</div>'+
     '<p class="note">Titulares vistos en la app oficial del BSN el 2 de septiembre de 2026. Solo los títulos, resumidos — el texto de los artículos es de sus medios.</p>';
   host.appendChild(nw);
 }
@@ -1203,7 +1457,10 @@ function buildStandings2026(){
   n.innerHTML='La línea azul marca el corte de cuartos de final. DIF es juegos detrás del primero, calculado aquí — la app oficial no lo publica. '+
     'Bayamón y Caguas terminaron 22-12 empatados; Bayamón se quedó el primer lugar del Grupo A.';
   host.appendChild(n);
-  const dl=el('button','btn'); dl.style.marginTop='var(--sp-2_5)'; dl.textContent='Descargar posiciones 2026 (CSV)';
+  /* PHASE_12 (owner-approved, redesign-v2): item 6 -- "just restyle the button/table."
+     Real crest() was already wired here before this phase; the cutoff-row class (.cut) and
+     DIF computation just above are untouched. Only the export button's class changed. */
+  const dl=el('button','exportbtn2'); dl.textContent='Descargar posiciones 2026 (CSV)';
   dl.onclick=()=>{
     const rows=[];
     ['A','B'].forEach(g=>STAND2026[g].forEach((r,i)=>rows.push([g,i+1,F[r[0]].name,r[1],r[2],r[3],r[4],r[5]])));
@@ -1212,16 +1469,27 @@ function buildStandings2026(){
   host.appendChild(dl);
 }
 
+/* PHASE_12 (owner-approved, redesign-v2): item 6 -- "reuse Premios' .lead-list styling
+   from Historia" (PHASE_11, main.css -- the exact same classes). Same real LEAD2026 rows,
+   same real per-row "expandido"/"la app abrevia el nombre" computation (r[3] truthy or
+   not), same real crest() (r[1] is already a real club key here, unlike FIVE_2026's own
+   club-NAME field). Dropped: buildTable()'s own CSV-export affordance -- a lead-list isn't
+   a buildTable() output, the same real tradeoff PHASE_11 already made for Historia's own
+   Premios scoring/MVP lists, for the same reason. */
 function buildLeaders2026(){
   const host=$('#leaders2026');
-  const rows=LEAD2026.map((r,i)=>[i+1,r[3]||r[0],F[r[1]].name,r[2],r[3]?'expandido':'la app abrevia el nombre']);
-  host.innerHTML='';
-  buildTable(host,[
-    {label:'#'},{label:'Jugador',wide:true},{label:'Club'},{label:'PPJ',num:true},{label:'Nombre',}
-  ],rows,{file:'lideres_2026',sort:3,dir:-1,note:'Fuente: app oficial del BSN, 2 sep 2026.'});
-  const n=el('p','note');
-  n.textContent='La app de la liga imprime solo la inicial del nombre. Dos de los cinco se pudieron confirmar contra la prensa; los otros tres quedan como aparecen, sin adivinar.';
-  host.appendChild(n);
+  host.innerHTML='<div class="lead-list">'+LEAD2026.map((r,i)=>{
+    const name=r[3]||r[0], expanded=!!r[3];
+    return `<div class="lead-row">
+      <div class="yrchip mono">#${i+1}</div>
+      <div class="who" style="display:flex;align-items:center;gap:var(--sp-2_5)">${crest(r[1],28,32)}
+        <div style="min-width:0"><div class="pn">${esc(name)}${!expanded?' <span class="muted" style="cursor:help;font-weight:400" title="La app oficial del BSN imprime solo la inicial del nombre">†</span>':''}</div>
+        <div class="cl">${esc(F[r[1]].name)}</div></div>
+      </div>
+      <div class="val"><div class="n mono">${r[2]}</div><div class="u">ppj</div></div>
+    </div>`;
+  }).join('')+'</div>'
+    +'<p class="scrollnote">Fuente: app oficial del BSN, 2 sep 2026. La app imprime solo la inicial del nombre. Dos de los cinco se pudieron confirmar contra la prensa; los otros tres quedan como aparecen, sin adivinar.</p>';
 }
 
 function buildClubPicker(){
@@ -1243,6 +1511,20 @@ function drawClubPill(){
   const k=ST.get('club');
   $('#clubPillName').textContent = k ? F[k].name.split(' de ')[0] : 'Mi club';
   $('#clubPillCrest').innerHTML = k ? crest(k,20,24) : '';
+  /* PHASE_9 item 1 (owner-approved, redesign-v2): rail's own Mi club
+     button (>=860px, header.top's clubpill is gone there) mirrors the
+     same crest/name, same "Mi club" fallback string, no new copy. */
+  const rn=$('#railClubName'); if(rn) rn.textContent = k ? F[k].name.split(' de ')[0] : 'Mi club';
+  const rc=$('#railClubCrest'); if(rc) rc.innerHTML = k ? crest(k,20,24) : '';
+  /* #railClub carries no static aria-label (matching #clubPill, which has
+     none either -- both rely on their own visible text for the accessible
+     name). But .raillabel is display:none at the icon-only rail tier
+     (860-1119px, main.css), unlike #clubPill's text which is never
+     hidden -- so #railClub alone needs an explicit, dynamically-kept-in-
+     sync aria-label to still have a real accessible name at that width.
+     Same live-updated-attribute pattern applyTheme() already uses for
+     #railTheme, just triggered from here instead. */
+  const rb=$('#railClub'); if(rb) rb.setAttribute('aria-label', k ? F[k].name.split(' de ')[0] : 'Mi club');
 }
 function buildClubCard(){
   const host=$('#clubCard');
@@ -1331,14 +1613,22 @@ function buildCalendar(){
   <p class="note">La apertura de 2027 es un estimado de este archivo. La liga no ha
     anunciado fechas.</p>`;
 
-  $('#calNext').innerHTML='<div class="timeline">'+CAL_MILESTONES.map(m=>{
+  /* PHASE_12 (owner-approved, redesign-v2): .milestone/.mbadge treatment (item 6) -- one
+     real row per real CAL_MILESTONES entry (4 today, not the mockup's own hardcoded
+     3-row sample), real CAL_KIND label/class per entry via MBADGE_CLS below (a pure ascii
+     alias for CAL_KIND's own 'patrón' key -- CSS class names with an accented character
+     need escaping this file's own convention doesn't use anywhere else, so the accent-free
+     alias is the safer choice, not a data change: CAL_KIND itself, and its label text, are
+     untouched). */
+  const MBADGE_CLS={confirmado:'confirmado',proyectado:'proyectado','patrón':'patron'};
+  $('#calNext').innerHTML='<div class="cal-milestones">'+CAL_MILESTONES.map(m=>{
     const k=CAL_KIND[m.k]||CAL_KIND['patrón'];
     const when=m.d?fmtLongDate(m.d):m.m;
     const past=m.d&&m.d<today;
-    return `<div class="tw">
-      <div class="td">${esc(when)}${past?' · ya pasó':''}</div>
-      <div class="tt2">${esc(m.t)} <span class="${k.cls}">${k.label}</span></div>
-      <div class="tb">${esc(m.b)}</div>
+    return `<div class="milestone"><span class="dot"></span>
+      <div class="m-body"><div class="m-t">${esc(m.t)}</div>
+        <div class="m-d">${esc(when)}${past?' · ya pasó':''} — ${esc(m.b)}</div></div>
+      <span class="mbadge ${MBADGE_CLS[m.k]||'patron'}">${esc(k.label)}</span>
     </div>`;
   }).join('')+'</div>';
 
@@ -1355,6 +1645,40 @@ function buildCalendar(){
     {label:'Año',num:true},{label:'Temp.'},{label:'Inicio'},{label:'Fin reg.'},{label:'Playoffs'},
     {label:'J',num:true},{label:'Equipos',num:true},{label:'Formato',wide:true}
   ],CALENDAR.map(c=>[c.y,c.n,c.start,c.regEnd,c.po,c.games,c.teams,c.fmt]),{file:'calendario',sort:0,dir:-1});
+  /* PHASE_52A (owner-approved, redesign-v2): at 390px this table (FIN REG./PLAYOFFS
+     included) is wider than the viewport -- buildTable()'s shared .tblwrap already
+     scrolls (overflow:auto, confirmed live: scrollWidth 633 vs clientWidth 356 at
+     390px, not a hard clip), but nothing signals that, so the columns are reachable
+     in principle and undiscoverable in practice -- "make every column reachable" and
+     "add a scroll affordance" are really the same fix. Scoped to #calendarBox
+     specifically (not a buildTable()/.tblwrap change, which is shared by every other
+     table in the app) via this inline block, not a new top-level function, so this
+     phase adds zero new declarations to the frozen inventory baseline. The fade is a
+     CSS ::after (empty generated content -- never announced to a screen reader, no
+     aria-hidden needed) toggled only while scrollLeft hasn't reached the end; tabIndex
+     is 0 only while the wrapper actually overflows, never fixed. ResizeObserver, not a
+     window 'resize' listener: this whole block runs once, eagerly, from the BOOT list
+     (web/index.html), while the view is still [hidden] -- a hidden element's
+     clientWidth/scrollWidth are both 0, so a plain call below (or a 'resize' listener,
+     which only fires on an actual viewport resize) would wrongly and permanently
+     conclude "not scrollable". ResizeObserver also fires the moment a hidden
+     element's box goes from 0x0 to its real size, i.e. exactly when the view actually
+     becomes visible -- found live, not assumed: a plain call at boot measured 0/0 and
+     left tabIndex at -1 even on a table that, once visible, does scroll. */
+  {
+    const wrap=document.querySelector('#calendarBox .tblwrap');
+    if(wrap){
+      const update=()=>{
+        const scrollable=wrap.scrollWidth>wrap.clientWidth+1;
+        const atEnd=wrap.scrollLeft+wrap.clientWidth>=wrap.scrollWidth-2;
+        wrap.classList.toggle('has-more-right',scrollable&&!atEnd);
+        wrap.tabIndex=scrollable?0:-1;
+      };
+      wrap.addEventListener('scroll',update);
+      new ResizeObserver(update).observe(wrap);
+      update();
+    }
+  }
 
   /* Stated, not hidden. An empty section with no explanation reads as a
      bug; a section that says what is missing and where it would come
@@ -1371,67 +1695,112 @@ function buildCalendar(){
       un calendario de partidos verificado, va aquí.</p>`;
 }
 
+/* PHASE_12 (owner-approved, redesign-v2): .channels-grid/.chnl (item 7) -- same real 8-row
+   CHANNELS array, all 3 real fields kept (platform label, handle/name, one-line
+   description) -- the mockup's own .chnl sample is a single-line icon+label only, but
+   dropping the real platform tag and description to match it would be losing real content
+   this phase's own opening line forbids. A plain circular-check icon stands in for every
+   row (CHANNELS has no per-platform icon set in the real data to draw from, and inventing
+   8 brand icons -- YouTube, Instagram, TikTok, X, Facebook, both app stores -- isn't a
+   real asset this pass has; flagged in this phase's own report as a deliberate, minimal
+   generic icon rather than fabricated brand marks). */
 function buildChannels(){
   const host=$('#channels');
-  host.innerHTML='<div class="cards g3">'+CHANNELS.map(c=>
-    `<a class="card" href="${esc(c[2])}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:block">
-      <div class="dim" style="font-size:var(--fs-3xs);letter-spacing:.07em;font-weight:600">${esc(c[0]).toUpperCase()}</div>
-      <div style="font-weight:700;margin-top:3px;color:var(--azul-hi)">${esc(c[1])}</div>
-      <div class="muted" style="font-size:var(--fs-2xs);margin-top:3px">${esc(c[3])}</div></a>`).join('')+'</div>';
+  host.innerHTML='<div class="channels-grid">'+CHANNELS.map(c=>
+    `<a class="chnl" href="${esc(c[2])}" target="_blank" rel="noopener" style="align-items:flex-start;flex-direction:column;gap:2px">
+      <span style="display:flex;align-items:center;gap:var(--sp-2_5)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>
+      <span class="dim" style="font-size:var(--fs-3xs);letter-spacing:.07em;font-weight:600">${esc(c[0]).toUpperCase()}</span></span>
+      <span style="color:var(--azul-hi)">${esc(c[1])}</span>
+      <span class="muted" style="font-size:var(--fs-2xs);font-weight:400">${esc(c[3])}</span></a>`).join('')+'</div>';
 }
 /* ============================================================
    HISTORIA
    ============================================================ */
+/* PHASE_11 (owner-approved, redesign-v2): one real streak-walk, shared by buildRibbon()
+   (which years to color as "dynasty") and buildDynasties() (the streak cards themselves) --
+   the exact same run-detection buildDynasties() already did, factored out so both callers
+   compute it identically rather than duplicating the walk. Same rule as before: a run is
+   2+ consecutive seasons won by the same club; single titles are not a "dynasty." */
+function historiaStreaks(){
+  const runs=[]; let cur=null;
+  YEARS.forEach(y=>{
+    const k=champOf[y];
+    if(k && cur && cur.k===k && y===cur.end+1){ cur.end=y; cur.n++; }
+    else { if(cur&&cur.n>1) runs.push(cur); cur = k?{k,start:y,end:y,n:1}:null; }
+  });
+  if(cur&&cur.n>1) runs.push(cur);
+  runs.sort((a,b)=>b.n-a.n||a.start-b.start);
+  return runs;
+}
+/* PHASE_11 (owner-approved, redesign-v2): flat, always-44px ribbon (item 3/7 -- fixes the
+   27.6x40px phone touch-target bug the survey found; the old fixed-10-column decade grid
+   could never clear 44px at phone width, so the whole row/decade grouping is gone, not just
+   the CSS). Every one of the 97 real years (YEARS, not a hardcoded list) gets its own cell,
+   labeled by year. Colors 3 real states: a documented champion that's part of a real 2+
+   dynasty streak (historiaStreaks() above, not hardcoded), a documented champion that isn't,
+   and no champion on record -- matching the new 3-item legend exactly. */
 function buildRibbon(){
-  const host=$('#ribbon'); host.innerHTML='';
-  for(let d=1930;d<=2020;d+=10){
-    const row=el('div','decade');
-    const lab=el('div','decade-label'); lab.textContent=d+'s'; row.appendChild(lab);
-    const cells=el('div','cells');
-    for(let i=0;i<10;i++){
-      const y=d+i;
-      if(y>LAST){ const sp=el('span'); cells.appendChild(sp); continue; }
-      const k=champOf[y];
-      const b=el('button','cell'+(k?'':' empty'));
-      if(k){
-        b.style.background=`linear-gradient(160deg,${F[k].c1},${F[k].c1} 62%,${F[k].c2} 63%)`;
-        b.setAttribute('aria-label',y+' — '+F[k].name);
-        b.onclick=()=>showSeason(y,b);
-      }else{
-        b.setAttribute('aria-label',y+' — sin campeón registrado');
-        b.disabled=false; b.classList.add('empty');
-        b.onclick=()=>showSeason(y,b);
-      }
-      b.dataset.y=y;
-      cells.appendChild(b);
-    }
-    row.appendChild(cells); host.appendChild(row);
-  }
+  const host=$('#ribbon'); if(!host) return;
+  /* Computed fresh on every call, not cached at module-parse time: YEARS/champOf are
+     defined later, in index.html's own inline script (loaded after this file) -- a
+     top-level const evaluated here would hit the exact "used before defined" failure
+     already documented and fixed elsewhere in this file (BOOT/GRID_CLUBS). 97 years is
+     cheap enough that a fresh walk per call needs no caching. */
+  const dynastyYears=new Set();
+  historiaStreaks().forEach(r=>{ for(let y=r.start;y<=r.end;y++) dynastyYears.add(y); });
+  host.innerHTML=YEARS.map(y=>{
+    const k=champOf[y];
+    const cls=k?(dynastyYears.has(y)?'dynasty':'champ'):'';
+    const label=k?(y+' — '+F[k].name):(y+' — sin campeón registrado');
+    return `<button type="button" class="cell ${cls}" data-y="${y}" aria-label="${esc(label)}" onclick="showSeason(${y},this)">${y}</button>`;
+  }).join('');
+  /* PHASE_11 (owner-approved, redesign-v2): the readout used to sit on a static "Toca una
+     temporada" placeholder until a real click -- the mockup's own script always renders a
+     real year by default (2026 there). Shows the real most recent season (LAST, currently
+     2026) here instead, via the pure renderReadout() below -- NOT showSeason(), which also
+     navigates/sets the URL hash; that would rewrite the address bar on every page load
+     regardless of which tab is actually open, a real side effect this avoids. */
+  renderReadout(LAST);
+  loadSeasonExtra(LAST);
+  const b=document.querySelector('.cell[data-y="'+LAST+'"]'); if(b) b.classList.add('active');
 }
 function showSeason(y,btn){
   showView('historia','cinta',{noScroll:true,noHash:true});   /* the ribbon + readout live here */
   setHash('historia/temporada/'+y);
-  document.querySelectorAll('.cell.sel').forEach(c=>c.classList.remove('sel'));
-  if(btn) btn.classList.add('sel');
-  else { const b=document.querySelector('.cell[data-y="'+y+'"]'); if(b) b.classList.add('sel'); }
+  document.querySelectorAll('.cell.active').forEach(c=>c.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  else { const b=document.querySelector('.cell[data-y="'+y+'"]'); if(b) b.classList.add('active'); }
+  renderReadout(y);
+  loadSeasonExtra(y);
+}
+function renderReadout(y){
   const k=champOf[y], r=ruOf[y];
-  const host=$('#readout');
+  const host=$('#readout'); if(!host) return;
+  /* PHASE_11 (owner-approved, redesign-v2): the mockup's own per-row "Fuente única" badge
+     has no real backing data -- NOTES only carries 5 real footnotes (1942/1945/1953/2024/
+     2026), not a source-confidence field for every one of the 97 seasons, so a "single
+     source" pill is never shown here on a year that doesn't actually have one; that would
+     be inventing a claim this app doesn't verify. Only a real NOTES[y] entry gets a badge
+     (labeled with its own real caveat text), and only a genuinely missing champion gets the
+     "missing" badge -- both real, both already-existing data, nothing new fabricated. */
+  const noteBadge = NOTES[y] ? `<span class="hbadge note" title="${esc(NOTES[y])}">Nota del archivo</span>` : '';
   if(!k){
-    host.innerHTML=`<div class="yr">${y}</div><div>
-      <div class="win">Sin campeón registrado</div>
-      <div class="lose">Esta temporada es un hueco del archivo, no un blanco.</div>
-      <div class="meta">${esc(NOTES[y]||'Ninguna fuente consultada nombra un campeón para este año.')}</div></div>`;
+    host.innerHTML=`<div class="yr mono">${y}</div>
+      <div class="champ-line">Campeón no documentado<span class="hbadge missing">Dato incompleto</span></div>
+      <div class="vs-line">${esc(NOTES[y]||'Ninguna fuente consultada nombra un campeón para este año.')}</div>`;
   }else{
     const f=F[k];
-    host.innerHTML=`<div class="yr" style="color:${f.c1}">${y}</div>
-      <div style="min-width:0">
-        <div class="win">${esc(f.name)}</div>
-        <div class="lose">${r?'venció a '+esc(F[r].name):'subcampeón no registrado'}</div>
-        <div class="meta">Título ${f.won.indexOf(y)+1} de ${f.won.length} para el club${NOTES[y]?' · '+esc(NOTES[y]):''}</div>
-        <div class="btnrow"><button class="btn" onclick="showTeam('${k}')" style="padding:5px 11px;font-size:var(--fs-2xs)">Ver ${esc(f.name.split(' de ')[0])}</button></div>
-      </div>`;
+    /* PHASE_2_REDESIGN step 2 (kept): a solid flag-color block needs a text color verified
+       against ITS OWN background, so the year numeral is never tinted to the champion's own
+       arbitrary club color -- unrelated to this pass, left exactly as that phase set it. */
+    const sc=SCORING.find(s=>s[0]===y);
+    host.innerHTML=`<div class="yr mono">${y}</div>
+      <div class="champ-line">${esc(f.name)}${noteBadge}</div>
+      <div class="vs-line">${r?'venció a '+esc(F[r].name)+' en la final':'subcampeón no registrado'} · título ${f.won.indexOf(y)+1} de ${f.won.length} para el club</div>
+      <div class="btnrow" style="margin-top:var(--sp-3)"><button class="btn" onclick="showTeam('${k}')" style="padding:5px 11px;font-size:var(--fs-2xs)">Ver ${esc(f.name.split(' de ')[0])}</button></div>
+      ${sc?`<div class="xlink">Campeón de anotación esa temporada: <a href="#" onclick="showView('historia','premios');return false">${esc(sc[1])} (${esc(sc[2])}) →</a></div>`
+        :`<div class="xlink" style="color:var(--ink-3)">Sin campeón de anotación registrado para ${y} — el archivo de premios cubre ${SCORING[0][0]}–${SCORING[SCORING.length-1][0]}.</div>`}`;
   }
-  loadSeasonExtra(y);
 }
 
 /* Per-season detail from web/data/seasons/<y>.json — scoring champion,
@@ -1491,32 +1860,53 @@ function buildTitleStats(){
     <div><div class="n">${F[most].won.length}</div><div class="l">títulos de ${esc(F[most].name.split(' de ')[0])}, el máximo</div></div>
     <div><div class="n">${noTitle}</div><div class="l">clubes activos sin título</div></div>`;
 }
+/* PHASE_11 (owner-approved, redesign-v2): medal rank badges (top 3) + the real crest()
+   helper per franchise, on the exact same 20-franchise/title-count computation this
+   function already did (FKEYS.filter(k=>F[k].won.length), sorted descending) -- only the
+   markup changed, not the data. New .bar-row/.rk/.who/.pn/.track/.fill/.v classes, NOT the
+   shared bars()/.barrow helper (that one is also Jugadores' own leadBars() -- left
+   untouched, out of scope this pass). */
 function buildTitleBars(){
-  const rows=FKEYS.filter(k=>F[k].won.length)
-    .sort((a,b)=>F[b].won.length-F[a].won.length)
-    .map(k=>[F[k].name.split(' de ')[0],F[k].won.length,F[k].c1]);
-  bars($('#titleBars'),rows);
+  const rows=FKEYS.filter(k=>F[k].won.length).sort((a,b)=>F[b].won.length-F[a].won.length);
+  const max=F[rows[0]].won.length;
+  $('#titleBars').innerHTML=rows.map((k,i)=>{
+    const f=F[k], rk=i<3?' rk'+(i+1):'';
+    return `<div class="bar-row${rk}">
+      <div class="rk">${i+1}</div>
+      <div class="who">${crest(k,32,38)}
+        <div class="wrap"><div class="pn">${esc(f.name)}</div>
+          <div class="track"><div class="fill" style="width:${f.won.length/max*100}%"></div></div></div>
+      </div>
+      <div class="v mono">${f.won.length}</div>
+    </div>`;
+  }).join('')
+    +`<p class="scrollnote">${rows.length} franquicias con al menos un título, de ${FKEYS.length} en total.</p>`;
 }
+/* PHASE_11 (owner-approved, redesign-v2): streak cards with real crest + a per-year
+   mini-strip -- same historiaStreaks() walk buildRibbon() uses above (not a second,
+   possibly-drifting computation), re-rendered into the mockup's own card visual. */
 function buildDynasties(){
-  /* A run is consecutive seasons won by the same club. Only runs of
-     two or more are interesting; they are what the ribbon shows. */
-  const runs=[]; let cur=null;
-  YEARS.forEach(y=>{
-    const k=champOf[y];
-    if(k && cur && cur.k===k && y===cur.end+1){ cur.end=y; cur.n++; }
-    else { if(cur&&cur.n>1) runs.push(cur); cur = k?{k,start:y,end:y,n:1}:null; }
-  });
-  if(cur&&cur.n>1) runs.push(cur);
-  runs.sort((a,b)=>b.n-a.n||a.start-b.start);
-  const host=$('#dynasties');
-  host.innerHTML='<div class="cards g3">'+runs.slice(0,9).map(r=>`
-    <div class="card" style="display:flex;gap:var(--sp-3);align-items:center">
-      ${crest(r.k,32,38)}
-      <div><div style="font-family:inherit;font-weight:800;font-size:26px;line-height:1">${r.n} seguidos</div>
-      <div style="font-weight:600;font-size:var(--fs-xs)">${esc(F[r.k].name.split(' de ')[0])}</div>
-      <div class="dim" style="font-size:var(--fs-2xs)">${r.start}–${r.end}</div></div></div>`).join('')+'</div>'+
-    `<p class="note">${runs.length} rachas de dos o más títulos consecutivos en 97 temporadas. Bayamón 2025–26 es la primera desde Ponce en 2014–15.</p>`;
+  const runs=historiaStreaks();
+  const host=$('#dynasties'); if(!host) return;
+  host.innerHTML='<div class="streaks">'+runs.slice(0,9).map((r,i)=>{
+    const years=[]; for(let y=r.start;y<=r.end;y++) years.push(y);
+    return `<div class="streak-card${i<3?' top':''}">
+      <div class="rankbadge">${r.n}×</div>
+      <div class="body">${crest(r.k,32,38)}
+        <div><div class="who">${esc(F[r.k].name)}</div>
+        <div class="yrs">${r.start}–${r.end} · ${r.n} títulos seguidos</div></div>
+      </div>
+      <div class="mini">${years.map(y=>`<i title="${y}">${String(y).slice(2)}</i>`).join('')}</div>
+    </div>`;
+  }).join('')+'</div>'+
+    `<p class="scrollnote">${runs.length} rachas de dos o más títulos consecutivos en 97 temporadas. Bayamón 2025–26 es la primera desde Ponce en 2014–15.</p>`;
 }
+/* PHASE_11 (owner-approved, redesign-v2): visual polish only -- row/column computation
+   (every club with a title vs. every club with a runner-up finish, item 11's own "keep
+   real data/interactivity untouched," NOT reduced to the mockup's top-8 sample) is
+   byte-identical to before. Only the cell markup changed: a solid weighted color
+   (>=3 red, else blue, matching the mockup's own .cellv threshold) instead of a pill,
+   plus the new .matrix CSS's zebra striping (main.css, no markup needed for that part). */
 function buildMatrix(){
   const active=FKEYS.filter(k=>F[k].won.length||F[k].ru.length);
   const pairs={};
@@ -1529,7 +1919,7 @@ function buildMatrix(){
     h+=`<tr><td class="lbl">${esc(F[rk].abbr)} <span class="dim">${esc(F[rk].name.split(' de ')[0])}</span></td>`;
     cols.forEach(ck=>{
       const n=pairs[rk+'|'+ck]||0;
-      h+=`<td>${n?`<span class="pill w">${n}</span>`:'<span class="dim">·</span>'}</td>`;
+      h+=n?`<td class="cellv ${n>=3?'hi':'lo'}">${n}</td>`:'<td class="zero">·</td>';
     });
     h+='</tr>';
   });
@@ -1582,10 +1972,39 @@ function tile(k){
     ${crest(k,40,48)}<span class="tn">${esc(f.name.split(' de ')[0])}</span>
     <span class="tt">${f.won.length?f.won.length+'×':'—'}</span></button>`;
 }
+/* PHASE_42 (owner-approved, redesign-v2): Desaparecidas-only, a separate function from
+   tile() rather than an optional flag on it -- tile() stays byte-for-byte what Activos
+   already renders (task's own "do not change... the Activos tiles"), no shared branch
+   that could regress it later. Fixes a real disambiguation gap: tile()'s own name line
+   is f.name.split(' de ')[0], the mascot word only ("Gallitos de la UPR" and "Gallitos
+   de Isabela" both render as just "Gallitos") -- the one real collision among the 21
+   defunct clubs, confirmed by scanning every short name before writing this. City +
+   active years, both straight from F, nothing hardcoded per club -- so this stays
+   correct if F's founded/end ever change (hydrate(), init.js, can overwrite them from
+   franchises.json). founded/end are both "first season"/"last season" is a judgment
+   call, not a literal F field name, but matches how showTeam()'s own phero-sub already
+   phrases the exact same two fields ("fundado {founded} ... desaparecido en {end}") --
+   not a new interpretation invented here. */
+function tileGone(k){
+  const f=F[k];
+  const bits=[];
+  if(f.city) bits.push(esc(f.city));
+  const start=f.founded, end=f.end;
+  let yrs='';
+  if(start!=null&&end!=null) yrs = start===end ? String(start) : start+'–'+end;
+  else if(start!=null) yrs=String(start);
+  else if(end!=null) yrs=String(end);
+  if(yrs) bits.push(yrs);
+  const sub=bits.join(' · ');
+  return `<button class="teamtile" onclick="showTeam('${k}')" aria-pressed="false">
+    ${crest(k,40,48)}<span class="tn">${esc(f.name.split(' de ')[0])}</span>
+    ${sub?`<span class="tts">${sub}</span>`:''}
+    <span class="tt">${f.won.length?f.won.length+'×':'—'}</span></button>`;
+}
 function buildTiles(){
   $('#tilesActive').innerHTML=ACTIVE.slice().sort((a,b)=>F[a].name.localeCompare(F[b].name,'es')).map(tile).join('');
   $('#tilesGone').innerHTML=FKEYS.filter(k=>!F[k].active)
-    .sort((a,b)=>F[a].name.localeCompare(F[b].name,'es')).map(tile).join('');
+    .sort((a,b)=>F[a].name.localeCompare(F[b].name,'es')).map(tileGone).join('');
 }
 function showTeam(k){
   showView('equipos','equipo',{noScroll:true,noHash:true});
@@ -1707,7 +2126,21 @@ function sfAssignZones(players){
 function sfInitials(name){
   return name.replace(/[«»]/g,'').split(/\s+/).filter(Boolean).slice(0,2).map(s=>s[0]).join('').toUpperCase();
 }
+/* PHASE_42 (owner-approved, redesign-v2): owner-reported collision/clipping on this
+   court at 1000px -- SVG <text> has no built-in wrap/truncate, so a long name (e.g.
+   "Alvarado Sierra, Omar J.", "Mojica Izquierdo, Javier") just kept drawing past its
+   own backing rect, bleeding into whatever sat nearby. A hard character budget (fit to
+   the real rect width now used for every zone, not the old 84/92px binary split) plus
+   an ellipsis is the fix; the full name is never actually lost -- kept in a <title> on
+   the group so a screen reader or a hover tooltip still gets it whenever truncation
+   actually fires. Layout only: still the same 5 real players, same real zone/position
+   data, same ppg -- sfAssignZones()/the data this draws from is untouched. */
+function sfFit(name,maxChars){
+  if(name.length<=maxChars) return {text:name,truncated:false};
+  return {text:name.slice(0,maxChars-1).trimEnd()+'…',truncated:true};
+}
 function sfCourtSvg(f,players){
+  const w=96;
   const groups=sfAssignZones(players).map(p=>{
     const [cx,cy]=SF_ZONE[p.zone];
     const gap=p.bsnpr_id==null;
@@ -1715,14 +2148,14 @@ function sfCourtSvg(f,players){
     const posLabel=gap?'sin confirmar':esc(p.position||p.zone);
     const posColor=gap?'var(--rojo)':'var(--ink-3)';
     const dash=gap?' stroke="var(--court-line)" stroke-width="1.5" stroke-dasharray="3,2"':'';
-    const w=p.name.length>15?92:84;
+    const fit=sfFit(p.name,17);
     return `<g>
+      ${fit.truncated?`<title>${esc(p.name)}</title>`:''}
       <circle cx="${cx}" cy="${cy}" r="16" fill="${fill}"${dash}/>
       <text x="${cx}" y="${cy+5}" text-anchor="middle" font-family="Inter,sans-serif" font-weight="800" font-size="11" fill="${ink}">${esc(sfInitials(p.name))}</text>
-      <rect x="${cx-w/2}" y="${cy+20}" width="${w}" height="40" rx="6" fill="var(--deep)" opacity=".94"/>
-      <text x="${cx}" y="${cy+33}" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700" font-size="9.5" fill="var(--ink)">${esc(p.name)}</text>
-      <text x="${cx}" y="${cy+45}" text-anchor="middle" font-family="Inter,sans-serif" font-weight="${gap?700:400}" font-size="8" fill="${posColor}">${posLabel}</text>
-      <text x="${cx}" y="${cy+57}" text-anchor="middle" font-family="Inter,sans-serif" font-weight="800" font-size="9" fill="var(--flag-ink)">${p.ppg} pts</text>
+      <rect x="${cx-w/2}" y="${cy+20}" width="${w}" height="32" rx="6" fill="var(--deep)" opacity=".94"/>
+      <text x="${cx}" y="${cy+33}" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700" font-size="9" fill="var(--ink)">${esc(fit.text)}</text>
+      <text x="${cx}" y="${cy+45}" text-anchor="middle" font-family="Inter,sans-serif" font-weight="${gap?700:400}" font-size="7.5" fill="${posColor}">${posLabel} · <tspan fill="var(--flag-ink)" font-weight="800">${p.ppg} pts</tspan></text>
     </g>`;
   }).join('');
   return `<svg viewBox="0 0 300 260" aria-hidden="true">
@@ -1786,17 +2219,204 @@ let MVP_ID=null, MVP_ALSO=null;
    "lo que falta" / coverage / MVP-warning copy from the file:// baseline
    (champions-only) to the deployed reality; MANIFEST.counts feeds the numbers. */
 let MANIFEST=null, DATA_TEXT=false;
+/* PHASE_2_REDESIGN step 4 (owner-approved, redesign-v2): Resumen/Temporadas tabs for the
+   player page. Pure show/hide -- #playerDetail and #playerExtra are never re-rendered or
+   destroyed on a tab switch, only [hidden] toggles here, so anything already inside them
+   (season-compare checkboxes, the /season deep-link card) survives a switch away and back
+   untouched (verified live, not assumed -- see the redesign-v2 PHASE 4 report). Both tabs
+   are always in the DOM (index.html, never built/rebuilt in JS) -- a player who lacks
+   Temporadas-side data still gets that tab, showing loadPlayerExtra()'s own real degraded
+   state ("sin ficha vinculada", empty season table, ...), not a hidden/missing tab.
+   Manual-activation ARIA tablist (WAI-ARIA APG): arrow keys move focus between tabs
+   without activating; Enter/Space activates the focused one. */
+/* PHASE_19 (owner-approved, redesign-v2): a real 3-entry map (Resumen/
+   Temporadas/Fuentes) instead of the old hardcoded resumen<->temporadas
+   pair -- same manual-activation ARIA tablist behavior (aria-selected/
+   tabIndex/hidden), just data-driven so a 3rd tab doesn't need a 2nd code
+   path. */
+const PLAYER_TAB_MAP={resumen:['ptab-resumen','playerDetail'],temporadas:['ptab-temporadas','playerExtra'],fuentes:['ptab-fuentes','playerFuentes']};
+function showPlayerTab(which){
+  if(!PLAYER_TAB_MAP[which]) return;
+  Object.keys(PLAYER_TAB_MAP).forEach(k=>{
+    const [tabId,panelId]=PLAYER_TAB_MAP[k];
+    const tab=document.getElementById(tabId), panel=document.getElementById(panelId);
+    if(!tab||!panel) return;
+    const on=k===which;
+    tab.setAttribute('aria-selected',String(on)); tab.tabIndex=on?0:-1;
+    panel.hidden=!on;
+  });
+}
+function playerTabKeydown(e){
+  const order=['ptab-resumen','ptab-temporadas','ptab-fuentes'];
+  const i=order.indexOf(e.target.id); if(i<0) return;
+  if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+    e.preventDefault();
+    const next=order[(i+(e.key==='ArrowRight'?1:-1)+order.length)%order.length];
+    order.forEach(t=>{ document.getElementById(t).tabIndex=-1; });
+    const nt=document.getElementById(next); nt.tabIndex=0; nt.focus();
+  }else if(e.key==='Enter'||e.key===' '){
+    e.preventDefault();
+    showPlayerTab({'ptab-resumen':'resumen','ptab-temporadas':'temporadas','ptab-fuentes':'fuentes'}[e.target.id]);
+  }
+}
+/* PHASE_19 (owner-approved, redesign-v2): page-level head (back link stays
+   static HTML, index.html) -- avatar/eyebrow/name/subline, shown above all
+   3 tabs, real team color via --pc (same inline-custom-property pattern
+   .cmpfill's own --w already uses in this file) inherited down into
+   portrait()'s own .crest border (main.css). c1 null (archive-only, no
+   club context) falls back to the real --line token, not a guess. */
+function buildPlayerHead(opts){
+  const host=$('#playerHead'); if(!host) return;
+  host.innerHTML=`<div class="phero-head" style="--pc:${opts.c1||'var(--line)'}">
+    ${opts.portraitHtml||''}
+    <div class="phero-head-body">
+      ${opts.eyebrow?`<div class="ed-eye">${esc(opts.eyebrow)}</div>`:''}
+      <h1>${esc(opts.name)}</h1>
+      ${opts.meta?`<div class="phero-sub">${esc(opts.meta)}</div>`:''}
+    </div>
+    ${opts.actionHtml?`<div class="phero-head-action">${opts.actionHtml}</div>`:''}
+  </div>`;
+}
+/* Información del jugador -- one real rebuild per call (sync-only rows at
+   first paint, sync+async together once loadPlayerExtra's own fetch
+   lands), never an append -- avoids any dedup bookkeeping between the two
+   passes. rows is [label,value][]; a null/empty value drops that row
+   rather than printing a dash -- an identity field the archive doesn't
+   have is omitted, not padded with a placeholder (PC4 by omission, same
+   discipline loadPlayerExtra's own old "top" line already used). */
+function renderPlayerInfo(rows){
+  const host=$('#playerInfo'); if(!host) return;
+  const body=(rows||[]).filter(r=>r[1]).map(([k,v])=>`<div class="row"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`).join('');
+  host.innerHTML=`<h3>Información del jugador</h3>${body||'<p class="note" style="margin-top:0">Sin más datos de identidad en el archivo.</p>'}`;
+  /* PHASE_20 item d: a long value ("21 de septiembre de 1957") in the
+     narrow info column wraps mid-phrase next to its label instead of
+     cleanly under it -- measured live (multi-line .v gets >1 client
+     rect), not guessed from a fixed character count, since what counts
+     as "too long" depends on the label's own width too. .row-stack (CSS)
+     switches that one row to a stacked label/value layout; every other
+     row is untouched. */
+  host.querySelectorAll('.row').forEach(row=>{
+    const v=row.querySelector('.v'); if(!v) return;
+    row.classList.toggle('row-stack', v.getClientRects().length>1);
+  });
+}
+/* PHASE_20 item b + PHASE_21 item 3: chips shaped exactly "<label> <year>"
+   (SCORING's "Campeón de anotación 1977", MVP_YEARS' "MVP 1984", ...)
+   collapse into one real chip per label; PHASE_21 extends this to also
+   fold in that label's own "<N>× <label>" counted chip (MVP_REPEAT's
+   "3× MVP", HOF/POOL-derived "7× campeón de anotación") when one exists,
+   and to drop the bare generic chip ("MVP", "Campeón de anotación") when
+   a counted chip already covers that same label -- real facts, fewer
+   chips, nothing lost (every year is still printed; the generic chip only
+   ever repeated what the counted+year chip already states). Label
+   matching is case-insensitive (the real tag text differs in case between
+   "Campeón de anotación 1977" and "7× campeón de anotación").
+   A label with only one matching year AND no counted chip is left exactly
+   as it was -- there is nothing to compress. Consecutive years collapse to
+   a range (1984-1987 -> "1984–1987"); non-consecutive years stay listed
+   (1977, 1978, 1979 -> "1977 · 1978 · 1979"). Order-preserving where it
+   can be: a merged chip appears at its COUNTED tag's own position when one
+   exists (that is the real anchor fact), else at its first year-tag's
+   position -- not shoved to the end. Display only -- the real p.tags Set
+   this reads from is never mutated, so the index's own #pf filter (which
+   matches on the real, ungrouped tag text) keeps working unchanged. */
+function groupHonorChips(tags){
+  const yearRe=/^(.+) (\d{4})$/, countRe=/^(\d+)× (.+)$/, lc=s=>s.toLowerCase();
+  const yearsByLabel=new Map();   /* lowercase label -> [years] */
+  tags.forEach(t=>{ const m=t.match(yearRe); if(m){
+    const k=lc(m[1]); if(!yearsByLabel.has(k)) yearsByLabel.set(k,[]); yearsByLabel.get(k).push(+m[2]);
+  }});
+  const countedLabel=new Map();   /* lowercase label -> real "<N>× label" tag text */
+  tags.forEach(t=>{ const m=t.match(countRe); if(m) countedLabel.set(lc(m[2]),t); });
+  const rangeFmt=years=>{
+    years=Array.from(new Set(years)).sort((a,b)=>a-b);
+    const parts=[]; let i=0;
+    while(i<years.length){ let j=i; while(j+1<years.length&&years[j+1]===years[j]+1) j++;
+      parts.push(j>i?years[i]+'–'+years[j]:''+years[i]); i=j+1; }
+    return parts.join(' · ');
+  };
+  const emitted=new Set(), out=[];
+  tags.forEach(t=>{
+    const cm=t.match(countRe);
+    if(cm){
+      const key=lc(cm[2]);
+      if(emitted.has(key)) return;
+      emitted.add(key);
+      const yrs=yearsByLabel.get(key);
+      out.push(t+(yrs&&yrs.length?' · '+rangeFmt(yrs):''));
+      return;
+    }
+    const ym=t.match(yearRe);
+    if(ym){
+      const key=lc(ym[1]);
+      if(emitted.has(key)) return;                 /* its counted chip already emitted this (with years) */
+      const yrs=yearsByLabel.get(key)||[];
+      if(yrs.length<2 && !countedLabel.has(key)){ out.push(t); return; }   /* a true singleton -- untouched */
+      if(countedLabel.has(key)) return;             /* the counted branch will emit (or already did) this label */
+      emitted.add(key);
+      out.push(ym[1]+' · '+rangeFmt(yrs));
+      return;
+    }
+    /* PHASE_22 item 2: a bare generic ("MVP", "Campeón de anotación") is now
+       hidden whenever EITHER a counted chip OR any real year chip for the
+       same label is shown -- a year chip, even a lone one left untouched
+       above, already states strictly more than the bare generic ever did,
+       so the generic adds nothing. Real case this closes: Raymond Dalmau
+       has "Campeón de anotación 1968"/"1970" (no counted chip for that
+       label) and a separate bare "Campeón de anotación" -- the bare one
+       is now dropped since the year chip already covers it. */
+    const key=lc(t);
+    if(countedLabel.has(key) || yearsByLabel.has(key)) return;
+    out.push(t);
+  });
+  return out;
+}
+/* Archive-only Ficha paragraph -- templated from the exact real aggregates
+   loadPlayerExtra already computes for the season table's own totals line
+   (nConf/nDisp/lo/hi/car.length), never hand-written per player. Three
+   real cases, not one case force-fit to every player: a DOB conflict (the
+   mockup's own Llovet example), a figures-only conflict, or no conflict at
+   all -- most archive-only players are the third case and get an honest
+   plain summary, not a dispute narrative that doesn't apply to them. */
+function archiveFichaParagraph(car,nConf,nDisp,lo,hi,b,dobDisputed){
+  if(!car.length) return 'Sin estadísticas por temporada en el archivo.';
+  const span=lo?` entre ${lo} y ${hi}`:'';
+  if(nDisp){
+    return `La ficha de bsnpr.com para este jugador muestra tanto la fecha de nacimiento`
+      +(b&&b.date?` del ${esc(fmtArchiveDob(b.date))}`:'')
+      +` como ${nDisp} temporada${nDisp===1?'':'s'}${span} — ambos datos vienen de la misma página, `
+      +`y no sabemos cuál de los dos es el correcto. El archivo conserva las filas pero las excluye de los totales.`;
+  }
+  if(nConf){
+    return `${nConf} temporada${nConf===1?'':'s'} de este jugador ${nConf===1?'tiene':'tienen'} cifras distintas entre dos páginas de bsnpr.com. `
+      +`El archivo conserva ambas filas pero las excluye de los totales — no escoge una.`;
+  }
+  return `El archivo documenta ${car.length} temporada${car.length===1?'':'s'}${span}, sin conflictos de fuente conocidos.`;
+}
 function showPlayer(name,id,season){
   [id,name]=survivorOf(id,name);
-  showView('jugadores','buscar',{noScroll:true,noHash:true});   /* a player card lives in the Buscar view */
   buildPlayerIndex();   /* before the hash: playerSlug() needs the curated pool */
+  /* PHASE_19 (owner-approved, redesign-v2): a real "jugador" view (VIEW_MAP.jugadores's
+     own detail:['jugador','#playerPage']), not a sub-state of Buscar -- same real
+     routing/history this app's other detail views (showTeam's #teamDetail) already use. */
+  showView('jugadores','jugador',{noScroll:true,noHash:true});
   setHash('jugadores/jugador/'+playerSlug(name,id)+(season!=null?'/'+season:''));
-  loadPlayerExtra(name,id,season);   /* 5D.3b/c — async, fills #playerExtra; season_detail_spec.md §4 */
-  const p=PINDEX.find(x=>norm(x.name)===norm(name));
+  const pt=$('#playerTabs'); if(pt) pt.hidden=false;
+  showPlayerTab(season!=null?'temporadas':'resumen');   /* a /season deep link opens on Temporadas, not Resumen */
+  loadPlayerExtra(name,id,season);   /* 5D.3b/c — async, fills #playerExtra + the Información/Fuentes panels; season_detail_spec.md §4 */
+  /* PHASE_36: nickKey() fallback -- a caller that still has the old
+     plain-name string (a roster chip built from a data.js array that was
+     never updated to the nickname form, e.g.) needs to land on the same
+     merged card norm() alone would now miss. */
+  const p=PINDEX.find(x=>norm(x.name)===norm(name)) || PINDEX.find(x=>nickKey(x.name)===nickKey(name));
   const host=$('#playerDetail');
+  const fh=$('#playerFuentes');
   if(!p){
     if(id!=null){ renderArchiveCard(name,id,host); return; }  /* 5D.3c — archive-only player */
-    host.innerHTML='<p class="note">No aparece en el índice.</p>'; return;
+    buildPlayerHead({name,eyebrow:'',meta:'',portraitHtml:'',c1:null});
+    host.innerHTML='<p class="note">No aparece en el índice.</p>';
+    if(fh) fh.innerHTML='';
+    revealNode(host); return;
   }
   const c1=p.clubs.size?F[Array.from(p.clubs)[0]].c1:'var(--azul)';
   const c2=p.clubs.size?F[Array.from(p.clubs)[0]].c2:'var(--blanco)';
@@ -1807,40 +2427,80 @@ function showPlayer(name,id,season){
   if(p.gp==null)missing.push('juegos');
   if(!p.years)missing.push('años activos');
   const dagger = norm(p.name)==='raymond dalmau';
-  let bigN=null,bigL='';
-  if(p.pts!=null){ bigN=num(p.pts); bigL='puntos de carrera'; }
-  else if(p.ppg!=null){ bigN=p.ppg; bigL='puntos por juego'; }
-  else if(p.mvp){ bigN=p.mvp; bigL=p.mvp===1?'premio MVP':'premios MVP'; }
-  else if(p.gp!=null){ bigN=num(p.gp); bigL='juegos en el archivo'; }
-  host.innerHTML=`<div class="card" style="margin-top:var(--sp-4_5);border-color:${c1}">
-    <div class="tri phero-tri"></div>
-    <div class="phero">
-      ${portrait(p.name,c1,c2,60,74,p.pos)}
-      <div class="phero-body">
-        <h2>${esc(p.name)}</h2>
-        <div class="phero-sub">${esc([p.pos,p.years].filter(Boolean).join(' · ')||'posición y años sin registrar')}</div>
-        ${bigN!=null?`<div class="phero-stat"><span class="ed-stat">${bigN}</span>
-          <span class="phero-spark" id="playerSpark" style="color:${c1}"></span></div>
-          <div class="phero-statl">${esc(bigL)}</div>`:''}
-        <div class="chips">${Array.from(p.tags).map(t=>`<span class="tag ${/MVP|Leyenda|10\.000/.test(t)?'gold':''}">${esc(t)}</span>`).join('')}</div>
-        <div class="chips">${Array.from(p.clubs).map(c=>`<button class="chip" onclick="showTeam('${c}')">${esc(F[c].name)}</button>`).join('')}</div>
-        ${p.bio?`<p class="phero-note" style="margin:2px 0 0">${esc(p.bio)}</p>`:''}
-      </div>
+  /* PHASE_20 item c: bigN/bigL (the headline number above the strip) always
+     restates one of the strip's own 6 real values -- every curated player hit
+     this, not just an edge case, since bigN/bigL IS one of pts/ppg/mvp/gp by
+     construction. bigKey names which one, so that exact tile is left out of
+     the strip below instead of printing the same real number twice. If none
+     of the 4 ever resolves (bigKey stays null -- no headline stat at all),
+     every tile stays; there is nothing to de-duplicate. */
+  let bigN=null,bigL='',bigKey=null;
+  if(p.pts!=null){ bigN=num(p.pts); bigL='puntos de carrera'; bigKey='pts'; }
+  else if(p.ppg!=null){ bigN=p.ppg; bigL='puntos por juego'; bigKey='ppg'; }
+  else if(p.mvp){ bigN=p.mvp; bigL=p.mvp===1?'premio MVP':'premios MVP'; bigKey='mvp'; }
+  else if(p.gp!=null){ bigN=num(p.gp); bigL='juegos en el archivo'; bigKey='gp'; }
+  const stripAll=[
+    {k:'pts',n:num(p.pts),l:'puntos'},
+    {k:'reb',n:num(p.reb),l:'rebotes'},
+    {k:'ast',n:num(p.ast)+(dagger?'<span style="color:var(--fuego)">†</span>':''),l:'asistencias'},
+    {k:'gp',n:num(p.gp),l:'juegos'},
+    {k:'ppg',n:p.ppg==null?'—':p.ppg,l:'puntos por juego'},
+    {k:'mvp',n:p.mvp||'—',l:'MVP'}
+  ].filter(s=>s.k!==bigKey);
+  const honorsEmpty = !p.tags.size && !p.clubs.size && !p.bio;
+  const honorChips = groupHonorChips(Array.from(p.tags));
+
+  buildPlayerHead({
+    eyebrow:'Jugador destacado — ficha curada del archivo',
+    name:p.name, c1,
+    meta:[p.pos,p.years].filter(Boolean).join(' · ')||'posición y años sin registrar',
+    portraitHtml:portrait(p.name,c1,c2,72,88,p.pos),
+    /* PHASE_21 item 2: relocated here from the Ficha panel -- a real action,
+       level with the name, not a 4th field buried at the bottom of a
+       narrower column. */
+    actionHtml:`<button class="btn" onclick="cmpFromPlayer(${JSON.stringify(p.name).replace(/"/g,'&quot;')})">Comparar con otro jugador</button>`
+  });
+
+  /* Three real panels (Información/Resumen/Ficha), matching the mockup's own
+     3-box split -- #playerInfo is built empty here, filled by renderPlayerInfo()
+     right after (sync rows only; loadPlayerExtra rebuilds it with the async
+     Nacimiento/Lugar/Nacionalidad rows once the archive fetch lands, if linked). */
+  host.innerHTML=`<div class="presumen">
+    <div class="rp-panel rp-info" id="playerInfo"></div>
+    <div class="rp-panel rp-stats">
+      <div class="ed-eye">Resumen</div>
+      ${bigN!=null?`<div class="phero-stat" style="margin-bottom:var(--sp-2_5)"><span class="ed-stat">${bigN}</span>
+        <span class="phero-spark" id="playerSpark" style="color:${c1}"></span></div>
+        <div class="phero-statl" style="margin-bottom:var(--sp-3)">${esc(bigL)}</div>`:''}
+      <div class="strip">${stripAll.map(s=>`<div><div class="n">${s.n}</div><div class="l">${esc(s.l)}</div></div>`).join('')}</div>
     </div>
-    <div class="strip" style="margin-top:var(--sp-3_5)">
-      <div><div class="n">${num(p.pts)}</div><div class="l">puntos</div></div>
-      <div><div class="n">${num(p.reb)}</div><div class="l">rebotes</div></div>
-      <div><div class="n">${num(p.ast)}${dagger?'<span style="color:var(--fuego)">†</span>':''}</div><div class="l">asistencias</div></div>
-      <div><div class="n">${num(p.gp)}</div><div class="l">juegos</div></div>
-      <div><div class="n">${p.ppg==null?'—':p.ppg}</div><div class="l">puntos por juego</div></div>
-      <div><div class="n">${p.mvp||'—'}</div><div class="l">MVP</div></div>
+    <div class="rp-panel rp-context">
+      <div class="ed-eye">Ficha</div>
+      ${p.clubs.size?`<div class="chips">${Array.from(p.clubs).map(c=>`<button class="chip" onclick="showTeam('${c}')">${esc(F[c].name)}</button>`).join('')}</div>`:''}
+      ${p.bio?`<p class="phero-note" style="margin:${p.clubs.size?'var(--sp-3)':'0'} 0 0">${esc(p.bio)}</p>`:''}
+      ${honorsEmpty?'<p class="note" style="margin-top:0">Sin honores, clubes o biografía registrados.</p>':''}
+      ${dagger?'<div class="warn" style="margin-top:var(--sp-3)">† 2.302 asistencias en 537 juegos da 4,3 por juego, no 5,1 como publica la fuente. La contradicción está en el dato original y no se ha resuelto; por eso su promedio de asistencias no se usa en los juegos.</div>':''}
+      ${missing.length?`<div class="warn" style="margin-top:var(--sp-3)">Lo que este archivo <b>no</b> sabe de ${esc(p.name.split(' ')[0])}: ${esc(missing.join(', '))}. Antes de 2011 no existe ninguna base pública de estadísticas por temporada del BSN.</div>`:''}
+      <div id="playerFichaAsync"></div>
     </div>
-    ${dagger?'<div class="warn">† 2.302 asistencias en 537 juegos da 4,3 por juego, no 5,1 como publica la fuente. La contradicción está en el dato original y no se ha resuelto; por eso su promedio de asistencias no se usa en los juegos.</div>':''}
-    ${missing.length?`<div class="warn">Lo que este archivo <b>no</b> sabe de ${esc(p.name.split(' ')[0])}: ${esc(missing.join(', '))}. Antes de 2011 no existe ninguna base pública de estadísticas por temporada del BSN.</div>`:''}
-    ${p.legendWhy?`<div class="note"><b>Leyenda</b> por: ${esc(p.legendWhy.join(" · "))}. El criterio está en «El archivo».</div>`:''}
-    <div class="btnrow"><button class="btn" onclick="cmpFromPlayer(${JSON.stringify(p.name).replace(/"/g,'&quot;')})">Comparar con otro jugador</button></div>
-    <div class="note">Aparece en: ${esc(Array.from(p.src).join(' · '))}</div>
+  </div>
+  ${p.tags.size?`<div class="rp-panel rp-panel-honors">
+    <div class="ed-eye">Honores</div>
+    <div class="chips">${honorChips.map(t=>`<span class="tag ${/MVP|Leyenda|10\.000/.test(t)?'gold':''}">${esc(t)}</span>`).join('')}</div>
+    ${p.legendWhy?`<div class="note legend-note"><b>Leyenda</b> por: ${esc(p.legendWhy.join(" · "))}. El criterio está en «El archivo».</div>`:''}
+  </div>`:''}
+  <div id="playerResumenSeasons"></div>`;
+  renderPlayerInfo([['Nombre',p.name],['Posición',p.pos],['Años activos',p.years]]);
+
+  /* Fuentes tab: the real "Aparece en" source list (sync, PINDEX's own p.src) --
+     the Wayback attribution line + "Mismo nombre" cross-links are async, filled
+     by loadPlayerExtra once id/d resolve (#playerFuentesAsync). */
+  if(fh) fh.innerHTML=`<div class="rp-panel rp-fuentes">
+    <div class="ed-eye">Fuentes</div>
+    <div class="fsrc"><div class="note" style="margin-top:0">Aparece en: ${esc(Array.from(p.src).join(' · '))}</div></div>
+    <div class="fsrc" id="playerFuentesAsync"></div>
   </div>`;
+
   revealNode(host); host.scrollIntoView({block:'start',behavior:'smooth'});
 }
 /* 5D.3b — per-season career table from web/data/players/<id>.json, below the
@@ -1899,7 +2559,7 @@ function renderSeasonCmp(){
   if(rows.length<2){ host.innerHTML=''; return; }
   const ps=rows.map(seasonCmpObj);
   host.innerHTML=`<div class="card cmpcard" style="margin-top:10px">
-    <div class="cmpheads">${ps.map((p,i)=>`<div class="cmphead">
+    <div class="cmpheads">${ps.map((p,i)=>`<div class="cmphead" style="--cmp-c:${cmpColor(p,i)}">
       <span class="cmpdot" style="background:${cmpColor(p,i)}"></span>
       <span class="cmpname">${esc(SEASON_CMP_NAME)} · ${esc(p.name)}</span></div>`).join('')}</div>
     <div class="cmprows">
@@ -1944,7 +2604,7 @@ function renderSeasonDetail(car,season,name,id){
   const ak=row.franchise_id && FID2APP && FID2APP[row.franchise_id];
   const team=(ak&&F[ak])?F[ak].name:(row.team_raw||'—');
   const s=row.stats, p=seasonCmpObj(row);
-  host.innerHTML=`<div class="card" style="margin-top:var(--sp-3)" id="seasonDetailCard">
+  host.innerHTML=`<div class="card pcard" style="margin-top:var(--sp-3)" id="seasonDetailCard">
     <div class="phero-sub" style="margin-bottom:6px">${esc(name)} · ${row.season} · ${esc(team)}</div>
     ${s?`<div class="strip">
       <div><div class="n">${p.ppg??'—'}</div><div class="l">puntos por juego</div></div>
@@ -1984,54 +2644,119 @@ async function loadPlayerExtra(name,idHint,season){
   const key = (id!=null) ? 'id:'+id : norm(name);
   host.innerHTML=''; host.dataset.key=key;
   SEASON_CMP_CAREER=null; SEASON_CMP_SEL=new Set(); SEASON_CMP_NAME=name;
+  const p=PINDEX&&PINDEX.find(x=>norm(x.name)===norm(name));   /* curated, or null for archive-only */
   if(id==null){
-    host.innerHTML=`<div class="card" style="margin-top:var(--sp-3)"><div class="note" style="margin-top:var(--sp-2_5)">Sin ficha vinculada en el archivo de bsnpr.com `
+    host.innerHTML=`<div class="card pcard" style="margin-top:var(--sp-3)"><div class="note" style="margin-top:var(--sp-2_5)">Sin ficha vinculada en el archivo de bsnpr.com `
       +`<span class="muted">— no se ha podido identificar con certeza a este jugador en esa base</span>.</div></div>`;
-    return;
+    return;   /* curated+unlinked: Información/Ficha/Fuentes already have everything real there is (showPlayer()'s sync build) */
   }
   const [d]=await Promise.all([DATA.get('players/'+id+'.json'), ensureDQ()]);   /* ensureDQ never rejects; null = no markers */
   if(!d || host.dataset.key!==key) return;
 
-  let h='';
-  const b=d.birth||{}, top=[];
+  const b=d.birth||{};
   /* J16 A05: a player with a disputed career row gets an explicit attribution on the DOB itself -- it is
      never called verified, since it has one source family and the ages shown for it are derived, not stated. */
   const dobDisputed=DISPUTED_IDS&&DISPUTED_IDS.has(Number(id));
-  if(b.date) top.push('n. '+esc(fmtArchiveDob(b.date))+(dobDisputed?' (según bsnpr.com)':'')+(b.city?' · '+esc(b.city):''));
-  if(d.position) top.push(esc(d.position));
-  if(d.nationality && d.nationality!=='Puerto Rico') top.push(esc(d.nationality));
-  if(top.length) h+=`<div class="muted" style="font-size:var(--fs-xs)">${top.join(' · ')}</div>`;
-  h+=sameNameLine(id);
+  const dobStr=b.date?(fmtArchiveDob(b.date)+(dobDisputed?' (según bsnpr.com)':'')):null;
+  const nat=(d.nationality&&d.nationality!=='Puerto Rico')?d.nationality:null;
 
-  /* jugador05.asp scouting note (2005–06), where the archive has one */
-  const bio=d.bio||null;
-  if(bio && bio.notes_es){
-    const yr=bio.roster && bio.roster.year;
-    h+=`<div class="note" style="margin-top:var(--sp-2_5)">Reseña de bsnpr.com`
-      +`<span class="muted">${yr?' · '+yr:''}</span></div>`
-      +`<p class="muted" style="font-size:var(--fs-xs);margin:var(--sp-1) 0 0;line-height:1.5">${esc(bio.notes_es)}</p>`;
+  /* Información del jugador -- full rebuild (renderPlayerInfo(), tabs.js), same
+     real fields this function always had (top[]/sameNameLine used to render inline
+     above the season table); PHASE_19 only relocates them into their own panel. */
+  if(p){
+    renderPlayerInfo([['Nombre',p.name],['Posición',p.pos],['Años activos',p.years],
+      ['Nacimiento',dobStr],['Lugar',b.city||null],['Nacionalidad',nat]]);
+  }else{
+    const r=(PALL||[]).find(x=>x.id===id)||{};
+    const span=(r.first_season&&r.last_season)
+      ? (r.first_season===r.last_season?''+r.first_season:r.first_season+'–'+r.last_season) : '';
+    renderPlayerInfo([['Nombre',name],['Posición',r.position||null],['Años',span||null],['Fuente','bsnpr.com'],
+      ['Nacimiento',dobStr],['Lugar',b.city||null],['Nacionalidad',nat]]);
   }
 
-  const car=(d.career||[]).slice().sort((a,b)=>(a.season||0)-(b.season||0));
   /* 8.3b — fill the hero sparkline with points-by-season (the guard above
      already dropped a stale load, so #playerSpark belongs to this player). */
+  const car=(d.career||[]).slice().sort((a,b)=>(a.season||0)-(b.season||0));
   const sp=$('#playerSpark');
   if(sp && car.length){
     const pv=car.map(c=>c.points==null?null:c.points);
     if(pv.filter(v=>v!=null).length>=2) sp.innerHTML=spark(pv,{area:true,dot:true,w:150,h:26});
   }
+
+  /* rows the archive holds twice with different figures (Calidad de datos): both rows stay in the table,
+     marked, and both stay out of the totals below; the archive does not pick one. Same for a row that
+     conflicts with the player's own birth_date (J16 A05): it stays, is marked, and drops out of totals too. */
+  const fl=car.map(c=>dqFlag(id,c));
+  const dfl=car.map(c=>disputeFlag(id,c));
+  const nConf=new Set(fl.filter(Boolean)).size;
+  const nDisp=new Set(dfl.filter(Boolean)).size;
+  let tp=0,tg=0; const sea=new Set();
+  car.forEach((c,i)=>{ if(fl[i]||dfl[i]) return; if(c.points!=null)tp+=c.points; if(c.games!=null)tg+=c.games; if(c.season)sea.add(c.season); });
+  const yrs=car.filter((c,i)=>!fl[i]&&!dfl[i]).map(c=>c.season).filter(Boolean);
+  const lo=yrs.length?Math.min(...yrs):null, hi=yrs.length?Math.max(...yrs):null;
+  /* the season table's own totals line (below) correctly spans only
+     non-flagged years (lo/hi above) -- but "what years does this ficha's
+     career[] claim at all" is a different, real question that stays
+     answerable even when every row is disputed (Llovet: lo/hi above is
+     null since all 5 rows are flagged, yet the archive plainly does have
+     rows for 1965-1969 -- the dispute is about the birth date's
+     compatibility with those years, not about whether the years exist).
+     allLo/allHi back the Resumen "Rango en la ficha" tile and the Ficha
+     paragraph's own span, both of which are about what the ficha SAYS,
+     not what counts toward the totals. */
+  const allYrs=car.map(c=>c.season).filter(Boolean);
+  const allLo=allYrs.length?Math.min(...allYrs):null, allHi=allYrs.length?Math.max(...allYrs):null;
+  /* PHASE_21 item 4: the mockup's own compact form ("1965–69") for the
+     Resumen tile specifically -- same real allLo/allHi, just the shared
+     century dropped from the end year so the tile never has to wrap at
+     140px. Only compacted when both years share a century (true for every
+     real BSN season so far, 1930-present); a genuine cross-century span
+     prints in full rather than silently truncating a real digit. */
+  const rangeCompact = allLo==null ? '—'
+    : (Math.floor(allLo/100)===Math.floor(allHi/100) ? allLo+'–'+String(allHi).slice(-2) : allLo+'–'+allHi);
+
+  /* archive-only Resumen tiles + Ficha paragraph -- real aggregates of the exact
+     same per-row flags the season table below computes, never a second, possibly-
+     divergent count. Curated players keep their own sync stat strip (showPlayer())
+     and never touch these two ids. */
+  if(!p){
+    const statsHost=$('#playerArchiveStats');
+    if(statsHost) statsHost.innerHTML=`<div class="ed-eye">Resumen</div><div class="strip">
+      <div><div class="n">${car.length}</div><div class="l">Temporadas documentadas</div></div>
+      <div><div class="n">${nConf+nDisp}</div><div class="l">Con conflicto de fuente</div></div>
+      <div><div class="n">${rangeCompact}</div><div class="l">Rango en la ficha</div></div>
+    </div>`;
+    const fichaHost=$('#playerArchiveFicha');
+    if(fichaHost) fichaHost.innerHTML=`<div class="ed-eye">Ficha</div>`
+      +`<p class="note" style="margin-top:0">${esc(archiveFichaParagraph(car,nConf,nDisp,allLo,allHi,b,dobDisputed))}</p>`;
+  }
+
+  /* jugador05.asp scouting note (2005–06), where the archive has one -- curated
+     players only (archive-only's own Ficha paragraph above is the whole story for
+     them); appended to the sync Ficha panel's own async slot, never replacing it. */
+  const bio=d.bio||null;
+  if(p && bio && bio.notes_es){
+    const fa=$('#playerFichaAsync');
+    if(fa){
+      const yr=bio.roster && bio.roster.year;
+      fa.innerHTML=`<div class="note" style="margin-top:var(--sp-3)">Reseña de bsnpr.com${yr?' · '+yr:''}</div>`
+        +`<p class="muted" style="font-size:var(--fs-xs);margin:var(--sp-1) 0 0;line-height:1.5">${esc(bio.notes_es)}</p>`;
+    }
+  }
+
+  /* Fuentes tab: "Mismo nombre" cross-links (both player types) + the Wayback
+     attribution line (curated only -- archive-only's renderArchiveCard() already
+     wrote it synchronously, since it has id up front). */
+  const fa2=$('#playerFuentesAsync');
+  if(fa2){
+    let fx='';
+    if(p) fx+=`<div class="note" style="margin-top:0">Ficha del archivo de bsnpr.com (jugador #${id}) vía Wayback Machine.</div>`;
+    fx+=sameNameLine(id);
+    fa2.innerHTML=fx;
+  }
+
+  let h='';
   if(car.length){
-    /* rows the archive holds twice with different figures (Calidad de datos): both rows stay in the table,
-       marked, and both stay out of the totals below; the archive does not pick one. Same for a row that
-       conflicts with the player's own birth_date (J16 A05): it stays, is marked, and drops out of totals too. */
-    const fl=car.map(c=>dqFlag(id,c));
-    const dfl=car.map(c=>disputeFlag(id,c));
-    const nConf=new Set(fl.filter(Boolean)).size;
-    const nDisp=new Set(dfl.filter(Boolean)).size;
-    let tp=0,tg=0; const sea=new Set();
-    car.forEach((c,i)=>{ if(fl[i]||dfl[i]) return; if(c.points!=null)tp+=c.points; if(c.games!=null)tg+=c.games; if(c.season)sea.add(c.season); });
-    const yrs=car.filter((c,i)=>!fl[i]&&!dfl[i]).map(c=>c.season).filter(Boolean);
-    const lo=yrs.length?Math.min(...yrs):null, hi=yrs.length?Math.max(...yrs):null;
     h+='<div class="note" style="margin-top:var(--sp-2_5)">Temporada por temporada <span class="dim" style="font-weight:400">— marca 2 o 3 para comparar</span></div>'
       +'<div class="tblwrap"><table><thead><tr><th></th><th>Año</th><th>Equipo</th><th class="num">JJ</th><th class="num">PTS</th></tr></thead><tbody>'
       +car.map((c,i)=>{
@@ -2048,35 +2773,64 @@ async function loadPlayerExtra(name,idHint,season){
       }).join('')
       +'</tbody></table></div>'
       +'<div id="seasonCmpPanel"></div>';
-    if(tp||tg||nConf||nDisp)
-      h+=`<div class="muted" style="font-size:var(--fs-2xs);margin-top:6px">`
-        +((tp||tg)?`Totales del archivo: `
-        +`${tp.toLocaleString('es-PR')} puntos en ${tg.toLocaleString('es-PR')} juegos · `
-        +`${sea.size} temporada${sea.size===1?'':'s'}${lo?` (${lo}–${hi})`:''}. `
-        +`Serie regular; suma de la tabla por temporada de bsnpr.com, no incluye playoffs.`:'')
-        +(nConf?` Totales sin ${nConf} temporada${nConf===1?'':'s'} con fuentes en conflicto `
-        +`(<a href="#archivo/calidad">ver Calidad de datos</a>).`:'')
-        +(nDisp?` Totales sin ${nDisp} temporada${nDisp===1?'':'s'} con la fecha de nacimiento en conflicto `
-        +`(<a href="#archivo/calidad">ver Calidad de datos</a>).`:'')+`</div>`;
+    if(tp||tg||nConf||nDisp) h+=`<div class="muted" style="font-size:var(--fs-2xs);margin-top:6px">${seasonTotalsNote(tp,tg,sea,lo,hi,nConf,nDisp)}</div>`;
   }else{
     h+=`<div class="note" style="margin-top:var(--sp-2_5)">Sin estadísticas por temporada en el archivo `
       +`<span class="muted">— ${bio&&bio.notes_es?'sólo la reseña de arriba':'sin ficha detallada'}</span>.</div>`;
   }
   h+='<div id="seasonDetail"></div>';
-  host.innerHTML=`<div class="card" style="margin-top:var(--sp-3)">${h}`
-    +`<div class="note">Ficha del archivo de bsnpr.com (jugador #${id}) vía Wayback Machine.</div></div>`;
+  host.innerHTML=`<div class="card pcard" style="margin-top:var(--sp-3)">${h}</div>`;
   SEASON_CMP_CAREER=car;
   if(season!=null) renderSeasonDetail(car,season,name,id);
+
+  /* PHASE_21 item 5: the mockup shows "Temporada por temporada" under the 3
+     panels on Resumen, not hidden behind the Temporadas tab -- real for
+     archive-only players (who have no curated stat strip otherwise) and for
+     curated players with real season data. Read-only: no checkboxes, no
+     per-season drill-in link -- those stay exclusive to the Temporadas tab
+     (owner's own instruction), this is a second, simpler rendering of the
+     exact same real car[]/fl/dfl the table above already computed. */
+  renderResumenSeasons(car,fl,dfl,tp,tg,sea,lo,hi,nConf,nDisp);
+}
+/* shared by the Temporadas tab's own totals line and the Resumen-tab read-
+   only table's footer below -- one real computation, two real renderings,
+   never two separate counts that could quietly disagree. */
+function seasonTotalsNote(tp,tg,sea,lo,hi,nConf,nDisp){
+  return ((tp||tg)?`Totales del archivo: `
+    +`${tp.toLocaleString('es-PR')} puntos en ${tg.toLocaleString('es-PR')} juegos · `
+    +`${sea.size} temporada${sea.size===1?'':'s'}${lo?` (${lo}–${hi})`:''}. `
+    +`Serie regular; suma de la tabla por temporada de bsnpr.com, no incluye playoffs.`:'')
+    +(nConf?` Totales sin ${nConf} temporada${nConf===1?'':'s'} con fuentes en conflicto `
+    +`(<a href="#archivo/calidad">ver Calidad de datos</a>).`:'')
+    +(nDisp?` Totales sin ${nDisp} temporada${nDisp===1?'':'s'} con la fecha de nacimiento en conflicto `
+    +`(<a href="#archivo/calidad">ver Calidad de datos</a>).`:'');
+}
+function renderResumenSeasons(car,fl,dfl,tp,tg,sea,lo,hi,nConf,nDisp){
+  const host=$('#playerResumenSeasons'); if(!host) return;
+  if(!car.length){ host.innerHTML=''; return; }
+  const rows=car.map((c,i)=>{
+    const ak=FID2APP&&FID2APP[c.franchise_id];
+    const team=(ak&&F[ak])?esc(F[ak].name):esc(c.team_raw||'—');
+    const tag=(fl[i]?dqTag(fl[i]):'')+(dfl[i]?disputeTag():'');
+    return `<tr><td>${c.season||'—'}${tag?'<div>'+tag+'</div>':''}</td><td>${team}</td>`
+      +`<td class="num">${c.games==null?'—':c.games}</td><td class="num">${c.points==null?'—':c.points.toLocaleString('es-PR')}</td></tr>`;
+  }).join('');
+  host.innerHTML=`<div class="seasons-resumen">
+    <h2>Temporada por temporada</h2>
+    <div class="tblwrap"><table><thead><tr><th>Año</th><th>Equipo</th><th class="num">JJ</th><th class="num">PTS</th></tr></thead>
+    <tbody>${rows}</tbody></table></div>
+    ${(tp||tg||nConf||nDisp)?`<div class="muted" style="font-size:var(--fs-2xs);margin-top:6px">${seasonTotalsNote(tp,tg,sea,lo,hi,nConf,nDisp)}</div>`:''}
+  </div>`;
 }
 
 let LEAD_CAT='points', LEAD_MODE='total';
 function buildLeaderControls(){
   const host=$('#leaderControls');
-  host.innerHTML=`<div class="filters">
+  host.innerHTML=`<div class="search-card"><div class="filters">
     <div class="field"><label for="lcat">Categoría</label><select id="lcat">
       <option value="points">Puntos</option><option value="rebounds">Rebotes</option><option value="assists">Asistencias</option></select></div>
     <div class="field"><label for="lmode">Orden</label><select id="lmode">
-      <option value="total">Total de carrera</option><option value="pg">Por juego</option></select></div></div>`;
+      <option value="total">Total de carrera</option><option value="pg">Por juego</option></select></div></div></div>`;
   $('#lcat').onchange=e=>{LEAD_CAT=e.target.value;buildLeaders();};
   $('#lmode').onchange=e=>{LEAD_MODE=e.target.value;buildLeaders();};
 }
@@ -2100,40 +2854,60 @@ function buildHOFControls(){
     <select id="hs"><option value="era">Época</option><option value="pts">Puntos</option><option value="mvp">MVP</option></select></div></div>`;
   $('#hs').onchange=e=>{HOF_SORT=e.target.value;buildHOF();};
 }
+/* PHASE_14 (owner-approved, redesign-v2): .salon-grid/.salon-card replaces the plain
+   .cards.g2 -- same real HOF fields (portrait/name/years/pos/role/chips/note/"Ficha"
+   button), unchanged; only the shell and a plain rank chip (this sort's own current
+   position, not a "top 3" claim -- era/pts/mvp order has no gold-silver-bronze
+   semantics) are new. */
 function buildHOF(){
   const list=HOF.slice().sort((a,b)=>{
     if(HOF_SORT==='era')return a.era-b.era;
     if(HOF_SORT==='pts')return (b.pts||0)-(a.pts||0);
     return (b.mvp||0)-(a.mvp||0);
   });
-  $('#hofList').innerHTML='<div class="cards g2">'+list.map(h=>`
-    <div class="card" style="display:flex;gap:13px">
-      ${portrait(h.n,'var(--azul)','var(--blanco)',48,58,h.pos)}
-      <div style="min-width:0">
-        <div style="font-weight:700;font-size:16px">${esc(h.n)}</div>
+  $('#hofList').innerHTML='<div class="salon-grid">'+list.map((h,i)=>{
+    /* PHASE_21: real club color when PINDEX can resolve one for this HOF name
+       (most can -- HOF feeds PINDEX's own merge), portrait() itself falls back
+       to the real neutral navy otherwise -- never a guessed club. */
+    const pp=PINDEX&&PINDEX.find(x=>norm(x.name)===norm(h.n));
+    const hc1=pp&&pp.clubs.size?F[Array.from(pp.clubs)[0]].c1:null;
+    return `
+    <div class="salon-card">
+      <span class="rankbadge">${i+1}</span>
+      ${portrait(h.n,hc1,null,48,58,h.pos)}
+      <div class="body">
+        <div class="who">${esc(h.n)}</div>
         <div class="dim" style="font-size:12px">${esc(h.yrs)} · ${esc(h.pos)}</div>
         <div class="muted" style="font-size:13px;margin-top:5px">${esc(h.role)}</div>
         <div class="chips">${h.hon.map(x=>`<span class="tag ${/MVP|Salón|Máximo|Récord|Campeón|récord/i.test(x)?'gold':''}">${esc(x)}</span>`).join('')}</div>
         ${h.note?`<div class="note">${esc(h.note)}</div>`:''}
         <div class="btnrow"><button class="btn" style="padding:3px 9px;font-size:12px"
           onclick="showPlayer(${JSON.stringify(h.n).replace(/"/g,'&quot;')})">Ficha</button></div>
-      </div></div>`).join('')+'</div>';
+      </div></div>`;
+  }).join('')+'</div>';
 }
+/* PHASE_14 (owner-approved, redesign-v2): reuses .coach-grid/.coach-card (built for
+   buildCoaches() just below -- same shape of content: a name/title + two lines, no
+   numeral, no portrait). Real STONE fields unchanged. */
 function buildStone(){
-  $('#stone').innerHTML='<div class="cards g2">'+STONE.map(s=>`
-    <div class="card"><div style="font-weight:700">${esc(s[0])}</div>
-    <div class="muted" style="font-size:var(--fs-xs)">${esc(s[1])}</div>
+  $('#stone').innerHTML='<div class="coach-grid">'+STONE.map(s=>`
+    <div class="coach-card"><div class="ct">${esc(s[0])}</div>
+    <div class="cs">${esc(s[1])}</div>
     <div class="note">${esc(s[2])}</div></div>`).join('')+'</div>';
 }
 
 /* ============================================================
    RÉCORDS
    ============================================================ */
+/* PHASE_14 (owner-approved, redesign-v2): .rec-grid/.rec-card replaces the plain
+   .cards.g2 -- same real RECORDS fields, unchanged; numeral's font-family switches
+   from inherit to var(--font-display), the same big-numeral treatment every other
+   number in this system already gets (.stat .n/.lead-row .val .n/.bar-row .v). */
 function buildRecords(){
-  $('#recordList').innerHTML='<div class="cards g2">'+RECORDS.map(r=>`
-    <div class="card">
+  $('#recordList').innerHTML='<div class="rec-grid">'+RECORDS.map(r=>`
+    <div class="rec-card">
       <div style="display:flex;align-items:baseline;gap:var(--sp-2_5)">
-        <span style="font-family:inherit;font-weight:800;font-size:32px;line-height:1;color:var(--rojo)">${esc(r[1])}</span>
+        <span style="font-family:var(--font-display);font-weight:800;font-size:32px;line-height:1;color:var(--rojo)">${esc(r[1])}</span>
         <span style="font-weight:700">${esc(r[0])}</span></div>
       <div class="muted" style="font-size:var(--fs-xs);margin-top:var(--sp-1)">${esc(r[2])} · ${r[3]}</div>
       ${r[4]?`<div class="note">${esc(r[4])}</div>`:''}</div>`).join('')+'</div>';
@@ -2159,17 +2933,60 @@ function buildScoringChart(){
     ${g}<path d="${path}" fill="none" stroke="var(--rojo)" stroke-width="2"/>${dots}${ticks}</svg></div>
     <p class="note">Hasta 1970 la liga premiaba puntos totales; desde 1971, promedio. Las dos series no son comparables, así que solo se grafica la segunda.</p>`;
 }
-function buildScoringTable(){
-  buildTable($('#scoringTable'),[
-    {label:'Año',num:true},{label:'Jugador',wide:true,
-      render:v=>`<button class="btn" style="padding:2px var(--sp-2);font-size:var(--fs-2xs)" onclick="showPlayer(${JSON.stringify(v).replace(/"/g,'&quot;')})">${esc(v)}</button>`},
-    {label:'Club',wide:true},{label:'Métrica'},{label:'Valor',num:true}
-  ],SCORING.map(s=>[s[0],s[1],s[2],s[3]==='ppg'?'promedio':'total',s[4]]),{file:'campeones_anotacion',sort:0,dir:-1});
+/* PHASE_11 (owner-approved, redesign-v2): consecutive-year, same-player runs, walked live
+   over the real (ascending) SCORING array -- returns {year: runLength}, keyed on the run's
+   OWN most recent year (so rendering most-recent-first shows the 🔥 pill exactly once per
+   run, on its first/newest row, not on every row of the run). Not hardcoded: recomputed
+   from SCORING every call, same discipline as historiaStreaks() above. */
+function scoringStreaksFor(arr,yearIdx,nameIdx){
+  const out={}; let i=0;
+  while(i<arr.length){
+    let j=i;
+    while(j+1<arr.length && arr[j+1][nameIdx]===arr[i][nameIdx] && arr[j+1][yearIdx]===arr[j][yearIdx]+1) j++;
+    if(j>i) out[arr[j][yearIdx]]=j-i+1;
+    i=j+1;
+  }
+  return out;
 }
+/* PHASE_11 (owner-approved, redesign-v2): the old plain sortable table is now the mockup's
+   decade-grouped .lead-list, most-recent-first, real 🔥 repeat-champion pill from
+   scoringStreaksFor() above -- reads the real, LIVE SCORING array, whatever its current
+   state is: 26 rows (1966-1991) is only this file's own baked-in seed for a local/offline
+   open; hydrate() (init.js) replaces it in place with a richer, reconciled 68-row set
+   (1948-2021) whenever web/data is reachable -- confirmed live, not assumed, since this
+   function never caches a row count or year range, only ever reads SCORING fresh. CSV/
+   export button removed here (a lead-list isn't a buildTable() output any more) but the
+   data itself, the "Ver ficha" link, and the total row count are all unchanged. The line
+   chart above (buildScoringChart()) is deliberately kept, not removed -- it's real, working
+   data visualization the mockup simply didn't happen to include, and nothing in this
+   pass's scope asked for it to go. */
+function buildScoringTable(){
+  const streaks=scoringStreaksFor(SCORING,0,1);
+  const rows=SCORING.slice().reverse();
+  let lastDecade=null, html='';
+  rows.forEach(r=>{
+    const [y,player,club,metric,value]=r;
+    const decade=Math.floor(y/10)*10+'s';
+    if(decade!==lastDecade){ html+=`<div class="decade-head">${esc(decade)}</div>`; lastDecade=decade; }
+    const streak=streaks[y];
+    html+=`<div class="lead-row${streak?' repeat':''}">
+      <div class="yrchip mono">${y}</div>
+      <div class="who">
+        <div class="pn"><button class="btn" style="padding:2px var(--sp-2);font-size:var(--fs-2xs)" onclick="showPlayer(${JSON.stringify(player).replace(/"/g,'&quot;')})">${esc(player)}</button>${streak?`<span class="streakpill">🔥 ${streak}×</span>`:''}</div>
+        <div class="cl">${esc(club)}</div>
+      </div>
+      <div class="val"><div class="n mono">${value}</div><div class="u">${metric==='ppg'?'ppj':'pts totales'}</div></div>
+    </div>`;
+  });
+  $('#scoringTable').innerHTML=`<div class="lead-list">${html}</div>
+    <p class="scrollnote">${SCORING.length} temporadas documentadas, ${SCORING[0][0]}–${SCORING[SCORING.length-1][0]}. 🔥 marca rachas de campeonatos consecutivos del mismo jugador.</p>`;
+}
+/* PHASE_14 (owner-approved, redesign-v2): .coach-grid/.coach-card replaces the plain
+   .cards.g2 -- same real COACHES fields, unchanged. */
 function buildCoaches(){
-  $('#coachList').innerHTML='<div class="cards g2">'+COACHES.map(c=>`
-    <div class="card"><div style="font-weight:700">${esc(c[0])}</div>
-    <div class="muted" style="font-size:var(--fs-xs)">${esc(c[1])}</div>
+  $('#coachList').innerHTML='<div class="coach-grid">'+COACHES.map(c=>`
+    <div class="coach-card"><div class="ct">${esc(c[0])}</div>
+    <div class="cs">${esc(c[1])}</div>
     ${c[2]?`<div class="note">${esc(c[2])}</div>`:''}</div>`).join('')+'</div>';
 }
 function buildNBA(){
@@ -2177,21 +2994,53 @@ function buildNBA(){
     `<span class="tag blue" title="${esc(p[1])}">${esc(p[0])}</span>`).join('')+'</div>'+
     '<p class="note">'+NBA_PLAYERS.map(p=>esc(p[0])+': '+esc(p[1])).join(' · ')+'</p>';
 }
+/* PHASE_41 (owner-approved, redesign-v2): RETIRED itself is NOT edited -- still
+   [4,5,9,15,16,17,17,54] / [5,9,15], the exact literal PHASE_41A's own read-only
+   source check left in place (undeterminable from repo evidence whether Bayamón's
+   duplicate 17 is a typo or a real double-retirement; kept exactly as recorded,
+   not guessed at either way). Rendering counts occurrences at render time -- a
+   Map over r[2].split(' · '), never a splice/dedupe on RETIRED -- so a repeated
+   number shows once with an "×N" mark instead of twice, and r[1] (the total,
+   still 8 for Bayamón) stays the honest total-slots count while the chip count
+   (7 distinct) and the dupe itself both stay visible and spelled out in the
+   count line. "La liga los publica como dígitos, sin nombres…" kept verbatim. */
 function buildRetiredNums(){
-  $('#retiredList').innerHTML='<div class="cards g2">'+RETIRED.map(r=>`
-    <div class="card"><div style="font-weight:700">${esc(r[0])}</div>
-    <div style="font-weight:800;letter-spacing:-.02em;font-size:22px;margin-top:4px">${esc(r[2])}</div>
-    <div class="note">${r[1]} números. La liga los publica como dígitos, sin nombres — y el archivo no los adivina.</div></div>`).join('')+'</div>';
+  $('#retiredList').innerHTML='<div class="retired-grid">'+RETIRED.map(r=>{
+    const k=FKEYS.find(x=>F[x].name===r[0]);
+    const counts=new Map();
+    r[2].split(' · ').forEach(n=>counts.set(n,(counts.get(n)||0)+1));
+    const dupes=[...counts.entries()].filter(([,c])=>c>1);
+    const chips=[...counts.entries()].map(([n,c])=>
+      `<span class="jersey-chip">${esc(n)}${c>1?`<i class="x2">×${c}</i>`:''}</span>`).join('');
+    const countLine = dupes.length===1
+      ? r[1]+' números retirados — el '+esc(dupes[0][0])+' se retiró '
+        +(dupes[0][1]===2?'dos veces':dupes[0][1]+' veces')+'.'
+      : dupes.length>1
+      ? r[1]+' números retirados, con '+dupes.length+' repetidos.'
+      : r[1]+' números retirados.';
+    const plate=k?crestPlate(k):null;
+    const crestHtml=k?`<span class="crest-plate" style="--plate:${plate}">${crest(k,31,36)}</span>`:'';
+    return `<div class="card retired-card">
+      <div class="retired-head">${crestHtml}<div class="retired-name">${esc(r[0])}</div></div>
+      <div class="jersey-row">${chips}</div>
+      <div class="note">${countLine} La liga los publica como dígitos, sin nombres — y el archivo no los adivina.</div>
+    </div>`;
+  }).join('')+'</div>';
 }
 
 /* ============================================================
    REFUERZOS
    ============================================================ */
+/* PHASE_11 (owner-approved, redesign-v2): visual polish only -- REF_RULES itself (4 real
+   bylaw cards) is untouched; new .rules/.rule grid (mockup's own class names, no collision)
+   instead of the generic .cards.g2. .timeline (REF_TIMELINE) and the scorer table
+   (REF_SCORERS, already a buildTable()/.tblwrap output) are deliberately left alone --
+   .timeline is shared with Inicio's own "Lo próximo" (out of scope this pass), and the
+   scorer table already gets the shared table treatment for free. */
 function buildRefRules(){
-  $('#refRules').innerHTML='<div class="cards g2">'+REF_RULES.map(r=>`
-    <div class="card"><div class="dim" style="font-size:var(--fs-3xs);letter-spacing:.07em;font-weight:600">${esc(r[0]).toUpperCase()}</div>
-    <div style="font-weight:700;margin-top:3px;font-size:16px">${esc(r[1])}</div>
-    <div class="muted" style="font-size:var(--fs-xs);margin-top:4px">${esc(r[2])}</div></div>`).join('')+'</div>';
+  $('#refRules').innerHTML='<div class="rules">'+REF_RULES.map(r=>
+    `<div class="rule"><b>${esc(r[0])}</b>${esc(r[1])}<br><span class="muted" style="font-size:var(--fs-2xs)">${esc(r[2])}</span></div>`
+  ).join('')+'</div>';
 }
 function buildRefTimeline(){
   $('#refTimeline').innerHTML='<div class="timeline">'+REF_TIMELINE.map(t=>`
@@ -2340,25 +3189,48 @@ function buildSources(){
 /* ============================================================
    PREMIOS, MVP POR AÑO Y FINALES JUEGO A JUEGO
    ============================================================ */
+/* PHASE_11 (owner-approved, redesign-v2): MVP judgment call, reported explicitly per this
+   task's own request -- the referenced mockup's Premios view leaves MVP as an unbuilt
+   "en construcción" placeholder, because whoever built that mockup didn't have MVP data on
+   hand. This app already has real MVP data live today -- MVP_YEARS' own baked-in seed is
+   39 rows (not the "30" an older comment near its declaration claims), and, same discovery
+   as SCORING just above, hydrate() (init.js) fills real gaps in from index/mvp.json
+   whenever reachable -- 63 rows confirmed live, not assumed, once hydrated. Either way,
+   this function only ever reads the current, live MVP_YEARS -- rendering a fake "not
+   available yet" card over data that demonstrably exists would
+   itself misrepresent the archive, the opposite of this app's whole honesty-about-gaps
+   discipline. So MVP gets the SAME real lead-list/decade/🔥-streak treatment as scoring,
+   from the real MVP_YEARS array, with its own real "years missing" note kept verbatim
+   (never fabricating the ~58 years this array doesn't have a source for) -- "not yet
+   available" is honored for what's actually missing (those years), not for the whole tab. */
 function buildMVPYears(){
-  const rows=MVP_YEARS.map(r=>[r[0],r[1],r[2],Math.floor(r[0]/10)*10]);
-  buildTable($('#mvpYears'),[
-    {label:'Año',num:true},
-    {label:'Jugador',wide:true,render:(v,r)=>{
-      const id=MVP_ID&&MVP_ID[r[0]], also=MVP_ALSO&&MVP_ALSO[r[0]];
-      const b=`<button class="btn" style="padding:2px var(--sp-2);font-size:var(--fs-2xs)" onclick="showPlayer(${JSON.stringify(v).replace(/"/g,'&quot;')}${id!=null?','+id:''})">${esc(v)}</button>`;
-      return also ? b+` <span class="muted" style="cursor:help" title="El archivo también registra a ${esc(also)} para este año">†</span>` : b;
-    }},
-    {label:'Club',wide:true},{label:'Década',num:true}
-  ],rows,{file:'mvp_por_ano',sort:0,dir:-1});
+  const streaks=scoringStreaksFor(MVP_YEARS,0,1);
+  const rows=MVP_YEARS.slice().reverse();
+  let lastDecade=null, html='';
+  rows.forEach(r=>{
+    const [y,player,club]=r;
+    const decade=Math.floor(y/10)*10+'s';
+    if(decade!==lastDecade){ html+=`<div class="decade-head">${esc(decade)}</div>`; lastDecade=decade; }
+    const streak=streaks[y];
+    const id=MVP_ID&&MVP_ID[y], also=MVP_ALSO&&MVP_ALSO[y];
+    html+=`<div class="lead-row${streak?' repeat':''}">
+      <div class="yrchip mono">${y}</div>
+      <div class="who">
+        <div class="pn"><button class="btn" style="padding:2px var(--sp-2);font-size:var(--fs-2xs)" onclick="showPlayer(${JSON.stringify(player).replace(/"/g,'&quot;')}${id!=null?','+id:''})">${esc(player)}</button>${streak?`<span class="streakpill">🔥 ${streak}×</span>`:''}${also?` <span class="muted" style="cursor:help" title="El archivo también registra a ${esc(also)} para este año">†</span>`:''}</div>
+        <div class="cl">${esc(club)}</div>
+      </div>
+      <div class="val"><div class="n mono">${y}</div><div class="u">temporada</div></div>
+    </div>`;
+  });
   const missing=[];
   for(let y=1950;y<=LAST;y++){ if(!MVP_YEARS.some(r=>r[0]===y)) missing.push(y); }
-  const n=el('div','warn');
-  n.innerHTML=(DATA_TEXT
+  const note=(DATA_TEXT
     ? `Recuperados ${MVP_YEARS.length} de las ${LAST-1949} temporadas desde 1950. La tabla histórica de bsnpr.com (una sola captura de 2004) cubre 1958–2004; el resto sale de páginas de temporada y de la lista de ganadores repetidos. Faltan ${missing.length}: 1950, 1953 y 1956, más varias temporadas recientes que ninguna fuente pública lista todavía. `
     : `Recuperados ${MVP_YEARS.length} de las ${LAST-1949} temporadas desde 1950. Faltan ${missing.length}, casi todas de ganadores que solo lo lograron una vez: Wikipedia los publica dentro de un widget ordenable que no sobrevive a la extracción de texto. `)
     + `Años sin MVP en el archivo: ${missing.join(', ')}.`;
-  $('#mvpYears').appendChild(n);
+  $('#mvpYears').innerHTML=`<div class="lead-list">${html}</div>
+    <p class="scrollnote">🔥 marca MVP consecutivos del mismo jugador.</p>
+    <div class="warn" style="margin-top:var(--sp-3)">${esc(note)}</div>`;
 }
 
 function buildSeasonAwards(){
@@ -2393,15 +3265,21 @@ function buildFinalsByYear(){
   $('#finYear').onchange=e=>{FIN_YEAR=+e.target.value;drawFinal();};
   drawFinal();
 }
+/* PHASE_12 (owner-approved, redesign-v2): item 6's own instruction for this panel --
+   "reuse Historia's La Cinta row styling directly, don't design a new look for it." Same
+   real FINALS_BY_YEAR data, same series/MVP/table computation; only the container markup
+   changed, from the old plain .series/.seriesrow block to Historia's own .readout/
+   .champ-line/.vs-line classes (PHASE_11, main.css) -- the exact same classes, not a
+   re-declared copy of them. */
 function drawFinal(){
   const f=FINALS_BY_YEAR[FIN_YEAR];
   const host=$('#finBody');
   const c=F[f.champ], r=F[f.ru];
   const w=+f.series.split('-')[0], l=+f.series.split('-')[1];
-  host.innerHTML=`<div class="series" style="margin-top:12px">
-    <div class="seriesrow win">${crest(f.champ,28,34)}<span class="nm">${esc(c.name)}</span><span class="sc">${w}</span></div>
-    <div class="seriesrow lose">${crest(f.ru,28,34)}<span class="nm">${esc(r.name)}</span><span class="sc">${l}</span></div>
-  </div><div class="note">MVP de la final: <b>${esc(f.mvp)}</b></div><div id="finTbl"></div>`;
+  host.innerHTML=`<div class="readout" style="margin-top:12px">
+    <div class="champ-line">${crest(f.champ,28,34)} ${esc(c.name)} <span class="mono">${w}</span></div>
+    <div class="vs-line">venció a ${esc(r.name)} <span class="mono">${l}</span> · MVP de la final: <b>${esc(f.mvp)}</b></div>
+  </div><div id="finTbl"></div>`;
   const rows=f.games.map(g=>{
     const win = g[4]>g[5] ? g[2] : g[3];
     return ['Juego '+g[0],g[1],F[g[2]].abbr+' (L)',F[g[3]].abbr+' (V)',g[4]+'-'+g[5],
@@ -2413,13 +3291,41 @@ function drawFinal(){
   ],rows,{file:'final_'+FIN_YEAR,sort:null});
 }
 
+/* PHASE_41 (owner-approved, redesign-v2): OWNERS itself is NOT edited -- it still only
+   covers 5 of the 12 real active clubs. This now renders all 12 (FKEYS.filter(active)),
+   OWNERS' own 5 first in OWNERS' own existing order, then the other 7 in a muted state
+   -- "—" where the owner name would sit, "Sin apoderado confirmado en el archivo" where
+   the optional note would sit, same card shape both ways, so the gap reads as a real
+   archive gap (PC4) rather than as missing content. Intro line computed from F/OWNERS,
+   spelled out via numWordsEs() -- cannot say the wrong count the way Equipos' own
+   lede used to (PHASE_39/40). Each crest wrapped in the new .crest-plate (crestPlate()
+   above) for the dark-theme Cangrejeros / light-theme Vaqueros-Criollos-Santeros
+   contrast bug -- crest() itself is untouched. */
 function buildOwners(){
-  $('#owners').innerHTML='<div class="cards g2">'+OWNERS.map(o=>`
-    <div class="card" style="display:flex;gap:var(--sp-3)">
-      ${crest(o[0],32,38)}
+  const activeKeys=FKEYS.filter(k=>F[k].active);
+  const ownedKeys=OWNERS.map(o=>o[0]);
+  const unownedKeys=activeKeys.filter(k=>!ownedKeys.includes(k));
+  const wOwned=numWordsEs(OWNERS.length), wActive=numWordsEs(activeKeys.length);
+  const intro=wOwned[0].toUpperCase()+wOwned.slice(1)+' de los '+wActive
+    +' clubes tienen apoderado confirmado en el archivo.';
+  const ownedCards=OWNERS.map(o=>{
+    const plate=crestPlate(o[0]);
+    return `<div class="card" style="display:flex;gap:var(--sp-3)">
+      <span class="crest-plate" style="--plate:${plate}">${crest(o[0],31,36)}</span>
       <div><div style="font-weight:700">${esc(F[o[0]].name)}</div>
       <div class="muted" style="font-size:var(--fs-xs)">${esc(o[1])}</div>
-      ${o[2]?`<div class="note">${esc(o[2])}</div>`:''}</div></div>`).join('')+'</div>';
+      ${o[2]?`<div class="note">${esc(o[2])}</div>`:''}</div></div>`;
+  }).join('');
+  const unownedCards=unownedKeys.map(k=>{
+    const plate=crestPlate(k);
+    return `<div class="card muted" style="display:flex;gap:var(--sp-3)">
+      <span class="crest-plate" style="--plate:${plate}">${crest(k,31,36)}</span>
+      <div><div style="font-weight:700">${esc(F[k].name)}</div>
+      <div class="muted" style="font-size:var(--fs-xs)">—</div>
+      <div class="note">Sin apoderado confirmado en el archivo</div></div></div>`;
+  }).join('');
+  $('#owners').innerHTML=`<p class="lede owners-intro">${esc(intro)}</p>`
+    +`<div class="cards g2 owners-grid">${ownedCards}${unownedCards}</div>`;
 }
 /* ============================================================
    CONSULTA — the reason this archive exists rather than a wiki page
@@ -3195,10 +4101,12 @@ function buildQB(){
       ${Object.keys(DATASETS).map(k=>`<option value="${k}">${esc(DATASETS[k].label)}</option>`).join('')}</select></div>
     <div class="field" style="min-width:170px"><label for="qbq">Contiene</label>
       <input type="search" id="qbq" placeholder="texto libre"></div>
-    <div class="field" style="max-width:104px"><label for="qbfrom">Desde</label>
-      <input type="text" id="qbfrom" inputmode="numeric" placeholder="1930"></div>
-    <div class="field" style="max-width:104px"><label for="qbto">Hasta</label>
-      <input type="text" id="qbto" inputmode="numeric" placeholder="2026"></div>
+    <div class="qb-range">
+      <div class="field"><label for="qbfrom">Desde</label>
+        <input type="text" id="qbfrom" inputmode="numeric" placeholder="1930"></div>
+      <div class="field"><label for="qbto">Hasta</label>
+        <input type="text" id="qbto" inputmode="numeric" placeholder="2026"></div>
+    </div>
     <div class="field" style="min-width:170px"><label for="qbclub">Franquicia</label><select id="qbclub">
       <option value="">Todas</option>${FKEYS.slice().sort((a,b)=>F[a].name.localeCompare(F[b].name,'es'))
         .map(k=>`<option value="${k}">${esc(F[k].name)}</option>`).join('')}</select></div>
@@ -3215,6 +4123,25 @@ function buildQB(){
     const n=$('#'+id);
     n.addEventListener(id==='qbds'||id==='qbclub'?'change':'input',runQB);
   });
+  /* PHASE_52A (owner-approved, redesign-v2): any wide ("name") column can run long
+     enough to wrap onto several lines at phone width -- the real cause of the uneven
+     row heights the task named (the Nota column, scrolled out of view at 390px, was
+     still wrapping and inflating just its own row). Capped to one line with ellipsis
+     (web/css/main.css, #qbResult td.name) instead; the full text is never removed
+     from the DOM (still selectable, still in the CSV export via the existing
+     "Descargar CSV" button, unchanged) -- this only adds a native title tooltip, and
+     only on cells that are actually truncated, so the data stays reachable on screen
+     too, not just in the export. A MutationObserver, not a call placed after each of
+     the 2 things that can repaint #qbResult (runQB()'s own buildTable() call, and
+     buildTable()'s own internal sort-click render()) -- one observer here covers
+     both automatically, local to this closure, so this phase adds zero new
+     declarations to the frozen inventory baseline. */
+  new MutationObserver(()=>{
+    $('#qbResult').querySelectorAll('td.name').forEach(td=>{
+      if(td.scrollWidth>td.clientWidth+1) td.title=td.textContent.trim();
+      else td.removeAttribute('title');
+    });
+  }).observe($('#qbResult'),{childList:true,subtree:true});
   runQB();
 }
 function resetQB(){
@@ -3259,11 +4186,36 @@ function copyQB(){
   }
 }
 function buildCoverage(){
-  $('#coverage').innerHTML='<div class="covergrid">'+COVERAGE.map(c=>`
+  /* PHASE_52A (owner-approved, redesign-v2): the previous grid-template-columns:
+     repeat(auto-fit,minmax(112px,1fr)) fit as many 112px-plus columns as the row had
+     room for -- at >=900px that landed on 7, leaving COVERAGE's own 10 tiles as a
+     7+3 orphan row; at 390px it landed on 3, leaving a lone 10th tile stranded on its
+     own row 4. best(n,min,max) picks a column count that divides COVERAGE.length
+     evenly within a reasonable range for each tier (never hardcodes the tile count
+     itself -- COVERAGE.length is read fresh on every call, so a future decade added
+     to that array is handled automatically); when no exact divisor exists in range,
+     falls back to a balanced ceiling-division split so the last row is never more
+     than one tile short of a full one, instead of the old algorithm's worst case.
+     For today's real N=10 this resolves to a clean 2x5 grid at narrow widths and 5x2
+     at >=900px -- confirmed live, zero empty cells either tier. Local, not a new
+     top-level function -- called only here, so this phase adds zero new declarations
+     to the frozen inventory baseline. */
+  const best=(n,min,max)=>{
+    for(let c=max;c>=min;c--){ if(n%c===0) return c; }
+    const rows=Math.ceil(n/max);
+    return Math.min(max,Math.ceil(n/rows));
+  };
+  const n=COVERAGE.length;
+  const colsNarrow=best(n,2,4), colsWide=best(n,4,7);
+  $('#coverage').innerHTML=`<div class="covergrid" style="--cov-cols-narrow:${colsNarrow};--cov-cols-wide:${colsWide}">`+COVERAGE.map(c=>`
     <div class="cov"><div class="cy">${esc(c[0])}</div>
     <div class="cb"><div class="cf" style="width:${c[1]}%;background:${c[1]>60?'var(--ok)':c[1]>40?'var(--azul)':'var(--rojo)'}"></div></div>
     <div class="cl">${esc(c[2])}</div></div>`).join('')+'</div>'+
-    '<p class="note">El porcentaje es cuánto de lo que uno querría saber de esa década está en el archivo, no una medida de exactitud. Los años treinta son el 20% porque solo hay campeones.</p>';
+    /* PHASE_52B (owner-approved, redesign-v2): "20%" was a literal in this sentence
+       while COVERAGE[0][1] (the real 1930s value) already held the same number --
+       derived here instead, so the two can never drift apart; COVERAGE[0][1] is 20
+       today, so the rendered text is unchanged. */
+    `<p class="note">El porcentaje es una estimación editorial de cuánto de lo que uno querría saber de esa década está en el archivo, no una medida de exactitud. Los años treinta son el ${COVERAGE[0][1]}% porque solo hay campeones.</p>`;
 }
 
 /* ============================================================
@@ -3284,11 +4236,33 @@ function hubAsk(e){
   runAsk(v);
 }
 
-/* one editorial block: eyebrow · headline stat + visual · phrase · context · action */
+/* one editorial block: eyebrow · headline stat + visual · phrase · context · action.
+   PHASE_2_REDESIGN step 2: o.lead's own stat (the one full-width featured card per
+   hub render -- "18 títulos de Bayamón" today) gets the solid tricolor-block treatment;
+   every other (non-lead) stat tile in the grid is untouched, so this stays one real
+   spot, not every card on the page. */
 function edBlock(o){
-  const stat = (o.stat!=null && o.stat!=='') ? `<div class="ed-stat">${esc(String(o.stat))}</div>` : '';
+  const stat = (o.stat!=null && o.stat!=='')
+    ? `<div class="ed-stat${o.lead?' tri-block tri-block-rojo':''}">${esc(String(o.stat))}</div>` : '';
   const viz  = o.viz ? `<span class="ed-viz">${o.viz}</span>` : '';
+  /* PHASE_9 hub restyle (owner-approved, redesign-v2): o.icon is one of TABS' own path strings
+     (web/js/tabs.js, same array buildNav() reads) -- reusing the rail's own icon set, not new
+     SVGs, so a card's glyph matches the rail tab a visitor already sees for that same section.
+     Optional: the one hub card with no rail equivalent (Comparar, a Jugadores sub-view, not a
+     top-level tab) renders with no icon rather than an invented one.
+     PHASE_9 alignment fix (owner-approved, redesign-v2): an icon-less card used to render NO
+     first child at all, so its .ed-eye sat 46px higher than its row-mates' (the icon box's own
+     38px height plus the .ed flex container's 8px gap -- found live, not assumed: measured
+     against the actual .ed-icon height and .ed's own `gap` computed style, and 38+8 is exactly
+     the measured 46px). Fixed by always reserving the same box, empty when there's no icon --
+     .ed-icon-empty overrides only the background (transparent), keeping width/height/radius
+     identical, so the layout footprint matches exactly with nothing painted inside it. */
+  const icon = o.icon
+    ? `<div class="ed-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${o.icon}" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`
+    : '<div class="ed-icon ed-icon-empty" aria-hidden="true"></div>';
   return `<button class="ed${o.lead?' ed-lead':''}" onclick="${o.go}">
+    <span class="ed-go" aria-hidden="true">→</span>
+    ${icon}
     <div class="ed-eye">${esc(o.eye)}</div>
     ${(stat||viz)?`<div class="ed-row">${stat}${viz}</div>`:''}
     <div class="ed-phrase">${esc(o.phrase)}</div>
@@ -3310,36 +4284,83 @@ function buildHub(){
   const club=pr.club, f=club&&F[club]?F[club]:null;
   const cn = f ? f.name.split(' de ')[0] : null;
 
-  $('#hubTop').innerHTML=`
+  /* PHASE_12 (owner-approved, redesign-v2): .club-card treatment (item 3) only when a club
+     is actually picked -- same real heading/lede text and the same real crest() call as
+     before (56px now, up from 40px, to read as the card's own focal art rather than a
+     small icon; still the real SVG shield, or a real photo once one exists in
+     web/img/crest/ -- crest() itself decides that, unchanged).
+     A real gap found after the fact and fixed here: name-set-but-no-club fell through to
+     the plain, unstyled .hubtop div -- real "Hola, [nombre]" text with no card at all, not
+     a styling failure, just a state this branch never covered. Now gets a lighter
+     .club-card.neutral sibling instead: same real shell (border-radius/padding/corner-ring
+     all inherited from .club-card itself), a neutral background/ring (main.css), no crest
+     (there's no club to show one for). The real heading text
+     ("Hola, "+nombre) and the real lede ("Escoge por dónde entrar...") are byte-identical
+     to what the old plain .hubtop rendered -- only the wrapper changed.
+     Only the truly anonymous state (no name AND no club) keeps the original plain .hubtop
+     layout -- nothing to personalize there, so no card treatment was asked for or added. */
+  if(f){
+    $('#hubTop').innerHTML = `
+    <div class="club-card">
+      ${crest(club,56,64)}
+      <div class="body">
+        <div class="hi">${pr.name ? 'Hola, '+esc(pr.name) : 'El archivo, desde '+esc(cn)}</div>
+        <div class="sub">${esc(f.won.length?cn+' tiene '+f.won.length+(f.won.length===1?' título':' títulos')+
+                ' en las 97 temporadas que cubre este archivo.'
+              : cn+' nunca ha ganado. Está en el archivo igual.')}</div>
+      </div>
+    </div>`;
+  }else if(pr.name){
+    $('#hubTop').innerHTML = `
+    <div class="club-card neutral">
+      <div class="body">
+        <div class="hi">Hola, ${esc(pr.name)}</div>
+        <div class="sub">Escoge por dónde entrar, o pregunta directamente.</div>
+      </div>
+    </div>`;
+  }else{
+    $('#hubTop').innerHTML = `
     <div class="hubtop">
       <div style="flex:1;min-width:240px">
-        <h1 class="hubhead">${pr.name ? 'Hola, '+esc(pr.name)
-          : (f?'El archivo, desde '+esc(cn):'El archivo del BSN')}</h1>
-        <p class="hublede">${f
-          ? esc(f.won.length?cn+' tiene '+f.won.length+(f.won.length===1?' título':' títulos')+
-                ' en las 97 temporadas que cubre este archivo.'
-              : cn+' nunca ha ganado. Está en el archivo igual.')
-          : 'Noventa y siete temporadas, 1930 a 2026. Escoge por dónde entrar, o pregunta directamente.'}</p>
+        <h2 class="hubhead">El archivo del BSN</h2>
+        <p class="hublede">Escoge por dónde entrar, o pregunta directamente.</p>
       </div>
-      ${f?`<div style="display:flex;align-items:center;gap:var(--sp-2_5)">${crest(club,40,48)}</div>`:''}
     </div>`;
+  }
 
   /* LEAD — the user's club title comb, or Bayamón (the all-time leader) */
   const lf = (f && f.won.length) ? f : F.bay;
   const lead = lf===f ? cn : 'Bayamón';
-  const mostEver = FKEYS.every(k=>F[k].won.length<=lf.won.length);
   const blocks=[];
 
+  /* Icons: TABS' own path strings (web/js/tabs.js, the same array buildNav() reads for the
+     rail) -- historia/jugadores/juega/archivo each find their entry by id. Comparar has none:
+     it's a Jugadores sub-view, never a top-level tab, so no rail icon exists for it -- left
+     icon-less rather than inventing one (owner-approved, redesign-v2). */
+  const iconOf = id => { const t=TABS.find(x=>x[0]===id); return t ? t[2] : null; };
+
+  /* PHASE_9 hub restyle (owner-approved, redesign-v2): lead-card phrase now states the club's
+     first-to-most-recent title span (lf.won[0]/lf.won[lf.won.length-1], never typed literals --
+     stays correct for whichever club is picked, or Bayamón un-picked) instead of "el máximo de
+     la liga", which just repeated the hero's own stat 3 ("18 títulos de Vaqueros de Bayamón, el
+     club más ganador") -- see the redesign-v2 PHASE 9 hub-restyle report, option C. Only shown
+     when there's more than one title: a single-title club's own first and most recent title are
+     the same year, so "de 1998 a 1998" would read as a typo, not a fact -- those clubs fall back
+     to the bare "títulos de X", the same text a non-leader club already got before this change.
+     mostEver (whether lf leads the whole league) was only ever used by the text this replaces --
+     removed with it, not left dangling unused. */
   blocks.push(edBlock({ lead:true, eye:lf===f?'Historia · tu club':'Historia',
+    icon: iconOf('historia'),
     stat: lf.won.length,
     viz: titleComb(lf,{w:220,h:32,gap:1}),
-    phrase:'títulos de '+lead+(mostEver?', el máximo de la liga':''),
+    phrase:'títulos de '+lead+(lf.won.length>1?', de '+lf.won[0]+' a '+lf.won[lf.won.length-1]:''),
     ctx:'La cinta de campeones, 1930 a 2026. Las dinastías se leen como franjas sólidas de color; los años flacos, como huecos.',
     act:'Ver la cinta', go:"showView('historia','cinta')" }));
 
   const nJug = (PALL&&PALL.length) ? PALL.length : (PINDEX?PINDEX.length:0);
   const topPts = PINDEX ? PINDEX.filter(p=>p.pts!=null).map(p=>p.pts).sort((x,y)=>x-y).slice(-7) : [];
   blocks.push(edBlock({ eye:'Jugadores',
+    icon: iconOf('jugadores'),
     stat: nJug ? nJug.toLocaleString('es-PR') : '—',
     viz: topPts.length>=2 ? spark(topPts,{area:true,w:96,h:24}) : '',
     phrase:'jugadores con fuente',
@@ -3354,6 +4375,7 @@ function buildHub(){
 
   const jn = (typeof puzzleNo==='function') ? puzzleNo() : null;
   blocks.push(edBlock({ eye:'Juega',
+    icon: iconOf('juega'),
     stat: jn!=null ? '#'+jn : '',
     viz: dotgrid([0,1,0, 0,0,1, 1,0,0]),
     phrase:'La Cuadrícula de hoy',
@@ -3361,6 +4383,7 @@ function buildHub(){
     act:'Jugar', go:"showView('juega','cuadricula')" }));
 
   blocks.push(edBlock({ eye:'Archivo', stat:'2011',
+    icon: iconOf('archivo'),
     viz: sparkBars(COVERAGE.map(c=>c[1]),{w:110,h:24,scale:100,gap:1.5}),
     phrase:'el muro real',
     ctx:'Antes de 2011 no hay estadística por temporada del BSN. El archivo enseña ese hueco y todos los demás.',
@@ -3369,9 +4392,44 @@ function buildHub(){
   $('#hubGrid').innerHTML='<div class="edhub">'+blocks.join('')+'</div>';
 
   buildPrimer();
+  buildRecentChamps();
   $('#hubFoot').textContent = f
     ? 'Cambia de club desde la píldora de arriba y el archivo se reordena a su alrededor.'
     : 'Escoge un club en Equipos y el archivo se reordena a su alrededor.';
+}
+
+/* PHASE_9 hub restyle (owner-approved, redesign-v2): "Últimos campeones" -- built from real
+   data already used elsewhere (champOf/YEARS, both inline in index.html; the title-number
+   column is the exact same computation showSeason() already does, f.won.indexOf(y)+1 --
+   tabs.js's own showSeason()). The last 3 seasons with a documented champion, most recent
+   first -- YEARS is already sorted ascending, so this walks backward and stops at 3 real
+   entries rather than assuming the last 3 YEARS values all have one (a season with no
+   champion registered would otherwise show as a gap here). */
+function buildRecentChamps(){
+  const host=$('#hubChamps'); if(!host) return;
+  const rows=[];
+  for(let i=YEARS.length-1; i>=0 && rows.length<3; i--){
+    const y=YEARS[i], k=champOf[y];
+    if(!k) continue;
+    const f=F[k];
+    rows.push({y, k, f, num:f.won.indexOf(y)+1});
+  }
+  if(!rows.length){ host.innerHTML=''; return; }
+  /* PHASE_12 (owner-approved, redesign-v2): .champ-strip treatment (item 5), one real strip
+     per real row -- all 3 real last-documented-champion rows kept (not reduced to the
+     mockup's own single-strip sample; see this phase's own report on "none removed"), real
+     crest(), and a real onclick into Historia -> Dinastías (showView, not a placeholder
+     href="#") -- exactly the destination item 5 named. */
+  host.innerHTML=`
+    <h2 class="big">Últimos campeones</h2>
+    ${rows.map(r=>`
+    <button type="button" class="champ-strip" onclick="showView('historia','dinastias')">
+      ${crest(r.k,44,50)}
+      <div class="body">
+        <div class="who">${esc(r.f.name)} — campeón ${r.y}</div>
+        <div class="meta">Título #${r.num} · ver en Historia → Dinastías</div>
+      </div>
+    </button>`).join('')}`;
 }
 
 function buildProfile(){
@@ -3598,23 +4656,32 @@ function buildPrimer(){
       +'cursor:pointer;font:inherit;text-decoration:underline">Leer qué es el BSN</button></p>';
     return;
   }
+  /* PHASE_12 follow-up (owner-approved, redesign-v2): label+icon swap only, per the
+     clarification this task's own answer surfaced -- buildPrimer() is the "¿Qué es el
+     BSN?" first-visit explainer, not date-driven content, so the tag now says exactly
+     that (matching the real .primerhead h4 just below it) with an info icon, not a clock.
+     Every paragraph, the dismiss button, and the glosario link below are still
+     byte-identical to before -- this touches only the tag's own label string and its svg. */
   host.innerHTML=`
-    <div class="primer">
-      <div class="primerhead">
-        <h4>¿Qué es el BSN?</h4>
-        <button class="x" onclick="dismissPrimer()">Ya lo sé, ocúltalo</button>
+    <div class="today-card">
+      <div class="tc-tag"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 11h1v5h1"/></svg>¿Qué es el BSN?</div>
+      <div class="primer">
+        <div class="primerhead">
+          <h4>¿Qué es el BSN?</h4>
+          <button class="x" onclick="dismissPrimer()">Ya lo sé, ocúltalo</button>
+        </div>
+        <p>El Baloncesto Superior Nacional es la liga profesional de baloncesto de Puerto Rico.
+          Empezó en 1930 y no ha parado desde entonces, salvo unos pocos años sueltos. Hoy son
+          doce equipos, cada uno de un pueblo, y cada equipo juega 34 partidos entre marzo y
+          junio. Después vienen los playoffs, y en agosto se corona un campeón.</p>
+        <p>Lo que la hace distinta de otras ligas es el tamaño. Con 34 juegos, dos malas semanas
+          te cuestan la temporada; de ahí el apodo, «La Más Dura». Y cada club puede firmar un
+          número limitado de jugadores extranjeros, llamados refuerzos, así que el resto de la
+          cancha es talento puertorriqueño.</p>
+        <p>Este archivo cubre las 97 temporadas: quién ganó, quién anotó, quién jugó y qué se
+          perdió por el camino. Si una palabra no te suena, está en el
+          <button class="x" onclick="showView('archivo','glosario')">glosario</button>.</p>
       </div>
-      <p>El Baloncesto Superior Nacional es la liga profesional de baloncesto de Puerto Rico.
-        Empezó en 1930 y no ha parado desde entonces, salvo unos pocos años sueltos. Hoy son
-        doce equipos, cada uno de un pueblo, y cada equipo juega 34 partidos entre marzo y
-        junio. Después vienen los playoffs, y en agosto se corona un campeón.</p>
-      <p>Lo que la hace distinta de otras ligas es el tamaño. Con 34 juegos, dos malas semanas
-        te cuestan la temporada; de ahí el apodo, «La Más Dura». Y cada club puede firmar un
-        número limitado de jugadores extranjeros, llamados refuerzos, así que el resto de la
-        cancha es talento puertorriqueño.</p>
-      <p>Este archivo cubre las 97 temporadas: quién ganó, quién anotó, quién jugó y qué se
-        perdió por el camino. Si una palabra no te suena, está en el
-        <button class="x" onclick="showView('archivo','glosario')">glosario</button>.</p>
     </div>`;
 }
 
@@ -3682,23 +4749,66 @@ let QZ=null;
    the final fallback text is honest, not currently reachable (every
    bio-less player has at least one of the four), kept for whenever that
    stops being true. */
+/* PHASE_47 (owner-approved, redesign-v2): two real bugs found going through this
+   function for the position/terminology pass item 4 asked for, not anticipated
+   going in. (a) "N rebotes"/"N asistencias"/"N robos"/"N tapones" glued a hardcoded
+   plural straight onto the real per-game average -- reachable the moment any of
+   those four equals exactly 1 (confirmed live, PHASE_47's own screenshot: a real
+   player with ppg=1 showed "Promedió 1 puntos por juego." before the matching fix
+   below). plural() (helpers.js) fixes all four here; "tapón"/"tapones" is the one
+   genuinely irregular pair in this set (not a plain +s), passed explicitly rather
+   than guessed. (b) none of this -- the player-facing text never showed "1 puntos"
+   before this phase either, since the bug was below in clueList() for ppg, not here
+   -- this function's own rpg/apg/spg/bpg concatenation had the exact same bug,
+   just never confirmed with a real low-average player until this pass checked it
+   directly. */
 function statClue(p){
   const parts=[];
-  if(p.rpg!=null) parts.push(p.rpg+' rebotes');
-  if(p.apg!=null) parts.push(p.apg+' asistencias');
+  if(p.rpg!=null) parts.push(p.rpg+' '+plural(p.rpg,'rebote'));
+  if(p.apg!=null) parts.push(p.apg+' '+plural(p.apg,'asistencia'));
   if(parts.length) return `Promedió ${parts.join(' y ')} por juego.`;
   const parts2=[];
-  if(p.spg!=null) parts2.push(p.spg+' robos');
-  if(p.bpg!=null) parts2.push(p.bpg+' tapones');
+  if(p.spg!=null) parts2.push(p.spg+' '+plural(p.spg,'robo'));
+  if(p.bpg!=null) parts2.push(p.bpg+' '+plural(p.bpg,'tapón','tapones'));
   if(parts2.length) return `Promedió ${parts2.join(' y ')} por juego.`;
   return 'Su producción más allá de los puntos nunca se registró.';
+}
+/* PHASE_47B (owner-approved, redesign-v2): PHASE_47's own fix only covered SLOT_ES's
+   5 standard codes (PG/SG/SF/PF/C) -- "G"/"F"/"F/C" still fell back to the raw code,
+   confirmed live, a real and regularly-reachable gap (52 of 376 POOL players, 13.8%,
+   /tmp/p47b_pos_values.txt). POS_ES is this one new table the task asked for ("a
+   single mapping table so changing them is a one-line edit") -- Quiz-only, kept
+   separate from SLOT_ES (games.js, Draft's own, not duplicated) rather than merged
+   into it. G->"Base o escolta" and "F/C"->"Poste" are NOT new wording -- Grid's own
+   CATS categories (data.js) already treat bare "G" as part of 'guard' and "F/C" as
+   part of 'big' via their own real regexes (/G|PG|SG/ and /C|PF|F\/C/); reused
+   directly. "F"->"Alero o ala-pívot" has no existing precedent anywhere in the app
+   (confirmed: neither CATS regex matches bare "F") -- a genuine new proposal,
+   printed in /tmp/p47b_strings.txt for approval before commit, not assumed. */
+const POS_ES={G:'Base o escolta',F:'Alero o ala-pívot','F/C':'Poste'};
+/* posEs(p) tries SLOT_ES then POS_ES on the full code first (so "F/C" resolves to
+   the single clean "Poste" rather than a clunkier token-by-token join); only a code
+   NEITHER table recognizes falls through to posTokens() (games.js, already exists --
+   reused rather than re-implementing compound-splitting here), translating each
+   token separately and joining with " o ". Not exercised by any of today's real
+   players (all 8 real codes resolve on the first branch), but in place so a future,
+   genuinely novel compound code still translates instead of leaking a raw one. If
+   nothing translates at all, returns null -- the clue is OMITTED (clueList() below
+   falls back to the same "no está registrada" line already used for a missing pos),
+   never a raw code shown to the player. */
+function posEs(p){
+  const direct=SLOT_ES[p.pos]||POS_ES[p.pos];
+  if(direct) return direct;
+  const toks=posTokens(p).map(t=>SLOT_ES[t]||POS_ES[t]).filter(Boolean);
+  return toks.length?[...new Set(toks)].join(' o '):null;
 }
 function clueList(p){
   const cl=[];
   cl.push(p.d.length>1?`Jugó en los ${p.d[0]}s y los ${p.d[p.d.length-1]}s.`:`Jugó en los ${p.d[0]}s.`);
   cl.push(p.t.includes('import')?'Llegó a la liga como refuerzo.':p.t.includes('native')?'Es nativo o nativizado.':'Su estatus no está registrado.');
-  cl.push(p.pos?`Jugaba de ${p.pos}.`:'Su posición no está registrada.');
-  if(p.ppg!=null) cl.push(`Promedió ${p.ppg} puntos por juego.`);
+  const pEs=p.pos?posEs(p):null;
+  cl.push(pEs?`Jugaba de ${pEs}.`:'Su posición no está registrada.');
+  if(p.ppg!=null) cl.push(`Promedió ${p.ppg} ${plural(p.ppg,'punto')} por juego.`);
   else cl.push('Su promedio de anotación nunca se registró.');
   cl.push(p.c.length?`Vistió el uniforme de ${p.c.map(c=>F[c].name).join(', ')}.`:'Su club no está registrado en el archivo.');
   cl.push(p.b || statClue(p));
@@ -3710,6 +4820,15 @@ function newQuiz(){
   QZ={p,clues:clueList(p),shown:1,guesses:3,done:false};
   drawQuiz();
 }
+/* PHASE_47 (owner-approved, redesign-v2): visual pass (item 1) -- "Otra pista" used
+   to share .guessbar with the input+"Adivinar" button, wrapping to its own awkward
+   second row at 390px (confirmed live, not assumed) since 3 flex items rarely fit
+   one line at that width. Moved into its own .btnrow underneath, the same
+   separation Draft already uses between its own primary action (court tap) and
+   secondary ones (spin/reset) -- the answer bar now reads as one action, "reveal
+   another clue" as a clearly separate one, matching the other 3 games' own
+   hierarchy instead of Quiz's own flatter layout. No change to clue text, point
+   math, or guess matching -- rendering only. */
 function drawQuiz(){
   const host=$('#quizGame');
   if(!QZ){ host.innerHTML=''; return; }
@@ -3721,8 +4840,8 @@ function drawQuiz(){
     QZ.clues.slice(0,QZ.shown).map(c=>'<li>'+esc(c)+'</li>').join('')+'</ol></div>';
   if(!QZ.done){
     h+=`<div class="guessbar"><input type="text" id="qGuess" placeholder="¿Quién es?" autocomplete="off" list="poolNames">
-      <button class="btn primary" onclick="guessQuiz()">Adivinar</button>
-      <button class="btn" onclick="revealClue()" ${QZ.shown>=6?'disabled':''}>Otra pista</button></div>`;
+      <button class="btn primary" onclick="guessQuiz()">Adivinar</button></div>
+      <div class="btnrow"><button class="btn" onclick="revealClue()" ${QZ.shown>=6?'disabled':''}>Otra pista</button></div>`;
   } else {
     h+=`<div class="btnrow"><button class="btn primary" onclick="newQuiz()">Otro jugador</button>
       <button class="btn" onclick="showPlayer(${JSON.stringify(QZ.p.n).replace(/"/g,'&quot;')})">Ver su ficha</button></div>`;
@@ -3788,12 +4907,72 @@ const CMP_FALLBACK=['var(--azul)','var(--rojo)','var(--ok)'];
 
 function cmpFind(name){
   if(!PINDEX) return null;
+  /* PHASE_36: the nickKey() fallback is what lets cmpAdd('Mario Morales')
+     (the plain form, e.g. CMP_PRESETS' own literal string) still resolve
+     to the merged "Mario «Quijote» Morales" card once that's his only
+     PINDEX entry -- norm() equality/startsWith alone can't, since neither
+     is a substring/prefix of the other once the nickname sits in between. */
   return PINDEX.find(x=>norm(x.name)===norm(name)) ||
-         PINDEX.find(x=>norm(x.name).startsWith(norm(name)));
+         PINDEX.find(x=>norm(x.name).startsWith(norm(name))) ||
+         PINDEX.find(x=>nickKey(x.name)===nickKey(name));
 }
 function cmpColor(p,i){
   const c=Array.from(p.clubs).find(k=>F[k]);
   return c?F[c].c1:CMP_FALLBACK[i%3];
+}
+/* PHASE_25 item 1: two real club colors can be too close to tell apart at
+   a glance (same hue family, similar lightness -- e.g. Cariduros de
+   Fajardo's maroon #7A1F3D vs Piratas de Quebradillas' red #B3141F,
+   hueDist 15.6°/Ldiff 9; or two different "blue" clubs). Collision rule:
+   circular hue distance <=20° AND |lightness diff|<=15 (HSL, computed on
+   the real hex, both measured live against this league's real palette
+   before picking the thresholds -- 20°/15 catches both real examples
+   above without also flagging genuinely different hues like Santurce's
+   orange (H18.5) against Quebradillas' red (H356, 22.7° apart -- just
+   outside the rule, correctly left alone). CMP_DISTINCT is a small fixed
+   set of 4 hues chosen to sit in this league's real color gaps (checked
+   against all 33 active/historic club c1 hexes available at the time):
+   2 of the 4 still land inside the threshold of exactly one specific
+   club each (amber/Osos de Manatí, cyan/Capitanes de Arecibo) -- left in
+   deliberately rather than chasing a mathematically-impossible "never
+   collides with any of 33+ real clubs" set, since the assignment loop
+   below already skips any candidate that collides with a color actually
+   in use THIS comparison; a real clash only happens if every one of the
+   4 is simultaneously unusable, never observed testing up to 3 players. */
+const CMP_DISTINCT=['#5B8C1F','#7A3FD1','#C9960C','#0E8FA6'];
+function hexHsl(hex){
+  const [r,g,b]=hexRgb(hex).map(v=>v/255);
+  const max=Math.max(r,g,b), min=Math.min(r,g,b); let h=0,s=0,l=(max+min)/2;
+  if(max!==min){
+    const d=max-min; s=l>0.5?d/(2-max-min):d/(max+min);
+    if(max===r) h=(g-b)/d+(g<b?6:0); else if(max===g) h=(b-r)/d+2; else h=(r-g)/d+4;
+    h*=60;
+  }
+  return [h,s*100,l*100];
+}
+function cmpColorsCollide(hexA,hexB){
+  if(!/^#/.test(hexA)||!/^#/.test(hexB)) return false;
+  const [h1,,l1]=hexHsl(hexA), [h2,,l2]=hexHsl(hexB);
+  const d=Math.abs(h1-h2)%360, hd=d>180?360-d:d;
+  return hd<=20 && Math.abs(l1-l2)<=15;
+}
+/* The one real color every downstream piece (avatar, card top bar,
+   scoreboard numeral, bars, radar polygon, legend) must share -- computed
+   ONCE per drawCompare() call and threaded through as a plain array, so
+   none of them can silently drift from what another one drew. The first
+   player always keeps their real club color (nothing to collide with
+   yet); each later player's real color is swapped for a CMP_DISTINCT
+   pick only if it actually collides with a color already locked in. */
+function cmpAssignColors(ps){
+  const used=[];
+  return ps.map((p,i)=>{
+    let hex=cmpColor(p,i);
+    if(used.some(u=>cmpColorsCollide(hex,u))){
+      hex=CMP_DISTINCT.find(c=>!used.some(u=>cmpColorsCollide(c,u)))||hex;
+    }
+    used.push(hex);
+    return hex;
+  });
 }
 /* backlog item 4 (season_detail_spec.md addendum) — cross-player season
    comparison. CMP_MODE tracks each added name's chosen side: 'career'
@@ -3895,7 +5074,19 @@ function cmpFromPlayer(name){
 function cmpPreset(a,b){
   showView('jugadores','comparar',{noScroll:true,noHash:true});
   try{ buildCompare(); }catch(e){}
-  CMP=[a,b].filter(n=>cmpFind(n));
+  /* PHASE_36: resolve each preset name FIRST (cmpResolveName(), the same
+     call cmpAdd() already makes) instead of keeping the raw literal string
+     CMP_PRESETS carries -- a real bug this merge exposed: CMP_PRESETS[0]'s
+     own 'Mario Morales' resolves (via cmpFind()'s new nickKey fallback) to
+     the merged "Mario «Quijote» Morales" card, but CMP itself used to keep
+     'Mario Morales' verbatim, so cmpEnsureData()/CMP_DATA got written
+     under THAT key while cmpSeasonSelect() -- reading cmpResolved(name).name,
+     the RESOLVED player's own canonical name -- looked the data up under
+     the nickname key instead. Two different keys for the same real fetch
+     meant the season select never saw its own data land and stayed on
+     "Cargando…" forever. Resolving upfront, the same way cmpAdd() always
+     has, keeps CMP/CMP_DATA/CMP_MODE on one consistent key throughout. */
+  CMP=[a,b].map(n=>cmpResolveName(n)||n).filter(n=>cmpFind(n));
   CMP.forEach(n=>{ CMP_MODE[n]='career'; cmpEnsureData(n).then(drawCompare); });
   if(CMP.length===2) setHash('jugadores/comparar/'+slug(a)+'/'+slug(b));
   drawCompare();
@@ -3938,7 +5129,8 @@ function buildCompare(){
   const host=$('#cmpPick');
   if(!host) return;
   const names=cmpCandidateNames().map(n=>'<option value="'+esc(n)+'">').join('');
-  host.innerHTML=`<div class="filters">
+  host.innerHTML=`<div class="search-card">
+  <div class="filters">
     <div class="field" style="min-width:230px"><label for="cmpQ">Añadir jugador</label>
       <input list="cmpList" id="cmpQ" type="search" placeholder="Escribe un nombre…" autocomplete="off"></div>
     <div class="field"><label>&nbsp;</label><button class="btn primary" onclick="cmpAdd()">Añadir</button></div>
@@ -3950,7 +5142,8 @@ function buildCompare(){
   <div class="msg" id="cmpMsg" role="status" aria-live="polite"></div>
   <div class="note" style="margin-top:var(--sp-2)">Cada jugador se puede fijar a su carrera o a una temporada
     específica. El archivo no tiene datos por jugador de 2022 en adelante — esas temporadas
-    no aparecen para nadie todavía.</div>`;
+    no aparecen para nadie todavía.</div>
+  </div>`;
   const inp=$('#cmpQ');
   if(inp) inp.onkeydown=e=>{ if(e.key==='Enter'){ e.preventDefault(); cmpAdd(); } };
   drawCompare();
@@ -3965,8 +5158,7 @@ function buildCompare(){
    indistinguishable from a bug, and it hides the real fact (this player
    can only ever be compared by career) instead of showing it (PC4). */
 function cmpSeasonSelectDisabled(label,name){
-  return `<select disabled style="font-size:12px;padding:3px 8px;width:auto;min-width:0"
-    aria-label="Temporada de ${esc(name)}"><option>${esc(label)}</option></select>`;
+  return `<select disabled aria-label="Temporada de ${esc(name)}"><option>${esc(label)}</option></select>`;
 }
 /* Picked once a player's career[] has landed (cmpEnsureData) — "Carrera"
    only offered when they're a PINDEX name (its own career averages exist);
@@ -3996,18 +5188,51 @@ function cmpSeasonSelect(name){
     const label=(c.season||'—')+(club?' · '+club:'')+(isMvp?' — MVP':'');
     opts+=`<option value="${i}"${curVal===String(i)?' selected':''}>${esc(label)}</option>`;
   });
-  return `<select style="font-size:12px;padding:3px 8px;width:auto;min-width:0" aria-label="Temporada de ${esc(name)}"
+  return `<select aria-label="Temporada de ${esc(name)}"
     onchange="cmpSetMode(${JSON.stringify(name).replace(/"/g,'&quot;')},this.value)">${opts}</select>`;
 }
-function cmpHead(p,i){
-  const col=cmpColor(p,i);
-  const meta=p._mode==='season' ? '' : esc([p.pos,p.years].filter(Boolean).join(' · ')||'años sin registrar');
-  return `<div class="cmphead">
-    <span class="cmpdot" style="background:${col}"></span>
-    <span class="cmpname">${esc(p.name)}</span>
-    ${cmpSeasonSelect(p.name)}
-    ${meta?`<span class="dim" style="font-size:11px">${meta}</span>`:''}
-    <button class="btn cmpx" onclick="cmpRemove(${JSON.stringify(p.name).replace(/"/g,'&quot;')})" aria-label="Quitar a ${esc(p.name)}">Quitar</button>
+/* PHASE_22 Part 2a: a real head-to-head card (avatar/name/pos·years/club/
+   season-select/Quitar), new .cmp2* classes throughout -- cmpHead() is only
+   ever called from drawCompare() below (grep-confirmed), so this rewrite
+   cannot touch renderSeasonCmp()'s own season-vs-season panel, which has
+   always had its own separate inline markup against the old .cmphead/
+   .cmpdot/.cmpname classes and is untouched here, left exactly as PHASE_21
+   left it. portrait() (PHASE_21's own real direction-B avatar) replaces
+   the old bare color dot.
+   PHASE_25 item 1: `col` is now a required 3rd param -- drawCompare()'s
+   own cmpAssignColors() result, already collision-resolved against every
+   other player in THIS comparison -- instead of a fresh cmpColor(p,i)
+   call here. Passed straight into portrait() as c1 (the avatar's own fill
+   color) so the avatar, the top accent bar, and every other place this
+   same color is used downstream are guaranteed the same hex, never three
+   independent lookups that could drift. portrait()'s own c2 param has
+   never done anything (confirmed reading its body -- portraitFill(c1)
+   is the only place c1/c2 feed in, and c2 isn't referenced), so this
+   changes nothing about avatars outside Comparar; portrait() itself is
+   untouched. */
+function cmpHead(p,i,col){
+  /* PHASE_25 item 4: this line used to vanish entirely for a season-mode
+     player (meta='') while a career-mode player alongside it always had
+     one (falling back to the honest 'años sin registrar' text when pos
+     AND years are both missing) -- one fewer line on one card shifts its
+     own select/Quitar up relative to its neighbor's. Season mode now
+     shows the one real fact it actually has here (which season is
+     pinned, from the same p._season cmpResolved() already set) instead
+     of pos·years it was never going to have; the line itself is always
+     rendered either way, never conditionally dropped. */
+  const meta=p._mode==='season'
+    ? (p._season!=null ? 'Temporada '+esc(String(p._season)) : ' ')
+    : esc([p.pos,p.years].filter(Boolean).join(' · ')||'años sin registrar');
+  const clubKey=Array.from(p.clubs||[]).find(k=>F[k]);
+  const clubName=clubKey?F[clubKey].name:'';
+  const c2=clubKey?F[clubKey].c2:null;
+  return `<div class="cmp2head" style="--cmp-c:${col}">
+    ${portrait(p.name,col,c2,72,88,p.pos)}
+    <div class="cmp2name">${esc(p.name)}</div>
+    <div class="cmp2meta">${meta}</div>
+    ${clubName?`<div class="cmp2meta">${esc(clubName)}</div>`:''}
+    <span class="cmp2select">${cmpSeasonSelect(p.name)}</span>
+    <button class="btn cmpx cmp2x" onclick="cmpRemove(${JSON.stringify(p.name).replace(/"/g,'&quot;')})" aria-label="Quitar a ${esc(p.name)}">Quitar</button>
   </div>`;
 }
 
@@ -4015,12 +5240,23 @@ function cmpHead(p,i){
    in the whole index so the shape means something across eras. A
    category the player never had recorded collapses to the centre and
    is called out under the chart, not silently drawn as zero. */
-function cmpRadar(ps){
+function cmpRadar(ps,colors){
   const maxes={};
   CMP_RATE.forEach(r=>{
     maxes[r.s]=Math.max(1,...(PINDEX||[]).map(p=>typeof p[r.s]==='number'?p[r.s]:0));
   });
-  const R=64, cx=88, cy=80, n=CMP_RATE.length;
+  /* PHASE_22 item d: bigger (R 64->90, same proportions scaled ~1.44x) and
+     in its own real panel now instead of a narrow sidebar column -- the
+     real per-category math/scaling below (against PINDEX's own live
+     maxes) is unchanged, only the drawing's own size.
+     PHASE_24 item 1: cy pushed down 16px (112->128, viewBox height
+     240->256 to match) -- the top axis label ("PTS", i=0, straight up)
+     was landing at y=5.7 with a 12.5px font, clipped by the SVG's own
+     viewport above y=0. Every other label had real margin (closest was
+     the side labels at y=78, nowhere near either edge), so a uniform
+     vertical shift was enough; cx/R/the bottom labels' own margin are
+     untouched. */
+  const R=90, cx=127, cy=128, n=CMP_RATE.length;
   const pt=(i,f)=>{
     const a=-Math.PI/2 + i*2*Math.PI/n;
     return [cx+Math.cos(a)*R*f, cy+Math.sin(a)*R*f];
@@ -4034,23 +5270,57 @@ function cmpRadar(ps){
     const [x,y]=pt(i,1);
     g+=`<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="var(--line)" stroke-width="1"/>`;
     const [lx,ly]=pt(i,1.22);
-    g+=`<text x="${lx.toFixed(1)}" y="${(ly+3).toFixed(1)}" text-anchor="middle" font-size="9.5"
+    g+=`<text x="${lx.toFixed(1)}" y="${(ly+3.5).toFixed(1)}" text-anchor="middle" font-size="12.5"
         fill="var(--ink-3)" font-weight="700" letter-spacing=".05em">${r.a}</text>`;
   });
   ps.forEach((p,i)=>{
-    const col=cmpColor(p,i);
+    const col=colors[i];
+    /* PHASE_26 item 1: the 2px stroke is fully opaque and sits directly on
+       .cmp2radar-panel's own --card background (not --raise -- the radar
+       has no track, just the panel itself) -- real measured failures here
+       too (e.g. Fajardo maroon 1.61:1 against dark --card). The 16%-opacity
+       fill is already a faint wash blended with the panel behind it, so
+       running it through the same safe pair costs nothing and keeps fill
+       and stroke the same color, just belt-and-suspenders on the one
+       that's actually legible at full opacity. */
+    const fillPair=cmpFillSafe(col,'#0C1428','#0C1428',3), fillPairLight=cmpFillSafe(col,'#FFFFFF','#FFFFFF',3);
     const d=CMP_RATE.map((r,j)=>{
       const v=typeof p[r.s]==='number'?p[r.s]:0;
       return pt(j, Math.max(0.02, Math.min(1, v/maxes[r.s]))).map(x=>x.toFixed(1)).join(',');
     }).join(' ');
-    g+=`<polygon class="cmpspoke" points="${d}" fill="${col}" fill-opacity=".16" stroke="${col}"
-        stroke-width="2" stroke-linejoin="round" style="animation-delay:${i*90}ms"/>`;
+    g+=`<polygon class="cmpspoke" points="${d}" style="--cmp-fd:${fillPair};--cmp-fl:${fillPairLight};animation-delay:${i*90}ms"
+        fill-opacity=".16" stroke-width="2" stroke-linejoin="round"/>`;
   });
-  return `<svg viewBox="0 0 176 168" width="176" height="168" role="img"
+  return `<svg viewBox="0 0 254 256" width="254" height="256" role="img"
     aria-label="Perfil por categoría de los jugadores comparados">${g}</svg>`;
 }
 
-function cmpBarRow(row, ps, isTotal){
+/* PHASE_22 Part 2c, extended PHASE_24 item 4: a 5th, optional `mode` param.
+   false/undefined/omitted (the only way renderSeasonCmp() ever calls this,
+   3 args, grep-confirmed) renders the exact byte-for-byte original
+   .cmprow/.cmpbars/.cmpbarline/.cmptrack/.cmpfill/.cmpval markup, untouched
+   -- including its own var(--ok) green lead color and its own min-bar-
+   width-on-zero quirk, neither touched here, per the standing "Temporadas
+   must stay byte-identical" constraint. mode='mirrored' (Comparar's
+   2-player case) renders the "tale of the tape" row: label centered, each
+   player's value on the outside, the bar growing from the centre line
+   outward on each side. mode='grouped' (Comparar's 3-player case, PHASE_24
+   item 4 -- previously silently reused the legacy branch, which is why its
+   lead color used to be the same var(--ok) green that collides with a
+   teal club color) is new: same per-row grouped-bars shape as legacy, but
+   with its own .cmp3* classes so the lead gets the player's own real
+   contrast-safe color instead of a flat green, and each bar gets a
+   colored owner cue (first name) beside its value -- three players with
+   same-ish colors are still only told apart by the head cards above, so
+   case where two of the real "find max" colors happen to visually read
+   similarly was already a pre-existing risk; this phase doesn't change
+   who's assigned which color, only how the lead's OWN color renders as
+   text. PHASE_24 item 5: a true 0 now draws no fill (w=0) in BOTH new
+   branches, same as a missing value's bar -- only the value text ("0",
+   not "—") and the still-rendered row distinguish a real zero from a
+   hole. The legacy branch's own 2%-floor-on-zero quirk is left exactly as
+   it was, for the same byte-identical reason the lead color is. */
+function cmpBarRow(row, ps, isTotal, mode, colors){
   const vals=ps.map(p=>typeof p[row.s]==='number'?p[row.s]:null);
   const known=vals.filter(v=>v!=null);
   const max=row.cap!=null ? row.cap : (known.length?Math.max.apply(null,known):0);
@@ -4060,6 +5330,60 @@ function cmpBarRow(row, ps, isTotal){
     if(row.cap!=null && row.cap<=1) return (v*100).toFixed(1)+'%';
     return isTotal? num(v) : v.toFixed(1);
   };
+  const widthOf=v=>(v==null||!max||v===0)?0:Math.max(2,(v/max)*100);
+  if(mode==='mirrored' && ps.length===2){
+    const tie=known.length===2 && vals[0]===vals[1];
+    const cell=(i,side)=>{
+      const v=vals[i], col=colors[i];
+      const w=widthOf(v);
+      const lead=best!=null&&v===best&&!tie;
+      const pair=lead?cmpColorPair(col,'#131E38','#E1E9F5'):null;
+      const valStyle=pair?` style="--cmp-cd:${pair.dark};--cmp-cl:${pair.light}"`:'';
+      /* PHASE_26 item 1: >=3:1 fill pair against the real track/row
+         background (cmp2fill's own CSS now reads --cmp-fd/--cmp-fl,
+         picked per theme the same way --cmp-cd/--cmp-cl already is for
+         text), computed fresh per cell since each side can be a
+         different player's color. */
+      const fillPair=cmpFillPair(col);
+      return {
+        val:`<div class="cmp2val ${side}${lead?' lead':''}${v==null?' hole':''}"${valStyle}>${esc(fmt(v))}</div>`,
+        fill:`<div class="cmp2half ${side}"><div class="cmp2fill" style="--w:${w}%;--cmp-fd:${fillPair.dark};--cmp-fl:${fillPair.light}"></div></div>`
+      };
+    };
+    const a=cell(0,'l'), b=cell(1,'r');
+    return `<div class="cmp2row">
+      <div class="cmp2lab">${esc(row.k)}</div>
+      <div class="cmp2line">
+        ${a.val}
+        <div class="cmp2track">${a.fill}${b.fill}</div>
+        ${b.val}
+      </div>
+    </div>`;
+  }
+  if(mode==='grouped'){
+    return `<div class="cmp3row">
+      <div class="cmp3lab">${esc(row.k)}</div>
+      <div class="cmp3bars">${ps.map((p,i)=>{
+        const v=vals[i], col=colors[i];
+        const w=widthOf(v);
+        const lead=best!=null&&v===best;
+        /* PHASE_25 item 2: both the lead value AND the owner cue are real
+           text on this same --raise background -- the owner cue used to
+           be the flat club/assigned hex with no contrast check at all
+           (same bug the lead value already had before PHASE_22 fixed
+           it). Same cmpColorPair() treatment for both now. */
+        const pair=cmpColorPair(col,'#131E38','#E1E9F5');
+        const ownerStyle=` style="--cmp-cd:${pair.dark};--cmp-cl:${pair.light}"`;
+        const valStyle=lead?ownerStyle:'';
+        const fillPair=cmpFillPair(col);
+        return `<div class="cmp3barline">
+          <span class="cmp3owner"${ownerStyle}>${esc((p.name||'').split(' ')[0])}</span>
+          <div class="cmp3track"><div class="cmp3fill" style="--w:${w}%;--cmp-fd:${fillPair.dark};--cmp-fl:${fillPair.light};animation-delay:${i*70}ms"></div></div>
+          <div class="cmp3val${lead?' lead':''}${v==null?' hole':''}"${valStyle}>${esc(fmt(v))}</div>
+        </div>`;
+      }).join('')}</div>
+    </div>`;
+  }
   return `<div class="cmprow">
     <div class="cmplab">${row.k}</div>
     <div class="cmpbars">${ps.map((p,i)=>{
@@ -4097,13 +5421,23 @@ function cmpResolved(name){
   }
   return null;
 }
+/* PHASE_22 Part 2 (owner-approved, redesign-v2): Comparar's own real page,
+   in the player page's own visual language (.rp-panel, --card/--raise
+   tiers, portrait()'s real avatars, corner-ring decoration -- no tricolor,
+   same owner instruction as PHASE_21's avatars). Every real computation
+   below (resolved/ps/pending/anySeason/RATE-SHOT-TOTAL/the verdict's a/b/
+   shared count/holes) is byte-for-byte the same as before this phase --
+   only the markup assembling them changed. cmpBarRow()'s own `mode`
+   param ('mirrored'/'grouped', PHASE_24 — previously a bare boolean) is
+   the one real behavior switch Comparar drives; it's never passed by
+   renderSeasonCmp(), so that path's own real output still never changes. */
 function drawCompare(){
   const out=$('#cmpOut'); if(!out) return;
   if(!CMP.length){
-    out.innerHTML=`<div class="card cmpempty">
+    out.innerHTML=`<div class="rp-panel cmpempty">
       <div style="font-weight:700;font-size:var(--fs-base)">Nadie en la comparación todavía</div>
       <p class="muted" style="font-size:var(--fs-xs);margin:6px 0 0">Escribe un nombre arriba o toca uno de los duelos.
-      Con dos jugadores aparece el veredicto, las barras a escala y el radar de perfil.</p></div>`;
+      Con dos jugadores aparece el marcador, las barras a escala y el radar de perfil.</p></div>`;
     return;
   }
   const resolved=CMP.map(n=>({name:n,p:cmpResolved(n)}));
@@ -4116,24 +5450,45 @@ function drawCompare(){
      never curated with any tag). Pure career-vs-career (today's exact
      behavior) keeps the original CMP_RATE/SHOT/TOTAL + radar + tags path. */
   const anySeason=ps.some(p=>p._mode==='season');
-  const heads=`<div class="cmpheads">${CMP.map((n,i)=>
-    cmpHead(resolved[i].p||{name:n,clubs:new Set(),pos:null,years:null,_mode:'pending'},i)).join('')}</div>`;
+  const n=CMP.length;
+  /* PHASE_25 item 1: one collision-resolved color per player, computed
+     once and threaded everywhere below (avatar, top bar, scoreboard,
+     bars, radar, legend) instead of each spot calling cmpColor() fresh.
+     Two parallel arrays, not one: HEAD_COLORS covers every card shown
+     (including a still-pending add, which has no real stats to put in
+     `ps` yet), COLORS covers only the resolved players everything past
+     the heads actually renders. They're built from the same objects in
+     the same order and so are identical once nothing is still loading —
+     the only time they can differ is transiently, while a just-added
+     player's data is still in flight. */
+  const headObjs=CMP.map((nm,i)=>resolved[i].p||{name:nm,clubs:new Set(),pos:null,years:null,_mode:'pending'});
+  const HEAD_COLORS=cmpAssignColors(headObjs);
+  const COLORS=cmpAssignColors(ps);
+  const headCards=headObjs.map((p,i)=>cmpHead(p,i,HEAD_COLORS[i]));
+  const heads=`<div class="cmp2heads n${n}">${n===2?`${headCards[0]}<div class="cmp2vs"><span>VS</span></div>${headCards[1]}`:headCards.join('')}</div>`;
 
   if(ps.length<2){
-    out.innerHTML=`<div class="card cmpcard">${heads}
-      <p class="muted" style="font-size:var(--fs-xs);margin-top:var(--sp-2_5)">${
-        pending.length ? 'Cargando datos de temporada para '+esc(pending.join(', '))+'…'
-                        : 'Añade otro jugador para comparar.'}</p></div>`;
+    out.innerHTML=`${heads}
+      <div class="rp-panel cmpempty" style="margin-top:var(--sp-4)">
+        <p class="muted" style="font-size:var(--fs-xs);margin:0">${
+          pending.length ? 'Cargando datos de temporada para '+esc(pending.join(', '))+'…'
+                          : 'Añade otro jugador para comparar.'}</p></div>`;
     return;
   }
 
   const RATE=anySeason?SEASON_CMP_RATE:CMP_RATE, SHOT=anySeason?SEASON_CMP_SHOT:CMP_SHOT,
         TOTAL=anySeason?SEASON_CMP_TOTAL:CMP_TOTAL;
   const rows=RATE.concat(SHOT,TOTAL);
+  /* PHASE_24 item 4: a named mode instead of a bare boolean -- 'mirrored'
+     (2 players) and 'grouped' (3 players) are both new cmpBarRow()
+     branches now (own classes, own lead-color handling); mode is never
+     passed as anything but these two strings from here, so the legacy
+     branch (mode undefined) is only ever reached via renderSeasonCmp(). */
+  const mode=ps.length===2?'mirrored':'grouped';
 
   /* The verdict is counted only over categories both players have on
      record. Winning a row your rival never had measured is not a win. */
-  let verdict='';
+  let verdict='', scoreboard='';
   if(ps.length===2){
     let a=0,b=0,shared=0;
     rows.forEach(r=>{
@@ -4143,32 +5498,72 @@ function drawCompare(){
     });
     if(shared){
       const lead=a===b?null:(a>b?ps[0]:ps[1]);
-      const col=lead?cmpColor(lead,a>b?0:1):'var(--ink-2)';
+      /* PHASE_25 item 2: this used the flat club/assigned hex as a raw
+         inline color with zero contrast check -- live-checked against
+         the real #0C1428/#FFFFFF this sits on (.cmp2score's own --card
+         background) and both A.D.'s teal and Georgie's maroon measured
+         under 4.5:1 in at least one theme. Same cmpColorPair() treatment
+         the scoreboard numerals already had. */
+      const leadPair=lead?cmpColorPair(COLORS[a>b?0:1]):null;
+      const leadStyle=leadPair?` style="--cmp-cd:${leadPair.dark};--cmp-cl:${leadPair.light}"`:'';
       verdict=`<div class="cmpverdict">${lead
-        ? `<b style="color:${col}">${esc(lead.name.split(' ')[0])}</b> gana <b>${Math.max(a,b)}</b> de <b>${shared}</b> renglones comparables`
+        ? `<b class="cmp2verdict-lead"${leadStyle}>${esc(lead.name.split(' ')[0])}</b> gana <b>${Math.max(a,b)}</b> de <b>${shared}</b> renglones comparables`
         : `Empate: <b>${a}</b> a <b>${b}</b> en ${shared} renglones comparables`}
         <span class="dim"> · ${rows.length-shared} sin datos en común</span></div>`;
+      /* b. the exact same a/b/shared count above, just also drawn as large
+         mirrored numerals -- real colors (cmpColorPair(), the same text-
+         safe pair the mirrored rows use), never rendered for a 0-0 "tie"
+         that isn't really a tie (see the `shared` guard above/below). */
+      const pairA=cmpColorPair(COLORS[0]), pairB=cmpColorPair(COLORS[1]);
+      scoreboard=`<div class="rp-panel cmp2score">
+        <div class="cmp2score-row">
+          <span class="cmp2score-n" style="--cmp-cd:${pairA.dark};--cmp-cl:${pairA.light}">${a}</span>
+          <span class="cmp2score-dash">–</span>
+          <span class="cmp2score-n" style="--cmp-cd:${pairB.dark};--cmp-cl:${pairB.light}">${b}</span>
+        </div>
+        ${verdict}
+      </div>`;
     } else {
       verdict=`<div class="cmpverdict dim">No hay ni un renglón que los dos tengan registrado. Ese es el hueco del archivo, no un empate.</div>`;
+      scoreboard=`<div class="rp-panel cmp2score">${verdict}</div>`;
     }
   }
 
-  let h=`<div class="card cmpcard">
-    ${heads}
-    ${verdict}
-    <div class="cmpsplit">
-      ${anySeason?'':`<div class="cmpradar">${cmpRadar(ps)}
-        <div class="dim" style="font-size:var(--fs-3xs);text-align:center;margin-top:2px">Cada eje va contra el mejor del índice</div>
-      </div>`}
-      <div class="cmprows">
-        <div class="cmpgrouplab">Por juego</div>
-        ${RATE.map(r=>cmpBarRow(r,ps,false)).join('')}
-        <div class="cmpgrouplab">${anySeason?'Tiro':'Tiro y carga'}</div>
-        ${SHOT.map(r=>cmpBarRow(r,ps,false)).join('')}
-        <div class="cmpgrouplab">${anySeason?'De la temporada':'De carrera'}</div>
-        ${TOTAL.map(r=>cmpBarRow(r,ps,true)).join('')}
+  const radarPanel = anySeason?'':`<div class="rp-panel cmp2radar-panel">
+    <div class="cmp2radar-group">
+      <div class="cmp2radar-svg">${cmpRadar(ps,COLORS)}</div>
+      <div class="cmp2legend">
+        ${ps.map((p,i)=>`<div class="cmp2legend-item"><span class="cmp2legend-dot" style="background:${COLORS[i]}"></span>${esc(p.name)}</div>`).join('')}
+        <div class="dim" style="font-size:var(--fs-3xs)">Cada eje va contra el mejor del índice</div>
       </div>
     </div>
+  </div>`;
+
+  /* PHASE_24 item 3: a row where every player is missing used to still
+     draw its label + an empty track for each side -- real visual noise on
+     rows like "Tiros de campo" when neither player has 2012+ box scores.
+     Split each group into rows with >=1 known value (rendered as before)
+     and rows with zero (collected, never drawn, named in one line at the
+     panel's own bottom instead) -- a group with nothing left to render
+     also skips its own label, so "TIRO Y CARGA" never sits over nothing. */
+  const splitGroup=(group,isTot)=>{
+    const kept=[], skippedLabels=[];
+    group.forEach(r=>{
+      if(ps.some(p=>typeof p[r.s]==='number')) kept.push(cmpBarRow(r,ps,isTot,mode,COLORS));
+      else skippedLabels.push(r.k);
+    });
+    return {kept, skippedLabels};
+  };
+  const rG=splitGroup(RATE,false), sG=splitGroup(SHOT,false), tG=splitGroup(TOTAL,true);
+  const allSkipped=rG.skippedLabels.concat(sG.skippedLabels,tG.skippedLabels);
+  const rowsPanel=`<div class="rp-panel cmp2rows-panel">
+    ${rG.kept.length?`<div class="ed-eye">Por juego</div>${rG.kept.join('')}`:''}
+    ${sG.kept.length?`<div class="ed-eye" style="margin-top:var(--sp-4)">${anySeason?'Tiro':'Tiro y carga'}</div>${sG.kept.join('')}`:''}
+    ${tG.kept.length?`<div class="ed-eye" style="margin-top:var(--sp-4)">${anySeason?'De la temporada':'De carrera'}</div>${tG.kept.join('')}`:''}
+    ${allSkipped.length?`<div class="cmp2skip dim">Sin datos en común — ${esc(allSkipped.join(' · '))}</div>`:''}
+  </div>`;
+
+  const footPanel=`<div class="rp-panel cmp2foot-panel">
     <div class="cmpfoot">
       ${ps.map((p,i)=>`<div class="cmpfootcol">
         <div class="dim" style="font-size:var(--fs-3xs);letter-spacing:.07em;font-weight:700">${esc(p.name.split(' ')[0].toUpperCase())}</div>
@@ -4179,16 +5574,18 @@ function drawCompare(){
           `<span class="tag ${/MVP|Leyenda|10\.000/.test(t)?'gold':''}" style="font-size:var(--fs-3xs)">${esc(t)}</span>`).join('')||'<span class="dim" style="font-size:var(--fs-2xs)">—</span>'}</div>
         ${p.hi?`<div class="muted" style="font-size:var(--fs-3xs);margin-top:5px">Mejor: ${p.hi[1].toFixed(1)} pts en ${p.hi[0]}</div>`:''}`}
       </div>`).join('')}
-    </div>`;
+    </div>
+  </div>`;
+
+  let h=heads+scoreboard+radarPanel+rowsPanel+footPanel;
 
   const holes=[];
   ps.forEach(p=>{
-    const n=rows.filter(r=>typeof p[r.s]!=='number').length;
-    if(n) holes.push(p.name.split(' ')[0]+': '+n);
+    const c=rows.filter(r=>typeof p[r.s]!=='number').length;
+    if(c) holes.push(p.name.split(' ')[0]+': '+c);
   });
-  if(holes.length) h+=`<div class="warn">Casillas sin registrar — ${esc(holes.join(' · '))}. Un guion es un hueco del archivo, no un cero, y por eso no dibuja barra.${anySeason?'':' Antes de 2012 no existe una base pública de estadísticas por temporada del BSN.'}</div>`;
+  if(holes.length) h+=`<div class="warn" style="margin-top:var(--sp-4)">Casillas sin registrar — ${esc(holes.join(' · '))}. Un guion es un hueco del archivo, no un cero, y por eso no dibuja barra.${anySeason?'':' Antes de 2012 no existe una base pública de estadísticas por temporada del BSN.'}</div>`;
   if(pending.length) h+=`<div class="note">Cargando temporadas de ${esc(pending.join(', '))}…</div>`;
-  h+='</div>';
   out.innerHTML=h;
 }
 /* Deep links: #archivo, #equipos/bay, #jugador/georgie-torres */
@@ -4289,6 +5686,7 @@ const VIEW_MAP={
     ['Todas las temporadas',['temporadas','Todas las temporadas']]
   ]},
   jugadores:{ host:'#jugBuscar', drop:['#jugMode'], pre:['buscar','Buscar'], split:'h3.sec',
+    detail:['jugador','#playerPage'],
     adopt:[['#jugComparar','comparar','Comparar']], map:[
     ['Líderes de carrera',['lideres','Líderes de carrera']],
     ['Récords de la liga',['records','Récords']],
@@ -4353,7 +5751,20 @@ const VIEW_DESC={
   equipos:{
     activos:'Los doce clubes que juegan hoy.',
     duenos:'Quién es el apoderado de cada franquicia.',
-    desaparecidos:'Veinte clubes que ya no existen, con su historial de finales.',
+    /* PHASE_40 (owner-approved, redesign-v2): a getter, not a plain string -- VIEW_DESC
+       is a top-level object literal, evaluated the instant tabs.js runs, well before
+       web/index.html's own inline script defines FKEYS (the exact GRID_CLUBS/FKEYS
+       timing trap games.js's own comment documents) and before hydrate() (init.js) has
+       had a chance to overwrite any F[k].active flag from web/data/index/franchises.json.
+       A getter defers the count to each real read, which only ever happens from inside
+       buildEquiposLanding() at full-boot time (post-hydration) -- so this reads Object.
+       values(F) directly rather than FKEYS, sidestepping the trap instead of relying on
+       call-order luck. */
+    get desaparecidos(){
+      const n=Object.values(F).filter(x=>!x.active).length;
+      const w=numWordsEs(n,true);
+      return w[0].toUpperCase()+w.slice(1)+' clubes que ya no existen, con su historial de finales.';
+    },
     retirados:'Camisetas que ningún otro jugador del club volverá a usar.'
   },
   archivo:{
@@ -4365,7 +5776,351 @@ const VIEW_DESC={
     glosario:'Las palabras que el archivo usa sin explicar en el resto de la app.'
   }
 };
+/* PHASE_11 (owner-approved, redesign-v2): Historia's own landing (item 1's "Explora
+   Historia" grid + the 3 real stat cards) branches here, ONLY for sec==='historia' --
+   every other section (Jugadores/Equipos/Archivo, explicitly out of scope this pass) keeps
+   the exact generic mega-feat+landgrid path below, untouched. Real icon paths are the
+   mockup's own (generic line icons for a sub-view, not a team/club logo -- no real-data
+   concern the way crest() has one), real descriptions are VIEW_DESC.historia's own existing
+   copy (order already carries the real [slug,label] pairs VIEW_MAP.historia produced, in
+   real order -- cinta/titulos/dinastias/finales/premios/refuerzos/temporadas). */
+const HISTORIA_XICON={
+  cinta:'M4 12h16M4 7h16M4 17h16',
+  titulos:'M4 21h4V11H4ZM10 21h4V4h-4ZM16 21h4v-8h-4Z',
+  dinastias:'M12 2l2.5 6.5L21 9l-5 4.5L17.5 21 12 17l-5.5 4L8 13.5 3 9l6.5-.5Z',
+  finales:'M4 4h16v16H4Z M4 10h16 M10 4v16',
+  premios:'M12 2l2.6 5.9L21 9l-4.5 4.1L17.6 20 12 16.8 6.4 20l1.1-6.9L3 9l6.4-1.1Z',
+  refuerzos:'M4 6h16M4 12h16M4 18h10',
+  temporadas:'M4 5h16v14H4Z M4 10h16 M9 5v14'
+};
+function buildHistoriaLanding(order){
+  const wrap=el('div');
+  const most=FKEYS.slice().sort((a,b)=>F[b].won.length-F[a].won.length)[0];
+  const withTitles=FKEYS.filter(k=>F[k].won.length).length;
+  const stats=el('div','stats3');
+  stats.innerHTML=`
+    <div class="stat solid"><div class="n mono">${F[most].won.length}</div>
+      <div class="l">Títulos de ${esc(F[most].name)}, el club más ganador</div></div>
+    <div class="stat"><div class="n mono">${NSEASONS}</div>
+      <div class="l">Temporadas documentadas, de ${YEARS[0]} a ${YEARS[YEARS.length-1]}</div></div>
+    <div class="stat"><div class="n mono">${withTitles}</div>
+      <div class="l">Franquicias distintas que han sido campeonas</div></div>`;
+  wrap.appendChild(stats);
+  const h2=el('h2','sec'); h2.textContent='Explora Historia'; wrap.appendChild(h2);
+  const grid=el('div','explore');
+  const D=VIEW_DESC.historia||{};
+  order.forEach(([slug,label])=>{
+    const b=el('button','xcard'); b.type='button';
+    b.innerHTML=`<span class="go" aria-hidden="true">→</span>
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="${HISTORIA_XICON[slug]||''}" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="t">${esc(label)}</span>
+      <span class="d">${esc(D[slug]||'')}</span>`;
+    b.onclick=()=>showView('historia',slug);
+    grid.appendChild(b);
+  });
+  wrap.appendChild(grid);
+  return wrap;
+}
+/* PHASE_11 (owner-approved, redesign-v2): rewrites #historia's own .phead in place into
+   the mockup's eyebrow/Oswald-pagehead hero (item 4) -- the class add is scoped to this one
+   element (classList.add, not a global rule change), so every other section's .phead
+   (Inicio/Jugadores/Equipos/Juega/Archivo, all out of scope this pass) is completely
+   unaffected; .hhero's own CSS never touches the bare .phead selector either. The arc
+   device is the REAL Inicio hero's own repeating-radial-gradient rings (main.css's .hhero
+   rule), reused exactly, not a new SVG -- item 4's own instruction. The existing .tri
+   flag-strip (shared across every section's .phead) is dropped ONLY here, in its place the
+   eyebrow's own gradient tick (var(--tri), the same flag gradient) already carries the same
+   red/white/blue accent in miniature -- a deliberate substitution, not an oversight, flagged
+   in this pass's own report. */
+function buildHistoriaHero(){
+  const head=document.querySelector('#historia .phead'); if(!head) return;
+  head.classList.add('hhero');
+  head.innerHTML=`<div class="eyebrow">EL ARCHIVO DEL BSN · ${YEARS[0]}—${YEARS[YEARS.length-1]}</div>
+    <h1>Historia</h1>
+    <p class="lede">Ocho vistas construidas con los datos reales del archivo: la cinta de ${NSEASONS} temporadas, títulos por franquicia, dinastías, finales cara a cara, premios, la regla de refuerzos 2024–2026 y la tabla completa de temporadas.</p>`;
+}
+/* PHASE_14 (owner-approved, redesign-v2): Jugadores' own landing, same mechanism as
+   buildHistoriaLanding() above -- branches in buildLanding() below ONLY for
+   sec==='jugadores'; every other section (Equipos/Archivo, out of scope this pass)
+   keeps the generic mega-feat+landgrid path. Real icon paths are generic line icons
+   for a sub-view (not a player likeness or club logo -- no real-data concern the way
+   portrait()/crest() have one); real descriptions are VIEW_DESC.jugadores's own
+   existing copy; order already carries the real [slug,label] pairs VIEW_MAP.jugadores
+   produced (buscar/comparar/lideres/records/salon/nba/dirigentes/canchas). */
+const JUGADORES_XICON={
+  buscar:'M10.5 3a7.5 7.5 0 1 0 0 15 7.5 7.5 0 0 0 0-15ZM21 21l-5.2-5.2',
+  comparar:'M9 6a6 6 0 1 0 0 12M15 6a6 6 0 1 1 0 12',
+  lideres:'M4 20h4v-5H4ZM10 20h4v-9H10ZM16 20h4v-13H16Z',
+  records:'M12 2l2.6 5.9L21 9l-4.5 4.1L17.6 20 12 16.8 6.4 20l1.1-6.9L3 9l6.4-1.1Z',
+  salon:'M4 21h16M5 21V10l7-5 7 5v11M9 21v-6h6v6',
+  nba:'M4 12h14M13 6l5 6-5 6',
+  dirigentes:'M9 3h6v3H9ZM7 6h10l-1 15H8Z',
+  canchas:'M3 21h18M5 21V8l7-4 7 4v13M9 21v-5h6v5'
+};
+function buildJugadoresLanding(order){
+  const wrap=el('div');
+  const stats=el('div','stats3');
+  stats.innerHTML=`
+    <div class="stat solid"><div class="n mono">${PINDEX?PINDEX.length:0}</div>
+      <div class="l">Jugadores destacados con ficha propia en el archivo</div></div>
+    <div class="stat"><div class="n mono">${HOF.length}</div>
+      <div class="l">En el Salón: los que definieron la liga</div></div>
+    <div class="stat"><div class="n mono">${NBA_PLAYERS.length}</div>
+      <div class="l">Llegaron del BSN a la NBA</div></div>`;
+  wrap.appendChild(stats);
+  const h2=el('h2','sec'); h2.textContent='Explora Jugadores'; wrap.appendChild(h2);
+  const grid=el('div','explore');
+  const D=VIEW_DESC.jugadores||{};
+  order.forEach(([slug,label])=>{
+    const b=el('button','xcard'); b.type='button';
+    b.innerHTML=`<span class="go" aria-hidden="true">→</span>
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="${JUGADORES_XICON[slug]||''}" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="t">${esc(label)}</span>
+      <span class="d">${esc(D[slug]||'')}</span>`;
+    b.onclick=()=>showView('jugadores',slug);
+    grid.appendChild(b);
+  });
+  wrap.appendChild(grid);
+  return wrap;
+}
+function buildJugadoresHero(){
+  const head=document.querySelector('#jugadores .phead'); if(!head) return;
+  head.classList.add('hhero');
+  head.innerHTML=`<div class="eyebrow">EL ARCHIVO DEL BSN</div>
+    <h1>Jugadores</h1>
+    <p class="lede">El índice reúne a todos los jugadores que este archivo puede nombrar con fuente. Cada ficha dice también qué no se sabe de él.</p>`;
+}
+/* PHASE_40 (owner-approved, redesign-v2): Equipos' own landing, same mechanism as
+   buildHistoriaLanding()/buildJugadoresLanding() above -- branches in buildLanding()
+   below ONLY for sec==='equipos'; Archivo (out of scope this pass) keeps the generic
+   mega-feat+landgrid path. Real icon paths are generic line icons for a sub-view (not
+   a club crest -- no real-data concern the way crest() has one); real descriptions are
+   VIEW_DESC.equipos's own existing copy (its own desaparecidos entry is a getter, see
+   above); order already carries the real [slug,label] pairs VIEW_MAP.equipos produced
+   (activos/duenos/desaparecidos/retirados). All 3 stat numbers are FKEYS/F-derived,
+   none typed in -- the PHASE_39 survey's own GAPS#1 finding (copy said "veinte", real
+   count is 21) is exactly the class of bug a hardcoded number here would repeat. */
+const EQUIPOS_XICON={
+  activos:'M4 21V10l8-6 8 6v11M9 21v-7h6v7',
+  duenos:'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4 20c0-4 3.5-7 8-7s8 3 8 7',
+  desaparecidos:'M3 7l9-4 9 4-9 4-9-4ZM3 7v10l9 4 9-4V7M12 11v10',
+  retirados:'M8 4h8l1 3-2 2v12H9V9L7 7Z'
+};
+function buildEquiposLanding(order){
+  const wrap=el('div');
+  const activeN=FKEYS.filter(k=>F[k].active).length, goneN=FKEYS.length-activeN;
+  /* PHASE_40B (owner-approved, redesign-v2): the #3 stat's number AND its own
+     gap clause both come from champOf (web/index.html's DERIVED section) --
+     the real per-year "who won" map every YEARS entry gets checked against
+     when a champion is recorded, not a second, separately-derived count that
+     could silently drift from it. missingYears is the same YEARS/champOf
+     pair as champOf's own build; the clause text is 0/1/N-driven, never
+     hardcoded -- today that's exactly [1953] (no source consulted records a
+     1953 champion, per NOTES[1953] above), the ONE already-known case. */
+  const titlesN=Object.keys(champOf).length;
+  const missingYears=YEARS.filter(y=>!(y in champOf));
+  const titlesGap = missingYears.length===0 ? ''
+    : missingYears.length===1 ? ' — falta el de '+missingYears[0]
+    : ' — faltan '+missingYears.length;
+  const stats=el('div','stats3');
+  stats.innerHTML=`
+    <div class="stat solid"><div class="n mono">${activeN}</div>
+      <div class="l">Clubes activos en el BSN hoy</div></div>
+    <div class="stat"><div class="n mono">${goneN}</div>
+      <div class="l">Franquicias que ya no existen, con su historial de finales</div></div>
+    <div class="stat"><div class="n mono">${titlesN}</div>
+      <div class="l">Campeonatos en el archivo${esc(titlesGap)}</div></div>`;
+  wrap.appendChild(stats);
+  const h2=el('h2','sec'); h2.textContent='Explora Equipos'; wrap.appendChild(h2);
+  const grid=el('div','explore');
+  const D=VIEW_DESC.equipos||{};
+  order.forEach(([slug,label])=>{
+    const b=el('button','xcard'); b.type='button';
+    b.innerHTML=`<span class="go" aria-hidden="true">→</span>
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="${EQUIPOS_XICON[slug]||''}" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="t">${esc(label)}</span>
+      <span class="d">${esc(D[slug]||'')}</span>`;
+    b.onclick=()=>showView('equipos',slug);
+    grid.appendChild(b);
+  });
+  wrap.appendChild(grid);
+  return wrap;
+}
+/* PHASE_44 (owner-approved, redesign-v2): Juega's own hero, same mechanism as
+   buildHistoriaHero()/buildJugadoresHero()/buildEquiposHero() above -- the PHASE_43
+   survey's own finding was that Juega never got this pass at all (no buildJuegaHero()
+   existed, no buildJuegaLanding() either -- out of scope this phase, the existing
+   .shelf/.tile gameShelf stays as Juega's own equivalent component, untouched). The
+   lede's own meaning is unchanged from the static fallback (web/index.html's own
+   .phead, also unchanged this phase since it already reads identically) -- only the
+   count word is now computed from GAMES.length via numWordsEs() instead of the literal
+   "Cuatro", so it can't silently go stale the way Equipos' own "veinte" bug did. */
+function buildJuegaHero(){
+  const head=document.querySelector('#juega .phead'); if(!head) return;
+  head.classList.add('hhero');
+  const wn=numWordsEs(GAMES.length);
+  const lede=wn[0].toUpperCase()+wn.slice(1)+' juegos sobre el archivo. Todos usan la'
+    +' misma nómina verificada de jugadores, así que ninguno inventa una respuesta.';
+  head.innerHTML=`<div class="eyebrow">EL ARCHIVO DEL BSN</div>
+    <h1>Juega</h1>
+    <p class="lede">${lede}</p>`;
+}
+function buildEquiposHero(){
+  const head=document.querySelector('#equipos .phead'); if(!head) return;
+  head.classList.add('hhero');
+  const activeN=FKEYS.filter(k=>F[k].active).length, goneN=FKEYS.length-activeN;
+  const wa=numWordsEs(activeN), wg=numWordsEs(goneN);
+  const lede=wa[0].toUpperCase()+wa.slice(1)+' clubes activos y '+wg
+    +' que ya no existen. Cada uno con su historial de finales.';
+  head.innerHTML=`<div class="eyebrow">EL ARCHIVO DEL BSN</div>
+    <h1>Equipos</h1>
+    <p class="lede">${lede}</p>`;
+}
+/* PHASE_49 (owner-approved, redesign-v2): Archivo's own hero, same mechanism as the
+   4 above -- the PHASE_48 survey's own finding was that Archivo never got this pass
+   at all (no buildArchivoHero() existed, the exact "one section still looks like the
+   old app" gap that survey flagged as its #2 finding). h1/lede reused verbatim from
+   the existing static .phead (web/index.html:444-448) -- no new copy, task's own
+   explicit "NO new Spanish strings" instruction.
+   No eyebrow here, unlike the other 4: the only candidate text that "already covers"
+   an eyebrow slot is the literal "EL ARCHIVO DEL BSN" every other hero already uses
+   -- but Archivo's own h1 is "El archivo", so that eyebrow would read as "EL ARCHIVO
+   DEL BSN" directly above "El archivo", repeating the word immediately. Reusing it
+   here isn't really reuse in spirit, it's a worse result from the same bytes; the
+   task's own wording ("no eyebrow unless an existing string already covers it")
+   reads as permission to omit, not a mandate to force a fit. No new eyebrow string
+   proposed either -- omission needs none. */
+function buildArchivoHero(){
+  const head=document.querySelector('#archivo .phead'); if(!head) return;
+  head.classList.add('hhero');
+  head.innerHTML=`<h1>El archivo</h1>
+    <p class="lede">Pregúntale directamente, o mira qué tiene, qué le falta y de dónde sale cada dato. Un archivo que esconde sus huecos vale menos que uno que los enseña.</p>`;
+}
+/* PHASE_11 (owner-approved, redesign-v2): Premios subtab split (item 9) -- real markup
+   surgery on buildViews()'s already-built #historia .view[data-view="premios"] (moves
+   existing element references, appends/creates none of the underlying data containers --
+   #mvpYears/#scoringChart/#scoringTable/#seasonAwards keep their own ids and builders
+   untouched). Grouped by matching each h4.sub's own real text, not by position, so this
+   stays correct even if the real DOM order ever shifts. "Premios por temporada"
+   (SEASON_AWARDS, its own real year-filter + table) is item 11's "leave existing real
+   data/interactivity untouched" case -- not folded into the 2-tab toggle the mockup itself
+   only has for scoring/MVP, kept as its own always-visible block below both tabs, exactly
+   the real content/interactivity it already had, only visually placed under the new
+   subtab area (a deliberate placement call, reported in this pass's own report). */
+function restructurePremios(){
+  const view=document.querySelector('#historia .view[data-view="premios"]'); if(!view) return;
+  const kids=Array.from(view.children);
+  const head=kids.find(n=>n.classList&&n.classList.contains('viewhead'));
+  const groups={mvp:[],temporada:[],scoring:[]};
+  let cur=null;
+  kids.forEach(n=>{
+    if(n===head) return;
+    if(n.tagName==='H4'){
+      const t=norm(n.textContent);
+      cur = t.indexOf('mvp')===0 ? 'mvp' : t.indexOf('premios por temporada')===0 ? 'temporada'
+        : t.indexOf('campeones de anotaci')===0 ? 'scoring' : null;
+      if(cur) groups[cur].push(n); return;
+    }
+    if(cur) groups[cur].push(n);
+  });
+  if(!groups.scoring.length && !groups.mvp.length) return;   /* already restructured, or markup missing */
+  const subtab=el('div','subtab'); subtab.setAttribute('role','tablist');
+  const scoringWrap=el('div'); groups.scoring.forEach(n=>scoringWrap.appendChild(n));
+  const mvpWrap=el('div'); groups.mvp.forEach(n=>mvpWrap.appendChild(n)); mvpWrap.hidden=true;
+  const bScoring=el('button'); bScoring.type='button'; bScoring.textContent='Campeones de anotación';
+  bScoring.setAttribute('aria-current','true');
+  const bMvp=el('button'); bMvp.type='button'; bMvp.textContent='MVP'; bMvp.setAttribute('aria-current','false');
+  const flip=(showScoring)=>{
+    bScoring.setAttribute('aria-current',String(showScoring));
+    bMvp.setAttribute('aria-current',String(!showScoring));
+    scoringWrap.hidden=!showScoring; mvpWrap.hidden=showScoring;
+  };
+  bScoring.onclick=()=>flip(true); bMvp.onclick=()=>flip(false);
+  subtab.appendChild(bScoring); subtab.appendChild(bMvp);
+  const rest=el('div'); groups.temporada.forEach(n=>rest.appendChild(n));
+  view.innerHTML='';
+  if(head) view.appendChild(head);
+  view.appendChild(subtab); view.appendChild(scoringWrap); view.appendChild(mvpWrap); view.appendChild(rest);
+}
+/* PHASE_12 (owner-approved, redesign-v2): "La liga ahora" accordion skin (item 6's own
+   preamble) -- a one-time DOM pass over the REAL <details class="liga"> elements, adding an
+   icon + a subtitle (copied from each accordion's own real <p class="lede">, not new text)
+   + a chevron SVG into each real <summary>. Does NOT touch ligaFold() (init.js) at all --
+   that function only ever sets .open on these same real elements and still runs exactly as
+   before, same 860px breakpoint, same open/closed rule. Matched by each accordion's own
+   real h4 text, not by position, so this stays correct even if their order ever changes. */
+/* Keys are pre-normalized (norm() strips accents/case -- 'ó'->'o' etc.) so the lookup in
+   buildLigaAccordionSkin() below, which calls norm(title) on the real h4 text, actually
+   matches -- an earlier draft of this map kept the accented spelling here and silently
+   matched nothing; caught live before this was ever reported working. */
+const LIGA_ICON={
+  'lo proximo':'M12 2.7a9.3 9.3 0 1 0 0 18.6 9.3 9.3 0 0 0 0-18.6Zm0 4.6v5l3 3',
+  'la final brava 2026':'M12 2l2.6 6.6L21 9l-5 4.6L17.4 21 12 17.3 6.6 21 8 13.6 3 9l6.4-.4Z',
+  'finales anteriores, juego a juego':'M4 5h16M4 12h16M4 19h16',
+  'posiciones bsn 2026':'M4 19V10M10 19V5M16 19v-7M4 5h.01',
+  'lideres 2026':'M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4 21c0-4 4-6 8-6s8 2 8 6',
+  'canales oficiales':'M12 2a9 9 0 1 0 .01 0M3 12h18M12 3c3 4 3 14 0 18M12 3c-3 4-3 14 0 18'
+};
+function buildLigaAccordionSkin(){
+  document.querySelectorAll('#inicio .liga').forEach(d=>{
+    if(d.querySelector('.acc-sum-chev')) return;   /* already skinned (e.g. a re-run) */
+    const h4=d.querySelector(':scope > summary h4'); if(!h4) return;
+    const title=h4.textContent;
+    const sub=d.querySelector(':scope > p.lede');
+    const icon=LIGA_ICON[norm(title)]||'';
+    const summary=d.querySelector(':scope > summary');
+    summary.classList.add('acc-sum-chev');
+    summary.innerHTML=`<span class="acc-ic"><svg viewBox="0 0 24 24"><path d="${icon}" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="acc-t"><span class="acc-title">${esc(title)}</span>${sub?`<span class="acc-sub">${esc(sub.textContent)}</span>`:''}</span>
+      <svg class="chev" viewBox="0 0 24 24" width="18" height="18"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
+  });
+}
+/* PHASE_50 (owner-approved, redesign-v2): Archivo's own landing, same mechanism as the
+   3 above -- branches in buildLanding() below ONLY for sec==='archivo', leaving the
+   generic mega-feat+landgrid path (below) as what Juega's own landing still falls
+   through to, untouched. Keeps the lead megaFeat('gap') panel byte-identical to what
+   the generic path already rendered for Archivo ("Lo que este archivo no sabe", task's
+   own scope A.1), then groups the same 6 real routes VIEW_MAP.archivo/order already
+   carries into 3 groups by NAV_MENU.archivo.cols -- reused verbatim for both the group
+   labels ("Preguntar"/"El estado del archivo"/"Referencia") and the slug membership of
+   each group, not re-typed. Card titles/blurbs are order's own label (the same string
+   already live today as each view's subnav pill text, see _subnavEl()) and
+   VIEW_DESC.archivo[slug] (same convention every other landing builder's order.forEach
+   already uses) -- no new copy anywhere. No icon tiles (.xcard's gradient reads purple,
+   task's own explicit call-out) -- reuses the plain .landcard (no .ic) the generic
+   Juega path already renders today, with 2 new modifier classes (archl-primary/
+   archl-compact) for the visual-hierarchy split the task asks for, see main.css. */
+function buildArchivoLanding(order){
+  const wrap=el('div','landing');
+  const feat=el('div','mega-feat'); feat.innerHTML=megaFeat(NAV_MENU.archivo.feat);
+  wrap.appendChild(feat);
+  const D=VIEW_DESC.archivo||{};
+  const bySlug={}; order.forEach(([slug,label])=>{ bySlug[slug]={slug,label}; });
+  NAV_MENU.archivo.cols.forEach(([groupLabel,items],gi)=>{
+    const slugs=items.map(it=>it[1]).filter(s=>bySlug[s]);
+    if(!slugs.length) return;
+    const group=el('div','archl-group');
+    const h=el('h2','archl-label'); h.textContent=groupLabel; group.appendChild(h);
+    const grid=el('div','archl-grid '+(slugs.length===2?'g2':slugs.length===3?'g3':'g1'));
+    slugs.forEach(slug=>{
+      const o=bySlug[slug];
+      const a=el('a','landcard '+(gi===0?'archl-primary':'archl-compact'));
+      a.href='#archivo/'+slug;
+      a.innerHTML=`<span class="lc-t">${esc(o.label)}<i aria-hidden="true">→</i></span>`
+        + (D[slug]?`<span class="lc-d">${esc(D[slug])}</span>`:'');
+      a.onclick=e=>{ e.preventDefault(); showView('archivo',slug); };
+      grid.appendChild(a);
+    });
+    group.appendChild(grid);
+    wrap.appendChild(group);
+  });
+  return wrap;
+}
 function buildLanding(sec,order){
+  if(sec==='historia') return buildHistoriaLanding(order);
+  if(sec==='jugadores') return buildJugadoresLanding(order);
+  if(sec==='archivo') return buildArchivoLanding(order);
+  if(sec==='equipos') return buildEquiposLanding(order);
   const wrap=el('div','landing');
   const feat=el('div','mega-feat'); feat.innerHTML=megaFeat(NAV_MENU[sec].feat);
   wrap.appendChild(feat);
@@ -4394,6 +6149,16 @@ function buildJuegaViews(panel){
     s.classList.add('view'); s.dataset.view=s.id.replace('stage-',''); s.dataset.sec='juega'; s.hidden=true;
     const g=GAMES.find(x=>x.id===s.dataset.view);
     order.push([s.dataset.view, g?g.t:s.dataset.view]);
+    /* PHASE_44 (owner-approved, redesign-v2): the "‹ Juegos" stagebar used to be typed
+       out byte-for-byte 4 times in web/index.html (once per <div class="stage">) --
+       same label, class and onclick="closeGame()" every time, a pure drift risk (one
+       edited without the other three) with no behavior depending on the static markup
+       itself (closeGame()/the Escape handler both only ever touch GAME_OPEN/showView(),
+       never query .stagebar) -- confirmed before doing this. Generated here once instead,
+       same label/class/behavior, title straight from GAMES' own real [id,t] pair. */
+    const bar=el('div','stagebar');
+    bar.innerHTML=`<button class="btn" onclick="closeGame()">‹ Juegos</button><span class="stagetitle">${esc(g?g.t:s.dataset.view)}</span>`;
+    s.insertBefore(bar,s.firstChild);
   });
   panel.insertBefore(_subnavEl('juega',order,'Juegos'), phead?phead.nextSibling:panel.firstChild);
   panel.insertBefore(land, panel.querySelector(':scope > .subnav').nextSibling);
@@ -4509,7 +6274,13 @@ function applyHash(){
        An unknown/mistyped season is silently ignored (normal card, no
        per-season block) — never an error state for a bad deep link. */
     const season = p[3] && /^\d{4}$/.test(p[3]) ? +p[3] : null;
-    const pl=PINDEX&&PINDEX.find(x=>slug(x.name)===c);
+    /* PHASE_36: a merged nickname-form card changes its own canonical slug
+       (mario-quijote-morales, not mario-morales) -- the second clause keeps
+       the OLD plain-name URL resolving to that same card, by comparing c
+       against the slug of the nickname-STRIPPED name instead of a second
+       real property read (stripNick() is already a pure function of
+       x.name, nothing new to look up). */
+    const pl=PINDEX&&(PINDEX.find(x=>slug(x.name)===c) || PINDEX.find(x=>slug(stripNick(x.name))===c));
     if(pl) showPlayer(pl.name,null,season);
     else {
       const q=PSLUG&&PSLUG.get(c);

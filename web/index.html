@@ -50,7 +50,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;1,14..32,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css?v=7a7083d635e9">
+<!-- PHASE_2_REDESIGN (branch redesign-v2) step 1: Oswald, a condensed display face, for
+     short numerals/titles only -- see main.css's own comment at the --font-display rule
+     for the exact selector list and why. Reuses the preconnects above (same two hosts). -->
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css?v=d142e3bdc050">
 </head>
 <body>
 <div class="splash" id="splash" role="status" aria-live="polite" aria-label="Cargando el archivo">
@@ -110,26 +114,64 @@
       <span id="clubPillCrest"></span><span id="clubPillName">Mi club</span><span class="plus">+</span>
     </button>
   </div>
-  <nav class="tabs" aria-label="Secciones">
-    <div class="tabscroll" id="tabscroll" role="tablist"></div>
-    <div id="megaPanel" class="mega"></div>
-  </nav>
 </header>
 
+<!-- PHASE_2_REDESIGN step 7 (owner-approved, redesign-v2): nav.tabs + the mega-menu
+     retired, replaced by a persistent left rail (.rail, a real flex item so it makes
+     actual layout room, not an overlay -- .shellmain gets the remaining width and does
+     its own centering inside that, same as .wrap always has). header.top stays full-
+     width, outside .shell entirely -- deliberate, the logo/top bar was never
+     rail-relative either. .bottombar stays a sibling of .shell, outside it, exactly
+     where it always was -- untouched, still phone-only. -->
+<div class="shell">
+<nav class="rail" id="rail" aria-label="Secciones">
+  <button class="raillogo" onclick="showTab('inicio')" aria-label="Ir a Inicio">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--flag-w)" stroke-width="1.5" aria-hidden="true">
+      <circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3v18"/>
+      <path d="M5.6 5.6c2.6 2.2 2.6 10.6 0 12.8"/><path d="M18.4 5.6c-2.6 2.2-2.6 10.6 0 12.8"/>
+    </svg>
+  </button>
+  <div class="railnav" id="railNav" role="tablist" aria-orientation="vertical" onkeydown="railKeydown(event)"></div>
+  <div class="railbottom">
+    <button class="railctl" id="railTheme" onclick="toggleTheme()" title="Tema: automático / claro / oscuro" aria-label="Cambiar de tema">
+      <svg id="railThemeIcon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"></svg>
+      <span class="raillabel">Tema</span>
+    </button>
+    <button class="railctl" id="railClub" onclick="showTab('perfil')">
+      <span id="railClubCrest" class="railcrest"></span>
+      <span class="raillabel" id="railClubName">Mi club</span>
+      <span class="plus">+</span>
+    </button>
+  </div>
+</nav>
+<div class="shellmain">
 <main class="wrap">
 
 <!-- ═══════════ INICIO — home + the live "Ahora" view (PHASE_8) ═══════════ -->
 <section id="inicio" role="tabpanel" aria-labelledby="tab-inicio">
   <div class="panel">
     <div id="heroBox"></div>
-    <div id="hubTop"></div>
+    <!-- PHASE_9 item 3 (owner-approved, redesign-v2): .hubsearch moved up
+         one slot, directly under the hero -- #hubTop's own content/logic
+         is untouched, just repositioned after it now. -->
+    <!-- PHASE_9 search-placeholder fix (owner-approved, redesign-v2): the
+         placeholder attribute's own text is swapped by syncSearchPlaceholder()
+         (web/js/init.js) below 640px -- an <input>'s placeholder can't hold a
+         <span>, so the hero-headline-full CSS-hide trick doesn't apply here;
+         confirmed no CSS mechanism can change placeholder TEXT CONTENT at all
+         (only its color/font/etc. via ::placeholder), so this has to be JS.
+         aria-label is static (never toggles) and always carries the complete
+         example, so a screen reader gets the same full text at every width
+         even though sighted phone users see the shorter one. -->
     <div class="hubsearch">
       <input type="search" id="hubSearch" onkeydown="hubAsk(event)"
              placeholder="Prueba: cuándo murió Piculín · 1971 · títulos de Bayamón"
-             aria-label="Buscar en el archivo">
+             aria-label="Buscar en el archivo. Ejemplo: Prueba: cuándo murió Piculín · 1971 · títulos de Bayamón">
     </div>
+    <div id="hubTop"></div>
     <div id="hubGrid"></div>
     <p class="note" id="hubFoot"></p>
+    <div id="hubChamps"></div>
     <div id="hubPrimer"></div>
 
     <div class="phead">
@@ -169,11 +211,15 @@
       <div id="leaders2026"></div>
     </details>
 
-    <details class="liga">
-      <summary><h4>En esta fecha</h4></summary>
-      <p class="lede">Lo que pasó un día como hoy en la historia de la liga. Cambia todos los días.</p>
-      <div id="onThisDay"></div>
-    </details>
+    <!-- PHASE_9 Diff 1-lite (dead-code cleanup, redesign-v2): the "En esta
+         fecha" accordion is removed from Inicio (owner-approved). Its
+         functions stay dormant, not deleted: buildOnThisDay() (tabs.js),
+         ON_THIS_DAY and OTD_ES (data.js) are untouched, because
+         tests/_web_text.py uses ON_THIS_DAY's own comment header as a
+         splice marker to reconstruct the pre-split app text -- removing
+         that constant broke 32 unrelated tests (see the redesign-v2
+         PHASE_9 cleanup report). A future pass that re-anchors those
+         markers first can remove the dormant code safely. -->
 
     <details class="liga">
       <summary><h4>Canales oficiales</h4></summary>
@@ -192,8 +238,17 @@
       <h1 class="big">97 temporadas</h1>
       <p class="lede">Cada bloque es una temporada, pintado con el color del campeón. Las dinastías se leen como franjas sólidas. Toca cualquiera.</p>
     </div>
-    <div class="ribbon" id="ribbon"></div>
-    <div class="readout" id="readout" role="status" aria-live="polite"><span class="dim">Toca una temporada.</span></div>
+    <!-- PHASE_11 (owner-approved, redesign-v2): legend + scroll-wrap added to the real
+         static markup -- buildRibbon() (tabs.js) fills #ribbon itself; the legend's 3 items
+         are static since they describe the fixed color/legend meaning, not per-year data. -->
+    <div class="legend">
+      <span><i style="background:linear-gradient(150deg,var(--azul),var(--azul-deep))"></i>Título documentado</span>
+      <span><i style="background:linear-gradient(150deg,var(--rojo),var(--rojo-deep))"></i>Parte de una dinastía (2+ seguidos)</span>
+      <span><i style="background:var(--raise);border:1px solid var(--line)"></i>Sin campeón confirmado</span>
+    </div>
+    <div class="ribbon-wrap"><div class="ribbon" id="ribbon"></div></div>
+    <div class="fixnote">Celdas a 44×44px mínimo en todo ancho de pantalla — el survey encontró las celdas anteriores en 27.6×40px en ancho de teléfono, debajo del piso táctil de la app. Corregido aquí.</div>
+    <div class="readout" id="readout" role="status" aria-live="polite"></div>
     <div id="seasonExtra"></div>
     <div class="strip" id="titleStats"></div>
 
@@ -245,7 +300,7 @@
     <div class="phead">
       <div class="tri"></div>
       <h1 class="big">Equipos</h1>
-      <p class="lede">Doce clubes activos y veinte que ya no existen. Cada uno con su historial completo de finales.</p>
+      <p class="lede">Doce clubes activos y veintiuno que ya no existen. Cada uno con su historial de finales.</p>
     </div>
     <h4 class="sub">Activos</h4>
     <div class="tiles" id="tilesActive"></div>
@@ -279,8 +334,6 @@
     <div id="jugBuscar">
     <div id="playerSearch"></div>
     <div id="playerIndex"></div>
-    <div id="playerDetail"></div>
-    <div id="playerExtra"></div>
 
     <h3 class="sec">Líderes de carrera</h3>
     <p class="lede">Los totales de por vida: puntos, rebotes y asistencias acumulados en toda una carrera.</p>
@@ -309,6 +362,28 @@
     <p class="lede">Canchas y coliseos de Puerto Rico que llevan el nombre de un jugador.</p>
     <div id="stone"></div>
     </div><!-- /jugBuscar -->
+
+    <!-- PHASE_19 (owner-approved, redesign-v2): the real "jugador" page -- a detail-only
+         view (VIEW_MAP.jugadores's own detail:['jugador','#playerPage'] entry, same
+         mechanism Equipos' #teamDetail already uses for showTeam()), not a sub-state of
+         Buscar any more. #playerTabs/#playerDetail/#playerExtra are the exact same real
+         ids this used to have inside #jugBuscar (PHASE_2_REDESIGN step 4) -- moved here
+         unchanged, so loadPlayerExtra()/renderSeasonDetail()/renderSeasonCmp()/
+         playerTabKeydown() needed zero changes. #ptab-fuentes/#playerFuentes are new
+         (the mockup's 3rd tab); showPlayerTab() (tabs.js) is now a real 3-entry map
+         instead of a hardcoded resumen/temporadas pair. -->
+    <div id="playerPage">
+      <div class="pback"><a href="#jugadores" id="playerBack">&larr; Jugadores</a></div>
+      <div id="playerHead"></div>
+      <div class="ptabs" id="playerTabs" hidden role="tablist" aria-label="Secciones de la ficha del jugador" onkeydown="playerTabKeydown(event)">
+        <button type="button" role="tab" id="ptab-resumen" aria-selected="true" aria-controls="playerDetail" tabindex="0" onclick="showPlayerTab('resumen')">Resumen</button>
+        <button type="button" role="tab" id="ptab-temporadas" aria-selected="false" aria-controls="playerExtra" tabindex="-1" onclick="showPlayerTab('temporadas')">Temporadas</button>
+        <button type="button" role="tab" id="ptab-fuentes" aria-selected="false" aria-controls="playerFuentes" tabindex="-1" onclick="showPlayerTab('fuentes')">Fuentes</button>
+      </div>
+      <div id="playerDetail" role="tabpanel" aria-labelledby="ptab-resumen" tabindex="0"></div>
+      <div id="playerExtra" role="tabpanel" aria-labelledby="ptab-temporadas" tabindex="0" hidden></div>
+      <div id="playerFuentes" role="tabpanel" aria-labelledby="ptab-fuentes" tabindex="0" hidden></div>
+    </div>
   </div>
 </section>
 
@@ -331,23 +406,15 @@
     <div id="gameShelf" class="shelf"></div>
 
     <div class="stage" id="stage-cuadricula" hidden>
-      <div class="stagebar"><button class="btn" onclick="closeGame()">‹ Juegos</button>
-        <span class="stagetitle">La Cuadrícula</span></div>
       <div id="gridGame"></div>
     </div>
     <div class="stage" id="stage-temporada" hidden>
-      <div class="stagebar"><button class="btn" onclick="closeGame()">‹ Juegos</button>
-        <span class="stagetitle">La Temporada Perfecta</span></div>
       <div id="draftGame"></div>
     </div>
     <div class="stage" id="stage-quiensoy" hidden>
-      <div class="stagebar"><button class="btn" onclick="closeGame()">‹ Juegos</button>
-        <span class="stagetitle">¿Quién soy?</span></div>
       <div id="quizGame"></div>
     </div>
     <div class="stage" id="stage-subeybaja" hidden>
-      <div class="stagebar"><button class="btn" onclick="closeGame()">‹ Juegos</button>
-        <span class="stagetitle">Sube y Baja</span></div>
       <div id="hlGame"></div>
     </div>
   </div>
@@ -381,7 +448,7 @@
     </div>
 
     <div class="ask">
-      <input type="search" id="askInput" placeholder="¿Quién ganó en 1971?  ·  títulos de Bayamón  ·  líder de anotación 1987"
+      <input type="search" id="askInput" placeholder="¿Quién ganó en 1971?"
              autocomplete="off" spellcheck="false" aria-label="Pregunta al archivo">
     </div>
     <div class="chips" id="askChips"></div>
@@ -424,22 +491,24 @@
 
 <div class="wrap">
   <footer class="foot">
-    <div class="tri" style="width:60px;margin-bottom:12px"></div>
+    <div class="tri" style="width:90px;margin-bottom:12px"></div>
     <p style="margin:0">BSN Archivo · construido por <b>bennizpr</b> · San Juan, Puerto Rico.<br>
     Los datos vienen de fuentes públicas citadas en «El archivo». Proyecto independiente de un aficionado. No está afiliado ni respaldado por el Baloncesto Superior Nacional ni por sus equipos.<br>
     Este sitio no usa cookies ni analítica. Las tipografías vienen de Google Fonts, por lo que Google recibe tu dirección IP. Tu navegador guarda solo tus preferencias (tema y club favorito), tu progreso en los juegos y una copia de los datos para que el sitio funcione sin conexión.<br>
     ¿Ves un error o quieres que retiremos algo? Escríbenos a <a href="mailto:benniz.8008@gmail.com" target="_blank" rel="noopener">benniz.8008@gmail.com</a> o por Instagram <a href="https://www.instagram.com/bennizpr/" target="_blank" rel="noopener">@bennizpr</a>.</p>
   </footer>
 </div>
+</div><!-- /.shellmain -->
+</div><!-- /.shell -->
 
 <div class="bottombar" id="bottombar" role="tablist" aria-label="Navegación principal"></div>
 <script src="js/data.js?v=5a842dfd174e"></script>
-<script src="js/helpers.js?v=fa5b989d9435"></script>
-<script src="js/player.js?v=a184c7ce7c97"></script>
+<script src="js/helpers.js?v=c9b4cb978e43"></script>
+<script src="js/player.js?v=8d29a44c3b0d"></script>
 <script src="js/data-quality.js?v=0dbf5b135d19"></script>
-<script src="js/games.js?v=69446642c205"></script>
-<script src="js/tabs.js?v=1835c6b5d4bf"></script>
-<script src="js/init.js?v=064004dbc89b"></script>
+<script src="js/games.js?v=2a2673fd2ec1"></script>
+<script src="js/tabs.js?v=2e32ef24195e"></script>
+<script src="js/init.js?v=cabba202f619"></script>
 <script>
 
 /* ============================================================
@@ -967,11 +1036,20 @@ function applyTheme(t){
   /* The header control now cycles auto → light → dark, so it shows the
      *stored preference* — the "auto" disc when following the system. */
   const pref=prof().theme;
+  const label='Tema: '+THEME_ES[pref]+(pref==='auto'?' (sigue el sistema)':'')+' · toca para cambiar a '+THEME_ES[THEME_NEXT[pref]];
   const i=$('#themeIcon');
   if(i) i.innerHTML=THEME_ICON[pref]||THEME_ICON.auto;
   const b=$('#themeBtn');
-  if(b) b.setAttribute('aria-label',
-    'Tema: '+THEME_ES[pref]+(pref==='auto'?' (sigue el sistema)':'')+' · toca para cambiar a '+THEME_ES[THEME_NEXT[pref]]);
+  if(b) b.setAttribute('aria-label',label);
+  /* PHASE_9 item 1 (owner-approved, redesign-v2): header.top is gone at
+     >=860px, so its quick theme toggle moved into the rail -- same icon
+     set, same aria-label logic, just a second real target to keep in
+     sync (no class-based batch update elsewhere in this file, matching
+     the existing #themeIcon/#themeBtn single-id convention). */
+  const ri=$('#railThemeIcon');
+  if(ri) ri.innerHTML=THEME_ICON[pref]||THEME_ICON.auto;
+  const rb=$('#railTheme');
+  if(rb) rb.setAttribute('aria-label',label);
 }
 function setTheme(t){
   setProf('theme',t);
@@ -1015,7 +1093,10 @@ const BOOT=[
   ['posiciones 2026',buildStandings2026],
   ['líderes 2026',buildLeaders2026],
   ['mi club',()=>{buildClubPicker();buildClubCard();drawClubPill();}],
-  ['en esta fecha',buildOnThisDay],
+  /* PHASE_9 Diff 1-lite (dead-code cleanup, redesign-v2): the boot call to
+     buildOnThisDay() is removed -- its accordion is gone from Inicio (see
+     the comment above the details list). buildOnThisDay() itself is left
+     defined but never called; see that comment for why. */
   ['calendario',buildCalendar],
   ['canales',buildChannels],
   ['ask',buildAsk],

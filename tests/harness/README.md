@@ -34,9 +34,24 @@ real, committed artifact, not a re-run against a moving target.
     gave different `tab:juega` DOM (`app/bsn_archivo.html:6826`, a `Math.random()`-seeded preview
     board, unrelated to the split). **Do not use this label as a comparison baseline** — it isn't
     reproducible by construction.
-- `inventory_main_HEAD.json` — the pre-split function/const inventory, from `app/bsn_archivo.html`
-  alone (single-file form). Ground truth: this file never changes, since `app/bsn_archivo.html`
-  doesn't.
+- `inventory_main_HEAD.json` — the frozen name-set baseline `src/verify_clean.py::verify_web_data()`
+  checks the live `web/` tree's declaration inventory against (`make verify`; only the `name` field
+  is read, nothing else). Through PHASE_1_SPLIT this was the pre-split function/const inventory
+  from `app/bsn_archivo.html` alone (single-file form) and genuinely never changed, since
+  `app/bsn_archivo.html` didn't. That stopped being true once real feature work started landing on
+  top of the split: PHASE_2_REDESIGN PHASE 4 (`redesign-v2`) added two new top-level functions,
+  `showPlayerTab`/`playerTabKeydown` (`web/js/tabs.js`), taking the count from 426 to 428. Updated
+  deliberately, owner-approved, by hand-appending just those 2 entries (`kind`, `name`, `line`, and
+  a `file` tag, since they live in a specific split file, not the original single document) to the
+  existing 426 -- not a full regeneration, which would reorder the whole list (the multi-file scan
+  walks file-by-file, not the original single-document byte order this list has always preserved)
+  for what's really a 2-name change. PHASE 7 did it again the other direction: retiring the
+  mega-menu removed 6 top-level declarations (`MEGA_TAB`, `megaCloseT`, `scheduleClose`,
+  `cancelClose`, `closeMega`, `openMega`) and added 1 (`railKeydown`), 428 -> 423 -- the 6 removed
+  in place (their original single-document positions), the 1 added appended at the end, same
+  hand-edit discipline as before, not a regeneration. Expect the same going forward: a future
+  phase that adds or removes a top-level declaration updates this file the same way, by hand,
+  appended/removed minimally, not regenerated wholesale.
 - `inventory_web_split.json` — same 426 declarations, same names, tagged with `file` via the
   multi-file form. STEP 3: 408 `web/index.html` / 18 `web/js/data.js`. STEP 4: 385
   `web/index.html` / 18 `web/js/data.js` / 23 `web/js/helpers.js`. STEP 5: 370 `web/index.html` /
@@ -82,7 +97,6 @@ NODE_PATH=/private/tmp/bsn_harness/node_modules node tests/harness/capture.mjs \
 there.
 
 ```
-python3 tests/harness/inventory.py tests/harness/inventory_main_HEAD.json app/bsn_archivo.html
 python3 tests/harness/inventory.py tests/harness/inventory_web_split.json web/index.html web/js/data.js web/js/helpers.js web/js/player.js web/js/data-quality.js web/js/games.js web/js/tabs.js web/js/init.js
 ```
 

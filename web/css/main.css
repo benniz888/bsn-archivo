@@ -7,8 +7,13 @@
    for the live/decisive states, white for data. Orange is borrowed
    from the league's own app and reserved for "happening now".
 
-   The signature device is the tricolor rule — a 3px red/white/blue
-   bar (one shared gradient, --tri). It marks the active tab on both
+   The signature device is the tricolor rule — a 3px bar (one shared
+   gradient, --tri) shaped like the real flag: a small blue triangle
+   at the leading edge, then red/white/red. (PHASE_31: equal red/
+   white/blue thirds, this device's original form, read as the FRENCH
+   flag instead — fixed to the real stripes-plus-triangle shape; see
+   --tri's own comment below for the colors and the owner-approved
+   PHASE_30 preview this came from.) It marks the active tab on both
    desktop and mobile, heads every major section, leads every player/
    team hero card, and — as a fading lead-in, --tri-fade — opens every
    h3.sec divider, so the flag is structural rather than decorative.
@@ -32,16 +37,94 @@
   --focus:var(--fuego); /* keyboard-focus ring — its own token so it can
                             diverge from --fuego's "live game" meaning
                             later without a silent side effect */
+  /* PHASE_31 (owner-approved, redesign-v2): equal red/white/blue thirds reads
+     as the FRENCH flag, not Puerto Rico's -- the real PR flag is red/white
+     STRIPES with a blue TRIANGLE at the hoist (leading) edge, never three
+     equal bands. --tri-red/--tri-blue/--tri-white are the new, dedicated
+     accent colors (distinct from --rojo/--azul, which stay exactly as they
+     are everywhere else in the app -- buttons, badges, live markers -- this
+     redesign only touches the tricolor device itself). --tri-white auto-
+     flips to --line in light theme (declared once here, picked up by every
+     gradient below with zero per-token light overrides needed -- same
+     deferred-cascade trick --rojo/--azul already relied on for the OLD
+     --tri, not a new pattern). Real search, same session: flag red #CE1126
+     (Pantone 186C), blue #0038A8 (Pantone 293C, 1952 spec). Official blue
+     fails WCAG 1.4.11 (>=3:1 non-text) outright against every dark ground
+     here (1.68-1.98:1) and official red is short against dark --raise
+     (2.94:1) -- --tri-red/--tri-blue below are the minimally lightened,
+     same-hue dark-theme variants, re-checked against all FOUR real dark
+     grounds these sit on (--card/--night/--raise/--line-soft -- PHASE_30's
+     own preview only checked three and landed red 0.02 short of 3:1
+     against --line-soft specifically, caught and nudged here before
+     shipping; worst case now 3.01-3.04:1 across all four), overridden
+     back to the true official hexes in light theme just below (already
+     >=4.5:1 there, no adjustment needed). */
+  --tri-red:#D11F33;
+  --tri-blue:#3D68BD;
+  --tri-white:#FFFFFF;
+  /* fixed px lead-in length regardless of bar width (an 18px tick and a
+     900px header rule both get the same ~10px triangle, not a scaled one)
+     -- calc() mixes this with the remaining %, so one formula works at any
+     element width. --tri-clip/--tri-clip-v (geometry only, identical both
+     themes) carve the actual point into that same lead-in zone via
+     clip-path on each real selector below -- a flat gradient alone can
+     taper COLOR but not the element's own silhouette, so the literal
+     point needs this second, separate property; it cannot live inside a
+     background-image custom property the way the color stops can. */
+  --tri-notch:10px;
+  --tri-clip:polygon(0 50%,10px 0,100% 0,100% 100%,10px 100%);
+  --tri-clip-v:polygon(50% 0,100% 10px,100% 100%,0 100%,0 10px);
   /* the tricolor rule's gradient, as one token — .tri and the nav active-tab
      underline both read this instead of each carrying their own copy of the
-     same three stops (visual-motif pass, step A). */
-  --tri:linear-gradient(90deg,var(--rojo) 0 33.3%,var(--flag-w) 33.3% 66.6%,var(--azul) 66.6% 100%);
+     same stops (visual-motif pass, step A; stops rewritten PHASE_31 — see
+     above). Notch, then red/white/red thirds of whatever's left. */
+  --tri:linear-gradient(90deg,
+    var(--tri-blue) 0 var(--tri-notch),
+    var(--tri-red) var(--tri-notch) calc(var(--tri-notch) + (100% - var(--tri-notch))/3),
+    var(--tri-white) calc(var(--tri-notch) + (100% - var(--tri-notch))/3) calc(var(--tri-notch) + (100% - var(--tri-notch))*2/3),
+    var(--tri-red) calc(var(--tri-notch) + (100% - var(--tri-notch))*2/3) 100%);
+  /* PHASE_32 item 1: --tri's own equal-thirds-of-the-remainder stretches
+     fine up to the ~60-90px bars that actually use it (.tri, .bottombar,
+     .ptabs) -- past ~120px that math turns each stripe into an oversized
+     block. A separate token, not a --tri rewrite, since those shorter
+     bars are explicitly NOT part of this change and must keep stretching
+     exactly as before. Fixed px cluster (same 10px notch, same 21/20/21px
+     stripe rhythm --tri-fade already uses) then solid flag red for
+     whatever width remains -- the 3rd stripe and the solid tail are the
+     same color, so they're one continuous stop, not two. Only
+     header.top::after and .splashfill read this (the only two real
+     --tri use-sites that are ever actually wider than ~120px, confirmed
+     live before writing this: .ptabs tops out at 86px, .bottombar at
+     ~65px, both still on plain --tri, unchanged). */
+  --tri-wide:linear-gradient(90deg,
+    var(--tri-blue) 0 10px,var(--tri-red) 10px 31px,
+    var(--tri-white) 31px 51px,var(--tri-red) 51px 100%);
   /* step B — a lead-in variant for long hairlines (h3.sec's trailing rule):
      tricolor for a short stretch sized like .tri itself, fading into the
      ordinary line color for whatever length remains, so a rule that can run
      600-900px on desktop doesn't read as three giant color blocks. px stops
-     (not %) so this works at any container width without per-instance math. */
-  --tri-fade:linear-gradient(90deg,var(--rojo) 0 14px,var(--flag-w) 14px 28px,var(--azul) 28px 42px,var(--line) 60px);
+     (not %) so this works at any container width without per-instance math.
+     PHASE_31: same notch+stripes shape as --tri, still exactly 42px of real
+     color before the 60px fade-to-line point (unchanged length). 1px tall,
+     so no clip-path here — a notch can't show at 1px height either way. */
+  --tri-fade:linear-gradient(90deg,
+    var(--tri-blue) 0 10px,var(--tri-red) 10px 21px,
+    var(--tri-white) 21px 31px,var(--tri-red) 31px 42px,var(--line) 60px);
+  /* PHASE_2_REDESIGN step 7: the same stops, rotated for the rail's vertical
+     active-tab mark (--tri itself stays 90deg -- .tri and the bottombar's own
+     device both still read it horizontally, unchanged). */
+  --tri-v:linear-gradient(180deg,
+    var(--tri-blue) 0 var(--tri-notch),
+    var(--tri-red) var(--tri-notch) calc(var(--tri-notch) + (100% - var(--tri-notch))/3),
+    var(--tri-white) calc(var(--tri-notch) + (100% - var(--tri-notch))/3) calc(var(--tri-notch) + (100% - var(--tri-notch))*2/3),
+    var(--tri-red) calc(var(--tri-notch) + (100% - var(--tri-notch))*2/3) 100%);
+  /* PHASE_31: the two short eyebrow ticks (18px) are too small to show a
+     3-stripe pattern legibly -- a separate, simplified blue+red-only
+     gradient/clip-path, per the approved spec ("no white sliver"). Not
+     reusable as --tri's own stops (different stop count entirely), so each
+     tick selector references these two directly instead. */
+  --tri-tick:linear-gradient(90deg,var(--tri-blue) 0 5px,var(--tri-red) 5px 100%);
+  --tri-tick-clip:polygon(0 50%,5px 0,100% 0,100% 100%,5px 100%);
 
   /* text */
   --ink:#EEF3FB;
@@ -136,12 +219,20 @@
   --raise:#E1E9F5;      /* firmer table-header / chip tint against white cards */
   --line:#C3D2E8;       /* crisper gridlines (BR density) */
   --line-soft:#DDE6F3;
-  /* --tri-fade's middle stop swaps --flag-w for --line: at 1px tall there's
-     no room for .tri's usual hairline-border trick (an inset border that
-     size would just fill the whole line), so on a white card the white
-     stripe would vanish outright instead of merely needing a border. --line
-     is already the visible mid-tone this ground uses for every other rule. */
-  --tri-fade:linear-gradient(90deg,var(--rojo) 0 14px,var(--line) 14px 28px,var(--azul) 28px 42px,var(--line) 60px);
+  /* PHASE_31: --tri/--tri-v/--tri-fade all read --tri-red/--tri-blue/
+     --tri-white, declared once in :root -- flipping those three here is
+     enough for all three gradients to pick up the light-theme look live,
+     no gradient redeclaration needed (the OLD --tri-fade's own explicit
+     light override, which did it the hard way with a full second copy of
+     the gradient, is retired; --tri-white:var(--line) below does the same
+     "white would vanish on a white card, use the visible line tone
+     instead" job it used to do by hand). Real official flag hexes here
+     (searched live, same session) -- #CE1126 red / #0038A8 blue -- both
+     already clear >=4.5:1 against every light ground used below, so
+     unlike the dark-theme pair these are NOT adjusted at all. */
+  --tri-red:#CE1126;
+  --tri-blue:#0038A8;
+  --tri-white:var(--line);
 
   --azul:#0F52B8;
   --azul-hi:#0A3E90;
@@ -202,13 +293,25 @@ body{
   padding-bottom:calc(var(--bar) + env(safe-area-inset-bottom));
 }
 @media(min-width:860px){body{padding-bottom:0}}
-/* one family — the tricolor rule carries the identity, so headings lean on
-   weight + negative tracking rather than a separate display face. */
+/* Through PHASE_1_SPLIT this was one family everywhere — the tricolor rule
+   carried the identity, headings leaned on weight + negative tracking
+   rather than a separate display face. PHASE_2_REDESIGN (branch
+   redesign-v2) step 1, owner-approved, narrows that: Oswald now appears,
+   but ONLY on the short numeral/title selectors in the --font-display
+   rule below, never on body-length text. h1-h4 here stay Inter — this
+   tag-level rule is intentionally left alone (some h4s in this app hold
+   real prose, e.g. "En esta fecha"'s own unclassed <h4>, and nothing
+   distinguishes them from a short title at the tag level), so a heading
+   only gets Oswald if it also matches one of the specific selectors below. */
 h1,h2,h3,h4{font-family:inherit;font-weight:800;
   letter-spacing:-.02em;line-height:var(--lh-head);margin:0}
 /* big numerals — Inter wants tighter tracking and true tabular figures at
-   display size, where Barlow Condensed used to give the compression. */
-.clock .n,.strip .n,.seriesrow .sc,.answer .abig,.readout .yr,.ed-stat,.hubhead{
+   display size, where Barlow Condensed used to give the compression.
+   PHASE_9 item 4b (dead-code cleanup): .clock .n removed from this list --
+   .clock's own rule is gone (removed earlier in this same cleanup), so
+   this entry matched nothing since that removal. Every other selector
+   below is unchanged. */
+.strip .n,.seriesrow .sc,.answer .abig,.readout .yr,.ed-stat,.hubhead{
   letter-spacing:-.03em;font-feature-settings:"tnum" 1,"cv05" 1}
 a{color:var(--azul-hi);text-decoration-thickness:1px;text-underline-offset:2px}
 a:hover{color:var(--blanco)}
@@ -223,25 +326,90 @@ button{font:inherit;color:inherit}
    janks (worse on desktop, where every folded section is expanded). Everything
    not listed just snaps in one frame; at these sizes that reads as crisp. */
 html.theming,html.theming body,
-html.theming header.top,html.theming nav.tabs,html.theming .bottombar,
+html.theming header.top,html.theming .rail,html.theming .bottombar,
 html.theming .card,html.theming .btn,html.theming .chip,html.theming .tag,
 html.theming input,html.theming select,html.theming textarea{
   transition:background-color var(--dur) linear,border-color var(--dur) linear,
              color var(--dur) linear!important}
 
 /* the tricolor rule — flag as structure */
-.tri{height:3px;border-radius:2px;background:var(--tri)}
+/* PHASE_31: clip-path carves the real point into the lead-in blue zone --
+   a flat gradient can taper color but not the element's own silhouette.
+   Supersedes border-radius at this 3px scale (the clip-path's own sharp
+   corners replace it everywhere, not just at the clipped end) -- a 2px
+   radius on a 3px-tall bar read as barely-there rounding to begin with,
+   judged live against the flag shape being the far more visible change. */
+.tri{height:3px;border-radius:2px;background:var(--tri);clip-path:var(--tri-clip)}
+/* PHASE_32 item 2: the footer's own .tri instance only, a bit bigger (90px
+   wide inline already, 5px tall here) so the triangle and stripes read
+   clearly at the page's own bottom -- scoped to `footer .tri` (specificity
+   beats the bare .tri rule above via the extra type selector) so .phero-tri/
+   .phead .tri (74px wide, same 3px height, used on player/team cards, never
+   inside a <footer>) are completely unaffected. clip-path's own "0 50%"/
+   "100%" anchors are relative to the element's own box, so the triangle
+   notch already scales to this taller height with no separate value needed. */
+footer .tri{height:5px}
 /* On a light ground the flag's white stripe would read as a gap in
    the rule rather than as part of it, so it gets a hairline. */
 [data-theme="light"] .tri,
-[data-theme="light"] .bottombar button[aria-selected="true"]::before{box-shadow:inset 0 0 0 1px rgba(11,23,48,.10)}
+[data-theme="light"] .bottombar button[aria-selected="true"]::before,
+[data-theme="light"] header.top::after{box-shadow:inset 0 0 0 1px rgba(11,23,48,.10)}
+
+/* PHASE_2_REDESIGN step 2 (owner-approved, redesign-v2): the tricolor used
+   more boldly -- a solid flag-color fill behind a stat, additive to (never
+   replacing) .tri/.tri-fade above, which stay exactly as they were. Applied
+   to exactly 3 real spots (see the JS): the home hero's day-count, the home
+   hub's one featured/lead stat, and the Historia decade-readout year.
+
+   Text is always --flag-w (literal #FFFFFF, never flips with theme) -- NOT
+   --blanco ("max contrast text", themed). --blanco was checked and REJECTED:
+   in light theme, --blanco (#08122A, near-black) on light theme's --azul is
+   2.58:1, failing even the 3:1 floor for large bold text. --flag-w passes
+   the 3:1 large-text floor against every rojo/azul x theme combination
+   (computed: white/dark-rojo 4.14:1, white/dark-azul 5.51:1, white/light-
+   rojo 5.90:1, white/light-azul 7.19:1 -- all >=3:1).
+
+   .tri-block-rojo is used ONLY where the block holds nothing but the large
+   bold numeral: white-on-dark-theme-rojo is 4.14:1, which clears 3:1 but
+   falls short of 4.5:1, so rojo is never used where a smaller label shares
+   the block. The one spot with a numeral + small label together (the hero's
+   day-count + its "DÍAS PARA..." unit line) uses azul instead, which clears
+   4.5:1 in both themes (5.51:1 dark, 7.19:1 light) -- see the redesign-v2
+   PHASE 2 report for the full numbers and how this was decided. */
+.tri-block{border-radius:var(--r-sm);padding:var(--sp-2) var(--sp-3)}
+.tri-block-rojo{background:var(--rojo);color:var(--flag-w)}
+.tri-block-azul{background:var(--azul);color:var(--flag-w)}
+/* .readout .yr declares its OWN color directly (not just inherited) --
+   .readout .yr{color:var(--ink-3)}, specificity (0,2,0). A same-
+   specificity .tri-block-azul .yr rule would lose that tie by source
+   order (this block sits before it in the sheet); found empirically via
+   computed styles, not assumed -- see the redesign-v2 PHASE 2 report.
+   Fixed by writing the exact combined selector so it's unambiguously
+   more specific (0,3,0), correct regardless of where in the sheet either
+   rule sits. (PHASE_9 dead-code cleanup: .clock.tri-block-azul .u, the
+   same fix for .clock's own .u, removed here -- .clock's own rule is
+   gone, nothing renders that class combination anymore.) */
+.readout .yr.tri-block-azul{color:var(--flag-w)}
 
 /* ---------- top bar ---------- */
 header.top{position:sticky;top:0;z-index:60;background:var(--scrim);
-  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
   padding-top:env(safe-area-inset-top)}
 header.top::before{content:"";position:absolute;top:0;left:0;right:0;
   height:env(safe-area-inset-top);background:var(--statusbar)}
+/* PHASE_8 item 1 (owner-approved, redesign-v2): masthead grow. Plain 1px
+   border-bottom replaced with the same 3px tricolor device used elsewhere
+   for a bolder accent line (--tri, the established HORIZONTAL token --
+   --tri-v is the separate, vertically-oriented one Phase 7 built for the
+   rail's active-tab mark and isn't suited to a full-width horizontal bar,
+   so this reuses --tri instead of the literal token named in the request --
+   same colour stops, correct orientation). */
+/* PHASE_32 item 1: --tri-wide, not --tri -- full viewport width, always
+   well past the ~120px point where equal-thirds-of-the-remainder turns
+   each stripe into an oversized block. Same clip-path (same 10px notch,
+   height unchanged at 3px, so the existing geometry still fits). */
+header.top::after{content:"";position:absolute;left:0;right:0;bottom:0;
+  height:3px;background:var(--tri-wide);clip-path:var(--tri-clip)}
 /* Standalone means iOS is drawing its status bar over the page, whether or
    not it bothers to report an inset. 44px is the classic bar height; every
    notched phone reports more than that, so max() takes the real number when
@@ -250,12 +418,22 @@ html.standalone header.top{padding-top:max(env(safe-area-inset-top),44px)}
 html.standalone header.top::before{height:max(env(safe-area-inset-top),44px)}
 html.standalone .splash{padding-top:max(env(safe-area-inset-top),44px)}
 .toprow{display:flex;align-items:center;gap:12px;max-width:var(--maxw);margin:0 auto;
-  padding:10px calc(16px + env(safe-area-inset-right)) 10px calc(16px + env(safe-area-inset-left))}
-html.standalone .toprow{padding-top:6px;padding-bottom:12px}
+  padding:16px calc(16px + env(safe-area-inset-right)) 16px calc(16px + env(safe-area-inset-left))}
+html.standalone .toprow{padding-top:10px;padding-bottom:16px}
 .mark{display:flex;align-items:center;gap:9px;flex:none;background:none;border:0;padding:0;cursor:pointer;color:inherit}
-.mark svg{display:block}
-.markname{font-family:inherit;font-weight:800;font-size:18px;letter-spacing:-.02em;line-height:1}
+.mark svg{display:block;width:44px;height:44px}
+.markname{font-family:inherit;font-weight:800;font-size:22px;letter-spacing:-.02em;line-height:1}
 .marksub{font-size:10px;color:var(--ink-3);letter-spacing:.09em;text-transform:uppercase;line-height:1;margin-top:3px}
+/* PHASE_8 item 1 fix (owner-approved, redesign-v2): the grown masthead
+   overflowed .clubpill off the right edge below 640px (.toprow doesn't
+   wrap) -- scale mark/name/padding back down on phone widths so the row
+   fits with visible margin at 360px; .rail's 76px coupling (>=860px) is
+   untouched, the rail isn't present below 860px anyway. */
+@media(max-width:639px){
+  .toprow{padding-top:10px;padding-bottom:10px}
+  .mark svg{width:24px;height:24px}
+  .markname{font-size:14px}
+}
 .topspace{flex:1}
 .clubpill{display:flex;align-items:center;gap:7px;background:transparent;color:var(--ink);
   border:1.5px solid var(--rojo);border-radius:99px;padding:6px 13px 6px 8px;font-size:13.5px;
@@ -269,37 +447,172 @@ html.standalone .toprow{padding-top:6px;padding-bottom:12px}
   stroke-linecap:round;stroke-linejoin:round}
 .clubpill .plus{color:var(--rojo);font-weight:700}
 
-/* ---------- nav ---------- */
-/* The nav lives inside the sticky header so the two never
-   overlap at any font size — pinning the nav to a hard-coded
-   top offset breaks the moment the header grows. */
-nav.tabs{border-top:1px solid var(--line-soft);position:relative}
-
-/* ---------- mega-menu (PHASE_8.2) — Apple/Airbnb dropdown ----------
-   Desktop only. Hover or keyboard-focus a top item; the panel drops with
-   grouped link columns + one featured block. Hidden on mobile — there the
-   bottom bar goes straight to the section. */
-.mega{position:absolute;top:100%;left:0;right:0;z-index:55;
-  padding:0 calc(16px + env(safe-area-inset-right)) 0 calc(16px + env(safe-area-inset-left));
-  opacity:0;transform:translateY(-6px);pointer-events:none;
-  transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease)}
-.mega.open{opacity:1;transform:none;pointer-events:auto}
-.mega-inner{max-width:var(--maxw);margin:0 auto;background:var(--deep);
-  border:1px solid var(--line);border-top:0;border-radius:0 0 14px 14px;
-  box-shadow:0 16px 40px var(--shadow);
-  display:grid;grid-template-columns:1fr minmax(220px,300px);gap:var(--sp-5);
-  padding:var(--sp-5) var(--sp-5) var(--sp-6)}
-.mega-cols{display:flex;flex-wrap:wrap;gap:var(--sp-5) var(--sp-6)}
-.mega-col{min-width:150px}
-.mega-col h4{font-size:var(--fs-3xs);letter-spacing:.08em;text-transform:uppercase;
-  color:var(--ink-3);font-weight:700;margin-bottom:var(--sp-2)}
-.mega-col a,.mega-col button{display:block;width:100%;text-align:left;background:none;border:0;
-  color:var(--ink-2);font:inherit;font-size:var(--fs-sm);padding:5px 0;cursor:pointer;
-  border-radius:var(--r-sm);transition:color var(--dur-fast)}
-.mega-col a:hover,.mega-col button:hover{color:var(--blanco)}
+/* ---------- rail (PHASE_2_REDESIGN step 7, owner-approved, redesign-v2) ----------
+   Replaces nav.tabs (formerly inside header.top) AND the mega-menu below (retired
+   outright -- verified first, live, that every mega-menu destination already has an
+   equivalent subnav pill once you're on that section's page; see the redesign-v2
+   PHASE 7 report). .shell/.shellmain make the rail a REAL flex item, not a
+   position:fixed overlay -- .shellmain gets the actual remaining width and .wrap's
+   own max-width/margin:auto centers within THAT, same centering logic .wrap always
+   had, just now relative to a narrower box instead of the full viewport. */
+.shell{display:flex}
+.shellmain{flex:1;min-width:0}
+/* PHASE_9 item 1 (owner-approved, redesign-v2): header.top removed >=860px
+   (mockup's rail carries the logo + Mi club itself, no separate top bar
+   at that width) -- the rail's own sticky top/height no longer has a
+   header to offset for there, so top:0/100vh replaces the old 76px
+   coupling outright rather than swapping in a different number. Under
+   860px .rail stays display:none (unchanged) and header.top stays
+   exactly as PHASE_8 left it -- the coupling never applied there anyway. */
+.rail{flex:none;display:none;flex-direction:column;gap:2px;
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+  width:64px;padding:var(--sp-3) 0;background:var(--scrim);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-right:1px solid var(--line)}
+@media(min-width:860px){.rail{display:flex}header.top{display:none}}
+/* PHASE_10 item 2 (owner-approved, redesign-v2): labeled-tier rail width matched to the
+   mockup's own measured value (76px, getComputedStyle on the live file, not the earlier 220px
+   guess) -- lifts item 1's own "don't touch rail width" note, per this item's explicit scope.
+   Padding 20px 0px is the mockup's own value too -- no --sp-* token is exactly 20px (--sp-4 is
+   16px, --sp-5 is 24px), used as a literal and flagged here rather than rounded, same discipline
+   as item 1's 9px label font-size. The icon-only tier's own 64px (base rule above) is NOT
+   derived from this value -- two independent literals, confirmed by reading the CSS, not
+   assumed -- so it needs no change and none was made; checked and reported per this item's own
+   instruction to check either way. */
+@media(min-width:1120px){.rail{width:76px;padding:20px 0}}
+/* PHASE_9 item 1d (owner-approved, redesign-v2): header.top handled the
+   standalone-mode top inset (html.standalone header.top{padding-top:
+   max(env(safe-area-inset-top),44px)}) -- once it's display:none at
+   >=860px that protection is gone too, so .rail needs its own. max()
+   against the SAME base value the plain rule already uses (--sp-3 here,
+   --sp-4 at the labeled tier) means a zero/absent inset computes to
+   exactly today's padding-top, unchanged -- only a real nonzero inset
+   grows it. Scoped to standalone mode only, matching header.top's own
+   scoping; .rail doesn't exist below 860px regardless. */
+@media(min-width:860px){
+  html.standalone .rail{padding-top:max(var(--sp-3),env(safe-area-inset-top,0px))}
+}
+@media(min-width:1120px){
+  html.standalone .rail{padding-top:max(var(--sp-4),env(safe-area-inset-top,0px))}
+}
+/* Logo: a fixed-size badge (mockup's .rail .logo, red circle + basketball
+   glyph), NOT a flex item that stretches to the rail's own width like the
+   nav/control rows below it -- align-self:center keeps its own 32px
+   intrinsic size at both rail widths. */
+.raillogo{align-self:center;flex:none;display:flex;align-items:center;justify-content:center;
+  width:32px;height:32px;border-radius:999px;background:var(--rojo);
+  border:0;padding:0;margin:0 0 var(--sp-3);cursor:pointer;transition:filter var(--dur-fast) var(--ease)}
+.raillogo:hover{filter:brightness(1.12)}
+.railnav{display:flex;flex-direction:column;gap:2px}
+.railbottom{display:flex;flex-direction:column;gap:2px;margin-top:auto}
+.rail a,.rail .railctl{position:relative;display:flex;align-items:center;justify-content:center;gap:var(--sp-3);
+  color:var(--ink-3);background:none;border:0;text-decoration:none;font:inherit;font-weight:700;font-size:var(--fs-sm);
+  padding:13px 0;cursor:pointer}
+@media(min-width:1120px){.rail a,.rail .railctl{justify-content:flex-start;padding:13px var(--sp-4)}}
+.rail a svg,.rail .railctl svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;flex:none}
+.railcrest{display:flex;align-items:center;justify-content:center;flex:none}
+/* #railClub's own "+" (matches .clubpill .plus in the header exactly, same
+   meaning: pick/change your club) is NEVER hidden by the icon-only/labeled
+   breakpoint below, unlike .raillabel -- with no club picked, #railClubCrest
+   is empty and .raillabel is display:none at 860-1119px, so without this
+   the button would have zero visible content at that tier. */
+.rail .railctl .plus{color:var(--rojo);font-weight:700;flex:none}
+.rail .raillabel{display:none}
+@media(min-width:1120px){.rail .raillabel{display:inline;white-space:nowrap}}
+/* PHASE_10 item 3 (owner-approved, redesign-v2): bug fix, not a new treatment. Items 1+2 only
+   restyled .railnav a (the 5 nav tabs) for the 76px labeled-tier rail; .railctl (Tema, Mi club)
+   kept the OLD row layout (icon beside label, justify-content:flex-start, 16px side padding)
+   sized for the old 220px rail, so "Tema"/a club name like "Cangrejeros" overflowed past the
+   new 76px edge -- confirmed live before this fix: label right edge at 87.5px/131.7px vs the
+   rail's own 76px. Checked the mockup's actual bottom-group control first, live, per this item's
+   own instruction, rather than inventing a treatment: it has exactly ONE such control (a bare
+   "+" button, matching Mi club) and it is ALWAYS icon-only there -- no visible text, an
+   aria-label only -- and has no theme-toggle equivalent at all, so there's no mockup control to
+   diff against for that piece specifically. What's applied below is not new: it's the exact
+   .raillabel{display:none}-plus-aria-label mechanism this file already uses for BOTH .railctl
+   buttons at the 860-1119px icon-only tier (confirmed live working correctly, unaffected by
+   this bug: 63px wide, fits inside the 64px rail, real aria-label intact) -- reused one tier
+   later, for .railctl only, never touching .railnav a's own icon-above-label treatment from
+   items 1+2. justify-content/padding reverted to the same centered icon-only values too, so the
+   icon centers in the narrower button instead of sitting flush-left with dead space to its
+   right (the layout .railctl already had at 860-1119px, just re-applied at 1120px+). Real
+   accessible name is unaffected either way -- #railTheme/#railClub's aria-labels are dynamically
+   kept in sync regardless of tier (tabs.js applyTheme()/drawClubPill()), same as before. */
+@media(min-width:1120px){
+  .rail .railctl .raillabel{display:none}
+  .rail .railctl{justify-content:center;padding:13px 0}
+}
+.rail a:hover,.rail .railctl:hover{color:var(--ink);background:var(--raise)}
+.rail a[aria-selected="true"]{color:var(--blanco);font-weight:800}
+.rail a[aria-selected="true"]::before{content:"";position:absolute;left:0;top:0;bottom:0;
+  width:3px;background:var(--tri-v);clip-path:var(--tri-clip-v)}
+/* PHASE_10 item 1 (owner-approved, redesign-v2): the labeled tier's nav TABS specifically
+   (not .railctl -- theme toggle/Mi club stay exactly as PHASE_9 item 1 left them, untouched,
+   confirmed by scoping every rule below to .railnav a, never the shared .rail a,.rail .railctl
+   selector) go icon-above-label, matching the mockup's own .rail .item{display:flex;flex-
+   direction:column;align-items:center;gap:4px} -- read live via getComputedStyle on the actual
+   mockup file, not eyeballed. gap:4px is var(--sp-1), an exact existing-token match. The label's
+   own 9px font-size has NO exact match in the --fs-* scale (--fs-3xs, the smallest, is 11px) --
+   flagged here rather than silently rounded up, per this engagement's own literal-token
+   discipline; used as a literal since "matching... font-size... exactly" was explicit. Muted
+   label weight set to 400 (the mockup's own .item span{font-size:9px}, no explicit weight --
+   the browser default for a bare element is 400 -- read live, not assumed) instead of inheriting
+   700 from the shared .rail a rule above. Active color changed from --blanco to --ink, and
+   placed AFTER (not before) .rail a[aria-selected="true"] above deliberately -- .railnav
+   a[aria-selected="true"] and .rail a[aria-selected="true"] are the same (0,2,1) specificity, so
+   source order decides the tie; an earlier draft of this exact rule sat BEFORE line 407 above
+   and silently lost to it, found live (computed color was still #08122A, not --ink's #0B1730)
+   before this was ever reported clean -- same class of tie this file has hit before, fixed the
+   same way. --ink vs --blanco is identical in dark (#EEF3FB both) and a small real difference in
+   light (#08122A vs #0B1730). Active label weight set to 600 (not inherited 800) on the label
+   specifically -- matches the mockup's .item.active span{font-weight:600} without touching the
+   shared aria-selected rule's own font-weight:800 above (harmless dead weight on an SVG, left
+   alone to keep the change scoped to .railnav a only). Padding below is item 2's, not this
+   item's original 10px var(--sp-4) -- see the comment right after this block for why it isn't
+   the mockup's own 0px. */
+@media(min-width:1120px){
+  .railnav a{flex-direction:column;justify-content:center;gap:var(--sp-1);padding:3px 0}
+  .railnav a .raillabel{font-size:9px;font-weight:400}
+  .railnav a[aria-selected="true"]{color:var(--ink)}
+  .railnav a[aria-selected="true"] .raillabel{font-weight:600}
+}
+/* PHASE_10 item 2 (owner-approved, redesign-v2): icon shrunk from the shared 22px
+   (.rail a svg,.rail .railctl svg below) to the mockup's own measured 21px -- scoped to
+   .railnav a svg specifically so .railctl (theme toggle, Mi club) keeps its 22px, untouched,
+   same "don't touch railctl" scoping as item 1. .railnav's own gap (between the 5 nav tabs)
+   tightened from 2px to the mockup's measured 26px, matching how loosely its own flat item list
+   is spaced -- .rail's own top-level gap (2px, between the logo/.railnav/.railbottom GROUPS, a
+   different relationship the mockup doesn't cleanly map to) was left alone, not asked for and
+   not touched.
+   ITEM PADDING -- a real conflict, not resolved silently: the mockup's own item padding is
+   literally 0 (its items rely entirely on content height, ~36-45px there). Tested the exact
+   mockup values on this app's own real font rendering, live, before deciding anything: 0px
+   vertical padding + the new 21px icon measures 38.5px tall -- 5.5px UNDER the PHASE_9 44px
+   touch-target floor. Horizontal padding drops to 0 regardless (a real structural need, not a
+   style choice -- the rail is 76px wide now, items must span its full width or the mockup's own
+   centering has no room to work with). Vertical padding does NOT go to the mockup's 0px:
+   3px is the minimum integer value that clears 44px on this app's own rendering (tested 0/2/3/4px
+   live: 38.5/42.5/44.5/46.5px) -- 44.5px, the smallest size that still passes, not a value chosen
+   to look nicer. Flagging this plainly rather than reporting an exact match that isn't one.
+   Both rules below are scoped to @media(min-width:1120px) deliberately -- the icon-only tier
+   (860-1119px) keeps its existing 22px icon (.rail a svg,.rail .railctl svg above) and its
+   existing .railnav 2px gap untouched; this item's own scope is the labeled tier only, same as
+   item 1. */
+@media(min-width:1120px){
+  .railnav a svg{width:21px;height:21px}
+  .railnav{gap:26px}
+}
 .mega-feat{background:var(--raise);border:1px solid var(--line);border-radius:12px;
   padding:var(--sp-4);display:flex;flex-direction:column;gap:var(--sp-1);align-self:start}
-.mega-feat .fx{font-size:var(--fs-3xs);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+/* PHASE_50 (owner-approved, redesign-v2): --ink-3 measured 4.33:1 on --raise in light
+   theme (below the 4.5:1 floor for this small 11px text) -- found live on Archivo's own
+   landing, the only section currently rendering a real .mega-feat .fx (Historia/
+   Jugadores/Equipos replaced their own mega-feat with .stats3, Juega's landing never
+   had one). Fixed at this shared selector, not a new #archivo-scoped override and not
+   the --ink-3 token itself (used in dozens of other places this phase doesn't audit) --
+   same --ink-2 swap already established by .stat:not(.solid) .l right below in this
+   file, which solved the identical "muted small-caps label on a card background"
+   problem. Re-measured: 8.57:1 dark, 6.52:1 light (matches .fd exactly, same token). */
+.mega-feat .fx{font-size:var(--fs-3xs);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);font-weight:700}
 .mega-feat .fn{font-weight:800;font-size:var(--fs-num);line-height:1;letter-spacing:-.03em;margin-top:2px}
 .mega-feat .ft{font-weight:700;font-size:var(--fs-sm)}
 .mega-feat .fd{color:var(--ink-2);font-size:var(--fs-2xs);line-height:1.4}
@@ -309,8 +622,6 @@ nav.tabs{border-top:1px solid var(--line-soft);position:relative}
 .mega-feat .mf-dot{color:var(--ink-3)}
 .mega-feat .mf-dot svg{display:block;width:34px;height:34px}
 .mega-feat button.btn,.mega-feat a.btn{margin-top:var(--sp-2)}
-@media(prefers-reduced-motion:reduce){.mega{transition:none}}
-@media(max-width:859px){.mega{display:none}}
 
 /* ── Section view router (PHASE_8.2b) ─────────────────────────────
    Each nav section is a set of focused views, one shown at a time,
@@ -341,6 +652,25 @@ nav.tabs{border-top:1px solid var(--line-soft);position:relative}
 .landcard:hover .lc-t i{transform:translateX(3px)}
 .landcard .lc-d{color:var(--ink-2);font-size:var(--fs-2xs);line-height:1.45}
 @media(prefers-reduced-motion:reduce){.landcard,.landcard .lc-t i{transition:none}.landcard:hover{transform:none}}
+/* PHASE_50 (owner-approved, redesign-v2): Archivo landing's 3 groups (buildArchivoLanding(),
+   tabs.js) -- .archl-label reuses .mega-feat .fx's own token values (same font-size/
+   letter-spacing/weight), just not scoped under .mega-feat since these headings sit
+   outside it; --ink-2 from the start (not --ink-3), so this new text never repeats the
+   contrast failure fixed above. .archl-primary/.archl-compact are plain modifiers on the
+   existing .landcard (no .ic gradient tile -- task's own explicit "reads purple" call-
+   out) -- a top accent in --azul, the same token Refuerzos' .rule and Dirigentes'
+   .coach-card already use for this exact purpose, not a new color. */
+.archl-group{margin-top:var(--sp-5)}
+.archl-label{font-size:var(--fs-3xs);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);font-weight:700;margin:0 0 var(--sp-2)}
+.archl-grid{display:grid;grid-template-columns:1fr;gap:var(--sp-3)}
+@media(min-width:900px){
+  .archl-grid.g2{grid-template-columns:repeat(2,1fr)}
+  .archl-grid.g3{grid-template-columns:repeat(3,1fr)}
+}
+.landcard.archl-primary{border-top:3px solid var(--azul)}
+.landcard.archl-primary .lc-t{font-size:var(--fs-md)}
+.landcard.archl-compact{padding:var(--sp-3)}
+.landcard.archl-compact .lc-t{font-size:var(--fs-xs)}
 
 /* ── Plegado ──────────────────────────────────────────────────────
    Every tab had grown to five or six full sections stacked end to
@@ -388,13 +718,15 @@ nav.tabs{border-top:1px solid var(--line-soft);position:relative}
 .cmpname{font-weight:700;font-size:14.5px}
 .cmpx{padding:1px var(--sp-2);font-size:var(--fs-3xs)}
 .cmpverdict{margin:var(--sp-3) 0 var(--sp-1);font-size:14.5px;color:var(--ink-2)}
-.cmpsplit{display:flex;gap:var(--sp-4_5);flex-wrap:wrap;align-items:flex-start;margin-top:var(--sp-2_5)}
-.cmpradar{flex:0 0 auto;margin:0 auto}
 .cmprows{flex:1 1 260px;min-width:240px}
 .cmpgrouplab{font-size:var(--fs-3xs);letter-spacing:.1em;text-transform:uppercase;font-weight:700;
   color:var(--ink-3);margin:var(--sp-3) 0 6px}
 .cmpgrouplab:first-child{margin-top:0}
-.cmprow{margin-bottom:9px}
+/* PHASE_2_REDESIGN step 3: the same density pass's closest analog here --
+   Comparar has no <table>/th/td, so its own row rhythm (not a padding
+   value) is what tightened, proportionally to the table's th/td change
+   above. */
+.cmprow{margin-bottom:7px}
 .cmplab{font-size:var(--fs-2xs);color:var(--ink-2);margin-bottom:3px}
 .cmpbarline{display:flex;align-items:center;gap:var(--sp-2);margin-bottom:3px}
 .cmptrack{flex:1;height:9px;border-radius:99px;background:var(--line-soft);overflow:hidden}
@@ -403,11 +735,17 @@ nav.tabs{border-top:1px solid var(--line-soft);position:relative}
 .cmpval{flex:0 0 60px;text-align:right;font-variant-numeric:tabular-nums;font-size:var(--fs-2xs)}
 .cmpval.lead{color:var(--ok);font-weight:700}
 .cmpval.hole{color:var(--ink-3)}
-.cmpspoke{animation:cmppop .45s cubic-bezier(.22,.8,.3,1) both}
+/* PHASE_26 item 1: fill/stroke now come from the CSS custom props cmpRadar()
+   sets inline (--cmp-fd/--cmp-fl, a real >=3:1-against-panel pair) instead
+   of the old fill=/stroke= XML attributes, so the [data-theme] override
+   below can pick the right one live -- same mechanism every other
+   theme-reactive Comparar color in this file already uses. */
+.cmpspoke{animation:cmppop .45s cubic-bezier(.22,.8,.3,1) both;fill:var(--cmp-fd);stroke:var(--cmp-fd)}
+[data-theme="light"] .cmpspoke{fill:var(--cmp-fl);stroke:var(--cmp-fl)}
 @keyframes cmppop{from{opacity:0;transform:scale(.86);transform-origin:88px 80px}to{opacity:1;transform:none}}
 .cmpfoot{display:flex;gap:var(--sp-4_5);flex-wrap:wrap;margin-top:var(--sp-3_5);padding-top:var(--sp-3);border-top:1px solid var(--line)}
 .cmpfootcol{flex:1 1 140px;min-width:130px}
-.cmpempty{margin-top:var(--sp-3_5);border-style:dashed}
+.cmpempty{margin-top:var(--sp-3_5)}
 @media (prefers-reduced-motion:reduce){
   .cmpfill,.cmpspoke,.stage{animation:none}
   .cmpfill{width:var(--w)}
@@ -419,20 +757,9 @@ nav.tabs{border-top:1px solid var(--line-soft);position:relative}
    without a mouse. One rule, every interactive element. */
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,
 [tabindex]:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:6px}
-.tabscroll{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;max-width:var(--maxw);margin:0 auto;
-  padding:0 calc(10px + env(safe-area-inset-right)) 0 calc(10px + env(safe-area-inset-left))}
-.tabscroll::-webkit-scrollbar{display:none}
-nav.tabs button,nav.tabs a{background:none;border:0;color:var(--ink-3);font-weight:700;
-  padding:13px 4px 12px;margin:0 9px;white-space:nowrap;cursor:pointer;position:relative;
-  font-size:var(--fs-sm);letter-spacing:-.01em;text-decoration:none}
-nav.tabs button:hover,nav.tabs a:hover{color:var(--ink)}
-nav.tabs button[aria-selected="true"],nav.tabs a[aria-selected="true"]{color:var(--blanco);font-weight:800}
-nav.tabs button[aria-selected="true"]::after,nav.tabs a[aria-selected="true"]::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
-  border-radius:2px 2px 0 0;transform-origin:center;
-  animation:tabink var(--dur) var(--ease) both;
-  background:var(--tri)}
-@keyframes tabink{from{transform:scaleX(.15);opacity:0}to{transform:none;opacity:1}}
-@media(prefers-reduced-motion:reduce){nav.tabs button[aria-selected="true"]::after{animation:none}}
+.rail a[aria-selected="true"]::before{animation:railink var(--dur) var(--ease) both}
+@keyframes railink{from{transform:scaleY(.15);opacity:0}to{transform:none;opacity:1}}
+@media(prefers-reduced-motion:reduce){.rail a[aria-selected="true"]::before{animation:none}}
 
 /* ---------- mobile bottom bar (mirrors the league app) ---------- */
 .bottombar{position:fixed;left:0;right:0;bottom:0;z-index:70;display:flex;
@@ -443,17 +770,19 @@ nav.tabs button[aria-selected="true"]::after,nav.tabs a[aria-selected="true"]::a
 .bottombar button svg,.bottombar a svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.7}
 .bottombar button[aria-selected="true"],.bottombar a[aria-selected="true"]{color:var(--blanco)}
 .bottombar button[aria-selected="true"] svg,.bottombar a[aria-selected="true"] svg{stroke:var(--rojo)}
-/* step B — the bottom bar is a phone's *only* nav (nav.tabs, which already
+/* step B — the bottom bar is a phone's *only* nav (the rail, which already
    carries this mark, is desktop-only), so the active tab gets the same
    device the desktop underline uses, just relocated to the bar's top edge
    instead of the button's own bottom. Icon tint stays — this sits alongside
    it, not instead of it. */
 .bottombar button[aria-selected="true"]::before,.bottombar a[aria-selected="true"]::before{content:"";position:absolute;top:0;left:8px;right:8px;
-  height:3px;border-radius:0 0 2px 2px;background:var(--tri)}
+  height:3px;border-radius:0 0 2px 2px;background:var(--tri);clip-path:var(--tri-clip)}
 @media(min-width:860px){.bottombar{display:none}}
 /* PHASE_8.2 — on a phone the bottom bar is the nav; the top tab row goes.
-   header.top keeps its own bottom border as the separator. */
-@media(max-width:859px){nav.tabs{display:none}}
+   header.top keeps its own bottom border as the separator. PHASE_2_REDESIGN
+   step 7: "the top tab row" is now the rail; its own display:none default
+   plus @media(min-width:860px){.rail{display:flex}} above is the same
+   860px swap, just expressed on the new element -- unchanged. */
 
 /* ---------- sections ---------- */
 section[hidden]{display:none}
@@ -475,11 +804,36 @@ h3.sec{font-size:var(--fs-lg);margin:var(--sp-6) 0 var(--sp-3);text-transform:up
 h3.sec::after{content:"";flex:1;height:1px;background:var(--tri-fade)}
 h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
 .note{color:var(--ink-3);font-size:var(--fs-2xs);line-height:1.5;margin-top:var(--sp-3)}
+/* PHASE_26 item 2: investigated word-spacing/letter-spacing/font-feature-
+   settings/text-rendering on this element and every ancestor up to <main>
+   -- all computed to the plain browser default (word-spacing:0px,
+   letter-spacing:normal, font-feature-settings:normal, font-kerning:auto),
+   nothing overridden. The rendered gap (measured live via
+   Range.getClientRects(), both before and after this rule) is genuinely a
+   real space, pixel-identical to every other inter-word gap in the same
+   sentence -- at --fs-2xs (12px) a single Inter space is only ~3.2px wide,
+   which reads as tight right after an em dash into a 2-letter word even
+   though nothing is actually broken. Scoped word-spacing nudge (buildCompare()'s
+   own #cmpPick is the only real caller of this exact helper line) rather
+   than changing the shared .note rule everywhere else in the app uses. */
+#jugadores #cmpPick .note{word-spacing:.12em}
 .muted{color:var(--ink-2)}
 .dim{color:var(--ink-3)}
 
 /* ---------- cards ---------- */
 .card{background:var(--deep);border:1px solid var(--line);border-radius:var(--r);padding:var(--sp-4);color:inherit}
+/* PHASE_2_REDESIGN step 4 (owner-approved, redesign-v2): the player page's Resumen/
+   Temporadas tabs. Same tricolor-underline device as nav.tabs's own active-tab mark
+   (background:var(--tri), 3px, the same token bolder blocks use in step 2) -- an
+   accent already established elsewhere, not a new one invented for this component. */
+.ptabs{display:flex;gap:var(--sp-5);border-bottom:1px solid var(--line-soft);margin-top:var(--sp-4_5)}
+.ptabs button{background:none;border:0;color:var(--ink-3);font-weight:700;font:inherit;
+  padding:10px 2px;cursor:pointer;position:relative;font-size:var(--fs-sm)}
+.ptabs button:hover{color:var(--ink)}
+.ptabs button[aria-selected="true"]{color:var(--blanco);font-weight:800}
+.ptabs button[aria-selected="true"]::after{content:"";position:absolute;left:0;right:0;bottom:-1px;
+  height:3px;border-radius:2px 2px 0 0;background:var(--tri);clip-path:var(--tri-clip)}
+.ptabs button:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:4px}
 /* editorial hero atop a player / team card (PHASE_8.3b) — one defining
    number + a sparkline; the strip / kv-list / roster below stay as they were. */
 .phero{display:flex;gap:var(--sp-4);flex-wrap:wrap;align-items:flex-start}
@@ -499,23 +853,227 @@ h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
 @media(min-width:640px){.g3{grid-template-columns:1fr 1fr}}
 @media(min-width:960px){.g3{grid-template-columns:repeat(3,1fr)}}
 
+/* PHASE_41 (owner-approved, redesign-v2): Apoderados/Retirados redesign -- scoped
+   classes only, no new :root tokens; reuses --raise, --line, --card, the --ink steps,
+   --r, the --sp- steps, --rojo and --flag-w, the real crest()/crestSVG() markup, and
+   Historia's .streak-card
+   .mini i as the visual precedent for a small bold numeral badge. .crest-plate's own
+   --plate is set inline per club by crestPlate() (tabs.js) -- picked per club, but
+   checked live, always the SAME one in both themes, so there's no per-theme override
+   here the way --cmp-fd/--cmp-fl (PHASE_26) needs one -- that pair genuinely differs
+   by theme; this one doesn't. .owners-grid/.retired-grid's own margin-top (not a
+   change to the shared .cards/.lede rules) fixes the flush gap between the view's
+   lede line and its first card -- the PHASE_41 task's own reported bug, confirmed
+   live at 1000px before this existed.
+   PHASE_41B: a fixed 52x52 square, not the padding-hugs-content box this was before
+   -- that version stretched to the full card height inside buildOwners()' own
+   inline `style="display:flex"` card (no align-items set there, so flex defaulted
+   to stretch), a real bug reported live, not caught by PHASE_41's own screenshots
+   because .retired-head (the other .crest-plate context) already had its own
+   align-items:center and never showed it. align-self:flex-start fixes this from the
+   plate's own side instead of patching every parent that happens to hold one. */
+.crest-plate{display:inline-flex;align-items:center;justify-content:center;border-radius:12px;
+  width:52px;height:52px;flex:none;align-self:flex-start;background:var(--plate)}
+.owners-grid{margin-top:var(--sp-4)}
+.retired-grid{display:flex;flex-direction:column;gap:var(--sp-3);margin-top:var(--sp-4)}
+.retired-card{display:flex;flex-direction:column;gap:var(--sp-3)}
+.retired-head{display:flex;align-items:center;gap:var(--sp-3)}
+.retired-name{font-weight:700}
+.jersey-row{display:flex;gap:var(--sp-2);flex-wrap:wrap}
+.jersey-chip{position:relative;min-width:38px;height:38px;padding:0 6px;border-radius:9px;
+  background:var(--raise);border:1px solid var(--line);color:var(--ink);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-weight:700;font-size:16px}
+.jersey-chip .x2{position:absolute;top:-7px;right:-7px;background:var(--rojo);color:var(--flag-w);
+  border-radius:99px;font-size:9px;font-weight:700;padding:2px 5px;line-height:1.3;font-style:normal}
+
 /* ---------- hero: the offseason clock ---------- */
+/* PHASE_2_REDESIGN step 5 (owner-approved, redesign-v2): a decorative basketball-arc
+   motif behind the hero -- concentric ring lines radiating from the top-right corner
+   (repeating-radial-gradient, a second background-image layer stacked over the
+   existing radial gradient below; CSS layer order puts the FIRST-listed image on
+   top, so the arcs sit visually above the gradient, both still behind the real
+   content, which is a separate stacking context entirely). --line is already the
+   app's own subtle hairline/border tone and flips correctly per theme on its own,
+   so this needed no new token and no [data-theme="light"] override. Purely additive:
+   no markup changed, no copy changed, the real dynamic content (day-count, champion
+   line, titleComb() spark) is untouched. Simplified away below 640px (the .hero card
+   itself is much narrower there; dense rings at that size read as clutter, not
+   texture) -- see the max-width rule right after this one. */
 .hero{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
-  background:radial-gradient(130% 130% at 10% -8%,var(--hero-a),var(--hero-c) 78%)}
+  background-image:repeating-radial-gradient(circle at 100% 0%,transparent 0 63px,var(--line) 63px 64.5px),
+    radial-gradient(130% 130% at 10% -8%,var(--hero-a),var(--hero-c) 78%)}
+@media(max-width:639px){
+  .hero{background-image:radial-gradient(130% 130% at 10% -8%,var(--hero-a),var(--hero-c) 78%)}
+}
 .hero .ed-eye{padding:var(--sp-4) var(--sp-4_5) 0}
-.herotop{padding:var(--sp-2) var(--sp-4_5) var(--sp-4);display:flex;gap:var(--sp-4_5);flex-wrap:wrap;align-items:flex-end}
-.clock{flex:none}
-.clock .n{font-family:inherit;font-weight:800;font-size:var(--fs-hero);
-  line-height:.86;letter-spacing:-.025em}
-.clock .u{font-size:var(--fs-2xs);color:var(--ink-2);letter-spacing:.1em;text-transform:uppercase;margin-top:6px}
-.herotext{flex:1;min-width:230px}
-.herotext h2{font-size:clamp(22px,4.6vw,30px);text-transform:uppercase;letter-spacing:.005em}
-.herotext p{margin:var(--sp-2) 0 0;color:var(--ink-2);font-size:var(--fs-sm);max-width:52ch}
+/* line-height 1.08 (found, not assumed: zoomed crop at 860px) let the
+   tilde over any accented capital -- Ñ in "PUERTORRIQUEÑO" here -- almost
+   touch the line above it, tight enough to misread as a stray mark
+   crossing between the two lines. 1.2 clears it with real headroom,
+   confirmed on the same crop below. */
+.hero-headline{font-weight:800;font-size:clamp(26px,5.2vw,44px);line-height:1.2;
+  letter-spacing:-.005em;text-transform:uppercase;margin:0;padding:var(--sp-3) var(--sp-4_5) 0}
+/* PHASE_9 item 3 phone-compaction (owner-approved, redesign-v2): one
+   sentence in the DOM, no second copy -- display:none on the middle
+   clause below 640px reads as "97 temporadas documentadas" both visually
+   AND to the accessibility tree (display:none is excluded from accessible
+   name computation the same way .raillabel already is at the rail's
+   icon-only tier), confirmed live, not assumed. Desktop (>=640px)
+   unaffected -- this is additive, no rule above changes. */
+@media(max-width:639px){.hero-headline-full{display:none}}
+.hero-dek{color:var(--ink-2);font-size:var(--fs-md);line-height:1.5;
+  max-width:64ch;margin:var(--sp-2_5) var(--sp-4_5) 0;padding:0}
+/* Round 2 phone-target step 1 (owner-approved, redesign-v2): measured
+   option, applied cumulatively -- see the redesign-v2 PHASE_9 report for
+   the exact y after each step. Placed AFTER the base .hero-dek rule
+   deliberately -- same specificity (0,1,0), and this project has hit the
+   source-order tie before (the Oswald selector list, .hero-stat's own
+   background): whichever of two equal-specificity rules sits LATER in
+   the file wins regardless of which one "looks" like the override. My
+   first attempt put this media query BEFORE the base rule and it silently
+   lost the tie -- found live (computed font-size still read 18px at
+   390px), not assumed, fixed by moving it here. */
+@media(max-width:639px){.hero-dek{font-size:15px}}
+.hero-status{font-weight:700;font-size:var(--fs-sm);margin:var(--sp-3) var(--sp-4_5) 0;padding:0}
+/* --ink-3 (the plain .dim/.hero-note default) was tuned against opaque
+   card backgrounds (--raise/--deep) and measured, live, at only 4.27:1 /
+   4.33:1 here in light mode -- the hero's own radial-gradient background
+   (--hero-a/--hero-c) is lighter than those in this region, real pixel-
+   sampled, not assumed. Both fail the 4.5:1 small-text floor. --ink-2
+   (already proven at 6.31:1 two lines up, .hero-dek, same background
+   region) fixes both, re-verified at 6.44:1 / 6.52:1 light, 8.17:1 /
+   8.65:1 dark. */
+.hero-status .dim{font-weight:400;font-size:var(--fs-2xs);color:var(--ink-2)}
+.hero-note{color:var(--ink-2);font-size:var(--fs-2xs);line-height:1.5;
+  max-width:60ch;margin:var(--sp-2) var(--sp-4_5) 0;padding:0}
+.hero-stats{display:flex;gap:var(--sp-3);flex-wrap:wrap;
+  margin:var(--sp-4) var(--sp-4_5) 0;padding-bottom:var(--sp-4)}
+.hero-stat{flex:1 1 160px;background:var(--card);border:1px solid var(--line);
+  border-radius:var(--r);padding:var(--sp-3_5)}
+.hero-stat.tri-block{border-color:transparent}
+/* .hero-stat{background:var(--card)} and .tri-block-rojo/.tri-block-azul's
+   OWN {background:...} are both single-class selectors -- equal
+   specificity, and .hero-stat sits later in the file, so it would win the
+   tie and silently paint every tri-block stat white (found live, not by
+   reading the CSS: color came through correctly since .hero-stat never
+   redeclares it, but background didn't). Same fix as .clock.tri-block-azul
+   .u / .readout .yr.tri-block-azul above -- a combined selector at higher
+   specificity (0,2,0) that wins regardless of source order. */
+.hero-stat.tri-block-azul{background:var(--azul)}
+/* Round 2 (owner-approved, redesign-v2): --rojo-deep (#8E1119, the round-1
+   fix) solved the white-label-vs-block contrast (9.36:1) but a NEW check
+   this round -- the block's OWN contrast against the hero's surrounding
+   gradient, pixel-sampled live, WCAG 1.4.11 non-text 3:1 -- found it fails
+   at only 2.00:1, too close to the dark background to read as a distinct
+   block. Neither --rojo-deep nor --rojo nor the mockup's #B01D29 clears
+   BOTH constraints at once (all three measured and printed in the
+   redesign-v2 PHASE_9 report): moving along --rojo's own hue at
+   lightness/saturation found the two constraints trade off against each
+   other (darker helps white-text, hurts block-vs-surround; lighter is the
+   reverse), but they DO overlap in a real window. #D1101E -- same hue and
+   saturation as --rojo (355.7deg, 86%), lightness 0.44 instead of --rojo's
+   0.553, luminance 0.140 (inside the requested 0.12-0.18 band) -- clears
+   both with real margin: white label 5.52:1 (>=4.5), block vs surrounding
+   3.38:1 (>=3:1). Set here only, not as a new global token -- dark theme
+   only; light theme's --rojo already clears both on its own (5.9:1 text,
+   5.2:1 block-vs-surround) and stays untouched, consistent with every
+   other shipped .tri-block-rojo instance (the hub lead card, etc.). */
+.hero-stat.tri-block-rojo{background:#D1101E}
+[data-theme="light"] .hero-stat.tri-block-rojo{background:var(--rojo)}
+.hero-stat .ed-stat{line-height:.95}
+.hero-stat .u{font-size:var(--fs-3xs);letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink-3);margin-top:6px;line-height:1.35;font-weight:700}
+.hero-stat.tri-block .u{color:var(--flag-w)}
+/* PHASE_9 item 3 phone-compaction (owner-approved, redesign-v2): matches
+   the phone mockup's own stat layout (day counter full width, the other
+   two side by side, smaller) -- desktop (>=640px) untouched, this whole
+   block is additive under the same breakpoint the headline clause uses. */
+@media(max-width:639px){
+  .hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2_5)}
+  .hero-stats .hero-stat:nth-child(1){grid-column:1 / -1}
+  .hero-stats .hero-stat:nth-child(2),.hero-stats .hero-stat:nth-child(3){padding:var(--sp-3)}
+  .hero-stats .hero-stat:nth-child(2) .ed-stat,
+  .hero-stats .hero-stat:nth-child(3) .ed-stat{font-size:20px}
+}
+/* PHASE_9 item 3d2 step 1 (owner-approved, redesign-v2): stat 1 (day
+   counter) gets the same smaller phone treatment as stats 2/3 above --
+   the compound selector here (.hero-stats .hero-stat:nth-child(1)
+   .ed-stat) is already higher specificity than the plain .ed-stat{font-
+   size:var(--fs-xl)} rule it overrides, same proven pattern as stats
+   2/3's own identical override just above, not a source-order tie.
+   Numeral stays .ed-stat (Oswald, unchanged class). Colors untouched --
+   only size/padding shrink, so the block's own contrast numbers (already
+   verified: white on --azul, 5.51:1 dark / 7.19:1 light, clears both the
+   3:1 large-text and 4.5:1 small-text floors either way) don't move. */
+@media(max-width:639px){
+  .hero-stats .hero-stat:nth-child(1){padding:var(--sp-3)}
+  .hero-stats .hero-stat:nth-child(1) .ed-stat{font-size:20px}
+}
+/* PHASE_9 item 3d, step 4 (owner-approved, redesign-v2): tightened
+   inter-section spacing, phone only. Placed AFTER every base rule it
+   touches (.hero-headline at :641, .hero-dek at :651, .hero-status
+   at :664, .hero-note at :674, .hero-stats at :676, and even after the
+   phone stat-layout block right above this one) -- same class of
+   specificity tie this file has hit twice already (the Oswald selector
+   list, then .hero-dek's own phone font-size rule last round), so this
+   one is deliberately last among equals rather than trusted to "read
+   like" an override. */
+@media(max-width:639px){
+  .hero-headline{padding-top:6px}
+  .hero-dek{margin-top:6px}
+  .hero-status{margin-top:6px}
+  .hero-note{margin-top:3px}
+  .hero-stats{margin-top:8px;padding-bottom:8px}
+}
+/* PHASE_9 item 3d2 (owner-approved, redesign-v2): stat 1's block-vs-
+   surrounding contrast, checked as part of this item's own verify step
+   (not previously checked at phone width specifically) -- the phone
+   .hero{} uses a SIMPLER single radial-gradient (no repeating-arcs layer,
+   see the max-width:639px override near .hero's own rule), so it sits on
+   a different part of the gradient than the desktop check that passed at
+   3.10:1. Sampled 4 points around the block (above/below/left/right,
+   dark theme): 2.85, 3.07, 2.97, 3.55 -- genuinely borderline, two of
+   four below 3:1. --azul at phone width only, dark theme only: #186AE7
+   (same hue 216.2deg/sat 81.5% as --azul, lightness 0.50 instead of
+   --azul's 0.467) clears all four sampled points (3.19-3.96:1) with
+   white text still at 4.94:1 (>=4.5). Light theme's own phone sample
+   already passed (5.80:1) and is explicitly restored to --azul here,
+   unaffected. Placed after the base .hero-stat.tri-block-azul rule
+   (same equal-specificity-tie discipline as the rest of this file). */
+@media(max-width:639px){
+  .hero-stat.tri-block-azul{background:#186AE7}
+  [data-theme="light"] .hero-stat.tri-block-azul{background:var(--azul)}
+}
 .herofoot{border-top:1px solid var(--line);padding:var(--sp-3) var(--sp-4_5);display:flex;gap:var(--sp-3_5);flex-wrap:wrap;
   align-items:center;background:var(--wash)}
-.trophy{display:flex;align-items:center;gap:var(--sp-2_5);flex-wrap:wrap}
+/* Round 2 (owner-approved, redesign-v2): flex-wrap:wrap let the crest
+   wrap away from the name/t2 block at <=639px -- measured live: crest
+   sat alone on its own row (bottom 697.7px), the name block started a
+   full row below it (top 707.7px), not beside it. nowrap keeps crest+text
+   on one row always; min-width:0 on the text block (a real flexbox
+   necessity -- without it, a flex item's default min-width:auto stops
+   long text from wrapping/shrinking at all, it would overflow the row
+   instead) lets "Vaqueros de Bayamón — campeón 2026" wrap within its own
+   block if it's ever too long for the space beside the crest, rather
+   than pushing the crest down with it. */
+.trophy{display:flex;align-items:center;gap:var(--sp-2_5);flex-wrap:nowrap}
+.trophy>div{min-width:0}
 .trophy .t1{font-weight:700;font-size:var(--fs-base)}
 .trophy .t2{color:var(--ink-2);font-size:var(--fs-2xs)}
+/* PHASE_9 item 3 phone-compaction (owner-approved, redesign-v2): the
+   ribbon used to be a 3rd child of .trophy, wrapping to its OWN line
+   whenever crest+name already filled the row (measured live at 390px:
+   .herofoot ran 195px tall, three stacked wraps -- crest+name, ribbon
+   alone, then the button alone below that, since it was .herofoot's own
+   3rd flex child with an empty spacer before it). Moving the ribbon out
+   of .trophy and pairing it with the button in one .heroaction group
+   means the two wrap AS A PAIR -- two rows instead of three, nothing
+   dropped (crest still sits beside the name, ribbon and button both
+   still present, unchanged content). margin-left:auto keeps the old
+   spacer's job (push the pair right on wide screens) without a
+   dedicated empty div. */
+.heroaction{display:flex;align-items:center;gap:var(--sp-3);flex-wrap:wrap;margin-left:auto}
 .herospark{display:inline-flex;align-items:flex-end;flex:0 0 auto}
 .herospark svg{display:block;width:150px;height:20px}
 
@@ -561,17 +1119,63 @@ h4.sub{font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
 /* ---------- tables ----------
    Density modelled on basketball-reference: tight rows, a sticky first
    column so the name/rank stays put while the numbers scroll, a sticky
-   header + zebra once a table is long enough to scroll vertically. */
+   header + zebra once a table is long enough to scroll vertically.
+   PHASE_2_REDESIGN step 3 (owner-approved, redesign-v2): a further,
+   Databallr-style density pass -- tighter th/td padding. This is the ONE
+   shared table style every <table> in the app uses (drawDQTable, standings,
+   career leaders, records, ...), not a Calidad/Comparar-only rule -- there's
+   no separate table CSS to scope this to, so every table in the app got
+   denser, not just the two this phase was verified against. Two of the
+   three density characteristics named for this pass were already here and
+   left alone: th's letter-spacing (.06em, uppercase) and the sort-arrow
+   affordance (th .arrow, ▲/▼ on the active sort column, tabs.js buildTable()
+   line ~1015). Header font-size (--fs-3xs, 11px) is also unchanged -- it's
+   already the smallest step in the whole type scale; shrinking it further
+   would mean inventing a new token below the scale's own floor, and risks
+   exactly the 390px-readability regression this phase was told to watch
+   for, not proven safe by anything checked here. */
 .tblwrap{position:relative;overflow:auto;border:1px solid var(--line);border-radius:var(--r);
   margin-top:var(--sp-3);background:var(--deep);-webkit-overflow-scrolling:touch}
 .tblwrap.tall{max-height:min(68vh,600px)}
+/* PHASE_52A (owner-approved, redesign-v2): Calendario's own scroll affordance
+   (calScrollAffordance(), tabs.js) -- scoped to #calendarBox so every other table's
+   .tblwrap in the app (buildTable() is shared) keeps its current, unchanged behavior.
+   The fade is an empty ::after (never read as content by a screen reader, no aria-
+   hidden needed), the same --deep the wrapper's own background already uses so it
+   blends rather than introducing a new color; it only shows while has-more-right is
+   toggled on (there IS more to scroll to, checked live, not fixed at build time). The
+   focus ring only appears when the wrapper is actually tabbable -- tabIndex is -1,
+   not 0, whenever the table fits without scrolling (set in JS), so this rule alone
+   can't make an unscrollable table keyboard-stoppable. */
+#calendarBox .tblwrap.has-more-right::after{content:"";position:absolute;top:0;right:0;bottom:0;
+  width:28px;background:linear-gradient(to right,transparent,var(--deep));pointer-events:none}
+#calendarBox .tblwrap:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
+/* PHASE_52B (owner-approved, redesign-v2): at 390px the Formato column's own real
+   text (up to 91 characters, "Desempate y repechaje del 10 al 12 de julio...") wrapped
+   inside the shared td.name's 150px min-width -- up to 6 lines (measured live, line-
+   counted via Range.getClientRects(), not guessed from row height: 5/3/6 lines for the
+   table's 3 real rows), inflating that row far past its neighbors and leaving the
+   other, single-line cells in the same row looking stranded in empty vertical space.
+   Scoped to #calendarBox (buildTable()'s own shared td.name min-width:150px, used by
+   every other table in the app, is untouched) -- a wider min-width so the real longest
+   Formato string (measured live, 564px at this table's own font/weight) wraps to at
+   most 2 lines (confirmed 2/2/2, same line-counting method, after widening to 350px --
+   300px was tried first and left 2 of the 3 rows at 3 lines); text-overflow
+   is never set here, so no word is ever clipped, only wrapped, same as the shared
+   rule's own white-space:normal. vertical-align:top on every cell in this table (not
+   just Formato) so a short single-line cell in the same row as a 2-line Formato cell
+   sits flush with its own row's top instead of floating centered in now-taller rows --
+   this is the "align cells sensibly" fix: the row is still exactly as tall as its own
+   tallest cell needs (Formato), nothing shrinks, but nothing else floats either. */
+#calendarBox td.name{min-width:350px}
+#calendarBox td{vertical-align:top}
 table{border-collapse:collapse;width:100%;font-size:var(--fs-xs);min-width:360px}
 th{background:var(--raise);color:var(--ink-2);font-weight:700;font-size:var(--fs-3xs);letter-spacing:.06em;
-  text-transform:uppercase;text-align:left;padding:8px 11px;border-bottom:1px solid var(--line);white-space:nowrap}
+  text-transform:uppercase;text-align:left;padding:6px 9px;border-bottom:1px solid var(--line);white-space:nowrap}
 th.sortable{cursor:pointer;user-select:none}
 th.sortable:hover{color:var(--blanco)}
 th .arrow{opacity:.55;font-size:9px;margin-left:3px}
-td{padding:6px 11px;border-bottom:1px solid var(--line-soft);white-space:nowrap}
+td{padding:4px 9px;border-bottom:1px solid var(--line-soft);white-space:nowrap}
 tr:last-child td{border-bottom:0}
 tbody tr:hover td{background:var(--raise)}
 td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
@@ -604,6 +1208,45 @@ td.rank{color:var(--ink-3);width:32px}
 .tblwrap.scrolled th:first-child::after,.tblwrap.scrolled td:first-child::after{opacity:1}
 .tbl-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:var(--sp-3);font-size:var(--fs-2xs);color:var(--ink-3)}
 
+/* PHASE_51 (owner-approved, redesign-v2): Calidad de datos tap targets -- the survey's
+   own finding was ~393-413 controls under 44px on #archivo/calidad (drawDQ/drawDQTable,
+   web/js/data-quality.js): per-row player-name .btn links, year chips, Ficha/jug05
+   ratio links, CSV buttons, the filter inputs/select and the "filas idénticas"
+   disclosure. Decision (owner-approved): bigger controls, not a new interaction -- same
+   tables/columns/data/sort/filter/copy, every rule below only adds sizing, nothing that
+   changes what's rendered. Scoped to #dqBox (the real, unique container drawDQ() always
+   targets) so buildTable()/.tblwrap/.btn/.filters stay byte-identical everywhere else in
+   the app (Historia/Jugadores/Equipos tables, Jugadores' own Comparar, etc., all
+   confirmed unaffected live) -- none of the shared selectors themselves are touched,
+   only new #dqBox-prefixed overrides. Sizing the CONTROL (display:flex/inline-flex +
+   min-height:44px), not the table cell's own padding, per the task's own explicit
+   preference -- the row grows to match automatically (a table row's height is always
+   its tallest cell), so a plain-text cell sharing a row with a resized control gets the
+   same ~44px row height for free, no separate padding rule needed for it. th/select/
+   input aren't flex containers; those get padding/min-height instead, relying on the
+   browser's own default vertical-align:middle for table cells. */
+#dqBox .btn{display:inline-flex;align-items:center;min-height:44px;margin:2px 6px 2px 0}
+#dqBox td.num button{display:inline-flex;align-items:center;justify-content:center;
+  min-height:44px;min-width:44px;padding:0 6px}
+#dqBox td.num a{display:inline-flex;align-items:center;justify-content:flex-end;min-height:44px;min-width:44px}
+#dqBox th.sortable{padding-top:16px;padding-bottom:16px;min-width:44px}
+#dqBox .filters input,#dqBox .filters select{min-height:44px}
+#dqBox details>summary{display:flex;align-items:center;min-height:44px;cursor:pointer}
+/* the one inline prose link on Cobertura the task names explicitly (web/js/tabs.js
+   buildSources(), #sourcesBox). PHASE_51D: the first inline-flex/min-height:44px pass
+   grew the surrounding <p>'s own line box (found live -- 36px to 62px at 320/390px, 18px
+   to 44px at 1000px, since a taller inline-flex child always pushes its own line taller).
+   inline-block + 13px top/bottom padding + an equal NEGATIVE margin instead: padding is
+   part of the element's own border box (what getBoundingClientRect measures, and what
+   the browser hit-tests clicks against) regardless of margin, but a negative margin
+   exactly cancelling that padding removes the element's contribution to the surrounding
+   line's height -- the <p> is back to its original 18px-per-line box, the link's own hit
+   area is still the full 13+13+18=44px tall (confirmed live, not assumed -- see the
+   phase's own before/after paragraph-height table). The two similar "ver Calidad de
+   datos" links on a player's Resumen/Temporadas tab (seasonTotalsNote(), tabs.js) are a
+   different view, out of this task's named scope, deliberately left alone. */
+#sourcesBox p.muted a[href="#archivo/calidad"]{display:inline-block;padding:13px 0;margin:-13px 0}
+
 /* ---------- controls ---------- */
 input[type=search],input[type=text],select,textarea{
   background:var(--deep);border:1px solid var(--line);color:var(--ink);
@@ -614,12 +1257,114 @@ select{cursor:pointer}
 .filters>*{flex:0 1 auto;width:auto;min-width:120px}
 .field{display:flex;flex-direction:column;gap:4px}
 .field label{font-size:var(--fs-3xs);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+/* PHASE_52A (owner-approved, redesign-v2): A la medida's own Desde/Hasta pair
+   (#qbControls, buildQB() in tabs.js) used to be two separate .field children of
+   .filters -- at 390px Contiene+Desde fit one row but Hasta, alone, had nothing left
+   to pair with and wrapped to its own row by itself (found live: Desde/Hasta both
+   rendered at 120px, not their own inline max-width:104px, since .filters>* 's
+   min-width:120px above wins that conflict -- a min-width/max-width mismatch, not
+   really a layout bug on its own, but worth clearing up while this is already being
+   restructured). Wrapping them in one .qb-range div makes them ONE flex item from
+   .filters' own point of view, so they always wrap together, never split; each input
+   also gets a 44px floor, matching this engagement's own tap-target discipline. */
+#qbControls .qb-range{display:flex;gap:8px;flex:0 0 auto}
+#qbControls .qb-range .field{flex:1 1 90px;min-width:90px;max-width:130px}
+#qbControls .qb-range input{min-height:44px}
+/* PHASE_52A: the real cause of A la medida's uneven result-table row heights -- any
+   wide ("name") column wraps onto several lines when its content is long enough
+   (white-space:normal, set generically by buildTable() for every c.wide column); the
+   temporadas dataset's own Nota column is the worst offender, long enough on some
+   years to wrap 2-3 lines while sitting scrolled out of view at phone width, inflating
+   just that one row with no visible cause. Capped to a single line here, scoped to
+   #qbResult only (buildTable()'s own shared td.name rule, used by every other table
+   in the app, is untouched) -- the full text is never removed from the DOM (still
+   selectable, still in the unchanged CSV export); a native title tooltip is added in
+   JS (qbApplyTruncationTitles(), tabs.js) only on cells that actually truncate. */
+#qbResult td.name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}
 .btn{background:var(--raise);border:1px solid var(--line);color:var(--ink);padding:9px var(--sp-3_5);
   border-radius:var(--r-sm);font-size:var(--fs-xs);font-weight:600;cursor:pointer;white-space:nowrap}
 .btn:hover{border-color:var(--azul);color:var(--blanco)}
 .btn.primary{background:var(--azul);border-color:var(--azul);color:#fff}
 .btn.primary:hover{background:var(--azul-hi);border-color:var(--azul-hi)}
 .btn:disabled{opacity:.45;cursor:not-allowed}
+/* PHASE_9 item 5 (owner-approved, redesign-v2): every standalone .btn on phone was under the
+   44px touch-target floor (measured live: base .btn 39.5px, .primary 41px, the generic
+   "Descargar CSV" button 30px, megaFeat()'s single card-action button 32px -- see the
+   redesign-v2 PHASE 9 item 5 report). Grown to 44px here, phone only, no change at >=640px.
+   EXCLUDED: td.name .btn -- buildTable()'s wide-column render callbacks put a compact .btn
+   inside every <td class="name">, one per dense table row (378 on Jugadores/Buscar alone,
+   plus five more tables found the same way: mvpYears/awTable/scoringTable on Historia/Premios,
+   leadTable on Jugadores/Líderes, three dqX tables on Archivo/Calidad). Tested live: growing
+   those to 44px balloons row height 32px->52px (+62% total table height on Buscar's 378-row
+   list) -- a real break, not a hypothetical one, found by applying this exact rule and
+   measuring before writing it here. td.name .btn is a single structural selector that
+   correctly matches all of them (and only them -- #hofList's card-footer .btn, similarly
+   small, is NOT inside a <td> and safely gets this rule's 44px growth). Two of those tables
+   (Jugadores/Buscar, Archivo/Calidad's three dqX tables) get an invisible expanded tap target
+   instead, below; the other four (mvpYears/awTable/scoringTable/leadTable) are left as they
+   were -- flagged in the item 5 report as a possible follow-up, not done here. */
+@media(max-width:639px){
+  .btn:not(td.name .btn){min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+}
+/* PHASE_9 item 5, STEP B (owner-approved, redesign-v2): the two dense tables named in the item's
+   own scope -- Jugadores/Buscar's #playerIndex, and Archivo/Calidad's three disputed/data-quality
+   tables (#dqTable, the main conflicting-totals list; #dqDob, unresolved birth dates; #dqDisputed,
+   season/team mismatches -- all three share #dqTable's "disputed-player links" description, same
+   #dqBox section) -- get an EXPANDED, INVISIBLE tap target instead of growing the visible row
+   (which STEP A's own exclusion above keeps byte-identical). Per-case geometry measured live
+   (getBoundingClientRect, not assumed): every row in these tables has adjacent TRs touching with
+   ZERO gap (this TD's bottom == the next TD's top), so any expansion has to stay inside the
+   button's OWN row to avoid reaching into the next one.
+   #playerIndex/#dqDob/#dqDisputed: button 24px (42px if the name wraps to 2 lines), centered with
+   only 4px of free space above AND below before the row boundary either way -- max symmetric
+   inset -4px reaches the row's own edge exactly. Empirically, hit-testing right at that shared
+   edge has a ~2px dead zone in both engines (confirmed live, both Chromium and WebKit -- neither
+   row claims that sliver, which is the safe failure mode, never an overlap); backed off to -3px,
+   verified zero overlap AND real reach beyond the button's own box on 3+ adjacent pairs, both
+   engines, both this table and the ones below.
+   #dqTable: same 4px above, but the row also carries a non-interactive club-name caption below
+   the button, leaving 24.5px of real free space below before the next row (same regardless of
+   whether that row's own button wrapped to 42px or not -- measured both). -3px top (matching the
+   other three tables) / -16px bottom reaches the full 44px target on the 24px-button rows (more
+   on the 42px ones), using 16 of the 24.5px available -- an 8.5px buffer kept deliberately, not
+   maxed out. No left/right change -- the button's own width already clears 44px on every row;
+   expanding sideways risked the "Año" column's own separate clickable link in the same row. */
+@media(max-width:639px){
+  #playerIndex td.name .btn,
+  #dqDob td.name .btn,
+  #dqDisputed td.name .btn{position:relative}
+  #playerIndex td.name .btn::after,
+  #dqDob td.name .btn::after,
+  #dqDisputed td.name .btn::after{content:"";position:absolute;inset:-3px;z-index:1}
+  #dqTable td.name .btn{position:relative}
+  #dqTable td.name .btn::after{content:"";position:absolute;inset:-3px 0 -16px 0;z-index:1}
+}
+/* PHASE_9 item 5b (owner-approved, redesign-v2): the same invisible expanded tap target,
+   extended to the 4 dense tables item 5 found but didn't touch -- #mvpYears/#awTable/
+   #scoringTable (Historia/Premios) and #leadTable (Jugadores/Líderes). Re-measured live, not
+   assumed to match item 5's tables: every row pair across all four has the SAME tight-case
+   geometry as #playerIndex/#dqDob/#dqDisputed (24px button, 4px free space above and below,
+   zero gap between adjacent rows) -- confirmed by surveying every adjacent-button gap in each
+   table, not just the first pair (some pairs have far more room, 15.5-32.8px, where a row in
+   the middle of a decade/season group sits next to a sub-header or note; the TIGHTEST gap in
+   all four tables is 8px, identical to item 5's proven case). #mvpYears occasionally appends a
+   non-interactive dagger footnote (<span title="...">) after the button in the same cell, when
+   the archive also lists another player for that year -- checked live: it never changes the
+   button's own height (still 24px in every sampled row, with or without the footnote), so it
+   doesn't affect this rule. Same -3px reused deliberately, not assumed -- re-ran the same dead-
+   zone scan from item 5 on each table's own tightest pairs and got the identical result: zero
+   overlap, real reach beyond the button's own box, confirmed via real mouse clicks (not just
+   computed styles) landing on the correct player, 3+ adjacent pairs per table, both engines. */
+@media(max-width:639px){
+  #mvpYears td.name .btn,
+  #awTable td.name .btn,
+  #scoringTable td.name .btn,
+  #leadTable td.name .btn{position:relative}
+  #mvpYears td.name .btn::after,
+  #awTable td.name .btn::after,
+  #scoringTable td.name .btn::after,
+  #leadTable td.name .btn::after{content:"";position:absolute;inset:-3px;z-index:1}
+}
 .btnrow{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin-top:var(--sp-3)}
 .chip{background:var(--raise);border:1px solid var(--line);color:var(--ink-2);border-radius:99px;
   padding:5px var(--sp-3);font-size:var(--fs-2xs);cursor:pointer;font-weight:500}
@@ -651,12 +1396,15 @@ select{cursor:pointer}
 .ask input{padding:var(--sp-3_5) 15px;font-size:16px;border-radius:var(--r);border-color:var(--azul-deep);
   background:var(--deep)}
 .ask input:focus{border-color:var(--azul-hi);outline:2px solid var(--focus);outline-offset:2px}
-.answer{margin-top:var(--sp-3_5);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--deep)}
-.answer .ahead{padding:var(--sp-4) var(--sp-4_5);background:var(--ahead-a)}
-.answer .aq{font-size:var(--fs-2xs);letter-spacing:.08em;text-transform:uppercase;color:var(--aq-ink);font-weight:600}
-.answer .abig{font-family:inherit;font-weight:800;font-size:clamp(24px,5.4vw,38px);
-  line-height:1.05;margin-top:6px}
-.answer .asub{color:var(--ink-2);font-size:var(--fs-xs);margin-top:7px}
+/* PHASE_8 item 2a (owner-approved, redesign-v2): bolder to match the bigger
+   search bar above -- .abig stays font-family:inherit (Inter), deliberately
+   not switched to Oswald, same as PHASE_1's original exclusion. */
+.answer{margin-top:var(--sp-4_5);border:1.5px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--deep)}
+.answer .ahead{padding:var(--sp-4_5) var(--sp-5);background:var(--ahead-a)}
+.answer .aq{font-size:var(--fs-xs);letter-spacing:.08em;text-transform:uppercase;color:var(--aq-ink);font-weight:700}
+.answer .abig{font-family:inherit;font-weight:800;font-size:clamp(28px,6.4vw,46px);
+  line-height:1.03;margin-top:8px}
+.answer .asub{color:var(--ink-2);font-size:var(--fs-sm);margin-top:9px}
 .answer .abody{padding:0}
 .answer table{min-width:0}
 .answer th:first-child,.answer td:first-child{padding-left:var(--sp-4_5)}
@@ -665,22 +1413,16 @@ select{cursor:pointer}
 .answer .afoot{padding:var(--sp-2_5) var(--sp-4_5);border-top:1px solid var(--line);color:var(--ink-3);font-size:var(--fs-2xs)}
 
 /* ---------- ribbon ---------- */
-.ribbon{margin-top:var(--sp-4)}
-.decade{display:grid;grid-template-columns:46px 1fr;gap:9px;align-items:start;margin-bottom:6px}
-.decade-label{color:var(--ink-3);font-size:var(--fs-2xs);font-weight:600;padding-top:var(--sp-2)}
-.cells{display:grid;grid-template-columns:repeat(10,1fr);gap:3px}
-.cell{aspect-ratio:1/1.45;border:0;border-radius:3px;cursor:pointer;padding:0;min-height:24px;
-  transition:transform .12s ease}
-.cell:hover,.cell:focus-visible{transform:translateY(-3px);outline:none;box-shadow:0 0 0 2px var(--blanco)}
-.cell.empty{background:repeating-linear-gradient(45deg,var(--empty-a),var(--empty-a) 3px,var(--empty-b) 3px,var(--empty-b) 6px);cursor:default}
-.cell.empty:hover{transform:none;box-shadow:none}
-.cell.sel{box-shadow:0 0 0 2px var(--rojo)}
-.readout{border:1px solid var(--line);border-radius:var(--r);background:var(--deep);margin-top:var(--sp-3_5);
-  padding:var(--sp-4);min-height:96px;display:flex;gap:var(--sp-3_5);align-items:center}
-.readout .yr{font-size:var(--fs-2xl);line-height:1;color:var(--ink-3);flex:none;font-weight:800;letter-spacing:-.03em}
-.readout .win{font-weight:700;font-size:17px}
-.readout .lose{color:var(--ink-2);font-size:var(--fs-xs);margin-top:2px}
-.readout .meta{color:var(--ink-3);font-size:var(--fs-2xs);margin-top:7px;white-space:normal}
+/* PHASE_11 (owner-approved, redesign-v2): the old decade-row grid (.decade/.decade-label/
+   .cells, 10 fixed columns) is gone -- its fixed-column width was the actual cause of the
+   27.6x40px phone touch-target failure the survey found (10 columns can never clear 44px
+   at 390px minus gaps, no matter what min-height says). Replaced by a flat, always-44px
+   ribbon -- see the new .ribbon-wrap/.ribbon/.cell rules in the PHASE_11 block below,
+   after .matrix. .cell's old .empty/.sel modifiers are gone with it (unused now -- the new
+   JS never emits them, replaced by .champ/.dynasty/plain and .active respectively). */
+.readout{border:1px solid var(--line);border-radius:var(--r);background:var(--deep);margin-top:var(--sp-3_5)}
+.readout .yr{font-size:40px;line-height:1;color:var(--ink-3);flex:none;font-weight:700;letter-spacing:-.03em;
+  font-family:var(--font-display)}
 
 /* ---------- bars ---------- */
 .bars{margin-top:var(--sp-3);display:grid;gap:5px}
@@ -705,6 +1447,11 @@ select{cursor:pointer}
 .teamtile[aria-pressed="true"]{border-color:var(--rojo);box-shadow:0 0 0 1px var(--rojo) inset}
 .teamtile .tn{font-size:var(--fs-2xs);font-weight:600;text-align:center;line-height:1.2}
 .teamtile .tt{font-size:var(--fs-3xs);color:var(--ink-3)}
+/* PHASE_42 (owner-approved, redesign-v2): Desaparecidas-only disambiguation line (city +
+   active years, computed from F) -- same small/muted treatment as .tt right above, own
+   class so Activos' own tile() output (unchanged, no .tts span at all) is never affected
+   by this rule existing. */
+.teamtile .tts{font-size:var(--fs-3xs);color:var(--ink-3);text-align:center;line-height:1.2}
 
 /* ---------- standings ---------- */
 .standhead{display:flex;align-items:baseline;gap:10px;margin:18px 0 6px}
@@ -715,13 +1462,45 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 
 /* ---------- grid game ---------- */
 .gridwrap{overflow-x:auto;margin-top:var(--sp-3_5)}
-.gridtable{display:grid;grid-template-columns:92px repeat(3,minmax(90px,1fr));gap:5px;
-  min-width:410px;max-width:540px}
+.gridtable{display:grid;grid-template-columns:132px repeat(3,minmax(90px,1fr));gap:5px;
+  min-width:420px;max-width:540px}
 .gcorner{background:transparent}
+/* PHASE_45B (owner-approved, redesign-v2): PHASE_45's own row-vs-column split (.ghead.row
+   flex-direction:row on desktop, crest BESIDE the label, switching to flex-direction:
+   column only below 639px) is gone -- row and column headers now share ONE layout,
+   always: crest-plate stacked above a centered label, at every width. The task's own
+   instruction ("crest above the label, centered... not top-left with the label at
+   bottom-right") applies to desktop specifically, where .row used to still be
+   side-by-side. .ghead.row is kept as a class (gHead(), games.js) for any future
+   row-specific need, but carries no CSS of its own anymore -- deleting it outright
+   risked a future "why does this button still have the class" question with no rule to
+   point at; an empty selector is more honest about what actually changed.
+   overflow-wrap:anywhere -- PHASE_45's own fix for "Caridur/os"/"Atlético/s" mid-word
+   breaks -- stays replaced by a 2-line clamp on .glabel: normal word-boundary wrapping
+   for the common case, degrading to an ellipsis only once 2 lines genuinely isn't
+   enough room for a single unbreakable word. Every .ghead still carries axFull() as its
+   title (games.js), so the full name is always reachable, truncated or not.
+   Column widths: 92px->132px (desktop), 56px->84px (mobile, in the media query below) --
+   both still fit every real club's axLabel() in full or on 2 wrapped lines at 1000px;
+   only a couple of the longest single-word names (Conquistadores, Maratonistas) still
+   ellipsize at 390px, same two names PHASE_45 already found -- full 33-club check
+   printed by this phase's own report, not assumed. */
 .ghead{background:var(--raise);border:1px solid var(--line);border-radius:var(--r-sm);padding:var(--sp-2) 6px;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;text-align:center;
-  font-size:var(--fs-3xs);font-weight:600;line-height:1.2;min-height:66px;overflow-wrap:anywhere}
-.ghead.row{flex-direction:row;justify-content:flex-start;text-align:left;padding:var(--sp-2)}
+  font-size:var(--fs-3xs);font-weight:600;line-height:1.2;min-height:66px;min-width:0}
+.ghead .glabel{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+  overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal;word-break:normal;
+  width:100%;min-width:0}
+/* Grid-scoped override only -- the base .crest-plate (52x52, Equipos' Apoderados/
+   Retirados) is completely untouched; crestPlate() itself (tabs.js) isn't touched
+   either, it already just returns a hex, no size concept to change. */
+/* align-self:center overrides the base .crest-plate's own align-self:flex-start
+   (PHASE_41B, written for Equipos' .card layout, where the plate has to pin to the
+   TOP of a row that can grow taller than it) -- found live: left that in place here
+   and the plate sat flush against the header's left edge instead of centered above the
+   label, since .ghead's own align-items:center never gets a chance to apply once a
+   child sets its own align-self. */
+.ghead .crest-plate{width:32px;height:32px;border-radius:8px;padding:2px;align-self:center}
 .gcell{background:var(--deep);border:1px solid var(--line);border-radius:var(--r-sm);aspect-ratio:1;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:6px;
   cursor:pointer;color:inherit;font-size:var(--fs-3xs);text-align:center;line-height:1.2;position:relative}
@@ -732,6 +1511,23 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 .gcell .pn{font-weight:600}
 .gcell .pr{font-size:var(--fs-3xs);color:var(--ink-2)}
 .gcell .plus{font-size:var(--fs-lg);color:var(--ink-3);font-weight:300}
+/* PHASE_45/45B (owner-approved, redesign-v2): mobile overflow fix -- .gridtable's own
+   min-width:410px (desktop, now 420px) forced the whole board wider than a 390px/320px
+   viewport's real content width (minus .wrap's 16px+16px gutter), clipping the 3rd
+   column off-screen; .gridwrap's overflow-x:auto was the only thing keeping it
+   reachable, via a horizontal scroller -- the task's own explicit "not a horizontal
+   scroller" case. Real column sizing instead: a narrower fixed header column (PHASE_45:
+   92px->56px; PHASE_45B widened it again, 56px->84px, once 56px turned out to truncate
+   every club name to ~6 characters) and a 44px floor (was 90px) on the 3 data columns,
+   min-width:0 so the table can actually shrink -- verified live down to 320px, 44px-
+   floor cells confirmed via real getBoundingClientRect(), not assumed. Row headers no
+   longer need a flex-direction override here at all -- PHASE_45B made the stacked
+   (crest-above-label) layout the ONLY layout, at every width, so this block now only
+   ever touches .gridtable's own column sizing. Desktop (this rule's own media query
+   floor is 639px, nothing above it changes) keeps its own 132px/90px/420-540px values. */
+@media(max-width:639px){
+  .gridtable{grid-template-columns:84px repeat(3,minmax(44px,1fr));min-width:0;max-width:100%}
+}
 .guessbar{display:flex;gap:var(--sp-2);margin-top:var(--sp-3);flex-wrap:wrap}
 .guessbar input{flex:1;min-width:180px}
 .pips{display:flex;gap:var(--sp-1);margin-top:var(--sp-2_5);align-items:center}
@@ -753,6 +1549,51 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 .modebtns button{background:none;border:0;color:var(--ink-3);padding:5px 13px;border-radius:99px;
   font-size:var(--fs-2xs);font-weight:600;cursor:pointer}
 .modebtns button[aria-selected="true"]{background:var(--azul);color:#fff}
+/* PHASE_45 (owner-approved, redesign-v2): measured live at 390px, 60x28 and 74x28 --
+   both well under the 44px floor. .modebtns itself is shared with the theme/profile
+   pickers (tabs.js's own settings panel) -- scoped to .gamehead's own instance (Grid's
+   Diaria/Práctica toggle) specifically so those other, unrelated pickers are untouched
+   (checked live: a bare .modebtns button rule would have resized them too). min-height/
+   min-width + flex-centering instead of just more padding, so the pill grows
+   symmetrically around the existing label rather than the text drifting off-center;
+   label, onclick, and the [aria-selected="true"] active look (the rule right above,
+   untouched) are unchanged. */
+.gamehead .modebtns button{min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center}
+/* PHASE_46 (owner-approved, redesign-v2): Draft's court cells (games.js courtHTML())
+   used to reset everything via an INLINE style="all:unset;..." -- an inline
+   declaration beats any stylesheet selector for the same property, so a
+   :focus-visible outline rule could never have shown through it no matter how it was
+   written. The static parts of that same reset (the unset itself, display, border-
+   radius, padding, text-align, min-height -- cell size unchanged, still the same
+   58px floor) moved here instead; the per-render values (cursor/border-color/
+   background, which genuinely vary with each cell's state) still come from the
+   element's own inline style, same as before, and compose normally on top of this
+   class. --focus (var(--fuego)) against the court's own real background: >=3:1 in
+   both themes, printed by this phase's own report, not assumed. */
+.court-cell{all:unset;display:block;cursor:pointer;border-radius:12px;padding:var(--sp-2_5) var(--sp-2);
+  text-align:center;min-height:58px;box-sizing:content-box}
+.court-cell:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+/* The "· vacío" label used .dim (var(--ink-3)) at 11px, with an extra opacity:.45 on
+   top for a dead (unavailable this spin) slot -- measured under 4.5:1 live. Fixed
+   color (not --ink-3, not dimmed further) and 12px instead; the dead/open visual
+   distinction the opacity used to carry is still real (dashed vs solid border,
+   --line-soft vs --line, both unchanged) without also pushing the TEXT past a
+   readable contrast floor. */
+.court-empty{font-size:var(--fs-2xs);color:var(--ink-2)}
+/* PHASE_47 (owner-approved, redesign-v2): .btn and the text input are only >=44px
+   under the shared @media(max-width:639px) rule (PHASE_9) -- fine for most of the
+   app, but Quiz's own controls measured 41px at 1000px+ (checked live), and this
+   task asked for >=44px at every required width including desktop. Scoped to
+   #quizGame specifically, the same "add a size floor under the section that needs
+   it, leave the shared rule alone for everything else" pattern PHASE_45/46 already
+   used for .gamehead .modebtns button and .gamehead .modebtns button. No change to
+   the shared .btn/input rules themselves, so nothing else in the app grows. Real
+   keyboard focus: no all:unset anywhere in Quiz's own markup, so the app's own
+   global :focus-visible{outline:2px solid var(--focus);outline-offset:2px} rule
+   already applies with no override needed -- confirmed live, not assumed (see
+   PHASE_47's own report for the measured contrast). */
+#quizGame .btn,#quizGame input[type=text]{min-height:44px}
+#quizGame .btn{display:inline-flex;align-items:center;justify-content:center}
 .msg{margin-top:var(--sp-2_5);font-size:var(--fs-xs);min-height:22px}
 .msg.good{color:var(--ok)}
 .msg.bad{color:var(--bad-ink)}
@@ -775,7 +1616,12 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 .splashsub{font-size:var(--fs-3xs);color:var(--ink-3);letter-spacing:.14em;text-transform:uppercase;
   margin-top:-3px}
 .splashbar{width:100%;height:4px;border-radius:99px;background:var(--line-soft);overflow:hidden;margin-top:4px}
-.splashfill{height:100%;width:0;border-radius:99px;background:var(--tri);
+/* PHASE_32 item 1: --tri-wide -- .splashbar runs up to 260px (.splashinner's
+   own max-width), past the ~120px point equal-thirds stops making sense.
+   Cluster + clip-path notch both recompute against the fill's own current
+   width every frame as it animates (nothing JS-side needed), so the
+   triangle stays pinned to the start exactly as before. */
+.splashfill{height:100%;width:0;border-radius:99px;background:var(--tri-wide);clip-path:var(--tri-clip);
   transition:width .12s linear}
 .splashstep{font-size:var(--fs-3xs);color:var(--ink-3);min-height:16px;text-align:center;
   font-variant-numeric:tabular-nums}
@@ -862,19 +1708,67 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 .hubhead{font-family:inherit;font-weight:800;
   font-size:clamp(24px,5.4vw,36px);text-transform:uppercase;line-height:1.05}
 .hublede{color:var(--ink-2);font-size:var(--fs-sm);max-width:46ch;margin:7px 0 0}
-.hubsearch{margin:var(--sp-4) 0 var(--sp-1);position:relative}
-.hubsearch input{padding:13px 15px;font-size:16px;border-radius:var(--r);
-  border-color:var(--azul-deep);background:var(--deep)}
+/* PHASE_8 item 2a (owner-approved, redesign-v2): search restyle, CSS-only.
+   #hubSearch stays exactly where it sits in the DOM -- only its own box
+   grows (padding/font/border), matching the masthead's bigger scale from
+   item 1. Behavior untouched: hubAsk()/runAsk()/ask()/answerCard() are
+   byte-identical to before this commit. */
+.hubsearch{margin:var(--sp-5) 0 var(--sp-2);position:relative}
+.hubsearch input{padding:20px 22px;font-size:19px;border-radius:var(--r);
+  border-width:1.5px;border-color:var(--azul-deep);background:var(--deep)}
 .hubsearch input:focus{border-color:var(--azul-hi);outline:2px solid var(--focus);outline-offset:2px}
 /* ── Editorial blocks (PHASE_8.3) — a headline stat + a phrase + one line
    of context + a supporting visual, not a number in a box. Inicio hub,
    the player/team heros, the mega-menu featured blocks. */
-.ed{display:flex;flex-direction:column;gap:var(--sp-2);text-align:left;width:100%;
+.ed{position:relative;display:flex;flex-direction:column;gap:var(--sp-2);text-align:left;width:100%;
   background:var(--card);border:1px solid var(--line);border-radius:14px;padding:var(--sp-4);
   color:var(--ink);font:inherit;cursor:pointer;
   transition:transform var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease),box-shadow var(--dur-fast) var(--ease)}
-.ed:hover{transform:translateY(-2px);border-color:var(--ink-3);box-shadow:0 6px 18px var(--shadow)}
+.ed:hover{transform:translateY(-2px);border-color:var(--azul-hi);box-shadow:0 6px 18px var(--shadow)}
 .ed:active{transform:none}
+/* PHASE_12 follow-up (owner-approved, redesign-v2): the .xcard reveal-arrow, ported onto
+   these real cards instead of keeping a second, duplicate explore grid -- removed
+   buildInicioExplore()/#hubExplore entirely (index.html/tabs.js); this is now the one and
+   only explore grid, real live data unchanged (edBlock()'s own stat/viz/phrase/ctx/act are
+   untouched below). .ed-act's own inline "→" (the visible "Ver la cinta →" link text) stays
+   exactly as it was -- this is a second, purely decorative corner arrow, hidden until
+   hover, same as Historia's .xcard .go. */
+.ed-go{position:absolute;top:var(--sp-4);right:var(--sp-4);color:var(--ink-3);font-size:16px;
+  opacity:0;transition:opacity var(--dur-fast) var(--ease)}
+.ed:hover .ed-go,.ed:focus-visible .ed-go{opacity:1;color:var(--azul-hi)}
+@media(prefers-reduced-motion:reduce){.ed-go{transition:none}}
+/* PHASE_9 hub restyle (owner-approved, redesign-v2): reuses the rail's own icon size/weight
+   (22px, stroke-width 1.7 -- main.css ".rail a svg,.rail .railctl svg") so a hub card's glyph
+   reads as the same visual language as the rail tab it links to, not a new icon style. Box
+   sized proportionally larger than the icon (22px in a ~38px box, same ~58% fill the rail's
+   own crest/logo circles use) with --r-sm, the app's one existing radius token, rather than
+   the 14px .ed itself uses -- a smaller nested element taking a smaller radius. --rojo wash,
+   not --fuego: --fuego's own token comment reserves it for "live / in-progress" status only
+   (main.css :root) -- these icons aren't a live-status indicator, so reusing --rojo (the
+   flag/tricolor red, no such restriction, and the color already used for this card's own
+   tri-block-rojo stat number) is the more correct match, not just cosmetic. Contrast checked
+   live, both themes -- see the redesign-v2 PHASE 9 hub-restyle-build report. */
+/* PHASE_12 follow-up (owner-approved, redesign-v2): gradient icon chip, matching Historia's
+   own .xcard .ic exactly (same gradient, same white icon) -- replaces the flat rojo-wash
+   box PHASE_9 originally gave these cards. Kept var(--r-sm) (this app's own smaller-nested-
+   element radius token, not xcard's own literal 10px) since that choice was never about the
+   fill color and nothing here asked to change it. */
+.ed-icon{width:38px;height:38px;border-radius:var(--r-sm);background:linear-gradient(135deg,var(--rojo),var(--azul));
+  display:flex;align-items:center;justify-content:center;flex:none}
+.ed-icon svg{width:22px;height:22px;stroke:var(--flag-w);fill:none;stroke-width:1.7}
+/* PHASE_9 alignment fix (owner-approved, redesign-v2): Comparar (no rail icon -- see edBlock())
+   still gets a .ed-icon box in the DOM, same 38px/--r-sm/flex:none as every other card's, so its
+   .ed-eye lands at the same y as its row-mates'. This is the ONLY thing that needs to differ --
+   the background, and nothing else, so the box is truly invisible (matches the card background
+   exactly, not a visible empty placeholder) rather than an icon-less badge shape.
+   Found live, not assumed: a first attempt at just `.ed-icon-empty{background:transparent}`
+   (0,1,0) worked in dark theme but NOT light -- [data-theme="light"] .ed-icon{background:...}
+   above is (0,2,0), a strictly higher specificity that wins regardless of source order, so light
+   theme kept showing the rojo wash through the "empty" box. Same specificity-tie class this
+   file has hit before (the .clock.tri-block-azul .u / .readout .yr.tri-block-azul case, PHASE 2)
+   -- fixed the same way, an explicit same-scope override rather than relying on source order. */
+.ed-icon-empty{background:transparent}
+[data-theme="light"] .ed-icon-empty{background:transparent}
 .ed-eye{font-size:var(--fs-3xs);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
 .ed-row{display:flex;align-items:flex-end;gap:var(--sp-3);flex-wrap:wrap;min-height:1px}
 .ed-stat{font-family:inherit;font-weight:800;font-size:var(--fs-xl);line-height:.9;
@@ -900,6 +1794,29 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 @media(min-width:620px){.edhub{grid-template-columns:1fr 1fr}}
 @media(min-width:1000px){.edhub{grid-template-columns:repeat(4,1fr)}}
 
+/* PHASE_9 hub restyle (owner-approved, redesign-v2): "Últimos campeones" -- a small, static
+   3-row summary, not the interactive buildTable() machinery the rest of the app's data tables
+   use (no sort, no CSV export makes sense for a fixed recent-seasons list) -- so its own scoped
+   rules override the global table{min-width:360px}/td{padding:4px 9px;white-space:nowrap} rules
+   (main.css's own dense-table defaults, right for a scrollable stats table, wrong for a
+   3-row summary that should never need horizontal scroll). th/td.num reuse the app's existing
+   th{}/td.num,th.num{} rules as-is -- only what needs to differ from those is set here. */
+#hubChamps{margin-top:var(--sp-5)}
+.hubchamps{margin-top:var(--sp-3);border:1px solid var(--line);border-radius:var(--r-sm);overflow:hidden}
+.hubchamps table{min-width:0;font-size:var(--fs-sm)}
+.hubchamps th{padding:var(--sp-2_5) var(--sp-3_5);font-size:var(--fs-3xs)}
+.hubchamps td{padding:var(--sp-2_5) var(--sp-3_5);white-space:normal;border-bottom:1px solid var(--line-soft)}
+.hubchamps tbody tr:last-child td{border-bottom:0}
+.hubchamps tbody tr:nth-child(odd) td{background:var(--zebra)}
+.hubchamps td.yr{font-weight:700;color:var(--ink)}
+.hubchamps td.team{display:flex;align-items:center;gap:var(--sp-2_5);color:var(--ink-2)}
+.hubchamps .dot{width:9px;height:9px;border-radius:999px;flex:none}
+/* PHASE_9 hub restyle (owner-approved, redesign-v2): measured live before adding anything here
+   -- at 360px (the tighter of the two required phone widths) the table already fits with zero
+   overflow (scrollWidth===innerWidth); the club-name column just wraps to 2 lines on the
+   longest name ("Vaqueros de Bayamón"), which isn't breakage. No column-hiding override added:
+   "condense... if it doesn't fit" didn't apply here, so nothing was condensed. */
+
 /* ---------- misc ---------- */
 .kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:13.5px;margin-top:10px}
 .kv dt{color:var(--ink-3)}
@@ -920,6 +1837,236 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 .matrix table{min-width:520px;font-size:var(--fs-2xs)}
 .matrix td{text-align:center;padding:6px var(--sp-1)}
 .matrix td.lbl{text-align:left;font-weight:600;position:sticky;left:0;background:var(--deep)}
+/* PHASE_11 (owner-approved, redesign-v2): matrix visual polish only -- buildMatrix()'s own
+   real row/col computation (every club with a title vs. every club with a runner-up finish,
+   NOT reduced to a top-8) is untouched; only the cell markup gained a weighted color class. */
+.matrix tbody tr:nth-child(even){background:var(--zebra)}
+.matrix td.cellv{font-weight:700;color:var(--flag-w);border-radius:var(--r-sm)}
+.matrix td.cellv.hi{background:var(--rojo)}
+.matrix td.cellv.lo{background:var(--azul)}
+.matrix td.zero{color:var(--ink-3);font-weight:400}
+
+/* ============================================================
+   PHASE_11 -- Historia real build (owner-approved, redesign-v2)
+   Reference: approved Historia mockup v5 (claude.ai/artifact/YKxYor983NEQpnp7ukeUyu).
+   Matches the mockup's visual system, not its markup -- every number/name/year below is
+   rendered from the app's own real data (champOf/ruOf/F's won/ru, SCORING, MVP_YEARS,
+   REF_RULES/REF_TIMELINE/REF_SCORERS), never hardcoded from the mockup's own sample arrays.
+   Scoped entirely to Historia's own ids/classes -- .barrow/.bars (shared with Jugadores'
+   leadBars) and .timeline/.tw (shared with Inicio's "Lo próximo") are never touched; every
+   class below is either brand new (checked against the whole stylesheet first, zero prior
+   uses) or an existing Historia-exclusive class (.cell/.ribbon/.readout/.matrix/.decade,
+   confirmed via the same check -- restyled in place since nothing else references them).
+   Token discipline: reuses real tokens throughout (--card/--line/--ink* /--rojo/--azul/--zebra/
+   --raise/--r/--r-sm/--sp-* /--fs-*); the mockup's own ad hoc --wash (a solid raised chip
+   tint) maps to the real --raise, NOT the real --wash (which is an unrelated translucent
+   scrim color in this app -- reusing it here would have been visually wrong). Medal-badge
+   gold/silver/bronze gradients have no existing token (nothing in this app's palette is a
+   literal medal color) and are used as literals, flagged here per this engagement's own
+   literal-token discipline, same as prior phases' 9px/20px literals. */
+
+/* -- landing hero: eyebrow + Oswald pagehead + the REAL Inicio hero's own arc device,
+   reused exactly (repeating-radial-gradient rings from the top-right corner), not a new
+   SVG -- item 4's own instruction. No hero-a/hero-c color wash behind it (the mockup's own
+   hero has no fill, rings only), so only the ring layer is reused, on the page's own bg. */
+.hhero{position:relative;padding:var(--sp-6) 0 var(--sp-3);overflow:hidden}
+/* PHASE_51E (owner-approved, redesign-v2): the PHASE_51 comment fix above restored
+   this rule's own padding, which had been silently dropped since PHASE_11 by an
+   unrelated comment bug elsewhere in this file (full writeup in the PHASE_51/51D
+   session log entries). Owner reviewed the now-taller heroes this produced on all 5
+   sections and asked to keep every one at its pre-fix height -- position:relative and
+   overflow:hidden stay (the Archivo arc layer and its clipping both depend on them),
+   only the padding is zeroed back out, here, as its own override, so the original rule
+   above is left intact and legible rather than edited in place. */
+.hhero{padding:0}
+.hhero{background-image:repeating-radial-gradient(circle at 100% 0%,transparent 0 63px,var(--line) 63px 64.5px)}
+@media(max-width:639px){.hhero{background-image:none}}
+/* PHASE_49B (owner-approved, redesign-v2): Archivo-only -- its lede runs close to the
+   hero's full width (no eyebrow row above it to shorten the box, and the text itself
+   is near the 70ch cap), so the shared ring pattern above crossed behind the lede and
+   even grazed the h1 at 1000-1280px. Scoped to #archivo rather than changing .hhero
+   itself, which the other 4 hero sections still use unmodified. The rings move to a
+   ::before layer (own stacking, z-index:-1, behind the real text) with a px-based (not
+   %) mask: the lede's rendered width is fixed near 790px regardless of hero width, so
+   a px cutoff keeps the same real margin at every breakpoint instead of drifting with
+   viewport width the way a percentage cutoff would. Below 820px of box width nothing
+   shows (900-1000px hero boxes leave too little genuine clearance for a tasteful
+   sliver); at 1280px (hero ~1088px wide) a clean ~170px strip remains on the right. */
+#archivo .hhero{background-image:none}
+#archivo .hhero::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background-image:repeating-radial-gradient(circle at 100% 0%,transparent 0 63px,var(--line) 63px 64.5px);
+  -webkit-mask-image:linear-gradient(to right,transparent 0 820px,#000 920px);
+  mask-image:linear-gradient(to right,transparent 0 820px,#000 920px)}
+@media(max-width:899px){#archivo .hhero::before{display:none}}
+.hhero .eyebrow{display:flex;align-items:center;gap:var(--sp-2);font-size:var(--fs-2xs);text-transform:uppercase;
+  letter-spacing:.1em;color:var(--ink-3);font-weight:700;margin-bottom:var(--sp-3)}
+/* PHASE_31: --tri-tick, not --tri -- at 18px there's no room for a
+   legible 3-stripe pattern, so this is the simplified blue+red-only
+   variant the approved spec calls for, own smaller clip-path notch. */
+.hhero .eyebrow::before{content:"";width:18px;height:2px;background:var(--tri-tick);clip-path:var(--tri-tick-clip);border-radius:2px;flex:none}
+.hhero h1{font-family:var(--font-display);font-size:clamp(32px,5vw,52px);text-transform:uppercase;
+  line-height:.98;margin:0 0 var(--sp-3)}
+.hhero .lede{color:var(--ink-2);font-size:var(--fs-md);line-height:1.65;max-width:70ch;margin:0}
+
+/* -- landing: 3 real stat cards -- */
+.stats3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-3);margin-bottom:var(--sp-6)}
+@media(max-width:759px){.stats3{grid-template-columns:1fr}}
+.stat{position:relative;border-radius:16px;padding:var(--sp-5) var(--sp-5) var(--sp-5);overflow:hidden}
+.stat .n{font-family:var(--font-display);font-weight:700;font-size:40px;line-height:1;position:relative}
+.stat .l{font-size:var(--fs-2xs);text-transform:uppercase;letter-spacing:.04em;margin-top:var(--sp-2);
+  max-width:22ch;position:relative}
+.stat:not(.solid){background:var(--card);border:1px solid var(--line)}
+.stat:not(.solid) .l{color:var(--ink-2)}
+/* PHASE_11 contrast fix (owner-approved, redesign-v2): found live, not assumed --
+   linear-gradient(--rojo,--rojo-deep)'s own LIGHTER stop (--rojo) against white label text
+   measured 4.14:1 in dark theme, under the 4.5:1 AA floor for the small .l label (the big
+   .n numeral is large-text-exempt at 3:1 and was never the problem). Both stops now use
+   --rojo-deep (identical dark/light value, #8E1119) -- re-measured live: 9.36:1 both
+   themes, a flat but reliably safe color instead of a two-tone gradient that was unsafe on
+   one side. */
+.stat.solid{background:linear-gradient(135deg,var(--rojo-deep),var(--rojo-deep));color:var(--flag-w)}
+.stat.solid .l{color:var(--flag-w);opacity:.85}
+
+/* -- landing: explore grid to the 7 real sub-views -- */
+.explore{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-3)}
+@media(max-width:899px){.explore{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:519px){.explore{grid-template-columns:1fr}}
+.xcard{border:1px solid var(--line);border-radius:14px;padding:var(--sp-4);background:var(--card);cursor:pointer;
+  display:flex;flex-direction:column;gap:var(--sp-2_5);text-align:left;position:relative;color:inherit;
+  font:inherit;transition:border-color var(--dur-fast) var(--ease),transform var(--dur-fast) var(--ease)}
+.xcard:hover{border-color:var(--azul);transform:translateY(-2px)}
+.xcard:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.xcard .ic{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--rojo),var(--azul));
+  display:flex;align-items:center;justify-content:center;color:var(--flag-w);flex:none}
+.xcard .ic svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8}
+.xcard .t{font-family:var(--font-display);font-weight:600;font-size:15.5px}
+.xcard .d{font-size:var(--fs-xs);color:var(--ink-2);line-height:1.45}
+.xcard .go{position:absolute;top:var(--sp-4);right:var(--sp-4);color:var(--ink-3);font-size:16px;opacity:0;
+  transition:opacity var(--dur-fast)}
+.xcard:hover .go,.xcard:focus-visible .go{opacity:1;color:var(--azul)}
+@media(prefers-reduced-motion:reduce){.xcard,.xcard .go{transition:none}.xcard:hover{transform:none}}
+
+/* -- La cinta: legend + flat, always-44px ribbon (replaces the old decade-row grid, whose
+   fixed 10-column layout could never clear 44px on a phone -- the real cause found in the
+   survey). Every one of the 97 real years renders as its own cell now, not grouped by
+   decade -- horizontally scrollable on desktop, a min-44px 7-column grid on phone. */
+.legend{display:flex;gap:var(--sp-4);flex-wrap:wrap;margin-bottom:var(--sp-3);font-size:var(--fs-2xs);color:var(--ink-3)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:11px;height:11px;border-radius:3px;display:block;flex:none}
+.ribbon-wrap{overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+.ribbon{display:grid;grid-template-columns:repeat(20,1fr);gap:4px;min-width:900px;margin-top:0}
+@media(max-width:639px){.ribbon{grid-template-columns:repeat(7,minmax(44px,1fr));min-width:0}}
+.cell{min-height:44px;border-radius:var(--r-sm);background:var(--raise);border:1px solid var(--line);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ink-3);
+  font-weight:600;position:relative;aspect-ratio:auto;padding:0;transition:transform var(--dur-fast) var(--ease)}
+.cell:hover,.cell:focus-visible{border-color:var(--azul);transform:scale(1.08);z-index:2;outline:none}
+.cell.champ{background:linear-gradient(150deg,var(--azul),var(--azul-deep));border-color:transparent;
+  color:var(--flag-w);font-weight:700}
+.cell.dynasty{background:linear-gradient(150deg,var(--rojo),var(--rojo-deep));border-color:transparent;
+  color:var(--flag-w);font-weight:700}
+.cell.active{outline:2px solid var(--fuego);outline-offset:2px}
+.fixnote{font-size:var(--fs-2xs);color:var(--ink-3);margin-top:var(--sp-2_5);display:flex;gap:6px;align-items:flex-start}
+.fixnote::before{content:"✓";color:var(--ok);font-weight:700;flex:none}
+/* -- readout: same class kept (.readout .yr is already in the shared Oswald selector list),
+   restyled in place, gradient left-bar + real-data badges added. */
+.readout{position:relative;overflow:hidden;padding:var(--sp-5)}
+.readout::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--tri-v);clip-path:var(--tri-clip-v)}
+.readout .champ-line{font-size:20px;font-weight:700;margin-top:var(--sp-2_5);font-family:var(--font-display)}
+.readout .vs-line{color:var(--ink-2);font-size:var(--fs-sm);margin-top:4px}
+.readout .xlink{margin-top:var(--sp-4);padding-top:var(--sp-4);border-top:1px solid var(--line);font-size:var(--fs-xs)}
+.readout .xlink a{color:var(--azul-hi);font-weight:600;text-decoration:none}
+.readout .xlink a:hover{text-decoration:underline}
+.hbadge{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;
+  padding:3px 9px;border-radius:99px;margin-left:var(--sp-2);vertical-align:middle}
+.hbadge.note{background:var(--raise);color:var(--ink-3)}
+/* PHASE_11 contrast fix (owner-approved, redesign-v2): --rojo (the lighter dark-theme red)
+   against white measured 4.14:1, under 4.5:1 AA for this badge's own 10px text -- same
+   root cause as .stat.solid just above. --rojo-deep instead: 9.36:1 both themes. */
+.hbadge.missing{background:var(--rojo-deep);color:var(--flag-w)}
+
+/* -- Títulos: medal rank badges + real crest per row. New markup, NOT the shared bars()/
+   .barrow helper (that one is also used by Jugadores' leadBars -- left untouched). */
+.bar-row{display:grid;grid-template-columns:30px 1fr 44px;align-items:center;gap:var(--sp-3_5);padding:11px 0}
+.bar-row+.bar-row{border-top:1px solid var(--line)}
+.bar-row .rk{width:26px;height:26px;border-radius:99px;background:var(--raise);color:var(--ink-3);
+  font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
+/* medal gradients -- literal hex, no token: nothing else in this app's palette is a medal
+   color, flagged per this file's own literal-token discipline. */
+.bar-row.rk1 .rk{background:linear-gradient(135deg,#f4cd6b,#c9962a);color:#3a2a00}
+.bar-row.rk2 .rk{background:linear-gradient(135deg,#dfe4ea,#a9b1bb);color:#1a1e23}
+.bar-row.rk3 .rk{background:linear-gradient(135deg,#e3a165,#a8672f);color:#2c1600}
+.bar-row .who{display:flex;align-items:center;gap:var(--sp-2_5);min-width:0}
+.bar-row .pn{font-weight:600;font-size:var(--fs-xs);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-row .wrap{display:flex;flex-direction:column;gap:6px;min-width:0;flex:1}
+.bar-row .track{height:8px;background:var(--raise);border-radius:99px;overflow:hidden}
+.bar-row .fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--azul),var(--azul-hi))}
+.bar-row .v{font-family:var(--font-display);font-weight:700;font-size:19px;text-align:right}
+.scrollnote{font-size:var(--fs-2xs);color:var(--ink-3);margin-top:var(--sp-3_5)}
+
+/* -- Dinastías: streak cards with real crest + per-year mini-strip, replacing the old flat
+   run cards -- same buildDynasties() streak-walk, new markup. */
+.streaks{display:flex;flex-direction:column;gap:var(--sp-3)}
+.streak-card{border:1px solid var(--line);border-radius:14px;padding:var(--sp-4) var(--sp-4_5);background:var(--card);
+  display:flex;align-items:center;gap:var(--sp-4);flex-wrap:wrap}
+.streak-card .rankbadge{width:44px;height:44px;border-radius:12px;flex:none;display:flex;align-items:center;
+  justify-content:center;font-family:var(--font-display);font-weight:700;font-size:20px;
+  background:var(--raise);color:var(--ink-3)}
+.streak-card.top .rankbadge{background:linear-gradient(135deg,var(--rojo),var(--rojo-deep));color:var(--flag-w)}
+.streak-card .body{flex:1;min-width:200px;display:flex;align-items:center;gap:var(--sp-2_5)}
+.streak-card .who{font-family:var(--font-display);font-weight:600;font-size:16.5px}
+.streak-card .yrs{color:var(--ink-3);font-size:var(--fs-xs);margin-top:2px}
+.streak-card .mini{display:flex;gap:4px;flex:none;flex-wrap:wrap;max-width:220px}
+.streak-card .mini i{width:26px;height:26px;border-radius:6px;background:linear-gradient(150deg,var(--rojo),var(--rojo-deep));
+  display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--flag-w);font-weight:700;
+  font-style:normal}
+@media(max-width:639px){.streak-card .mini{display:none}}
+
+/* -- Premios: subtab toggle (scoring/MVP) + decade-grouped lead-list, real repeat-streak
+   pill computed live by walking SCORING/MVP_YEARS chronologically. */
+.subtab{display:flex;gap:6px;margin-bottom:var(--sp-4);flex-wrap:wrap}
+.subtab button{border:1px solid var(--line);background:var(--card);color:var(--ink-3);font:inherit;
+  font-size:var(--fs-xs);font-weight:600;padding:7px 14px;border-radius:99px;cursor:pointer;
+  transition:all var(--dur-fast) var(--ease)}
+.subtab button:hover{border-color:var(--azul);color:var(--ink)}
+.subtab button[aria-current="true"]{background:var(--ink);color:var(--night);border-color:var(--ink)}
+.lead-list{display:flex;flex-direction:column;gap:var(--sp-2)}
+.lead-row{display:grid;grid-template-columns:56px 1fr auto;align-items:center;gap:var(--sp-4);
+  padding:13px var(--sp-4_5);border-radius:12px;background:var(--card);border:1px solid var(--line);
+  transition:border-color var(--dur-fast) var(--ease),transform var(--dur-fast) var(--ease)}
+.lead-row:hover{border-color:var(--azul);transform:translateX(2px)}
+.lead-row .yrchip{font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--ink-3);
+  background:var(--raise);border-radius:9px;padding:8px 0;text-align:center}
+.lead-row.repeat .yrchip{background:linear-gradient(135deg,var(--rojo),var(--rojo-deep));color:var(--flag-w)}
+.lead-row .who{min-width:0}
+.lead-row .who .pn{font-weight:700;font-size:14.5px;display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap}
+.lead-row .who .cl{font-size:var(--fs-2xs);color:var(--ink-3);margin-top:2px}
+/* PHASE_11 contrast fix (owner-approved, redesign-v2): --rojo text on --tint-rojo measured
+   4.09:1 in dark theme (composited over the real --card background it actually sits on --
+   the app's own --on-rojo/--on-rojo-2 tokens exist for exactly this "text on a rojo tint"
+   pairing, e.g. .tag.gold already uses --on-rojo the same way). Switched to --on-rojo:
+   11.67:1 dark, 7.60:1 light, both re-measured live against the real composited background. */
+.streakpill{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;color:var(--on-rojo);
+  background:var(--tint-rojo);border-radius:99px;padding:2px 8px}
+.lead-row .val{text-align:right}
+.lead-row .val .n{font-family:var(--font-display);font-weight:700;font-size:20px;color:var(--ink)}
+.lead-row .val .u{font-size:10.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.03em}
+.decade-head{font-family:var(--font-display);font-size:var(--fs-2xs);letter-spacing:.08em;color:var(--ink-3);
+  text-transform:uppercase;margin:var(--sp-5) 0 var(--sp-2);padding-left:2px}
+.decade-head:first-child{margin-top:0}
+@media(max-width:639px){
+  .lead-row{grid-template-columns:44px 1fr auto;padding:11px var(--sp-3_5);gap:var(--sp-2_5)}
+  .lead-row .yrchip{font-size:var(--fs-sm);padding:6px 0}
+}
+
+/* -- Refuerzos: real-rule cards. Timeline/scorer table intentionally NOT touched here --
+   .timeline/.tw is shared with Inicio's own "Lo próximo" (out of scope this pass), and
+   the scorer table already gets the shared buildTable()/.tblwrap treatment for free. */
+.rules{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-3);margin-bottom:var(--sp-6)}
+@media(max-width:819px){.rules{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:639px){.rules{grid-template-columns:1fr}}
+.rule{border:1px solid var(--line);border-radius:12px;padding:var(--sp-4);background:var(--card);
+  font-size:var(--fs-xs);line-height:1.5;border-top:3px solid var(--azul)}
+.rule b{display:block;font-family:var(--font-display);font-weight:600;font-size:14px;margin-bottom:6px;color:var(--ink)}
 .pill{display:inline-block;padding:1px 7px;border-radius:99px;font-size:11px;font-weight:600}
 .pill.w{background:var(--tint-ok);color:var(--on-ok)}
 .pill.l{background:var(--tint-rojo);color:var(--on-rojo-2)}
@@ -927,9 +2074,816 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padding:1px 5px;
   font-size:12.5px;overflow-wrap:anywhere;word-break:break-word}
 .foot{border-top:1px solid var(--line);margin-top:40px;padding:22px 0 40px;color:var(--ink-3);font-size:12.5px}
-.covergrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:var(--sp-2);margin-top:var(--sp-3)}
+/* PHASE_52A (owner-approved, redesign-v2): column counts come from buildCoverage()
+   (tabs.js) via the 2 custom properties it sets inline on this element, computed from
+   COVERAGE.length itself (never a literal column count baked in here) -- see that
+   function's own comment for why. The :not([style*="--cov-cols"]) fallback keeps the
+   original auto-fit behavior if this element is ever rendered without that inline
+   style (defensive only; buildCoverage() always sets it today). */
+.covergrid{display:grid;grid-template-columns:repeat(var(--cov-cols-narrow),1fr);gap:var(--sp-2);margin-top:var(--sp-3)}
+.covergrid:not([style*="--cov-cols"]){grid-template-columns:repeat(auto-fit,minmax(112px,1fr))}
+@media(min-width:900px){.covergrid{grid-template-columns:repeat(var(--cov-cols-wide),1fr)}}
 .cov{background:var(--deep);border:1px solid var(--line);border-radius:var(--r-sm);padding:10px}
 .cov .cy{font-size:12px;color:var(--ink-3);font-weight:600}
 .cov .cb{height:6px;border-radius:3px;margin-top:7px;background:var(--line-soft);overflow:hidden}
 .cov .cf{height:100%;border-radius:3px}
 .cov .cl{font-size:11px;color:var(--ink-2);margin-top:6px;line-height:1.3}
+
+/* PHASE_2_REDESIGN step 1 (owner-approved, redesign-v2): Oswald, condensed
+   display face, for short numerals/titles ONLY. Every selector below was
+   checked against its real call site (grep across web/js/*.js), not
+   assumed from its class name -- each one only ever holds a number, a
+   score, a year, or a short (2-6 word) title/name. `.answer .abig` is
+   deliberately NOT here even though it sits in the shared tracking rule
+   near main.css:223: it's a free-form "big answer" slot for the Ask
+   feature, and while every current caller happens to pass short text,
+   nothing in the code constrains that going forward -- treated as
+   ambiguous, skipped per the owner's own instruction rather than guessed.
+   Falls back through two more condensed faces, then the system sans, so
+   a slow/failed Google Fonts load never blanks text. Every selector below
+   already carries font-weight:800 from its own rule or from h1-h4 above;
+   Oswald has no 800 weight (only 500/600/700 loaded), so the browser's
+   normal font-weight matching renders these at Oswald 700 -- expected,
+   not a bug, flagged in the redesign-v2 STEP 1 report.
+
+   MOVED HERE in the redesign-v2 FONT FIX pass (was originally right after
+   the h1-h4 rule, near main.css:220): the final review found that 10 of
+   these 17 selectors (.clock .n, .ed-stat, .strip .n, .seriesrow .sc,
+   .hubhead, .markname, .splashname, .stagetitle, .tiletitle, .primerhead
+   h4) never actually rendered Oswald, silently -- each one's own
+   component rule, defined LATER in this file, also sets
+   font-family:inherit at the SAME specificity (one class, or one tag+
+   class compound), and CSS breaks an exact-specificity tie by source
+   order, not by which rule looks more "special". Sitting early in the
+   file, this rule lost that tie for 10 of its 17 targets from the moment
+   it was written, verified only by eye (bold Inter vs. Oswald numerals
+   look close enough in a screenshot to miss), never by
+   getComputedStyle() on these specific elements, until the review that
+   found it. Placing this rule LAST in the whole stylesheet -- after every
+   rule it needs to beat, all of them at the identical or lower
+   specificity -- makes it win every one of those ties by construction,
+   not by accident. If a future rule is added after this one that also
+   sets font-family on any of these 17 selectors at equal-or-higher
+   specificity, IT will win instead; that's an ordinary, well-understood
+   CSS risk of a last-rule-wins fix, not a hidden one. */
+:root{--font-display:'Oswald',Impact,'Arial Narrow',sans-serif}
+.strip .n,.seriesrow .sc,.readout .yr,.ed-stat,.hubhead,
+.big,h3.sec,h4.sub,.viewhead,.markname,.splashname,.stagetitle,
+.tiletitle,.primerhead h4,.phero-body h2,.hero-headline{
+  font-family:var(--font-display)}
+/* PHASE_9 item 3 (owner-approved, redesign-v2): .hero-headline added to
+   this list -- verified live (getComputedStyle), same discipline as the
+   rest of this rule. PHASE_9 dead-code cleanup: .herotext h2 removed
+   from this list first (buildHero() no longer renders that element, and
+   .herotext h2's own rule is gone too -- see main.css's hero section).
+   PHASE_9 item 4b: .clock .n now also removed -- re-grepped and confirmed
+   zero live references anywhere (.clock's own rule was already gone);
+   the prior round had deliberately left it in and flagged it, this round
+   is that flagged follow-up, done. */
+
+/* ============================================================
+   PHASE_12 -- Inicio real build (owner-approved, redesign-v2)
+   Reference: approved Inicio mockup (claude.ai/artifact/TpoqBE7ifnm7n4DZ5oBKLe).
+   Same discipline as PHASE_11's Historia build: every class below either reuses an
+   Historia-proven token/class verbatim (--rojo-deep/--on-rojo already fixed for dark-theme
+   contrast there; .explore/.xcard/.lead-list/.lead-row/.decade-head/.streakpill/.readout/
+   .champ-line/.vs-line/.hbadge are the exact same classes, not re-declared) or is new and
+   checked first against the whole stylesheet for zero prior uses. No real function's data
+   or computation changed for this -- every id below is still written by the same real
+   builder named in this phase's own task text. */
+
+/* -- hero: reuses the REAL existing .hero/.ed-eye/.hero-headline (already Oswald, already
+   has its own repeating-radial-gradient arc device from PHASE_2_REDESIGN step 5 -- NOT a
+   second copy of that device). Only addition: the eyebrow gradient-tick, scoped to
+   .hero .ed-eye specifically so edBlock()'s OWN .ed-eye (the hub cards' small label,
+   tabs.js) is never affected -- confirmed via grep, .ed-eye has exactly these 2 real call
+   sites and only one of them is the hero. .hero-headline is NOT forced uppercase here,
+   unlike Historia's short one-word pagehead -- the real headline is a full dynamic
+   sentence (day-count copy, changes with today's date), and forcing caps on a full
+   sentence hurts readability in a way a single word doesn't; a deliberate, reported
+   deviation from Historia's own literal treatment, not an oversight. */
+.hero .ed-eye{display:flex;align-items:center;gap:var(--sp-2)}
+/* PHASE_31: same simplified tick as .hhero .eyebrow::before above. */
+.hero .ed-eye::before{content:"";width:18px;height:2px;background:var(--tri-tick);clip-path:var(--tri-tick-clip);border-radius:2px;flex:none}
+/* -- hero-stats: light decorative pass only, no markup change -- same corner-ring accent
+   Historia's .stat card uses, added to the REAL existing .hero-stat blocks so the "stat
+   row" gets the new system's visual language without moving or renaming any of buildHero()'s
+   own 3 real stat blocks (day-count, season count, leader-club title count). */
+.hero-stat{position:relative;overflow:hidden}
+.hero-stat::after{content:"";position:absolute;right:-14px;bottom:-18px;width:64px;height:64px;border-radius:999px;
+  border:8px solid rgba(255,255,255,.10);opacity:.6;pointer-events:none}
+.hero-stat:not(.tri-block)::after{border-color:var(--raise)}
+
+/* -- today card (buildPrimer's real "¿Qué es el BSN?" card -- see this phase's own report
+   for why "En esta fecha" in the task text maps to buildPrimer and not the dormant
+   buildOnThisDay(), which stays untouched/dormant exactly as PHASE_9 left it). Left accent
+   bar + clock tag, real copy (both the full primer and its collapsed one-liner state)
+   completely unchanged -- only a wrapper class added around the existing #hubPrimer
+   output, no text rewritten. */
+/* PHASE_12 fix (owner-approved, redesign-v2): --sp-5_5 was never a real token (the scale's
+   only half-steps are --sp-2_5/--sp-3_5/--sp-4_5 -- confirmed by reading the token block
+   itself) -- an undefined var() with no fallback invalidates the WHOLE padding declaration
+   at compute time, not just its own half, so this silently computed to padding:0. Uniform
+   var(--sp-5) instead, matching Historia's own .stat card padding exactly (main.css,
+   same real token, same uniform-not-asymmetric pattern), not a new literal. */
+.today-card{position:relative;border:1px solid var(--line);border-radius:16px;padding:var(--sp-5);
+  background:var(--card);margin:var(--sp-5) 0;overflow:hidden}
+.today-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--tri-v);clip-path:var(--tri-clip-v)}
+.today-card .tc-tag{display:inline-flex;align-items:center;gap:6px;font-size:var(--fs-2xs);font-weight:700;
+  text-transform:uppercase;letter-spacing:.05em;color:var(--rojo);margin-bottom:var(--sp-2_5)}
+.today-card .tc-tag svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;flex:none}
+[data-theme="light"] .today-card .tc-tag{color:var(--rojo)}
+
+/* -- club card: replaces the plain .hubtop row when a club is picked. Real crest() (not an
+   initials placeholder -- item 8), real gradient fill, corner-ring decoration. The
+   no-club-picked state keeps the exact real fallback copy, just without the card
+   treatment (a gradient card with no crest and a generic "escoge por dónde entrar" line
+   would look like a broken/empty state, not a feature -- so the plain .hubtop layout is
+   kept for that state, unchanged from before this phase). */
+/* PHASE_12 fix (owner-approved, redesign-v2): same --sp-5_5 typo as .today-card above, same
+   fix -- uniform var(--sp-5), matching Historia's own .stat card padding. */
+.club-card{position:relative;border-radius:16px;padding:var(--sp-5);margin:var(--sp-5) 0;overflow:hidden;
+  background:linear-gradient(135deg,var(--azul),var(--azul-deep));color:var(--flag-w);
+  display:flex;align-items:center;gap:var(--sp-4_5);flex-wrap:wrap}
+[data-theme="light"] .club-card{background:linear-gradient(135deg,var(--azul),var(--azul-hi))}
+.club-card::after{content:"";position:absolute;right:-30px;top:-30px;width:160px;height:160px;border-radius:999px;
+  border:14px solid rgba(255,255,255,.14)}
+.club-card .crest{position:relative;z-index:1;flex:none}
+.club-card .body{flex:1;min-width:200px;position:relative;z-index:1}
+.club-card .hi{font-family:var(--font-display);font-size:22px;font-weight:600;margin-bottom:4px}
+.club-card .sub{font-size:var(--fs-sm);opacity:.92;line-height:1.5}
+/* PHASE_12 (owner-approved, redesign-v2): a lighter sibling for the name-set/no-club state
+   -- same real shell (border-radius/padding/corner-ring, all inherited from .club-card
+   itself, nothing redeclared), neutral background instead of a club color since there's no
+   club to represent. The ring's own border color switches from the base rule's
+   rgba(255,255,255,.14) (tuned for a colored gradient) to var(--raise) -- the same real
+   token/pattern .hero-stat:not(.tri-block)::after already uses for its own neutral variant,
+   not a new invented value. .sub drops the base rule's opacity:.92 (tuned for white-on-
+   color) in favor of --ink-2, matching how .stat:not(.solid) .l does the same swap for its
+   own neutral case. No crest -- the markup itself never renders one here (buildHub()). */
+.club-card.neutral{background:var(--card);border:1px solid var(--line);color:var(--ink)}
+.club-card.neutral::after{border-color:var(--raise)}
+.club-card.neutral .sub{opacity:1;color:var(--ink-2)}
+
+/* -- champion strip: buildRecentChamps()'s real 3 rows (year/champion/title-number,
+   YEARS/champOf-derived), one .champ-strip per row -- item 5 describes a single strip
+   matching the mockup's own single-champion sample, but this app's own real function
+   already surfaces the real last 3 documented champions, and dropping 2 of them to match
+   the mockup's simpler sample would be removing real content this phase's own opening
+   line forbids ("none get removed or simplified"). Real crest(), real link into Historia
+   -> Dinastías (not a placeholder anchor). */
+.champ-strip{display:flex;align-items:center;gap:var(--sp-4);border:1px solid var(--line);border-radius:16px;
+  padding:var(--sp-4) var(--sp-4_5);background:var(--card);margin-bottom:var(--sp-2_5);cursor:pointer;
+  text-align:left;width:100%;font:inherit;color:inherit}
+.champ-strip:hover{border-color:var(--oro-cs,var(--azul))}
+.champ-strip .body{flex:1;min-width:200px}
+.champ-strip .who{font-family:var(--font-display);font-weight:600;font-size:16.5px}
+.champ-strip .meta{color:var(--ink-3);font-size:var(--fs-xs);margin-top:2px}
+
+/* -- explore grid: a NEW, second grid -- .edhub (buildHub()'s own 5 personalized cards:
+   Historia/Jugadores/Comparar/Juega/Archivo, each with a real live stat+sparkline) is
+   UNTOUCHED, its own data/logic never simplified, per this phase's own instruction that
+   buildHub's data/logic must not be replaced. This is the mockup's OWN, simpler, literal
+   5-real-tab explore grid (Historia/Jugadores/Equipos/Juega/Archivo) the task explicitly
+   asked for in addition -- Juega included (the mockup's own sample dropped it; not
+   repeated here), reuses Historia's .explore/.xcard classes byte-for-byte (zero new CSS
+   needed for this component, confirmed already in the stylesheet from PHASE_11). */
+
+/* -- La liga ahora accordion skin: restyles the REAL <details class="liga"> elements
+   ligaFold() (init.js) already manages -- same class, same open/close JS, same 860px
+   breakpoint, only the CSS (and a light one-time DOM pass adding an icon+chevron to each
+   real summary, see buildLigaAccordionSkin() in tabs.js) changed. */
+#inicio .liga{border:1px solid var(--line);border-radius:14px;background:var(--card);
+  margin-bottom:var(--sp-3);overflow:hidden;border-top:1px solid var(--line)}
+#inicio .liga:first-of-type{border-top:1px solid var(--line)}
+#inicio .liga[open]{border-color:var(--azul-hi)}
+#inicio .liga>summary{padding:var(--sp-4) var(--sp-4_5);gap:var(--sp-3_5)}
+#inicio .liga>summary::before{display:none}
+/* PHASE_12 contrast fix (owner-approved, redesign-v2): --rojo on --raise measured 3.99:1 in
+   dark theme, under 4.5:1 AA -- --raise is dark there, so (unlike PHASE_11's rojo-on-rojo-
+   tint bugs) the fix needs a LIGHTER icon color, not --rojo-deep (which measured even worse,
+   1.77:1, confirmed before ruling it out). --on-rojo is already this app's own token for
+   exactly this pairing -- re-measured live: 11.40:1 dark, 7.65:1 light. */
+#inicio .liga .acc-ic{width:34px;height:34px;border-radius:10px;background:var(--raise);display:flex;
+  align-items:center;justify-content:center;flex:none;color:var(--on-rojo)}
+#inicio .liga .acc-ic svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.9}
+#inicio .liga .acc-t{flex:1;min-width:0}
+#inicio .liga .acc-t .acc-title{font-family:var(--font-display);font-weight:600;font-size:15.5px}
+#inicio .liga .acc-t .acc-sub{color:var(--ink-3);font-size:var(--fs-2xs);margin-top:2px;font-weight:400}
+#inicio .liga .chev{color:var(--ink-3);transition:transform var(--dur-fast) var(--ease);flex:none}
+#inicio .liga[open] .acc-sum-chev .chev{transform:rotate(180deg)}
+#inicio .liga>.lede:first-of-type{display:none}   /* real lede text now duplicated into .acc-sub, hidden here to avoid repeating it twice */
+@media(min-width:860px){
+  #inicio .liga>summary{padding:var(--sp-4) var(--sp-4_5)}
+  #inicio .liga:first-of-type>summary{padding-top:var(--sp-4)}
+}
+
+/* -- calendar milestones: real CAL_MILESTONES/CAL_KIND, per-entry (not the mockup's own
+   hardcoded 3-row sample) -- #calCount's own .strip stat row is untouched. */
+.milestone{display:flex;align-items:flex-start;gap:var(--sp-3_5);padding:var(--sp-3) 0;border-bottom:1px solid var(--line)}
+.milestone:last-child{border-bottom:none}
+.milestone .dot{width:9px;height:9px;border-radius:999px;background:var(--ink-3);margin-top:6px;flex:none}
+.milestone .m-body{flex:1;min-width:0}
+.milestone .m-t{font-size:var(--fs-sm);font-weight:600}
+.milestone .m-d{color:var(--ink-3);font-size:var(--fs-2xs);margin-top:2px}
+.mbadge{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.04em;padding:3px 9px;border-radius:999px;flex:none}
+.mbadge.confirmado{background:var(--tint-ok);color:var(--on-ok)}
+.mbadge.proyectado{background:var(--tint-azul);color:var(--on-azul)}
+.mbadge.patron{background:var(--raise);color:var(--ink-2)}
+
+/* -- Final Brava: real 7-game boxscore as score cards, real AWARDS_2026 as a card grid
+   (each with real crest), real FIVE_2026 as chips (real crest), real Harrell sentence
+   wrapped, not rewritten. */
+.series-track{display:grid;grid-template-columns:repeat(7,1fr);gap:var(--sp-2);margin:var(--sp-2) 0 var(--sp-4_5)}
+@media(max-width:759px){.series-track{grid-template-columns:repeat(4,1fr)}}
+.gcard{border:1px solid var(--line);border-radius:10px;padding:10px 8px;text-align:center}
+.gcard.win{border-color:var(--rojo);background:var(--tint-rojo-soft)}
+.gcard .gn{font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em}
+.gcard .gs{font-family:var(--font-display);font-weight:700;font-size:16px;margin:3px 0}
+.awards-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--sp-2_5);margin:var(--sp-4) 0}
+@media(max-width:639px){.awards-grid{grid-template-columns:1fr}}
+.award{display:flex;align-items:center;gap:var(--sp-3);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.award .ab{min-width:0}
+.award .al{font-size:10.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.03em}
+.award .an{font-family:var(--font-display);font-weight:600;font-size:14px;margin-top:1px}
+.award .ac{font-size:var(--fs-2xs);color:var(--ink-3)}
+.allstar-row{display:flex;flex-wrap:wrap;gap:var(--sp-2);margin:var(--sp-3_5) 0 var(--sp-1)}
+.chip{border:1px solid var(--line);border-radius:999px;padding:6px 13px 6px 6px;font-size:var(--fs-xs);
+  display:flex;align-items:center;gap:var(--sp-2)}
+.chip .cn{font-weight:600}
+.chip .cc{color:var(--ink-3)}
+.conflict-note{display:flex;gap:var(--sp-2_5);border:1px solid var(--line);border-left:3px solid var(--azul-hi);
+  border-radius:10px;padding:12px 14px;background:var(--raise);font-size:var(--fs-xs);color:var(--ink-2);
+  line-height:1.5;margin-top:var(--sp-2_5)}
+.conflict-note svg{width:15px;height:15px;stroke:var(--azul-hi);fill:none;stroke-width:2;flex:none;margin-top:1px}
+.news-mini{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-2_5);margin-top:var(--sp-4)}
+@media(max-width:759px){.news-mini{grid-template-columns:1fr 1fr}}
+@media(max-width:519px){.news-mini{grid-template-columns:1fr}}
+.newscard{border:1px solid var(--line);border-radius:10px;padding:12px 13px}
+.newscard .nk{font-size:10px;letter-spacing:.07em;color:var(--ink-3);text-transform:uppercase;font-weight:600}
+.newscard .nt{font-size:var(--fs-xs);font-weight:600;line-height:1.35;margin-top:3px}
+
+/* -- standings: STAND2026 already used real crest() before this phase -- only the group
+   header/export-button styling is new; cutoff-row/DIF/downloadCSV logic untouched. */
+.exportbtn2{margin-top:var(--sp-2_5);border:1px solid var(--line);background:var(--raise);color:var(--ink);
+  border-radius:8px;padding:7px 13px;font:inherit;font-size:var(--fs-xs);font-weight:600;cursor:pointer;
+  transition:border-color var(--dur-fast) var(--ease)}
+.exportbtn2:hover{border-color:var(--azul-hi)}
+
+/* -- channels: real 8-row CHANNELS, unchanged -- new grid replacing .cards.g3 for this id
+   only (buildChannels() is the only caller of this class combination). */
+.channels-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-2_5)}
+@media(max-width:759px){.channels-grid{grid-template-columns:repeat(2,1fr)}}
+.chnl{display:flex;align-items:center;gap:var(--sp-2_5);border:1px solid var(--line);border-radius:10px;
+  padding:12px 14px;font-size:var(--fs-xs);font-weight:600;text-decoration:none;color:inherit;
+  transition:border-color var(--dur-fast) var(--ease)}
+.chnl:hover{border-color:var(--azul-hi)}
+.chnl svg{width:16px;height:16px;stroke:var(--ink-3);fill:none;stroke-width:1.8;flex:none}
+
+/* ============================================================
+   PHASE_14 -- Jugadores real build (owner-approved, redesign-v2)
+   Same discipline as PHASE_11/12: a markup/visual pass only, no data or JS
+   behavior change. .phero/.strip/.card/.cards/.g2/.tag/.chips/buildTable()/
+   .tblwrap/.filters/.field are all SHARED across the app -- Equipos' own team
+   page reuses .phero/.card with the identical structure, buildTable()/
+   .tblwrap backs every dense table in the app, .cards/.g2 backs Equipos' and
+   Archivo's own grids too, .filters/.field backs every other control bar
+   (HOF/Leader/DQ controls) -- none of those shared rules are redefined here.
+   Every new rule below is either scoped under #jugadores (so it only ever
+   touches Jugadores' own instances of a shared class -- same precedent as
+   #inicio .liga in the PHASE_12 block above; confirmed by grep that crest()
+   -- team logos -- is never called from Jugadores, only portrait() is, so
+   #jugadores .crest only ever matches a player silhouette) or a brand-new
+   class used only by Jugadores' own builders (buildJugadoresLanding/
+   buildHOF/buildRecords/buildCoaches/buildStone), checked against the whole
+   stylesheet first for zero prior uses, same as every phase before this. */
+
+/* -- landing hero: identical mechanism to Historia's own buildHistoriaHero()
+   (tabs.js) -- rewrites #jugadores's real .phead in place, scoped class add,
+   the REAL Inicio/Historia arc device reused exactly, no new SVG. */
+#jugadores .hhero{background-image:repeating-radial-gradient(circle at 100% 0%,transparent 0 63px,var(--line) 63px 64.5px)}
+@media(max-width:639px){#jugadores .hhero{background-image:none}}
+
+/* -- landing: 3 real stat cards + an explore grid to the 8 real sub-views --
+   reuses .stats3/.stat/.explore/.xcard byte-for-byte (defined above, PHASE_11),
+   zero new card-shell CSS needed; only buildJugadoresLanding() (tabs.js) is new. */
+
+/* -- player / archive card: a real wrapper class added ALONGSIDE .card (never
+   replacing it) in showPlayer()/renderArchiveCard()/loadPlayerExtra()/
+   renderSeasonDetail(). Corner-ring decoration matches .club-card's/
+   .hero-stat's own motif, reusing the same --raise token -- scoped so
+   Equipos' identical .phero/.card markup (a different #section, never
+   carries .pcard) is unaffected. */
+#jugadores .pcard{position:relative;overflow:hidden}
+#jugadores .pcard::after{content:"";position:absolute;right:-28px;top:-28px;width:130px;height:130px;
+  border-radius:999px;border:13px solid var(--raise);opacity:.55;pointer-events:none}
+/* .strip corner-ring, same motif as .hero-stat:not(.tri-block)::after, scoped so
+   Inicio's own #titleStats/#calCount strips and the team page's strip are unaffected. */
+#jugadores .strip>div{position:relative;overflow:hidden}
+#jugadores .strip>div::after{content:"";position:absolute;right:-12px;bottom:-16px;width:50px;height:50px;
+  border-radius:999px;border:8px solid var(--raise);opacity:.5;pointer-events:none}
+
+/* -- player index search bar: a new shell around the existing real .filters block
+   (buildPlayerIndex(), player.js) -- #pq/#pmode/#pf/#pfField and their own ids/
+   handlers are untouched; .filters/.field themselves stay shared/unscoped. */
+.search-card{border:1px solid var(--line);border-radius:14px;padding:var(--sp-4);background:var(--card);
+  margin-top:var(--sp-3);box-shadow:0 1px 3px var(--shadow)}
+.search-card .filters{margin-top:0}
+
+/* -- Salón: real HOF cards, new .salon-grid/.salon-card (buildHOF() only -- checked,
+   .salon-* has zero prior uses in this file). portrait()/chips/tags/"Ficha" button
+   are unchanged real fields; this is additive styling + a plain rank chip around them. */
+.salon-grid{display:grid;grid-template-columns:1fr;gap:var(--sp-3)}
+@media(min-width:720px){.salon-grid{grid-template-columns:1fr 1fr}}
+.salon-card{position:relative;overflow:hidden;display:flex;gap:var(--sp-3_5);align-items:flex-start;
+  border:1px solid var(--line);border-radius:14px;padding:var(--sp-4);background:var(--card)}
+.salon-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--tri-v);clip-path:var(--tri-clip-v)}
+.salon-card .rankbadge{width:24px;height:24px;border-radius:99px;background:var(--raise);color:var(--ink-3);
+  font-family:var(--font-display);font-weight:700;font-size:11.5px;display:flex;align-items:center;
+  justify-content:center;flex:none;margin-top:2px}
+.salon-card .body{min-width:0;flex:1}
+.salon-card .who{font-family:var(--font-display);font-weight:600;font-size:16.5px}
+
+/* -- Récords: new .rec-grid/.rec-card, replacing the plain .cards.g2 (buildRecords()
+   only, same "new grid replacing .cards.gN for this id only" pattern as
+   .channels-grid above). Numeral's own font-family switches (inline, in the JS)
+   from inherit to var(--font-display) -- the same treatment every other big
+   numeral in this system already gets (.stat .n/.lead-row .val .n/.bar-row .v);
+   color is unchanged, --rojo on --card already shipped and isn't a contrast
+   issue this pass found. */
+.rec-grid{display:grid;grid-template-columns:1fr;gap:var(--sp-3)}
+@media(min-width:720px){.rec-grid{grid-template-columns:1fr 1fr}}
+.rec-card{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:14px;
+  padding:var(--sp-4);background:var(--card)}
+.rec-card::after{content:"";position:absolute;right:-24px;bottom:-24px;width:96px;height:96px;
+  border-radius:999px;border:10px solid var(--raise);opacity:.5;pointer-events:none}
+
+/* -- Dirigentes / Honrados en concreto: new .coach-grid/.coach-card, replacing the
+   plain .cards.g2 (buildCoaches()/buildStone() -- two call sites, same shape of
+   content: a name/title + one or two lines, no numeral, no portrait). Top accent
+   reuses --azul exactly as Historia's own .rule{border-top:3px solid var(--azul)}
+   (Refuerzos) already does -- not a new color. */
+.coach-grid{display:grid;grid-template-columns:1fr;gap:var(--sp-3)}
+@media(min-width:640px){.coach-grid{grid-template-columns:1fr 1fr}}
+.coach-card{border:1px solid var(--line);border-top:3px solid var(--azul);border-radius:12px;
+  padding:var(--sp-4);background:var(--card)}
+.coach-card .ct{font-family:var(--font-display);font-weight:600;font-size:15.5px}
+.coach-card .cs{color:var(--ink-2);font-size:var(--fs-xs);margin-top:3px}
+
+/* ============================================================
+   PHASE_15 -- Jugadores polish (owner-approved, redesign-v2)
+   Structural inspiration only (separated panels, small-caps group labels,
+   label-over-value hierarchy) from a reference screenshot of this app's own
+   archive player card -- not a theme change. Both themes (already handled
+   site-wide by the existing toggle) are untouched; every color below is an
+   existing token, nothing new. No data/JS behavior changed -- see each
+   builder's own PHASE_15 comment for what moved vs. what stayed identical.
+   td/th padding on #playerIndex/#leadTable is never touched anywhere in
+   this block -- both carry PHASE_9's own calibrated invisible-tap-target
+   insets (td.name .btn::after), which are sized against TODAY's exact row
+   geometry and would silently go wrong under a padding change. */
+
+/* -- dropdowns: a custom chevron on every real filter <select> in Jugadores
+   (#pmode/#pf/#lcat/#lmode/#hs), replacing each browser's own native arrow.
+   Scoped to .field select (every one of those lives inside a real .field)
+   so Comparar's own small inline season-selects (cmpSeasonSelect(),
+   standalone, never inside .field) are untouched -- those are sized for a
+   12px/3px-padding compact control the chevron's own 34px right-padding
+   would crowd. Two data-URIs, one per theme, both the literal --ink-3 hex
+   already used elsewhere at this weight (not a new color) -- a data-URI
+   can't read a CSS custom property, so the per-theme swap has to be a
+   second rule, same mechanism --tri-fade's own light-mode override uses. */
+#jugadores .field select{appearance:none;-webkit-appearance:none;padding-right:34px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' fill='none' stroke='%237C90B2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;background-size:16px 16px}
+[data-theme="light"] #jugadores .field select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' fill='none' stroke='%235A6C8E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+
+/* -- player card (Resumen): the stat strip becomes separated rounded tiles
+   instead of the shared grid-with-1px-gutter-lines look (.strip's own base
+   rule, unchanged, still backs Inicio's #titleStats/#calCount and the team
+   page's own strip -- this only overrides the Jugadores player-card
+   instance). Scoped #jugadores .pcard .strip, so Buscar's search/filter
+   markup and every other section keep the original look. */
+#jugadores .pcard .strip{background:transparent;border:0;border-radius:0;gap:var(--sp-2_5);overflow:visible}
+#jugadores .pcard .strip>div{border:1px solid var(--line);border-radius:12px;text-align:center}
+/* the "lo que no sabe" / disputed-assist callouts: fuller rounded panel
+   instead of the shared left-accent-only .warn (still a warning -- PC4's
+   own "show the gaps" signal stays, just given the same panel treatment
+   as everything else on this pass). */
+#jugadores .pcard .warn{border-radius:var(--r);border:1px solid var(--rojo-deep);
+  border-left:3px solid var(--fuego);padding:var(--sp-3_5) var(--sp-4)}
+
+/* -- season-vs-season compare (Temporadas tab, renderSeasonCmp()): each
+   season's own .cmphead becomes its own bordered slot panel (a real grid,
+   not a wrapped flex row), top accent in that season's own --cmp-c (set
+   inline, same pattern .cmpfill's own --w already uses in this file).
+   PHASE_22 note: drawCompare() (Comparar itself) no longer emits .cmphead/
+   .cmpheads/.cmprows -- it has its own .cmp2* system below -- so these
+   three rules are now exclusive to renderSeasonCmp() (grep-confirmed). */
+.cmpheads{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:var(--sp-3);padding-bottom:0;border-bottom:0;margin-bottom:var(--sp-3)}
+.cmphead{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:12px;
+  padding:var(--sp-3) var(--sp-3_5);background:var(--card)}
+.cmphead::before{content:"";position:absolute;left:0;top:0;right:0;height:3px;background:var(--cmp-c,var(--azul))}
+.cmprows{border:1px solid var(--line);border-radius:12px;padding:var(--sp-3_5) var(--sp-4);background:var(--card)}
+
+/* -- Líderes: .bars (the bars() helper's own wrapper, exclusive to
+   buildLeaders() -- confirmed by grep, Líderes is its only real call site)
+   becomes a bordered panel around the existing real rows, same idea as
+   Comparar's .cmprows just above. */
+.bars{border:1px solid var(--line);border-radius:12px;padding:var(--sp-4);background:var(--card)}
+
+/* ============================================================
+   PHASE_19 -- the real "jugador" page (owner-approved, redesign-v2)
+   Source of truth: ~/Desktop/mockup 2/jugador.html + movil-jugador.html
+   (read, not modified). PHASE_14-17 restyled the inline card inside
+   Jugadores -> Buscar; PHASE_18's survey found that card was the only
+   player UI that has ever existed in this repo -- the mockup's back-link/
+   avatar/eyebrow/name/3-tab chrome and 3-panel grid were never built.
+   This phase builds them for real, as a detail-only view
+   (VIEW_MAP.jugadores's own detail:['jugador','#playerPage'], the same
+   mechanism Equipos' #teamDetail already uses), not a sub-state of Buscar.
+   PHASE_16/17's .rp-panel/.rp-stats/.strip tile rules are reused verbatim
+   below; .rp-id/.rp-honors are retired (nothing references them once
+   showPlayer() no longer builds that 4-panel shape -- grep-confirmed
+   before removal) in favor of .rp-info, matching the mockup's own 3-box
+   split (Información/Resumen/Ficha) instead.
+   Breakpoint: measured live, not guessed -- #jugadores .panel's own real
+   content width (not the bare viewport) at the rail's icon-only tier is
+   viewport-96px (rail 64px + .wrap's 2x16px padding, confirmed live:
+   860->764px, 900->804px, 1000->904px). Fixed column widths below total
+   540px + 2x16px gaps = 572px, so the brief's own "~1000px viewport, rail
+   showing" target (904px real content width) leaves a real 332px middle
+   column -- room for 2 stat tiles per row, not a guess-and-hope number.
+   940px (viewport) was picked with real margin under 1000px while staying
+   clear of the cramped 860-900px range (middle column 192-232px there). */
+#jugadores #playerPage{padding-top:var(--sp-2)}
+#jugadores .pback{margin-bottom:var(--sp-3)}
+#jugadores .pback a{font-size:var(--fs-xs);color:var(--ink-3);font-weight:500;
+  display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+#jugadores .pback a:hover{color:var(--ink)}
+/* page head: avatar + eyebrow + name + subline, shown above all 3 tabs
+   (unlike .phead/.subnav, which showView() hides for this one view only --
+   see helpers.js). Mirrors the mockup's own .phead/.avatar/.note/h1/.meta,
+   real tokens throughout. */
+#jugadores .phero-head{display:flex;align-items:flex-start;gap:var(--sp-4_5);flex-wrap:wrap;
+  padding-bottom:var(--sp-5);border-bottom:1px solid var(--line)}
+#jugadores .phero-head .pavatar{border:2px solid var(--pc,var(--line));flex:none}
+#jugadores .phero-head-body{flex:1;min-width:200px}
+#jugadores .phero-head-body .ed-eye{margin-bottom:var(--sp-1)}
+#jugadores .phero-head-body h1{font-family:var(--font-display);font-weight:700;
+  font-size:clamp(22px,3vw,30px);text-transform:none;letter-spacing:-.005em;margin:0}
+#jugadores .phero-head-body .phero-sub{margin-top:4px}
+/* item 2: "Comparar con otro jugador" relocated here from the Ficha panel --
+   a real action, not a 4th info field, so it sits level with the name on
+   the right instead of buried at the bottom of a narrower column. */
+#jugadores .phero-head-action{margin-left:auto;align-self:center}
+@media(max-width:519px){#jugadores .phero-head-action{margin-left:0;align-self:stretch}
+  #jugadores .phero-head-action .btn{width:100%}}
+/* 3-tab bar: the real manual-activation ARIA tablist (#playerTabs,
+   playerTabKeydown()/showPlayerTab() in tabs.js, now a real 3-entry map)
+   -- reuses .ptabs byte-for-byte (PHASE_2_REDESIGN step 4), full-width
+   under the new head instead of mid-card. */
+#jugadores #playerTabs{margin-top:var(--sp-4)}
+#jugadores .presumen{display:grid;grid-template-columns:1fr;gap:var(--sp-4);margin-top:var(--sp-4_5)}
+/* PHASE_22 item 1: align-items:stretch (grid's own default once unset) so
+   all 3 panels fill the row's tallest height instead of each sizing to its
+   own content -- content itself stays top-anchored (.rp-panel is a plain
+   block, not a flex column, so a taller box never re-centers what's
+   inside it). Single-column mobile stack is unaffected -- align-items
+   only matters once there's more than one item per grid row. */
+@media(min-width:940px){#jugadores .presumen{grid-template-columns:260px 1fr 280px}}
+#jugadores .rp-panel{border:1px solid var(--line);border-radius:var(--r);padding:var(--sp-4);
+  box-shadow:0 1px 3px var(--shadow)}
+/* Información + Ficha: the "about this player" cluster -- --card, one step
+   up from the page (--night), same relationship every other .card in this
+   app already has. */
+#jugadores .rp-info,#jugadores .rp-context{background:var(--card)}
+#jugadores .rp-context .chips{margin-top:var(--sp-2)}
+/* Resumen: one shade further up (--raise), distinct from the other two --
+   same token this file already uses for "a raised block inside a card". */
+#jugadores .rp-stats{background:var(--raise)}
+#jugadores .rp-info h3,#jugadores .rp-stats .ed-eye,#jugadores .rp-context .ed-eye{margin-bottom:var(--sp-2)}
+#jugadores .rp-info h3{font-size:var(--fs-3xs);letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:700;margin-top:0}
+/* Información: label/value rows, mirrors the mockup's own .info/.row/.k/.v. */
+#jugadores .rp-info .row{display:flex;justify-content:space-between;gap:var(--sp-3);
+  padding:var(--sp-2_5) 0;border-bottom:1px solid var(--line-soft);font-size:13.5px}
+#jugadores .rp-info .row:last-child{border-bottom:none}
+#jugadores .rp-info .row .k{color:var(--ink-3)}
+#jugadores .rp-info .row .v{font-weight:600;color:var(--ink);text-align:right}
+/* stat tiles: --card again, one step back down from the --raise panel they
+   sit in -- a real third tier (page < panel < tile). .strip>div's own
+   position/overflow + the corner-ring ::after (PHASE_14, #jugadores
+   .strip>div / #jugadores .strip>div::after, unscoped to any one
+   container) already apply here for free. */
+#jugadores .rp-stats .strip{background:transparent;border:0;border-radius:0;gap:var(--sp-2_5);overflow:visible;margin-top:0}
+#jugadores .rp-stats .strip>div{background:var(--card);border:1px solid var(--line);border-radius:12px;text-align:center}
+/* Ficha's own gap-callout: same fuller rounded-panel treatment PHASE_15
+   gave the Temporadas card's own .pcard .warn, restated here since this is
+   a different, non-.pcard ancestor -- written separately rather than
+   widening PHASE_15's own selector, which would otherwise also catch
+   Comparar's "Casillas sin registrar" .warn (out of scope that pass, still
+   out of scope here). */
+#jugadores .rp-context .warn{border-radius:var(--r);border:1px solid var(--rojo-deep);
+  border-left:3px solid var(--fuego);padding:var(--sp-3_5) var(--sp-4)}
+#jugadores .rp-context .btnrow{margin-top:var(--sp-3)}
+/* Temporada por temporada: unchanged real table (loadPlayerExtra, tabs.js),
+   now its own card under the Temporadas tab instead of sharing a card with
+   identity/bio text that moved out to Información/Ficha above. */
+#jugadores #playerExtra .pcard{margin-top:0}
+/* Fuentes tab: consolidated provenance -- "Aparece en" (curated), the
+   Wayback attribution line, "Mismo nombre en el archivo", and the full
+   per-row conflict list (archive-only), all real text relocated here, not
+   new facts. Reuses .rp-panel for the shell, --card (matches Información/
+   Ficha's own "about this record" tier). */
+#jugadores .rp-fuentes{margin-top:var(--sp-4_5);background:var(--card)}
+#jugadores .rp-fuentes .ed-eye{margin-bottom:var(--sp-2)}
+#jugadores .rp-fuentes .fsrc+.fsrc{margin-top:var(--sp-3);padding-top:var(--sp-3);border-top:1px solid var(--line-soft)}
+
+/* ============================================================
+   PHASE_20 -- curated player page rebalance (owner-approved, redesign-v2)
+   a) Honores moved out of the narrow Ficha column into its own real,
+      full-width panel below the 3-panel grid (same --card tier as
+      Información/Ficha), so chips get the whole page width to wrap in
+      instead of the ~280px Ficha column -- the real cause of the big dead
+      space under the left/middle panels the owner flagged (a chip wall
+      that long only looks "balanced" at full width). */
+#jugadores .rp-panel-honors{margin-top:var(--sp-4)}
+/* d) a long Información value ("21 de septiembre de 1957") wrapping mid-
+   phrase next to its label -- .row-stack is added by renderPlayerInfo()
+   (tabs.js) only on rows where the real rendered .v actually wrapped
+   (getClientRects().length>1, measured live after paint, not a guessed
+   character-count cutoff), so every normal short row is untouched. */
+#jugadores .rp-info .row.row-stack{flex-direction:column;align-items:flex-start;gap:3px}
+#jugadores .rp-info .row.row-stack .v{text-align:left}
+
+/* ============================================================
+   PHASE_21 -- player page polish 2 (owner-approved, redesign-v2)
+   ============================================================ */
+
+/* item 6: .pavatar, direction "B -- Gradiente" (PHASE_20 Part 2) -- global,
+   not #jugadores-scoped, since portrait()'s own .pavatar class is exclusive
+   to it (grep-confirmed before using a global selector, same discipline as
+   every other site-wide class in this file). Fill/text color are both set
+   inline per avatar (portraitFill(), tabs.js, real contrast math), so only
+   shape + the corner-ring decoration live here. No tricolor -- the owner
+   said it reads as the French flag on an avatar; corner-ring only. */
+.pavatar{position:relative;display:inline-flex;align-items:center;justify-content:center;
+  border-radius:var(--r);overflow:hidden}
+.pavatar::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:radial-gradient(circle at 78% 22%,transparent 0 54%,rgba(255,255,255,.18) 54% 66%,transparent 66%)}
+.pavatar .pini{font-family:var(--font-display);font-weight:700;line-height:1;position:relative;z-index:1}
+
+/* item 1: Resumen panel tiles -- flex, not grid, so a non-full last row
+   (5 tiles -> 2+2+1, or the archive-only 3-tile panel -> 2+1) stretches to
+   fill the row instead of leaving an empty orphan track. Grid's own
+   repeat(auto-fit,...) fixes the SAME column count for every row once
+   content determines it, so a lone last-row item never grows to fill its
+   row; flex redistributes remaining width per row independently, which is
+   exactly "no empty slot, last row fills." Scoped to .rp-stats .strip only
+   -- #jugadores .rp-stats also classes the archive-only panel
+   (#playerArchiveStats), so this one rule covers both real cases; every
+   other .strip in the app (Inicio's #titleStats/#calCount, the Temporadas-
+   tab stat strip) is untouched. */
+#jugadores .rp-stats .strip{display:flex;flex-wrap:wrap}
+#jugadores .rp-stats .strip>div{flex:1 1 140px}
+
+/* item 2: "Leyenda por: ..." relocated into the Honores panel as a small
+   footer note (it explains the Leyenda chip, which lives in this panel
+   now) -- same .note styling the rest of the app already uses for this
+   exact kind of aside. */
+#jugadores .rp-panel-honors .legend-note{margin-top:var(--sp-3);padding-top:var(--sp-3);
+  border-top:1px solid var(--line-soft)}
+
+/* item 4: archive-only "Rango en la ficha" tile -- the compact "1965–69"
+   form (JS, archiveFichaParagraph's own sibling logic in loadPlayerExtra)
+   is the primary fix; this is a second, belt-and-suspenders safety net so
+   even a same-century 9-character range never wraps inside a tile that can
+   get as narrow as ~140px (item 1's own flex-basis floor). */
+#jugadores .rp-stats .strip>div .n{white-space:nowrap}
+
+/* item 5: the read-only "Temporada por temporada" table under the 3 panels
+   on Resumen (renderResumenSeasons(), tabs.js) -- same real car[]/dqTag()/
+   disputeTag() data the Temporadas tab's own table uses, deliberately NOT
+   the same markup: no checkboxes, no per-season drill-in link -- those stay
+   exclusive to the Temporadas tab, per the owner's own "keep the drill-in
+   and compare tools as they are [there]" instruction. .tblwrap/table reuse
+   the app's one real dense-table look; only the wrapper + heading are new. */
+#jugadores .seasons-resumen{margin-top:var(--sp-4_5)}
+#jugadores .seasons-resumen h2{font-family:var(--font-display);font-weight:600;font-size:17px;
+  text-transform:none;letter-spacing:0;margin:0 0 var(--sp-3)}
+
+/* ============================================================
+   PHASE_22 Part 1 -- small fixes (owner-approved, redesign-v2)
+   ============================================================ */
+
+/* item 3: the season-compare checkboxes (Temporadas tab's own season
+   table, tabs.js) rendered as the browser's bare native box -- bright
+   white regardless of theme. appearance:none + a custom box/check mark,
+   pure CSS, keeps the real <input type=checkbox> element and its own
+   keyboard/label/onchange behavior completely intact (only the paint
+   changes, same technique focus-visible already relies on sitewide). */
+#jugadores #playerExtra input[type=checkbox]{appearance:none;-webkit-appearance:none;
+  width:16px;height:16px;border:1.5px solid var(--line);border-radius:4px;
+  background:var(--card);cursor:pointer;position:relative;flex:none;vertical-align:middle;margin:0}
+#jugadores #playerExtra input[type=checkbox]:hover{border-color:var(--azul)}
+#jugadores #playerExtra input[type=checkbox]:checked{background:var(--azul);border-color:var(--azul)}
+#jugadores #playerExtra input[type=checkbox]:checked::after{content:"";position:absolute;left:4px;top:1px;
+  width:4px;height:8px;border:solid var(--flag-w);border-width:0 2px 2px 0;transform:rotate(45deg)}
+
+/* ============================================================
+   PHASE_22 Part 2 -- Comparar redesign (owner-approved, redesign-v2)
+   datos.html in ~/Desktop/mockup 2 only mocks the bare head-to-head
+   slot cards (no scoreboard/rows/radar/add-player-bar) -- everything
+   below the heads is built to spec, in the player page's own visual
+   language (.rp-panel/--card//--raise tiers, portrait()'s real avatars,
+   no tricolor -- same owner instruction PHASE_21's avatars already
+   follow). .cmp2* is a brand-new namespace: nothing here is shared with
+   renderSeasonCmp()'s own .cmphead/.cmpheads/.cmprows system above, or
+   with cmpBarRow()'s unmirrored .cmprow/.cmpbarline/.cmptrack/.cmpfill/
+   .cmpval output (still used verbatim by renderSeasonCmp() and by
+   Comparar's own 3-player case, which keeps the grouped-bar look per
+   item c -- only the 2-player case switches to mirrored .cmp2row). */
+#jugadores #cmpOut{margin-top:var(--sp-3_5)}
+#jugadores #cmpOut>.rp-panel+.rp-panel{margin-top:var(--sp-3_5)}
+/* PHASE_24 item 2: the rule above only ever matched .rp-panel following
+   another .rp-panel -- .cmp2heads itself is a grid of .cmp2head cards,
+   not an .rp-panel, so the gap before the very first panel (scoreboard or
+   the 1-player prompt) was silently 0 while every later panel-to-panel
+   gap was already correct. One more rule for that one specific case. */
+#jugadores .cmp2heads+.rp-panel{margin-top:var(--sp-3_5)}
+
+/* a. head-to-head cards: a real grid (2 cards + VS, or 3 cards, never a
+   wrapped flex row), top accent bar in that player's own --cmp-c, same
+   corner-ring/avatar system the player page itself uses via portrait(). */
+#jugadores .cmp2heads{display:grid;gap:var(--sp-3);align-items:stretch}
+#jugadores .cmp2heads.n2{grid-template-columns:1fr auto 1fr}
+#jugadores .cmp2heads.n3{grid-template-columns:repeat(3,1fr)}
+#jugadores .cmp2head{position:relative;overflow:hidden;border:1px solid var(--line);
+  border-radius:var(--r);padding:var(--sp-4);background:var(--card);box-shadow:0 1px 3px var(--shadow);
+  display:flex;flex-direction:column;align-items:center;text-align:center;gap:var(--sp-1)}
+#jugadores .cmp2head::before{content:"";position:absolute;left:0;top:0;right:0;height:4px;
+  background:var(--cmp-c,var(--azul))}
+#jugadores .cmp2head .pavatar{margin-bottom:var(--sp-2)}
+#jugadores .cmp2name{font-family:var(--font-display);font-weight:700;font-size:16.5px}
+#jugadores .cmp2meta{font-size:var(--fs-2xs);color:var(--ink-3)}
+/* width:100% alone did nothing here -- .cmp2select is a <span> (inline by
+   default), and width has no effect on a non-replaced inline box, so the
+   select inside it was still sizing to its own content regardless of the
+   width:100% written below. display:block + align-self:stretch (flex
+   cross-axis, overriding .cmp2head's own align-items:center for just this
+   child) is what actually makes it a real block box the size of the card,
+   for the select's own width:100% to then resolve against. */
+#jugadores .cmp2select{margin-top:var(--sp-2_5);display:block;align-self:stretch}
+/* compact chevron for cmpSeasonSelect()'s own 12px/3px-padding control --
+   a scaled-down version of #jugadores .field select's chevron (that rule
+   stays untouched; its own comment already calls out this select as a
+   different sizing case, never routed through .field).
+   PHASE_24 item 6: width:100% (was auto, so a short "Carrera" select and
+   a long "Sin datos vinculados" disabled one on neighboring cards used to
+   size to their own content and visibly not line up) -- the cards
+   themselves are already equal-width grid tracks, so 100% of each card
+   now also makes every select in the row match. */
+#jugadores .cmp2select select{appearance:none;-webkit-appearance:none;padding-right:22px!important;
+  font-size:12px;padding:3px 8px;width:100%;box-sizing:border-box;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' fill='none' stroke='%237C90B2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 4px center;background-size:13px 13px;
+  border-radius:7px;border:1px solid var(--line);color:var(--ink-2)}
+[data-theme="light"] #jugadores .cmp2select select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' fill='none' stroke='%235A6C8E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+#jugadores .cmp2x{margin-top:var(--sp-2)}
+#jugadores .cmp2vs{display:flex;align-items:center;justify-content:center;font-family:var(--font-display);
+  font-weight:700;font-size:var(--fs-2xs);letter-spacing:.08em;color:var(--ink-3);padding:0 var(--sp-1)}
+
+/* b. scoreboard: large mirrored numerals in each player's own text-safe
+   color (cmpColorPair() -- the same real contrast-checked pair the
+   mirrored rows' lead value uses), the exact preserved verdict sentence
+   kept underneath, unstyled beyond what .cmpverdict already does. */
+#jugadores .cmp2score{text-align:center;background:var(--card)}
+#jugadores .cmp2score-row{display:flex;align-items:center;justify-content:center;gap:var(--sp-3)}
+#jugadores .cmp2score-n{font-family:var(--font-display);font-weight:700;font-size:clamp(40px,7vw,64px);
+  line-height:1;color:var(--cmp-cd,var(--ink))}
+[data-theme="light"] #jugadores .cmp2score-n{color:var(--cmp-cl,var(--ink))}
+#jugadores .cmp2score-dash{font-family:var(--font-display);font-size:clamp(24px,4vw,36px);color:var(--ink-3)}
+#jugadores .cmp2score .cmpverdict{text-align:center;margin-bottom:0}
+/* PHASE_25 item 2: the verdict's own leader name, same --cmp-cd/--cmp-cl
+   contrast-safe pattern every other player-colored text in Comparar
+   uses -- was a flat inline color with no contrast check. */
+#jugadores .cmp2verdict-lead{color:var(--cmp-cd,var(--ink))}
+[data-theme="light"] #jugadores .cmp2verdict-lead{color:var(--cmp-cl,var(--ink))}
+
+/* d. radar: its own panel, legend by player name/color instead of the
+   old bare dot-less list, no more empty space under a narrow sidebar
+   column (the old .cmpsplit two-column layout is retired -- this panel
+   is full-width, stacked above the rows panel like the rest of the
+   page's own top-to-bottom panel rhythm).
+   PHASE_24 item 1: the radar+legend pair wasn't actually centering as a
+   group -- .cmp2radar-svg's own `margin:0 auto` (meant for the no-legend
+   case, back when this was the only child) grabs ALL the flex row's free
+   space as its own auto margins once a sibling exists, shoving the
+   legend out near the panel's right edge instead of sitting centered
+   next to the radar. Fix: move the centering flex context to a new inner
+   .cmp2radar-group (real content, not a left/right flex item with its
+   own competing auto-margins), capped at ~720px and centered as a block;
+   the panel itself is back to a plain block (only the background stays).
+   Legend drops below the radar under 700px viewport width (same
+   viewport-breakpoint convention this file already uses elsewhere, e.g.
+   the 940px rail breakpoint) instead of squeezing sideways. */
+#jugadores .cmp2radar-panel{background:var(--card)}
+#jugadores .cmp2radar-group{display:flex;flex-wrap:wrap;gap:var(--sp-4);align-items:center;
+  justify-content:center;max-width:720px;margin:0 auto}
+#jugadores .cmp2radar-svg{flex:0 0 auto}
+#jugadores .cmp2legend{display:flex;flex-direction:column;gap:6px;min-width:160px}
+@media(max-width:700px){#jugadores .cmp2radar-group{flex-direction:column}}
+#jugadores .cmp2legend-item{display:flex;align-items:center;gap:var(--sp-2);font-size:var(--fs-2xs);font-weight:600}
+#jugadores .cmp2legend-dot{width:11px;height:11px;border-radius:3px;flex:0 0 auto}
+
+/* c. mirrored "tale of the tape" rows (2-player only -- cmpBarRow()'s
+   mode='mirrored' branch). Bars grow from the centre line outward so the
+   two players read as opposing forces, not a top/bottom pair. The
+   3-player case now has its own mode='grouped' branch just below (PHASE_24
+   item 4) -- same per-row grouped-bars shape as the legacy branch
+   renderSeasonCmp() still uses untouched, but with its own classes so the
+   lead color isn't the shared .cmpval.lead's flat var(--ok) green. */
+#jugadores .cmp2rows-panel{background:var(--raise)}
+#jugadores .cmp2row{margin-bottom:9px}
+#jugadores .cmp2lab{text-align:center;font-size:var(--fs-2xs);color:var(--ink-2);margin-bottom:3px}
+#jugadores .cmp2line{display:flex;align-items:center;gap:var(--sp-2)}
+#jugadores .cmp2val{flex:0 0 56px;font-variant-numeric:tabular-nums;font-size:var(--fs-2xs)}
+#jugadores .cmp2val.l{text-align:right}
+#jugadores .cmp2val.r{text-align:left}
+#jugadores .cmp2val.lead{font-weight:700;color:var(--cmp-cd,var(--ink))}
+[data-theme="light"] #jugadores .cmp2val.lead{color:var(--cmp-cl,var(--ink))}
+#jugadores .cmp2val.hole{color:var(--ink-3)}
+#jugadores .cmp2track{flex:1;display:flex;height:9px;border-radius:99px;background:var(--line-soft);overflow:hidden}
+#jugadores .cmp2half{flex:1;display:flex;height:100%}
+#jugadores .cmp2half.l{justify-content:flex-end}
+#jugadores .cmp2half.r{justify-content:flex-start}
+/* PHASE_26 item 1: background now reads the >=3:1-safe pair cmpBarRow()
+   sets inline per cell, same [data-theme] mechanism as everything else. */
+#jugadores .cmp2fill{height:100%;width:0;animation:cmpgrow .42s cubic-bezier(.22,.8,.3,1) forwards;
+  background:var(--cmp-fd)}
+[data-theme="light"] #jugadores .cmp2fill{background:var(--cmp-fl)}
+
+/* 3-player grouped rows (mode='grouped') -- same shape as the legacy
+   .cmprow/.cmpbarline (label above, one bar line per player), new classes
+   throughout so this never touches the legacy rule renderSeasonCmp()
+   still depends on. .cmp3owner is the new per-bar name cue (item 4b). */
+#jugadores .cmp3row{margin-bottom:9px}
+#jugadores .cmp3lab{font-size:var(--fs-2xs);color:var(--ink-2);margin-bottom:3px}
+#jugadores .cmp3barline{display:flex;align-items:center;gap:var(--sp-2);margin-bottom:3px}
+/* PHASE_25 item 2: contrast-safe color via the same --cmp-cd/--cmp-cl
+   custom-prop pattern the lead value already used -- was a flat inline
+   color with no contrast check at all. */
+#jugadores .cmp3owner{flex:0 0 64px;font-size:var(--fs-3xs);font-weight:700;letter-spacing:.02em;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--cmp-cd,var(--ink))}
+[data-theme="light"] #jugadores .cmp3owner{color:var(--cmp-cl,var(--ink))}
+#jugadores .cmp3track{flex:1;height:9px;border-radius:99px;background:var(--line-soft);overflow:hidden}
+#jugadores .cmp3fill{height:100%;border-radius:99px;width:0;animation:cmpgrow .42s cubic-bezier(.22,.8,.3,1) forwards;
+  background:var(--cmp-fd)}
+[data-theme="light"] #jugadores .cmp3fill{background:var(--cmp-fl)}
+#jugadores .cmp3val{flex:0 0 60px;text-align:right;font-variant-numeric:tabular-nums;font-size:var(--fs-2xs)}
+#jugadores .cmp3val.lead{font-weight:700;color:var(--cmp-cd,var(--ink))}
+[data-theme="light"] #jugadores .cmp3val.lead{color:var(--cmp-cl,var(--ink))}
+#jugadores .cmp3val.hole{color:var(--ink-3)}
+
+/* item 3: one compact muted line for every row where NOBODY in the
+   comparison has a value, at the bottom of the rows panel, instead of a
+   label and empty tracks for each -- reuses the existing "sin datos en
+   común" wording from the verdict line, no new Spanish phrase. */
+#jugadores .cmp2skip{font-size:var(--fs-2xs);margin-top:var(--sp-3);padding-top:var(--sp-3);
+  border-top:1px solid var(--line-soft)}
+
+/* e. the foot strip (per-player tags/best-stat) and the empty/pending
+   states are each their own real .rp-panel now -- --card tier, matching
+   Información/Ficha. The foot's own .cmpfoot/.cmpfootcol keep their exact
+   markup; only the top border+padding that used to separate it from the
+   rest of one shared .cmpcard is zeroed here, since the panel's own
+   border now does that job. */
+#jugadores .cmp2foot-panel{background:var(--card)}
+#jugadores .cmp2foot-panel .cmpfoot{margin-top:0;padding-top:0;border-top:0}
+#jugadores .rp-panel.cmpempty{background:var(--card)}
+
+/* f. add-player bar: .search-card already gets a box-shadow now (added
+   to the shared rule above, item f) -- Comparar's #cmpPick instance
+   needs nothing further scoped here. */
+
+/* g. mobile: cards stack, VS becomes a horizontal divider, mirrored rows
+   fall back to stacked full-width values (still readable at 390px --
+   a 56px fixed value column plus a real track doesn't fit three-across). */
+@media(max-width:759px){
+  #jugadores .cmp2heads.n2{grid-template-columns:1fr}
+  #jugadores .cmp2vs{padding:var(--sp-2) 0}
+  #jugadores .cmp2vs::before,#jugadores .cmp2vs::after{content:"";flex:1;height:1px;background:var(--line);margin:0 var(--sp-2)}
+  #jugadores .cmp2heads.n3{grid-template-columns:1fr}
+  #jugadores .cmp2score-n{font-size:clamp(36px,12vw,48px)}
+  #jugadores .cmp2line{flex-wrap:wrap}
+  #jugadores .cmp2val{flex:0 0 auto}
+  #jugadores .cmp2track{flex:1 1 100%;order:3;margin-top:3px}
+  #jugadores .cmp2val.l{order:1;text-align:left}
+  #jugadores .cmp2val.r{order:2;text-align:right;margin-left:auto}
+}
+@media (prefers-reduced-motion:reduce){#jugadores .cmp2fill{animation:none;width:var(--w)}}
