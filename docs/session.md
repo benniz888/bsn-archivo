@@ -8273,3 +8273,71 @@ reconstruction mechanism used to verify every step are in `docs/specs/app_split_
   zero console/page errors. `pytest`: 555 passed, 1 xfailed, 1 failed
   (same pre-existing `test_web_text` byte-diff, unrelated).
   `web/index.html` `?v=` hashes regenerated.
+
+- **PHASE_46 (branch `redesign-v2` — UI restyle).** Built, not committed.
+  Visual/string polish on Sube y Baja (HL) and La Temporada Perfecta
+  (Draft), web/js/games.js — no game logic, scoring, pool selection,
+  storage keys, or share text touched; `crest()`/`crestSVG()` and the
+  Grid code (PHASE_45/45B) untouched. (1) HL: neither card hinted that
+  it was tappable — new "Toca uno para responder." line (`.note`,
+  matching Draft's own existing hint-line treatment) shown only while
+  `!HL.done`, gone once answered — confirmed live, present before/absent
+  after. Both cards are plain `.card` buttons; the app's own GLOBAL
+  `:focus-visible{outline:2px solid var(--focus);outline-offset:2px}`
+  rule already covers them (nothing scopes an override onto `#hlGame`) —
+  confirmed live: real contrast 6.39:1 (dark) / 4.91:1 (light), tap
+  target 446×77.5px, both comfortably clear 3:1/44px, no CSS change
+  needed for this part, confirmed rather than assumed. (2) Draft's court
+  cells (`courtHTML()`) used an inline `style="all:unset;..."` — an
+  inline declaration beats ANY stylesheet selector for the same
+  property, so a `:focus-visible` outline could never have shown
+  through it regardless of how it was written (PHASE_43's own survey
+  already found this: real keyboard focus, zero visible indicator).
+  Fixed by moving the reset's STATIC parts (the unset itself, display,
+  border-radius, padding, text-align, the 58px min-height — cell size
+  unchanged) into a new `.court-cell` class; the per-render dynamic
+  values (cursor/border-color/background) stay inline as before, so
+  `outline` is never inline-set anymore and a new
+  `.court-cell:focus-visible{outline:2px solid var(--focus);outline-
+  offset:2px}` applies cleanly. Contrast computed by properly
+  alpha-compositing every semi-transparent background layer up the DOM
+  (an earlier, naive version of this check stopped at the first
+  non-fully-transparent layer — `--hair-2`, ~2% opacity — and
+  under-reported 2.87:1/N/A; the real composited result is 6.59:1 dark /
+  4.29:1 light, both clear 3:1). (3) The "· vacío" empty-slot label was
+  `.dim` (`--ink-3`) at 11px, with an extra `opacity:.45` on dead
+  (unavailable-this-spin) slots stacked on top — measured under 4.5:1
+  live. New `.court-empty{font-size:var(--fs-2xs);color:var(--ink-2)}`
+  (12px, fixed legible color, no further dimming) — the dead/open visual
+  distinction is still real via the existing dashed-vs-solid border and
+  `--line-soft`-vs-`--line` colors, just no longer also pushing the TEXT
+  under a readable floor. Checked at 320/390/1000px, both themes: no
+  clipping or overlap on any label, including boards with multiple
+  simultaneous "· vacío" cells. (4) The one real "10k"-shaped
+  abbreviation in Draft/HL player-facing text: a candidate card's tag
+  chip (games.js, the inline tag-label dictionary) displayed the literal
+  string "10k" for the real 10,000-career-points milestone — changed to
+  "10 mil puntos" (the task's own example wording); the `'10k'` TAG KEY
+  itself (data.js's `t:[...]` arrays, `TAGV`'s scoring weights) is an
+  internal identifier, never displayed on its own, left unchanged.
+  HL_SETS (data.js) was checked too — already clean, no abbreviations
+  there. Confirmed live on a real 10k-tagged player (Georgie Torres):
+  the chip row now reads "MVP · Anotación · Nativo · Leyenda · 10 mil
+  puntos". New `tests/test_juega_hl_draft.py` (11 tests): HL's hint
+  shown/hidden and ordered before the cards; the global focus-visible
+  rule confirmed present and unsuppressed for HL; Draft's `all:unset`
+  confirmed moved out of the inline style, the new `.court-cell`/
+  `.court-cell:focus-visible` rules confirmed present with the cell size
+  unchanged; the empty-slot label's new color/size confirmed and the old
+  `opacity:.45` confirmed gone; the "10k"→"10 mil puntos" tag fix
+  confirmed (two of these assertions originally also matched this
+  phase's own explanatory code comments on a naive substring search —
+  caught and tightened to check the real code pattern specifically
+  before shipping). No new top-level declarations — baseline stays 471.
+  Verified live, Chromium + WebKit, dark + light, 320/390/1000px, zero
+  console/page errors; the game confirmed still playable in both
+  (answering HL updates the real streak/best, a real Draft pick still
+  places correctly). `pytest`: 566 passed, 1 xfailed, 1 failed (same
+  pre-existing `test_web_text` byte-diff, unrelated). `web/index.html`
+  `?v=` hashes regenerated. Strings in `/tmp/p46_strings.txt`, pending
+  owner approval before commit.

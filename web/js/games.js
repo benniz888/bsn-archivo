@@ -532,13 +532,28 @@ function courtHTML(){
     const p=DR.slots[s], on=DR.sel===s, open=!p;
     const dead=open&&!DR.done&&!avail(s);
     const border = on?'var(--fuego)':(dead?'var(--line-soft)':(open?'var(--line)':'var(--ok)'));
-    return `<button onclick="selectSlot('${s}')" style="all:unset;cursor:${DR.done?'default':'pointer'};
-      display:block;border:2px ${open?'dashed':'solid'} ${border};border-radius:12px;padding:var(--sp-2_5) var(--sp-2);
-      text-align:center;background:${on?'var(--tint-fuego)':'var(--hair-2)'};min-height:58px">
+    /* PHASE_46 (owner-approved, redesign-v2): all:unset used to be inline (style=
+       "all:unset;..."), which has higher specificity than ANY stylesheet selector,
+       including a :focus-visible rule -- the court cells were keyboard-focusable
+       (real <button>s) but never keyboard-VISIBLE (confirmed live, PHASE_43's own
+       survey: outline:none, outlineWidth:0px when focused). The static parts of that
+       same inline style (the unset itself, display, border-radius, padding, text-
+       align, min-height -- cell size is unchanged, same 58px floor) moved into a new
+       .court-cell class instead; only the genuinely per-render values (cursor, the
+       state-driven border color, background) stay inline, so nothing here still sets
+       outline inline -- main.css's own .court-cell:focus-visible rule is free to
+       apply normally. The "· vacío" label: .dim (var(--ink-3)) at 11px with an extra
+       opacity:.45 on dead slots measured under 4.5:1 live -- replaced with a fixed,
+       always-legible color and bumped to 12px; the dead/available visual distinction
+       the opacity used to carry is still there (dashed vs solid border, --line-soft
+       vs --line) without also dimming the text past a readable contrast floor. */
+    return `<button onclick="selectSlot('${s}')" class="court-cell" style="cursor:${DR.done?'default':'pointer'};
+      border:2px ${open?'dashed':'solid'} ${border};
+      background:${on?'var(--tint-fuego)':'var(--hair-2)'}">
       <div style="font-size:var(--fs-3xs);letter-spacing:.08em;font-weight:700;color:${open?'var(--ink-3)':'var(--ink-2)'}">${s}</div>
       ${p?`<div style="font-weight:700;font-size:var(--fs-xs);margin-top:3px;line-height:1.2">${esc(p.n)}</div>
            <div class="dim" style="font-size:var(--fs-3xs)">${p.c.map(c=>F[c]?F[c].abbr:c).join(' ')}</div>`
-        :`<div class="dim" style="font-size:var(--fs-3xs);margin-top:3px${dead?';opacity:.45':''}">${SLOT_ES[s]}${dead?' · vacío':''}</div>`}
+        :`<div class="court-empty" style="margin-top:3px">${SLOT_ES[s]}${dead?' · vacío':''}</div>`}
     </button>`;
   };
   return `<div style="border:1px solid var(--line);border-radius:14px;padding:var(--sp-3_5);
@@ -602,7 +617,7 @@ function drawPicks(){
             <div class="dim" style="font-size:var(--fs-2xs)">${posLabel(p)} · ${p.c.map(c=>F[c]?F[c].abbr:c).join(' ')}</div>
             ${line?`<div class="muted" style="font-size:var(--fs-2xs);margin-top:var(--sp-1)">${line}</div>`
                  :`<div class="muted" style="font-size:var(--fs-2xs);margin-top:var(--sp-1)">Sin promedios registrados.</div>`}
-            <div class="chips">${(p.t||[]).map(t=>`<span class="tag">${esc({mvp:'MVP',scoring:'Anotación',champion:'Campeón',import:'Refuerzo',native:'Nativo',nba:'NBA','10k':'10k',legend:'Leyenda',figura:'Figura del BSN'}[t]||t)}</span>`).join('')}</div>
+            <div class="chips">${(p.t||[]).map(t=>`<span class="tag">${esc({mvp:'MVP',scoring:'Anotación',champion:'Campeón',import:'Refuerzo',native:'Nativo',nba:'NBA','10k':'10 mil puntos',legend:'Leyenda',figura:'Figura del BSN'}[t]||t)}</span>`).join('')}</div>
             ${bad?`<div class="note" style="color:var(--bad-ink)">${esc(bad)}</div>`:''}
           </button>`;
         });
@@ -680,6 +695,12 @@ function drawHL(){
   const best=parseInt(ST.get('hlbest')||'0',10)||0;
   let h=`<div class="gamehead"><div class="dim" style="font-size:var(--fs-2xs)">¿Quién tiene más ${esc(HL.set.label)}?</div>
     <div class="chips" style="margin:0"><span class="tag">Racha ${HL.streak}</span><span class="tag gold">Mejor ${best}</span></div></div>`;
+  /* PHASE_46 (owner-approved, redesign-v2): the two cards are real <button>s with no
+     text or icon suggesting they're tappable -- a new hint, same .note treatment
+     Draft's own court already uses for its own "toca una posición" line (games.js
+     drawPicks()), shown only while the round is live and gone once HL.done, so it
+     never sits above an already-answered pair. */
+  h+=!HL.done?'<p class="note" style="margin-top:var(--sp-2)">Toca uno para responder.</p>':'';
   h+='<div class="cards g2" style="margin-top:var(--sp-2_5)">';
   [HL.a,HL.b].forEach((x,i)=>{
     h+=`<button class="card" style="cursor:pointer;text-align:left" ${HL.done?'disabled':''} onclick="answerHL(${i})">

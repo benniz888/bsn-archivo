@@ -1436,6 +1436,27 @@ tr.cut td{border-bottom:1px solid var(--azul)}
    label, onclick, and the [aria-selected="true"] active look (the rule right above,
    untouched) are unchanged. */
 .gamehead .modebtns button{min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center}
+/* PHASE_46 (owner-approved, redesign-v2): Draft's court cells (games.js courtHTML())
+   used to reset everything via an INLINE style="all:unset;..." -- an inline
+   declaration beats any stylesheet selector for the same property, so a
+   :focus-visible outline rule could never have shown through it no matter how it was
+   written. The static parts of that same reset (the unset itself, display, border-
+   radius, padding, text-align, min-height -- cell size unchanged, still the same
+   58px floor) moved here instead; the per-render values (cursor/border-color/
+   background, which genuinely vary with each cell's state) still come from the
+   element's own inline style, same as before, and compose normally on top of this
+   class. --focus (var(--fuego)) against the court's own real background: >=3:1 in
+   both themes, printed by this phase's own report, not assumed. */
+.court-cell{all:unset;display:block;cursor:pointer;border-radius:12px;padding:var(--sp-2_5) var(--sp-2);
+  text-align:center;min-height:58px;box-sizing:content-box}
+.court-cell:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+/* The "· vacío" label used .dim (var(--ink-3)) at 11px, with an extra opacity:.45 on
+   top for a dead (unavailable this spin) slot -- measured under 4.5:1 live. Fixed
+   color (not --ink-3, not dimmed further) and 12px instead; the dead/open visual
+   distinction the opacity used to carry is still real (dashed vs solid border,
+   --line-soft vs --line, both unchanged) without also pushing the TEXT past a
+   readable contrast floor. */
+.court-empty{font-size:var(--fs-2xs);color:var(--ink-2)}
 .msg{margin-top:var(--sp-2_5);font-size:var(--fs-xs);min-height:22px}
 .msg.good{color:var(--ok)}
 .msg.bad{color:var(--bad-ink)}
