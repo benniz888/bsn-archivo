@@ -1,8 +1,11 @@
-/* BSN Archivo — service worker (PHASE_5 5E; PHASE_1_SPLIT added css/js routing).
+/* BSN Archivo — service worker (PHASE_5 5E; PHASE_1_SPLIT added css/js routing;
+ * PHASE_61 added the brand-asset precache and bumped the shell cache to v2).
  *
- * Two caches, no install-time precache (the shell's deployed filenames aren't
- * known here — each is cached on its own first successful request instead):
- *   bsn-shell : the HTML document, plus web/css/*.css and web/js/*.js
+ * Two caches. Install precaches only the small, fixed-name brand files (the
+ * header mark, icons, manifest — PRECACHE below); everything else is cached on
+ * its own first successful request instead:
+ *   bsn-shell-v2 : the HTML document, plus web/css/*.css, web/js/*.js and the
+ *                  brand files
  *   bsn-data  : the per-entity JSON under data/
  *
  * Routing (same-origin GET only; everything else passes straight through):
@@ -22,12 +25,29 @@
  */
 'use strict';
 
-const SHELL = 'bsn-shell';
+// Bump the suffix whenever the shell's markup changes shape: activate() drops every cache not in
+// KEEP, so a bump evicts a stale cached document that would otherwise show the old header offline.
+const SHELL = 'bsn-shell-v2';
 const DATA = 'bsn-data';
 const KEEP = [SHELL, DATA];
 
+const PRECACHE = [
+  'manifest.webmanifest',
+  'favicon.ico',
+  'img/brand/logo_mark_64.webp',
+  'img/brand/logo_mark_128.webp',
+  'img/brand/apple_touch_icon_180.png',
+  'img/brand/icon_192.png',
+  'img/brand/icon_512.png',
+  'img/brand/icon_maskable_512.png',
+];
+
 self.addEventListener('install', (e) => {
   self.skipWaiting();
+  // Best-effort: a missing icon must not block the worker from installing.
+  e.waitUntil(caches.open(SHELL).then((c) => c.addAll(PRECACHE)).catch((err) => {
+    console.warn('BSN sw: brand precache skipped', err);
+  }));
 });
 
 self.addEventListener('activate', (e) => {
@@ -57,7 +77,9 @@ function isDataJson(url) {
 // because data changes over time and a visitor tolerates a beat of staleness; a shell asset must
 // never silently mismatch the shell that requested it).
 function isShellAsset(url) {
-  return url.pathname.includes('/css/') || url.pathname.includes('/js/');
+  return url.pathname.includes('/css/') || url.pathname.includes('/js/') ||
+         url.pathname.includes('/img/brand/') || url.pathname.endsWith('/manifest.webmanifest') ||
+         url.pathname.endsWith('/favicon.ico');
 }
 
 self.addEventListener('fetch', (e) => {

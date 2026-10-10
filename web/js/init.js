@@ -87,6 +87,39 @@ if(window.matchMedia){
   else if(_spq.addListener) _spq.addListener(syncSearchPlaceholder);
 }
 
+/* PHASE_61: subnav edge fades. Capture-phase listener because 'scroll' doesn't bubble; syncSubnav()
+   dispatches a synthetic scroll so the fades are right on first show, not only after a swipe. */
+(function(){
+  const edge=n=>{
+    n.classList.toggle('fade-l',n.scrollLeft>2);
+    n.classList.toggle('fade-r',n.scrollLeft+n.clientWidth<n.scrollWidth-2);
+  };
+  document.addEventListener('scroll',e=>{
+    if(e.target&&e.target.classList&&e.target.classList.contains('subnav')) edge(e.target);
+  },true);
+  window.addEventListener('resize',()=>document.querySelectorAll('.subnav').forEach(edge));
+})();
+
+/* PHASE_61: below 860px the header search is an icon that expands over the header row. An IIFE,
+   not a named function -- the top-level declaration inventory is frozen (tests/harness). Desktop
+   never sees .searching (the CSS only honours it on phones). */
+(function(){
+  const hdr=document.querySelector('header.top'), btn=document.getElementById('hdrSearchBtn'),
+        inp=document.getElementById('hubSearch');
+  if(!hdr||!btn||!inp) return;
+  const set=open=>{
+    hdr.classList.toggle('searching',open);
+    btn.setAttribute('aria-expanded',open?'true':'false');
+    btn.setAttribute('aria-label',open?'Cerrar búsqueda':'Buscar en el archivo');
+    if(open) inp.focus();
+  };
+  btn.addEventListener('click',()=>set(!hdr.classList.contains('searching')));
+  inp.addEventListener('keydown',e=>{
+    if(e.key==='Escape'&&hdr.classList.contains('searching')){ set(false); btn.focus(); }
+    else if(e.key==='Enter'&&inp.value.trim()) hdr.classList.remove('searching'), btn.setAttribute('aria-expanded','false'), btn.setAttribute('aria-label','Buscar en el archivo');
+  });
+})();
+
 function finishBoot(){
   clearTimeout(SPLASH_DEADLINE);
   try{ buildShelf(); }catch(e){ console.error('BSN: falló el estante',e); }

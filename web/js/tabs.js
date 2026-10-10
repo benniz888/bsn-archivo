@@ -1134,8 +1134,13 @@ function _showPanel(id,noScroll){
     const btn=document.getElementById('tab-'+t);
     if(btn){ btn.setAttribute('aria-selected',t===id?'true':'false'); btn.tabIndex=(t===id||(railFallbackFirst&&t===NAV[0][0]))?0:-1; }
   });
-  document.querySelectorAll('#bottombar button').forEach((b,i)=>{
-    b.setAttribute('aria-selected',BOTTOM[i]===id?'true':'false');
+  /* PHASE_61: the bottom-bar items are <a>, not <button> (buildNav()); the old 'button' selector
+     matched nothing, so the active tab and its flag-stripe mark stayed on whatever buildNav()
+     painted at boot (Inicio). Runs for every route change, load and back/forward alike. */
+  document.querySelectorAll('#bottombar a').forEach((b,i)=>{
+    const on=BOTTOM[i]===id;
+    b.setAttribute('aria-selected',on?'true':'false');
+    if(on) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current');
   });
   const active=document.getElementById('tab-'+id);
   if(active&&active.scrollIntoView) active.scrollIntoView({block:'nearest',inline:'center'});
@@ -1176,6 +1181,8 @@ function syncSubnav(sec,view){
     const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
     nav.scrollTo({left:target,behavior:reduced?'auto':'smooth'});
   }
+  /* PHASE_61: refresh the edge fades even when no scroll happened (init.js listens for 'scroll'). */
+  nav.dispatchEvent(new Event('scroll'));
 }
 
 /* ============================================================

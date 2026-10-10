@@ -1,0 +1,16 @@
+{
+  "name": "BSN Archivo",
+  "short_name": "BSN",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#070C18",
+  "theme_color": "#070C18",
+  "description": "El archivo del Baloncesto Superior Nacional de Puerto Rico, 1930-2026.",
+  "icons": [
+    {"src": "img/brand/icon_192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "img/brand/icon_512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "img/brand/icon_maskable_512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}

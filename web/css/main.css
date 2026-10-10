@@ -34,9 +34,10 @@
   --rojo-deep:#8E1119;
   --blanco:#EEF3FB;
   --fuego:#FF6A1A;      /* live / in-progress only */
-  --focus:var(--fuego); /* keyboard-focus ring — its own token so it can
-                            diverge from --fuego's "live game" meaning
-                            later without a silent side effect */
+  --focus:var(--azul-hi); /* focus ring + selected/active outline: site blue, not
+                            orange (PHASE_61). Its own token, so it stays separate
+                            from --fuego's "live game" meaning. Contrast vs the
+                            court cell bg (the tightest ground): 3.8:1 dark, 7:1 light. */
   /* PHASE_31 (owner-approved, redesign-v2): equal red/white/blue thirds reads
      as the FRENCH flag, not Puerto Rico's -- the real PR flag is red/white
      STRIPES with a blue TRIANGLE at the hoist (leading) edge, never three
@@ -392,11 +393,18 @@ footer .tri{height:5px}
 .readout .yr.tri-block-azul{color:var(--flag-w)}
 
 /* ---------- top bar ---------- */
+/* PHASE_61: one source of truth for the sticky header's height. --hdr-inset is the status-bar
+   inset (standalone floors it at 44px, see below); html's scroll-padding-top and the desktop
+   rail's sticky offset both read these, so a hash/anchor jump never lands under the header. */
+:root{--hdr-h:64px;--hdr-inset:env(safe-area-inset-top,0px)}
+html.standalone{--hdr-inset:max(env(safe-area-inset-top),44px)}
+@media(max-width:639px){:root{--hdr-h:56px}}
+html{scroll-padding-top:calc(var(--hdr-h) + var(--hdr-inset) + var(--sp-3))}
 header.top{position:sticky;top:0;z-index:60;background:var(--scrim);
   -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
-  padding-top:env(safe-area-inset-top)}
+  padding-top:var(--hdr-inset)}
 header.top::before{content:"";position:absolute;top:0;left:0;right:0;
-  height:env(safe-area-inset-top);background:var(--statusbar)}
+  height:var(--hdr-inset);background:var(--statusbar)}
 /* PHASE_8 item 1 (owner-approved, redesign-v2): masthead grow. Plain 1px
    border-bottom replaced with the same 3px tricolor device used elsewhere
    for a bolder accent line (--tri, the established HORIZONTAL token --
@@ -414,32 +422,52 @@ header.top::after{content:"";position:absolute;left:0;right:0;bottom:0;
    not it bothers to report an inset. 44px is the classic bar height; every
    notched phone reports more than that, so max() takes the real number when
    there is one and the floor when there is not. */
-html.standalone header.top{padding-top:max(env(safe-area-inset-top),44px)}
-html.standalone header.top::before{height:max(env(safe-area-inset-top),44px)}
 html.standalone .splash{padding-top:max(env(safe-area-inset-top),44px)}
-.toprow{display:flex;align-items:center;gap:12px;max-width:var(--maxw);margin:0 auto;
-  padding:16px calc(16px + env(safe-area-inset-right)) 16px calc(16px + env(safe-area-inset-left))}
-html.standalone .toprow{padding-top:10px;padding-bottom:16px}
-.mark{display:flex;align-items:center;gap:9px;flex:none;background:none;border:0;padding:0;cursor:pointer;color:inherit}
-.mark svg{display:block;width:44px;height:44px}
-.markname{font-family:inherit;font-weight:800;font-size:22px;letter-spacing:-.02em;line-height:1}
-.marksub{font-size:10px;color:var(--ink-3);letter-spacing:.09em;text-transform:uppercase;line-height:1;margin-top:3px}
-/* PHASE_8 item 1 fix (owner-approved, redesign-v2): the grown masthead
-   overflowed .clubpill off the right edge below 640px (.toprow doesn't
-   wrap) -- scale mark/name/padding back down on phone widths so the row
-   fits with visible margin at 360px; .rail's 76px coupling (>=860px) is
-   untouched, the rail isn't present below 860px anyway. */
+.toprow{display:flex;align-items:center;gap:12px;max-width:var(--maxw);margin:0 auto;height:var(--hdr-h);
+  padding:0 calc(16px + env(safe-area-inset-right)) 0 calc(16px + env(safe-area-inset-left))}
+.mark{display:flex;align-items:center;gap:10px;flex:none;min-width:44px;min-height:44px;background:none;border:0;
+  padding:0;cursor:pointer;color:inherit;text-align:left}
+.markimg{display:block;width:40px;height:40px;border-radius:22%}
+/* The tile's left edge is a pale wash that dissolves into the light page: 1px outline there only.
+   box-shadow, not outline: it follows the image's rounded corners in every engine. */
+[data-theme="light"] .markimg{box-shadow:0 0 0 1px var(--line)}
+.marktext{display:block}
+.markname{display:block;font-family:inherit;font-weight:800;font-size:20px;letter-spacing:-.02em;line-height:1}
+.marksub{display:block;font-size:10px;color:var(--ink-3);letter-spacing:.09em;text-transform:uppercase;line-height:1;margin-top:3px}
+/* Phone: mark only. The text stays in the accessibility tree (visually hidden, not display:none). */
 @media(max-width:639px){
-  .toprow{padding-top:10px;padding-bottom:10px}
-  .mark svg{width:24px;height:24px}
-  .markname{font-size:14px}
+  .marktext{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .toprow{gap:8px}
 }
+/* Search: full field on desktop; below 860px an icon that expands over the row (.searching). */
+.hdrsearch{display:flex;align-items:center;flex:1 1 280px;min-width:0;max-width:560px;margin:0 auto}
+.hdrsearch input{flex:1;min-width:0;height:44px;padding:0 18px;font-size:16px;border-radius:99px;
+  border:1px solid var(--line);background:var(--deep);color:var(--ink)}
+.hdrsearch input:focus{border-color:var(--azul-hi)}
+.hdrsearchbtn{display:none;align-items:center;justify-content:center;flex:none;width:44px;height:44px;
+  background:transparent;border:1px solid var(--line);border-radius:99px;color:var(--ink-2);cursor:pointer}
+.hdrsearchbtn:hover{color:var(--ink);border-color:var(--ink-3)}
+.signin{flex:none;display:flex;align-items:center;min-height:44px;padding:0 var(--sp-3);color:var(--ink);
+  font-weight:600;font-size:var(--fs-sm);text-decoration:none}
+.signin[hidden]{display:none}
+@media(max-width:859px){
+  .hdrsearch{flex:none;margin:0 0 0 auto}
+  .hdrsearchbtn{display:flex}
+  .hdrsearch input{display:none}
+  .topspace{display:none}
+  header.top.searching .hdrsearch{flex:1;margin:0}
+  header.top.searching .hdrsearch input{display:block;margin-left:8px}
+  header.top.searching .mark,header.top.searching .themebtn,header.top.searching .clubpill,
+  header.top.searching .signin{display:none}
+}
+@media(max-width:359px){#gearBtn{display:none}}
+@media(min-width:860px){.topspace{display:none}}
 .topspace{flex:1}
 .clubpill{display:flex;align-items:center;gap:7px;background:transparent;color:var(--ink);
-  border:1.5px solid var(--rojo);border-radius:99px;padding:6px 13px 6px 8px;font-size:13.5px;
+  border:1.5px solid var(--rojo);border-radius:99px;min-height:44px;padding:6px 13px 6px 8px;font-size:13.5px;
   font-weight:600;cursor:pointer;white-space:nowrap}
 .clubpill:hover{background:var(--tint-rojo)}
-.themebtn{display:flex;align-items:center;justify-content:center;flex:none;width:40px;height:40px;
+.themebtn{display:flex;align-items:center;justify-content:center;flex:none;width:44px;height:44px;
   background:transparent;border:1px solid var(--line);border-radius:99px;color:var(--ink-2);cursor:pointer;
   transition:color .15s,border-color .15s}
 .themebtn:hover{color:var(--ink);border-color:var(--ink-3)}
@@ -465,10 +493,13 @@ html.standalone .toprow{padding-top:10px;padding-bottom:16px}
    860px .rail stays display:none (unchanged) and header.top stays
    exactly as PHASE_8 left it -- the coupling never applied there anyway. */
 .rail{flex:none;display:none;flex-direction:column;gap:2px;
-  position:sticky;top:0;height:100vh;overflow-y:auto;
+  position:sticky;top:calc(var(--hdr-h) + var(--hdr-inset));height:calc(100vh - var(--hdr-h) - var(--hdr-inset));overflow-y:auto;
   width:64px;padding:var(--sp-3) 0;background:var(--scrim);
   -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-right:1px solid var(--line)}
-@media(min-width:860px){.rail{display:flex}header.top{display:none}}
+/* PHASE_61: header.top now shows at every width (brand + search live there); at >=860px the
+   rail sits beneath it, and the header's own theme/settings/club controls step aside because
+   the rail already carries them. */
+@media(min-width:860px){.rail{display:flex}header.top .themebtn,header.top .clubpill{display:none}#gearBtn{display:none}}
 /* PHASE_10 item 2 (owner-approved, redesign-v2): labeled-tier rail width matched to the
    mockup's own measured value (76px, getComputedStyle on the live file, not the earlier 220px
    guess) -- lifts item 1's own "don't touch rail width" note, per this item's explicit scope.
@@ -479,29 +510,6 @@ html.standalone .toprow{padding-top:10px;padding-bottom:16px}
    assumed -- so it needs no change and none was made; checked and reported per this item's own
    instruction to check either way. */
 @media(min-width:1120px){.rail{width:76px;padding:20px 0}}
-/* PHASE_9 item 1d (owner-approved, redesign-v2): header.top handled the
-   standalone-mode top inset (html.standalone header.top{padding-top:
-   max(env(safe-area-inset-top),44px)}) -- once it's display:none at
-   >=860px that protection is gone too, so .rail needs its own. max()
-   against the SAME base value the plain rule already uses (--sp-3 here,
-   --sp-4 at the labeled tier) means a zero/absent inset computes to
-   exactly today's padding-top, unchanged -- only a real nonzero inset
-   grows it. Scoped to standalone mode only, matching header.top's own
-   scoping; .rail doesn't exist below 860px regardless. */
-@media(min-width:860px){
-  html.standalone .rail{padding-top:max(var(--sp-3),env(safe-area-inset-top,0px))}
-}
-@media(min-width:1120px){
-  html.standalone .rail{padding-top:max(var(--sp-4),env(safe-area-inset-top,0px))}
-}
-/* Logo: a fixed-size badge (mockup's .rail .logo, red circle + basketball
-   glyph), NOT a flex item that stretches to the rail's own width like the
-   nav/control rows below it -- align-self:center keeps its own 32px
-   intrinsic size at both rail widths. */
-.raillogo{align-self:center;flex:none;display:flex;align-items:center;justify-content:center;
-  width:32px;height:32px;border-radius:999px;background:var(--rojo);
-  border:0;padding:0;margin:0 0 var(--sp-3);cursor:pointer;transition:filter var(--dur-fast) var(--ease)}
-.raillogo:hover{filter:brightness(1.12)}
 .railnav{display:flex;flex-direction:column;gap:2px}
 .railbottom{display:flex;flex-direction:column;gap:2px;margin-top:auto}
 .rail a,.rail .railctl{position:relative;display:flex;align-items:center;justify-content:center;gap:var(--sp-3);
@@ -629,10 +637,16 @@ html.standalone .toprow{padding-top:10px;padding-bottom:16px}
    switches them; bare #section shows a landing that lists them
    (a plain list here, an editorial grid in 8.3). */
 .subnav{display:flex;gap:var(--sp-2);overflow-x:auto;scrollbar-width:none;
-  -webkit-overflow-scrolling:touch;margin:0 0 var(--sp-5);padding-bottom:2px}
+  -webkit-overflow-scrolling:touch;margin:0 0 var(--sp-5);padding-bottom:2px;
+  scroll-snap-type:x proximity;scroll-padding-inline:var(--sp-4)}
+.subnav>*{scroll-snap-align:center}
+/* PHASE_61: edge fades say "more this way"; .fade-l/.fade-r are toggled from scroll position (init.js). */
+.subnav.fade-r{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent)}
+.subnav.fade-l{-webkit-mask-image:linear-gradient(90deg,transparent,#000 36px);mask-image:linear-gradient(90deg,transparent,#000 36px)}
+.subnav.fade-l.fade-r{-webkit-mask-image:linear-gradient(90deg,transparent,#000 36px,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(90deg,transparent,#000 36px,#000 calc(100% - 36px),transparent)}
 .subnav::-webkit-scrollbar{display:none}
 .subnav button,.subnav a{flex:0 0 auto;background:transparent;border:1px solid var(--line);
-  color:var(--ink-3);border-radius:99px;padding:7px 14px;font:inherit;
+  color:var(--ink-3);border-radius:99px;min-height:44px;padding:7px 14px;font:inherit;
   font-size:var(--fs-sm);font-weight:600;cursor:pointer;white-space:nowrap;text-decoration:none;
   transition:color var(--dur-fast),border-color var(--dur-fast),background var(--dur-fast)}
 .subnav button:hover,.subnav a:hover{color:var(--ink);border-color:var(--ink-3)}
@@ -1568,7 +1582,7 @@ tr.cut td{border-bottom:1px solid var(--azul)}
    58px floor) moved here instead; the per-render values (cursor/border-color/
    background, which genuinely vary with each cell's state) still come from the
    element's own inline style, same as before, and compose normally on top of this
-   class. --focus (var(--fuego)) against the court's own real background: >=3:1 in
+   class. --focus (var(--azul-hi)) against the court's own real background: >=3:1 in
    both themes, printed by this phase's own report, not assumed. */
 .court-cell{all:unset;display:block;cursor:pointer;border-radius:12px;padding:var(--sp-2_5) var(--sp-2);
   text-align:center;min-height:58px;box-sizing:content-box}
@@ -1708,15 +1722,6 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 .hubhead{font-family:inherit;font-weight:800;
   font-size:clamp(24px,5.4vw,36px);text-transform:uppercase;line-height:1.05}
 .hublede{color:var(--ink-2);font-size:var(--fs-sm);max-width:46ch;margin:7px 0 0}
-/* PHASE_8 item 2a (owner-approved, redesign-v2): search restyle, CSS-only.
-   #hubSearch stays exactly where it sits in the DOM -- only its own box
-   grows (padding/font/border), matching the masthead's bigger scale from
-   item 1. Behavior untouched: hubAsk()/runAsk()/ask()/answerCard() are
-   byte-identical to before this commit. */
-.hubsearch{margin:var(--sp-5) 0 var(--sp-2);position:relative}
-.hubsearch input{padding:20px 22px;font-size:19px;border-radius:var(--r);
-  border-width:1.5px;border-color:var(--azul-deep);background:var(--deep)}
-.hubsearch input:focus{border-color:var(--azul-hi);outline:2px solid var(--focus);outline-offset:2px}
 /* ── Editorial blocks (PHASE_8.3) — a headline stat + a phrase + one line
    of context + a supporting visual, not a number in a box. Inicio hub,
    the player/team heros, the mega-menu featured blocks. */
@@ -1964,7 +1969,7 @@ tr.cut td{border-bottom:1px solid var(--azul)}
   color:var(--flag-w);font-weight:700}
 .cell.dynasty{background:linear-gradient(150deg,var(--rojo),var(--rojo-deep));border-color:transparent;
   color:var(--flag-w);font-weight:700}
-.cell.active{outline:2px solid var(--fuego);outline-offset:2px}
+.cell.active{outline:2px solid var(--focus);outline-offset:2px}
 .fixnote{font-size:var(--fs-2xs);color:var(--ink-3);margin-top:var(--sp-2_5);display:flex;gap:6px;align-items:flex-start}
 .fixnote::before{content:"✓";color:var(--ok);font-weight:700;flex:none}
 /* -- readout: same class kept (.readout .yr is already in the shared Oswald selector list),
