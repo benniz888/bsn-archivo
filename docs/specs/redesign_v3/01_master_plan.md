@@ -32,6 +32,7 @@ This plan continues the PHASE numbering (last used: PHASE_52B). Redesign v3 = PH
 | PHASE_70_ACCOUNTS | Optional sign-in | Opus medium for the security review, Sonnet to build | DEFERRED until after the league presentation, see 03 |
 | PHASE_71_PERF_A11Y | Performance + accessibility final pass | Sonnet low | After all redesign work |
 | PHASE_72_DATA_UPDATE | One-command data update flow | Sonnet low | See 06 |
+| PHASE_73_ARCHIVE_LOOK | Revisit the "El Archivo" folder look (deferred), final phase | Opus 5.5 | Starts from the WIP patch, see Archive look note below |
 
 Realistic pacing: PHASE_60 to 64 fit a week at Sonnet low. Do not try all of it in one week.
 
@@ -54,3 +55,6 @@ Realistic pacing: PHASE_60 to 64 fit a week at Sonnet low. Do not try all of it 
 - Complement bsnpr.com, not compete: historical depth only, no live standings.
 - Sources: keep RealGM and latinbasket data as is, add no new mentions, wait on the league (Sep 24 decision).
 - Unofficial-status notice, privacy line and corrections contact are live. Phase 69 extends them, it does not replace them.
+
+## Archive look
+Archive look: deferred by owner (Oct 10). Ignore all archive-look and folder-component requirements in 05_page_specs.md and 08_phase_prompts.md until PHASE_73_ARCHIVE_LOOK, the final phase. Page phases still make each page distinct through layout, accent and content, but built on the current visual style. WIP patch: docs/audits/archive_look_work_in_progress.patch.
