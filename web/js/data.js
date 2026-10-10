@@ -244,7 +244,7 @@ const REF_RULES=[
 /* ---------- on this day ---------- */
 const ON_THIS_DAY=[
  [5,22,1974,"Neftalí Rivera scores 79","Still the BSN single-game record. Thirty-four field goals, every one a two-pointer, plus eleven free throws."],
- [5,1,2012,"Jonathan García hands out 33 assists","Caciques de Humacao against Brujos de Guayama. Broke Pablo Alicea's 25 from 1989 and stands as an unofficial world record. Humacao also set the team scoring record with 130 that night, and 46 in a single quarter."],
+ [5,1,2012,"Jonathan García hands out 33 assists","Caciques de Humacao against Brujos de Guayama. Broke Pablo Alicea's 25 from 1989. Humacao also set the team scoring record with 130 that night, and 46 in a single quarter."],
  [9,8,1969,"17,621 fans in Bayamón","The largest crowd in league history, against Río Piedras. Beat a Ponce–Santurce game that had drawn 16,564."],
  [8,9,2017,"Quebradillas take Game 7","98–90 over Arecibo for the Piratas' sixth title and their first since 2013."],
  [7,27,2023,"Carolina win their first","The Gigantes beat Bayamón 80–60 in Game 5 to take the franchise's first championship."],
@@ -315,7 +315,7 @@ const POOL=[
  {n:"Víctor Liz",d:[2010],c:[],ppg:null,rpg:null,apg:null,pos:"G",
   t:["scoring","import"],b:"Led the league in scoring in 2017."},
  {n:"Jonathan García",d:[2010],c:[],ppg:null,rpg:null,apg:null,pos:"PG",
-  t:["native","legend"],b:"33 assists in one game in 2012, an unofficial world record."},
+  t:["native","legend"],b:"33 assists in one game in 2012."},
  {n:"Emmanuel Mudiay",d:[2020],c:["que"],ppg:23.6,rpg:null,apg:null,pos:"PG",
   t:["mvp","scoring","import","nba"],b:"779 points in 33 games to win the 2025 MVP."},
  {n:"Kobi Simmons",d:[2020],c:["car"],ppg:20.2,rpg:null,apg:null,pos:"G",
