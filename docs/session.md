@@ -9113,3 +9113,12 @@ reconstruction mechanism used to verify every step are in `docs/specs/app_split_
 - Tests: tests/test_no_emoji_in_web.py (static, 9 hits pre-change, 0 now) and tests/test_player_ring_overlap.py + tests/harness/ring_overlap_probe.mjs (Chromium+WebKit x 390/1000 x dark/light; 84 overlaps pre-fix, 0 now). Suite: 716 passed, 1 xfailed, 1 known failure (test_web_text). Strings: docs/strings_pending_phase65.md. Plan: docs/audits/phase65_plan.md.
 
 - PHASE_65 fixups (uncommitted): distinct icon per explore card (Historia 7, Jugadores 8; new SVGs for cinta, títulos, dinastías, premios, refuerzos, temporadas, salón, NBA, canchas); 16px heading-to-grid gap on both pages; Historia 7th card fills the last row, 2 columns on phones (was 1); record-card ring removed (it crossed the note text); `.subnav` hover only under `@media(hover:hover)` (touch kept a stale hover border on the last tapped pill) plus an explicit `:focus-visible` ring. Tests extended (records measured, explore layout/icons, touch sub-nav) and tests/test_explore_icons.py added.
+
+### PHASE_66_EQUIPOS — BUILT, uncommitted (2026-10-10)
+Plan: docs/audits/phase66_plan.md; strings as built: docs/strings_pending_phase66.md. Landing = stats strip + crest grids;
+club page = two columns, per-club accent (contrast-guarded via buildRetiredNums.accent), computed signature stat, finals
+timeline (G/P letters), interactive roster (closures in showTeam), generic SVG jersey rail for Bayamón/Guaynabo (number-only,
+17 drawn once). No new top-level names (helpers hang off buildRetiredNums); EQUIPOS_XICON kept only for the frozen inventory.
+web/index.html asset hashes refreshed (src/update_asset_hashes.py). New tests: tests/test_equipos_phase66.py.
+Open: Bayamón's duplicate 17 unresolved (shown once); Santurce #4 not shown (unsourced); "1 finales" plural slip proposed (C12).
+Note: tests/test_player_ring_overlap.py flakes with ERR_NETWORK_CHANGED if run while other browser jobs use the network.

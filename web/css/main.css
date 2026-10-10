@@ -1463,8 +1463,24 @@ select{cursor:pointer}
    for a single card. The 450px-ish size actually reviewed and approved
    only held in the 2-column mockup page, which this real team-page layout
    never had — capped for real now, not re-guessed. */
-.sf-court{background:var(--court);border-radius:var(--r);overflow:hidden;margin-top:var(--sp-2);max-width:380px}
-.sf-court svg{display:block;width:100%;height:auto}
+.sf-court{margin-top:var(--sp-2);max-width:460px}
+.sf-court svg{display:block;width:100%;height:auto;background:var(--card);border:1px solid var(--line);border-radius:var(--r-sm)}
+.sf-ln{fill:none;stroke:var(--ink-3);stroke-opacity:.35;stroke-width:1}
+.sf-ring{fill:var(--card);stroke:var(--club-g,var(--ink-3));stroke-width:1.5}
+.sf-ring.dash{stroke:var(--ink-3);stroke-dasharray:3 2.5}
+.sf-court text{font-family:Inter,-apple-system,"Segoe UI",Roboto,sans-serif;paint-order:stroke;stroke:var(--card);stroke-width:3.5px;stroke-linejoin:round}
+.sf-rn{font-size:11px;font-weight:700;fill:var(--ink)}
+.sf-pn{font-size:12px;font-weight:700;fill:var(--ink)}
+.sf-ps,.sf-unc{font-size:10px;font-weight:700;letter-spacing:.08em}
+.sf-ps{fill:var(--ink-3)}
+.sf-unc{fill:var(--bad-ink)}
+.sf-pg{font-size:11px;fill:var(--ink-2)}
+.sf-seg{display:inline-flex;max-width:100%;overflow-x:auto;scrollbar-width:none;border:1px solid var(--line);border-radius:4px;margin:var(--sp-2) 0}
+.sf-seg::-webkit-scrollbar{display:none}
+.sf-seg button{flex:0 0 auto;min-height:44px;min-width:44px;padding:0 var(--sp-3_5);background:transparent;border:0;border-left:1px solid var(--line);color:var(--ink-2);font:inherit;font-size:var(--fs-xs);font-weight:600;cursor:pointer}
+.sf-seg button:first-child{border-left:0}
+.sf-seg button[aria-pressed="true"]{color:var(--club-t,var(--ink));box-shadow:inset 0 -2px 0 var(--club-g,var(--ink))}
+.sf-seg button:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
 .tag{display:inline-block;background:var(--raise);border:1px solid var(--line);border-radius:99px;
   padding:2px var(--sp-2_5);font-size:var(--fs-3xs);color:var(--ink-2);margin:2px 4px 2px 0}
 .tag.gold{border-color:var(--rojo);color:var(--on-rojo);background:var(--tint-rojo)}
@@ -3058,3 +3074,98 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
 .cal-more[hidden]{display:none}
 #inicio .hubblock h2.big{margin:0 0 var(--sp-2)}
 #hubChamps{margin-top:0}
+
+/* ============================================================
+   PHASE_66 Equipos: landing crest grid, per-club page, roster, retired jerseys.
+   The club accent arrives as --club / --club-2 plus four contrast-checked variants
+   (text >= 4.5:1, graphics >= 3:1 against that theme's card), set inline from F.
+   ============================================================ */
+.eq-vars{--club-t:var(--club-t-d);--club-g:var(--club-g-d)}
+[data-theme="light"] .eq-vars{--club-t:var(--club-t-l);--club-g:var(--club-g-l)}
+.eq-strip{display:flex;flex-wrap:wrap;gap:var(--sp-2) var(--sp-5);list-style:none;margin:0 0 var(--sp-3);padding:0;color:var(--ink-2);font-size:var(--fs-sm)}
+.eq-strip b{font-size:var(--fs-lg);color:var(--ink);margin-right:var(--sp-1)}
+.eq-land h2.sec{margin-top:var(--sp-4)}
+.eq-land .tiles{grid-template-columns:repeat(2,1fr)}
+@media(min-width:720px){.eq-land .tiles{grid-template-columns:repeat(4,1fr)}}
+@media(min-width:980px){.eq-land .tiles{grid-template-columns:repeat(6,1fr)}}
+.eq-land .teamtile{min-height:44px}
+.eq-land .teamtile .crest{transform:scale(1.35);margin:var(--sp-2) 0}
+
+.eq-page{border-color:var(--club-g);position:relative;overflow:hidden}
+.eq-hero{display:grid;grid-template-columns:auto 1fr;gap:var(--sp-3) var(--sp-4);align-items:center;padding:var(--sp-3) 0}
+.eq-id h2{font-size:var(--fs-xl);text-transform:uppercase;letter-spacing:.005em}
+.eq-sig{grid-column:1/-1}
+.eq-sig .ed-stat{color:var(--club-t)}
+.eq-sig .phero-spark{display:inline-flex;color:var(--club-g);margin-bottom:var(--sp-1)}
+.eq-sig .phero-statl{margin-top:var(--sp-2)}
+.eq-sigtext{margin-top:var(--sp-2);padding-left:var(--sp-2);border-left:3px solid var(--club-g);color:var(--ink);font-size:var(--fs-sm);font-weight:700;line-height:1.3}
+.eq-dyn .eq-hero{border-bottom:3px solid var(--club-g)}
+.eq-con .eq-hero{border-bottom:1px solid var(--club-g)}
+.eq-seek .eq-hero{border:1px dashed var(--club-g);border-radius:var(--r);padding:var(--sp-3)}
+.eq-gone .eq-hero{border-bottom:1px dotted var(--club-g)}
+.eq-ten{position:relative;height:10px;background:var(--raise);border-radius:99px;margin:var(--sp-3) 0 var(--sp-1)}
+.eq-ten span{position:absolute;top:0;bottom:0;background:var(--club-g);border-radius:99px}
+.eq-ten-l{display:flex;justify-content:space-between;color:var(--ink-3);font-size:var(--fs-3xs)}
+.eq-cols{display:grid;gap:var(--sp-5);margin-top:var(--sp-4)}
+.eq-left,.eq-right{display:contents}
+.eq-facts{display:flex;flex-direction:column;gap:var(--sp-2);min-width:0;order:1}
+.eq-tlw{order:2;min-width:0}
+#teamRoster{order:3;min-width:0}
+#teamOpp{order:4;min-width:0}
+#teamStartingFive{order:5;min-width:0}
+#teamOpp:empty,#teamStartingFive:empty{display:none}
+@media(min-width:900px){
+  .eq-hero{grid-template-columns:auto 1fr auto}
+  .eq-sig{grid-column:auto;text-align:right}
+  .eq-sig .phero-stat{justify-content:flex-end}
+  .eq-sigtext{border-left:0;border-right:3px solid var(--club-g);padding:0 var(--sp-2) 0 0}
+  .eq-cols{grid-template-columns:6fr 6fr;align-items:start}
+  .eq-left,.eq-right{display:flex;flex-direction:column;gap:var(--sp-5);min-width:0}
+  .eq-facts,.eq-tlw,#teamRoster,#teamOpp,#teamStartingFive{order:0}
+}
+.eq-tl{display:flex;flex-wrap:wrap;gap:var(--sp-2);list-style:none;margin:var(--sp-2) 0;padding:0}
+.eq-tl li{display:inline-flex;align-items:center;gap:var(--sp-1);padding:2px var(--sp-2);border-radius:var(--r-sm);font-size:var(--fs-2xs);font-weight:700}
+.eq-tl .w{border:2px solid var(--club-g);background:var(--raise)}
+.eq-tl .w .eq-r{color:var(--club-t)}
+.eq-tl .w.run{border-width:4px}
+.eq-tl .l{border:1px dashed var(--ink-3);color:var(--ink-2)}
+
+.eq-filters{display:flex;flex-direction:column;gap:var(--sp-2);margin-bottom:var(--sp-2)}
+.eq-fg{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-2)}
+.eq-fl{min-width:72px;color:var(--ink-2);font-size:var(--fs-3xs);font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.eq-fb{min-height:44px;min-width:44px;padding:0 var(--sp-3);border-radius:99px;border:1px solid var(--line);background:transparent;color:var(--ink-2);font:inherit;font-size:var(--fs-xs);font-weight:600;cursor:pointer}
+.eq-fb[aria-pressed="true"]{color:var(--night);background:var(--ink);border-color:var(--ink)}
+.eq-fq{margin-top:0}
+.eq-fq .field{flex:1 1 180px}
+.eq-count{margin:var(--sp-2) 0;color:var(--ink-2);font-size:var(--fs-xs)}
+.eq-list{list-style:none;margin:0;padding:0;display:grid;gap:var(--sp-2)}
+.eq-row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:var(--sp-1) var(--sp-3);width:100%;min-height:44px;padding:var(--sp-2) var(--sp-3);text-align:left;color:inherit;font:inherit;background:var(--raise);border:1px solid var(--line);border-radius:var(--r);cursor:pointer}
+.eq-row[aria-expanded="true"]{border-color:var(--club-g)}
+.eq-n{font-weight:600}
+.eq-m{color:var(--ink-2);font-size:var(--fs-xs)}
+.eq-det{padding:var(--sp-3);border:1px solid var(--line);border-top:0;border-radius:0 0 var(--r) var(--r);color:var(--ink-2);font-size:var(--fs-xs)}
+.eq-det p{margin:0 0 var(--sp-2)}
+.eq-det[hidden],#teamRoster button.eq-more[hidden]{display:none}
+.eq-go,.eq-more{min-height:44px;margin-top:var(--sp-2)}
+.eq-row:focus-visible,.eq-fb:focus-visible,.eq-go:focus-visible,.eq-more:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+@media(max-width:600px){
+  .eq-fg{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .eq-fg::-webkit-scrollbar{display:none}
+  .eq-fl{min-width:0;flex:0 0 auto}
+  .eq-fb{flex:0 0 auto}
+}
+
+.eq-retired{margin-top:var(--sp-5)}
+.eq-rail{display:flex;flex-wrap:wrap;list-style:none;margin:var(--sp-3) 0;padding:0}
+.eq-jr{position:relative;width:76px;display:flex;flex-direction:column;align-items:center;padding:6px var(--sp-1) 0}
+.eq-jr::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;border-radius:3px;background:var(--ink-3)}
+.eq-jr svg{width:64px;height:108px;transform-origin:50% 8px;filter:drop-shadow(0 4px 4px rgba(0,0,0,.3))}
+.eq-jr .h{fill:none;stroke:var(--ink-3);stroke-width:2;stroke-linecap:round}
+.eq-jr .b{fill:var(--club);stroke:var(--club-g);stroke-width:2}
+.eq-jr .t{fill:none;stroke:var(--club-2);stroke-width:2.5}
+.eq-jr .num{font-family:var(--font-display);font-size:26px;font-weight:700}
+.eq-jlist{margin:var(--sp-2) 0;color:var(--ink);font-size:var(--fs-sm)}
+@media(hover:hover) and (prefers-reduced-motion:no-preference){
+  .eq-jr svg{transition:transform .4s ease}
+  .eq-jr:hover svg{transform:rotate(-2deg)}
+}
