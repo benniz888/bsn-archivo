@@ -159,7 +159,7 @@ const SCORING=[
 
 const RECORDS=[
   ["Points, single game","79","Neftalí Rivera",1974,"22 May 1974. Thirty-four field goals, every one a two-pointer — the three-point line had not been adopted."],
-  ["Assists, single game","33","Jonathan García",2012,"1 May 2012, Caciques de Humacao against Brujos de Guayama. Broke Pablo Alicea's 25 from 1989 and stands as an unofficial world record."],
+  ["Assists, single game","33","Jonathan García",2012,"1 May 2012, Caciques de Humacao against Brujos de Guayama. Broke Pablo Alicea's 25 from 1989."],
   ["Points, career","15,863","Georgie Torres",2001,"679 games. His first seven seasons were played before the three-point line existed."],
   ["Rebounds, career","6,178","Rubén Rodríguez",1991,"631 games."],
   ["Points, single season","810","Rubén Rodríguez",1978,""],
@@ -1911,14 +1911,9 @@ async function loadSeasonExtra(y){
 }
 function buildTitleStats(){
   const withC=YEARS.filter(y=>champOf[y]).length;
-  const clubs=FKEYS.filter(k=>F[k].won.length).length;
-  const most=FKEYS.slice().sort((a,b)=>F[b].won.length-F[a].won.length)[0];
   const noTitle=FKEYS.filter(k=>F[k].active&&!F[k].won.length).length;
   $('#titleStats').innerHTML=`
-    <div><div class="n">${NSEASONS}</div><div class="l">temporadas, 1930 a 2026</div></div>
     <div><div class="n">${withC}</div><div class="l">con campeón identificado</div></div>
-    <div><div class="n">${clubs}</div><div class="l">franquicias han ganado</div></div>
-    <div><div class="n">${F[most].won.length}</div><div class="l">títulos de ${esc(F[most].name.split(' de ')[0])}, el máximo</div></div>
     <div><div class="n">${noTitle}</div><div class="l">clubes activos sin título</div></div>`;
 }
 /* PHASE_11 (owner-approved, redesign-v2): medal rank badges (top 3) + the real crest()
@@ -3000,7 +2995,7 @@ function buildScoringChart(){
 }
 /* PHASE_11 (owner-approved, redesign-v2): consecutive-year, same-player runs, walked live
    over the real (ascending) SCORING array -- returns {year: runLength}, keyed on the run's
-   OWN most recent year (so rendering most-recent-first shows the 🔥 pill exactly once per
+   OWN most recent year (so rendering most-recent-first shows the streak pill exactly once per
    run, on its first/newest row, not on every row of the run). Not hardcoded: recomputed
    from SCORING every call, same discipline as historiaStreaks() above. */
 function scoringStreaksFor(arr,yearIdx,nameIdx){
@@ -3013,8 +3008,14 @@ function scoringStreaksFor(arr,yearIdx,nameIdx){
   }
   return out;
 }
+/* PHASE_65: the streak pill as plain Spanish text plus a small bar glyph (no emoji). A property of
+   scoringStreaksFor, not a new top-level name; `run` is the length keyed on the run's newest year. */
+scoringStreaksFor.pill=(year,run,noun)=>{
+  const a=year-run+1, tip=run+' '+noun+' seguidos, de '+a+' a '+year;
+  return `<span class="streakpill" title="${esc(tip)}"><svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true" focusable="false"><path d="M1 11V7h2.5v4ZM4.75 11V3h2.5v8ZM8.5 11V5H11v6Z" fill="currentColor"/></svg>Racha de ${run} (${a}–${year})</span>`;
+};
 /* PHASE_11 (owner-approved, redesign-v2): the old plain sortable table is now the mockup's
-   decade-grouped .lead-list, most-recent-first, real 🔥 repeat-champion pill from
+   decade-grouped .lead-list, most-recent-first, real repeat-champion streak pill from
    scoringStreaksFor() above -- reads the real, LIVE SCORING array, whatever its current
    state is: 26 rows (1966-1991) is only this file's own baked-in seed for a local/offline
    open; hydrate() (init.js) replaces it in place with a richer, reconciled 68-row set
@@ -3037,14 +3038,14 @@ function buildScoringTable(){
     html+=`<div class="lead-row${streak?' repeat':''}">
       <div class="yrchip mono">${y}</div>
       <div class="who">
-        <div class="pn"><button class="btn" style="padding:2px var(--sp-2);font-size:var(--fs-2xs)" onclick="showPlayer(${JSON.stringify(player).replace(/"/g,'&quot;')})">${esc(player)}</button>${streak?`<span class="streakpill">🔥 ${streak}×</span>`:''}</div>
+        <div class="pn"><button class="btn" style="padding:2px var(--sp-2);font-size:var(--fs-2xs)" onclick="showPlayer(${JSON.stringify(player).replace(/"/g,'&quot;')})">${esc(player)}</button>${streak?scoringStreaksFor.pill(y,streak,'campeonatos de anotación'):''}</div>
         <div class="cl">${esc(club)}</div>
       </div>
       <div class="val"><div class="n mono">${value}</div><div class="u">${metric==='ppg'?'ppj':'pts totales'}</div></div>
     </div>`;
   });
   $('#scoringTable').innerHTML=`<div class="lead-list">${html}</div>
-    <p class="scrollnote">${SCORING.length} temporadas documentadas, ${SCORING[0][0]}–${SCORING[SCORING.length-1][0]}. 🔥 marca rachas de campeonatos consecutivos del mismo jugador.</p>`;
+    <p class="scrollnote">${SCORING.length} temporadas documentadas, ${SCORING[0][0]}–${SCORING[SCORING.length-1][0]}. «Racha» marca campeonatos de anotación consecutivos del mismo jugador.</p>`;
 }
 /* PHASE_14 (owner-approved, redesign-v2): .coach-grid/.coach-card replaces the plain
    .cards.g2 -- same real COACHES fields, unchanged. */
@@ -3264,7 +3265,7 @@ function buildSources(){
    this function only ever reads the current, live MVP_YEARS -- rendering a fake "not
    available yet" card over data that demonstrably exists would
    itself misrepresent the archive, the opposite of this app's whole honesty-about-gaps
-   discipline. So MVP gets the SAME real lead-list/decade/🔥-streak treatment as scoring,
+   discipline. So MVP gets the SAME real lead-list/decade/streak-pill treatment as scoring,
    from the real MVP_YEARS array, with its own real "years missing" note kept verbatim
    (never fabricating the ~58 years this array doesn't have a source for) -- "not yet
    available" is honored for what's actually missing (those years), not for the whole tab. */
@@ -3281,7 +3282,7 @@ function buildMVPYears(){
     html+=`<div class="lead-row${streak?' repeat':''}">
       <div class="yrchip mono">${y}</div>
       <div class="who">
-        <div class="pn"><button class="btn" style="padding:2px var(--sp-2);font-size:var(--fs-2xs)" onclick="showPlayer(${JSON.stringify(player).replace(/"/g,'&quot;')}${id!=null?','+id:''})">${esc(player)}</button>${streak?`<span class="streakpill">🔥 ${streak}×</span>`:''}${also?` <span class="muted" style="cursor:help" title="El archivo también registra a ${esc(also)} para este año">†</span>`:''}</div>
+        <div class="pn"><button class="btn" style="padding:2px var(--sp-2);font-size:var(--fs-2xs)" onclick="showPlayer(${JSON.stringify(player).replace(/"/g,'&quot;')}${id!=null?','+id:''})">${esc(player)}</button>${streak?scoringStreaksFor.pill(y,streak,'MVP'):''}${also?` <span class="muted" style="cursor:help" title="El archivo también registra a ${esc(also)} para este año">†</span>`:''}</div>
         <div class="cl">${esc(club)}</div>
       </div>
       <div class="val"><div class="n mono">${y}</div><div class="u">temporada</div></div>
@@ -3294,7 +3295,7 @@ function buildMVPYears(){
     : `Recuperados ${MVP_YEARS.length} de las ${LAST-1949} temporadas desde 1950. Faltan ${missing.length}, casi todas de ganadores que solo lo lograron una vez: Wikipedia los publica dentro de un widget ordenable que no sobrevive a la extracción de texto. `)
     + `Años sin MVP en el archivo: ${missing.join(', ')}.`;
   $('#mvpYears').innerHTML=`<div class="lead-list">${html}</div>
-    <p class="scrollnote">🔥 marca MVP consecutivos del mismo jugador.</p>
+    <p class="scrollnote">«Racha» marca MVP consecutivos del mismo jugador.</p>
     <div class="warn" style="margin-top:var(--sp-3)">${esc(note)}</div>`;
 }
 
@@ -5844,26 +5845,23 @@ const VIEW_DESC={
    copy (order already carries the real [slug,label] pairs VIEW_MAP.historia produced, in
    real order -- cinta/titulos/dinastias/finales/premios/refuerzos/temporadas). */
 const HISTORIA_XICON={
-  cinta:'M4 12h16M4 7h16M4 17h16',
-  titulos:'M4 21h4V11H4ZM10 21h4V4h-4ZM16 21h4v-8h-4Z',
-  dinastias:'M12 2l2.5 6.5L21 9l-5 4.5L17.5 21 12 17l-5.5 4L8 13.5 3 9l6.5-.5Z',
+  cinta:'M3 9h4v6H3ZM10 9h4v6h-4ZM17 9h4v6h-4Z',
+  titulos:'M8 4h8v5a4 4 0 0 1-8 0ZM8 6H5v1a3 3 0 0 0 3 3M16 6h3v1a3 3 0 0 1-3 3M12 13v4M9 20h6M10 17h4',
+  dinastias:'M4 18h16M4 18 3 8l5 4 4-6 4 6 5-4-1 10',
   finales:'M4 4h16v16H4Z M4 10h16 M10 4v16',
-  premios:'M12 2l2.6 5.9L21 9l-4.5 4.1L17.6 20 12 16.8 6.4 20l1.1-6.9L3 9l6.4-1.1Z',
-  refuerzos:'M4 6h16M4 12h16M4 18h10',
-  temporadas:'M4 5h16v14H4Z M4 10h16 M9 5v14'
+  premios:'M12 3a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM8.5 13.5 7 21l5-3 5 3-1.5-7.5',
+  refuerzos:'M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7ZM3 20c0-3.5 2.7-6 6-6s6 2.5 6 6M18 8v6M15 11h6',
+  temporadas:'M4 6h16v14H4ZM4 10h16M8 3v4M16 3v4'
 };
 function buildHistoriaLanding(order){
   const wrap=el('div');
   const most=FKEYS.slice().sort((a,b)=>F[b].won.length-F[a].won.length)[0];
-  const withTitles=FKEYS.filter(k=>F[k].won.length).length;
-  const stats=el('div','stats3');
+  const stats=el('div','stats3 n2');
   stats.innerHTML=`
     <div class="stat solid"><div class="n mono">${F[most].won.length}</div>
       <div class="l">Títulos de ${esc(F[most].name)}, el club más ganador</div></div>
     <div class="stat"><div class="n mono">${NSEASONS}</div>
-      <div class="l">Temporadas documentadas, de ${YEARS[0]} a ${YEARS[YEARS.length-1]}</div></div>
-    <div class="stat"><div class="n mono">${withTitles}</div>
-      <div class="l">Franquicias distintas que han sido campeonas</div></div>`;
+      <div class="l">Temporadas documentadas, de ${YEARS[0]} a ${YEARS[YEARS.length-1]}</div></div>`;
   wrap.appendChild(stats);
   const h2=el('h2','sec'); h2.textContent='Explora Historia'; wrap.appendChild(h2);
   const grid=el('div','explore');
@@ -5896,7 +5894,7 @@ function buildHistoriaHero(){
   head.classList.add('hhero');
   head.innerHTML=`<div class="eyebrow">EL ARCHIVO DEL BSN · ${YEARS[0]}—${YEARS[YEARS.length-1]}</div>
     <h1>Historia</h1>
-    <p class="lede">Ocho vistas construidas con los datos reales del archivo: la cinta de ${NSEASONS} temporadas, títulos por franquicia, dinastías, finales cara a cara, premios, la regla de refuerzos 2024–2026 y la tabla completa de temporadas.</p>`;
+    <p class="lede">Las ${NSEASONS} temporadas del BSN: quién ganó, quién repitió y cómo se decidió cada final.</p>`;
 }
 /* PHASE_14 (owner-approved, redesign-v2): Jugadores' own landing, same mechanism as
    buildHistoriaLanding() above -- branches in buildLanding() below ONLY for
@@ -5911,21 +5909,21 @@ const JUGADORES_XICON={
   comparar:'M9 6a6 6 0 1 0 0 12M15 6a6 6 0 1 1 0 12',
   lideres:'M4 20h4v-5H4ZM10 20h4v-9H10ZM16 20h4v-13H16Z',
   records:'M12 2l2.6 5.9L21 9l-4.5 4.1L17.6 20 12 16.8 6.4 20l1.1-6.9L3 9l6.4-1.1Z',
-  salon:'M4 21h16M5 21V10l7-5 7 5v11M9 21v-6h6v6',
-  nba:'M4 12h14M13 6l5 6-5 6',
+  salon:'M3 9l9-5 9 5M5 9v9M9.5 9v9M14.5 9v9M19 9v9M3 21h18',
+  nba:'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18ZM3 12h18M12 3v18M5.6 5.6c3 2.6 3 10.2 0 12.8M18.4 5.6c-3 2.6-3 10.2 0 12.8',
   dirigentes:'M9 3h6v3H9ZM7 6h10l-1 15H8Z',
-  canchas:'M3 21h18M5 21V8l7-4 7 4v13M9 21v-5h6v5'
+  canchas:'M3 6h18v12H3ZM12 6v12M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z'
 };
 function buildJugadoresLanding(order){
   const wrap=el('div');
   const stats=el('div','stats3');
   stats.innerHTML=`
     <div class="stat solid"><div class="n mono">${PINDEX?PINDEX.length:0}</div>
-      <div class="l">Jugadores destacados con ficha propia en el archivo</div></div>
+      <div class="l">Jugadores con ficha propia</div></div>
     <div class="stat"><div class="n mono">${HOF.length}</div>
-      <div class="l">En el Salón: los que definieron la liga</div></div>
+      <div class="l">En el Salón</div></div>
     <div class="stat"><div class="n mono">${NBA_PLAYERS.length}</div>
-      <div class="l">Llegaron del BSN a la NBA</div></div>`;
+      <div class="l">Llegaron a la NBA</div></div>`;
   wrap.appendChild(stats);
   const h2=el('h2','sec'); h2.textContent='Explora Jugadores'; wrap.appendChild(h2);
   const grid=el('div','explore');
@@ -5947,7 +5945,7 @@ function buildJugadoresHero(){
   head.classList.add('hhero');
   head.innerHTML=`<div class="eyebrow">EL ARCHIVO DEL BSN</div>
     <h1>Jugadores</h1>
-    <p class="lede">El índice reúne a todos los jugadores que este archivo puede nombrar con fuente. Cada ficha dice también qué no se sabe de él.</p>`;
+    <p class="lede">Todos los jugadores que este archivo puede nombrar con fuente. Cada ficha dice también qué no se sabe.</p>`;
 }
 /* PHASE_40 (owner-approved, redesign-v2): Equipos' own landing, same mechanism as
    buildHistoriaLanding()/buildJugadoresLanding() above -- branches in buildLanding()

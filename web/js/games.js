@@ -405,7 +405,7 @@ function shareGrid(){
   const hits=GB.ans.flat().filter(Boolean).length;
   const rare=GB.ans.flat().filter(Boolean).reduce((a,c)=>a+c.share,0);
   let g='';
-  for(let i=0;i<3;i++){ for(let j=0;j<3;j++) g+=GB.ans[i][j]?'🟩':'⬛'; g+='\n'; }
+  for(let i=0;i<3;i++){ for(let j=0;j<3;j++) g+=GB.ans[i][j]?'■':'□'; g+='\n'; }
   const txt=`BSN Archivo · La Cuadrícula #${puzzleNo()}\n${hits}/9 · rareza ${rare.toFixed(1)}\n${g}`;
   if(navigator.clipboard&&navigator.clipboard.writeText){
     navigator.clipboard.writeText(txt).then(()=>{$('#gMsg').textContent='Copiado.';$('#gMsg').className='msg good';});

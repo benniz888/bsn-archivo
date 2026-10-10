@@ -649,7 +649,10 @@ html.standalone .splash{padding-top:max(env(safe-area-inset-top),44px)}
   color:var(--ink-3);border-radius:99px;min-height:44px;padding:7px 14px;font:inherit;
   font-size:var(--fs-sm);font-weight:600;cursor:pointer;white-space:nowrap;text-decoration:none;
   transition:color var(--dur-fast),border-color var(--dur-fast),background var(--dur-fast)}
-.subnav button:hover,.subnav a:hover{color:var(--ink);border-color:var(--ink-3)}
+/* PHASE_65: hover only where a pointer can really hover. On touch, :hover sticks to the last tapped pill
+   (Premios kept the stronger border after Back to Resumen). */
+@media(hover:hover){.subnav button:hover,.subnav a:hover{color:var(--ink);border-color:var(--ink-3)}}
+.subnav button:focus-visible,.subnav a:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
 .subnav button[aria-current="true"],.subnav a[aria-current="true"]{color:var(--night);background:var(--ink);border-color:var(--ink)}
 .view[hidden]{display:none}
 .view.view-enter{animation:panelin var(--dur) var(--ease) both}
@@ -1993,6 +1996,25 @@ tr.cut td{border-bottom:1px solid var(--azul)}
    one side. */
 .stat.solid{background:linear-gradient(135deg,var(--rojo-deep),var(--rojo-deep));color:var(--flag-w)}
 .stat.solid .l{color:var(--flag-w);opacity:.85}
+/* PHASE_65: Historia and Jugadores landings: compact KPI tiles so the explore cards sit above the
+   fold on a phone. Scoped by section; Equipos' landing keeps the PHASE_11 size until PHASE_66. */
+#historia .stats3,#jugadores .stats3{margin-bottom:var(--sp-5)}
+#historia .stat,#jugadores .stat{padding:var(--sp-3) var(--sp-4)}
+#historia .stat .n,#jugadores .stat .n{font-size:32px}
+#historia .stat .l,#jugadores .stat .l{max-width:none;margin-top:var(--sp-1)}
+#historia .stats3.n2{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:759px){
+  #historia .stats3,#jugadores .stats3{grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--sp-2_5)}
+  #jugadores .stats3 .stat.solid{grid-column:1/-1}
+}
+/* PHASE_65: explore cards. A 16px gap under the heading on both pages (the h2 margin is zeroed so the
+   gap is exactly the grid's margin-top); 2 columns on phones; no empty slot in the last row: Historia's
+   7th card spans the free cells (4-up: spans 2, 2-up: spans the row). */
+#historia h2.sec,#jugadores h2.sec{margin-bottom:0}
+#historia .explore,#jugadores .explore{margin-top:var(--sp-4)}
+@media(min-width:900px){#historia .explore .xcard:last-child:nth-child(4n+3){grid-column:span 2}}
+@media(max-width:899px){#historia .explore .xcard:last-child:nth-child(odd){grid-column:1/-1}}
+@media(max-width:519px){#historia .explore,#jugadores .explore{grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--sp-2_5)}}
 
 /* -- landing: explore grid to the 7 real sub-views -- */
 .explore{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-3)}
@@ -2032,8 +2054,6 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 .cell.dynasty{background:linear-gradient(150deg,var(--rojo),var(--rojo-deep));border-color:transparent;
   color:var(--flag-w);font-weight:700}
 .cell.active{outline:2px solid var(--focus);outline-offset:2px}
-.fixnote{font-size:var(--fs-2xs);color:var(--ink-3);margin-top:var(--sp-2_5);display:flex;gap:6px;align-items:flex-start}
-.fixnote::before{content:"✓";color:var(--ok);font-weight:700;flex:none}
 /* -- readout: same class kept (.readout .yr is already in the shared Oswald selector list),
    restyled in place, gradient left-bar + real-data badges added. */
 .readout{position:relative;overflow:hidden;padding:var(--sp-5)}
@@ -2112,7 +2132,7 @@ tr.cut td{border-bottom:1px solid var(--azul)}
    the app's own --on-rojo/--on-rojo-2 tokens exist for exactly this "text on a rojo tint"
    pairing, e.g. .tag.gold already uses --on-rojo the same way). Switched to --on-rojo:
    11.67:1 dark, 7.60:1 light, both re-measured live against the real composited background. */
-.streakpill{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;color:var(--on-rojo);
+.streakpill{display:inline-flex;align-items:center;gap:4px;font-size:var(--fs-2xs);font-weight:700;color:var(--on-rojo);
   background:var(--tint-rojo);border-radius:99px;padding:2px 8px}
 .lead-row .val{text-align:right}
 .lead-row .val .n{font-family:var(--font-display);font-weight:700;font-size:20px;color:var(--ink)}
@@ -2448,8 +2468,13 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
 /* .strip corner-ring, same motif as .hero-stat:not(.tri-block)::after, scoped so
    Inicio's own #titleStats/#calCount strips and the team page's strip are unaffected. */
 #jugadores .strip>div{position:relative;overflow:hidden}
-#jugadores .strip>div::after{content:"";position:absolute;right:-12px;bottom:-16px;width:50px;height:50px;
-  border-radius:999px;border:8px solid var(--raise);opacity:.5;pointer-events:none}
+/* PHASE_65: the ring used to sit bottom-right ON TOP of the label (it painted over the text and
+   reached 34px up, past the label's 15px bottom inset). It now sits in the top-right corner, behind
+   the content (z-index 0 vs 1), and the tile reserves a corner gutter so no ink enters its box.
+   tests/test_player_ring_overlap.py fails if any decorative circle touches a label or number. */
+#jugadores .strip>div::after{content:"";position:absolute;right:-16px;top:-16px;width:40px;height:40px;
+  border-radius:999px;border:6px solid var(--raise);opacity:.5;pointer-events:none;z-index:0}
+#jugadores .strip>div>*{position:relative;z-index:1}
 
 /* -- player index search bar: a new shell around the existing real .filters block
    (buildPlayerIndex(), player.js) -- #pq/#pmode/#pf/#pfField and their own ids/
@@ -2483,8 +2508,8 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
 @media(min-width:720px){.rec-grid{grid-template-columns:1fr 1fr}}
 .rec-card{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:14px;
   padding:var(--sp-4);background:var(--card)}
-.rec-card::after{content:"";position:absolute;right:-24px;bottom:-24px;width:96px;height:96px;
-  border-radius:999px;border:10px solid var(--raise);opacity:.5;pointer-events:none}
+/* PHASE_65: the corner ring that used to sit here ran through the note text of the long records, so
+   the record cards carry no ring. tests/test_player_ring_overlap.py measures the notes. */
 
 /* -- Dirigentes / Honrados en concreto: new .coach-grid/.coach-card, replacing the
    plain .cards.g2 (buildCoaches()/buildStone() -- two call sites, same shape of
