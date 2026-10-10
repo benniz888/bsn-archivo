@@ -9094,3 +9094,8 @@ reconstruction mechanism used to verify every step are in `docs/specs/app_split_
   Not applied, for a later data check: `docs/audits/data_review_todo.md` (disputed tags, 16 players
   with no club list). Suite: 704+ passed, 1 xfailed, 1 known failure (`test_web_text`). Verified
   Chromium + WebKit at 390/1000.
+
+## PHASE_63_TABLES — B0–B3 (2026-10-10, uncommitted, branch redesign-v3)
+- buildTable() (web/js/tabs.js) evolved in place, closures only (0 new top-level names): sticky header, right-edge scroll fade (.tblbox), tabIndex only while scrolling, aria-sort + real header buttons, "sin dato" mark, muted columns, clamped notes, paging (opts.pageSize; Temporadas + Jugadores = 25; Mostrar más/todo). Champion = crest + short name (.cellbtn.clubcell). Plan: docs/audits/phase63_plan.md. Strings: docs/strings_pending_phase63.md.
+- Next: B4 filters (combobox + search clear), B5 phone priorities, B6 sweep. Asset hashes refreshed via src/update_asset_hashes.py.
+- PHASE_63 B4–B6 (uncommitted): combobox + search-clear enhancer is an IIFE in js/init.js finishBoot() (native <select> kept, collapsed, as source of truth; MutationObserver re-applies). Phone sub-lines via col options subs/phone:'sub' (<=640px). Decade dividers via opts.decades. ARCH_CAP=Infinity (kept: frozen inventory names it); archive list now pages instead of capping at 500. Verified Chromium+WebKit 390/1000 dark/light, suite at baseline.

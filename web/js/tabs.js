@@ -1193,12 +1193,25 @@ function syncSubnav(sec,view){
    poster, not a tool.
    ============================================================ */
 let TBL_SEQ=0;
+/* PHASE_63 (redesign-v3): the one shared table component. Everything new -- paging,
+   clamped notes, the scroll fade, the muted "sin dato" mark -- lives in closures inside
+   this function (zero new top-level names: the frozen inventory baseline stays valid).
+   Column options (all optional, so every existing caller renders as before):
+   muted -> secondary column; clamp -> one-line ellipsis + expand button.
+   subs:[i,..] on a column -> on phones those columns' values drop into a muted sub-line under
+   this cell (the source columns carry phone:'sub' and are hidden at <=600px, never lost).
+   opts.pageSize -> first N rows + "Mostrando N de M" / "Ver N más" / "Mostrar todo".
+   opts.decades -> column index holding a year; while sorted by it, decade divider rows.
+   Paging only limits what is DRAWN: sort, CSV and the row count always use every row. */
 function buildTable(host,cols,rows,opts){
   opts=opts||{};
   const id='t'+(++TBL_SEQ);
-  const state={sort:opts.sort==null?null:opts.sort,dir:opts.dir||-1};
+  const page=opts.pageSize>0&&rows.length>opts.pageSize?opts.pageSize:0;
+  const state={sort:opts.sort==null?null:opts.sort,dir:opts.dir||-1,shown:page||Infinity};
+  if(host._tblRO) host._tblRO.disconnect();
   host.innerHTML='';
-  const wrap=el('div','tblwrap'); host.appendChild(wrap);
+  const box=el('div','tblbox'); host.appendChild(box);
+  const wrap=el('div','tblwrap'); box.appendChild(wrap);
   const meta=el('div','tbl-meta'); host.appendChild(meta);
 
   function sorted(){
@@ -1210,20 +1223,47 @@ function buildTable(host,cols,rows,opts){
       return String(x==null?'':x).localeCompare(String(y==null?'':y),'es')*state.dir;
     });
   }
-  function render(){
+  /* scroll state: right-edge fade while more is hidden, and the region is a tab stop ONLY while it really scrolls */
+  function update(){
+    const scrollable=wrap.scrollWidth>wrap.clientWidth+1;
+    box.classList.toggle('more-r',scrollable&&wrap.scrollLeft+wrap.clientWidth<wrap.scrollWidth-2);
+    wrap.tabIndex=scrollable?0:-1;
+    if(scrollable){ wrap.setAttribute('role','region'); wrap.setAttribute('aria-label','Tabla con desplazamiento horizontal'); }
+    else { wrap.removeAttribute('role'); wrap.removeAttribute('aria-label'); }
+    wrap.querySelectorAll('.clampc').forEach(c=>{
+      const t=c.firstChild;
+      c.lastChild.hidden=!(c.classList.contains('open')||t.scrollWidth>t.clientWidth+1);
+    });
+  }
+  const plain=(c,v)=>(v==null||v==='')?'<span class="nodata" title="Sin dato">sin dato</span>':esc(v);
+  function cell(c,v,r){
+    let h;
+    if(c.render) h=c.render(v,r);
+    else if(c.clamp&&v!=null&&v!=='') h=`<div class="clampc"><span class="clamptxt">${esc(v)}</span><button type="button" class="clampbtn" aria-expanded="false" hidden>Ver nota</button></div>`;
+    else h=plain(c,v);
+    if(c.subs) h+='<div class="subline">'+c.subs.map(i=>(cols[i].subLabel||'')+plain(cols[i],r[i])).join(' · ')+'</div>';
+    return h;
+  }
+  function render(focusRow,focusTh){
     const data=sorted();
-    wrap.classList.toggle('tall',data.length>24);   /* sticky header + zebra */
+    const vis=data.slice(0,state.shown);
+    wrap.classList.toggle('tall',vis.length>10);   /* sticky header + zebra */
     let h='<table><thead><tr>';
     cols.forEach((c,i)=>{
-      const arrow = state.sort===i ? `<span class="arrow">${state.dir>0?'▲':'▼'}</span>` : '';
-      h+=`<th class="${c.num?'num ':''}sortable" data-i="${i}" scope="col">${esc(c.label)}${arrow}</th>`;
+      const on=state.sort===i;
+      const arrow = on ? `<span class="arrow" aria-hidden="true">${state.dir>0?'▲':'▼'}</span>` : '';
+      h+=`<th class="${(c.num?'num ':'')+(c.phone==='sub'?'psub ':'')}sortable" data-i="${i}" scope="col"${on?` aria-sort="${state.dir>0?'ascending':'descending'}"`:''}><button type="button" class="thbtn">${esc(c.label)}${arrow}</button></th>`;
     });
     h+='</tr></thead><tbody>';
-    data.forEach(r=>{
-      h+='<tr>';
+    let dec=null;
+    vis.forEach((r,ri)=>{
+      if(opts.decades!=null&&state.sort===opts.decades&&vis.length>=12){
+        const y=parseInt(r[opts.decades],10), d=isNaN(y)?null:Math.floor(y/10)*10;
+        if(d!==null&&d!==dec){ dec=d; h+=`<tr class="grp"><th colspan="${cols.length}" scope="rowgroup">Década de ${d}</th></tr>`; }
+      }
+      h+=`<tr${ri===focusRow?' tabindex="-1"':''}>`;
       cols.forEach((c,i)=>{
-        const v=c.render?c.render(r[i],r):esc(dash(r[i]));
-        h+=`<td class="${c.num?'num':(c.wide?'name':'')}">${v}</td>`;
+        h+=`<td class="${(c.num?'num':(c.wide?'name':''))+(c.muted?' mut':'')+(c.clamp?' clamp':'')+(c.phone==='sub'?' psub':'')}">${cell(c,r[i],r)}</td>`;
       });
       h+='</tr>';
     });
@@ -1233,21 +1273,48 @@ function buildTable(host,cols,rows,opts){
       th.onclick=()=>{
         const i=+th.dataset.i;
         if(state.sort===i) state.dir=-state.dir; else {state.sort=i;state.dir=cols[i].num?-1:1;}
-        render();
+        render(-1,i);
       };
     });
+    wrap.querySelectorAll('.clampbtn').forEach(b=>{
+      b.onclick=()=>{
+        const c=b.parentNode, open=!c.classList.contains('open');
+        c.classList.toggle('open',open);
+        b.setAttribute('aria-expanded',String(open));
+        b.textContent=open?'Ocultar nota':'Ver nota';
+      };
+    });
+    if(focusTh!=null){ const t=wrap.querySelector(`th[data-i="${focusTh}"] .thbtn`); if(t) t.focus(); }
+    if(focusRow>=0){ const t=wrap.querySelector('tbody tr[tabindex]'); if(t) t.focus(); }
     /* right-edge shadow on the sticky first column, only once scrolled */
-    const onScroll=()=>wrap.classList.toggle('scrolled',wrap.scrollLeft>2);
-    wrap.onscroll=onScroll; onScroll();
-    meta.innerHTML=`<span>${data.length} fila${data.length===1?'':'s'}</span>`;
-    const b=el('button','btn'); b.style.padding='5px 10px'; b.style.fontSize='12px';
+    wrap.onscroll=()=>{ wrap.classList.toggle('scrolled',wrap.scrollLeft>2); update(); };
+    wrap.classList.toggle('scrolled',wrap.scrollLeft>2);
+    meta.innerHTML='';
+    const cnt=el('span'); cnt.setAttribute('aria-live','polite');
+    const total=data.length;
+    cnt.textContent = vis.length<total
+      ? `Mostrando ${vis.length} de ${total.toLocaleString('es-PR')}`
+      : `${total.toLocaleString('es-PR')} fila${total===1?'':'s'}`;
+    meta.appendChild(cnt);
+    if(vis.length<total){
+      const more=el('button','btn'); more.textContent='Ver '+Math.min(page,total-vis.length)+' más';
+      more.onclick=()=>{ const from=vis.length; state.shown=from+page; render(from); };
+      const all=el('button','btn'); all.textContent='Mostrar todo';
+      all.onclick=()=>{ const from=vis.length; state.shown=Infinity; render(from); };
+      meta.appendChild(more); meta.appendChild(all);
+    }
+    const b=el('button','btn');
     b.textContent='Descargar CSV';
     /* opts.csvHead / opts.csvRow: export a different (fuller) shape than the columns on screen */
     b.onclick=()=>downloadCSV(opts.csvHead||cols.map(c=>c.label),opts.csvRow?data.map(opts.csvRow):data,(opts.file||'bsn_'+id)+'.csv');
     meta.appendChild(b);
     if(opts.note){ const n=el('span'); n.textContent=opts.note; meta.appendChild(n); }
+    update();
   }
-  render();
+  render(-1);
+  /* ResizeObserver, not a window listener: the view may still be [hidden] (0x0) when this
+     runs, and it must re-measure the moment the table becomes visible (see PHASE_52A). */
+  host._tblRO=new ResizeObserver(update); host._tblRO.observe(wrap);
   return {render,state};
 }
 function csvCell(v){
@@ -1380,7 +1447,7 @@ function buildFinalBrava(){
     return [ 'Juego '+n, date, F[home].abbr+' (L)', F[away].abbr+' (V)', hs+'-'+as, F[win].abbr, st, note ];
   });
   buildTable(tbl,[
-    {label:'Juego'},{label:'Fecha'},{label:'Local'},{label:'Visita'},
+    {label:'Juego',subs:[1]},{label:'Fecha',phone:'sub'},{label:'Local'},{label:'Visita'},
     {label:'Marcador',num:false},{label:'Ganó'},{label:'Serie'},{label:'Qué pasó',wide:true}
   ],rows,{file:'final_brava_2026',sort:null});
 
@@ -1651,7 +1718,7 @@ function buildCalendar(){
   buildTable(host,[
     {label:'Año',num:true},{label:'Temp.'},{label:'Inicio'},{label:'Fin reg.'},{label:'Playoffs'},
     {label:'J',num:true},{label:'Equipos',num:true},{label:'Formato',wide:true}
-  ],CALENDAR.map(c=>[c.y,c.n,c.start,c.regEnd,c.po,c.games,c.teams,c.fmt]),{file:'calendario',sort:0,dir:-1});
+  ],CALENDAR.map(c=>[c.y,c.n,c.start,c.regEnd,c.po,c.games,c.teams,c.fmt]),{file:'calendario',sort:0,dir:-1,decades:0});
   /* PHASE_52A (owner-approved, redesign-v2): at 390px this table (FIN REG./PLAYOFFS
      included) is wider than the viewport -- buildTable()'s shared .tblwrap already
      scrolls (overflow:auto, confirmed live: scrollWidth 633 vs clientWidth 356 at
@@ -1958,16 +2025,18 @@ function buildSeasonTable(){
     const c=champOf[y],r=ruOf[y];
     return [y,c?F[c].name:null,r?F[r].name:null,NOTES[y]||''];
   }).reverse();
+  /* PHASE_63: champion = crest + short club name (the mascot word, before " de "), the full
+     name stays in title/aria-label; runner-up is the same fact, muted and without a crest. */
   buildTable($('#seasonTable'),[
     {label:'Año',num:true},
     {label:'Campeón',wide:true,render:(v,r)=>{
       if(!v) return '<span class="dim">sin registrar</span>';
       const k=champOf[r[0]];
-      return `<button class="btn" style="padding:2px var(--sp-2);font-size:var(--fs-2xs)" onclick="showTeam('${k}')">${esc(v)}</button>`;
-    }},
-    {label:'Subcampeón',wide:true},
-    {label:'Nota',wide:true}
-  ],rows,{file:'temporadas_bsn',sort:0,dir:-1});
+      return `<button class="cellbtn clubcell" title="${esc(v)}" aria-label="${esc(v)}" onclick="showTeam('${k}')">${crest(k,22,26)}<span>${esc(v.split(' de ')[0])}</span></button>`;
+    },subs:[2]},
+    {label:'Subcampeón',wide:true,muted:true,phone:'sub',subLabel:'Subcampeón: '},
+    {label:'Nota',wide:true,muted:true,clamp:true}
+  ],rows,{file:'temporadas_bsn',sort:0,dir:-1,pageSize:25,decades:0});
 }
 
 /* ============================================================
@@ -2849,8 +2918,8 @@ function buildLeaders(){
     v=>LEAD_MODE==='total'?v.toLocaleString('es-PR'):v.toFixed(1));
   buildTable($('#leadTable'),[
     {label:'#',num:true},
-    {label:'Jugador',wide:true,render:v=>`<button class="btn" style="padding:2px var(--sp-2);font-size:var(--fs-2xs)" onclick="showPlayer(${JSON.stringify(v).replace(/"/g,'&quot;')})">${esc(v)}</button>`},
-    {label:'Pos'},{label:'Años'},{label:'Total',num:true},{label:'PJ',num:true},{label:'Por juego',num:true}
+    {label:'Jugador',wide:true,subs:[2,3],render:v=>`<button class="cellbtn" onclick="showPlayer(${JSON.stringify(v).replace(/"/g,'&quot;')})">${esc(v)}</button>`},
+    {label:'Pos',muted:true,phone:'sub'},{label:'Años',muted:true,phone:'sub'},{label:'Total',num:true},{label:'PJ',num:true},{label:'Por juego',num:true}
   ],rows.map((r,i)=>[i+1,r[1],r[2],r[3],r[4],r[5],r[6]]),
     {file:'lideres_'+LEAD_CAT,sort:null,
      note:LEAD_CAT==='assists'?'† Dalmau: total y promedio no cuadran en la fuente.':''});
@@ -3252,9 +3321,9 @@ function buildSeasonAwards(){
       .map(r=>[r[0],r[1],r[2],r[3],r[4]]);
     buildTable($('#awTable'),[
       {label:'Año',num:true},{label:'Premio'},
-      {label:'Jugador',wide:true,render:v=>`<button class="btn" style="padding:2px var(--sp-2);font-size:var(--fs-2xs)" onclick="showPlayer(${JSON.stringify(v).replace(/"/g,'&quot;')})">${esc(v)}</button>`},
-      {label:'Club',wide:true},{label:'Línea',wide:true}
-    ],rows,{file:'premios_bsn',sort:0,dir:-1});
+      {label:'Jugador',wide:true,subs:[3],render:v=>`<button class="cellbtn" onclick="showPlayer(${JSON.stringify(v).replace(/"/g,'&quot;')})">${esc(v)}</button>`},
+      {label:'Club',wide:true,phone:'sub'},{label:'Línea',wide:true}
+    ],rows,{file:'premios_bsn',sort:0,dir:-1,decades:0});
   };
   $('#awYear').onchange=draw; draw();
   const n=el('p','note');
@@ -3293,7 +3362,7 @@ function drawFinal(){
             Math.abs(g[4]-g[5]),F[win].abbr,g[6],g[7]||''];
   });
   buildTable($('#finTbl'),[
-    {label:'Juego'},{label:'Fecha'},{label:'Local'},{label:'Visita'},{label:'Marcador'},
+    {label:'Juego',subs:[1]},{label:'Fecha',phone:'sub'},{label:'Local'},{label:'Visita'},{label:'Marcador'},
     {label:'Margen',num:true},{label:'Ganó'},{label:'Serie'},{label:'Parciales',wide:true}
   ],rows,{file:'final_'+FIN_YEAR,sort:null});
 }

@@ -205,16 +205,19 @@ function renderPlayerIndex(){
     Array.from(p.src).length
   ]);
   buildTable($('#playerIndex'),[
-    {label:'Jugador',wide:true,render:v=>`<button class="btn" style="padding:2px var(--sp-2);font-size:var(--fs-2xs)" onclick="showPlayer(${JSON.stringify(v).replace(/"/g,'&quot;')})">${esc(v)}</button>`},
-    {label:'Pos'},{label:'Años'},{label:'Clubes'},
+    {label:'Jugador',wide:true,subs:[1,2,3],render:v=>`<button class="cellbtn" onclick="showPlayer(${JSON.stringify(v).replace(/"/g,'&quot;')})">${esc(v)}</button>`},
+    {label:'Pos',muted:true,phone:'sub'},{label:'Años',muted:true,phone:'sub'},{label:'Clubes',muted:true,phone:'sub'},
     {label:'Pts',num:true},{label:'Reb',num:true},{label:'Ast',num:true},{label:'PJ',num:true},
     {label:'Fuentes',num:true}
-  ],rows,{file:'jugadores_bsn',sort:4,dir:-1});
+  ],rows,{file:'jugadores_bsn',sort:4,dir:-1,pageSize:25});
 }
 /* 5D.3c — "Todo el archivo" mode: search index/players.json (all 3.303), not
    the 385 curated. Token-AND over norm(name) so "george torres" finds
    "Torres Dougherty, George". Display cap keeps the DOM bounded. */
-const ARCH_CAP=500;
+/* No display cap any more: buildTable() pages the rows (25 at a time), so the DOM stays small
+   while "Mostrando N de M" always reports every match. Kept as a declaration because the
+   frozen inventory baseline names it. */
+const ARCH_CAP=Infinity;
 function renderArchiveIndex(q){
   const host=$('#playerIndex');
   if(!PALL){
@@ -231,10 +234,9 @@ function renderArchiveIndex(q){
     ? (p.first_season===p.last_season?''+p.first_season:p.first_season+'–'+p.last_season) : '';
   const rows=shown.map(p=>[p.name, p.position||'', span(p), p.n_seasons, p.id]);
   buildTable(host,[
-    {label:'Jugador',wide:true,render:(v,r)=>`<button class="btn" style="padding:2px var(--sp-2);font-size:var(--fs-2xs)" onclick="openArchivePlayer(${r[4]},${JSON.stringify(v).replace(/"/g,'&quot;')})">${esc(v)}</button>`},
-    {label:'Pos'},{label:'Años'},{label:'Temp.',num:true}
-  ],rows,{file:'archivo_bsn',sort:0,dir:1,
-    note:list.length>ARCH_CAP?`Mostrando ${ARCH_CAP} de ${list.length.toLocaleString('es-PR')} — afiná la búsqueda.`:''});
+    {label:'Jugador',wide:true,subs:[1,2],render:(v,r)=>`<button class="cellbtn" onclick="openArchivePlayer(${r[4]},${JSON.stringify(v).replace(/"/g,'&quot;')})">${esc(v)}</button>`},
+    {label:'Pos',muted:true,phone:'sub'},{label:'Años',muted:true,phone:'sub'},{label:'Temp.',num:true}
+  ],rows,{file:'archivo_bsn',sort:0,dir:1,pageSize:25});
 }
 function openArchivePlayer(id,name,season){
   [id,name]=survivorOf(id,name);

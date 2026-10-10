@@ -143,6 +143,113 @@ function finishBoot(){
   try{ buildLigaAccordionSkin(); }catch(e){ console.error('BSN: falló el look de "La liga ahora"',e); }
   try{ ligaFold(); }catch(e){ console.error('BSN: falló «La liga ahora»',e); }
   try{ syncSearchPlaceholder(); }catch(e){ console.error('BSN: falló el placeholder de búsqueda',e); }
+  /* PHASE_63 B4 (redesign-v3): every filter <select> and search box inside .filters becomes a
+     styled combobox / gets a clear button. Closures only (an IIFE inside this existing
+     function: no new top-level names). The native <select> stays in the DOM as the source of
+     truth -- same id, same onchange handlers, hidden from assistive tech -- so no builder
+     changes and the page still works if this block throws. A MutationObserver re-applies it
+     to filters that builders draw later or redraw. */
+  try{ (()=>{
+    let seq=0, openClose=null, openRoot=null;
+    const mk=(t,c)=>{ const e=document.createElement(t); if(c) e.className=c; return e; };
+    const enhanceSelect=sel=>{
+      sel.dataset.cbx='1';
+      const n=++seq, bid='cbx'+n, lid='cbxl'+n;
+      const lab=sel.id&&sel.closest('.field').querySelector('label[for="'+sel.id+'"]');
+      const root=mk('div','cbx'), btn=mk('button','cbx-btn'), txt=mk('span','cbx-val'), chev=mk('span','cbx-chev'), list=mk('ul','cbx-list');
+      btn.type='button'; btn.id=bid; btn.setAttribute('role','combobox');
+      btn.setAttribute('aria-haspopup','listbox'); btn.setAttribute('aria-expanded','false'); btn.setAttribute('aria-controls',lid);
+      if(lab){ lab.htmlFor=bid; if(!lab.id) lab.id='cbxlab'+n; btn.setAttribute('aria-labelledby',lab.id); }
+      else btn.setAttribute('aria-label',sel.getAttribute('aria-label')||'Filtro');
+      chev.setAttribute('aria-hidden','true');
+      list.id=lid; list.setAttribute('role','listbox'); list.hidden=true;
+      if(lab) list.setAttribute('aria-labelledby',lab.id);
+      btn.appendChild(txt); btn.appendChild(chev);
+      sel.parentNode.insertBefore(root,sel);
+      root.appendChild(btn); root.appendChild(list); root.appendChild(sel);
+      sel.classList.add('cbx-native'); sel.tabIndex=-1; sel.setAttribute('aria-hidden','true');
+      let active=-1, buf='', bt=0;
+      const opts=()=>Array.from(sel.options);
+      const sync=()=>{ const o=sel.options[sel.selectedIndex]; txt.textContent=o?o.text:''; btn.disabled=sel.disabled; };
+      const paint=()=>{
+        list.innerHTML='';
+        opts().forEach((o,i)=>{
+          const li=mk('li','cbx-opt'); li.id=lid+'o'+i; li.setAttribute('role','option'); li.dataset.i=i; li.textContent=o.text;
+          li.setAttribute('aria-selected',String(i===sel.selectedIndex));
+          if(o.disabled) li.setAttribute('aria-disabled','true');
+          list.appendChild(li);
+        });
+      };
+      const setActive=i=>{
+        const L=list.children; if(!L.length) return;
+        active=Math.max(0,Math.min(L.length-1,i));
+        Array.from(L).forEach((li,j)=>li.classList.toggle('on',j===active));
+        btn.setAttribute('aria-activedescendant',L[active].id);
+        L[active].scrollIntoView({block:'nearest'});
+      };
+      const close=()=>{
+        if(list.hidden) return;
+        list.hidden=true; btn.setAttribute('aria-expanded','false'); btn.removeAttribute('aria-activedescendant');
+        root.classList.remove('up'); if(openRoot===root){ openRoot=null; openClose=null; }
+      };
+      const open=()=>{
+        if(!list.hidden||sel.disabled) return;
+        if(openClose) openClose();
+        sync(); paint(); list.hidden=false; btn.setAttribute('aria-expanded','true');
+        root.classList.toggle('up',btn.getBoundingClientRect().bottom+300>innerHeight&&btn.getBoundingClientRect().top>300);
+        openRoot=root; openClose=close; setActive(sel.selectedIndex<0?0:sel.selectedIndex);
+      };
+      const choose=i=>{
+        const o=sel.options[i]; if(!o||o.disabled) return;
+        const changed=sel.selectedIndex!==i;
+        sel.selectedIndex=i; close(); sync(); btn.focus();
+        if(changed) sel.dispatchEvent(new Event('change',{bubbles:true}));
+      };
+      const typeahead=k=>{
+        clearTimeout(bt); buf+=k; bt=setTimeout(()=>{buf='';},600);
+        const o=opts(), key=norm(buf), from=buf.length===1?active+1:active;
+        for(let d=0;d<o.length;d++){ const i=(from+d+o.length)%o.length; if(!o[i].disabled&&norm(o[i].text).startsWith(key)){ if(list.hidden) open(); setActive(i); return; } }
+      };
+      btn.addEventListener('click',()=>{ list.hidden?open():close(); });
+      btn.addEventListener('keydown',e=>{
+        const k=e.key, isOpen=!list.hidden;
+        if(k==='ArrowDown'||k==='ArrowUp'){ e.preventDefault(); if(!isOpen) open(); else setActive(active+(k==='ArrowDown'?1:-1)); }
+        else if(k==='Home'||k==='End'){ if(isOpen){ e.preventDefault(); setActive(k==='Home'?0:1e9); } }
+        else if(k==='PageDown'||k==='PageUp'){ if(isOpen){ e.preventDefault(); setActive(active+(k==='PageDown'?10:-10)); } }
+        else if(k==='Enter'||k===' '){ e.preventDefault(); if(isOpen) choose(active); else open(); }
+        else if(k==='Escape'){ if(isOpen){ e.preventDefault(); close(); } }
+        else if(k==='Tab'){ close(); }
+        else if(k.length===1&&!e.ctrlKey&&!e.metaKey&&!e.altKey){ e.preventDefault(); typeahead(k); }
+      });
+      list.addEventListener('mousedown',e=>e.preventDefault());
+      list.addEventListener('click',e=>{ const li=e.target.closest('.cbx-opt'); if(li) choose(+li.dataset.i); });
+      root.addEventListener('focusout',e=>{ if(!root.contains(e.relatedTarget)) close(); });
+      btn.addEventListener('focus',sync);
+      sel.addEventListener('change',sync);
+      new MutationObserver(sync).observe(sel,{childList:true,subtree:true,attributes:true});
+      sync();
+    };
+    const enhanceSearch=inp=>{
+      inp.dataset.clr='1';
+      const wrap=mk('div','sbx'), b=mk('button','sbx-clr');
+      b.type='button'; b.hidden=true; b.setAttribute('aria-label','Limpiar búsqueda');
+      b.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+      inp.parentNode.insertBefore(wrap,inp); wrap.appendChild(inp); wrap.appendChild(b);
+      const sync=()=>{ b.hidden=!inp.value; };
+      inp.addEventListener('input',sync); inp.addEventListener('focus',sync);
+      b.addEventListener('click',()=>{ inp.value=''; sync(); inp.dispatchEvent(new Event('input',{bubbles:true})); inp.focus(); });
+      sync();
+    };
+    const scan=()=>{
+      document.querySelectorAll('.filters .field select:not([data-cbx])').forEach(enhanceSelect);
+      document.querySelectorAll('.filters .field input[type=search]:not([list]):not([data-clr])').forEach(enhanceSearch);
+    };
+    let queued=false;
+    new MutationObserver(()=>{ if(queued) return; queued=true; requestAnimationFrame(()=>{ queued=false; scan(); }); })
+      .observe(document.body,{childList:true,subtree:true});
+    document.addEventListener('pointerdown',e=>{ if(openRoot&&!openRoot.contains(e.target)) openClose(); });
+    scan();
+  })(); }catch(e){ console.error('BSN: fallaron los filtros',e); }
   if(location.hash){
     try{ applyHash(); }catch(e){ console.error('BSN: falló el enlace directo',e); }
   }else{

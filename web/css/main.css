@@ -1221,6 +1221,68 @@ td.rank{color:var(--ink-3);width:32px}
   background:linear-gradient(90deg,var(--shadow),transparent);opacity:0;transition:opacity var(--dur-fast)}
 .tblwrap.scrolled th:first-child::after,.tblwrap.scrolled td:first-child::after{opacity:1}
 .tbl-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:var(--sp-3);font-size:var(--fs-2xs);color:var(--ink-3)}
+/* PHASE_63 (redesign-v3): shared table polish. .tblbox is a non-scrolling parent so the
+   fade stays pinned to the visible edge (an ::after inside the scroller would scroll away);
+   it sits on its own class so Calendario's PHASE_52A rules above stay untouched. */
+.tblbox{position:relative}
+.tblbox.more-r::after{content:"";position:absolute;top:0;right:0;bottom:0;width:32px;
+  border-radius:0 var(--r) var(--r) 0;background:linear-gradient(to right,transparent,var(--deep));pointer-events:none;z-index:7}
+#calendarBox .tblbox::after{display:none}
+.tblwrap:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
+.tblwrap tr:focus{outline:2px solid var(--focus);outline-offset:-2px}
+.tblwrap td{padding-top:var(--sp-2);padding-bottom:var(--sp-2)}
+.tblwrap td.mut{color:var(--ink-3)}
+.nodata{color:var(--ink-3);font-size:var(--fs-3xs);font-style:italic;cursor:help}
+.thbtn{display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0;background:none;border:0;
+  font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;cursor:pointer}
+.thbtn:focus-visible,.cellbtn:focus-visible,.clampbtn:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:var(--r-sm)}
+.cellbtn{display:inline-flex;align-items:center;gap:var(--sp-2);min-height:44px;padding:0;background:none;border:0;
+  font:inherit;font-weight:600;color:var(--ink);text-align:left;cursor:pointer}
+.cellbtn:hover{text-decoration:underline}
+.clubcell .crest{flex:none}
+.clampc{display:flex;align-items:center;gap:var(--sp-2);max-width:320px}
+.clamptxt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.clampc.open .clamptxt{white-space:normal}
+.clampbtn{flex:none;min-height:44px;padding:0 var(--sp-1);background:none;border:0;font:inherit;font-size:var(--fs-3xs);
+  color:var(--azul-hi);text-decoration:underline;cursor:pointer}
+.tbl-meta .btn{min-height:44px}
+/* PHASE_63 B4: combobox + search clear (js/init.js finishBoot()). The native <select> stays in
+   flow but collapsed (visibility:hidden, height 0) so the field keeps the width of its widest
+   option and does not jump when the selection changes. */
+.cbx{position:relative;display:block}
+.filters .cbx .cbx-native{visibility:hidden;display:block;height:0!important;min-height:0!important;margin:0!important;padding:0 34px 0 0!important;border:0!important}
+.cbx-btn{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);width:100%;min-height:44px;padding:0 12px;
+  background:var(--deep);border:1px solid var(--line);border-radius:var(--r-sm);color:var(--ink);font:inherit;font-size:14px;text-align:left;cursor:pointer}
+.cbx-btn:hover{border-color:var(--ink-3)}
+.cbx-btn:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.cbx-btn:disabled{opacity:.55;cursor:not-allowed}
+.cbx-val{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cbx-chev{flex:none;width:8px;height:8px;margin-top:-3px;border:solid var(--ink-3);border-width:0 2px 2px 0;transform:rotate(45deg)}
+.cbx-btn[aria-expanded="true"] .cbx-chev{margin-top:3px;transform:rotate(-135deg)}
+.cbx-list{position:absolute;z-index:30;left:0;top:calc(100% + 4px);min-width:100%;width:max-content;max-width:min(90vw,360px);max-height:280px;overflow:auto;
+  margin:0;padding:4px;list-style:none;background:var(--raise);border:1px solid var(--line);border-radius:var(--r-sm);box-shadow:0 8px 24px var(--shadow)}
+.cbx.up .cbx-list{top:auto;bottom:calc(100% + 4px)}
+.cbx-opt{display:flex;align-items:center;min-height:44px;padding:0 12px;border-radius:4px;color:var(--ink);cursor:pointer}
+.cbx-opt[aria-selected="true"]{font-weight:700;box-shadow:inset 3px 0 0 var(--azul-hi)}
+.cbx-opt.on{background:var(--deep);outline:2px solid var(--focus);outline-offset:-2px}
+.cbx-opt[aria-disabled="true"]{color:var(--ink-3);cursor:not-allowed}
+.sbx{position:relative;display:block}
+.sbx input{padding-right:44px;min-height:44px}
+.sbx input::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
+.sbx-clr{position:absolute;top:0;right:0;bottom:0;width:44px;display:flex;align-items:center;justify-content:center;
+  background:none;border:0;color:var(--ink-2);cursor:pointer;border-radius:0 var(--r-sm) var(--r-sm) 0}
+.sbx-clr[hidden]{display:none}
+.sbx-clr:hover{color:var(--ink)}
+.sbx-clr:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
+/* PHASE_63 B5/B2: decade dividers, and phone sub-lines (a column flagged phone:'sub' is hidden
+   at <=640px and its value is repeated, muted, under the row's main cell -- nothing is lost). */
+.tblwrap tr.grp th{text-align:left;background:var(--raise);color:var(--ink-2);font-size:var(--fs-3xs);letter-spacing:.08em;
+  text-transform:uppercase;padding:var(--sp-2) 10px;box-shadow:inset 0 -1px 0 var(--line)}
+.subline{display:none;margin-top:2px;font-size:var(--fs-3xs);font-weight:400;line-height:1.35;color:var(--ink-3);white-space:normal}
+@media (max-width:640px){
+  .tblwrap .psub{display:none}
+  .tblwrap .subline{display:block}
+}
 
 /* PHASE_51 (owner-approved, redesign-v2): Calidad de datos tap targets -- the survey's
    own finding was ~393-413 controls under 44px on #archivo/calidad (drawDQ/drawDQTable,
