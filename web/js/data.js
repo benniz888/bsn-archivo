@@ -527,7 +527,15 @@ const CATS={
      requirement (real Immaculate Grid doesn't require that co-occurrence
      either). Falls back to career ppg only for hand-authored legends with
      no season breakdown (no `hi` field) -- unchanged for them. */
-  p20:['Promedió 20+ puntos',p=>{const v=p.hi?p.hi[1]:p.ppg;return v!=null&&v>=20;}],
+  /* PHASE_62: for most players hi is only the 2026 official line, so a 23.3 ppg season
+     recorded in ss (Brandon Knight, 2023) was invisible and he was rejected. Read the best
+     season across hi and ss, but skip the ss row of the season that has an official line
+     (o26): RealGM's figure for it includes playoff games, the official one does not. */
+  p20:['Promedió 20+ puntos',p=>{
+    let v=p.hi?p.hi[1]:p.ppg;
+    (p.ss||[]).forEach(r=>{ if(r[3]!=null&&!(p.o26&&p.hi&&r[0]===p.hi[0])&&(v==null||r[3]>v)) v=r[3]; });
+    return v!=null&&v>=20;
+  }],
   guard:['Base o escolta',p=>/G|PG|SG/.test(p.pos||'')],
   big:['Poste',p=>/C|PF|F\/C/.test(p.pos||'')],
   /* backlog item 6, part 1 (2026-09-14) — d1950/d1960/d1970 used to be

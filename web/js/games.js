@@ -346,13 +346,38 @@ function submitGuess(){
   checkRollover();
   if(!GB||!GB.sel) return;
   const inp=$('#gGuess'); if(!inp) return;
-  const v=norm(inp.value);
+  /* PHASE_62: norm() alone rejected valid spellings -- a nickname word left in
+     ("Jose Ortiz" vs "José «Piculín» Ortiz"), ", Jr.", "Q. J." vs "Q.J.", hyphens,
+     inner double spaces. gk() adds exactly those folds to norm() for this guess path
+     only (norm has ~50 other call sites). A typed fragment now resolves only when it
+     names ONE player; before, the first substring hit won, so "Dalmau" silently became
+     whichever Dalmau came first in POOL and the guess was judged on the wrong person. */
+  const gk=s=>norm(s).replace(/[-,]/g,' ').replace(/\s+/g,' ').replace(/\b([a-z])\s(?=[a-z]\b)/g,'$1').trim();
+  const v=gk(inp.value);
   if(!v) return;
-  const p=POOL.find(x=>norm(x.n)===v) || POOL.find(x=>norm(x.n).includes(v));
+  const keys=x=>[gk(x.n),gk(stripNick(x.n))];
+  let hits=POOL.filter(x=>keys(x).includes(v));
+  if(!hits.length && v.length>=3) hits=POOL.filter(x=>keys(x).some(k=>k.includes(v)));
+  const p=hits.length===1?hits[0]:null;
   const [i,j]=GB.sel;
+  if(hits.length>1){ $('#gMsg').textContent='Hay '+hits.length+' jugadores que encajan con eso. Escribe más del nombre. No gasta intento.'; $('#gMsg').className='msg bad'; return; }
   if(!p){ $('#gMsg').textContent='Ese nombre no está en la nómina verificada. No gasta intento.'; $('#gMsg').className='msg bad'; return; }
   if(GB.used.has(p.n)){ $('#gMsg').textContent='Ya lo usaste. No gasta intento.'; $('#gMsg').className='msg bad'; return; }
   const ok=GB.sol[i][j].some(x=>x.n===p.n);
+  /* PHASE_62: say which criterion failed. A criterion the archive has no data for (no club list,
+     no position, no scoring figure) is not a failure: "did not play there" is unknown, so a
+     rejection that rests only on missing data is free and the cell stays selected. */
+  const noData=a=>a.t==='c' ? !p.c.length
+    : (a.k==='guard'||a.k==='big') ? !p.pos
+    : a.k==='p20' ? (p.ppg==null&&!p.hi&&!p.ss) : false;
+  const bad=ok?[]:[GB.rows[i],GB.cols[j]].filter(a=>!axMatch(p,a));
+  const failed=bad.filter(a=>!noData(a)), missing=bad.filter(noData);
+  const m=$('#gMsg');
+  if(!ok && !failed.length && missing.length){
+    m.textContent='El archivo no tiene datos de '+p.n+' para «'+missing.map(axFull).join('» ni «')+'», así que no se puede confirmar. No gasta intento.';
+    m.className='msg bad';
+    return;
+  }
   GB.guesses++;
   GB.history.push({name:p.n,ok,i,j});
   if(ok){
@@ -362,9 +387,9 @@ function submitGuess(){
   GB.sel=null;
   saveDaily();
   drawBoard();
-  const m=$('#gMsg');
-  if(ok){ m.textContent=`${p.n} entra. ${GB.sol[i][j].length} jugador${GB.sol[i][j].length===1?'':'es'} del grupo sirven ahí.`; m.className='msg good'; }
-  else { m.textContent=`${p.n} no cumple ${axFull(GB.rows[i])} + ${axFull(GB.cols[j])}. Intento gastado.`; m.className='msg bad'; }
+  const m2=$('#gMsg');
+  if(ok){ m2.textContent=`${p.n} entra. ${GB.sol[i][j].length} jugador${GB.sol[i][j].length===1?'':'es'} del grupo sirven ahí.`; m2.className='msg good'; }
+  else { m2.textContent=p.n+' no figura en el archivo como «'+failed.map(axFull).join('» ni «')+'». Intento gastado.'; m2.className='msg bad'; }
 }
 function revealGrid(){
   let h='<h4 class="sub">Quién servía en cada casilla</h4><div class="cards g3">';

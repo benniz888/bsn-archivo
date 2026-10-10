@@ -9080,3 +9080,17 @@ reconstruction mechanism used to verify every step are in `docs/specs/app_split_
   power-user tool, per owner instruction this phase. `web/index.html`
   `?v=` hashes regenerated. Not committed, not pushed, pending owner
   approval.
+
+- **PHASE_62_CUADRICULA_FIX (2026-10-10, branch `redesign-v3`).** La Cuadrícula rejected valid
+  answers. Causes: `norm()` gaps in the guess path (inner spaces, `, Jr.`, `Q. J.`, hyphens, dropped
+  nickname word), first-substring-hit on ambiguous fragments, `CATS.p20` reading only `hi` (2026
+  official line) and ignoring `ss`, and 7 scoring/MVP tags missing although `scoring_titles.json` /
+  `mvp.json` list them. Fixed in `web/js/games.js` (`submitGuess`: `gk` fold, unique-fragment rule,
+  per-criterion rejection reason), `web/js/data.js` (`p20`), `web/index.html` (`addArchiveTags`
+  IIFE, no new top-level names). Approved strings are live (`docs/strings_pending_phase62.md`); a
+  rejection resting only on missing archive data is free. New: `tests/test_cuadricula_exhaustive.py`
+  (28 tests, drives the real `submitGuess` through `tests/harness/grid_probe.mjs`; needs node +
+  playwright-core, skips otherwise). Failure counts before/after: `docs/audits/phase62_failures.md`.
+  Not applied, for a later data check: `docs/audits/data_review_todo.md` (disputed tags, 16 players
+  with no club list). Suite: 704+ passed, 1 xfailed, 1 known failure (`test_web_text`). Verified
+  Chromium + WebKit at 390/1000.
