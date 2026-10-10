@@ -53,9 +53,12 @@ const SPLASH_DEADLINE=setTimeout(hideSplash,9000);
    on a phone. Managed here — not in CSS — because a closed <details> hides
    its content differently across engines (Chrome's ::details-content is not
    overridable), which had left the desktop blocks unclickable. */
+/* PHASE_64: every Inicio .liga starts closed (the whole group now sits inside the collapsed
+   "Más de la liga ahora" disclosure); done once, so a width change never re-closes what a
+   visitor opened. */
 function ligaFold(){
-  const wide = matchMedia('(min-width:860px)').matches;
-  document.querySelectorAll('#inicio .liga').forEach((d,i)=>{ d.open = wide || i===0; });
+  if(ligaFold.done) return; ligaFold.done=true;
+  document.querySelectorAll('#inicio .liga').forEach(d=>{ d.open=false; });
 }
 if(window.matchMedia){
   const _lmq=matchMedia('(min-width:860px)');
@@ -64,7 +67,7 @@ if(window.matchMedia){
 }
 
 /* PHASE_9 search-placeholder fix (owner-approved, redesign-v2): the full example
-   ("Prueba: cuándo murió Piculín · 1971 · títulos de Bayamón") clips mid-word at
+   (the old, longer example) clips mid-word at
    phone width (measured live: 390px, 19px font -- the string needs ~492px, the
    input only has ~312px to give it there). An <input>'s placeholder attribute is
    a plain string, not markup -- it can't hold a <span> the way hero-headline-full
@@ -78,8 +81,8 @@ if(window.matchMedia){
 function syncSearchPlaceholder(){
   const el=document.getElementById('hubSearch'); if(!el) return;
   el.placeholder = matchMedia('(max-width:639px)').matches
-    ? 'Prueba: cuándo murió Piculín'
-    : 'Prueba: cuándo murió Piculín · 1971 · títulos de Bayamón';
+    ? 'Prueba: títulos de Bayamón'
+    : 'Prueba: títulos de Bayamón · 1971';
 }
 if(window.matchMedia){
   const _spq=matchMedia('(max-width:639px)');

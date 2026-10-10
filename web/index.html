@@ -54,7 +54,7 @@
      short numerals/titles only -- see main.css's own comment at the --font-display rule
      for the exact selector list and why. Reuses the preconnects above (same two hosts). -->
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css?v=1347511c6f4e">
+<link rel="stylesheet" href="css/main.css?v=a5a1607ba8a1">
 </head>
 <body>
 <div class="splash" id="splash" role="status" aria-live="polite" aria-label="Cargando el archivo">
@@ -96,8 +96,8 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
       </button>
       <input type="search" id="hubSearch" onkeydown="hubAsk(event)" enterkeyhint="search"
-             placeholder="Prueba: cuándo murió Piculín · 1971 · títulos de Bayamón"
-             aria-label="Buscar en el archivo. Ejemplo: Prueba: cuándo murió Piculín · 1971 · títulos de Bayamón">
+             placeholder="Prueba: títulos de Bayamón · 1971"
+             aria-label="Buscar en el archivo. Ejemplo: títulos de Bayamón o 1971.">
     </form>
     <div class="topspace"></div>
     <button class="themebtn" id="themeBtn" onclick="toggleTheme()" title="Tema: automático / claro / oscuro"
@@ -149,64 +149,60 @@
 <section id="inicio" role="tabpanel" aria-labelledby="tab-inicio">
   <div class="panel">
     <div id="heroBox"></div>
-    <!-- PHASE_61: the search field (#hubSearch) now lives in header.top; hubAsk() and syncSearchPlaceholder() are unchanged. -->
+    <!-- PHASE_61: the search field (#hubSearch) lives in header.top; hubAsk() and syncSearchPlaceholder() are unchanged. -->
+    <!-- PHASE_64: one hero + one row of four cards + two blocks + one collapsed disclosure. #hubTop and #hubFoot are kept empty (buildHub() clears them). -->
     <div id="hubTop"></div>
     <div id="hubGrid"></div>
+    <div id="hubRecent"></div>
     <p class="note" id="hubFoot"></p>
-    <div id="hubChamps"></div>
-    <div id="hubPrimer"></div>
-
-    <div class="phead">
-      <div class="tri"></div>
-      <h2 class="big">La liga ahora</h2>
-      <p class="lede">Dónde está el BSN en este momento — la Final Brava de 2026, cómo terminaron las posiciones, y lo que viene.</p>
+    <div class="hubpair">
+      <section class="hubblock" aria-labelledby="hubChampsH">
+        <div id="hubChamps"></div>
+      </section>
+      <section class="hubblock" aria-labelledby="hubNextH">
+        <h2 class="big" id="hubNextH">Lo próximo</h2>
+        <p class="lede">Cuándo se espera que arranque la temporada y qué fechas vienen. Lo confirmado y lo estimado van marcados aparte.</p>
+        <div id="calCount"></div>
+        <div id="calNext"></div>
+      </section>
     </div>
 
-    <details class="liga" open>
-      <summary><h4>Lo próximo</h4></summary>
-      <p class="lede">Cuándo se espera que arranque la temporada y qué fechas vienen. Lo confirmado y lo estimado van marcados aparte.</p>
-      <div id="calCount"></div>
-      <div id="calNext"></div>
-    </details>
+    <details class="liga hubmore">
+      <summary><h4>Más de la liga ahora</h4></summary>
+      <p class="lede">Dónde está el BSN en este momento — la Final Brava de 2026, cómo terminaron las posiciones, y lo que viene.</p>
 
-    <details class="liga">
-      <summary><h4>La Final Brava 2026</h4></summary>
-      <p class="lede">La serie final de 2026, juego por juego. «Final Brava» es como la liga le llama a su final.</p>
-      <div id="finalBrava"></div>
-    </details>
+      <details class="liga">
+        <summary><h4>La Final Brava 2026</h4></summary>
+        <p class="lede">La serie final de 2026, juego por juego. «Final Brava» es como la liga le llama a su final.</p>
+        <div id="finalBrava"></div>
+      </details>
 
-    <details class="liga">
-      <summary><h4>Finales anteriores, juego a juego</h4></summary>
-      <p class="lede">Las tres finales que se pudieron reconstruir partido por partido (2024–2026). Las demás existen como resultado, no como serie — ver Historia.</p>
-      <div id="finalsByYear"></div>
-    </details>
+      <details class="liga">
+        <summary><h4>Finales anteriores, juego a juego</h4></summary>
+        <p class="lede">Las tres finales que se pudieron reconstruir partido por partido (2024–2026). Las demás existen como resultado, no como serie — ver Historia.</p>
+        <div id="finalsByYear"></div>
+      </details>
 
-    <details class="liga">
-      <summary><h4>Posiciones BSN 2026</h4></summary>
-      <p class="lede">Cómo terminó la fase regular: doce equipos, 34 juegos cada uno, ordenados por victorias.</p>
-      <div id="standings2026"></div>
-    </details>
+      <details class="liga">
+        <summary><h4>Posiciones BSN 2026</h4></summary>
+        <p class="lede">Cómo terminó la fase regular: doce equipos, 34 juegos cada uno, ordenados por victorias.</p>
+        <div id="standings2026"></div>
+      </details>
 
-    <details class="liga">
-      <summary><h4>Líderes 2026</h4></summary>
-      <p class="lede">Los que más anotaron, rebotearon y asistieron en la última temporada.</p>
-      <div id="leaders2026"></div>
-    </details>
+      <details class="liga">
+        <summary><h4>Líderes 2026</h4></summary>
+        <p class="lede">Los que más anotaron, rebotearon y asistieron en la última temporada.</p>
+        <div id="leaders2026"></div>
+      </details>
 
-    <!-- PHASE_9 Diff 1-lite (dead-code cleanup, redesign-v2): the "En esta
-         fecha" accordion is removed from Inicio (owner-approved). Its
-         functions stay dormant, not deleted: buildOnThisDay() (tabs.js),
-         ON_THIS_DAY and OTD_ES (data.js) are untouched, because
-         tests/_web_text.py uses ON_THIS_DAY's own comment header as a
-         splice marker to reconstruct the pre-split app text -- removing
-         that constant broke 32 unrelated tests (see the redesign-v2
-         PHASE_9 cleanup report). A future pass that re-anchors those
-         markers first can remove the dormant code safely. -->
+      <!-- PHASE_9 Diff 1-lite: the "En esta fecha" accordion stays removed; buildOnThisDay(), ON_THIS_DAY and OTD_ES
+           stay dormant because tests/_web_text.py uses ON_THIS_DAY's comment header as a splice marker. -->
 
-    <details class="liga">
-      <summary><h4>Canales oficiales</h4></summary>
-      <p class="lede">Este archivo no compite con la liga: cubre lo que la app oficial no guarda. Para hoy, ve directo a la fuente.</p>
-      <div id="channels"></div>
+      <details class="liga">
+        <summary><h4>Canales oficiales</h4></summary>
+        <p class="lede">Este archivo no compite con la liga: cubre lo que la app oficial no guarda. Para hoy, ve directo a la fuente.</p>
+        <div id="channels"></div>
+      </details>
     </details>
   </div>
 </section>
@@ -485,12 +481,12 @@
 
 <div class="bottombar" id="bottombar" role="tablist" aria-label="Navegación principal"></div>
 <script src="js/data.js?v=eebcf446518a"></script>
-<script src="js/helpers.js?v=c9b4cb978e43"></script>
+<script src="js/helpers.js?v=1061bc5b1854"></script>
 <script src="js/player.js?v=e078f1014cba"></script>
 <script src="js/data-quality.js?v=0dbf5b135d19"></script>
 <script src="js/games.js?v=c59d0f239d9e"></script>
-<script src="js/tabs.js?v=c958b8c65938"></script>
-<script src="js/init.js?v=9721c2d38b8f"></script>
+<script src="js/tabs.js?v=f117b96c8fbc"></script>
+<script src="js/init.js?v=3c2ceb340594"></script>
 <script>
 
 /* ============================================================

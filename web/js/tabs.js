@@ -1370,7 +1370,6 @@ function buildHero(){
   const t=todayISO();
   const since=daysBetween(SEASON_STATE.lastGame,t);
   const until=daysBetween(t,SEASON_STATE.nextEstimate);
-  const f=F[SEASON_STATE.champ];
   let n,u,h,p;
   if(since<0){ n=Math.abs(since); u='días para el juego decisivo'; h='La temporada sigue viva'; p='El archivo se actualiza cuando termine.'; }
   else if(until>0){
@@ -1383,35 +1382,16 @@ function buildHero(){
   }
   const d=new Date();
   const eye = (DIAS[d.getDay()]+' '+d.getDate()+' de '+MESES[d.getMonth()]+' de '+d.getFullYear()).toUpperCase();
-  const backToBack = f.won.indexOf(2025)>-1 && Math.max.apply(null,f.won)===2026;
-  const mostEver = FKEYS.every(k=>F[k].won.length<=f.won.length);
-  const t2 = 'título '+SEASON_STATE.title+' · '+(backToBack?'bicampeonato':(mostEver?'el máximo de la liga':'récord del club'));
-  /* Stat 3: computed, not hardcoded to Bayamón -- today's real leader,
-     but this stays whoever actually leads if the data ever changes. */
-  const leaderKey = FKEYS.reduce((best,k)=>F[k].won.length>F[best].won.length?k:best, FKEYS[0]);
-  const leader = F[leaderKey];
+  /* PHASE_64: the note, the 3 stat tiles and the trophy footer are gone; the hub's hero card carries the club and the cinta. */
   $('#heroBox').innerHTML=`
   <div class="hero">
     <div class="ed-eye">BSN · ${esc(eye)}</div>
     <h1 class="hero-headline">${YEARS.length} temporadas <span class="hero-headline-full">de baloncesto puertorriqueño,</span> documentadas</h1>
     <p class="hero-dek">Campeones, jugadores y récords desde 1930, con las fuentes y los huecos a la vista.</p>
     <p class="hero-status">${esc(h)} <span class="dim">· Apertura estimada: ${esc(fmtLongDate(SEASON_STATE.nextEstimate))} · ${esc(SEASON_STATE.nextLabel)}</span></p>
-    <p class="hero-note">${esc(p)}</p>
-    <div class="hero-stats">
-      <div class="hero-stat tri-block tri-block-azul"><div class="ed-stat">${n}</div><div class="u">${esc(u)}</div></div>
-      <div class="hero-stat"><div class="ed-stat">${YEARS.length}</div><div class="u">temporadas, de ${YEARS[0]} a ${YEARS[YEARS.length-1]}</div></div>
-      <div class="hero-stat tri-block tri-block-rojo"><div class="ed-stat">${leader.won.length}</div><div class="u">títulos de ${esc(leader.name)}, el club más ganador</div></div>
-    </div>
-    <div class="herofoot">
-      <div class="trophy">${crest(SEASON_STATE.champ,30,36)}
-        <div><div class="t1">${esc(f.name)} — campeón 2026</div>
-             <div class="t2">${esc(t2)}</div></div></div>
-      <div class="heroaction">
-        <span class="herospark" style="color:${f.c1}">${titleComb(f,{w:150,h:20,gap:1})}</span>
-        <button class="btn" onclick="showView('historia','cinta')">Ver la cinta</button>
-      </div>
-    </div>
+    <div id="hubPrimer"></div>
   </div>`;
+  if(typeof buildPrimer==='function') buildPrimer();   /* PHASE_64: the primer link is the hero's last line */
 }
 
 /* PHASE_12 (owner-approved, redesign-v2): finds a real F key by its own real F[k].name --
@@ -1676,15 +1656,8 @@ function buildCalendar(){
   const dConf=nextConf?daysBetween(today,nextConf.d):null;
   const sinceLast=daysBetween(SEASON_STATE.lastGame,today);
 
-  $('#calCount').innerHTML=`<div class="strip">
-    <div><div class="n">${dOpen!=null&&dOpen>0?dOpen:'—'}</div>
-      <div class="l">días para la apertura estimada de 2027</div></div>
-    <div><div class="n">${dConf!=null&&dConf>0?dConf:'—'}</div>
-      <div class="l">días para la próxima fecha confirmada</div></div>
-    <div><div class="n">${sinceLast>0?sinceLast:'—'}</div>
-      <div class="l">días desde el último juego del BSN</div></div>
-  </div>
-  <p class="note">La apertura de 2027 es un estimado de este archivo. La liga no ha
+  /* PHASE_64: the 3-stat strip is gone (the hero already shows the days to the estimated opening and since the last game); the note stays. */
+  $('#calCount').innerHTML=`<p class="note">La apertura de 2027 es un estimado de este archivo. La liga no ha
     anunciado fechas.</p>`;
 
   /* PHASE_12 (owner-approved, redesign-v2): .milestone/.mbadge treatment (item 6) -- one
@@ -1695,7 +1668,9 @@ function buildCalendar(){
      alias is the safer choice, not a data change: CAL_KIND itself, and its label text, are
      untouched). */
   const MBADGE_CLS={confirmado:'confirmado',proyectado:'proyectado','patrón':'patron'};
-  $('#calNext').innerHTML='<div class="cal-milestones">'+CAL_MILESTONES.map(m=>{
+  /* PHASE_64: upcoming items first (a past item has no place in "lo próximo"); the first 2 show,
+     the rest sit behind a keyboard-accessible toggle. Same row markup and tags as before. */
+  const msRow=m=>{
     const k=CAL_KIND[m.k]||CAL_KIND['patrón'];
     const when=m.d?fmtLongDate(m.d):m.m;
     const past=m.d&&m.d<today;
@@ -1704,7 +1679,19 @@ function buildCalendar(){
         <div class="m-d">${esc(when)}${past?' · ya pasó':''} — ${esc(m.b)}</div></div>
       <span class="mbadge ${MBADGE_CLS[m.k]||'patron'}">${esc(k.label)}</span>
     </div>`;
-  }).join('')+'</div>';
+  };
+  const msUp=CAL_MILESTONES.filter(m=>!(m.d&&m.d<today)), msPast=CAL_MILESTONES.filter(m=>m.d&&m.d<today);
+  const msAll=msUp.concat(msPast), msShow=msAll.slice(0,2), msRest=msAll.slice(2);
+  $('#calNext').innerHTML='<div class="cal-milestones">'+msShow.map(msRow).join('')
+    +(msRest.length?'<div class="cal-more" id="calMore" hidden>'+msRest.map(msRow).join('')+'</div>'
+      +'<button type="button" class="cal-toggle" aria-expanded="false" aria-controls="calMore">Ver todas las fechas</button>':'')
+    +'</div>';
+  const calTog=document.querySelector('#calNext .cal-toggle');
+  if(calTog) calTog.onclick=function(){
+    const m=document.getElementById('calMore'), open=m.hidden;
+    m.hidden=!open; calTog.setAttribute('aria-expanded',String(open));
+    calTog.textContent=open?'Ver menos fechas':'Ver todas las fechas';
+  };
 
   $('#calShape').innerHTML='<div class="timeline">'+CAL_SHAPE.map(s=>
     `<div class="tw">
@@ -2085,6 +2072,7 @@ function buildTiles(){
 function showTeam(k){
   showView('equipos','equipo',{noScroll:true,noHash:true});
   setHash('equipos/equipo/'+k);
+  if(F[k]) ST.recent({k:'c',a:k});
   const f=F[k], host=$('#teamDetail');
   const v=VENUES[k];
   const last=f.won.length?Math.max.apply(null,f.won):null;
@@ -2475,6 +2463,7 @@ function showPlayer(name,id,season){
   /* PHASE_19 (owner-approved, redesign-v2): a real "jugador" view (VIEW_MAP.jugadores's
      own detail:['jugador','#playerPage']), not a sub-state of Buscar -- same real
      routing/history this app's other detail views (showTeam's #teamDetail) already use. */
+  ST.recent({k:'p',a:name,b:id});
   showView('jugadores','jugador',{noScroll:true,noHash:true});
   setHash('jugadores/jugador/'+playerSlug(name,id)+(season!=null?'/'+season:''));
   const pt=$('#playerTabs'); if(pt) pt.hidden=false;
@@ -4342,7 +4331,7 @@ function edBlock(o){
     <div class="ed-eye">${esc(o.eye)}</div>
     ${(stat||viz)?`<div class="ed-row">${stat}${viz}</div>`:''}
     <div class="ed-phrase">${esc(o.phrase)}</div>
-    <div class="ed-ctx">${esc(o.ctx)}</div>
+    ${o.ctx?`<div class="ed-ctx">${esc(o.ctx)}</div>`:''}
     <span class="ed-act">${esc(o.act)} <span aria-hidden="true">→</span></span>
   </button>`;
 }
@@ -4375,63 +4364,43 @@ function buildHub(){
      to what the old plain .hubtop rendered -- only the wrapper changed.
      Only the truly anonymous state (no name AND no club) keeps the original plain .hubtop
      layout -- nothing to personalize there, so no card treatment was asked for or added. */
-  if(f){
-    $('#hubTop').innerHTML = `
-    <div class="club-card">
-      ${crest(club,56,64)}
-      <div class="body">
-        <div class="hi">${pr.name ? 'Hola, '+esc(pr.name) : 'El archivo, desde '+esc(cn)}</div>
-        <div class="sub">${esc(f.won.length?cn+' tiene '+f.won.length+(f.won.length===1?' título':' títulos')+
-                ' en las 97 temporadas que cubre este archivo.'
-              : cn+' nunca ha ganado. Está en el archivo igual.')}</div>
-      </div>
-    </div>`;
-  }else if(pr.name){
-    $('#hubTop').innerHTML = `
-    <div class="club-card neutral">
-      <div class="body">
-        <div class="hi">Hola, ${esc(pr.name)}</div>
-        <div class="sub">Escoge por dónde entrar, o pregunta directamente.</div>
-      </div>
-    </div>`;
-  }else{
-    $('#hubTop').innerHTML = `
-    <div class="hubtop">
-      <div style="flex:1;min-width:240px">
-        <h2 class="hubhead">El archivo del BSN</h2>
-        <p class="hublede">Escoge por dónde entrar, o pregunta directamente.</p>
-      </div>
-    </div>`;
-  }
+  /* PHASE_64: #hubTop and #hubFoot stay empty; the greeting, the crest and the club line live
+     inside the hero card below (one hero, not a club card plus a lead card plus a note). */
+  $('#hubTop').innerHTML='';
+  $('#hubFoot').textContent='';
 
-  /* LEAD — the user's club title comb, or Bayamón (the all-time leader) */
+  /* HERO — the user's club title run, or Bayamón (the all-time leader) */
   const lf = (f && f.won.length) ? f : F.bay;
   const lead = lf===f ? cn : 'Bayamón';
-  const blocks=[];
 
-  /* Icons: TABS' own path strings (web/js/tabs.js, the same array buildNav() reads for the
-     rail) -- historia/jugadores/juega/archivo each find their entry by id. Comparar has none:
-     it's a Jugadores sub-view, never a top-level tab, so no rail icon exists for it -- left
-     icon-less rather than inventing one (owner-approved, redesign-v2). */
+  /* Full-width cinta: one cell per season, columns = YEARS.length, a title is a solid cell, so a
+     dynasty reads as one solid run and a gap as a gap. Decade labels sit under the cell where
+     the decade starts; the phone hides every second label (CSS). Decoration only (aria-hidden):
+     the phrase beside it already says the count and the span. */
+  const decs = YEARS.filter(y=>y%10===0);
+  const cinta = '<div class="cinta" aria-hidden="true">'
+    +'<div class="cinta-bars" style="grid-template-columns:repeat('+YEARS.length+',1fr)">'
+    +YEARS.map(y=>'<i'+(lf.won.indexOf(y)>-1?' class="w"':'')+'></i>').join('')+'</div>'
+    +'<div class="cinta-axis">'+decs.map((y,i)=>'<span class="'+(i%2?'alt ':'')+(i===0?'first':(i===decs.length-1?'last':''))
+      +'" style="left:'+((YEARS.indexOf(y)+0.5)/YEARS.length*100).toFixed(2)+'%">'+y+'</span>').join('')+'</div></div>';
+  const heroCtx = (f && !f.won.length)
+    ? cn+' nunca ha ganado. Está en el archivo igual.'
+    : 'La cinta de campeones, 1930 a 2026. Las dinastías se leen como franjas sólidas de color; los años flacos, como huecos.';
+  const heroPhrase = 'títulos de '+lead+(lf.won.length>1?', de '+lf.won[0]+' a '+lf.won[lf.won.length-1]:'');
+  const greet = pr.name ? '<div class="hh-hi">Hola, '+esc(pr.name)+'</div>' : '';
+  const heroHtml = `<button class="ed ed-lead hubhero" onclick="showView('historia','cinta')">
+    <span class="ed-go" aria-hidden="true">→</span>
+    <div class="hh-top">${f?crest(club,56,64):''}<div>${greet}<div class="ed-eye">${lf===f?'Historia · tu club':'Historia'}</div></div></div>
+    <div class="ed-row"><div class="ed-stat tri-block tri-block-rojo">${esc(String(lf.won.length))}</div><div class="ed-phrase">${esc(heroPhrase)}</div></div>
+    ${cinta}
+    <div class="ed-ctx">${esc(heroCtx)}</div>
+    <span class="ed-act">Ver la cinta <span aria-hidden="true">→</span></span>
+  </button>`;
+
+  /* Icons: TABS' own path strings (the same array buildNav() reads for the rail); Comparar has
+     none (a Jugadores sub-view, not a top-level tab), so it renders icon-less. */
   const iconOf = id => { const t=TABS.find(x=>x[0]===id); return t ? t[2] : null; };
-
-  /* PHASE_9 hub restyle (owner-approved, redesign-v2): lead-card phrase now states the club's
-     first-to-most-recent title span (lf.won[0]/lf.won[lf.won.length-1], never typed literals --
-     stays correct for whichever club is picked, or Bayamón un-picked) instead of "el máximo de
-     la liga", which just repeated the hero's own stat 3 ("18 títulos de Vaqueros de Bayamón, el
-     club más ganador") -- see the redesign-v2 PHASE 9 hub-restyle report, option C. Only shown
-     when there's more than one title: a single-title club's own first and most recent title are
-     the same year, so "de 1998 a 1998" would read as a typo, not a fact -- those clubs fall back
-     to the bare "títulos de X", the same text a non-leader club already got before this change.
-     mostEver (whether lf leads the whole league) was only ever used by the text this replaces --
-     removed with it, not left dangling unused. */
-  blocks.push(edBlock({ lead:true, eye:lf===f?'Historia · tu club':'Historia',
-    icon: iconOf('historia'),
-    stat: lf.won.length,
-    viz: titleComb(lf,{w:220,h:32,gap:1}),
-    phrase:'títulos de '+lead+(lf.won.length>1?', de '+lf.won[0]+' a '+lf.won[lf.won.length-1]:''),
-    ctx:'La cinta de campeones, 1930 a 2026. Las dinastías se leen como franjas sólidas de color; los años flacos, como huecos.',
-    act:'Ver la cinta', go:"showView('historia','cinta')" }));
+  const blocks=[];
 
   const nJug = (PALL&&PALL.length) ? PALL.length : (PINDEX?PINDEX.length:0);
   const topPts = PINDEX ? PINDEX.filter(p=>p.pts!=null).map(p=>p.pts).sort((x,y)=>x-y).slice(-7) : [];
@@ -4440,13 +4409,12 @@ function buildHub(){
     stat: nJug ? nJug.toLocaleString('es-PR') : '—',
     viz: topPts.length>=2 ? spark(topPts,{area:true,w:96,h:24}) : '',
     phrase:'jugadores con fuente',
-    ctx:'Cada ficha dice también qué no se sabe de él.',
     act:'El índice', go:"showView('jugadores','buscar')" }));
 
   blocks.push(edBlock({ eye:'Comparar',
+    icon: 'M7 7h13M16 3l4 4-4 4M17 17H4M8 13l-4 4 4 4',
     viz: cmpMiniViz('Georgie Torres','Mario Morales'),
     phrase:'Georgie Torres  ⇄  Mario Morales',
-    ctx:'Dos carreras lado a lado. Las casillas vacías son huecos del archivo, no ceros.',
     act:'Comparar', go:"cmpPreset('Georgie Torres','Mario Morales')" }));
 
   const jn = (typeof puzzleNo==='function') ? puzzleNo() : null;
@@ -4455,23 +4423,36 @@ function buildHub(){
     stat: jn!=null ? '#'+jn : '',
     viz: dotgrid([0,1,0, 0,0,1, 1,0,0]),
     phrase:'La Cuadrícula de hoy',
-    ctx:'Nueve cruces de club × logro. Un jugador que encaje en cada uno.',
     act:'Jugar', go:"showView('juega','cuadricula')" }));
 
   blocks.push(edBlock({ eye:'Archivo', stat:'2011',
     icon: iconOf('archivo'),
     viz: sparkBars(COVERAGE.map(c=>c[1]),{w:110,h:24,scale:100,gap:1.5}),
     phrase:'el muro real',
-    ctx:'Antes de 2011 no hay estadística por temporada del BSN. El archivo enseña ese hueco y todos los demás.',
     act:'Cobertura', go:"showView('archivo','cobertura')" }));
 
-  $('#hubGrid').innerHTML='<div class="edhub">'+blocks.join('')+'</div>';
+  $('#hubGrid').innerHTML=heroHtml+'<div class="edhub">'+blocks.join('')+'</div>';
+
+  /* "Sigue donde lo dejaste": the last 3 players/clubs opened (ST.recent, local only). The
+     favorite club, when one is picked, always leads the row. Empty row = nothing rendered. */
+  (function(){
+    const host=$('#hubRecent'); if(!host) return;
+    const rec=(ST.json('recent')||[]).filter(x=>x&&((x.k==='c'&&F[x.a])||(x.k==='p'&&x.a)));
+    if(club&&F[club]) rec.unshift({k:'c',a:club,b:null});
+    const seen={}, items=rec.filter(x=>{ const id=x.k+':'+x.a; if(seen[id]) return false; seen[id]=1; return true; }).slice(0,4);
+    if(!items.length){ host.innerHTML=''; host.onclick=null; return; }
+    host.innerHTML='<h2 class="hubrec-h">Sigue donde lo dejaste</h2><div class="hubrec">'+items.map(x=>
+      '<button type="button" class="rec-chip" data-k="'+x.k+'" data-a="'+esc(x.a)+'" data-b="'+(x.b==null?'':esc(String(x.b)))+'">'
+      +(x.k==='c'?crest(x.a,20,24)+'<span>'+esc(F[x.a].name.split(' de ')[0])+'</span>':'<span>'+esc(x.a)+'</span>')+'</button>').join('')+'</div>';
+    host.onclick=function(e){
+      const b=e.target.closest('.rec-chip'); if(!b) return;
+      if(b.dataset.k==='c') showTeam(b.dataset.a);
+      else showPlayer(b.dataset.a, b.dataset.b===''?null:(isNaN(+b.dataset.b)?b.dataset.b:+b.dataset.b));
+    };
+  })();
 
   buildPrimer();
   buildRecentChamps();
-  $('#hubFoot').textContent = f
-    ? 'Cambia de club desde la píldora de arriba y el archivo se reordena a su alrededor.'
-    : 'Escoge un club en Equipos y el archivo se reordena a su alrededor.';
 }
 
 /* PHASE_9 hub restyle (owner-approved, redesign-v2): "Últimos campeones" -- built from real
@@ -4497,13 +4478,13 @@ function buildRecentChamps(){
      crest(), and a real onclick into Historia -> Dinastías (showView, not a placeholder
      href="#") -- exactly the destination item 5 named. */
   host.innerHTML=`
-    <h2 class="big">Últimos campeones</h2>
+    <h2 class="big" id="hubChampsH">Últimos campeones</h2>
     ${rows.map(r=>`
-    <button type="button" class="champ-strip" onclick="showView('historia','dinastias')">
+    <button type="button" class="champ-strip${r.k===prof().club?' mine':''}" onclick="showSeason(${r.y})">
       ${crest(r.k,44,50)}
       <div class="body">
         <div class="who">${esc(r.f.name)} — campeón ${r.y}</div>
-        <div class="meta">Título #${r.num} · ver en Historia → Dinastías</div>
+        <div class="meta">Título #${r.num}</div>
       </div>
     </button>`).join('')}`;
 }
@@ -4635,6 +4616,7 @@ function resetProfile(){
   }
   RESET_ARMED=false;
   PROFILE=Object.assign({},PROFILE_DEFAULTS);
+  ST.del('recent');
   saveProfile();
   applyTheme();
   buildClubPicker(); buildClubCard(); drawClubPill(); buildStandings2026(); if(typeof paintLandingFeats==='function') paintLandingFeats();
@@ -4794,6 +4776,7 @@ function loadProfile(){
   if(['auto','dark','light'].indexOf(p.theme)<0) p.theme='auto';
   if(!TABS.some(t=>t[0]===p.start)) p.start='inicio';
   if(p.primer!=='off') p.primer='on';
+  if(!saved) p.primer='off';   /* PHASE_64: a first visit sees the small link, not the big card */
   PROFILE=p;
   /* Write on first load, so a migrated or repaired profile is durable
      rather than re-derived every session. Without this the legacy keys
@@ -6135,6 +6118,7 @@ const LIGA_ICON={
   'finales anteriores, juego a juego':'M4 5h16M4 12h16M4 19h16',
   'posiciones bsn 2026':'M4 19V10M10 19V5M16 19v-7M4 5h.01',
   'lideres 2026':'M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4 21c0-4 4-6 8-6s8 2 8 6',
+  'mas de la liga ahora':'M4 6h16M4 12h16M4 18h10',
   'canales oficiales':'M12 2a9 9 0 1 0 .01 0M3 12h18M12 3c3 4 3 14 0 18M12 3c-3 4-3 14 0 18'
 };
 function buildLigaAccordionSkin(){

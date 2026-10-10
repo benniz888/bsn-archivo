@@ -2954,3 +2954,82 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
   #jugadores .cmp2val.r{order:2;text-align:right;margin-left:auto}
 }
 @media (prefers-reduced-motion:reduce){#jugadores .cmp2fill{animation:none;width:var(--w)}}
+
+/* ============================================================
+   PHASE_64 — Inicio: one hero, one row of four cards, two blocks, one disclosure
+   ============================================================ */
+/* the hero card: .ed-lead's shell, full width, with the full-width cinta */
+.hubhero{margin-top:var(--sp-5);padding:var(--sp-5);gap:var(--sp-3)}
+.hubhero .hh-top{display:flex;align-items:center;gap:var(--sp-4)}
+.hubhero .hh-hi{font-family:var(--font-display);font-size:22px;font-weight:600;margin-bottom:2px}
+.hubhero .ed-row{align-items:center}
+.hubhero .ed-stat{font-size:clamp(40px,7vw,64px)}
+.hubhero .ed-phrase{font-size:var(--fs-md)}
+.hubhero .ed-ctx{font-size:var(--fs-xs);max-width:58ch}
+/* cinta: solid cell = title; gap = empty cell with a quiet baseline */
+.cinta{width:100%}
+.cinta-bars{display:grid;height:44px;align-items:end}
+.cinta-bars i{display:block;height:3px;background:var(--line)}
+.cinta-bars i.w{height:100%;background:var(--azul-hi)}
+.cinta-axis{position:relative;height:20px;margin-top:6px;color:var(--ink-2);font-size:var(--fs-3xs);font-variant-numeric:tabular-nums}
+.cinta-axis span{position:absolute;top:0;transform:translateX(-50%);white-space:nowrap}
+.cinta-axis span.first{transform:none}
+.cinta-axis span.last{transform:translateX(-100%)}
+@media(max-width:639px){.cinta-axis span.alt{display:none}}
+/* the four entry cards: 2x2 on a phone, one row of four from 1000px */
+.hubhero+.edhub{margin-top:var(--sp-3)}
+.edhub{grid-template-columns:1fr 1fr}
+@media(min-width:620px){.edhub{grid-template-columns:1fr 1fr}}
+@media(min-width:1000px){.edhub{grid-template-columns:repeat(4,1fr)}}
+.edhub .ed{min-height:44px}
+/* selected / hover / focus = site blue, never orange */
+.ed:focus-visible,.champ-strip:focus-visible,.rec-chip:focus-visible,.liga>summary:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.champ-strip:hover,.champ-strip.mine{border-color:var(--azul-hi)}
+.champ-strip.mine{box-shadow:inset 3px 0 0 var(--azul-hi)}
+/* Sigue donde lo dejaste */
+.hubrec-h{font-size:var(--fs-xs);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);font-weight:700;margin:var(--sp-5) 0 var(--sp-2)}
+.hubrec{display:flex;flex-wrap:wrap;gap:var(--sp-2)}
+.rec-chip{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 var(--sp-4);border:1px solid var(--line);
+  border-radius:999px;background:var(--card);color:var(--ink);font:inherit;font-size:var(--fs-sm);cursor:pointer}
+.rec-chip:hover{border-color:var(--azul-hi)}
+/* the two content blocks: stacked on a phone, side by side from 1000px */
+.hubpair{display:grid;gap:var(--sp-5);margin-top:var(--sp-5)}
+@media(min-width:1000px){.hubpair{grid-template-columns:1fr 1fr;align-items:start}}
+.hubblock{min-width:0}
+.hubblock .big{margin-bottom:var(--sp-2)}
+/* "Más de la liga ahora": collapsed disclosure holding the older Inicio sections */
+.hubmore{margin-top:var(--sp-6);border-top:1px solid var(--line-soft)}
+.hubmore>summary{min-height:44px}
+.hubmore .liga{margin-left:var(--sp-3)}
+@media(prefers-reduced-motion:reduce){.ed,.ed:hover{transition:none;transform:none}}
+/* the "Leer qué es el BSN" link: 44px tap target */
+#hubPrimer button.x{min-height:44px;padding:0 8px}
+#inicio .liga .acc-title,#inicio .liga .acc-sub{display:block}
+#inicio .hubmore .liga{margin-left:0}
+#inicio .exportbtn2{min-height:44px}
+
+/* PHASE_64 round 2 */
+.hero{padding-bottom:var(--sp-4_5)}
+.hero-status{margin-bottom:0}
+.hero #hubPrimer>.note{margin:var(--sp-2) var(--sp-4_5) 0;padding:0}
+.hero #hubPrimer>.today-card{margin:var(--sp-3) var(--sp-4_5) 0}
+.ed-act{color:var(--azul-hi)}
+/* one section gap */
+.hubhero,.hubpair,.hubmore{margin-top:var(--sp-5)}
+.hubrec-h{margin-top:var(--sp-5)}
+/* the two blocks: same top line, same height */
+.hubpair{align-items:stretch}
+.hubblock{display:flex;flex-direction:column}
+.hubblock>.big,#hubChamps>.big{margin:0 0 var(--sp-2);line-height:1.1}
+#hubChamps{flex:1;display:flex;flex-direction:column}
+#hubChamps .champ-strip{flex:1;margin-bottom:var(--sp-2_5)}
+#hubChamps .champ-strip:last-child{margin-bottom:0}
+.hubblock .note{margin:0 0 var(--sp-2)}
+.hubblock .lede{margin:0 0 var(--sp-2)}
+.cal-toggle{display:inline-flex;align-items:center;min-height:44px;padding:0 var(--sp-4);margin-top:var(--sp-2);
+  border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--azul-hi);font:inherit;font-weight:700;font-size:var(--fs-sm);cursor:pointer}
+.cal-toggle:hover{border-color:var(--azul-hi)}
+.cal-toggle:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.cal-more[hidden]{display:none}
+#inicio .hubblock h2.big{margin:0 0 var(--sp-2)}
+#hubChamps{margin-top:0}

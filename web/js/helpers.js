@@ -159,6 +159,13 @@ const ST={
   set(k,v){ MEM[k]=String(v);
     try{ localStorage.setItem('bsn:'+k,String(v)); ST.wrote=true; }catch(e){ ST.wrote=false; } },
   setJSON(k,o){ ST.set(k,JSON.stringify(o)); },
+  /* PHASE_64: the last 3 players/clubs opened, local only ('bsn:recent'); e={k:'p'|'c',a:name or club key,b:player id}. */
+  recent(e){
+    if(!e||!e.a) return;
+    const cur=(ST.json('recent')||[]).filter(x=>!(x&&x.k===e.k&&x.a===e.a));
+    cur.unshift({k:e.k,a:String(e.a),b:e.b==null?null:e.b});
+    ST.setJSON('recent',cur.slice(0,3));
+  },
   del(k){ delete MEM[k]; try{ localStorage.removeItem('bsn:'+k); }catch(e){} },
   keys(){ try{ return Object.keys(localStorage).filter(k=>k.indexOf('bsn:')===0).map(k=>k.slice(4)); }
     catch(e){ return Object.keys(MEM); } }
