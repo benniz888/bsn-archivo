@@ -484,7 +484,11 @@ let DR=null;
    simulated rosters each: greedy median 32-2 -> 25-9, greedy 34-0 rate
    19.6% -> 0%, random median 18-16 -> 16-18 (still close to .500,
    slightly under). Full record: docs/session.md, 2026-09-14. */
-let CAL_K=116, CAL_S=40;
+/* PHASE_67B (2026-10-11): K 116->130, S 40->36 and an explicit 34-0 gate (see
+   finishDraft's winsFor). At K=116/S=40 a perfect season needed a total of 284 but the best
+   legal roster in the whole pool totals 271, so 34-0 was unreachable while 30+ wins was
+   common (greedy 21%, expert 44%). Docs: docs/audits/phase67b_plan.md. */
+let CAL_K=130, CAL_S=36;
 
 function posTokens(p){ return String(p.pos||'').split('/').map(s=>s.trim()).filter(Boolean); }
 function fits(p,slot){
@@ -709,12 +713,14 @@ function finishDraft(){
   /* Recalibrated after the pool grew and steals and blocks entered the
      rating; the old K/S produced a median of 30-4 against the new numbers. */
   const K=CAL_K,S=CAL_S;
-  const pr=1/(1+Math.exp(-(total-K)/S));
-  const wins=Math.max(0,Math.min(34,Math.round(pr*34)));
+  /* PHASE_67B: 34-0 only at total >= 240; a 33-win band for [236, 240); below that the K/S
+     curve, capped at 33. Monotonic in total, so 32 -> 33 -> 34 has no gap. */
+  const winsFor=t=>t>=240?34:t>=236?33:Math.min(33,Math.max(0,Math.round(34/(1+Math.exp(-(t-K)/S)))));
+  const wins=winsFor(total);
   const missing=roster.reduce((a,x)=>a+(x.ppg==null?1:0)+(x.rpg==null?1:0)+(x.apg==null?1:0),0);
   const guessed=roster.filter(p=>p.posSrc==='perfil').length;
-  const verdict = wins===34?'Temporada perfecta. Nadie lo ha hecho de verdad — el récord real es 29-5, Bayamón 1993.'
-    : wins>=30?'Mejor que cualquier temporada real del BSN.'
+  const verdict = wins===34?'Temporada perfecta. 34 victorias, ninguna derrota.'
+    : wins>=30?'Cuatro derrotas o menos.'
     : wins>=25?'Campeón claro.'
     : wins>=20?'Playoffs cómodos.'
     : wins>=15?'Pelea por el último boleto.'
