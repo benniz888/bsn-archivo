@@ -21,7 +21,7 @@ PRIVACY_LINE = ("Este sitio no usa cookies ni analítica. Las tipografías viene
                  "el sitio funcione sin conexión.")
 META_DESCRIPTION = ("Archivo histórico independiente del Baloncesto Superior Nacional, 1930–2026. "
                      "Proyecto de un aficionado, no oficial.")
-TITLE = "BSN Archivo · Baloncesto Superior Nacional, 1930–2026"
+TITLE = "El Archivo · Baloncesto Superior Nacional, 1930–2026"
 
 
 def _head(text):
@@ -44,7 +44,7 @@ class TestFooter:
 
     def test_the_kept_sentences_are_untouched(self):
         footer = _footer(web_text())
-        assert "BSN Archivo · construido por <b>bennizpr</b> · San Juan, Puerto Rico." in footer
+        assert "El Archivo · construido por <b>bennizpr</b> · San Juan, Puerto Rico." in footer
         assert "Los datos vienen de fuentes públicas citadas en «El archivo»." in footer
         # the old sentences this phase replaced are gone
         assert "Archivo personal." not in footer
@@ -90,7 +90,7 @@ class TestHeadTags:
     def test_the_og_and_twitter_tags_are_present_and_correct(self):
         head = _head(web_text())
         assert '<meta property="og:type" content="website">' in head
-        assert '<meta property="og:site_name" content="BSN Archivo">' in head
+        assert '<meta property="og:site_name" content="El Archivo">' in head
         assert f'<meta property="og:title" content="{TITLE}">' in head
         assert f'<meta property="og:description" content="{META_DESCRIPTION}">' in head
         assert '<meta property="og:url" content="https://bsnarchivo.com/">' in head

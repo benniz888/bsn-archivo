@@ -302,7 +302,7 @@ function drawBoard(){
     h+=`<div class="scoreline"><span>Aciertos <b>${hits}/9</b></span>
       <span>Rareza <b>${rare.toFixed(1)}</b> <span class="dim">(mientras más baja, mejor)</span></span>
       ${hits===9?'<span class="perfect">PERFECTA</span>':''}</div>
-      <div class="sharewrap"><h4 class="sub">Tu resultado</h4><pre class="sharebox" id="gShare" tabindex="0" aria-label="Tu resultado">${esc(GB.ans.map(r=>r.map(c=>c?'■':'□').join('')).reduce((t,l)=>t+l+'\n',`BSN Archivo · La Cuadrícula #${puzzleNo()}\n${hits}/9 · rareza ${rare.toFixed(1)}\n`))}</pre></div>
+      <div class="sharewrap"><h4 class="sub">Tu resultado</h4><pre class="sharebox" id="gShare" tabindex="0" aria-label="Tu resultado">${esc(GB.ans.map(r=>r.map(c=>c?'■':'□').join('')).reduce((t,l)=>t+l+'\n',`El Archivo · La Cuadrícula #${puzzleNo()}\n${hits}/9 · rareza ${rare.toFixed(1)}\n`))}</pre></div>
       <div class="btnrow"><button class="btn" onclick="shareGrid()">Copiar resultado</button>
       <button class="btn" onclick="revealGrid()">Ver respuestas</button>
       <button class="btn" onclick="setGMode('practice')">Otra en práctica</button></div>`;
@@ -733,7 +733,7 @@ function finishDraft(){
   </div>`;
 }
 function shareDraft(w){
-  const txt=`BSN Archivo · La Temporada Perfecta\n${w}-${34-w}\n`+
+  const txt=`El Archivo · La Temporada Perfecta\n${w}-${34-w}\n`+
     SLOTS.filter(s=>DR.slots[s]).map(s=>s+' · '+DR.slots[s].n).join('\n');
   if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(txt);
 }

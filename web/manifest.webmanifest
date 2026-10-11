@@ -1,6 +1,6 @@
 {
-  "name": "BSN Archivo",
-  "short_name": "BSN",
+  "name": "El Archivo",
+  "short_name": "El Archivo",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",
