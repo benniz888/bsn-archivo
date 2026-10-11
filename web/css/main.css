@@ -1599,11 +1599,15 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 .gcell{background:var(--deep);border:1px solid var(--line);border-radius:var(--r-sm);aspect-ratio:1;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:6px;
   cursor:pointer;color:inherit;font-size:var(--fs-3xs);text-align:center;line-height:1.2;position:relative}
-.gcell:hover:not(:disabled){border-color:var(--azul)}
-.gcell[aria-pressed="true"]{border-color:var(--rojo);box-shadow:0 0 0 1px var(--rojo) inset}
+.gcell:hover:not(:disabled){border-color:var(--azul-hi)}
+.gcell:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.gcell[aria-pressed="true"]{border-color:var(--focus);box-shadow:0 0 0 2px var(--focus) inset;background:var(--tint-azul)}
 .gcell.ok{background:var(--tint-ok);border-color:var(--ok-line)}
-.gcell.bad{background:var(--tint-rojo);border-color:var(--rojo-deep)}
-.gcell .pn{font-weight:600}
+/* PHASE_67A: a hit is also marked by a drawn tick (not colour alone); graphic, 3:1 vs the tint. */
+.gcell.ok::after{content:"";position:absolute;top:6px;right:8px;width:5px;height:10px;border:solid var(--ok);
+  border-width:0 2px 2px 0;transform:rotate(45deg)}
+.gcell:disabled{cursor:default}
+.gcell .pn{font-weight:600;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;max-width:100%}
 .gcell .pr{font-size:var(--fs-3xs);color:var(--ink-2)}
 .gcell .plus{font-size:var(--fs-lg);color:var(--ink-3);font-weight:300}
 /* PHASE_45/45B (owner-approved, redesign-v2): mobile overflow fix -- .gridtable's own
@@ -1622,20 +1626,28 @@ tr.cut td{border-bottom:1px solid var(--azul)}
    floor is 639px, nothing above it changes) keeps its own 132px/90px/420-540px values. */
 @media(max-width:639px){
   .gridtable{grid-template-columns:84px repeat(3,minmax(44px,1fr));min-width:0;max-width:100%}
+  .gcell{aspect-ratio:auto;min-height:72px}
 }
+/* PHASE_67A: header accents (column = bottom bar, row = left bar), site blue; pick list reuses
+   .cbx-list/.cbx-opt (PHASE_63) -- only the grid-specific bits live here. */
+.ghead{box-shadow:inset 0 -3px 0 var(--azul-hi)}
+.ghead.row{box-shadow:inset 3px 0 0 var(--azul-hi)}
+.guessbar .cbx-list{max-height:min(280px,40vh);width:auto;max-width:100%}
+.guessbar .cbx-opt{display:block;padding:11px 12px;min-height:44px}
+.cbx-opt.used{color:var(--ink-2)}
+.cbx-opt.used > span:first-child{text-decoration:line-through;text-decoration-thickness:1px}
+.cbx-opt .sm{color:var(--ink-2);font-size:var(--fs-3xs)}
+.sharewrap{margin-top:var(--sp-3)}
+.sharebox{margin:var(--sp-1) 0 0;padding:var(--sp-3);background:var(--deep);border:1px solid var(--line);
+  border-radius:var(--r-sm);color:var(--ink);font:var(--fs-xs)/1.5 ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere}
+.perfect{color:var(--ok);font-weight:700;border:1px solid var(--ok-line);border-radius:999px;padding:0 var(--sp-2)}
 .guessbar{display:flex;gap:var(--sp-2);margin-top:var(--sp-3);flex-wrap:wrap}
-.guessbar input{flex:1;min-width:180px}
+.guessbar input{flex:1;min-width:180px;min-height:44px}
 .pips{display:flex;gap:var(--sp-1);margin-top:var(--sp-2_5);align-items:center}
 .pip{width:16px;height:6px;border-radius:3px;background:var(--line)}
 .pip.used{background:var(--ink-3)}
 .pip.hit{background:var(--ok)}
 .pip.miss{background:var(--rojo)}
-.sugg{position:absolute;z-index:20;left:0;right:0;top:100%;background:var(--deep);border:1px solid var(--azul);
-  border-radius:var(--r-sm);max-height:220px;overflow-y:auto;margin-top:var(--sp-1)}
-.sugg button{display:block;width:100%;text-align:left;background:none;border:0;color:var(--ink);
-  padding:9px var(--sp-3);font-size:var(--fs-xs);cursor:pointer}
-.sugg button:hover,.sugg button.on{background:var(--raise)}
-.sugg .sm{color:var(--ink-3);font-size:var(--fs-3xs)}
 
 /* ---------- game shell ---------- */
 .gamehead{display:flex;gap:var(--sp-2_5);flex-wrap:wrap;align-items:center;justify-content:space-between;

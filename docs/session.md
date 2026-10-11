@@ -9122,3 +9122,8 @@ timeline (G/P letters), interactive roster (closures in showTeam), generic SVG j
 web/index.html asset hashes refreshed (src/update_asset_hashes.py). New tests: tests/test_equipos_phase66.py.
 Open: Bayamón's duplicate 17 unresolved (shown once); Santurce #4 not shown (unsourced); "1 finales" plural slip proposed (C12).
 Note: tests/test_player_ring_overlap.py flakes with ERR_NETWORK_CHANGED if run while other browser jobs use the network.
+
+## PHASE_67A — Juega: La Cuadrícula visuals (built, NOT committed)
+Files: web/js/games.js, web/css/main.css, docs/strings_pending_phase67a.md, docs/audits/phase67a_plan.md (+ asset hashes in web/index.html if refreshed).
+Cells: blue selected/hover/focus states, drawn tick on hits (not colour-only), dead .gcell.bad rule removed (only JS reference was an unreachable ternary branch, rewritten), cell aria-label "Fila: …, columna: …". Pick list is a real combobox/listbox reusing .cbx-list/.cbx-opt (Escape closes without leaving the game; used rows struck through + aria-disabled, no opacity). Result shows the ■/□ text in a visible box; copy failure shows a message. Game logic/data untouched; old .sugg CSS deleted. Strings awaiting approval: docs/strings_pending_phase67a.md.
+Harness note: Playwright WebKit crashes on any page with reducedMotion:'reduce' (also #inicio); use no-preference for WebKit.

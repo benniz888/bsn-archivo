@@ -250,7 +250,7 @@ function drawBoard(){
       La nómina verificada es de ${POOL.length} jugadores; el autocompletar te enseña quiénes existen.<br>
       Dificultad de hoy: <b>${diff.label}</b>${GB.ones?` — ${GB.ones} casilla${GB.ones===1?'':'s'} con una sola respuesta posible`:''}.</div>
   </div>
-  <div class="gridwrap"><div class="gridtable">
+  <div class="gridwrap"><div class="gridtable" role="group" aria-label="Cuadrícula de 3 por 3">
     <div class="gcorner"></div>`;
   /* PHASE_45 (owner-approved, redesign-v2): crest() was unwrapped here -- the exact
      same contrast bug crestPlate() already fixed for Equipos' Apoderados/Retirados
@@ -264,7 +264,7 @@ function drawBoard(){
      button. title=axFull() (already the real un-split name/category text this file's
      own axFull() returns) so the full label is always reachable, truncated or not. */
   const gHead=(ax,rowCls)=>{
-    const crestHtml=ax.t==='c'?`<span class="crest-plate" style="--plate:${crestPlate(ax.k)}">${crest(ax.k,24,28)}</span>`:'';
+    const crestHtml=ax.t==='c'?`<span class="crest-plate" aria-hidden="true" style="--plate:${crestPlate(ax.k)}">${crest(ax.k,24,28)}</span>`:'';
     return `<div class="ghead${rowCls?' row':''}" title="${esc(axFull(ax))}">${crestHtml}<span class="glabel">${esc(axLabel(ax))}</span></div>`;
   };
   GB.cols.forEach(c=>{ h+=gHead(c,false); });
@@ -273,16 +273,18 @@ function drawBoard(){
     h+=gHead(r,true);
     for(let j=0;j<3;j++){
       const a=GB.ans[i][j];
-      const cls=a?(a.ok?'ok':'bad'):'';
+      const cls=a?'ok':'';
       const sel=(GB.sel&&GB.sel[0]===i&&GB.sel[1]===j)?'true':'false';
-      h+=`<button class="gcell ${cls}" aria-pressed="${sel}" ${a||left<=0?'disabled':''} onclick="selectCell(${i},${j})">`;
+      const pos='Fila: '+axFull(r)+', columna: '+axFull(GB.cols[j])+'. ';
+      const lab=pos+(a?'Acertada: '+a.name+', '+a.share.toFixed(1)+'%.':sel==='true'?'Seleccionada.':'Vacía.');
+      h+=`<button class="gcell ${cls}" aria-label="${esc(lab)}" aria-pressed="${sel}" ${a||left<=0?'disabled':''} onclick="selectCell(${i},${j})">`;
       if(a) h+=`<span class="pn">${esc(a.name)}</span><span class="pr">${a.share.toFixed(1)}%</span>`;
       else h+=`<span class="plus">+</span>`;
       h+='</button>';
     }
   }
   h+='</div></div>';
-  h+=`<div class="pips" aria-label="Intentos usados">`;
+  h+=`<div class="pips" role="img" aria-label="Intentos usados: ${GB.guesses} de 9">`;
   for(let i=0;i<9;i++){
     const ev=GB.history[i];
     h+=`<span class="pip ${ev?(ev.ok?'hit':'miss'):''}"></span>`;
@@ -292,13 +294,15 @@ function drawBoard(){
   if(left>0){
     h+=`<div class="guessbar" style="position:relative">
       <input type="text" id="gGuess" placeholder="${GB.sel?'Nombre del jugador para esa casilla…':'Toca una casilla primero'}"
-        autocomplete="off" spellcheck="false" ${GB.sel?'':'disabled'} aria-label="Escribe un nombre">
+        autocomplete="off" spellcheck="false" ${GB.sel?'':'disabled'} aria-label="Nombre del jugador para la casilla seleccionada"
+        role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="gSugg">
       <button class="btn primary" onclick="submitGuess()" ${GB.sel?'':'disabled'}>Enviar</button>
-      <div id="gSugg"></div></div>`;
+      <ul id="gSugg" role="listbox" aria-label="Sugerencias de jugadores" hidden></ul></div>`;
   } else {
     h+=`<div class="scoreline"><span>Aciertos <b>${hits}/9</b></span>
       <span>Rareza <b>${rare.toFixed(1)}</b> <span class="dim">(mientras más baja, mejor)</span></span>
-      ${hits===9?'<span style="color:var(--ok);font-weight:700">PERFECTA</span>':''}</div>
+      ${hits===9?'<span class="perfect">PERFECTA</span>':''}</div>
+      <div class="sharewrap"><h4 class="sub">Tu resultado</h4><pre class="sharebox" id="gShare" tabindex="0" aria-label="Tu resultado">${esc(GB.ans.map(r=>r.map(c=>c?'■':'□').join('')).reduce((t,l)=>t+l+'\n',`BSN Archivo · La Cuadrícula #${puzzleNo()}\n${hits}/9 · rareza ${rare.toFixed(1)}\n`))}</pre></div>
       <div class="btnrow"><button class="btn" onclick="shareGrid()">Copiar resultado</button>
       <button class="btn" onclick="revealGrid()">Ver respuestas</button>
       <button class="btn" onclick="setGMode('practice')">Otra en práctica</button></div>`;
@@ -311,36 +315,56 @@ function drawBoard(){
   if(inp){
     inp.oninput=()=>drawSugg(inp.value);
     inp.onkeydown=e=>{
-      const box=$('#gSugg').querySelectorAll('button');
+      const box=$('#gSugg').querySelectorAll('[role=option]');
       if(e.key==='ArrowDown'){SUGG_I=Math.min(SUGG_I+1,box.length-1);paintSugg();e.preventDefault();}
       else if(e.key==='ArrowUp'){SUGG_I=Math.max(SUGG_I-1,0);paintSugg();e.preventDefault();}
+      else if(e.key==='Escape'&&!$('#gSugg').hidden){ drawSugg(''); e.preventDefault(); e.stopPropagation(); /* tabs.js closes the game on a document-level Escape */ }
       else if(e.key==='Enter'){
         e.preventDefault();
-        if(SUGG_I>=0&&box[SUGG_I]) box[SUGG_I].click(); else submitGuess();
+        if(SUGG_I>=0&&box[SUGG_I]){ if(box[SUGG_I].getAttribute('aria-disabled')!=='true') box[SUGG_I].click(); }
+        else submitGuess();
       }
     };
     if(GB.sel) inp.focus();
   }
 }
 function drawSugg(v){
-  const q=norm(v); const box=$('#gSugg');
+  const q=norm(v); const box=$('#gSugg'); const inp=$('#gGuess');
   SUGG_I=-1;
-  if(q.length<2){ box.innerHTML=''; box.className=''; return; }
+  /* drawSugg('') is also how the list is closed (Escape, after a pick, no matches): no new top-level name */
+  const close=()=>{ box.innerHTML=''; box.hidden=true; box.className=''; inp.setAttribute('aria-expanded','false'); inp.removeAttribute('aria-activedescendant'); };
+  if(q.length<2){ close(); return; }
   /* Suggestions come from the whole pool, not just the valid
      answers — showing only correct names would give the game away. */
   const hits=POOL.filter(p=>norm(p.n).includes(q)).slice(0,8);
-  if(!hits.length){ box.innerHTML=''; box.className=''; return; }
-  box.className='sugg';
-  box.innerHTML=hits.map(p=>{
+  if(!hits.length){ close(); return; }
+  box.className='cbx-list'; box.hidden=false; inp.setAttribute('aria-expanded','true'); inp.removeAttribute('aria-activedescendant');
+  box.innerHTML=hits.map((p,i)=>{
     const used=GB.used.has(p.n);
-    return `<button ${used?'disabled style="opacity:.4"':''} onclick="chooseSugg(${JSON.stringify(p.n).replace(/"/g,'&quot;')})">
-      ${esc(p.n)} <span class="sm">${esc([p.pos,p.c.map(c=>F[c].abbr).join('/')].filter(Boolean).join(' · '))}${used?' · ya usado':''}</span></button>`;
+    return `<li class="cbx-opt${used?' used':''}" role="option" id="gSugg${i}" aria-selected="false"${used?' aria-disabled="true"':''} data-n="${esc(p.n)}">
+      <span>${esc(p.n)} <span class="sm">${esc([p.pos,p.c.map(c=>F[c].abbr).join('/')].filter(Boolean).join(' · '))}${used?' · ya usado':''}</span></span></li>`;
   }).join('');
+  /* PHASE_67A: on a short viewport the list can run under the bottom nav; open it upward when
+     that is where the room is, else cap its height to what is visible below the field. */
+  box.style.top=''; box.style.bottom=''; box.style.maxHeight='';
+  const ib=inp.getBoundingClientRect(), need=box.offsetHeight, below=innerHeight-72-ib.bottom-8, above=ib.top-64;
+  if(need>below){
+    if(above>below){ box.style.top='auto'; box.style.bottom='calc(100% + 4px)'; box.style.maxHeight=Math.max(132,Math.min(need,above-8))+'px'; }
+    else box.style.maxHeight=Math.max(132,below)+'px';
+  }
+  /* keep focus in the input: mousedown would otherwise blur it before the click lands */
+  box.onmousedown=e=>e.preventDefault();
+  box.onclick=e=>{ const o=e.target.closest('[role=option]'); if(o&&o.getAttribute('aria-disabled')!=='true') chooseSugg(o.dataset.n); };
 }
 function paintSugg(){
-  $('#gSugg').querySelectorAll('button').forEach((b,i)=>b.classList.toggle('on',i===SUGG_I));
+  const inp=$('#gGuess');
+  $('#gSugg').querySelectorAll('[role=option]').forEach((b,i)=>{
+    b.classList.toggle('on',i===SUGG_I); b.setAttribute('aria-selected',String(i===SUGG_I));
+    if(i===SUGG_I){ inp.setAttribute('aria-activedescendant',b.id); b.scrollIntoView({block:'nearest'}); }
+  });
+  if(SUGG_I<0) inp.removeAttribute('aria-activedescendant');
 }
-function chooseSugg(n){ $('#gGuess').value=n; $('#gSugg').innerHTML=''; $('#gSugg').className=''; submitGuess(); }
+function chooseSugg(n){ $('#gGuess').value=n; drawSugg(''); submitGuess(); }
 function selectCell(i,j){ if(GB.ans[i][j]) return; GB.sel=[i,j]; drawBoard(); }
 function submitGuess(){
   checkRollover();
@@ -402,14 +426,12 @@ function revealGrid(){
   $('#gReveal').innerHTML=h;
 }
 function shareGrid(){
-  const hits=GB.ans.flat().filter(Boolean).length;
-  const rare=GB.ans.flat().filter(Boolean).reduce((a,c)=>a+c.share,0);
-  let g='';
-  for(let i=0;i<3;i++){ for(let j=0;j<3;j++) g+=GB.ans[i][j]?'■':'□'; g+='\n'; }
-  const txt=`BSN Archivo · La Cuadrícula #${puzzleNo()}\n${hits}/9 · rareza ${rare.toFixed(1)}\n${g}`;
-  if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(txt).then(()=>{$('#gMsg').textContent='Copiado.';$('#gMsg').className='msg good';});
-  }
+  const box=$('#gShare'), m=$('#gMsg');
+  const txt=box?box.textContent:'';
+  const fail=()=>{ m.textContent='No se pudo copiar. Selecciona el texto y cópialo a mano.'; m.className='msg bad'; };
+  if(txt&&navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(()=>{m.textContent='Copiado.';m.className='msg good';},fail);
+  } else fail();
 }
 function setGMode(m){
   GMODE=m;
