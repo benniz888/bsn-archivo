@@ -4982,7 +4982,7 @@ function setProf(k,v){ prof()[k]=v; saveProfile(); }
 
 /* ============================================================
    ¿QUIÉN SOY?
-   Six clues, three guesses, points fall as clues are revealed.
+   Three to six clues, three guesses, points fall as clues are revealed.
    ============================================================ */
 let QZ=null;
 /* backlog item 6, part 3 (2026-09-14) — the candidate pool was capped at
@@ -5017,7 +5017,7 @@ function statClue(p){
   if(p.spg!=null) parts2.push(p.spg+' '+plural(p.spg,'robo'));
   if(p.bpg!=null) parts2.push(p.bpg+' '+plural(p.bpg,'tapón','tapones'));
   if(parts2.length) return `Promedió ${parts2.join(' y ')} por juego.`;
-  return 'Su producción más allá de los puntos nunca se registró.';
+  return null;   /* PHASE_67C: nothing recorded -> no clue (the old "nunca se registró" filler is never shown) */
 }
 /* PHASE_47B (owner-approved, redesign-v2): PHASE_47's own fix only covered SLOT_ES's
    5 standard codes (PG/SG/SF/PF/C) -- "G"/"F"/"F/C" still fell back to the raw code,
@@ -5025,15 +5025,15 @@ function statClue(p){
    /tmp/p47b_pos_values.txt). POS_ES is this one new table the task asked for ("a
    single mapping table so changing them is a one-line edit") -- Quiz-only, kept
    separate from SLOT_ES (games.js, Draft's own, not duplicated) rather than merged
-   into it. G->"Base o escolta" and "F/C"->"Poste" are NOT new wording -- Grid's own
+   into it. G->"Base o escolta" is NOT new wording (PHASE_67C: "F/C" now reads "Pívot", no "Poste"); neither was -- Grid's own
    CATS categories (data.js) already treat bare "G" as part of 'guard' and "F/C" as
    part of 'big' via their own real regexes (/G|PG|SG/ and /C|PF|F\/C/); reused
    directly. "F"->"Alero o ala-pívot" has no existing precedent anywhere in the app
    (confirmed: neither CATS regex matches bare "F") -- a genuine new proposal,
    printed in /tmp/p47b_strings.txt for approval before commit, not assumed. */
-const POS_ES={G:'Base o escolta',F:'Alero o ala-pívot','F/C':'Poste'};
+const POS_ES={G:'Base o escolta',F:'Alero o ala-pívot','F/C':'Pívot'};
 /* posEs(p) tries SLOT_ES then POS_ES on the full code first (so "F/C" resolves to
-   the single clean "Poste" rather than a clunkier token-by-token join); only a code
+   the single clean "Pívot" rather than a clunkier token-by-token join); only a code
    NEITHER table recognizes falls through to posTokens() (games.js, already exists --
    reused rather than re-implementing compound-splitting here), translating each
    token separately and joining with " o ". Not exercised by any of today's real
@@ -5048,22 +5048,216 @@ function posEs(p){
   const toks=posTokens(p).map(t=>SLOT_ES[t]||POS_ES[t]).filter(Boolean);
   return toks.length?[...new Set(toks)].join(' o '):null;
 }
+/* PHASE_67C (owner-approved): the clue ladder is now built per player from structured fields only
+   (POOL, MVP_YEARS, SEASON_AWARDS, SCORING, FINALS_BY_YEAR, HOF, BIO, LEADERS, STONE,
+   NBA_PLAYERS, F.won). No free-text bio line (POOL.b) is ever shown: its claims were rebuilt from
+   those tables, or dropped. Everything lives in clueList.init's closure (0 new top-level names).
+   No 'récord' or 'número 1 de todos los tiempos' clue is built: RECORDS (career rebounds: Rubén Rodríguez 6,178)
+   contradicts LEADERS (Mario Butler 8,236 first, Rodríguez second); see docs/audits/data_review_todo.md. The rank
+   clues ("entre los diez primeros", "número N" for N>1) come from LEADERS, which is consistent with itself.
+   Rules: (a) a clue that leaves >70% of POOL as candidates is skipped, except clue 1 when nothing
+   narrower exists; (b) a club combination only as the 5th clue; (c) the decade clue only for players
+   who started before the 2020s; (d) the candidate count never reaches 1 before the last clue; the last
+   clue is a structured honor (award, title, all-time rank, named coliseum); a season stat line is never the last clue. Candidates = players for
+   whom the clue is true OR whose field is not recorded (a thin record never looks tighter than it is);
+   the last clue counts only players who have that field and must leave exactly 1.
+   Name matching to the honor tables is first+last token AND the award year inside the player's
+   decades, never the name alone (D1). A player who cannot reach 3 clues is not drawn. */
 function clueList(p){
-  const cl=[];
-  cl.push(p.d.length>1?`Jugó en los ${p.d[0]}s y los ${p.d[p.d.length-1]}s.`:`Jugó en los ${p.d[0]}s.`);
-  cl.push(p.t.includes('import')?'Llegó a la liga como refuerzo.':p.t.includes('native')?'Es nativo o nativizado.':'Su estatus no está registrado.');
-  const pEs=p.pos?posEs(p):null;
-  cl.push(pEs?`Jugaba de ${pEs}.`:'Su posición no está registrada.');
-  if(p.ppg!=null) cl.push(`Promedió ${p.ppg} ${plural(p.ppg,'punto')} por juego.`);
-  else cl.push('Su promedio de anotación nunca se registró.');
-  cl.push(p.c.length?`Vistió el uniforme de ${p.c.map(c=>F[c].name).join(', ')}.`:'Su club no está registrado en el archivo.');
-  cl.push(p.b || statClue(p));
-  return cl;
+  const Q=clueList.Q||(clueList.Q=clueList.init());
+  return Q.ladder(p);
 }
-function newQuiz(){
-  const cands=POOL.filter(p=>p.d.length&&(p.b||p.rpg!=null||p.apg!=null||p.spg!=null||p.bpg!=null));
-  const p=pick(cands);
-  QZ={p,clues:clueList(p),shown:1,guesses:3,done:false};
+clueList.init=function(){
+  const WORDS=s=>norm(s).replace(/[^a-z0-9]+/g,' ').trim().split(' ').filter(Boolean);
+  const KEY=s=>{ s=String(s||''); if(s.indexOf(',')>-1){ const a=s.split(','); s=a.slice(1).join(' ')+' '+a[0]; }
+    const t=WORDS(stripNick(s)); return t.length?t[0]+'|'+t[t.length-1]:''; };
+  const by=(rows,get)=>{ const m=new Map(); rows.forEach(r=>{ const k=KEY(get(r)); if(!k) return;
+    let a=m.get(k); if(!a){ a=[]; m.set(k,a); } a.push(r); }); return m; };
+  const MV=by(MVP_YEARS,r=>r[1]), SA=by(SEASON_AWARDS,r=>r[2]), SC=by(SCORING,r=>r[1]),
+        HF=by(HOF,r=>r.n), BI=by(BIO,r=>r.n), SN=by(STONE,r=>r[0]);
+  const LD={}; Object.keys(LEADERS).forEach(c=>{ LD[c]=by(LEADERS[c],r=>r[1]); });
+  const FM=new Map(); Object.keys(FINALS_BY_YEAR).forEach(y=>{ const m=FINALS_BY_YEAR[y].mvp;
+    if(m){ const k=KEY(m); let a=FM.get(k); if(!a){ a=[]; FM.set(k,a); } a.push(+y); } });
+  const NB=new Set(NBA_PLAYERS.map(r=>KEY(r[0])));
+  /* the archive's own award labels (SEASON_AWARDS); the clue wording is built from these, never paraphrased */
+  const AWL={mvp:'Más Valioso',fin:'MVP de la final',sco:'Líder de anotación',rook:'Novato del Año',def:'Defensor del Año',
+    six:'Sexto Hombre',mip:'Progreso del Año',reb:'Líder de rebotes',ast:'Líder de asistencias'};
+  const AW={}; Object.keys(AWL).forEach(k=>{ AW[AWL[k]]=k; });
+  /* Held back until the owner resolves the data (docs/audits/data_review_todo.md): Butler's MVP join and
+     1980-2008 range are unverified and he has no club; Cruz's club is unverified. */
+  const HOLD={'mario|butler':1,'teofilo|cruz':1};
+  const CATS_ES={points:'puntos',rebounds:'rebotes',assists:'asistencias'};
+  const G=POOL.map(p=>{
+    const k=KEY(p.n), lo=p.d[0], hi=p.d[p.d.length-1]+10, aw={};
+    const add=(a,y)=>{ y=+y; if(y>=lo&&y<=hi) (aw[a]||(aw[a]=new Set())).add(y); };
+    (MV.get(k)||[]).forEach(r=>add('mvp',r[0]));
+    (SA.get(k)||[]).forEach(r=>{ if(AW[r[1]]) add(AW[r[1]],r[0]); });
+    (FM.get(k)||[]).forEach(y=>add('fin',y));
+    (SC.get(k)||[]).forEach(r=>add('sco',r[0]));
+    const hof=(HF.get(k)||[])[0]||null, bio=(BI.get(k)||[])[0]||null, ti=new Set();
+    (p.ss||[]).forEach(s=>{ const f=F[s[1]]; if(f&&f.won&&f.won.indexOf(s[0])>-1) ti.add(s[0]); });
+    let rank=null; Object.keys(CATS_ES).forEach(c=>{ const r=(LD[c].get(k)||[])[0];
+      if(r&&Math.abs(r[4]/r[5]-r[6])>0.15) return;      /* row disagrees with itself (total/games vs listed average): not used */
+      if(r&&(!rank||r[0]<rank.r)) rank={c,r:r[0],tot:r[4]}; });
+    const tg=p.t||[];
+    return {p,k,aw,ti,hof,bio,rank,stone:SN.has(k),
+      nba:tg.indexOf('nba')>-1||NB.has(k),tagged:tg.length>0,
+      mvpN:Math.max(aw.mvp?aw.mvp.size:0,hof&&hof.mvp||0),
+      famous:tg.some(t=>'legend,mvp,figura,10k'.indexOf(t)>-1)||!!hof};
+  });
+  G.forEach(g=>{
+    const honor=Object.keys(g.aw).length>0||g.ti.size>0||g.rank||g.stone;
+    g.tier=g.famous?'f':(honor||g.p.t.some(t=>'champion,scoring,nba,figura'.indexOf(t)>-1)||g.p.d[0]<2020)?'m':'l';
+  });
+  const lst=a=>a.length<2?a.join(''):a.slice(0,-1).join(', ')+' y '+a[a.length-1];
+  const lc=s=>s.charAt(0).toLowerCase()+s.slice(1);
+  const stopw='del los las van von'.split(' ');
+  const leak=(g,t)=>{ const bad=WORDS(g.p.n).filter(w=>w.length>=3&&stopw.indexOf(w)<0); const tw=WORDS(t);
+    return bad.some(w=>tw.indexOf(w)>-1); };
+  function cands(g){
+    const p=g.p, C=[];
+    const K=(type,grp,text,field,known,match,o)=>C.push(Object.assign({type,grp,text,field,known,match},o||{}));
+    const yes=()=>true;
+    if(p.d[0]<2020) K('era','era',p.d.length>1?`Jugó en los ${p.d[0]}s y los ${p.d[p.d.length-1]}s.`:`Jugó en los ${p.d[0]}s.`,
+      'POOL.d='+JSON.stringify(p.d),yes,x=>x.p.d[0]===p.d[0]&&x.p.d[x.p.d.length-1]===p.d[p.d.length-1]);
+    if(p.d.length>=3) K('span','span',`Jugó en ${p.d.length} décadas distintas.`,'POOL.d.length='+p.d.length,yes,x=>x.p.d.length===p.d.length);
+    const pEs=p.posSrc!=='perfil'&&p.pos?posEs(p):null;
+    if(pEs) K('pos','pos',`Jugaba de ${lc(pEs)}.`,'POOL.pos='+p.pos,x=>!!x.p.pos,x=>posEs(x.p)===pEs);
+    if(g.bio&&g.bio.ht) K('ht','ht',`Medía ${g.bio.ht}.`,'BIO.ht='+g.bio.ht,x=>!!(x.bio&&x.bio.ht),x=>x.bio.ht===g.bio.ht);
+    if(p.ppg!=null){ const lo=Math.floor(p.ppg/5)*5;
+      K('ppg','ppg',`Promedió entre ${lo} y ${lo+5} puntos por juego en su carrera.`,'POOL.ppg='+p.ppg,x=>x.p.ppg!=null,x=>x.p.ppg>=lo&&x.p.ppg<lo+5);
+      K('ppgx','ppg',`Promedió ${p.ppg} ${plural(p.ppg,'punto')} por juego en su carrera.`,'POOL.ppg='+p.ppg,x=>x.p.ppg!=null,x=>Math.abs(x.p.ppg-p.ppg)<0.05); }
+    /* a notable rebound or assist average only (8+ rpg, 5+ apg); statClue words it, "9.8" matches within half a unit */
+    const sc=(p.rpg>=8||p.apg>=5)?statClue(p):null;
+    if(sc&&(p.rpg!=null||p.apg!=null)) K('rpa','rpg',sc,'POOL.rpg='+p.rpg+' apg='+p.apg,x=>x.p.rpg!=null||x.p.apg!=null,
+      x=>(p.rpg==null||(x.p.rpg!=null&&Math.abs(x.p.rpg-p.rpg)<=0.5))&&(p.apg==null||(x.p.apg!=null&&Math.abs(x.p.apg-p.apg)<=0.5)));
+    if(p.c.length>=3) K('nclubs','nclubs',`Vistió el uniforme de ${p.c.length} clubes distintos del BSN.`,'POOL.c.length='+p.c.length,x=>x.p.c.length>0,x=>x.p.c.length===p.c.length);
+    if(p.c.length===1) K('club1','club',`Jugó con ${F[p.c[0]].name}.`,'POOL.c='+JSON.stringify(p.c),x=>x.p.c.length>0,x=>x.p.c.indexOf(p.c[0])>-1);
+    if(p.c.length>=2) K('clubs','club',`Jugó con ${lst(p.c.map(c=>F[c].name))}.`,'POOL.c='+JSON.stringify(p.c),x=>x.p.c.length>0,
+      x=>p.c.every(c=>x.p.c.indexOf(c)>-1),{combo:true});
+    if(p.hi){ const y=p.hi[0], v=p.hi[1];
+      K('best','best',`Su mejor temporada registrada fue ${y}, con ${v} ${plural(v,'punto')} por juego.`,'POOL.hi='+JSON.stringify(p.hi),x=>!!x.p.hi,x=>x.p.hi[0]===y&&x.p.hi[1]===v);
+      const row=(p.ss||[]).find(r=>r[0]===y&&r[3]===v);
+      if(row&&F[row[1]]){ const parts=[`${row[3]} ${plural(row[3],'punto')}`];
+        if(row[4]!=null) parts.push(`${row[4]} ${plural(row[4],'rebote')}`);
+        if(row[5]!=null) parts.push(`${row[5]} ${plural(row[5],'asistencia')}`);
+        K('bestline','best',`En ${y} promedió ${lst(parts)} con ${F[row[1]].name}.`,'POOL.ss='+JSON.stringify(row),
+          x=>!!x.p.ss,x=>x.p.ss.some(r=>r[0]===y&&r[1]===row[1]&&r[3]===v)); } }
+    if(g.ti.size) K('titles','titles',g.ti.size>1?`Ganó al menos ${g.ti.size} campeonatos del BSN.`:'Ganó al menos un campeonato del BSN.',
+      'POOL.ss x F.won='+JSON.stringify([...g.ti]),x=>!!x.p.ss,x=>x.ti.size>=g.ti.size,{finalOK:true});
+    /* sentence frames: [one, at least N, last clue with years]; the four "premio" awards use the archive label (AWL) */
+    const FR={
+      mvp:['Fue elegido Jugador Más Valioso de la liga.',n=>`Ganó al menos ${n} veces el premio de Jugador Más Valioso.`,y=>`Fue Jugador Más Valioso de la liga en ${y}.`],
+      fin:['Fue MVP de una serie final.',n=>`Fue MVP de la final al menos ${n} veces.`,y=>`Fue MVP de la final en ${y}.`],
+      sco:['Ganó el título de anotación.',n=>`Ganó al menos ${n} títulos de anotación.`,y=>`Fue campeón de anotación en ${y}.`],
+      reb:['Lideró la liga en rebotes en una temporada.',null,y=>`Fue líder de rebotes en ${y}.`],
+      ast:['Lideró la liga en asistencias en una temporada.',null,y=>`Fue líder de asistencias en ${y}.`]};
+    ['rook','def','six','mip'].forEach(k=>{ const lab=AWL[k];
+      FR[k]=[`Ganó el premio de ${lab}.`,null,y=>`Ganó el premio de ${lab} en ${y}.`]; });
+    Object.keys(AWL).forEach(a=>{
+      const yrs=g.aw[a]?[...g.aw[a]].sort():[]; const n=a==='mvp'?g.mvpN:yrs.length; if(!n) return;
+      const f=FR[a], few=yrs.length&&yrs.length<=4;
+      K(a,a,n>1&&f[1]?f[1](n):f[0],
+        'awards.'+a+'='+JSON.stringify(yrs)+(a==='mvp'&&g.hof&&g.hof.mvp?' (HOF.mvp='+g.hof.mvp+')':''),yes,
+        x=>(a==='mvp'?x.mvpN:(x.aw[a]?x.aw[a].size:0))>=n,{finalOK:true,
+          fin:few?f[2](lst(yrs)):null,
+          fm:few?(x=>!!x.aw[a]&&yrs.every(y=>x.aw[a].has(y))):null});
+    });
+    if(g.rank){ const cat=CATS_ES[g.rank.c];
+      K('rank','rank',`Está entre los diez primeros de la historia del BSN en ${cat}.`,'LEADERS.'+g.rank.c+' #'+g.rank.r,yes,
+        x=>!!x.rank&&x.rank.c===g.rank.c&&x.rank.r<=10,{finalOK:g.rank.r>1,fin:`Es el número ${g.rank.r} de todos los tiempos en ${cat}, con ${num(g.rank.tot)} ${cat}.`,
+        fm:x=>!!x.rank&&x.rank.c===g.rank.c&&x.rank.r===g.rank.r}); }
+    if(g.stone) K('stone','stone','Un coliseo lleva su nombre.','STONE',yes,x=>x.stone,{finalOK:true});
+    if(g.nba) K('nba','nba','Llegó a jugar en la NBA.','NBA_PLAYERS / POOL.t nba',x=>x.tagged,x=>x.nba);
+    if(p.t.indexOf('import')>-1||p.t.indexOf('native')>-1){ const im=p.t.indexOf('import')>-1;
+      K('status','status',im?'Llegó a la liga como refuerzo.':'Es nativo o nativizado.','POOL.t='+(im?'import':'native'),x=>x.tagged,
+        x=>x.p.t.indexOf(im?'import':'native')>-1); }
+    const yrsAll=[].concat(...Object.keys(g.aw).map(a=>[...g.aw[a]]));
+    if(yrsAll.length&&p.d[0]<2020){ const dec=Math.floor(Math.min(...yrsAll)/10)*10;
+      K('awera','awera',`Ganó su primer premio de la liga en los ${dec}s.`,'awards min year '+Math.min(...yrsAll),
+        x=>Object.keys(x.aw).length>0,x=>{ const y=[].concat(...Object.keys(x.aw).map(a=>[...x.aw[a]])); return Math.floor(Math.min(...y)/10)*10===dec; }); }
+    return C;
+  }
+  const LIM=0.7*G.length, TG=[170,70,28,10,4], LATE={bestline:3,ht:3,ppgx:3,best:2};
+  const cache=new Map();
+  function build(g){
+    if(HOLD[g.k]) return null;
+    const cs=cands(g).filter(c=>!leak(g,c.text)&&(!c.fin||!leak(g,c.fin)));
+    cs.forEach(c=>{ c.n0=G.reduce((n,x)=>n+((!c.known(x)||c.match(x))?1:0),0); c.s0=G.reduce((n,x)=>n+((c.known(x)&&c.match(x))?1:0),0); });
+    const finals=cs.filter(c=>c.finalOK).sort((a,b)=>a.n0-b.n0);
+    let best=null;
+    finals.forEach(f=>{
+      const pre=[], used={}; used[f.grp]=1; let R=G;
+      for(let i=0;i<5&&R.length>2;i++){
+        let pk=null, ps=1e9, pr=null;
+        [false,true].forEach(loose=>{
+          if(pk) return;
+          cs.forEach(c=>{
+            if(c===f||used[c.grp]||(c.combo&&i<4)) return;
+            if(c.n0>LIM&&!(loose&&i===0)) return;
+            if(i<(LATE[c.type]||0)) return;      /* near-unique by nature (a season line, a height, an exact average) */
+            const r=R.filter(x=>!c.known(x)||c.match(x));
+            if(r.length<2||r.length>=R.length) return;
+            const s=Math.abs(Math.log(r.length+0.5)-Math.log(TG[i]+0.5));
+            if(s<ps){ ps=s; pk=c; pr=r; }
+          });
+        });
+        if(!pk) break;
+        used[pk.grp]=1; pre.push(pk); R=pr;
+      }
+      if(pre.length<2) return;
+      const fm=f.fm&&f.fin?f.fm:f.match, last=R.filter(x=>f.known(x)&&fm(x));
+      if(last.length!==1) return;      /* the last clue names exactly one player */
+      const key=[Math.min(pre.length+1,6),-last.length];
+      if(!best||key[0]>best.key[0]||(key[0]===best.key[0]&&key[1]>best.key[1])) best={key,pre,f};
+    });
+    if(!best) return null;
+    const pre=best.pre.filter(c=>!c.combo).sort((a,b)=>b.n0-a.n0);
+    /* broadest first, but a late-by-nature clue (see LATE) never moves ahead of its earliest slot */
+    for(let i=0;i<pre.length;i++){ const need=LATE[pre[i].type]||0;
+      if(need>i){ const c=pre.splice(i,1)[0]; pre.splice(Math.min(need,pre.length),0,c); i--; } }
+    best.pre.filter(c=>c.combo).forEach(c=>pre.push(c));
+    let R=G; const out=pre.concat([best.f]).map(c=>{ R=R.filter(x=>c===best.f?(c.known(x)&&(c.fm&&c.fin?c.fm(x):c.match(x))):(!c.known(x)||c.match(x)));
+      return {t:c===best.f&&c.fin?c.fin:c.text,f:c.field,n:R.length,k:c.type}; });
+    return out;
+  }
+  return {
+    G,
+    ladder(p){ if(cache.has(p.n)) return cache.get(p.n);
+      const g=G.find(x=>x.p===p); const L=g?build(g):null; cache.set(p.n,L); return L; },
+    tier(p){ const g=G.find(x=>x.p===p); return g?g.tier:'l'; },
+    /* usable clues with their candidate counts, for the audit probes and the data review */
+    explain(p){ const g=G.find(x=>x.p===p); if(!g) return [];
+      return cands(g).map(c=>({type:c.type,text:c.text,final:!!c.finalOK,
+        n0:G.reduce((n,x)=>n+((!c.known(x)||c.match(x))?1:0),0),s0:G.reduce((n,x)=>n+((c.known(x)&&c.match(x))?1:0),0)})); }
+  };
+};
+function newQuiz(focus){
+  const Q=clueList.Q||(clueList.Q=clueList.init());
+  /* PHASE_67C: weighted draw by fame tier (~40% legend/famous, ~35% mid, ~25% lesser-known), never one
+     of the last 10 rounds ('bsn:quiz:recent', through ST's try/catch), and only a player whose ladder
+     builds (3+ clues). A tier with nobody left is dropped and the weights renormalise. */
+  let recent=ST.json('quiz:recent'); if(!Array.isArray(recent)) recent=[];
+  const shuf=a=>{ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+  const lists={f:[],m:[],l:[]}; POOL.forEach(p=>{ if(p.d.length) lists[Q.tier(p)].push(p); });
+  /* a tier with fewer than 15 drawable players cannot supply its weight: the weights become proportional to what exists */
+  const el={f:0,m:0,l:0}; Object.keys(lists).forEach(k=>{ el[k]=lists[k].filter(p=>clueList(p)).length; });
+  const small=Object.keys(el).some(k=>el[k]<15);
+  const find=(skip)=>{
+    const W=small?{f:el.f,m:el.m,l:el.l}:{f:0.40,m:0.35,l:0.25}, order=[];
+    Object.keys(W).forEach(k=>{ if(lists[k].length&&W[k]>0) order.push(k); });
+    while(order.length){
+      const tot=order.reduce((s,k)=>s+W[k],0); let r=Math.random()*tot, k=order[order.length-1];
+      for(const o of order){ r-=W[o]; if(r<=0){ k=o; break; } }
+      for(const p of shuf(lists[k])){ if(skip&&recent.indexOf(p.n)>-1) continue; if(clueList(p)) return p; }
+      order.splice(order.indexOf(k),1);
+    }
+    return null;
+  };
+  const p=find(true)||find(false);
+  if(!p){ QZ=null; drawQuiz(); return; }
+  recent.push(p.n); ST.setJSON('quiz:recent',recent.slice(-10));
+  QZ={p,clues:clueList(p),shown:1,guesses:3,done:false,focus:focus===true?'qGuess':null};
   drawQuiz();
 }
 /* PHASE_47 (owner-approved, redesign-v2): visual pass (item 1) -- "Otra pista" used
@@ -5073,41 +5267,104 @@ function newQuiz(){
    separation Draft already uses between its own primary action (court tap) and
    secondary ones (spin/reset) -- the answer bar now reads as one action, "reveal
    another clue" as a clearly separate one, matching the other 3 games' own
-   hierarchy instead of Quiz's own flatter layout. No change to clue text, point
-   math, or guess matching -- rendering only. */
+   hierarchy instead of Quiz's own flatter layout.
+   PHASE_67C: the guess field is La Cuadrícula's combobox (.cbx-list/.cbx-opt, role=combobox/listbox);
+   the ladder has 3 to 6 clues and the points table is spread over however many there are. */
 function drawQuiz(){
   const host=$('#quizGame');
-  if(!QZ){ host.innerHTML=''; return; }
-  const pts=[60,40,25,15,10,5][QZ.shown-1];
+  if(!QZ){ host.innerHTML='<div class="card">No hay jugadores con pistas suficientes todavía.</div>'; return; }
+  const n=QZ.clues.length, PT=[60,40,25,15,10,5];
+  const ptsAt=k=>PT[n>1?Math.round((k-1)*5/(n-1)):0];
   let h=`<div class="gamehead"><div class="dim" style="font-size:var(--fs-2xs)">Tres intentos · cada pista revelada baja los puntos</div>
-    <div class="chips" style="margin:0"><span class="tag gold">${QZ.done?'—':pts+' puntos'}</span>
+    <div class="chips" style="margin:0"><span class="tag gold">${QZ.done?'—':ptsAt(QZ.shown)+' puntos'}</span>
+      <span class="tag">Pista ${QZ.shown} de ${n}</span>
       <span class="tag">Intentos ${QZ.guesses}</span></div></div>`;
   h+='<div class="card" style="margin-top:var(--sp-2_5)"><ol style="margin:0;padding-left:20px;line-height:1.8">'+
-    QZ.clues.slice(0,QZ.shown).map(c=>'<li>'+esc(c)+'</li>').join('')+'</ol></div>';
+    QZ.clues.slice(0,QZ.shown).map(c=>'<li>'+esc(c.t)+'</li>').join('')+'</ol></div>';
   if(!QZ.done){
-    h+=`<div class="guessbar"><input type="text" id="qGuess" placeholder="¿Quién es?" autocomplete="off" list="poolNames">
-      <button class="btn primary" onclick="guessQuiz()">Adivinar</button></div>
-      <div class="btnrow"><button class="btn" onclick="revealClue()" ${QZ.shown>=6?'disabled':''}>Otra pista</button></div>`;
+    h+=`<div class="guessbar" style="position:relative"><input type="text" id="qGuess" placeholder="¿Quién es?" autocomplete="off" spellcheck="false"
+        aria-label="Nombre del jugador" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="qSugg">
+      <button class="btn primary" onclick="guessQuiz()">Adivinar</button>
+      <ul id="qSugg" role="listbox" aria-label="Sugerencias de jugadores" hidden></ul></div>
+      <div class="btnrow"><button class="btn" id="qMore" onclick="revealClue()" ${QZ.shown>=n?'disabled':''}>Otra pista</button></div>`;
   } else {
-    h+=`<div class="btnrow"><button class="btn primary" onclick="newQuiz()">Otro jugador</button>
+    h+=`<div class="btnrow"><button class="btn primary" id="qNext" onclick="newQuiz(true)">Otro jugador</button>
       <button class="btn" onclick="showPlayer(${JSON.stringify(QZ.p.n).replace(/"/g,'&quot;')})">Ver su ficha</button></div>`;
   }
   h+='<div class="msg" id="qMsg" role="status" aria-live="polite"></div>';
   host.innerHTML=h;
-  const i=$('#qGuess'); if(i){ i.onkeydown=e=>{if(e.key==='Enter')guessQuiz();}; }
+  const inp=$('#qGuess');
+  if(inp){
+    const box=$('#qSugg'); let on=-1;
+    const close=()=>{ on=-1; box.innerHTML=''; box.hidden=true; box.className=''; inp.setAttribute('aria-expanded','false'); inp.removeAttribute('aria-activedescendant'); };
+    const paint=()=>{ box.querySelectorAll('[role=option]').forEach((b,i)=>{ b.classList.toggle('on',i===on); b.setAttribute('aria-selected',String(i===on));
+      if(i===on){ inp.setAttribute('aria-activedescendant',b.id); b.scrollIntoView({block:'nearest'}); } });
+      if(on<0) inp.removeAttribute('aria-activedescendant'); };
+    /* the list comes from the whole pool, not the drawable players: showing only drawable names would narrow the answer */
+    inp.oninput=()=>{
+      const q=norm(inp.value); on=-1;
+      if(q.length<2){ close(); return; }
+      const hits=POOL.filter(p=>norm(p.n).indexOf(q)>-1||nickKey(p.n).indexOf(q)>-1).slice(0,8);
+      if(!hits.length){ close(); return; }
+      box.className='cbx-list'; box.hidden=false; inp.setAttribute('aria-expanded','true'); inp.removeAttribute('aria-activedescendant');
+      box.innerHTML=hits.map((p,i)=>`<li class="cbx-opt" role="option" id="qSugg${i}" aria-selected="false" data-n="${esc(p.n)}"><span>${esc(p.n)}</span></li>`).join('');
+      box.style.top=''; box.style.bottom=''; box.style.maxHeight='';
+      const ib=inp.getBoundingClientRect(), need=box.offsetHeight, below=innerHeight-72-ib.bottom-8, above=ib.top-64;
+      if(need>below){
+        if(above>below){ box.style.top='auto'; box.style.bottom='calc(100% + 4px)'; box.style.maxHeight=Math.max(132,Math.min(need,above-8))+'px'; }
+        else box.style.maxHeight=Math.max(132,below)+'px';
+      }
+      box.onmousedown=e=>e.preventDefault();
+      box.onclick=e=>{ const o=e.target.closest('[role=option]'); if(o){ close(); guessQuiz(o.dataset.n); } };
+    };
+    inp.onkeydown=e=>{
+      const opts=box.querySelectorAll('[role=option]');
+      if(e.key==='ArrowDown'){ on=Math.min(on+1,opts.length-1); paint(); e.preventDefault(); }
+      else if(e.key==='ArrowUp'){ on=Math.max(on-1,0); paint(); e.preventDefault(); }
+      else if(e.key==='Escape'&&!box.hidden){ close(); e.preventDefault(); e.stopPropagation(); /* tabs.js closes the game on a document-level Escape */ }
+      else if(e.key==='Enter'){
+        e.preventDefault();
+        if(on>=0&&opts[on]){ const nm=opts[on].dataset.n; close(); guessQuiz(nm); }
+        else guessQuiz();
+      }
+    };
+  }
+  if(QZ.focus){ const f=$('#'+QZ.focus); QZ.focus=null; if(f&&!f.disabled) f.focus(); }
 }
-function revealClue(){ if(QZ.shown<6){QZ.shown++;drawQuiz();} }
-function guessQuiz(){
-  const v=norm($('#qGuess').value); if(!v) return;
-  if(norm(QZ.p.n).includes(v)&&v.length>=3){
-    QZ.done=true; drawQuiz();
-    $('#qMsg').textContent=`Correcto: ${QZ.p.n}. ${[60,40,25,15,10,5][QZ.shown-1]} puntos.`;
+function revealClue(){ if(QZ.shown<QZ.clues.length){ QZ.shown++; QZ.focus=QZ.shown>=QZ.clues.length?'qGuess':'qMore'; drawQuiz(); } }
+/* guessQuiz(name): a name picked from the list; guessQuiz(): whatever is typed. Typed text counts only as a
+   full name (accent/case-insensitive, nickname optional, same folds as La Cuadrícula's guess); a fragment such
+   as "dal" shows the matching options and costs nothing. */
+function guessQuiz(name){
+  if(!QZ||QZ.done) return;
+  const inp=$('#qGuess'), m=$('#qMsg');
+  const soft=t=>{ m.textContent=t; m.className='msg bad'; if(inp){ inp.focus(); inp.dispatchEvent(new Event('input')); } };
+  let g=null;
+  if(typeof name==='string') g=POOL.find(x=>x.n===name)||null;
+  else {
+    const gk=s=>norm(s).replace(/[-,]/g,' ').replace(/\s+/g,' ').replace(/\b([a-z])\s(?=[a-z]\b)/g,'$1').trim();
+    const v=gk(inp.value); if(!v) return;
+    const hits=POOL.filter(x=>gk(x.n)===v||gk(stripNick(x.n))===v);
+    if(hits.length===1) g=hits[0];
+    else {
+      const part=POOL.some(x=>norm(x.n).indexOf(norm(inp.value))>-1);
+      soft(hits.length>1?'Hay varios jugadores con ese nombre. Elige uno de la lista. No gasta intento.'
+        :part?'Elige un nombre de la lista. No gasta intento.':'Ese nombre no está en la nómina verificada. No gasta intento.');
+      return;
+    }
+  }
+  if(!g){ soft('Ese nombre no está en la nómina verificada. No gasta intento.'); return; }
+  const n=QZ.clues.length, PT=[60,40,25,15,10,5], pts=PT[n>1?Math.round((QZ.shown-1)*5/(n-1)):0];
+  if(g.n===QZ.p.n){
+    QZ.done=true; QZ.focus='qNext'; drawQuiz();
+    $('#qMsg').textContent=`Correcto: ${QZ.p.n}. ${pts} puntos.`;
     $('#qMsg').className='msg good';
     return;
   }
   QZ.guesses--;
+  QZ.focus='qGuess';
   if(QZ.guesses<=0){
-    QZ.done=true; QZ.shown=6; drawQuiz();
+    QZ.done=true; QZ.shown=n; QZ.focus='qNext'; drawQuiz();
     $('#qMsg').textContent='Se acabaron los intentos. Era '+QZ.p.n+'.';
     $('#qMsg').className='msg bad';
   } else {
@@ -5872,7 +6129,7 @@ const GAMES=[
    <circle cx="160" cy="38" r="7" fill="#FF6A1A"/>
    <g fill="#EEF3FB" fill-opacity=".9"><circle cx="118" cy="80" r="4"/><circle cx="160" cy="86" r="4"/><circle cx="202" cy="80" r="4"/></g>`},
   {id:'quiensoy',t:'¿Quién soy?',
-   d:'Seis pistas que van de lo difícil a lo obvio. Mientras menos necesites, más vale el acierto.',
+   d:'Hasta seis pistas, de la más difícil a la más obvia. Mientras menos necesites, más vale el acierto.',
    meta:'Adivinanza · 3 intentos',
    art:`<defs><linearGradient id="ga3" x1="0" y1="0" x2="1" y2="1">
      <stop offset="0" stop-color="#4A2A7A"/><stop offset="1" stop-color="#140A24"/></linearGradient></defs>

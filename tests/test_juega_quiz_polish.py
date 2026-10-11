@@ -97,7 +97,8 @@ class TestQuizTapTargetsAndFocus:
 class TestQuizPositionUsesSlotEs:
     def test_clue_list_calls_the_real_pos_es_resolver(self):
         src = _quiz_source()
-        assert "const pEs=p.pos?posEs(p):null;" in src
+        # PHASE_67C: only a curated position is shown (posSrc 'perfil' is computed from rates)
+        assert "const pEs=p.posSrc!=='perfil'&&p.pos?posEs(p):null;" in src
         assert "Jugaba de ${p.pos}." not in src  # PHASE_47's own form, still raw
         assert "Jugaba de ${SLOT_ES[p.pos]||p.pos}." not in src  # PHASE_47's partial fix
 
@@ -135,10 +136,10 @@ class TestPosEsCoversEveryRealPosition:
         # real Spanish phrases, not invented for this phase.
         text = DATA_JS.read_text(encoding="utf-8")
         assert "guard:['Base o escolta'" in text
-        assert "big:['Poste'" in text
+        assert "big:['Poste'" in text  # Grid's own label is untouched; the quiz says "Pívot" (PHASE_67C)
         pos_es = self._pos_es()
         assert pos_es["G"] == "Base o escolta"
-        assert pos_es["FC"] == "Poste"
+        assert pos_es["FC"] == "Pívot"  # PHASE_67C: no "poste" in the quiz
 
     def test_f_is_flagged_as_a_new_proposal_in_the_strings_file(self):
         strings_file = Path("/tmp/p47b_strings.txt")

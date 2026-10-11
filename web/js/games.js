@@ -626,7 +626,7 @@ function drawPicks(){
   const roster=rosterOf(), imp=importsIn(roster);
   const nat=roster.filter(p=>(p.t||[]).includes('native')).length;
   let h=`<div class="gamehead">
-    <div class="dim" style="font-size:var(--fs-2xs)">Gira equipo y década · coloca cinco posiciones · ${DR.skips} pases</div>
+    <div class="dim" style="font-size:var(--fs-2xs)">Gira equipo y década · coloca cinco posiciones · ${DR.skips} ${DR.skips===1?'pase':'pases'}</div>
     <div class="chips" style="margin:0">
       <span class="tag ${imp>=3?'gold':''}">Refuerzos ${imp}/3</span>
       <span class="tag">Nativos ${nat}</span>
