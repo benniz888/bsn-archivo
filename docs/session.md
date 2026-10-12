@@ -9145,3 +9145,7 @@ PHASE_67C fixup (uncommitted): last clue now leaves exactly 1 candidate (best-se
 ## PHASE_67D — Sube y Baja restyle (built, NOT committed)
 Files: web/js/games.js (drawHL markup: `.hlcard` + `.hl-name`/`.hl-val`, inline styles removed, win/lose/picked classes; answerHL stores `HL.pick` for display only), web/css/main.css (`.hlcard` block before `.msg`), web/index.html (asset hashes). Logic, scoring, data untouched; 0 new top-level names; 0 new strings.
 Note: the game has no Sube/Baja buttons; it is "pick the higher of two cards", so the two cards are the buttons (min-height 88px). Blue hover (only under @media(hover:hover)), focus and picked ring; drawn tick on the higher card and cross on the lower after answering (text message unchanged); Racha chip is `.tag.blue`, Mejor plain `.tag`. Verified Chromium+WebKit 390/1000 dark/light, 0 console errors, no horizontal scroll, 4 keyboard rounds each. Suite 787 passed, 1 xfailed, 1 known failure (test_web_text). Shots: /tmp/bsn67d_shots/.
+
+## PHASE_67D2 — Sube y Baja data consistency (built, NOT committed)
+Files: web/js/data.js (HL_SETS rows() filter LEADERS rows whose total/games differs from the listed average by >0.15), web/js/games.js (newHL builds only pairs differing by >= max(1, 2% of the larger)), tests/test_hl_consistency_67d2.py + tests/harness/hl_probe.mjs, docs/audits/data_review_todo.md (appended), web/index.html (hashes).
+Result: 1 of 30 LEADERS rows fails (assists #8 Raymond Dalmau, 4.29 vs 5.1); points/rebounds/games 0, titles n/a. No new strings.

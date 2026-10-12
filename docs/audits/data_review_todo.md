@@ -194,3 +194,9 @@ A.D. Vassallo (2013,2016,2018,2019,2020); Admiral Schofield (2026); Aleem Ford (
 ### PHASE_67C string fixup 3 — award names to confirm (2026-10-11)
 - Defensive award: SEASON_AWARDS labels it "Defensor del Año"; SEASON_AW (web/js/tabs.js, the per-season award files' display names) labels the same award "Defensa del Año". ¿Quién soy? uses "Defensor del Año" ("Ganó el premio de Defensor del Año."). Owner to confirm the official name and make the two tables agree.
 - Sixth-man award: the archive labels it "Sexto Hombre" (no "del Año"), unlike Novato / Defensor / Progreso del Año. The clue reads "Ganó el premio de Sexto Hombre." Owner to confirm the official name.
+
+
+### PHASE_67D2 — LEADERS rows excluded from Sube y Baja (2026-10-11)
+Rule: a LEADERS row is not used as a question option when total ÷ games differs from its listed average by more than 0.15 (same rule as the ¿Quién soy? rank clues). Checked every row of points (10), rebounds (10), assists (10); "juegos jugados" reads the games column of the points rows, which all pass; "títulos de la franquicia" reads F[k].won (no ratio to check).
+- Fails (1 of 30): **assists #8 Raymond Dalmau**, 2,302 in 537 games = 4.29 per game, listed 5.1. Points 0 fail, rebounds 0 fail, games 0 fail, titles n/a. Still open: either the total or the average is wrong (5.1 would be about 2,740); needs an independent source. His points (11,592 / 537 = 21.6) and rebounds (5,673 / 537 = 10.6) rows are consistent and stay.
+- Pairing rule (not a data issue): two values are never paired when they differ by less than max(1, 2% of the larger).

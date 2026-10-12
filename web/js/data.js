@@ -557,10 +557,12 @@ const CATS={
    Two careers, one question. Runs on the only fully verified
    numbers in the archive, so it never has to guess.
    ============================================================ */
+/* PHASE_67D2: LEADERS rows whose total/games disagrees with their listed average by more than
+   0.15 (same rule as the quiz clues) are never a question option; see data_review_todo.md. */
 const HL_SETS=[
-  {label:'puntos de carrera',rows:()=>LEADERS.points.map(r=>[r[1],r[4]]),unit:'puntos'},
-  {label:'rebotes de carrera',rows:()=>LEADERS.rebounds.map(r=>[r[1],r[4]]),unit:'rebotes'},
-  {label:'asistencias de carrera',rows:()=>LEADERS.assists.map(r=>[r[1],r[4]]),unit:'asistencias'},
-  {label:'juegos jugados',rows:()=>LEADERS.points.map(r=>[r[1],r[5]]),unit:'juegos'},
+  {label:'puntos de carrera',rows:()=>LEADERS.points.filter(r=>Math.abs(r[4]/r[5]-r[6])<=0.15).map(r=>[r[1],r[4]]),unit:'puntos'},
+  {label:'rebotes de carrera',rows:()=>LEADERS.rebounds.filter(r=>Math.abs(r[4]/r[5]-r[6])<=0.15).map(r=>[r[1],r[4]]),unit:'rebotes'},
+  {label:'asistencias de carrera',rows:()=>LEADERS.assists.filter(r=>Math.abs(r[4]/r[5]-r[6])<=0.15).map(r=>[r[1],r[4]]),unit:'asistencias'},
+  {label:'juegos jugados',rows:()=>LEADERS.points.filter(r=>Math.abs(r[4]/r[5]-r[6])<=0.15).map(r=>[r[1],r[5]]),unit:'juegos'},
   {label:'títulos de la franquicia',rows:()=>FKEYS.filter(k=>F[k].won.length).map(k=>[F[k].name,F[k].won.length]),unit:'títulos'}
 ];

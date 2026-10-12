@@ -747,8 +747,11 @@ let HL=null;
 function newHL(keep){
   const set=pick(HL_SETS);
   const rows=set.rows();
-  let a=pick(rows),b=pick(rows),n=0;
-  while((b[0]===a[0]||b[1]===a[1])&&n++<40) b=pick(rows);
+  /* A pair is a fair question only if the values differ by at least 2% of the larger
+     (and by at least 1); equal or near-equal values would make the answer arguable. */
+  const apart=(x,y)=>x[0]!==y[0]&&Math.abs(x[1]-y[1])>=Math.max(1,0.02*Math.max(x[1],y[1]));
+  const as=rows.filter(x=>rows.some(y=>apart(x,y)));
+  const a=pick(as), b=pick(rows.filter(y=>apart(a,y)));
   HL={set,a,b,streak:keep?HL.streak:0,done:false};
   drawHL();
 }
