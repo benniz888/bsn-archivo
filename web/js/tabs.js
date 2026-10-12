@@ -1951,11 +1951,11 @@ async function loadSeasonExtra(y){
     const v=sc.metric_era==='ppg'
       ? (sc.ppg!=null?sc.ppg+' por juego':'—')
       : (sc.total_points!=null?sc.total_points.toLocaleString('es-PR')+' puntos':'—');
-    h+=`<dl class="kv"><dt>Campeón de anotación</dt><dd>${esc(sc.player_raw)}<span class="muted"> · ${esc(sc.team_raw||'')} · ${esc(v)}</span></dd></dl>`;
+    h+=`<dl class="kv"><dt>Campeón de anotación</dt><dd>${esc(sc.player||sc.player_raw)}<span class="muted"> · ${esc(sc.team_raw||'')} · ${esc(v)}</span></dd></dl>`;
   }
   if(d.awards && d.awards.length){
     h+='<dl class="kv">'+d.awards.map(a=>
-      `<dt>${esc(SEASON_AW[a.award]||a.award)}</dt><dd>${esc(a.player_raw)}<span class="muted"> · ${esc(a.team_raw||'')}</span></dd>`).join('')+'</dl>';
+      `<dt>${esc(SEASON_AW[a.award]||a.award)}</dt><dd>${esc(a.player||a.player_raw)}<span class="muted"> · ${esc(a.team_raw||'')}</span></dd>`).join('')+'</dl>';
   }
   if(d.standings){
     const st=d.standings;
@@ -1968,7 +1968,7 @@ async function loadSeasonExtra(y){
     h+='<div class="note" style="margin-top:var(--sp-3)">Líderes de la temporada</div><dl class="kv">';
     for(const cat of Object.keys(d.leaders)){
       const top=d.leaders[cat][0]; if(!top) continue;
-      h+=`<dt>${esc(SEASON_LC[cat]||cat)}</dt><dd>${esc(top.player_raw)}<span class="muted"> · ${top.value!=null?top.value:'—'}${top.club_raw?' · '+esc(top.club_raw):''}</span></dd>`;
+      h+=`<dt>${esc(SEASON_LC[cat]||cat)}</dt><dd>${esc(top.player||top.player_raw)}<span class="muted"> · ${top.value!=null?top.value:'—'}${top.club_raw?' · '+esc(top.club_raw):''}</span></dd>`;
     }
     h+='</dl>';
   }

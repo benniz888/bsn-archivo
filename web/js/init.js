@@ -343,6 +343,8 @@ async function hydrate(){
       const metric=s.metric_era==='ppg'?'ppg':'total';
       const val=metric==='ppg'?(c.value!=null?c.value:c.ppg):c.total_points;
       if(val!=null) rows.push([s.season,c.player,club(c,s.season),metric,val,c.bsnpr_id!=null?c.bsnpr_id:null]);
+      /* PHASE_72C: the display name differs from the source spelling (typo, casing, expansion): keep the source one searchable */
+      if(c.player_raw&&nickKey(c.player_raw)!==nickKey(c.player)) (DATA.aka[nickKey(c.player)]||(DATA.aka[nickKey(c.player)]=[])).push(c.player_raw);
     }
     rows.sort((a,b)=>a[0]-b[0]);
     SCORING.length=0; rows.forEach(r=>SCORING.push(r));
@@ -370,6 +372,7 @@ async function hydrate(){
     const have=new Set(MVP_YEARS.map(r=>r[0]));
     mvp.forEach(m=>{
       if(m.bsnpr_id!=null) MVP_ID[m.season]=m.bsnpr_id;
+      if(m.player_raw&&nickKey(m.player_raw)!==nickKey(m.player)) (DATA.aka[nickKey(m.player)]||(DATA.aka[nickKey(m.player)]=[])).push(m.player_raw);
       if(m.also && have.has(m.season)) MVP_ALSO[m.season]=m.also;
       if(!have.has(m.season)){
         const ak=m.franchise_id&&FID2APP[m.franchise_id];

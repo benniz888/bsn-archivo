@@ -3480,6 +3480,17 @@ Tasks:
 6. Chromium + WebKit on a repaired player page and both González pages. Suite vs baseline 873 passed / 1 skipped / 1 xfailed.
 Not in 72B: D2 names, Cruz/Morales flags, D9 pipeline. New Spanish: none expected; any goes to docs/strings_pending_phase72.md unapplied.
 
+### PHASE_72C_BUILD — display-layer names, Cruz/Morales (scope written 2026-10-12, before any edit)
+Owner decisions D2 and D8 (Cruz, Morales). Branch `data-fixes-v1`, no commit, no push. `data/raw/` and `data/clean/` stay byte-identical (checked by test); the work is a display layer in the generated `web/data/` plus the JS that reads it. No `parse-players`, no `sync-web-data` (N7).
+Tasks:
+1. New `src/display_names.py`: `proper_case()` for ALL-CAPS tokens (Spanish particles de/del/la/las/los/y, Mc, Mac only for an explicit list, Jr./Sr./II/III/IV, apostrophes, hyphens, accents kept, nickname quotes normalised to «…» with the missing space restored), an `OVERRIDES` list for typos (one entry per name, each with its source row in a comment; only `GOERGIE TORRES` has evidence), a `NON_NAMES` set left untouched, and `display_name()` that expands a truncated or surname-only name to the canonical full name only when the same `bsnpr_id` is already linked in `player_id_map.csv` for that very row and the spelling is consistent. Ayuso is excluded and flagged.
+2. `src/build_web_data.py`: `player` (display) added next to `player_raw` in `seasons/*.json` (awards, leaders, scoring champion) and `index/scoring_titles.json`; `index/mvp.json` `player` uses the same function (replacing `_titlecase` for names; team names keep it); digest folds in `display_names.py` and `DIGEST_REVISION` bumps so returning visitors refresh.
+3. JS: season detail reads `player||player_raw`; MVP/scoring rows carry the raw spelling; the curated player search also matches the original spelling (property on existing objects, 0 new top-level names).
+4. D8: Mario Morales `c` gains `gua` (Mets de Guaynabo: MVP 1980/82/83/93 and scoring 1993 rows, `mets_guaynabo`) next to `san` (scoring 1980 row, which conflicts with the 1980 MVP row: flagged, not resolved). Teófilo Cruz keeps `san` (6 season rows) and stays on HOLD in the quiz (owner call, flagged). No other club is added.
+5. Tests in `tests/test_phase72c.py`: table-driven casing over every ALL-CAPS pattern in the real data, override list (evidence present, one per name), expansion rule, search by both spellings (browser), raw and clean files unchanged (digests), build output. `data_review_todo.md` flags Ayuso, unresolved names, Cruz/Morales.
+6. update_asset_hashes, full suite vs baseline 892 passed / 1 skipped / 1 xfailed, Chromium + WebKit at 390 and 1000 (Jugadores search, a corrected-name player page, a Líderes table).
+Not in 72C: Ayuso identity, the 1979 "NO FUE SELECCIONADO" row wording, D9 pipeline. New Spanish: none expected; any goes to docs/strings_pending_phase72.md unapplied.
+
 [BLOCKERS]
 
 - B1 — **Manual, user-only — but partly answered by PHASE_3C.** The bsnpr.com
@@ -9234,3 +9245,9 @@ Files: src/parse_games.py (`_decode` at lines 144/217/354 equivalents), src/appl
 Guarantee: after the repair, the 39,371 rows outside the three names hash to the same sha256 as before (includes the 365 ids a re-parse would move); only `player_raw` and `bsnpr_id` changed, only on the 296 rows. Check mode writes nothing; second `--apply` is a no-op.
 González: 58 rows -> 2513 (57 x 2013 Santurce, 1 x 2012 Humacao = his career rows). Unassigned and listed: 82 `Gonzalez, Javier` Quebradillas 2001-03 (candidate 1006, no season rows), 2 blank-team 2008 rows.
 No Spanish strings. Chromium + WebKit, 390 and 1000: repaired player page (Lloreda Ferrón) and both González pages (2513, 1006): 0 console errors, 0 failed requests, no overflow.
+
+## PHASE_72C_BUILD — display-layer names, Cruz/Morales (built, NOT committed, 2026-10-12)
+Suite: **959 passed, 1 skipped, 1 xfailed** (baseline 892/1/1; +67 in tests/test_phase72c.py, one assertion updated in test_build_web_data). Chromium + WebKit, 390 and 1000: Jugadores search by the source spelling ("goergie"), the Georgie Torres page, a Líderes table, the 1986 season detail: 0 console errors, 0 failed requests, no overflow.
+Files: src/display_names.py (new), src/build_web_data.py (display names, digest folds the module, DIGEST_REVISION 3), web/data (60 season files, index/mvp.json, index/scoring_titles.json, manifest), web/js/{tabs,init,helpers,player,data}.js, web/index.html (hashes), tests/test_phase72c.py, tests/harness/phase72c_probe.mjs, tests/test_build_web_data.py, docs/audits/data_review_todo.md.
+On screen: 144 distinct source spellings change (353 occurrences): 112 ALL-CAPS recased (one of them the GOERGIE override) and 32 truncated or surname-only names expanded through an already-linked id. Override list: 1 entry. `data/raw` and `data/clean` unchanged. No new Spanish strings.
+Left alone and listed in data_review_todo.md: Ayuso, unevidenced typos, ~75 unlinked truncated/surname-only observations, NO FUE SELECCIONADO, Cruz HOLD, Morales 1980 conflict.

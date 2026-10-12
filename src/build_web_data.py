@@ -25,6 +25,7 @@ import unicodedata
 from pathlib import Path
 
 from src.wayback_cdx import REPO_ROOT
+from src.display_names import display_name
 from src.parse_wayback import open_clean_text
 from src.city_season_overrides import OVERRIDES_FILE, load_overrides, override_for
 
@@ -49,7 +50,7 @@ SCHEMA_VERSION = 1
 # digest, and therefore every client's cached web/data copy, untouched. Bump this whenever that happens:
 # DATA.syncVersion() (web/js/helpers.js) then drops the localStorage data cache and asks the service worker
 # to purge its data cache.
-DIGEST_REVISION = 2
+DIGEST_REVISION = 3   # 3: display names (src/display_names.py), PHASE_72C
 _DE_SPLIT = re.compile(r"\s+de\s+|,\s*", re.I)   # "Nick de City" / "Nick, City"
 
 
@@ -137,6 +138,8 @@ def _source_digest(inputs: list[str]) -> str:
         with open_clean_text(path, "r") as fh:
             h.update(fh.read().encode("utf-8"))
     h.update(f"build-revision:{DIGEST_REVISION}".encode("utf-8"))
+    # the display layer decides what is written as `player`; an override edit must refresh clients
+    h.update((Path(__file__).parent / "display_names.py").read_bytes())
     return h.hexdigest()
 
 
@@ -572,10 +575,12 @@ def build_scoring_titles() -> Path:
         if r["agreement"] == "dual_metric_d4":
             praw, pfid = club_of(s)
             rec["dual"] = {
-                "ppg": {"player": r["ppg_champion"], "value": _float(r["ppg_value"]),
+                "ppg": {"player": display_name(r["ppg_champion"]), "player_raw": r["ppg_champion"],
+                        "value": _float(r["ppg_value"]),
                         "club_raw": praw, "franchise_id": pfid,
                         "bsnpr_id": pid_for(r["ppg_champion"], s)},
-                "total_points": {"player": r["total_points_champion"],
+                "total_points": {"player": display_name(r["total_points_champion"]),
+                                 "player_raw": r["total_points_champion"],
                                  "value": _int(r["total_points_value"]),
                                  "club_raw": (hist[s]["team_raw"] if s in hist else None),
                                  "franchise_id": resolve(hist[s]["team_raw"], s) if s in hist else None,
@@ -585,7 +590,7 @@ def build_scoring_titles() -> Path:
             craw, cfid = club_of(s)
             cname = r["historic_player"] or r["seed_player"] or r["leaders_player"] or None
             rec["champion"] = {
-                "player": cname,
+                "player": display_name(cname) if cname else cname, "player_raw": cname,
                 "club_raw": craw, "franchise_id": cfid,
                 "bsnpr_id": pid_for(cname, s),
                 "ppg": _float(r["historic_ppg"]) or _float(r["leaders_ppg"]),
@@ -740,12 +745,12 @@ def build_mvp() -> Path:
         disagree = yr in app_mvp and not _mvp_name_match(app_mvp[yr], r["player_raw"])
         out.append({
             "season": yr,
-            "player": _titlecase(r["player_raw"]),
+            "player": display_name(r["player_raw"]),
             "player_raw": r["player_raw"],
             "bsnpr_id": _int(idmap.get((_norm(r["player_raw"]), r["season"]))),
             "franchise_id": resolve_team(r["team_raw"], yr),
             "team_raw": _titlecase(r["team_raw"]),
-            "also": _titlecase(r["player_raw"]) if disagree else None,
+            "also": display_name(r["player_raw"]) if disagree else None,
         })
     out.sort(key=lambda m: m["season"])
     _jdump(out, WEB / "index" / "mvp.json")
@@ -993,26 +998,52 @@ _LEADER_CATS_ES = {
 }
 
 
+def _shown(rec: dict, raw: str, canonical: str | None = None) -> dict:
+    """Add `player` (display name) to a season-detail record only when it differs from `player_raw`, so a
+    reader sees at a glance which names the display layer changed; the page falls back to `player_raw`."""
+    shown = display_name(raw, canonical)
+    if shown != raw:
+        rec["player"] = shown
+    return rec
+
+
+def _leader_canonical() -> "callable":
+    """(obs_source, player_raw, club_raw, season) -> the canonical full name of the bsnpr_id that
+    player_id_map.csv already links to that exact observation, or None (zero or several ids). Feeds
+    display_name() only; no identity decision is made here."""
+    names = {r["bsnpr_id"]: r["canonical_name"] for r in _read("players_canonical.csv")}
+    ids: dict[tuple, set] = {}
+    for r in _read("player_id_map.csv"):
+        if r["bsnpr_id"] and r["obs_source"].startswith("player_season_leaders"):
+            ids.setdefault((r["obs_source"], r["player_raw"], r["club_raw"], r["season"]), set()).add(r["bsnpr_id"])
+
+    def canonical(src: str, raw: str, club: str, season: str):
+        got = ids.get((src, raw, club, season), set())
+        return names.get(next(iter(got))) if len(got) == 1 else None
+    return canonical
+
+
 def _season_leaders() -> dict[str, dict]:
     """season -> {category: [ {rank, player_raw, club_raw, value, games, kind} ]}
     merged from the 1986/2007+ board and the 2000-2002 <pre> board."""
     out: dict[str, dict] = {}
+    canon = _leader_canonical()
     for r in _read("player_season_leaders.csv"):
         cat = _LEADER_CATS_ES.get(r["category"], r["category"])
-        out.setdefault(r["season"], {}).setdefault(cat, []).append({
+        out.setdefault(r["season"], {}).setdefault(cat, []).append(_shown({
             "rank": _int(r["rank"]), "player_raw": r["player_raw"],
             "club_raw": r["club_raw"], "value": _float(r["prom"]),
             "games": _int(r["games"]), "kind": r["prom_kind"],
-        })
+        }, r["player_raw"], canon("player_season_leaders.csv", r["player_raw"], r["club_raw"], r["season"])))
     for r in _read("player_season_leaders_2000_2002.csv"):
         cat = _LEADER_CATS_ES.get(r["category"], r["category"])
         if r["serie"] and r["serie"] != "Serie Regular":
             continue
-        out.setdefault(r["season"], {}).setdefault(cat, []).append({
+        out.setdefault(r["season"], {}).setdefault(cat, []).append(_shown({
             "rank": _int(r["rank"]), "player_raw": r["player_raw"],
             "club_raw": r["club_raw"], "value": _float(r["prom"]),
             "games": _int(r["games"]), "kind": r["prom_kind"],
-        })
+        }, r["player_raw"], canon("player_season_leaders_2000_2002.csv", r["player_raw"], r["club_raw"], r["season"])))
     for s in out:
         for cat in out[s]:
             out[s][cat].sort(key=lambda x: x["rank"] or 99)
@@ -1079,7 +1110,7 @@ def build_seasons_detail() -> int:
     awards: dict[str, list] = {}
     for r in _read("historic_awards.csv"):
         awards.setdefault(r["season"], []).append(
-            {"award": r["award"], "player_raw": r["player_raw"], "team_raw": r["team_raw"]})
+            _shown({"award": r["award"], "player_raw": r["player_raw"], "team_raw": r["team_raw"]}, r["player_raw"]))
     leaders = _season_leaders()
     resolve_team = _team_resolver()
     standings = _standings_from_games(resolve_team)
@@ -1118,11 +1149,11 @@ def build_seasons_detail() -> int:
                           if st else None),
             "leaders": leaders.get(s) or None,
             "awards": awards.get(s) or None,
-            "scoring_champion": ({"player_raw": hist_sc[s]["player_raw"],
-                                  "team_raw": hist_sc[s]["team_raw"],
-                                  "total_points": _int(hist_sc[s]["total_points"]),
-                                  "ppg": _float(hist_sc[s]["ppg"]),
-                                  "metric_era": hist_sc[s]["metric_era"]}
+            "scoring_champion": (_shown({"player_raw": hist_sc[s]["player_raw"],
+                                         "team_raw": hist_sc[s]["team_raw"],
+                                         "total_points": _int(hist_sc[s]["total_points"]),
+                                         "ppg": _float(hist_sc[s]["ppg"]),
+                                         "metric_era": hist_sc[s]["metric_era"]}, hist_sc[s]["player_raw"])
                                  if s in hist_sc else None),
             "coverage": {
                 "stats_tracked": {k: (v == "1") for k, v in tracked.get(s, {}).items()

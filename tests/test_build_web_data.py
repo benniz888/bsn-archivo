@@ -89,7 +89,8 @@ class TestBuild:
         assert resolved >= 0.9 * len(st)
         # PHASE_3I — historic champions now carry a bsnpr_id (title attestation)
         s48 = next(r for r in st if r["season"] == 1948)
-        assert s48["champion"]["player"] == "RAUL FELICIANO"
+        assert s48["champion"]["player_raw"] == "RAUL FELICIANO"      # the source spelling is kept
+        assert s48["champion"]["player"] == "Raul Feliciano"          # PHASE_72C display name
         assert s48["champion"]["bsnpr_id"] == 1943
         with_id = sum(1 for r in st if (r["champion"] or {}).get("bsnpr_id")
                       or (r["dual"] or {}).get("ppg", {}).get("bsnpr_id"))
