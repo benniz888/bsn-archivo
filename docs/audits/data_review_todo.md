@@ -216,3 +216,9 @@ Source: docs/audits/phase68_archivo_audit.md. Nothing below was touched in PHASE
 **Seen during PHASE_68 verification (data-adjacent, not changed)**
 - `manifest.counts.seasons` is 98 and `YEARS.length` is 97 (the `1942-1943` split-season file is the extra one, per D3). Every "N temporadas" in the app uses `YEARS.length` (97); the manifest's 98 counts files, not seasons.
 - `seasons_with_leaders` is 15: 1986, 2000, 2001, 2002, 2007–2010, 2012–2014, 2018–2021 (from `web/data/seasons/*.json`). Any prose that still describes leader coverage by a fixed year should be read against that list.
+
+## PHASE_69 follow-ups (Oct 12)
+
+- **Lawyer question: verbatim bio prose.** The player biographies from bsnpr.com (Wayback captures) are shown verbatim on player pages. Is reproducing that prose acceptable, or should it be shortened, paraphrased or dropped? Créditos (PHASE_69) says the bios, season stats, tables and boxscores come from bsnpr.com files kept by the Internet Archive; it does not answer the rights question.
+- **PHASE_72: English one-liners with no provenance.** `HOF[].role`, `POOL[].b`, `NBA_PLAYERS` and `SEASON_AWARDS` carry English one-line descriptions with no recorded source. Find the source for each or replace the text before it is relied on (PC1, PC3).
+- **Lawyer: registrar and DNS provider unknown.** The privacy text says the site is served from GitHub Pages and that the host sees visitor IPs. Who the domain registrar is, and whether a DNS or proxy provider sits in front of `bsnarchivo.com`, is not recorded; any of them may also process visitor data. Confirm and, if needed, add them to the privacy text.

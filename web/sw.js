@@ -1,16 +1,19 @@
 /* BSN Archivo — service worker (PHASE_5 5E; PHASE_1_SPLIT added css/js routing;
- * PHASE_61 added the brand-asset precache and bumped the shell cache to v2).
+ * PHASE_61 added the brand-asset precache and bumped the shell cache to v2;
+ * PHASE_69 self-hosted the fonts: shell cache v3, the two woff2 files precached, /fonts/ cache-first).
  *
  * Two caches. Install precaches only the small, fixed-name brand files (the
  * header mark, icons, manifest — PRECACHE below); everything else is cached on
  * its own first successful request instead:
- *   bsn-shell-v2 : the HTML document, plus web/css/*.css, web/js/*.js and the
- *                  brand files
+ *   bsn-shell-v3 : the HTML document, plus web/css/*.css, web/js/*.js, the
+ *                  brand files and the self-hosted fonts
  *   bsn-data  : the per-entity JSON under data/
  *
  * Routing (same-origin GET only; everything else passes straight through):
  *   navigation           -> network-first, cache the response, offline falls
  *                           back to the cached shell
+ *   fonts/ paths         -> cache-first (filenames carry the package version, so a
+ *                           cached file is never stale)
  *   css/ and js/ paths   -> network-first, cache the response, offline falls
  *                           back to that same file's own cache entry (added
  *                           for PHASE_1_SPLIT: these used to be inline in the
@@ -27,7 +30,7 @@
 
 // Bump the suffix whenever the shell's markup changes shape: activate() drops every cache not in
 // KEEP, so a bump evicts a stale cached document that would otherwise show the old header offline.
-const SHELL = 'bsn-shell-v2';
+const SHELL = 'bsn-shell-v3';
 const DATA = 'bsn-data';
 const KEEP = [SHELL, DATA];
 
@@ -40,6 +43,8 @@ const PRECACHE = [
   'img/brand/icon_192.png',
   'img/brand/icon_512.png',
   'img/brand/icon_maskable_512.png',
+  'fonts/inter-latin-opsz-normal-5.3.0.woff2',
+  'fonts/oswald-latin-wght-normal-5.3.0.woff2',
 ];
 
 self.addEventListener('install', (e) => {
@@ -102,6 +107,19 @@ self.addEventListener('fetch', (e) => {
         return (await cache.match(req)) || (await cache.match('./')) ||
                Response.error();
       }
+    })());
+    return;
+  }
+
+  // Fonts: the version is in the filename, so a cached copy can never be stale. Cache-first.
+  if (url.pathname.includes('/fonts/')) {
+    e.respondWith((async () => {
+      const cache = await caches.open(SHELL);
+      const hit = await cache.match(req);
+      if (hit) return hit;
+      const res = await fetch(req);
+      if (res && res.ok) cache.put(req, res.clone());
+      return res;
     })());
     return;
   }

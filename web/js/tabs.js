@@ -918,7 +918,7 @@ const TABS=[
 const NAV=TABS.slice(1);                 /* desktop top strip — inicio is the wordmark */
 const BOTTOM=TABS.map(t=>t[0]);          /* mobile bottom bar — all 6 */
 /* Every <section role="tabpanel"> id. Perfil has no nav button (gear only). */
-const PANELS=[...TABS.map(t=>t[0]),'perfil'];
+const PANELS=[...TABS.map(t=>t[0]),'perfil','privacidad','terminos','accesibilidad','creditos'];
 let CURRENT='inicio';
 
 /* PHASE_2_REDESIGN step 7 (owner-approved, redesign-v2): rail items, same TABS/NAV
@@ -1147,6 +1147,16 @@ function _showPanel(id,noScroll){
   });
   const active=document.getElementById('tab-'+id);
   if(active&&active.scrollIntoView) active.scrollIntoView({block:'nearest',inline:'center'});
+  /* PHASE_69: keyboard and screen-reader users land on the page they opened, not on <body>. preventScroll
+     because the scrollTo below decides where the page sits. Not during boot (the splash is still
+     up while a deep link is applied): moving focus then would skip the skip link for no reason. */
+  if(changed&&shown){
+    const sp=document.getElementById('splash');
+    if(!sp||sp.classList.contains('gone')){
+      const h=Array.from(shown.querySelectorAll('h1')).find(x=>x.offsetParent!==null);
+      if(h){ h.tabIndex=-1; h.focus({preventScroll:true}); }
+    }
+  }
   if(!noScroll){
     const smooth = changed && !matchMedia('(prefers-reduced-motion:reduce)').matches;
     window.scrollTo({top:0,behavior:smooth?'smooth':'auto'});
@@ -4795,16 +4805,78 @@ function buildProfile(){
 
     <h3 class="sec">Tus datos</h3>
     <div class="btnrow">
-      <button class="btn" onclick="exportProfile()">Descargar mis datos</button>
-      <button class="btn" onclick="resetProfile()">Restaurar preferencias</button>
+      <button class="btn b44" onclick="exportProfile()">Descargar mis datos</button>
+      <button class="btn b44" onclick="resetProfile()">Restaurar preferencias</button>
+      <button class="btn b44 danger" id="wipeBtn" aria-expanded="false" aria-controls="wipeBox">Borrar todos los datos de este dispositivo</button>
     </div>
-    <p class="note" id="profMsg"></p>`;
+    <div class="warn wipebox" id="wipeBox" role="alertdialog" aria-labelledby="wipeQ" hidden>
+      <p id="wipeQ" style="margin:0 0 var(--sp-3)">¿Borrar todo lo que este sitio guarda en tu dispositivo? No se puede deshacer.</p>
+      <div class="btnrow" style="margin-top:0">
+        <button class="btn b44 danger" id="wipeGo">Borrar todo</button>
+        <button class="btn b44" id="wipeNo">Cancelar</button>
+      </div>
+    </div>
+    <p class="note" id="profMsg" role="status" tabindex="-1"></p>
+    <p class="note profnote">Qué se guarda en este navegador y cómo borrarlo: <a href="#privacidad">Política de privacidad</a>.</p>`;
 
   $('#profName').oninput=e=>{
     setProf('name',e.target.value.slice(0,24));
     try{ buildHub(); }catch(err){ console.error('BSN: falló el hub al cambiar el nombre',err); }
   };
   $('#profStart').onchange=e=>setProf('start',e.target.value);
+
+  /* PHASE_69: "delete everything this site stores on this device". Inline two-step confirm (no
+     window.confirm). Closure-only: nothing new at top level. The wipe does NOT reload the page.
+     A reload would re-run boot, which writes the default profile, re-registers the service worker
+     and refills the data copy, so storage would look un-deleted a second later. Instead the
+     in-memory profile is reset to defaults WITHOUT saving it and the visible pieces are redrawn,
+     so storage stays empty until the visitor does something that stores again. No reload also
+     means no loop is possible. DATA.mem is left alone on purpose: it is the public archive, and
+     keeping it in memory avoids re-writing the offline copy during this page view. */
+  const wipeBtn=$('#wipeBtn'), wipeBox=$('#wipeBox'), wipeNo=$('#wipeNo'), wipeGo=$('#wipeGo');
+  const closeWipe=(refocus)=>{
+    wipeBox.hidden=true; wipeBtn.setAttribute('aria-expanded','false');
+    if(refocus) wipeBtn.focus();
+  };
+  wipeBtn.onclick=()=>{
+    wipeBox.hidden=false; wipeBtn.setAttribute('aria-expanded','true');
+    wipeNo.focus();   /* the safe choice is the one under the cursor */
+  };
+  wipeNo.onclick=()=>closeWipe(true);
+  wipeBox.onkeydown=e=>{ if(e.key==='Escape'){ e.stopPropagation(); closeWipe(true); } };
+  wipeGo.onclick=async()=>{
+    wipeGo.disabled=true; wipeNo.disabled=true;
+    const failed=[];
+    try{
+      Object.keys(localStorage).filter(k=>k.indexOf('bsn:')===0).forEach(k=>localStorage.removeItem(k));
+    }catch(e){ failed.push('almacenamiento'); console.error('BSN: no se pudo vaciar localStorage',e); }
+    Object.keys(MEM).forEach(k=>{ delete MEM[k]; });
+    try{
+      if('caches' in window){
+        const names=await caches.keys();
+        await Promise.all(names.filter(n=>n==='bsn-data'||n.indexOf('bsn-shell')===0).map(n=>caches.delete(n)));
+      }
+    }catch(e){ failed.push('caché'); console.error('BSN: no se pudo borrar la caché',e); }
+    try{
+      if('serviceWorker' in navigator){
+        const regs=await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map(r=>r.unregister()));
+      }
+    }catch(e){ failed.push('service worker'); console.error('BSN: no se pudo quitar el service worker',e); }
+    /* back to a first-visit state in memory, drawn but not saved */
+    PROFILE=Object.assign({},PROFILE_DEFAULTS,{primer:'off'});
+    RESET_ARMED=false;
+    applyTheme();
+    buildClubPicker(); buildClubCard(); drawClubPill(); buildStandings2026(); if(typeof paintLandingFeats==='function') paintLandingFeats();
+    try{ buildHub(); }catch(e){ console.error('BSN: falló el hub tras borrar',e); }
+    try{ drawStreak(); loadOrStartDaily(); drawBoard(); }catch(e){ console.error('BSN: falló la cuadrícula tras borrar',e); }
+    buildProfile();
+    const msg=$('#profMsg');
+    msg.textContent=failed.length
+      ? 'No se pudo borrar todo en este navegador. Borra los datos del sitio desde los ajustes de privacidad de tu navegador.'
+      : 'Listo. Se borraron los datos de este dispositivo.';
+    msg.focus({preventScroll:true});
+  };
 }
 
 /* Everything the app holds about you, in one file you can read. The

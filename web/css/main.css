@@ -18,6 +18,16 @@
    team hero card, and — as a fading lead-in, --tri-fade — opens every
    h3.sec divider, so the flag is structural rather than decorative.
    ============================================================ */
+/* PHASE_69: Inter and Oswald are served from /fonts/ (SIL OFL 1.1, @fontsource-variable 5.3.0, latin
+   subset), so no request leaves this origin. Family names stay "Inter" and "Oswald" so no other rule
+   changes. No italic file: the one .nodata label gets a synthesised slant. The latin-only range is
+   guarded by tests/test_phase69_legal.py, which fails the day shipped text needs a latin-ext letter. */
+@font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;
+  src:url(../fonts/inter-latin-opsz-normal-5.3.0.woff2) format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Oswald';font-style:normal;font-weight:200 700;font-display:swap;
+  src:url(../fonts/oswald-latin-wght-normal-5.3.0.woff2) format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 :root{
   /* ground */
   --night:#070C18;      /* page */
@@ -2100,7 +2110,8 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 .cell{min-height:44px;border-radius:var(--r-sm);background:var(--raise);border:1px solid var(--line);
   cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ink-3);
   font-weight:600;position:relative;aspect-ratio:auto;padding:0;transition:transform var(--dur-fast) var(--ease)}
-.cell:hover,.cell:focus-visible{border-color:var(--azul);transform:scale(1.08);z-index:2;outline:none}
+.cell:hover,.cell:focus-visible{border-color:var(--azul);transform:scale(1.08);z-index:2}
+/* PHASE_69: dropped the dead outline:none here; the ring is drawn by the .cell:focus-visible rule near the end of this file. */
 .cell.champ{background:linear-gradient(150deg,var(--azul),var(--azul-deep));border-color:transparent;
   color:var(--flag-w);font-weight:700}
 .cell.dynasty{background:linear-gradient(150deg,var(--rojo),var(--rojo-deep));border-color:transparent;
@@ -2213,6 +2224,41 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padding:1px 5px;
   font-size:12.5px;overflow-wrap:anywhere;word-break:break-word}
 .foot{border-top:1px solid var(--line);margin-top:40px;padding:22px 0 40px;color:var(--ink-3);font-size:12.5px}
+/* PHASE_69: footer legal nav (2x2 on a phone, one row from 640px), every link a 44px target. */
+.foot p{margin:0}
+.footlegal{display:grid;grid-template-columns:1fr 1fr;margin:var(--sp-2) 0}
+.footlegal a{display:flex;align-items:center;min-height:44px;padding:0 var(--sp-3) 0 0;font-weight:600}
+.foot p a{display:inline-block;padding:14px 4px;margin:-14px -4px;overflow-wrap:anywhere}
+@media(min-width:640px){
+  .footlegal{display:flex;flex-wrap:wrap}
+  .footlegal a{padding:0 var(--sp-4);border-left:1px solid var(--line)}
+  .footlegal a:first-child{padding-left:0;border-left:0}
+}
+/* PHASE_69: skip link, visible only on focus. */
+/* fixed, not absolute: it must be on screen wherever the page is scrolled. Literal colours on purpose:
+   --azul-deep flips to a light tint in the light theme, which would put white text on a pale ground.
+   #fff on #092F70 is 12.9:1 in both themes. */
+.skip{position:fixed;left:var(--sp-3);top:-100px;z-index:1000;display:inline-flex;align-items:center;min-height:44px;
+  padding:0 var(--sp-4);background:#092F70;color:#fff;font-weight:700;border-radius:var(--r-sm);text-decoration:none}
+.skip:focus{top:var(--sp-3);outline:2px solid #fff;outline-offset:-4px}
+#main:focus,h1[tabindex="-1"]:focus,#profMsg:focus{outline:none}
+/* PHASE_69: long-form pages (privacidad, terminos, accesibilidad, creditos). */
+.legal{max-width:65ch}
+.legal h3.sec{font-size:var(--fs-md)}
+.legal p,.legal li{color:var(--ink-2);font-size:var(--fs-sm);line-height:1.6;margin:var(--sp-2) 0 0}
+.legal h2{font-size:var(--fs-md);margin:var(--sp-6) 0 var(--sp-2)}
+.legal ul{padding-left:var(--sp-5);margin:var(--sp-2) 0 0}
+.legal .stamp{color:var(--ink-3);font-size:var(--fs-2xs)}
+.legal a,.legalrow a,.profnote a{display:inline-block;padding:14px 4px;margin:-14px -4px;overflow-wrap:anywhere}
+.legaltable{width:100%;border-collapse:collapse;margin-top:var(--sp-3);font-size:var(--fs-xs)}
+.legaltable th,.legaltable td{text-align:left;vertical-align:top;padding:var(--sp-2) var(--sp-3) var(--sp-2) 0;
+  border-bottom:1px solid var(--line);color:var(--ink-2)}
+.legaltable th{color:var(--ink);font-weight:700}
+.legalrow{margin-top:var(--sp-5);color:var(--ink-3);font-size:var(--fs-2xs)}
+.profnote{margin-top:var(--sp-3)}
+.btn.b44{min-height:44px;min-width:44px}
+.btn.danger{border-color:var(--rojo)}
+.wipebox{margin-top:var(--sp-3)}
 /* PHASE_52A (owner-approved, redesign-v2): column counts come from buildCoverage()
    (tabs.js) via the 2 custom properties it sets inline on this element, computed from
    COVERAGE.length itself (never a literal column count baked in here) -- see that
@@ -2239,7 +2285,7 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
    nothing in the code constrains that going forward -- treated as
    ambiguous, skipped per the owner's own instruction rather than guessed.
    Falls back through two more condensed faces, then the system sans, so
-   a slow/failed Google Fonts load never blanks text. Every selector below
+   a slow/failed font load never blanks text. Every selector below
    already carries font-weight:800 from its own rule or from h1-h4 above;
    Oswald has no 800 weight (only 500/600/700 loaded), so the browser's
    normal font-weight matching renders these at Oswald 700 -- expected,

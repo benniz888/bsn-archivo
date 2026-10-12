@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#070C18">
 <meta name="description" content="Archivo histórico independiente del Baloncesto Superior Nacional, 1930–2026. Proyecto de un aficionado, no oficial.">
 <title>El Archivo · Baloncesto Superior Nacional, 1930–2026</title>
@@ -47,16 +47,14 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="El Archivo">
 <meta name="application-name" content="El Archivo">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;1,14..32,400&display=swap" rel="stylesheet">
-<!-- PHASE_2_REDESIGN (branch redesign-v2) step 1: Oswald, a condensed display face, for
-     short numerals/titles only -- see main.css's own comment at the --font-display rule
-     for the exact selector list and why. Reuses the preconnects above (same two hosts). -->
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css?v=302b6c84b999">
+<!-- PHASE_69: Inter and Oswald are self-hosted (fonts/, SIL OFL 1.1; @font-face lives in css/main.css).
+     Preloaded here so the CSS-then-font waterfall does not show a swap. crossorigin is required for font preloads. -->
+<link rel="preload" href="fonts/inter-latin-opsz-normal-5.3.0.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/oswald-latin-wght-normal-5.3.0.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/main.css?v=ef760dea2f73">
 </head>
 <body>
+<a class="skip" href="#main" onclick="event.preventDefault();var m=document.getElementById('main');if(m){m.focus({preventScroll:true});m.scrollIntoView();}">Saltar al contenido</a>
 <div class="splash" id="splash" role="status" aria-live="polite" aria-label="Cargando el archivo">
   <div class="splashinner">
     <img class="splashmark" src="img/brand/logo_mark_64.webp" srcset="img/brand/logo_mark_64.webp 1x, img/brand/logo_mark_128.webp 2x" width="64" height="64" alt="">
@@ -137,7 +135,7 @@
   </div>
 </nav>
 <div class="shellmain">
-<main class="wrap">
+<main class="wrap" id="main" tabindex="-1">
 
 <!-- ═══════════ INICIO — home + the live "Ahora" view (PHASE_8) ═══════════ -->
 <section id="inicio" role="tabpanel" aria-labelledby="tab-inicio">
@@ -198,6 +196,7 @@
         <div id="channels"></div>
       </details>
     </details>
+    <p class="legalrow">Sobre este archivo: <a href="#creditos">Créditos y fuentes</a> · <a href="#privacidad">Privacidad</a></p>
   </div>
 </section>
 
@@ -397,8 +396,7 @@
     <div class="phead">
       <div class="tri"></div>
       <h1 class="big">Perfil</h1>
-      <p class="lede">Todo se guarda en este navegador y en ningún otro sitio. No hay cuenta, no
-        hay servidor, no sale nada de aquí.</p>
+      <p class="lede">Lo que guardas aquí se queda en este navegador. No hay cuentas y este sitio no recibe tus datos.</p>
     </div>
     <div id="profBody"></div>
 
@@ -434,6 +432,7 @@
     <p class="lede">La cobertura no es pareja. Esta rejilla dice, por década, cuánto del archivo está verificado — para que nadie construya un análisis sobre un hueco.</p>
     <div id="coverage"></div>
     <div id="sourcesBox"></div>
+    <p class="legalrow"><a href="#creditos">Licencias y créditos completos.</a></p>
 
     <h3 class="sec">Calidad de datos</h3>
     <p class="lede">Dónde las fuentes no coinciden y qué hicimos con cada caso. El archivo muestra las dos cifras; no escoge una a ojo.</p>
@@ -458,15 +457,153 @@
   </div>
 </section>
 
+<!-- ═══════════ PRIVACIDAD (PHASE_69; text approved by the owner, see docs/strings_pending_phase69.md) ═══════════ -->
+<section id="privacidad" hidden role="tabpanel" aria-label="Política de privacidad">
+  <div class="panel legal">
+    <div class="phead">
+      <div class="tri"></div>
+      <h1 class="big">Política de privacidad</h1>
+      <p class="stamp">Última actualización: 12 de octubre de 2026</p>
+    </div>
+    <p>En breve: este sitio no tiene cuentas, no usa cookies, no usa analítica y no te pide datos. Lo poco que guarda se queda en tu propio dispositivo.</p>
+    <p><strong>Quién publica este sitio.</strong> El Archivo es un proyecto independiente de bennizpr. No hay empresa ni oficina detrás. Para escribirnos: <a href="mailto:benniz.8008@gmail.com">benniz.8008@gmail.com</a>.</p>
+    <p><strong>Dónde está alojado.</strong> El sitio se sirve desde GitHub Pages. Como en cualquier sitio web, quien lo aloja recibe tu dirección IP y datos técnicos de tu navegador cuando lo visitas, y puede guardarlos en sus registros según sus propias políticas. Nosotros no vemos esos registros.</p>
+    <p><strong>Lo que no hacemos.</strong> No usamos cookies. No usamos herramientas de analítica ni de publicidad. No hay formularios que envíen datos, ni cuentas, ni inicio de sesión. No cargamos tipografías, scripts ni imágenes de terceros: todo lo que ves viene de este mismo sitio. Nada de lo que escribes o guardas en el sitio se envía a nosotros.</p>
+    <p><strong>Qué se guarda en tu dispositivo.</strong> Para que el sitio funcione y recuerde tus preferencias, tu navegador guarda esto. Se queda en tu dispositivo y no se envía a ningún sitio:</p>
+    <div style="overflow-x:auto">
+    <table class="legaltable">
+      <thead><tr><th scope="col">Qué</th><th scope="col">Para qué</th><th scope="col">Datos personales</th></tr></thead>
+      <tbody>
+        <tr><td>Tema (claro, oscuro o automático)</td><td>Recordar tu elección</td><td>No</td></tr>
+        <tr><td>Club favorito</td><td>Mostrar tu equipo</td><td>No</td></tr>
+        <tr><td>Nombre opcional (hasta 24 caracteres)</td><td>Mostrar tu nombre en el sitio. Solo existe si lo escribes en Perfil</td><td>Sí, lo que tú escribas</td></tr>
+        <tr><td>Pantalla de entrada y otras preferencias de Perfil</td><td>Abrir el sitio donde prefieres</td><td>No</td></tr>
+        <tr><td>Últimos jugadores y clubes que abriste (hasta 3)</td><td>Mostrarlos en Inicio</td><td>No</td></tr>
+        <tr><td>Progreso de los juegos: racha, mejor marca, respuestas de la Cuadrícula de hoy y de ayer, últimos jugadores de ¿Quién soy?</td><td>Seguir tu racha y no repetir</td><td>No</td></tr>
+        <tr><td>Copia de los datos del archivo</td><td>Cargar más rápido y funcionar sin conexión</td><td>No: es información pública del archivo</td></tr>
+        <tr><td>Copia de las páginas, estilos y scripts del sitio (caché del navegador, «service worker»)</td><td>Funcionar sin conexión</td><td>No</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Todo esto es necesario para que el sitio haga lo que pides, o lo que tú mismo eliges guardar. No sirve para rastrearte ni para mostrarte anuncios. Si escribes tu nombre real en Perfil, queda guardado solo en tu navegador.</p>
+    <p>Se queda hasta que lo borres tú.</p>
+    <p><strong>Ver, descargar y borrar lo que se guarda.</strong></p>
+    <p>En Perfil, «Descargar mis datos» te baja un archivo con lo que el sitio guarda de ti. «Restaurar preferencias» borra tu nombre, tu club, el tema y la pantalla de entrada, pero no tu racha ni tus juegos. «Borrar todos los datos de este dispositivo» elimina todo lo que el sitio guarda, incluida la racha, los juegos y la copia sin conexión.</p>
+    <p>También puedes borrar los datos del sitio desde los ajustes de privacidad de tu navegador.</p>
+    <p><strong>Enlaces a otros sitios.</strong> Hay enlaces a sitios de terceros, por ejemplo las cuentas y la app de la liga. Solo se cargan si tú los abres, y desde ahí rigen las políticas de cada sitio.</p>
+    <p><strong>Datos de otras personas.</strong> El archivo muestra nombres y estadísticas deportivas públicas de jugadores, dirigentes y otras personas. Si eres una de ellas y quieres corregir o retirar algo, escríbenos.</p>
+    <p><strong>Menores.</strong> El sitio no recopila datos personales de nadie, incluidos menores de edad.</p>
+    <p><strong>Tus opciones y cómo contactarnos.</strong> Como no tenemos tus datos, no hay nada que pedirnos ver o borrar: lo controlas tú desde Perfil o desde tu navegador. Si tienes dudas, escribe a <a href="mailto:benniz.8008@gmail.com">benniz.8008@gmail.com</a> o por Instagram <a href="https://www.instagram.com/bennizpr/" target="_blank" rel="noopener">@bennizpr</a>.</p>
+    <p><strong>Cambios.</strong> Si el sitio cambia lo que guarda o añade cuentas u otros servicios, esta política se actualizará antes y cambiará la fecha de arriba. Historial: 12 de octubre de 2026: primera versión.</p>
+  </div>
+</section>
+
+<!-- ═══════════ TÉRMINOS (PHASE_69) ═══════════ -->
+<section id="terminos" hidden role="tabpanel" aria-label="Términos de uso">
+  <div class="panel legal">
+    <div class="phead">
+      <div class="tri"></div>
+      <h1 class="big">Términos de uso</h1>
+      <p class="stamp">Última actualización: 12 de octubre de 2026</p>
+    </div>
+    <p><strong>Qué es este sitio.</strong> El Archivo es un archivo histórico del Baloncesto Superior Nacional (BSN) de Puerto Rico, hecho por un aficionado y para aficionados, con fines informativos y de consulta. Al usarlo aceptas estos términos.</p>
+    <p><strong>Los datos pueden tener errores.</strong> Reunimos estadísticas de muchas fuentes públicas y a veces no coinciden entre sí. El archivo muestra los huecos y las discrepancias a propósito. No garantizamos que los datos estén completos, al día o libres de errores; los totales de carrera son un mínimo, no una cifra oficial. Para ver qué sabemos, qué falta y qué está en disputa, consulta <a href="#archivo/calidad">Calidad de datos</a>. Para cifras oficiales, consulta a la liga.</p>
+    <p><strong>Proyecto independiente.</strong> No es un sitio oficial del BSN. No está afiliado ni respaldado por el Baloncesto Superior Nacional ni por sus equipos.</p>
+    <p><strong>Nombres y marcas de terceros.</strong> Los nombres de la liga, de los equipos y de las personas, y las marcas que pertenecen a otros, se mencionan solo para identificarlos. Los escudos y retratos que ves en este sitio son dibujos propios y no son los símbolos oficiales de nadie. Pertenecen a sus dueños los derechos sobre sus nombres y marcas.</p>
+    <p><strong>Quién publica el sitio.</strong> El Archivo es un proyecto independiente de bennizpr. No se ha constituido como empresa. Contacto: <a href="mailto:benniz.8008@gmail.com">benniz.8008@gmail.com</a>.</p>
+    <p><strong>Uso aceptable.</strong> Puedes usar el sitio, compartir enlaces y citar datos con crédito al archivo y a sus fuentes. No lo uses para hacer pasar tu trabajo por oficial, para sobrecargar el servicio ni para acceder a lo que no está publicado. El contenido de terceros mantiene sus propias condiciones (ver <a href="#creditos">Créditos</a>).</p>
+    <p><strong>Sin garantía y limitación de responsabilidad.</strong> El sitio se ofrece «tal cual» y «según disponibilidad», sin garantías de ningún tipo. En la medida en que la ley lo permita, quien publica el sitio no responde por pérdidas ni daños que resulten de usarlo o de confiar en sus datos. Esto no limita ningún derecho que la ley no permita limitar.</p>
+    <p><strong>Propiedad intelectual.</strong> Las estadísticas son hechos. El diseño, el código y los textos originales de este sitio son de bennizpr, con todos los derechos reservados, salvo el contenido derivado de Wikipedia (CC BY-SA 4.0) y las tipografías (SIL Open Font License). Los detalles están en <a href="#creditos">Créditos</a>.</p>
+    <p><strong>Correcciones y retiros.</strong> Si ves un error, o eres dueño de un contenido, o apareces en el archivo y quieres que lo corrijamos o lo retiremos, escríbenos a <a href="mailto:benniz.8008@gmail.com">benniz.8008@gmail.com</a> con el enlace y lo que necesitas. Lo revisaremos.</p>
+    <p><strong>Enlaces externos.</strong> Los enlaces a otros sitios son por comodidad. No controlamos esos sitios ni respondemos por ellos.</p>
+    <p><strong>Cambios.</strong> Podemos actualizar estos términos. La versión vigente es la publicada aquí, con su fecha. Si sigues usando el sitio después de un cambio, aceptas la versión nueva. Historial: 12 de octubre de 2026: primera versión.</p>
+  </div>
+</section>
+
+<!-- ═══════════ ACCESIBILIDAD (PHASE_69) ═══════════ -->
+<section id="accesibilidad" hidden role="tabpanel" aria-label="Declaración de accesibilidad">
+  <div class="panel legal">
+    <div class="phead">
+      <div class="tri"></div>
+      <h1 class="big">Declaración de accesibilidad</h1>
+    </div>
+    <p>Queremos que cualquier persona pueda usar El Archivo. Nuestra meta es cumplir las Pautas de Accesibilidad para el Contenido Web (WCAG) 2.2, nivel AA. <strong>No afirmamos que el sitio las cumpla por completo.</strong> Esta página dice lo que sí funciona y lo que todavía no.</p>
+    <p class="stamp">Última revisión: 12 de octubre de 2026.</p>
+    <h2>Qué ya funciona</h2>
+    <ul>
+      <li>La página está marcada en español.</li>
+      <li>Hay regiones de navegación y de contenido principal, y cada página tiene un título principal.</li>
+      <li>Hay un enlace «Saltar al contenido» al empezar la página.</li>
+      <li>Al cambiar de página, el foco del teclado pasa al título de la página nueva.</li>
+      <li>Los controles muestran un contorno visible cuando los enfocas con el teclado.</li>
+      <li>Puedes ampliar la pantalla con los dedos.</li>
+      <li>Si tu dispositivo pide menos movimiento, la mayoría de las animaciones del sitio se reducen o se detienen.</li>
+      <li>El sitio tiene tema claro y oscuro, y sigue el que tu dispositivo prefiere.</li>
+    </ul>
+    <h2>Lo que aún falla o no se ha probado</h2>
+    <ul>
+      <li>El título de la pestaña del navegador es el mismo en todas las pantallas.</li>
+      <li>El contraste de color se ha revisado en gran parte, pero hay elementos pendientes de verificar, como las insignias de posición 1 a 3 en algunas tablas.</li>
+      <li>No hemos probado el sitio con lectores de pantalla ni hemos corrido una auditoría automática completa. Los escudos y retratos son dibujos y no todos tienen descripción de texto.</li>
+      <li>Los datos históricos tienen huecos que se muestran como casillas vacías o con guiones.</li>
+    </ul>
+    <p><strong>Cómo avisarnos.</strong> Si algo no funciona para ti, escríbenos a <a href="mailto:benniz.8008@gmail.com">benniz.8008@gmail.com</a> o por Instagram <a href="https://www.instagram.com/bennizpr/" target="_blank" rel="noopener">@bennizpr</a>. Dinos qué página, qué dispositivo y qué navegador usas, y qué no pudiste hacer. Intentaremos corregirlo o darte la información de otra forma.</p>
+  </div>
+</section>
+
+<!-- ═══════════ CRÉDITOS (PHASE_69) ═══════════ -->
+<section id="creditos" hidden role="tabpanel" aria-label="Créditos y fuentes">
+  <div class="panel legal">
+    <div class="phead">
+      <div class="tri"></div>
+      <h1 class="big">Créditos y fuentes</h1>
+    </div>
+    <p>El Archivo reúne información de fuentes públicas. Aquí decimos cuáles y bajo qué condiciones se usan.</p>
+    <p><strong>Wikipedia.</strong> Parte de los datos de este sitio, como las listas de campeones y franquicias, las arenas, los premios de temporada y los líderes de carrera, se basan en artículos de Wikipedia en español (<a href="https://es.wikipedia.org/" target="_blank" rel="noopener">es.wikipedia.org</a>) y en inglés (<a href="https://en.wikipedia.org/" target="_blank" rel="noopener">en.wikipedia.org</a>). Ese contenido está disponible bajo la licencia <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">Creative Commons Atribución-CompartirIgual 4.0 Internacional (CC BY-SA 4.0)</a>. Los autores de cada artículo aparecen en el historial de la propia página de Wikipedia.</p>
+    <p><strong>Se hicieron cambios.</strong> Hemos reorganizado, resumido, traducido y combinado ese contenido con otras fuentes, y hemos corregido o marcado discrepancias. Estos cambios son nuestros y no han sido revisados ni respaldados por Wikipedia ni por sus autores. El material adaptado de Wikipedia se comparte bajo la misma licencia, CC BY-SA 4.0.</p>
+    <p><strong>Artículos usados.</strong></p>
+    <ul>
+      <li><a href="https://en.wikipedia.org/wiki/Baloncesto_Superior_Nacional" lang="en" target="_blank" rel="noopener">Baloncesto Superior Nacional</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/2024_Baloncesto_Superior_Nacional_season" lang="en" target="_blank" rel="noopener">2024 Baloncesto Superior Nacional season</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/Carlos_Arroyo" lang="en" target="_blank" rel="noopener">Carlos Arroyo</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/Raymond_Dalmau" lang="en" target="_blank" rel="noopener">Raymond Dalmau</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/Martin_Ansa" lang="en" target="_blank" rel="noopener">Martin Ansa</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/Willie_Quinones" lang="en" target="_blank" rel="noopener">Willie Quinones</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/Willie_Melendez" lang="en" target="_blank" rel="noopener">Willie Melendez</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/Mike_Rosario" lang="en" target="_blank" rel="noopener">Mike Rosario</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/Bonzi_Wells" lang="en" target="_blank" rel="noopener">Bonzi Wells</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/George_Conditt_IV" lang="en" target="_blank" rel="noopener">George Conditt IV</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/Jimmy_Thordsen" lang="en" target="_blank" rel="noopener">Jimmy Thordsen</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/John_Meeks_(basketball)" lang="en" target="_blank" rel="noopener">John Meeks (basketball)</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/Leon_Smith_(basketball)" lang="en" target="_blank" rel="noopener">Leon Smith (basketball)</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/Tyler_Hines" lang="en" target="_blank" rel="noopener">Tyler Hines</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/Tyreke_Evans" lang="en" target="_blank" rel="noopener">Tyreke Evans</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/Coliseo_Manuel_Iguina" lang="en" target="_blank" rel="noopener">Coliseo Manuel Iguina</a></li>
+      <li><a href="https://es.wikipedia.org/wiki/Santurce_(San_Juan)" lang="es" target="_blank" rel="noopener">Santurce (San Juan)</a></li>
+    </ul>
+    <p><strong>Otras fuentes.</strong> Las reseñas de jugadores, las estadísticas por temporada, las tablas históricas y los boxscores vienen de archivos de bsnpr.com conservados por el Internet Archive (Wayback Machine). También usamos estadísticas, titulares resumidos y alineaciones de la app y de los datos oficiales de la liga, y notas de la prensa puertorriqueña y otras fuentes públicas, citadas donde aparecen en el sitio. Los titulares son solo títulos; el texto de los artículos es de sus medios. Las estadísticas son hechos; los datos pueden tener errores (ver <a href="#archivo/calidad">Calidad de datos</a>).</p>
+    <p><strong>Tipografías.</strong> Este sitio usa las tipografías <strong>Inter</strong> (© The Inter Project Authors) y <strong>Oswald</strong> (© The Oswald Project Authors), con licencia <a href="https://openfontlicense.org/" target="_blank" rel="noopener">SIL Open Font License, versión 1.1</a>. Se sirven desde este mismo sitio. Textos de las licencias: <a href="fonts/OFL-Inter.txt" target="_blank" rel="noopener">Inter</a> · <a href="fonts/OFL-Oswald.txt" target="_blank" rel="noopener">Oswald</a>.</p>
+    <p><strong>Marca e íconos.</strong> El logotipo y los íconos de El Archivo son creación de bennizpr.</p>
+    <p><strong>Nombres y marcas.</strong> Los nombres de la liga, los equipos y las personas se usan solo para identificarlos y pertenecen a sus dueños. Este es un proyecto independiente y no tiene vínculo oficial con ellos.</p>
+    <p><strong>Correcciones.</strong> ¿Falta un crédito o hay algo mal atribuido? Escríbenos a <a href="mailto:benniz.8008@gmail.com">benniz.8008@gmail.com</a>.</p>
+  </div>
+</section>
+
 </main>
 
 <div class="wrap">
   <footer class="foot">
     <div class="tri" style="width:90px;margin-bottom:12px"></div>
-    <p style="margin:0">El Archivo · construido por <b>bennizpr</b> · San Juan, Puerto Rico.<br>
-    Los datos vienen de fuentes públicas citadas en «El archivo». Proyecto independiente de un aficionado. No está afiliado ni respaldado por el Baloncesto Superior Nacional ni por sus equipos.<br>
-    Este sitio no usa cookies ni analítica. Las tipografías vienen de Google Fonts, por lo que Google recibe tu dirección IP. Tu navegador guarda solo tus preferencias (tema y club favorito), tu progreso en los juegos y una copia de los datos para que el sitio funcione sin conexión.<br>
-    ¿Ves un error o quieres que retiremos algo? Escríbenos a <a href="mailto:benniz.8008@gmail.com" target="_blank" rel="noopener">benniz.8008@gmail.com</a> o por Instagram <a href="https://www.instagram.com/bennizpr/" target="_blank" rel="noopener">@bennizpr</a>.</p>
+    <p>El Archivo · construido por <b>bennizpr</b> · San Juan, Puerto Rico.<br>
+    Proyecto independiente. No es un sitio oficial del BSN. No está afiliado ni respaldado por el Baloncesto Superior Nacional ni por sus equipos.<br>
+    Este sitio no usa cookies ni analítica y no pide datos personales. Las tipografías se sirven desde este mismo sitio. Tu navegador guarda en tu dispositivo tus preferencias, tu progreso en los juegos y una copia de los datos; consulta la <a href="#privacidad">Política de privacidad</a>.</p>
+    <nav class="footlegal" aria-label="Información legal">
+      <a href="#privacidad">Privacidad</a>
+      <a href="#terminos">Términos</a>
+      <a href="#accesibilidad">Accesibilidad</a>
+      <a href="#creditos">Créditos</a>
+    </nav>
+    <p class="footcontact">¿Ves un error o quieres que retiremos algo? Escríbenos a <a href="mailto:benniz.8008@gmail.com">benniz.8008@gmail.com</a> o por Instagram <a href="https://www.instagram.com/bennizpr/" target="_blank" rel="noopener">@bennizpr</a>.</p>
   </footer>
 </div>
 </div><!-- /.shellmain -->
@@ -478,7 +615,7 @@
 <script src="js/player.js?v=e078f1014cba"></script>
 <script src="js/data-quality.js?v=0dbf5b135d19"></script>
 <script src="js/games.js?v=8bfc96dfee30"></script>
-<script src="js/tabs.js?v=348bf46e7b24"></script>
+<script src="js/tabs.js?v=1dc7a4a6c7fb"></script>
 <script src="js/init.js?v=3c2ceb340594"></script>
 <script>
 
