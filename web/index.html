@@ -54,7 +54,7 @@
      short numerals/titles only -- see main.css's own comment at the --font-display rule
      for the exact selector list and why. Reuses the preconnects above (same two hosts). -->
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css?v=017ad5f9b776">
+<link rel="stylesheet" href="css/main.css?v=302b6c84b999">
 </head>
 <body>
 <div class="splash" id="splash" role="status" aria-live="polite" aria-label="Cargando el archivo">
@@ -207,7 +207,7 @@
   <div class="panel">
     <div class="phead">
       <div class="tri"></div>
-      <h1 class="big">97 temporadas</h1>
+      <h1 class="big" id="histCount"></h1>
       <p class="lede">Cada bloque es una temporada, pintado con el color del campeón. Las dinastías se leen como franjas sólidas. Toca cualquiera.</p>
     </div>
     <!-- PHASE_11 (owner-approved, redesign-v2): legend + scroll-wrap added to the real
@@ -224,7 +224,7 @@
     <div class="strip" id="titleStats"></div>
 
     <h3 class="sec">Títulos por franquicia</h3>
-    <p class="lede">Quién ha ganado más en 97 temporadas. Bayamón lleva la delantera desde hace décadas.</p>
+    <p class="lede" id="titleLede"></p>
     <div id="titleBars"></div>
 
     <h3 class="sec">Dinastías</h3>
@@ -453,7 +453,7 @@
 
     <h3 class="sec">Glosario</h3>
     <p class="lede">Las palabras que este archivo usa sin explicar en el resto de la app.
-      También se pueden preguntar en Consulta: escribe «qué es un refuerzo».</p>
+      También se pueden preguntar en <a class="xlink" href="#archivo/preguntar">Preguntar</a>: escribe «qué es un refuerzo».</p>
     <div id="glosBox"></div>
   </div>
 </section>
@@ -478,7 +478,7 @@
 <script src="js/player.js?v=e078f1014cba"></script>
 <script src="js/data-quality.js?v=0dbf5b135d19"></script>
 <script src="js/games.js?v=8bfc96dfee30"></script>
-<script src="js/tabs.js?v=97826c82baf0"></script>
+<script src="js/tabs.js?v=348bf46e7b24"></script>
 <script src="js/init.js?v=3c2ceb340594"></script>
 <script>
 

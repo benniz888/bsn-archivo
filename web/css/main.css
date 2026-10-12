@@ -2095,7 +2095,7 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend i{width:11px;height:11px;border-radius:3px;display:block;flex:none}
 .ribbon-wrap{overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}
-.ribbon{display:grid;grid-template-columns:repeat(20,1fr);gap:4px;min-width:900px;margin-top:0}
+.ribbon{display:grid;grid-template-columns:repeat(20,1fr);gap:4px;min-width:956px;margin-top:0}
 @media(max-width:639px){.ribbon{grid-template-columns:repeat(7,minmax(44px,1fr));min-width:0}}
 .cell{min-height:44px;border-radius:var(--r-sm);background:var(--raise);border:1px solid var(--line);
   cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ink-3);
@@ -2133,7 +2133,7 @@ tr.cut td{border-bottom:1px solid var(--azul)}
    color, flagged per this file's own literal-token discipline. */
 .bar-row.rk1 .rk{background:linear-gradient(135deg,#f4cd6b,#c9962a);color:#3a2a00}
 .bar-row.rk2 .rk{background:linear-gradient(135deg,#dfe4ea,#a9b1bb);color:#1a1e23}
-.bar-row.rk3 .rk{background:linear-gradient(135deg,#e3a165,#a8672f);color:#2c1600}
+.bar-row.rk3 .rk{background:linear-gradient(135deg,#e3a165,#b87a3a);color:#1a0d00}
 .bar-row .who{display:flex;align-items:center;gap:var(--sp-2_5);min-width:0}
 .bar-row .pn{font-weight:600;font-size:var(--fs-xs);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bar-row .wrap{display:flex;flex-direction:column;gap:6px;min-width:0;flex:1}
@@ -3205,3 +3205,32 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
   .eq-jr svg{transition:transform .4s ease}
   .eq-jr:hover svg{transform:rotate(-2deg)}
 }
+
+/* PHASE_68 (redesign-v3): tap targets >= 44px (A08) and a visible edge cue on every horizontal scroller (A06).
+   Min sizes only; padding and look are untouched. */
+input[type=search],input[type=text],select,textarea{min-height:44px}
+.chip,.btn,.subtab button{min-height:44px}
+.thbtn{min-width:44px}
+/* the edge fade (.tblbox.more-r::after, above) plus a drawn chevron on the header row, so the cue is a
+   shape and not only a colour change; --ink-2 on --deep is well above 3:1 in both themes */
+.tblbox.more-r::before{content:"";position:absolute;top:22px;right:10px;width:8px;height:8px;
+  border-top:2px solid var(--ink-2);border-right:2px solid var(--ink-2);
+  transform:translateY(-50%) rotate(45deg);pointer-events:none;z-index:8}
+/* PHASE_68 (A07): links from table and list rows to the existing views. Text links keep their line height and
+   reach 44px through padding balanced by negative margin (same pattern as the Calidad link above). */
+a.cellbtn{text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
+.cellbtn.yrlink{min-width:44px;justify-content:flex-end}
+a.xlink{display:inline-block;padding:14px 7px;margin:-14px -7px;color:inherit;text-decoration:underline;
+  text-decoration-color:var(--line);text-underline-offset:3px}
+a.xlink:hover{color:var(--blanco);text-decoration-color:currentColor}
+.lead-row a.yrchip{display:flex;align-items:center;justify-content:center;box-sizing:border-box;min-height:44px;text-decoration:none}
+/* the season cells had `outline:none` and showed focus only as a border colour and scale; draw the ring */
+.cell:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+/* player page: tabs and back link were 41px and 20px high */
+.ptabs button{min-height:44px}
+#jugadores .pback a{min-height:44px}
+/* A16, measured with computed colours: the bronze badge's dark stop gave 3.80:1 under its label (now 5.34:1 at the
+   worst stop), and white on --rojo in the dark theme gave 4.14:1 for the 12px counts in the finals matrix. */
+:root:not([data-theme="light"]) .matrix td.cellv.hi{background:var(--rojo-deep)}
+/* unranked-medal numerals were --ink-3 on --raise: 4.33:1 in the light theme, so use --ink-2 */
+.bar-row .rk{color:var(--ink-2)}

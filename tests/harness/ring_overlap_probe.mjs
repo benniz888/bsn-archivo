@@ -68,7 +68,7 @@ function measureTiles() {
     }
     const labels = [...tile.querySelectorAll('.l, .n')].map(e => ({ text: e.textContent.trim().slice(0, 24), ratio: +contrast(e).toFixed(2) }));
     const noteInk = ink.filter(k => k.el.closest('.note')).length;
-    out.push({ tile: tile.className || tile.tagName, circles: circles.length, ink: ink.length, noteInk, hits, zfail, labels });
+    out.push({ tile: tile.className || tile.tagName, circles: circles.length, ink: ink.length, noteInk, hasNote: !!tile.querySelector('.note'), hits, zfail, labels });
   });
   return out;
 }

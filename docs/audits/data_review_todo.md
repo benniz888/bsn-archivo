@@ -200,3 +200,19 @@ A.D. Vassallo (2013,2016,2018,2019,2020); Admiral Schofield (2026); Aleem Ford (
 Rule: a LEADERS row is not used as a question option when total ÷ games differs from its listed average by more than 0.15 (same rule as the ¿Quién soy? rank clues). Checked every row of points (10), rebounds (10), assists (10); "juegos jugados" reads the games column of the points rows, which all pass; "títulos de la franquicia" reads F[k].won (no ratio to check).
 - Fails (1 of 30): **assists #8 Raymond Dalmau**, 2,302 in 537 games = 4.29 per game, listed 5.1. Points 0 fail, rebounds 0 fail, games 0 fail, titles n/a. Still open: either the total or the average is wrong (5.1 would be about 2,740); needs an independent source. His points (11,592 / 537 = 21.6) and rebounds (5,673 / 537 = 10.6) rows are consistent and stay.
 - Pairing rule (not a data issue): two values are never paired when they differ by less than max(1, 2% of the larger).
+
+
+### PHASE_68 — Archivo build: items deferred (2026-10-11)
+Source: docs/audits/phase68_archivo_audit.md. Nothing below was touched in PHASE_68.
+
+**PHASE_72 (data)**
+- **A02 — source-name quality in per-season detail and the Premios scoring list.** Typo "GOERGIE TORRES" (1986 MVP); names truncated by the parse ("Ayuso, Elias 'Lar", "Morales, Mario 'Qui", "Butler, Mario Albe" in 2013 and 1986 leaders); ALL-CAPS and unaccented forms ("RAUL FELICIANO", "Teofilo Cruz", "NEFTALI RIVERA"); three name formats on one page ("Bass, Paris", "CHRISTIAN DALMAU", "Hector Blondet"). The same player shows as "Teófilo Cruz" elsewhere. Fix at the parse (`src/`), not by display rewrite; where `bsnpr_id` resolves, the build can show the canonical name, otherwise the raw string stays.
+- **A03 — Rubén Rodríguez 6,178 (Récords) vs Mario Butler 8,236 (Líderes) career rebounds.** Already recorded above under "PHASE_67C fixup" (the two RECORDS/LEADERS bullets); not repeated. PHASE_68 built no note and picked no side.
+
+**PHASE_73 (look)**
+- **A13 — sub-view header.** Every Archivo view repeats the page title plus a 4-line lede above the subnav (about 300px at 390px). Collapsing the lede on sub-views is a layout and look decision, not a code fix.
+- **A15 — subnav edge fade.** The audit saw clipped pills with no cue; the existing `.subnav.fade-l/.fade-r` mask does render (visible in the PHASE_68 error-state screenshot at 390px). Re-check at the audit's own configurations before treating it as open.
+
+**Seen during PHASE_68 verification (data-adjacent, not changed)**
+- `manifest.counts.seasons` is 98 and `YEARS.length` is 97 (the `1942-1943` split-season file is the extra one, per D3). Every "N temporadas" in the app uses `YEARS.length` (97); the manifest's 98 counts files, not seasons.
+- `seasons_with_leaders` is 15: 1986, 2000, 2001, 2002, 2007–2010, 2012–2014, 2018–2021 (from `web/data/seasons/*.json`). Any prose that still describes leader coverage by a fixed year should be read against that list.

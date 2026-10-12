@@ -67,7 +67,7 @@ def test_every_player_page_has_decorated_tiles_to_check(probe):
 def test_record_cards_were_measured_including_their_notes(probe):
     recs = [(r["cfg"], t) for r in probe["results"] if r["kind"] == "records" for t in r["tiles"]]
     assert len(recs) >= 8 * 8, len(recs)          # 8 configs x at least 8 record cards
-    assert all(t["noteInk"] > 0 for _cfg, t in recs if "rec-card" in t["tile"] and t["ink"] >= 4), "a record note was not measured"
+    assert all(t["noteInk"] > 0 for _cfg, t in recs if "rec-card" in t["tile"] and t["hasNote"]), "a record note was not measured"
     assert sum(1 for _cfg, t in recs if t["noteInk"] > 0) >= 8 * 8
 
 

@@ -1056,7 +1056,7 @@ function megaFeat(k){
         <div class="fn">${f.won.length}</div></div>
       <div class="mf-viz" style="color:${f.c1}">${titleComb(f)}</div>
       <div class="ft">${esc(f.name.split(' de ')[0])}</div>
-      <div class="fd">títulos en 97 temporadas${f.won.length?' · último en '+Math.max.apply(null,f.won):''}</div>
+      <div class="fd">títulos en ${YEARS.length} temporadas${f.won.length?' · último en '+Math.max.apply(null,f.won):''}</div>
       <button class="btn" style="padding:6px 12px;font-size:12px" onclick="megaGo('titulos')">Ver todos</button>`;
   }
   if(k==='compare'){
@@ -1088,10 +1088,13 @@ function megaFeat(k){
       <button class="btn" style="padding:6px 12px;font-size:12px" onclick="megaGo('cuadricula')">Jugar</button>`;
   }
   if(k==='gap'){
+    /* The count is read
+       from the manifest (seasons_with_leaders), never a fixed year. */
+    const lc=(MANIFEST&&MANIFEST.counts)?MANIFEST.counts.seasons_with_leaders:null;
     return `<div class="fx">Lo que este archivo no sabe</div>
-      <div class="ft" style="margin-top:2px">Antes de 2011 no hay estadística por temporada</div>
+      <div class="ft" style="margin-top:2px">${lc!=null?'Líderes por temporada en '+lc+' de '+YEARS.length+' temporadas':'Líderes por temporada solo en una parte de las temporadas'}</div>
       <div class="mf-viz">${sparkBars(COVERAGE.map(c=>c[1]),{w:180,h:24,scale:100,gap:2})}</div>
-      <div class="fd">Ese es el muro real. Todo lo demás — los huecos, los conflictos entre fuentes, de dónde sale cada dato — está aquí, dicho de frente.</div>
+      <div class="fd">Ese es el hueco real. Todo lo demás — los huecos, los conflictos entre fuentes, de dónde sale cada dato — está aquí, dicho de frente.</div>
       <button class="btn" style="padding:6px 12px;font-size:12px" onclick="megaGo('cobertura')">Ver los huecos</button>`;
   }
   return '';
@@ -1235,7 +1238,7 @@ function buildTable(host,cols,rows,opts){
       c.lastChild.hidden=!(c.classList.contains('open')||t.scrollWidth>t.clientWidth+1);
     });
   }
-  const plain=(c,v)=>(v==null||v==='')?'<span class="nodata" title="Sin dato">sin dato</span>':esc(v);
+  const plain=(c,v)=>(v==null||v==='')?'<span class="nodata" title="Sin dato">sin dato</span>':((c.fmt&&typeof v==='number')?num(v):esc(v));
   function cell(c,v,r){
     let h;
     if(c.render) h=c.render(v,r);
@@ -1317,6 +1320,29 @@ function buildTable(host,cols,rows,opts){
   host._tblRO=new ResizeObserver(update); host._tblRO.observe(wrap);
   return {render,state};
 }
+/* PHASE_68 (A06): the same edge cue for the scrollers buildTable() does not draw (standings, season
+   standings, career tables, the finals matrix). Wraps `wrap` in .tblbox once, toggles .more-r while
+   more is hidden on the right, and makes the region a keyboard stop only while it really scrolls.
+   A property of buildTable, not a new top-level name (the function inventory pins those). */
+buildTable.cue=function(wrap){
+  if(!wrap||wrap._cue) return;
+  wrap._cue=1;
+  let box=wrap.parentElement;
+  if(!box||!box.classList.contains('tblbox')){
+    box=el('div','tblbox'); wrap.parentNode.insertBefore(box,wrap); box.appendChild(wrap);
+  }
+  const upd=()=>{
+    const scrollable=wrap.scrollWidth>wrap.clientWidth+1;
+    box.classList.toggle('more-r',scrollable&&wrap.scrollLeft+wrap.clientWidth<wrap.scrollWidth-2);
+    wrap.classList.toggle('scrolled',wrap.scrollLeft>2);
+    wrap.tabIndex=scrollable?0:-1;
+    if(scrollable){ wrap.setAttribute('role','region'); wrap.setAttribute('aria-label','Tabla con desplazamiento horizontal'); }
+    else { wrap.removeAttribute('role'); wrap.removeAttribute('aria-label'); }
+  };
+  wrap.addEventListener('scroll',upd,{passive:true});
+  const ro=new ResizeObserver(upd); ro.observe(wrap); if(wrap.firstElementChild) ro.observe(wrap.firstElementChild);
+  upd();
+};
 function csvCell(v){
   if(v==null) return '';
   const s=String(v);
@@ -1506,6 +1532,7 @@ function buildStandings2026(){
     });
     h+='</tbody></table>';
     w.innerHTML=h;
+    buildTable.cue(w);
   });
   const n=el('p','note');
   n.innerHTML='La línea azul marca el corte de cuartos de final. DIF es juegos detrás del primero, calculado aquí — la app oficial no lo publica. '+
@@ -1752,7 +1779,7 @@ function buildCalendar(){
       de la fase regular, playoffs y formato — que es lo que se ve arriba.
     </div>
     <p class="note">Para los juegos de hoy, la fuente es bsnpr.com y la app oficial de la
-      liga, que están enlazadas en Hoy bajo «Canales oficiales». Si en algún momento entra
+      liga, que están enlazadas en <a class="xlink" href="#inicio">Inicio</a>, bajo «Canales oficiales». Si en algún momento entra
       un calendario de partidos verificado, va aquí.</p>`;
 }
 
@@ -1796,16 +1823,17 @@ function historiaStreaks(){
 /* PHASE_11 (owner-approved, redesign-v2): flat, always-44px ribbon (item 3/7 -- fixes the
    27.6x40px phone touch-target bug the survey found; the old fixed-10-column decade grid
    could never clear 44px at phone width, so the whole row/decade grouping is gone, not just
-   the CSS). Every one of the 97 real years (YEARS, not a hardcoded list) gets its own cell,
+   the CSS). Every real year (YEARS, not a hardcoded list) gets its own cell,
    labeled by year. Colors 3 real states: a documented champion that's part of a real 2+
    dynasty streak (historiaStreaks() above, not hardcoded), a documented champion that isn't,
    and no champion on record -- matching the new 3-item legend exactly. */
 function buildRibbon(){
   const host=$('#ribbon'); if(!host) return;
+  const hc=$('#histCount'); if(hc) hc.textContent=YEARS.length+' temporadas';
   /* Computed fresh on every call, not cached at module-parse time: YEARS/champOf are
      defined later, in index.html's own inline script (loaded after this file) -- a
      top-level const evaluated here would hit the exact "used before defined" failure
-     already documented and fixed elsewhere in this file (BOOT/GRID_CLUBS). 97 years is
+     already documented and fixed elsewhere in this file (BOOT/GRID_CLUBS). One walk of YEARS is
      cheap enough that a fresh walk per call needs no caching. */
   const dynastyYears=new Set();
   historiaStreaks().forEach(r=>{ for(let y=r.start;y<=r.end;y++) dynastyYears.add(y); });
@@ -1839,7 +1867,7 @@ function renderReadout(y){
   const host=$('#readout'); if(!host) return;
   /* PHASE_11 (owner-approved, redesign-v2): the mockup's own per-row "Fuente única" badge
      has no real backing data -- NOTES only carries 5 real footnotes (1942/1945/1953/2024/
-     2026), not a source-confidence field for every one of the 97 seasons, so a "single
+     2026), not a source-confidence field for every one of the seasons, so a "single
      source" pill is never shown here on a year that doesn't actually have one; that would
      be inventing a claim this app doesn't verify. Only a real NOTES[y] entry gets a badge
      (labeled with its own real caveat text), and only a genuinely missing champion gets the
@@ -1877,7 +1905,9 @@ async function loadSeasonExtra(y){
   const host=$('#seasonExtra'); if(!host) return;
   host.innerHTML=''; host.dataset.y=y;
   const d=await DATA.get('seasons/'+y+'.json');
-  if(!d || host.dataset.y!==y) return;
+  if(host.dataset.y!==y) return;
+  /* A18: a failed or missing file used to leave this blank. */
+  if(!d){ host.innerHTML='<p class="note" role="status">No se pudo cargar el detalle de esta temporada.</p>'; return; }
   let h='';
   const sc=d.scoring_champion;
   if(sc){
@@ -1908,6 +1938,7 @@ async function loadSeasonExtra(y){
   host.innerHTML = h
     ? `<div class="card" style="margin-top:var(--sp-3)">${h}<div class="note">Del archivo de bsnpr.com vía Wayback Machine.</div></div>`
     : '';
+  host.querySelectorAll('.tblwrap').forEach(buildTable.cue);
 }
 function buildTitleStats(){
   const withC=YEARS.filter(y=>champOf[y]).length;
@@ -1925,10 +1956,14 @@ function buildTitleStats(){
 function buildTitleBars(){
   const rows=FKEYS.filter(k=>F[k].won.length).sort((a,b)=>F[b].won.length-F[a].won.length);
   const max=F[rows[0]].won.length;
+  const tl=$('#titleLede');
+  if(tl) tl.textContent='Quién ha ganado más en '+YEARS.length+' temporadas. '+F[rows[0]].city+' lleva la delantera.';
+  /* A14: clubs with the same title count share a rank (1, 2, 2, 4), so two clubs on 8 titles are not 4 and 5 */
+  const rank=rows.map((k,i)=>1+rows.findIndex(j=>F[j].won.length===F[k].won.length));
   $('#titleBars').innerHTML=rows.map((k,i)=>{
-    const f=F[k], rk=i<3?' rk'+(i+1):'';
+    const f=F[k], rk=rank[i]<=3?' rk'+rank[i]:'';
     return `<div class="bar-row${rk}">
-      <div class="rk">${i+1}</div>
+      <div class="rk">${rank[i]}</div>
       <div class="who">${crest(k,32,38)}
         <div class="wrap"><div class="pn">${esc(f.name)}</div>
           <div class="track"><div class="fill" style="width:${f.won.length/max*100}%"></div></div></div>
@@ -1944,6 +1979,10 @@ function buildTitleBars(){
 function buildDynasties(){
   const runs=historiaStreaks();
   const host=$('#dynasties'); if(!host) return;
+  /* the newest run and the one before it, read from the same runs (no hard-coded club or year) */
+  const byEnd=runs.slice().sort((x,y)=>y.end-x.end);
+  const span=r=>F[r.k].name+' '+r.start+'–'+r.end;
+  const recent=byEnd.length>1?' La más reciente es '+span(byEnd[0])+'; la anterior, '+span(byEnd[1])+'.':'';
   host.innerHTML='<div class="streaks">'+runs.slice(0,9).map((r,i)=>{
     const years=[]; for(let y=r.start;y<=r.end;y++) years.push(y);
     return `<div class="streak-card${i<3?' top':''}">
@@ -1955,7 +1994,7 @@ function buildDynasties(){
       <div class="mini">${years.map(y=>`<i title="${y}">${String(y).slice(2)}</i>`).join('')}</div>
     </div>`;
   }).join('')+'</div>'+
-    `<p class="scrollnote">${runs.length} rachas de dos o más títulos consecutivos en 97 temporadas. Bayamón 2025–26 es la primera desde Ponce en 2014–15.</p>`;
+    `<p class="scrollnote">${runs.length} rachas de dos o más títulos consecutivos en ${YEARS.length} temporadas.${recent}</p>`;
 }
 /* PHASE_11 (owner-approved, redesign-v2): visual polish only -- row/column computation
    (every club with a title vs. every club with a runner-up finish, item 11's own "keep
@@ -1981,6 +2020,7 @@ function buildMatrix(){
   });
   h+='</tbody></table></div>';
   $('#matrix').innerHTML=h;
+  buildTable.cue($('#matrix .matrix'));
 }
 let SEASON_Q='',SEASON_CLUB='';
 function buildSeasonFilters(){
@@ -2010,13 +2050,16 @@ function buildSeasonTable(){
   /* PHASE_63: champion = crest + short club name (the mascot word, before " de "), the full
      name stays in title/aria-label; runner-up is the same fact, muted and without a crest. */
   buildTable($('#seasonTable'),[
-    {label:'Año',num:true},
+    {label:'Año',num:true,render:v=>`<a class="cellbtn yrlink" href="#historia/temporada/${v}" aria-label="Ver la temporada ${v}">${v}</a>`},
     {label:'Campeón',wide:true,render:(v,r)=>{
       if(!v) return '<span class="dim">sin registrar</span>';
       const k=champOf[r[0]];
       return `<button class="cellbtn clubcell" title="${esc(v)}" aria-label="${esc(v)}" onclick="showTeam('${k}')">${crest(k,22,26)}<span>${esc(v.split(' de ')[0])}</span></button>`;
     },subs:[2]},
-    {label:'Subcampeón',wide:true,muted:true,phone:'sub',subLabel:'Subcampeón: '},
+    {label:'Subcampeón',wide:true,muted:true,phone:'sub',subLabel:'Subcampeón: ',render:(v,r)=>{
+      const k=ruOf[r[0]];
+      return (v&&k)?`<a class="cellbtn" href="#equipos/equipo/${k}">${esc(v)}</a>`:(v?esc(v):'<span class="nodata" title="Sin dato">sin dato</span>');
+    }},
     {label:'Nota',wide:true,muted:true,clamp:true}
   ],rows,{file:'temporadas_bsn',sort:0,dir:-1,pageSize:25,decades:0});
 }
@@ -2697,7 +2740,7 @@ function showPlayer(name,id,season){
       ${p.bio?`<p class="phero-note" style="margin:${p.clubs.size?'var(--sp-3)':'0'} 0 0">${esc(p.bio)}</p>`:''}
       ${honorsEmpty?'<p class="note" style="margin-top:0">Sin honores, clubes o biografía registrados.</p>':''}
       ${dagger?'<div class="warn" style="margin-top:var(--sp-3)">† 2.302 asistencias en 537 juegos da 4,3 por juego, no 5,1 como publica la fuente. La contradicción está en el dato original y no se ha resuelto; por eso su promedio de asistencias no se usa en los juegos.</div>':''}
-      ${missing.length?`<div class="warn" style="margin-top:var(--sp-3)">Lo que este archivo <b>no</b> sabe de ${esc(p.name.split(' ')[0])}: ${esc(missing.join(', '))}. Antes de 2011 no existe ninguna base pública de estadísticas por temporada del BSN.</div>`:''}
+      ${missing.length?`<div class="warn" style="margin-top:var(--sp-3)">Lo que este archivo <b>no</b> sabe de ${esc(p.name.split(' ')[0])}: ${esc(missing.join(', '))}. ${(MANIFEST&&MANIFEST.counts)?'Este archivo tiene líderes por temporada en '+MANIFEST.counts.seasons_with_leaders+' de '+YEARS.length+' temporadas.':'Este archivo tiene líderes por temporada solo en una parte de las temporadas.'}</div>`:''}
       <div id="playerFichaAsync"></div>
     </div>
   </div>
@@ -2997,6 +3040,7 @@ async function loadPlayerExtra(name,idHint,season){
   }
   h+='<div id="seasonDetail"></div>';
   host.innerHTML=`<div class="card pcard" style="margin-top:var(--sp-3)">${h}</div>`;
+  host.querySelectorAll('.tblwrap').forEach(buildTable.cue);
   SEASON_CMP_CAREER=car;
   if(season!=null) renderSeasonDetail(car,season,name,id);
 
@@ -3038,6 +3082,7 @@ function renderResumenSeasons(car,fl,dfl,tp,tg,sea,lo,hi,nConf,nDisp){
     <tbody>${rows}</tbody></table></div>
     ${(tp||tg||nConf||nDisp)?`<div class="muted" style="font-size:var(--fs-2xs);margin-top:6px">${seasonTotalsNote(tp,tg,sea,lo,hi,nConf,nDisp)}</div>`:''}
   </div>`;
+  host.querySelectorAll('.tblwrap').forEach(buildTable.cue);
 }
 
 let LEAD_CAT='points', LEAD_MODE='total';
@@ -3060,7 +3105,7 @@ function buildLeaders(){
   buildTable($('#leadTable'),[
     {label:'#',num:true},
     {label:'Jugador',wide:true,subs:[2,3],render:v=>`<button class="cellbtn" onclick="showPlayer(${JSON.stringify(v).replace(/"/g,'&quot;')})">${esc(v)}</button>`},
-    {label:'Pos',muted:true,phone:'sub'},{label:'Años',muted:true,phone:'sub'},{label:'Total',num:true},{label:'PJ',num:true},{label:'Por juego',num:true}
+    {label:'Pos',muted:true,phone:'sub'},{label:'Años',muted:true,phone:'sub'},{label:'Total',num:true,fmt:true},{label:'PJ',num:true,fmt:true},{label:'Por juego',num:true}
   ],rows.map((r,i)=>[i+1,r[1],r[2],r[3],r[4],r[5],r[6]]),
     {file:'lideres_'+LEAD_CAT,sort:null,
      note:LEAD_CAT==='assists'?'† Dalmau: total y promedio no cuadran en la fuente.':''});
@@ -3121,12 +3166,22 @@ function buildStone(){
    from inherit to var(--font-display), the same big-numeral treatment every other
    number in this system already gets (.stat .n/.lead-row .val .n/.bar-row .v). */
 function buildRecords(){
+  /* A07: link only on an exact match (club by name, player by exact name in the index, year in YEARS);
+     anything else stays plain text */
+  buildPlayerIndex();
+  const who=n=>{
+    const k=clubKeyByName(n);
+    if(k) return `<a class="xlink" href="#equipos/equipo/${k}">${esc(n)}</a>`;
+    const pl=PINDEX&&PINDEX.find(x=>norm(x.name)===norm(n));
+    return pl?`<a class="xlink" href="#jugadores/jugador/${playerSlug(pl.name)}">${esc(n)}</a>`:esc(n);
+  };
+  const yr=y=>YEARS.indexOf(y)>-1?`<a class="xlink" href="#historia/temporada/${y}">${y}</a>`:esc(y);
   $('#recordList').innerHTML='<div class="rec-grid">'+RECORDS.map(r=>`
     <div class="rec-card">
       <div style="display:flex;align-items:baseline;gap:var(--sp-2_5)">
         <span style="font-family:var(--font-display);font-weight:800;font-size:32px;line-height:1;color:var(--rojo)">${esc(r[1])}</span>
         <span style="font-weight:700">${esc(r[0])}</span></div>
-      <div class="muted" style="font-size:var(--fs-xs);margin-top:var(--sp-1)">${esc(r[2])} · ${r[3]}</div>
+      <div class="muted" style="font-size:var(--fs-xs);margin-top:var(--sp-1)">${who(r[2])} · ${yr(r[3])}</div>
       ${r[4]?`<div class="note">${esc(r[4])}</div>`:''}</div>`).join('')+'</div>';
 }
 function buildScoringChart(){
@@ -3192,11 +3247,12 @@ function buildScoringTable(){
     const decade=Math.floor(y/10)*10+'s';
     if(decade!==lastDecade){ html+=`<div class="decade-head">${esc(decade)}</div>`; lastDecade=decade; }
     const streak=streaks[y];
+    const ck=clubKeyByName(club);
     html+=`<div class="lead-row${streak?' repeat':''}">
-      <div class="yrchip mono">${y}</div>
+      <a class="yrchip mono" href="#historia/temporada/${y}" aria-label="Ver la temporada ${y}">${y}</a>
       <div class="who">
         <div class="pn"><button class="btn" style="padding:2px var(--sp-2);font-size:var(--fs-2xs)" onclick="showPlayer(${JSON.stringify(player).replace(/"/g,'&quot;')})">${esc(player)}</button>${streak?scoringStreaksFor.pill(y,streak,'campeonatos de anotación'):''}</div>
-        <div class="cl">${esc(club)}</div>
+        <div class="cl">${ck?`<a class="xlink" href="#equipos/equipo/${ck}">${esc(club)}</a>`:esc(club)}</div>
       </div>
       <div class="val"><div class="n mono">${value}</div><div class="u">${metric==='ppg'?'ppj':'pts totales'}</div></div>
     </div>`;
@@ -3354,23 +3410,22 @@ function buildSources(){
   const C=(DATA_TEXT&&MANIFEST)?MANIFEST.counts:null;
   const nf=n=>Number(n).toLocaleString('es-PR');
   const gaps = C ? [
-    'No hay una base pública de estadísticas por temporada del BSN anterior a 2001. Antes de eso el archivo solo tiene campeones, campeones de anotación y MVP.',
+    `Líderes por temporada: ${C.seasons_with_leaders} de ${YEARS.length} temporadas. En las demás el archivo no tiene tablas de líderes.`,
     `Boxscores: ${nf(C.game_files)} partidos con caja completa, de las temporadas 2001–2003 y 2008–2013 — lo que sobrevivió en el Wayback Machine del motor de estadísticas de bsnpr.com. Fuera de esos años no hay ninguno.`,
     `Posiciones: esas mismas ${C.seasons_with_standings} temporadas (derivadas de los partidos archivados, no siempre completas) más 2025 y 2026. 2004–2007 y 2014–2024 no tienen posiciones extraíbles.`,
-    `Campeones de anotación 1948–2021 (${C.scoring_titles} temporadas). Faltan 2022 en adelante.`,
+    `Campeones de anotación ${SCORING.length?SCORING[0][0]+'–'+SCORING[SCORING.length-1][0]+' ':''}(${C.scoring_titles} temporadas).${SCORING.length?' Faltan '+(SCORING[SCORING.length-1][0]+1)+' en adelante.':''}`,
     'MVP 1958–2004 de la tabla histórica de bsnpr.com; los recientes según prensa. Faltan 1950, 1953, 1956 y varias temporadas recientes que ninguna fuente pública lista.',
     `Premios y líderes por temporada (Novato, Defensa, líderes de cada categoría) solo donde bsnpr.com o Wikipedia los publican: ${C.seasons_with_awards} temporadas con algún premio, ${C.seasons_with_leaders} con tablas de líderes. 2014–2015 y 2019–2023 son los huecos grandes.`,
-    'Los números retirados de Bayamón (8) y Guaynabo (3) se publican como dígitos, sin nombres.',
+    `Los números retirados de ${RETIRED.map(r=>r[0].split(' de ').slice(1).join(' de ')+' ('+r[1]+')').join(' y ')} se publican como dígitos, sin nombres.`,
     'Líderes de carrera y récords vienen de Wikipedia y están ~5 años desactualizados: los jugadores activos aparecen sub-contados.'
   ] : [
-    'No existe ninguna base pública de estadísticas por temporada del BSN anterior a 2011. Ese es el muro real.',
-    'MVP por año: 39 temporadas recuperadas de la tabla de ganadores repetidos y de las páginas de temporada. Faltan los ganadores de una sola vez, que Wikipedia publica dentro de un widget ordenable que no sobrevive a la extracción de texto.',
+    'Las tablas de líderes por temporada existen solo en una parte de las temporadas. Ese es el hueco real.',
+    `MVP por año: ${MVP_YEARS.length} temporadas recuperadas de la tabla de ganadores repetidos y de las páginas de temporada. Faltan los ganadores de una sola vez, que Wikipedia publica dentro de un widget ordenable que no sobrevive a la extracción de texto.`,
     'Solo existen páginas de temporada en Wikipedia para 2009, 2016, 2017, 2018 y 2024 en adelante. Entre 2010 y 2015 y entre 2019 y 2023 no hay fuente pública extraíble de premios ni de líderes.',
     'Campeones de anotación 1956–65 y 1992–presente: mismo artículo, misma tabla, simplemente no se bajó.',
-    'Los números retirados de Bayamón (8) y Guaynabo (3) se publican como dígitos, sin nombres.',
-    'Posiciones completas solo de 2009, 2025 y 2026.',
-    'No hay boxscores. Ninguno, de ninguna temporada.'
-  ];
+    `Los números retirados de ${RETIRED.map(r=>r[0].split(' de ').slice(1).join(' de ')+' ('+r[1]+')').join(' y ')} se publican como dígitos, sin nombres.`,
+    'Los boxscores existen solo para algunas temporadas; sin los datos del sitio no se puede decir cuáles.'
+  ];   /* A17: the old no-data lines claimed no boxscores at all */
   const pistaBlock = C ? `
     <h3 class="sec">De dónde salieron los boxscores y los líderes</h3>
     <div class="card"><p style="margin:0">El viejo motor de estadísticas de <b>bsnpr.com</b>
@@ -3379,30 +3434,7 @@ function buildSources(){
     2001–2003 y 2008–2013, la tabla de líderes por temporada, la de MVP históricos (1958–2004) y
     <b>${nf(C.players)} fichas de jugador</b>. Todo eso se bajó, se parseó y es lo que llena las
     pestañas de Temporadas y Jugadores cuando esta página se sirve desde un servidor. Lo que el
-    Wayback no capturó — sobre todo 2004–2007 y 2014–2023 — sigue siendo un hueco.</p></div>` : `
-    <h3 class="sec">La pista que abre todo</h3>
-    <div class="card" style="border-color:var(--ok)">
-      <p style="margin:0 0 8px"><b>Hallazgo del 3 de septiembre de 2026:</b> bsnpr.com tiene páginas de jugador vivas en
-      <code>bsnpr.com/jugadores/jugador?id=NNN</code>. La de Carlos Arroyo es la 273 y trae una tabla temporada por temporada
-      con columnas de caja completas: juegos, minutos, tiros de dos y de tres intentados y anotados, tiros libres,
-      asistencias, rebotes y puntos.</p>
-      <p class="muted" style="font-size:var(--fs-xs);margin:0">La sesión anterior concluyó que el motor de estadísticas del BSN
-      estaba muerto y solo era recuperable por el Wayback Machine. Eso era falso: la ruta vieja murió, pero existe un
-      endpoint de jugador vivo e indexado. Si <code>id</code> es un rango denso de enteros, ese endpoint <b>es</b> la base
-      de datos de jugadores del BSN. Devuelve 500 a un fetcher automático, así que hay que recorrerlo desde un navegador
-      o un script con cabeceras normales. Está incluido: <code>bsnpr_scraper.py</code>.</p>
-    </div>
-    <div class="card" style="margin-top:var(--sp-3)">
-      <p style="margin:0 0 8px">El motor de estadísticas del viejo <b>bsnpr.com</b> publicaba líderes por temporada en
-      <code>estadisticas/lideres.asp?anio=YYYY</code>, con años de <b>1957 a 2004</b>. Las páginas ya no existen, pero
-      las URLs aparecen citadas una por una en las referencias de Wikipedia — es decir, existieron, y es muy probable
-      que estén en el Wayback Machine.</p>
-      <p class="muted" style="font-size:13.5px;margin:0">Un solo volcado de ese archivo cerraría casi todos los huecos de arriba a la vez:
-      líderes por temporada desde 1957, MVP, posiciones y un grupo de jugadores diez veces más grande — que es lo único que
-      frena a los juegos y a las consultas por jugador.</p>
-      <div class="note">Consulta CDX: <code>web.archive.org/cdx/search/cdx?url=bsnpr.com/estadisticas*&amp;output=json&amp;collapse=urlkey</code>
-      — hay que correrla fuera de este archivo.</div>
-    </div>`;
+    Wayback no capturó — sobre todo 2004–2007 y 2014–2023 — sigue siendo un hueco.</p></div>` : '';
   host.innerHTML=`
     <h3 class="sec">Conflictos entre fuentes</h3>
     <div class="cards g2">${conflicts.map(c=>`<div class="card">
@@ -3423,7 +3455,7 @@ function buildSources(){
 
     <h3 class="sec">De dónde sale cada cosa</h3>
     <div class="cards g2">
-      <div class="card"><div style="font-weight:700">Campeones 1930–2025</div>
+      <div class="card"><div style="font-weight:700">Campeones ${YEARS[0]}–${LAST-1}</div>
         <div class="muted" style="font-size:13.5px">Wikipedia, invirtiendo las listas por franquicia. Esa inversión fue lo que reveló el hueco de 1953.</div></div>
       <div class="card"><div style="font-weight:700">Temporada 2026</div>
         <div class="muted" style="font-size:13.5px">El Nuevo Día, Primera Hora, Telemundo PR, El Vocero y Noticel para la final y los premios; la app oficial del BSN para posiciones y líderes.</div></div>
@@ -4018,7 +4050,7 @@ const ASKERS=[
     if(!m) return null;
     if(!/gan|campe|final|quien|quién|titul|de\s+19|de\s+20|^\s*(19|20)/.test(q) && !/^\s*(19|20)\d\d\s*$/.test(q)) return null;
     const y=+m[1];
-    if(y>LAST) return {q:'Temporada '+y,big:'Todavía no se ha jugado',sub:'El archivo llega hasta 2026.'};
+    if(y>LAST) return {q:'Temporada '+y,big:'Todavía no se ha jugado',sub:'El archivo llega hasta '+LAST+'.'};
     const k=champOf[y], r=ruOf[y];
     if(!k) return {q:'Temporada '+y,big:'Sin campeón registrado',
       sub:esc(NOTES[y]||'Ninguna fuente consultada nombra un campeón para este año.'),
@@ -4041,7 +4073,7 @@ const ASKERS=[
     if(!rows.length) return null;
     const tally={};rows.forEach(r=>tally[r[1]]=(tally[r[1]]||0)+1);
     const top=Object.keys(tally).sort((a,b)=>tally[b]-tally[a])[0];
-    return {q:'Campeones de los '+d,big:esc(top),
+    return {q:'Campeones de la década de '+d,big:esc(top),
       sub:`Ganó ${tally[top]} de los ${rows.length} títulos de la década.`,
       table:{cols:[{label:'Año',num:true},{label:'Campeón',wide:true},{label:'Subcampeón',wide:true}],
         rows,file:'campeones_'+d,sort:0,dir:1}};
@@ -4116,7 +4148,7 @@ const ASKERS=[
       const l=LEADERS.points;
       return {q:'Máximo anotador de la historia',big:esc(l[0][1]),
         sub:`${l[0][4].toLocaleString('es-PR')} puntos en ${l[0][5]} juegos — ${l[0][6]} por juego, entre ${esc(l[0][3])}.`,
-        table:{cols:[{label:'#',num:true},{label:'Jugador',wide:true},{label:'Puntos',num:true},{label:'PJ',num:true},{label:'PPJ',num:true}],
+        table:{cols:[{label:'#',num:true},{label:'Jugador',wide:true},{label:'Puntos',num:true,fmt:true},{label:'PJ',num:true,fmt:true},{label:'PPJ',num:true}],
           rows:l.map(r=>[r[0],r[1],r[4],r[5],r[6]]),file:'lideres_puntos',sort:2,dir:-1}};
     }
     return null;
@@ -4130,7 +4162,7 @@ const ASKERS=[
     const l=LEADERS[cat], label={points:'puntos',rebounds:'rebotes',assists:'asistencias'}[cat];
     return {q:'Líder de '+label+' de carrera',big:esc(l[0][1]),
       sub:`${l[0][4].toLocaleString('es-PR')} ${label} en ${l[0][5]} juegos.`,
-      table:{cols:[{label:'#',num:true},{label:'Jugador',wide:true},{label:'Total',num:true},{label:'PJ',num:true},{label:'Por juego',num:true}],
+      table:{cols:[{label:'#',num:true},{label:'Jugador',wide:true},{label:'Total',num:true,fmt:true},{label:'PJ',num:true,fmt:true},{label:'Por juego',num:true}],
         rows:l.map(r=>[r[0],r[1],r[4],r[5],r[6]]),file:'lideres_'+cat,sort:2,dir:-1}};
   },
   /* standings */
@@ -4235,16 +4267,16 @@ function buildAsk(){
   const inp=$('#askInput');
   let t=null;
   inp.oninput=()=>{clearTimeout(t);t=setTimeout(()=>ask(inp.value),220);};
-  inp.onkeydown=e=>{if(e.key==='Enter'){clearTimeout(t);ask(inp.value);}};
+  inp.onkeydown=e=>{if(e.key==='Enter'){clearTimeout(t);ask(inp.value);setHash('archivo/preguntar'+(slug(inp.value)?'/'+slug(inp.value):''));}};
 }
-function runAsk(q){ $('#askInput').value=q; ask(q); revealNode($('#askAnswer')); $('#askAnswer').scrollIntoView({block:'nearest',behavior:'smooth'}); }
+function runAsk(q){ $('#askInput').value=q; ask(q); setHash('archivo/preguntar'+(slug(q)?'/'+slug(q):'')); revealNode($('#askAnswer')); $('#askAnswer').scrollIntoView({block:'nearest',behavior:'smooth'}); }
 
 /* ============================================================
    QUERY BUILDER
    ============================================================ */
 const DATASETS={
   temporadas:{
-    label:'Temporadas (1930–2026)',
+    get label(){ return 'Temporadas ('+YEARS[0]+'–'+YEARS[YEARS.length-1]+')'; },
     cols:[{label:'Año',num:true},{label:'Campeón',wide:true},{label:'Subcampeón',wide:true},
           {label:'Década',num:true},{label:'Nota',wide:true}],
     rows:()=>YEARS.map(y=>[y,champOf[y]?F[champOf[y]].name:null,ruOf[y]?F[ruOf[y]].name:null,
@@ -4252,7 +4284,7 @@ const DATASETS={
     yearCol:0, clubCols:[1,2]
   },
   franquicias:{
-    label:'Franquicias (32)',
+    get label(){ return 'Franquicias ('+FKEYS.length+')'; },
     cols:[{label:'Franquicia',wide:true},{label:'Ciudad'},{label:'Fundada',num:true},{label:'Estado'},
           {label:'Títulos',num:true},{label:'Finales perdidas',num:true},{label:'Finales',num:true},
           {label:'% en finales',num:true},{label:'Último título',num:true}],
@@ -4264,9 +4296,9 @@ const DATASETS={
     yearCol:2, clubCols:[0]
   },
   lideres:{
-    label:'Líderes de carrera (30)',
+    get label(){ return 'Líderes de carrera ('+['points','rebounds','assists'].reduce((n,k)=>n+LEADERS[k].length,0)+')'; },
     cols:[{label:'Categoría'},{label:'#',num:true},{label:'Jugador',wide:true},{label:'Pos'},
-          {label:'Años'},{label:'Total',num:true},{label:'Juegos',num:true},{label:'Por juego',num:true}],
+          {label:'Años'},{label:'Total',num:true,fmt:true},{label:'Juegos',num:true,fmt:true},{label:'Por juego',num:true}],
     rows:()=>{
       const out=[];
       [['points','Puntos'],['rebounds','Rebotes'],['assists','Asistencias']].forEach(([k,lab])=>
@@ -4285,7 +4317,7 @@ const DATASETS={
     yearCol:0, clubCols:[2]
   },
   records:{
-    label:'Récords de la liga (11)',
+    get label(){ return 'Récords de la liga ('+RECORDS.length+')'; },
     cols:[{label:'Récord',wide:true},{label:'Marca'},{label:'Quién',wide:true},{label:'Año',num:true},{label:'Contexto',wide:true}],
     rows:()=>RECORDS.map(r=>[r[0],r[1],r[2],r[3],r[4]]),
     yearCol:3
@@ -4320,7 +4352,7 @@ const DATASETS={
       Array.from(p.clubs).map(c=>F[c].abbr).join(' '),p.pts,p.reb,p.ast,p.gp,p.mvp||null]);}
   },
   mvp:{
-    label:'MVP por año (39 recuperados)',
+    get label(){ return 'MVP por año ('+MVP_YEARS.length+' recuperados)'; },
     cols:[{label:'Año',num:true},{label:'Jugador',wide:true},{label:'Club',wide:true},{label:'Década',num:true}],
     rows:()=>MVP_YEARS.map(r=>[r[0],r[1],r[2],Math.floor(r[0]/10)*10]),
     yearCol:0, clubCols:[2]
@@ -4355,9 +4387,9 @@ function buildQB(){
       <input type="search" id="qbq" placeholder="texto libre"></div>
     <div class="qb-range">
       <div class="field"><label for="qbfrom">Desde</label>
-        <input type="text" id="qbfrom" inputmode="numeric" placeholder="1930"></div>
+        <input type="text" id="qbfrom" inputmode="numeric" placeholder="${YEARS[0]}"></div>
       <div class="field"><label for="qbto">Hasta</label>
-        <input type="text" id="qbto" inputmode="numeric" placeholder="2026"></div>
+        <input type="text" id="qbto" inputmode="numeric" placeholder="${YEARS[YEARS.length-1]}"></div>
     </div>
     <div class="field" style="min-width:170px"><label for="qbclub">Franquicia</label><select id="qbclub">
       <option value="">Todas</option>${FKEYS.slice().sort((a,b)=>F[a].name.localeCompare(F[b].name,'es'))
@@ -4370,7 +4402,8 @@ function buildQB(){
     <button class="btn" onclick="resetQB()">Limpiar</button>
     <button class="btn" onclick="copyQB()">Copiar como tabla</button>
   </div>
-  <div id="qbSql" class="note" style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace"></div>`;
+  <div id="qbSql" class="note" style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace"></div>
+  <div id="qbMsg" class="note" role="status"></div>`;
   ['qbds','qbq','qbfrom','qbto','qbclub','qblim'].forEach(id=>{
     const n=$('#'+id);
     n.addEventListener(id==='qbds'||id==='qbclub'?'change':'input',runQB);
@@ -4425,6 +4458,13 @@ function runQB(){
   if(q)where.push(`texto LIKE '%${$('#qbq').value}%'`);
   $('#qbSql').textContent='SELECT * FROM '+key+(where.length?' WHERE '+where.join(' AND '):'')+
     (!isNaN(lim)&&lim>0?' LIMIT '+lim:'')+';   -- '+rows.length+' fila'+(rows.length===1?'':'s');
+  /* A11: say so when nothing matched, when the range is reversed, or when a year field was ignored. */
+  const msg=[];
+  const bad=[['qbfrom',from],['qbto',to]].filter(([id,n])=>$('#'+id).value.trim()&&isNaN(n)).map(([id])=>$('#'+id).value.trim());
+  bad.forEach(v=>msg.push('Escribe el año con números; se ignoró «'+v+'».'));
+  if(d.yearCol!=null&&!isNaN(from)&&!isNaN(to)&&from>to) msg.push('«Desde» es mayor que «Hasta»: no hay años en ese rango.');
+  else if(!rows.length) msg.push('Sin resultados con estos filtros.');
+  $('#qbMsg').textContent=msg.join(' ');
 }
 function copyQB(){
   const txt=[QB_LAST.cols.map(c=>c.label).join('\t')]
@@ -4612,10 +4652,10 @@ function buildHub(){
     phrase:'La Cuadrícula de hoy',
     act:'Jugar', go:"showView('juega','cuadricula')" }));
 
-  blocks.push(edBlock({ eye:'Archivo', stat:'2011',
+  blocks.push(edBlock({ eye:'Archivo', stat:(MANIFEST&&MANIFEST.counts)?String(MANIFEST.counts.seasons_with_leaders):'—',
     icon: iconOf('archivo'),
     viz: sparkBars(COVERAGE.map(c=>c[1]),{w:110,h:24,scale:100,gap:1.5}),
-    phrase:'el muro real',
+    phrase:'temporadas con líderes',
     act:'Cobertura', go:"showView('archivo','cobertura')" }));
 
   $('#hubGrid').innerHTML=heroHtml+'<div class="edhub">'+blocks.join('')+'</div>';
@@ -4923,7 +4963,7 @@ function buildPrimer(){
           te cuestan la temporada; de ahí el apodo, «La Más Dura». Y cada club puede firmar un
           número limitado de jugadores extranjeros, llamados refuerzos, así que el resto de la
           cancha es talento puertorriqueño.</p>
-        <p>Este archivo cubre las 97 temporadas: quién ganó, quién anotó, quién jugó y qué se
+        <p>Este archivo cubre las ${YEARS.length} temporadas: quién ganó, quién anotó, quién jugó y qué se
           perdió por el camino. Si una palabra no te suena, está en el
           <button class="x" onclick="showView('archivo','glosario')">glosario</button>.</p>
       </div>
@@ -6233,8 +6273,8 @@ function _subnavEl(sec,order,landLabel){
 /* one line per view — the section landing's editorial card copy (8.3c) */
 const VIEW_DESC={
   historia:{
-    cinta:'Cada temporada desde 1930 con su campeón, pintada del color del club.',
-    titulos:'Quién ha ganado más en 97 temporadas.',
+    get cinta(){ return 'Cada temporada desde '+YEARS[0]+' con su campeón, pintada del color del club.'; },   /* getters: YEARS is defined by index.html's inline script, after this file loads */
+    get titulos(){ return 'Quién ha ganado más en '+YEARS.length+' temporadas.'; },
     dinastias:'Las rachas de títulos seguidos, club por club.',
     finales:'Cada emparejamiento de final y cuántas veces ocurrió.',
     premios:'MVP, novato del año y líder de anotación, año por año.',
@@ -6792,6 +6832,13 @@ function applyHash(){
         }
       }
     }
+    return;
+  }
+  /* A10: #archivo/preguntar/<slug> re-asks that question (same optional-segment pattern as jugador/<slug>/<season>) */
+  if(a==='archivo' && b==='preguntar' && c){
+    showView('archivo','preguntar',{fromHash:true,noScroll:true});
+    const q=c.replace(/-/g,' ');
+    $('#askInput').value=q; ask(q);
     return;
   }
   if(a==='equipos' && b==='equipo' && c && F[c]){ showTeam(c); return; }
