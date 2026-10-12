@@ -229,3 +229,8 @@ Why still open: both numbers come from one unsourced seed (`data/clean/bsn_recor
 Also flagged in the same words: Butler's HOF chip and role, and the "Líder histórico de rebotes" line in his bio. Not changed: `data/clean/*.csv`, `web/data/index/records.json` and `career_leaders.json` (data layer untouched; the generated records.json still has the Rodríguez row, which the page no longer reads).
 To close: an independent career-rebound figure (outside data, D4 forbids fetching it in this phase), then drop the flag or correct the row, and add provenance columns to both CSVs.
 Superseded by the 72C audit finding: the "expect exactly 296 rows" note for the mojibake regeneration above is wrong; see `docs/audits/phase72_audit.md` item 3.
+
+## PHASE_72B — mojibake repaired, González split (2026-10-12, owner D3/D8)
+Done: per-sequence decoder in `src/parse_games.py` (`_decode`, three sites); `src/apply_game_name_repair.py --apply` repaired the 296 rows of `data/clean/game_box_player.csv` (Lloreda 118 -> id 2690, Cotto 120 -> id 2675, González 58 -> id 2513). `parse-games` was not re-run; the 365 unrelated `bsnpr_id` values are unchanged (pinned by digest in `tests/test_phase72b.py`).
+Supersedes the two PHASE_72 follow-ups above: (1) "re-run `make parse-games` and expect exactly 296 rows" is wrong (a re-parse also moves 365 ids); (2) "Javier González: one player under three spellings" is wrong: the 58 `GonzÃ¡lez` rows are id 2513 (González López, b. 1989; 2013 Santurce and 2012 Humacao match his career rows).
+Still open (left as is, not guessed): 82 rows `Gonzalez, Javier` (Quebradillas 2001-03; only candidate id 1006 has no season rows) and 2 rows `González, Javier` (2008, no team; 2513 starts in 2011).

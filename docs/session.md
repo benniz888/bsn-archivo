@@ -3469,6 +3469,17 @@ Tasks (each gets a test in `tests/test_phase72a.py`; hashes via `python -m src.u
 7. New Spanish text -> docs/strings_pending_phase72.md, marked built-under-owner-decision or pending; nothing else applied.
 Not in 72A (later sub-phases): D2 name display layer, D3 decoder + 296-row overlay, D8 González split, Cruz/Morales flags, D9 pipeline.
 
+### PHASE_72B_BUILD — mojibake decoder + 296-row overlay + González split (scope written 2026-10-12, before any edit)
+Owner decisions D3 and D8 (González only). Branch `data-fixes-v1`, no commit, no push. `parse-games` is NOT re-run (365 unrelated `bsnpr_id` values must stay byte-identical); `parse-players` / `sync-web-data` are never run (N7).
+Tasks:
+1. `src/parse_games.py`: per-byte-sequence decoder (`_decode`) at the three cp1252 decode sites (lines 144, 217, 354). Pure UTF-8, mixed and pure cp1252 pages all decode correctly; nothing else in the parser changes.
+2. New `src/apply_game_name_repair.py`: idempotent overlay on the committed `data/clean/game_box_player.csv`. Repairs the 3 damaged names (`Lloreda, JosÃ© Jaime`, `Cotto, RubÃ©n`, `GonzÃ¡lez, Javier`) and sets `bsnpr_id` only on those repaired rows, only when the existing resolver (`parse_games._resolve`, alias + season-in-career) returns exactly one id. Check mode by default; writes only with `--apply`. Every other row stays byte-identical.
+3. D8 González: the 58 `GonzÃ¡lez` rows resolve to id 2513 (González López, Javier, 2011-2017) by the same rule. The 82 `Gonzalez, Javier` Quebradillas 2001-03 rows (candidate id 1006, no season rows) and the 2 blank-team 2008 rows are NOT assigned (would be a guess); listed in the report.
+4. Apply the overlay to data/clean, rebuild web/data with `python -m src.build_web_data` only, check the diff is limited to the repaired rows.
+5. Tests in `tests/test_phase72b.py`: decoder cases (mixed pages), overlay idempotency, row-diff guarantee (exactly 296 rows, only `player_raw`/`bsnpr_id`), González split, untouched ids.
+6. Chromium + WebKit on a repaired player page and both González pages. Suite vs baseline 873 passed / 1 skipped / 1 xfailed.
+Not in 72B: D2 names, Cruz/Morales flags, D9 pipeline. New Spanish: none expected; any goes to docs/strings_pending_phase72.md unapplied.
+
 [BLOCKERS]
 
 - B1 — **Manual, user-only — but partly answered by PHASE_3C.** The bsnpr.com
@@ -9217,3 +9228,9 @@ NEXT: owner confirms section E strings; 72B.
 
 ## PHASE_72A — strings applied (2026-10-12)
 Owner approved E1-E11; E7 applied as "Fue Defensor del Año en 2026." / "Fue Sexto Hombre en 2026."; E9 footnote added under the Cobertura tiles. Tests updated (`tests/test_phase72a.py`, `tests/_web_text.py` end marker). Committed on `data-fixes-v1`, not pushed.
+
+## PHASE_72B_BUILD — decoder, 296-row overlay, González split (built, NOT committed, 2026-10-12)
+Files: src/parse_games.py (`_decode` at lines 144/217/354 equivalents), src/apply_game_name_repair.py (new), data/clean/game_box_player.csv (296 rows), web/data/games/2011-2013 (168 files, regenerated with `python -m src.build_web_data` only; structural diff = 296 `bsnpr_id` null->int in games, 3 starting-five players resolved in san.json/sge.json, manifest source_digest), tests/test_phase72b.py (19), docs/audits/data_review_todo.md, docs/session.md.
+Guarantee: after the repair, the 39,371 rows outside the three names hash to the same sha256 as before (includes the 365 ids a re-parse would move); only `player_raw` and `bsnpr_id` changed, only on the 296 rows. Check mode writes nothing; second `--apply` is a no-op.
+González: 58 rows -> 2513 (57 x 2013 Santurce, 1 x 2012 Humacao = his career rows). Unassigned and listed: 82 `Gonzalez, Javier` Quebradillas 2001-03 (candidate 1006, no season rows), 2 blank-team 2008 rows.
+No Spanish strings. Chromium + WebKit, 390 and 1000: repaired player page (Lloreda Ferrón) and both González pages (2513, 1006): 0 console errors, 0 failed requests, no overflow.
