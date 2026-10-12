@@ -6,14 +6,18 @@
 <meta name="theme-color" content="#070C18">
 <meta name="description" content="Archivo histórico independiente del Baloncesto Superior Nacional, 1930–2026. Proyecto de un aficionado, no oficial.">
 <title>El Archivo · Baloncesto Superior Nacional, 1930–2026</title>
+<link rel="canonical" href="https://bsnarchivo.com/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="El Archivo">
-<meta property="og:title" content="El Archivo · Baloncesto Superior Nacional, 1930–2026">
+<meta property="og:locale" content="es_PR">
+<meta property="og:title" content="El Archivo">
 <meta property="og:description" content="Archivo histórico independiente del Baloncesto Superior Nacional, 1930–2026. Proyecto de un aficionado, no oficial.">
 <meta property="og:url" content="https://bsnarchivo.com/">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="El Archivo · Baloncesto Superior Nacional, 1930–2026">
+<meta property="og:image" content="https://bsnarchivo.com/img/brand/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="El Archivo">
 <meta name="twitter:description" content="Archivo histórico independiente del Baloncesto Superior Nacional, 1930–2026. Proyecto de un aficionado, no oficial.">
+<meta name="twitter:image" content="https://bsnarchivo.com/img/brand/og.png">
 <!-- PHASE_61: icon set + manifest are real files under web/ now (img/brand/, manifest.webmanifest); they were data URIs while the app was one file. -->
 <link rel="icon" href="favicon.ico" sizes="48x48">
 <link rel="icon" type="image/png" sizes="32x32" href="img/brand/favicon_32.png">
@@ -51,7 +55,7 @@
      Preloaded here so the CSS-then-font waterfall does not show a swap. crossorigin is required for font preloads. -->
 <link rel="preload" href="fonts/inter-latin-opsz-normal-5.3.0.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/oswald-latin-wght-normal-5.3.0.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/main.css?v=ef760dea2f73">
+<link rel="stylesheet" href="css/main.css?v=ec2711771923">
 </head>
 <body>
 <a class="skip" href="#main" onclick="event.preventDefault();var m=document.getElementById('main');if(m){m.focus({preventScroll:true});m.scrollIntoView();}">Saltar al contenido</a>
@@ -76,7 +80,7 @@
 </div>
 <header class="top">
   <div class="toprow">
-    <button class="mark" onclick="showTab('inicio')" aria-label="Ir a Inicio">
+    <button class="mark" onclick="showTab('inicio')" aria-label="El Archivo 1930 — 2026, ir a Inicio">
       <img class="markimg" src="img/brand/logo_mark_64.webp" srcset="img/brand/logo_mark_64.webp 1x, img/brand/logo_mark_128.webp 2x" width="40" height="40" alt="" decoding="async">
       <span class="marktext">
         <span class="markname">EL ARCHIVO</span>
@@ -138,7 +142,7 @@
 <main class="wrap" id="main" tabindex="-1">
 
 <!-- ═══════════ INICIO — home + the live "Ahora" view (PHASE_8) ═══════════ -->
-<section id="inicio" role="tabpanel" aria-labelledby="tab-inicio">
+<section id="inicio" role="tabpanel" aria-label="Inicio">
   <div class="panel">
     <div id="heroBox"></div>
     <!-- PHASE_61: the search field (#hubSearch) lives in header.top; hubAsk() and syncSearchPlaceholder() are unchanged. -->
@@ -470,7 +474,7 @@
     <p><strong>Dónde está alojado.</strong> El sitio se sirve desde GitHub Pages. Como en cualquier sitio web, quien lo aloja recibe tu dirección IP y datos técnicos de tu navegador cuando lo visitas, y puede guardarlos en sus registros según sus propias políticas. Nosotros no vemos esos registros.</p>
     <p><strong>Lo que no hacemos.</strong> No usamos cookies. No usamos herramientas de analítica ni de publicidad. No hay formularios que envíen datos, ni cuentas, ni inicio de sesión. No cargamos tipografías, scripts ni imágenes de terceros: todo lo que ves viene de este mismo sitio. Nada de lo que escribes o guardas en el sitio se envía a nosotros.</p>
     <p><strong>Qué se guarda en tu dispositivo.</strong> Para que el sitio funcione y recuerde tus preferencias, tu navegador guarda esto. Se queda en tu dispositivo y no se envía a ningún sitio:</p>
-    <div style="overflow-x:auto">
+    <div style="overflow-x:auto" tabindex="0" role="group" aria-label="Tabla de datos, desplazable">
     <table class="legaltable">
       <thead><tr><th scope="col">Qué</th><th scope="col">Para qué</th><th scope="col">Datos personales</th></tr></thead>
       <tbody>
@@ -611,11 +615,11 @@
 
 <div class="bottombar" id="bottombar" role="tablist" aria-label="Navegación principal"></div>
 <script src="js/data.js?v=9ddfe48073c9"></script>
-<script src="js/helpers.js?v=1061bc5b1854"></script>
+<script src="js/helpers.js?v=b5c59231bee6"></script>
 <script src="js/player.js?v=e078f1014cba"></script>
-<script src="js/data-quality.js?v=0dbf5b135d19"></script>
-<script src="js/games.js?v=8bfc96dfee30"></script>
-<script src="js/tabs.js?v=1dc7a4a6c7fb"></script>
+<script src="js/data-quality.js?v=2143eba8a282"></script>
+<script src="js/games.js?v=8e6c043dc0b1"></script>
+<script src="js/tabs.js?v=12f9538c0c19"></script>
 <script src="js/init.js?v=3c2ceb340594"></script>
 <script>
 
@@ -1277,7 +1281,13 @@ runBoot();
 /* 5E — offline/PWA. sw.js sits next to this file when deployed; on file://
    there is no server and nothing registers. Failure is silent by design. */
 if('serviceWorker' in navigator && location.protocol!=='file:'){
-  window.addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); });
+  /* PHASE_71 P10: updateViaCache:'none' makes the browser fetch sw.js (and anything it imports) past the 10-minute
+     HTTP cache GitHub Pages applies, and update() asks for that check on every load. The new worker already
+     skipWaiting()s and claim()s (sw.js), silently: it only swaps caches and fetch routing, the page's running
+     JS is untouched, so a game in progress or the delete-data flow is not interrupted. */
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{});
+  });
 }
 </script>
 </body></html>

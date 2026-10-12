@@ -255,8 +255,9 @@
 
   --ink:#0B1730;
   --ink-2:#3C5177;
-  --ink-3:#5A6C8E;      /* darkened from #65799B: metadata runs at 11px and
-                           the lighter value missed AA on the raised ground */
+  --ink-3:#566888;      /* darkened from #65799B: metadata runs at 11px and
+                           the lighter value missed AA on the raised ground.
+                           PHASE_71: #5A6C8E measured 4.32:1 on --raise (#E1E9F5); #566888 is 4.60:1 */
   --ok:#0A7A42;
 
   --scrim:rgba(241,244,250,.94);
@@ -1665,7 +1666,7 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 .modebtns{display:flex;gap:var(--sp-1);background:var(--raise);border:1px solid var(--line);border-radius:99px;padding:3px}
 .modebtns button{background:none;border:0;color:var(--ink-3);padding:5px 13px;border-radius:99px;
   font-size:var(--fs-2xs);font-weight:600;cursor:pointer}
-.modebtns button[aria-selected="true"]{background:var(--azul);color:#fff}
+.modebtns button[aria-selected="true"],.modebtns button[aria-pressed="true"]{background:var(--azul);color:#fff}
 /* PHASE_45 (owner-approved, redesign-v2): measured live at 390px, 60x28 and 74x28 --
    both well under the 44px floor. .modebtns itself is shared with the theme/profile
    pickers (tabs.js's own settings panel) -- scoped to .gamehead's own instance (Grid's
@@ -1676,6 +1677,8 @@ tr.cut td{border-bottom:1px solid var(--azul)}
    label, onclick, and the [aria-selected="true"] active look (the rule right above,
    untouched) are unchanged. */
 .gamehead .modebtns button{min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center}
+/* PHASE_71: Perfil toggles were 28px high; 44px floor, same look. */
+.profctl .modebtns button{min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center}
 /* PHASE_46 (owner-approved, redesign-v2): Draft's court cells (games.js courtHTML())
    used to reset everything via an INLINE style="all:unset;..." -- an inline
    declaration beats any stylesheet selector for the same property, so a
@@ -2249,7 +2252,7 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
 .legal h2{font-size:var(--fs-md);margin:var(--sp-6) 0 var(--sp-2)}
 .legal ul{padding-left:var(--sp-5);margin:var(--sp-2) 0 0}
 .legal .stamp{color:var(--ink-3);font-size:var(--fs-2xs)}
-.legal a,.legalrow a,.profnote a{display:inline-block;padding:14px 4px;margin:-14px -4px;overflow-wrap:anywhere}
+.legal a,.legalrow a,.profnote a{display:inline-block;padding:14px 7px;margin:-14px -7px;overflow-wrap:anywhere}
 .legaltable{width:100%;border-collapse:collapse;margin-top:var(--sp-3);font-size:var(--fs-xs)}
 .legaltable th,.legaltable td{text-align:left;vertical-align:top;padding:var(--sp-2) var(--sp-3) var(--sp-2) 0;
   border-bottom:1px solid var(--line);color:var(--ink-2)}
@@ -2755,8 +2758,8 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
 /* Resumen: one shade further up (--raise), distinct from the other two --
    same token this file already uses for "a raised block inside a card". */
 #jugadores .rp-stats{background:var(--raise)}
-#jugadores .rp-info h3,#jugadores .rp-stats .ed-eye,#jugadores .rp-context .ed-eye{margin-bottom:var(--sp-2)}
-#jugadores .rp-info h3{font-size:var(--fs-3xs);letter-spacing:.1em;text-transform:uppercase;
+#jugadores .rp-info h2,#jugadores .rp-stats .ed-eye,#jugadores .rp-context .ed-eye{margin-bottom:var(--sp-2)}
+#jugadores .rp-info h2{font-size:var(--fs-3xs);letter-spacing:.1em;text-transform:uppercase;
   color:var(--ink-3);font-weight:700;margin-top:0}
 /* Información: label/value rows, mirrors the mockup's own .info/.row/.k/.v. */
 #jugadores .rp-info .row{display:flex;justify-content:space-between;gap:var(--sp-3);
@@ -3280,3 +3283,27 @@ a.xlink:hover{color:var(--blanco);text-decoration-color:currentColor}
 :root:not([data-theme="light"]) .matrix td.cellv.hi{background:var(--rojo-deep)}
 /* unranked-medal numerals were --ink-3 on --raise: 4.33:1 in the light theme, so use --ink-2 */
 .bar-row .rk{color:var(--ink-2)}
+/* PHASE_71 P06: the Temporada Perfecta EQUIPO / DÉCADA labels were #E8B23A (1.93:1) and #9B6BE0 (3.77:1) on the white card in
+   the light theme. in the dark theme both keep their colours (9.47:1 and 4.86:1 on --card); in the light theme EQUIPO reads --flag-ink (6.44:1)
+   and DÉCADA uses #7E4ACB (5.63:1). The card borders keep their hues. */
+.dr-lab{font-size:var(--fs-3xs);letter-spacing:.1em;font-weight:700}
+.dr-lab.eq{color:#E8B23A}
+.dr-lab.dec{color:#9B6BE0}
+[data-theme="light"] .dr-lab.eq{color:var(--flag-ink)}
+[data-theme="light"] .dr-lab.dec{color:#7E4ACB}
+/* PHASE_71 P03: the builders fill .hubpair, .liga, .legalrow, the footer and #bottombar while the splash covers the page,
+   and those fills were counted as 0.8 (390px) / 0.5 (1000px) of layout shift in the first 300 ms. A visibility:hidden box still
+   takes part in layout (JS measurements are unchanged) but is not eligible for layout-shift scoring, and the splash already hides
+   it, so nothing visible changes: it shows the instant the splash starts to fade, as before. Only the boxes that actually moved
+   are hidden; the hero stays painted under the splash so LCP is not pushed back to the end of the 3 s splash floor (hiding the
+   whole shell was tried: CLS 0.00 but mobile LCP 2.1 s -> 5.1 s). Engines without :has() keep today's behavior. */
+body:has(#splash:not(.gone)) :is(.hubpair,.liga,.legalrow,.foot,#bottombar,.wrap:has(>.foot)){visibility:hidden}
+/* PHASE_71 P13: headings that jumped from h1 to h3/h4 (player Información, club page, Calidad, Perfil) are h2 now and keep the
+   old look: h2.sub is the h4.sub rule, #perfil h2.sec is the h3.sec rule. */
+h2.sub{font-family:var(--font-display);font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
+#perfil h2.sec{font-family:var(--font-display);font-size:var(--fs-lg);margin:var(--sp-6) 0 var(--sp-3);text-transform:uppercase;
+  letter-spacing:.005em;display:flex;align-items:center;gap:var(--sp-3)}
+#perfil h2.sec::after{content:"";flex:1;height:1px;background:var(--tri-fade)}
+/* PHASE_71 P12: the bottom bar's nav wrapper exists only while the bar does (the rail takes over at 860px). */
+.bbnav{display:contents}
+@media(min-width:860px){.bbnav{display:none}}

@@ -95,16 +95,19 @@ class TestHeadTags:
         head = _head(web_text())
         assert '<meta property="og:type" content="website">' in head
         assert '<meta property="og:site_name" content="El Archivo">' in head
-        assert f'<meta property="og:title" content="{TITLE}">' in head
+        # PHASE_71 (owner-approved): the share title is the bare name; TITLE stays the document <title> default.
+        assert '<meta property="og:title" content="El Archivo">' in head
         assert f'<meta property="og:description" content="{META_DESCRIPTION}">' in head
         assert '<meta property="og:url" content="https://bsnarchivo.com/">' in head
-        assert '<meta name="twitter:card" content="summary">' in head
-        assert f'<meta name="twitter:title" content="{TITLE}">' in head
+        assert '<meta name="twitter:card" content="summary_large_image">' in head   # PHASE_71: was "summary"
+        assert '<meta name="twitter:title" content="El Archivo">' in head
         assert f'<meta name="twitter:description" content="{META_DESCRIPTION}">' in head
 
-    def test_no_og_image_tag_exists(self):
+    def test_og_image_is_the_phase71_absolute_url_and_nothing_else_is_shared_as_an_image(self):
+        # Was "no og:image tag exists" (PHASE_69 era, there was no image file). PHASE_71 added web/img/brand/og.png.
         text = web_text()
-        assert "og:image" not in text
+        assert text.count('property="og:image"') == 1 and text.count('name="twitter:image"') == 1
+        assert '<meta property="og:image" content="https://bsnarchivo.com/img/brand/og.png">' in text
 
     def test_error_and_equivocad_never_appear_in_the_head_and_oficial_only_in_the_approved_text(self):
         head = _head(web_text())

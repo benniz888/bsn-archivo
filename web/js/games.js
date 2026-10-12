@@ -641,11 +641,11 @@ function drawPicks(){
     const avail=poolFor(DR.club,DR.dec).length;
     h+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2_5);margin:var(--sp-3) 0">
       <div class="card" style="text-align:center;border-color:#E8B23A;padding:var(--sp-2_5)">
-        <div style="font-size:var(--fs-3xs);letter-spacing:.1em;font-weight:700;color:#E8B23A">EQUIPO</div>
+        <div class="dr-lab eq">EQUIPO</div>
         <div style="font-family:inherit;font-weight:800;font-size:30px;line-height:1.1">${esc(F[DR.club].abbr)}</div>
         <div class="dim" style="font-size:var(--fs-3xs)">${esc(F[DR.club].name)}</div></div>
       <div class="card" style="text-align:center;border-color:#9B6BE0;padding:var(--sp-2_5)">
-        <div style="font-size:var(--fs-3xs);letter-spacing:.1em;font-weight:700;color:#9B6BE0">DÉCADA</div>
+        <div class="dr-lab dec">DÉCADA</div>
         <div style="font-family:inherit;font-weight:800;font-size:30px;line-height:1.1">${DR.dec}s</div>
         <div class="dim" style="font-size:var(--fs-3xs)">${avail} ${plural(avail,'disponible')}</div></div>
     </div>

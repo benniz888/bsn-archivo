@@ -962,6 +962,12 @@ function buildNav(){
     s.appendChild(b);
   });
   const bb=$('#bottombar'); bb.innerHTML='';
+  /* PHASE_71 P12: the bar is a named landmark (axe `region`); wrapped here, not in index.html, so the markup anchors that
+     tests/_web_text.py splices on stay intact. display:contents (.bbnav) keeps the bar's fixed positioning unchanged. */
+  if(!bb.parentNode.classList.contains('bbnav')){
+    const nv=document.createElement('nav'); nv.className='bbnav'; nv.setAttribute('aria-label','Secciones');
+    bb.parentNode.insertBefore(nv,bb); nv.appendChild(bb);
+  }
   BOTTOM.forEach(id=>{
     const t=TABS.find(x=>x[0]===id);
     const b=el('a');
@@ -1157,12 +1163,34 @@ function _showPanel(id,noScroll){
       if(h){ h.tabIndex=-1; h.focus({preventScroll:true}); }
     }
   }
+  _showPanel.title();
   if(!noScroll){
     const smooth = changed && !matchMedia('(prefers-reduced-motion:reduce)').matches;
     window.scrollTo({top:0,behavior:smooth?'smooth':'auto'});
   }
   return changed;
 }
+
+/* PHASE_71 P02 (WCAG 2.4.2): one document.title per route, "<label> · El Archivo", Inicio just "El Archivo".
+   Labels are the visible ones only: TABS label for a section landing, the subnav pill for a sub-view,
+   the visible h1 for Perfil and the legal pages, the player/team name on those detail views. A property
+   of _showPanel (not a new top-level name); called from _showPanel, showView, showTeam and buildPlayerHead
+   so it also covers deep links and Back/Forward (applyHash goes through the same functions). */
+_showPanel.title=function(teamName){
+  let lab=null;
+  if(CURRENT!=='inicio'){
+    const t=TABS.find(x=>x[0]===CURRENT);
+    if(t) lab=t[1];
+    else { const h=document.querySelector('#'+CURRENT+' h1'); lab=h?h.textContent.trim():null; }
+    const now=VIEW_NOW[CURRENT];
+    if(VIEW_SECS.indexOf(CURRENT)>-1 && now && now!=='__landing'){
+      if(now==='jugador'){ const h=document.querySelector('#playerHead h1'); if(h&&h.textContent.trim()) lab=h.textContent.trim(); }
+      else if(now==='equipo'){ if(teamName) lab=teamName; }
+      else { const a=document.querySelector('#'+CURRENT+' .subnav a[data-view="'+now+'"]'); if(a&&a.textContent.trim()) lab=a.textContent.trim(); }
+    }
+  }
+  document.title=lab?lab+' \u00b7 El Archivo':'El Archivo';
+};
 
 
 /* ============================================================
@@ -1241,7 +1269,7 @@ function buildTable(host,cols,rows,opts){
     const scrollable=wrap.scrollWidth>wrap.clientWidth+1;
     box.classList.toggle('more-r',scrollable&&wrap.scrollLeft+wrap.clientWidth<wrap.scrollWidth-2);
     wrap.tabIndex=scrollable?0:-1;
-    if(scrollable){ wrap.setAttribute('role','region'); wrap.setAttribute('aria-label','Tabla con desplazamiento horizontal'); }
+    if(scrollable){ wrap.setAttribute('role','group'); wrap.setAttribute('aria-label','Tabla con desplazamiento horizontal'); }
     else { wrap.removeAttribute('role'); wrap.removeAttribute('aria-label'); }
     wrap.querySelectorAll('.clampc').forEach(c=>{
       const t=c.firstChild;
@@ -1346,7 +1374,7 @@ buildTable.cue=function(wrap){
     box.classList.toggle('more-r',scrollable&&wrap.scrollLeft+wrap.clientWidth<wrap.scrollWidth-2);
     wrap.classList.toggle('scrolled',wrap.scrollLeft>2);
     wrap.tabIndex=scrollable?0:-1;
-    if(scrollable){ wrap.setAttribute('role','region'); wrap.setAttribute('aria-label','Tabla con desplazamiento horizontal'); }
+    if(scrollable){ wrap.setAttribute('role','group'); wrap.setAttribute('aria-label','Tabla con desplazamiento horizontal'); }
     else { wrap.removeAttribute('role'); wrap.removeAttribute('aria-label'); }
   };
   wrap.addEventListener('scroll',upd,{passive:true});
@@ -2122,6 +2150,7 @@ function showTeam(k){
   setHash('equipos/equipo/'+k);
   if(F[k]) ST.recent({k:'c',a:k});
   const f=F[k], host=$('#teamDetail');
+  if(f) _showPanel.title(f.name);
   const v=VENUES[k];
   const last=f.won.length?Math.max.apply(null,f.won):null;
   const finals=f.won.length+f.ru.length;
@@ -2197,7 +2226,7 @@ function showTeam(k){
   /* Finals timeline: the letter and the filled/outlined shape carry the result, not color alone. */
   const finalsAll=wonY.map(y=>[y,1]).concat(ruY.map(y=>[y,0])).sort((a,b)=>a[0]-b[0]);
   const inRun=y=>runBest.length>=3&&y>=runBest[0]&&y<=runBest[runBest.length-1];
-  const timeline=finalsAll.length?`<h4 class="sub">Finales</h4>
+  const timeline=finalsAll.length?`<h2 class="sub">Finales</h2>
       <ol class="eq-tl">${finalsAll.map(([y,w])=>`<li class="${w?'w':'l'}${w&&inRun(y)?' run':''}"><span class="eq-y">${y}</span><span class="eq-r" aria-hidden="true">${w?'G':'P'}</span><span class="sr">: ${w?'campeón':'subcampeón'}</span></li>`).join('')}</ol>
       <p class="note">G = campeón · P = subcampeón</p>`:'';
   const tenure=(!f.active&&f.founded!=null&&f.end!=null)?(()=>{
@@ -2248,7 +2277,7 @@ function showTeam(k){
         <div id="teamRoster"></div>
       </div>
     </div>
-    ${retired?`<section class="eq-retired" aria-labelledby="eqRetH"><h4 class="sub" id="eqRetH">Camisetas retiradas</h4>${buildRetiredNums.block(retired,k)}</section>`:''}
+    ${retired?`<section class="eq-retired" aria-labelledby="eqRetH"><h2 class="sub" id="eqRetH">Camisetas retiradas</h2>${buildRetiredNums.block(retired,k)}</section>`:''}
   </div>`;
   /* Interactive roster. State lives in this closure; rows are one roving tab stop. */
   (()=>{
@@ -2271,7 +2300,7 @@ function showTeam(k){
     const grp=(label,items,cur)=>`<div class="eq-fg" role="group" aria-label="${label}"><span class="eq-fl">${label}</span>${
       [['','Todas']].concat(items.map(v=>[String(v),String(v)])).map(([v,t])=>
         `<button type="button" class="eq-fb" data-v="${esc(v)}" aria-pressed="${(cur==null?'':String(cur))===v}">${esc(t)}</button>`).join('')}</div>`;
-    box.innerHTML=`<h4 class="sub">Jugadores en el archivo con este club</h4>
+    box.innerHTML=`<h2 class="sub">Jugadores en el archivo con este club</h2>
       <div class="eq-filters">
         <div data-f="era">${grp('Época',allDecs,null)}</div>
         ${grps.length>1?`<div data-f="pos">${grp('Posición',grps,null)}</div>`:''}
@@ -2339,7 +2368,7 @@ function showTeam(k){
     draw();
   })();
   if(oppRows.length){
-    const t=el('div'); t.innerHTML='<h4 class="sub">El careo en finales</h4>'; $('#teamOpp').appendChild(t);
+    const t=el('div'); t.innerHTML='<h2 class="sub">El careo en finales</h2>'; $('#teamOpp').appendChild(t);
     const tt=el('div'); $('#teamOpp').appendChild(tt);
     buildTable(tt,[{label:'Rival',wide:true},{label:'Ganadas',num:true},{label:'Perdidas',num:true},{label:'Total',num:true}],
       oppRows,{file:'finales_'+k,sort:3,dir:-1});
@@ -2444,7 +2473,7 @@ function renderStartingFive(k,season){
   const pills=seasons.length>1
     ? `<div class="sf-seg" role="group" aria-label="Temporada">${seasons.map(s=>`<button type="button" aria-pressed="${s===season}" onclick="renderStartingFive('${k}','${s}')">${s}</button>`).join('')}</div>`
     : '';
-  host.innerHTML=`<h4 class="sub">Cinco inicial ${esc(season)} — inferido de minutos jugados</h4>
+  host.innerHTML=`<h2 class="sub">Cinco inicial ${esc(season)} — inferido de minutos jugados</h2>
     <p class="lede">No hay un registro oficial de titulares; estos son los 5 jugadores con más minutos en cancha, agregados por temporada — una inferencia declarada, no un dato verificado. El número bajo cada nombre es su promedio real de puntos, no una calificación.</p>
     ${pills}
     <div class="sf-court">${sfCourtSvg(f,rec.players)}</div>
@@ -2545,6 +2574,7 @@ function buildPlayerHead(opts){
     </div>
     ${opts.actionHtml?`<div class="phero-head-action">${opts.actionHtml}</div>`:''}
   </div>`;
+  _showPanel.title();   /* PHASE_71 P02: the title names the player once the head exists */
 }
 /* Información del jugador -- one real rebuild per call (sync-only rows at
    first paint, sync+async together once loadPlayerExtra's own fetch
@@ -2556,7 +2586,7 @@ function buildPlayerHead(opts){
 function renderPlayerInfo(rows){
   const host=$('#playerInfo'); if(!host) return;
   const body=(rows||[]).filter(r=>r[1]).map(([k,v])=>`<div class="row"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`).join('');
-  host.innerHTML=`<h3>Información del jugador</h3>${body||'<p class="note" style="margin-top:0">Sin más datos de identidad en el archivo.</p>'}`;
+  host.innerHTML=`<h2>Información del jugador</h2>${body||'<p class="note" style="margin-top:0">Sin más datos de identidad en el archivo.</p>'}`;
   /* PHASE_20 item d: a long value ("21 de septiembre de 1957") in the
      narrow info column wraps mid-phrase next to its label instead of
      cleanly under it -- measured live (multi-line .v gets >1 client
@@ -4733,7 +4763,7 @@ function buildProfile(){
   const short=k=>F[k].name.split(' de ')[0];
 
   const themeBtn=(v,label)=>
-    `<button onclick="setTheme('${v}')" aria-selected="${p.theme===v?'true':'false'}">${label}</button>`;
+    `<button onclick="setTheme('${v}')" aria-pressed="${p.theme===v?'true':'false'}">${label}</button>`;
 
   const clubs='<div class="tiles">'+ACTIVE.map(k=>
     `<button class="teamtile" aria-pressed="${k===p.club?'true':'false'}" onclick="pickClub('${k}')">
@@ -4777,8 +4807,8 @@ function buildProfile(){
           <div class="ph">El recuadro de bienvenida en el inicio.</div></div>
         <div class="profctl">
           <div class="modebtns" role="group" aria-label="¿Qué es el BSN?">
-            <button onclick="showPrimer()" aria-selected="${p.primer!=='off'?'true':'false'}">Mostrar</button>
-            <button onclick="dismissPrimer()" aria-selected="${p.primer==='off'?'true':'false'}">Ocultar</button>
+            <button onclick="showPrimer()" aria-pressed="${p.primer!=='off'?'true':'false'}">Mostrar</button>
+            <button onclick="dismissPrimer()" aria-pressed="${p.primer==='off'?'true':'false'}">Ocultar</button>
           </div>
         </div>
       </div>
@@ -4792,7 +4822,7 @@ function buildProfile(){
       </div>
     </div>
 
-    <h3 class="sec">Tus números</h3>
+    <h2 class="sec">Tus números</h2>
     <div class="strip">
       <div><div class="n">${st.cur||0}</div><div class="l">racha actual</div></div>
       <div><div class="n">${st.best||0}</div><div class="l">mejor racha</div></div>
@@ -4803,7 +4833,7 @@ function buildProfile(){
     <p class="note">El progreso de los juegos se guarda aparte de los ajustes, así que
       restaurar las preferencias no te borra la racha.</p>
 
-    <h3 class="sec">Tus datos</h3>
+    <h2 class="sec">Tus datos</h2>
     <div class="btnrow">
       <button class="btn b44" onclick="exportProfile()">Descargar mis datos</button>
       <button class="btn b44" onclick="resetProfile()">Restaurar preferencias</button>
@@ -6266,7 +6296,7 @@ let GAME_OPEN=null;
 function buildShelf(){
   const host=$('#gameShelf');
   if(!host) return;
-  host.innerHTML=GAMES.map(g=>`<button class="tile" onclick="openGame('${g.id}')" aria-label="Abrir ${esc(g.t)}">
+  host.innerHTML=GAMES.map(g=>`<button class="tile" onclick="openGame('${g.id}')">
     <svg class="tileart" viewBox="0 0 320 104" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${g.art}</svg>
     <span class="tilebody" style="display:block">
       <span class="tiletitle" style="display:block">${esc(g.t)}</span>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#070C18">
+<title>No encontramos esa página · El Archivo</title>
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" type="image/png" sizes="32x32" href="/img/brand/favicon_32.png">
+<script>
+/* Same theme resolution as index.html's head script: the stored choice ('bsn:theme'), else the system setting. */
+(function(){
+  var t=null;
+  try{ t=localStorage.getItem('bsn:theme'); }catch(e){}
+  if(t!=='light'&&t!=='dark'){
+    t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';
+  }
+  document.documentElement.setAttribute('data-theme',t);
+  var m=document.querySelector('meta[name="theme-color"]');
+  if(m) m.setAttribute('content',t==='light'?'#F1F4FA':'#070C18');
+})();
+</script>
+<style>
+/* Self-hosted fonts, root-relative because this page is served at whatever path was not found. */
+@font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;
+  src:url(/fonts/inter-latin-opsz-normal-5.3.0.woff2) format('woff2')}
+@font-face{font-family:'Oswald';font-style:normal;font-weight:200 700;font-display:swap;
+  src:url(/fonts/oswald-latin-wght-normal-5.3.0.woff2) format('woff2')}
+:root{--night:#070C18;--ink:#EEF3FB;--ink-2:#A9BCDA;--azul:#1663D8;--rojo:#E5303D;--line:#1E2C4C;--flag-w:#FFFFFF;--tri-blue:#0038A8;--tri-red:#CE1126}
+[data-theme="light"]{--night:#F1F4FA;--ink:#0B1730;--ink-2:#3C5177;--azul:#0F52B8;--line:#C3D2E8}
+*{box-sizing:border-box}
+html{color-scheme:dark}
+[data-theme="light"]{color-scheme:light}
+body{margin:0;min-height:100vh;background:var(--night);color:var(--ink);font-family:'Inter',system-ui,sans-serif;
+  display:flex;align-items:center;justify-content:center;padding:24px 16px;line-height:1.5}
+main{max-width:520px;width:100%}
+.tri{height:4px;width:96px;margin-bottom:24px;
+  background:linear-gradient(90deg,var(--tri-blue) 0 25%,var(--tri-red) 25% 50%,var(--flag-w) 50% 75%,var(--tri-red) 75% 100%)}
+h1{font-family:'Oswald','Inter',sans-serif;font-weight:700;font-size:clamp(32px,8vw,48px);line-height:1.1;margin:0 0 12px;
+  text-transform:uppercase;letter-spacing:.005em}
+p{margin:0 0 28px;font-size:18px;color:var(--ink-2)}
+a.go{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;padding:10px 22px;border-radius:99px;
+  background:var(--azul);color:#fff;font-weight:700;font-size:16px;text-decoration:none}
+a.go:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+  <div class="tri" aria-hidden="true"></div>
+  <h1>No encontramos esa página</h1>
+  <p>Puede que el enlace esté mal escrito o que la página ya no exista.</p>
+  <a class="go" href="/">Ir a Inicio</a>
+</main>
+</body>
+</html>

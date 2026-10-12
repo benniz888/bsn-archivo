@@ -142,6 +142,7 @@ function showView(sec,view,opts){
     const smooth=!matchMedia('(prefers-reduced-motion:reduce)').matches;
     window.scrollTo({top:0,behavior:smooth?'smooth':'auto'});
   }
+  _showPanel.title();   /* PHASE_71 P02: after VIEW_NOW is current */
 }
 /* ============================================================
    STORAGE
