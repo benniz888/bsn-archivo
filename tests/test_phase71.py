@@ -30,9 +30,9 @@ def test_open_graph_and_twitter_tags():
     assert _meta("property", "og:title") == "El Archivo"
     assert _meta("name", "twitter:title") == "El Archivo"
     assert _meta("property", "og:type") == "website"
-    assert _meta("property", "og:url") == "https://bsnarchivo.com/"
-    assert _meta("property", "og:image") == "https://bsnarchivo.com/img/brand/og.png"
-    assert _meta("name", "twitter:image") == "https://bsnarchivo.com/img/brand/og.png"
+    assert _meta("property", "og:url") == "https://elarchivopr.com/"
+    assert _meta("property", "og:image") == "https://elarchivopr.com/img/brand/og.png"
+    assert _meta("name", "twitter:image") == "https://elarchivopr.com/img/brand/og.png"
     assert _meta("property", "og:locale") == "es_PR"
     assert _meta("property", "og:site_name") == "El Archivo"
     assert _meta("name", "twitter:card") == "summary_large_image"
@@ -41,7 +41,7 @@ def test_open_graph_and_twitter_tags():
 
 
 def test_canonical_link():
-    assert '<link rel="canonical" href="https://bsnarchivo.com/">' in INDEX
+    assert '<link rel="canonical" href="https://elarchivopr.com/">' in INDEX
 
 
 def test_og_image_exists_is_1200x630_and_under_300_kb():
@@ -108,9 +108,9 @@ def test_perfil_toggle_buttons_use_aria_pressed_not_aria_selected():
 def test_robots_sitemap_and_404_exist():
     robots = (WEB / "robots.txt").read_text()
     assert "User-agent: *" in robots and "Allow: /" in robots
-    assert "Sitemap: https://bsnarchivo.com/sitemap.xml" in robots
+    assert "Sitemap: https://elarchivopr.com/sitemap.xml" in robots
     sm = (WEB / "sitemap.xml").read_text()
-    assert sm.count("<loc>") == 1 and "<loc>https://bsnarchivo.com/</loc>" in sm and "<lastmod>2026-10-12</lastmod>" in sm
+    assert sm.count("<loc>") == 1 and "<loc>https://elarchivopr.com/</loc>" in sm and "<lastmod>2026-10-12</lastmod>" in sm
     assert "#" not in sm
     assert (WEB / "404.html").exists()
 
