@@ -28,7 +28,7 @@ Not collected: birthdate, phone, address, real name (display name optional), dev
 - Row-level security ON for every table. Policy: a user can read/write only rows where `user_id = auth.uid()`. Test with two test users: user A must get zero rows of user B.
 - The public (anon) key may live in the client; it is designed to be public ONLY because RLS is on. The service-role key never appears in the repo, in the client, or in chat. The repo is public.
 - Add to `.gitignore`: `.env*`. Ship `.env.example` with placeholder names only.
-- Email magic-link redirect URLs allowlisted to bsnarchivo.com (and localhost for dev). Rate limits on auth enabled. Email confirmation required.
+- Email magic-link redirect URLs allowlisted to elarchivopr.com (and localhost for dev). Rate limits on auth enabled. Email confirmation required.
 - Content-Security-Policy meta/headers limited to self + the auth provider + fonts host (or self-hosted fonts). GitHub Pages cannot set headers: use a `<meta http-equiv>` CSP and say what that cannot cover.
 - Never log tokens or emails to the console. Escape every user-supplied string when rendering (display names, search history) to avoid XSS.
 - Account deletion: one button, deletes the auth user and all rows (cascade). Data export: one button, downloads JSON of the user's rows.

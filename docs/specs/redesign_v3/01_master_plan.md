@@ -46,7 +46,7 @@ Realistic pacing: PHASE_60 to 64 fit a week at Sonnet low. Do not try all of it 
 ## Decisions that need the owner (do not let Claude Code decide these silently)
 1. Accounts: deferred. If you ever build them, they contradict the earlier "no backend" decision. See 03.
    Presentation risk to decide before the meeting: the league's own logos, crests and player photos. Show the PHASE_60 image-rights list to the president as part of the pitch, or confirm in the meeting what the league permits.
-2. Name change timing. The new logo says "EL ARCHIVO" (no BSN), so it survives a rename. Header wordmark stays "BSN ARCHIVO" until the new name is chosen. Domain is bsnarchivo.com.
+2. Name change timing. The new logo says "EL ARCHIVO" (no BSN), so it survives a rename. Header wordmark stays "BSN ARCHIVO" until the new name is chosen. Domain is elarchivopr.com.
 3. Business details (SETTLED Oct 9): the site is run by "bennizpr", contact `benniz.8008@gmail.com` (Instagram @bennizpr). No legal entity or address is claimed. Legal pages say "proyecto independiente de bennizpr", not "company". No marketing email, so no mailing address is needed.
 4. Whether you plan to earn money from the site or bennizpr (ads, sponsors, store). That decides refund policy, FTC disclosure, and tax questions.
 5. Your employer: check the bank's outside-business-activities / conflict-of-interest policy before launching accounts, giveaways or monetization.
