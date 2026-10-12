@@ -39,3 +39,9 @@ Name corrections (GOERGIE, Casian0, truncations) change data values, not interfa
 | E9 | Cobertura footnote, under the tiles | El porcentaje indica cuántos de cuatro datos (campeón, subcampeón, campeón de anotación y MVP) tiene el archivo por cada temporada de la década. (replaces the removed "estimación editorial" footnote) | D6, wording by the owner | APPROVED (as edited) |
 | E10 | Jugadores > Todo el archivo, offline note | El índice completo solo está disponible en la versión publicada, con conexión. Esta copia local trae los N jugadores destacados. (the typed "(3.303 jugadores)" and the fallback 385 are removed) | the count cannot be read offline | APPROVED |
 | E11 | Piculín bio | no change in text; the existing Spanish line now applies (key fixed) | D5 | APPROVED |
+
+## F. PHASE_72D: the 1979 row (S7), proposal only, NOT applied
+| # | Where | Text now | Proposed text | Status |
+|---|---|---|---|---|
+| F1 | Historia > La cinta > 1979, season detail, line "Novato del Año" | `NO FUE SELECCIONADO` (the source's own cell, shown as printed; the display layer leaves it alone) | `No se seleccionó` (what the source says, in sentence case). Alternatives: `Sin selección` (the S7 draft), or hide the line. | PENDING owner |
+| F2 | `docs/data_update_runbook.md` and the data-update report | English, developer-facing; not a public string | n/a | no approval needed |

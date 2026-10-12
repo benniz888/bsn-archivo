@@ -3491,6 +3491,16 @@ Tasks:
 6. update_asset_hashes, full suite vs baseline 892 passed / 1 skipped / 1 xfailed, Chromium + WebKit at 390 and 1000 (Jugadores search, a corrected-name player page, a Líderes table).
 Not in 72C: Ayuso identity, the 1979 "NO FUE SELECCIONADO" row wording, D9 pipeline. New Spanish: none expected; any goes to docs/strings_pending_phase72.md unapplied.
 
+### PHASE_72D_BUILD — `make data-update` (scope written 2026-10-12, before any edit)
+Owner decision D9. Branch `data-pipeline-v1` from `main` 8fecba1 (72A-72C merged: 4054861, 159217e, 331a787 confirmed ancestors). No commit, no push.
+Tasks:
+1. New `src/data_update.py` + `make data-update` (`ARGS=--apply` for apply mode). Check mode (default) runs: preflight + guards, game-name repair overlay check (in memory), display-name layer check, validation (`verify_clean` plus the new checks), `build_web_data` into a temp dir (data/clean copied to temp, overlay applied there), diff against `web/data`, then the full suite (`--skip-tests` to skip). Writes NOTHING to tracked files; prints the report. `--apply` writes only after every check passes (overlay, `build_web_data`), then `update_asset_hashes` and the full suite, then writes `docs/audits/data_update_report.md`. Exit 0 / 1 (failed check, one actionable line each) / 2 (usage or guard).
+2. Guards in code: any command or `--only` stage naming `parse-players`, `sync-web-data` or `parse-games` (any spelling) is refused with a clear error; `parse_games.main` is never called.
+3. Checks and report fields: row counts per dataset, name quality (ALL-CAPS remaining, unresolved truncated, override list size), mojibake scan (expect 0), González unassigned rows (expect 84), Cruz/Morales flags, bsnpr_id digest (39,371 unrelated box rows), diff summary (files and rows changed).
+4. `tests/test_phase72d.py` (check mode writes nothing by file hashes, guards, report fields, a failing check blocks --apply, apply order); `docs/data_update_runbook.md` (one page).
+5. S7 wording for the 1979 row proposed in `docs/strings_pending_phase72.md`, not applied. Ayuso stays as is (owner: leave).
+No Spanish strings applied. Full suite vs baseline 959 passed / 1 skipped / 1 xfailed.
+
 [BLOCKERS]
 
 - B1 — **Manual, user-only — but partly answered by PHASE_3C.** The bsnpr.com
@@ -9251,3 +9261,9 @@ Suite: **959 passed, 1 skipped, 1 xfailed** (baseline 892/1/1; +67 in tests/test
 Files: src/display_names.py (new), src/build_web_data.py (display names, digest folds the module, DIGEST_REVISION 3), web/data (60 season files, index/mvp.json, index/scoring_titles.json, manifest), web/js/{tabs,init,helpers,player,data}.js, web/index.html (hashes), tests/test_phase72c.py, tests/harness/phase72c_probe.mjs, tests/test_build_web_data.py, docs/audits/data_review_todo.md.
 On screen: 144 distinct source spellings change (353 occurrences): 112 ALL-CAPS recased (one of them the GOERGIE override) and 32 truncated or surname-only names expanded through an already-linked id. Override list: 1 entry. `data/raw` and `data/clean` unchanged. No new Spanish strings.
 Left alone and listed in data_review_todo.md: Ayuso, unevidenced typos, ~75 unlinked truncated/surname-only observations, NO FUE SELECCIONADO, Cruz HOLD, Morales 1980 conflict.
+
+## PHASE_72D_BUILD — `make data-update` (built, NOT committed, 2026-10-12, branch data-pipeline-v1)
+Files: src/data_update.py (new), Makefile (`data-update` target), tests/test_phase72d.py (37), docs/data_update_runbook.md (new), docs/strings_pending_phase72.md (section F, S7 proposal NOT applied), docs/session.md.
+`make data-update` on the current data (check mode, full suite included): all 12 checks PASS, diff 0 files / 0 rows, mojibake 0, Gonzalez unassigned 84, bsnpr_id digest f542ac5d5390 over 39,371 rows, ALL-CAPS left on purpose 2 (ELIAS AYUSO, NO FUE SELECCIONADO), 90 unresolved truncated/surname-only observations, 1 override. Suite run by the pipeline: 996 passed, 1 skipped, 1 xfailed (baseline 959/1/1; +37). Check mode left every tracked file byte-identical (test-pinned). Total about 16 s without the suite.
+Guards: parse-players, sync-web-data and parse-games (any spelling) raise GuardError in `guard()`/`run()`; `--only` with them exits 2. `parse_games.main` is never called; the overlay and resolver helpers are imported only.
+Ayuso unchanged (owner: leave). No Spanish applied.

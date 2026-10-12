@@ -92,7 +92,13 @@ site:
 	touch web/.nojekyll
 	@echo "web/ ready — Pages source: main branch, /web folder"
 
+# One repeatable pass from the committed data to a verified web/data (PHASE_72D, docs/data_update_runbook.md).
+# Check mode by default: writes nothing to a tracked file. `make data-update ARGS=--apply` writes after every
+# check passes. Never runs parse-players, sync-web-data or parse-games (guarded in src/data_update.py).
+data-update:
+	.venv/bin/python -m src.data_update $(ARGS)
+
 test:
 	.venv/bin/pytest -q
 
-.PHONY: setup enumerate samples fetch parse verify enumerate-root fetch-pre2007 parse-pre2007 fetch-players fetch-jug05 fetch-jugador05 parse-players reconcile enumerate-games fetch-games parse-games enumerate-historic fetch-historic build-web-data sync-web-data site test
+.PHONY: setup enumerate samples fetch parse verify enumerate-root fetch-pre2007 parse-pre2007 fetch-players fetch-jug05 fetch-jugador05 parse-players reconcile enumerate-games fetch-games parse-games enumerate-historic fetch-historic build-web-data sync-web-data site data-update test
