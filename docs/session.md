@@ -3457,6 +3457,40 @@ tree in one step, the fast path once the hook flags a gap.
 
 ---
 
+### PHASE_72A_BUILD — web-layer fixes (scope written 2026-10-12, before any edit)
+Re-ordered by the owner (D9: `make data-update` is the LAST sub-phase). 72A = the audit's web-layer scope, with owner decisions D1-D8 applied. Branch `data-fixes-v1`, no commit, no push. One phase: no data/clean, no src parse, no web/data regeneration.
+Tasks (each gets a test in `tests/test_phase72a.py`; hashes via `python -m src.update_asset_hashes`; then full suite vs baseline 856 passed / 1 failed / 1 xfailed):
+1. D1 Récords: drop "Rebotes de carrera" (Rodríguez 6,178) from `REC_ES` (web/index.html) and `RECORDS` (web/js/tabs.js); Líderes rebounds: Butler row flagged SIN CONFIRMAR (web/js/tabs.js); log in docs/audits/data_review_todo.md.
+2. D5 `BIO_ES` key `José Ortiz` -> `José «Piculín» Ortiz` (web/index.html); key-coverage test for HOF_ES / BIO_ES / NBA_ES.
+3. D7 labels: "Defensor del Año" and "Sexto Hombre" everywhere (web/js/tabs.js SEASON_AW + Butler prose, web/index.html BIO_ES).
+4. D6 COVERAGE: unsourced percentages removed; per-decade coverage derived from YEARS / SCORING / MVP_YEARS (web/js/tabs.js, web/js/init.js).
+5. Derived numbers H1-H5, H7, H9 (98.ª temporada, FIN_YEAR, finals label, 2026 tag, 3.303/385, San Germán 13 títulos, 34 games) and LAST/YEARS from champion data.
+6. Retire the stale `test_web_text` frozen-original check (skip with reason; the redesign changed the page on purpose).
+7. New Spanish text -> docs/strings_pending_phase72.md, marked built-under-owner-decision or pending; nothing else applied.
+Not in 72A (later sub-phases): D2 name display layer, D3 decoder + 296-row overlay, D8 González split, Cruz/Morales flags, D9 pipeline.
+
+### PHASE_72B_BUILD — mojibake decoder + 296-row overlay + González split (scope written 2026-10-12, before any edit)
+Owner decisions D3 and D8 (González only). Branch `data-fixes-v1`, no commit, no push. `parse-games` is NOT re-run (365 unrelated `bsnpr_id` values must stay byte-identical); `parse-players` / `sync-web-data` are never run (N7).
+Tasks:
+1. `src/parse_games.py`: per-byte-sequence decoder (`_decode`) at the three cp1252 decode sites (lines 144, 217, 354). Pure UTF-8, mixed and pure cp1252 pages all decode correctly; nothing else in the parser changes.
+2. New `src/apply_game_name_repair.py`: idempotent overlay on the committed `data/clean/game_box_player.csv`. Repairs the 3 damaged names (`Lloreda, JosÃ© Jaime`, `Cotto, RubÃ©n`, `GonzÃ¡lez, Javier`) and sets `bsnpr_id` only on those repaired rows, only when the existing resolver (`parse_games._resolve`, alias + season-in-career) returns exactly one id. Check mode by default; writes only with `--apply`. Every other row stays byte-identical.
+3. D8 González: the 58 `GonzÃ¡lez` rows resolve to id 2513 (González López, Javier, 2011-2017) by the same rule. The 82 `Gonzalez, Javier` Quebradillas 2001-03 rows (candidate id 1006, no season rows) and the 2 blank-team 2008 rows are NOT assigned (would be a guess); listed in the report.
+4. Apply the overlay to data/clean, rebuild web/data with `python -m src.build_web_data` only, check the diff is limited to the repaired rows.
+5. Tests in `tests/test_phase72b.py`: decoder cases (mixed pages), overlay idempotency, row-diff guarantee (exactly 296 rows, only `player_raw`/`bsnpr_id`), González split, untouched ids.
+6. Chromium + WebKit on a repaired player page and both González pages. Suite vs baseline 873 passed / 1 skipped / 1 xfailed.
+Not in 72B: D2 names, Cruz/Morales flags, D9 pipeline. New Spanish: none expected; any goes to docs/strings_pending_phase72.md unapplied.
+
+### PHASE_72C_BUILD — display-layer names, Cruz/Morales (scope written 2026-10-12, before any edit)
+Owner decisions D2 and D8 (Cruz, Morales). Branch `data-fixes-v1`, no commit, no push. `data/raw/` and `data/clean/` stay byte-identical (checked by test); the work is a display layer in the generated `web/data/` plus the JS that reads it. No `parse-players`, no `sync-web-data` (N7).
+Tasks:
+1. New `src/display_names.py`: `proper_case()` for ALL-CAPS tokens (Spanish particles de/del/la/las/los/y, Mc, Mac only for an explicit list, Jr./Sr./II/III/IV, apostrophes, hyphens, accents kept, nickname quotes normalised to «…» with the missing space restored), an `OVERRIDES` list for typos (one entry per name, each with its source row in a comment; only `GOERGIE TORRES` has evidence), a `NON_NAMES` set left untouched, and `display_name()` that expands a truncated or surname-only name to the canonical full name only when the same `bsnpr_id` is already linked in `player_id_map.csv` for that very row and the spelling is consistent. Ayuso is excluded and flagged.
+2. `src/build_web_data.py`: `player` (display) added next to `player_raw` in `seasons/*.json` (awards, leaders, scoring champion) and `index/scoring_titles.json`; `index/mvp.json` `player` uses the same function (replacing `_titlecase` for names; team names keep it); digest folds in `display_names.py` and `DIGEST_REVISION` bumps so returning visitors refresh.
+3. JS: season detail reads `player||player_raw`; MVP/scoring rows carry the raw spelling; the curated player search also matches the original spelling (property on existing objects, 0 new top-level names).
+4. D8: Mario Morales `c` gains `gua` (Mets de Guaynabo: MVP 1980/82/83/93 and scoring 1993 rows, `mets_guaynabo`) next to `san` (scoring 1980 row, which conflicts with the 1980 MVP row: flagged, not resolved). Teófilo Cruz keeps `san` (6 season rows) and stays on HOLD in the quiz (owner call, flagged). No other club is added.
+5. Tests in `tests/test_phase72c.py`: table-driven casing over every ALL-CAPS pattern in the real data, override list (evidence present, one per name), expansion rule, search by both spellings (browser), raw and clean files unchanged (digests), build output. `data_review_todo.md` flags Ayuso, unresolved names, Cruz/Morales.
+6. update_asset_hashes, full suite vs baseline 892 passed / 1 skipped / 1 xfailed, Chromium + WebKit at 390 and 1000 (Jugadores search, a corrected-name player page, a Líderes table).
+Not in 72C: Ayuso identity, the 1979 "NO FUE SELECCIONADO" row wording, D9 pipeline. New Spanish: none expected; any goes to docs/strings_pending_phase72.md unapplied.
+
 [BLOCKERS]
 
 - B1 — **Manual, user-only — but partly answered by PHASE_3C.** The bsnpr.com
@@ -9179,3 +9213,41 @@ Not built: P04 (lazy panels: buildViews() needs every builder's markup in the DO
 NEXT: owner confirms A1, A3 and which description wins (S5); COMMIT ONLY step stages by explicit path, web/index.html last after `python -m src.update_asset_hashes`.
 
 - PHASE_71 fixup: Perfil theme/primer toggle buttons and the `Inter` link in Créditos raised to a 44px minimum (`.profctl .modebtns button` min-height/min-width; `.legal a` padding/margin 4px -> 7px horizontally, flow unchanged). Owner decisions S5, A1, A3, S7 appended to docs/strings_pending_phase71.md. Test added in tests/test_phase71.py.
+
+## PHASE_72_AUDIT — data fixes audit (READ-ONLY, 2026-10-12, NOT committed)
+Branch `data-fixes-v1` from `main` 374e58b. Audit: `docs/audits/phase72_audit.md`. Proposed strings (none applied): `docs/strings_pending_phase72.md`. No change under `web/`, `src/`, `data/` or `tests/`.
+Baseline (`pytest -q` on clean main, before any work): **856 passed, 1 failed, 1 xfailed**. The failure is pre-existing: `tests/test_web_text.py::TestWebTextReconstructsTheOriginal::test_web_text_equals_the_frozen_pre_split_original_byte_for_byte` (first diff at byte 131).
+Findings, one line each (evidence and confidence in the audit):
+- 1 Rebounds: both numbers come from one seed (`bsn_records.csv:3`, `bsn_career_leaders.csv:12-13`, scaffold `195fc2a`, no provenance columns). Rodríguez = id 2113, games sum 631 (matches). Butler = id 1575, games 789 minus a 10-game duplicate 2001 row = 779 (matches). Favors Butler (about 80%); no per-season rebound totals exist in the repo, so it cannot be proved.
+- 2 A02 names: 562 distinct / 1,800 occurrences in published season/MVP/scoring data. ALL-CAPS 111/287, truncated at a fixed-width source cell 44/156 (the cut is in the raw page), surname-only 42/83, typos 9/19 (`GOERGIE TORRES` is in the raw capture), plus 2 non-names. Fix belongs in a build-time override layer, not raw.
+- 3 Mojibake: `parse_games.py:144,217,354` decode every page as cp1252; 392 `pogamestat` pages are valid UTF-8 (265 other pages declare utf-8 but are not). 3 names, 296 rows in `game_box_player.csv`. The earlier fix (whole-page UTF-8 first) repairs only 170 of the 296 rows: 265 `pogamestat` pages are mixed (UTF-8 names in a cp1252 page). Fix = per-byte-sequence decode, dry-run verified (296 rows repaired, 0 left, ids 2690/2675/2513 resolve). `parse-games` is also NOT idempotent at HEAD: a control re-parse changes 365 `bsnpr_id` values (360 gain, 5 lose; 2001-03) because the identity spine moved; a full regeneration would touch 661 rows, not 296. Recommended: a narrow overlay for the 296 rows.
+- 4 Honors: 303 reproduced exactly (376 pool, 73 with a structured honor). 35 played only in seasons with no award table, 86 have award tables but won none, 182 have no per-season rows. Only 7 can gain an honor from repo data (rank-1 scoring/rebounds/assists rows); the rest need outside data.
+- 5 English: source literals are English (18 HOF.role, 44 of 45 data.js bios, 7 NBA_PLAYERS, 0 SEASON_AWARDS) and are overlaid at load by the Spanish layer in `web/index.html:636-868`. 1 English line reaches a visitor: the Piculín bio (overlay key `José Ortiz` vs pool name `José «Piculín» Ortiz`). `RECENT` (data.js:108-163) is dead English data. All English dates to scaffold `195fc2a`.
+- 6 Hard-coded numbers: 12 items that should derive (98.ª temporada, FIN_YEAR, finals label, 2026 tag, 3.303/385, Dalmau prose, 34 games, two disagreeing COVERAGE tables, "1930-2026" meta); H11 (COVERAGE percentages, unsourced) is the one that touches PC1.
+- 7 Labels: "Defensor del Año" 6 + "Defensor del año" 1 vs "Defensa del Año" (1 definition, renders 41 historic rows) vs "Jugador Defensivo del Año"; "Sexto Hombre" 4 vs "Sexto hombre del año" 1 vs English "Sixth man" 2.
+- 8 Identity/club: Atenienses -> Cariduros is contradicted by `franchises.csv` (Cariduros 1973-2023, in 2018-19 leaders) and unverified; Javier González is probably two players (Quebradillas 2001-03 vs Santurce/Humacao 2012-13, id 2513), not one; Cruz = Santurce on six season rows; Morales = Santurce and Guaynabo with a 1980 contradiction; 7 legends not playable.
+- 9 Pipeline: designed (`make data-update`, check mode by default, no parse-players / sync-web-data per N7), not built.
+Owner decisions needed: see audit section 11 (8 groups). Proposed build split 72A-72F in audit section 10 (pipeline first, outside-data work last).
+NEXT: owner reviews the audit and strings file; then one sub-phase per turn, starting 72A. COMMIT ONLY step stages by explicit path (audit, strings file, session.md).
+
+## PHASE_72A_BUILD — web-layer fixes (built, NOT committed, 2026-10-12)
+Scope as written in [TASK_QUEUE]. Suite: **873 passed, 1 skipped, 1 xfailed** (baseline 856 passed / 1 failed / 1 xfailed): +17 new tests (`tests/test_phase72a.py`, 19, minus 2 retired Cobertura tests replaced in `test_archivo_polish_b.py`), the stale `test_web_text` frozen-original check is skipped with its reason. Chromium + WebKit at 390 and 1000 on Líderes>Rebotes and Cobertura: 0 console errors, no horizontal overflow.
+Files: web/index.html (REC_ES row removed, BIO_ES Piculín key, award labels, Butler flags, LAST/YEARS derived, hashes), web/js/tabs.js (RECORDS row, Butler tag, SEASON_AW, COVERAGE.derive, 98.ª, FIN_YEAR, finals label, LAST tags, 1942 sentence), web/js/init.js (typed coverage override removed), web/js/player.js (3.303/385), tests/test_phase72a.py, tests/harness/phase72a_probe.mjs, tests/test_archivo_polish_b.py, tests/test_web_text.py, tests/_web_text.py (end marker), docs/audits/data_review_todo.md (D1 log), docs/strings_pending_phase72.md (section E).
+Decisions: H9 (34 games) NOT derived: the Temporada Perfecta win curve is calibrated to 34 and tests extract its closure standalone; left literal. H10 prose "34 juegos / 12 equipos" and H12 meta years left (owner call). Footnote under Cobertura removed; replacement proposed, not applied (E9).
+Not in 72A: D2 names, D3 decoder + 296-row overlay (parse_games untouched), D8 González/Cruz/Morales, D9 `make data-update`.
+NEXT: owner confirms section E strings; 72B.
+
+## PHASE_72A — strings applied (2026-10-12)
+Owner approved E1-E11; E7 applied as "Fue Defensor del Año en 2026." / "Fue Sexto Hombre en 2026."; E9 footnote added under the Cobertura tiles. Tests updated (`tests/test_phase72a.py`, `tests/_web_text.py` end marker). Committed on `data-fixes-v1`, not pushed.
+
+## PHASE_72B_BUILD — decoder, 296-row overlay, González split (built, NOT committed, 2026-10-12)
+Files: src/parse_games.py (`_decode` at lines 144/217/354 equivalents), src/apply_game_name_repair.py (new), data/clean/game_box_player.csv (296 rows), web/data/games/2011-2013 (168 files, regenerated with `python -m src.build_web_data` only; structural diff = 296 `bsnpr_id` null->int in games, 3 starting-five players resolved in san.json/sge.json, manifest source_digest), tests/test_phase72b.py (19), docs/audits/data_review_todo.md, docs/session.md.
+Guarantee: after the repair, the 39,371 rows outside the three names hash to the same sha256 as before (includes the 365 ids a re-parse would move); only `player_raw` and `bsnpr_id` changed, only on the 296 rows. Check mode writes nothing; second `--apply` is a no-op.
+González: 58 rows -> 2513 (57 x 2013 Santurce, 1 x 2012 Humacao = his career rows). Unassigned and listed: 82 `Gonzalez, Javier` Quebradillas 2001-03 (candidate 1006, no season rows), 2 blank-team 2008 rows.
+No Spanish strings. Chromium + WebKit, 390 and 1000: repaired player page (Lloreda Ferrón) and both González pages (2513, 1006): 0 console errors, 0 failed requests, no overflow.
+
+## PHASE_72C_BUILD — display-layer names, Cruz/Morales (built, NOT committed, 2026-10-12)
+Suite: **959 passed, 1 skipped, 1 xfailed** (baseline 892/1/1; +67 in tests/test_phase72c.py, one assertion updated in test_build_web_data). Chromium + WebKit, 390 and 1000: Jugadores search by the source spelling ("goergie"), the Georgie Torres page, a Líderes table, the 1986 season detail: 0 console errors, 0 failed requests, no overflow.
+Files: src/display_names.py (new), src/build_web_data.py (display names, digest folds the module, DIGEST_REVISION 3), web/data (60 season files, index/mvp.json, index/scoring_titles.json, manifest), web/js/{tabs,init,helpers,player,data}.js, web/index.html (hashes), tests/test_phase72c.py, tests/harness/phase72c_probe.mjs, tests/test_build_web_data.py, docs/audits/data_review_todo.md.
+On screen: 144 distinct source spellings change (353 occurrences): 112 ALL-CAPS recased (one of them the GOERGIE override) and 32 truncated or surname-only names expanded through an already-linked id. Override list: 1 entry. `data/raw` and `data/clean` unchanged. No new Spanish strings.
+Left alone and listed in data_review_todo.md: Ayuso, unevidenced typos, ~75 unlinked truncated/surname-only observations, NO FUE SELECCIONADO, Cruz HOLD, Morales 1980 conflict.

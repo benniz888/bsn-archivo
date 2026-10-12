@@ -181,6 +181,9 @@ const ST={
    Cache: memory -> localStorage (bsn:data:*, via ST) -> network.
    ============================================================ */
 const DATA={
+  /* PHASE_72C: nickKey(display name) -> the source spellings it replaced (a typo fixed by the display layer),
+     so the curated player search still finds a player by the spelling the archive printed. */
+  aka:{},
   base: location.protocol==='file:' ? null : new URL('data/',location.href).href,
   mem:{},
   async get(path,fresh){

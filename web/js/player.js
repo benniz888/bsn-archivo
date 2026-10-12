@@ -198,7 +198,7 @@ function renderPlayerIndex(){
        be its own separate card ("Mario Morales") -- nickKey(p.name) is that
        same name with the quoted segment dropped, so it matches q the same
        way the nickname itself already does via the line above. */
-    return norm(p.name+' '+tags+' '+clubs+' '+(p.bio||'')).includes(q) || nickKey(p.name).includes(q);
+    return norm(p.name+' '+tags+' '+clubs+' '+(p.bio||'')+' '+(DATA.aka[nickKey(p.name)]||[]).join(' ')).includes(q) || nickKey(p.name).includes(q);
   });
   const rows=list.map(p=>[
     p.name, p.pos, p.years, Array.from(p.clubs).map(c=>F[c].abbr).join(' '), p.pts, p.reb, p.ast, p.gp,
@@ -223,7 +223,7 @@ function renderArchiveIndex(q){
   if(!PALL){
     /* file:// (no data/ to reach) vs. hydrate still in flight over http. */
     host.innerHTML = DATA.base===null
-      ? '<p class="note">El índice completo (3.303 jugadores) solo está disponible en la versión publicada, con conexión. Esta copia local trae los '+(PINDEX?PINDEX.length:385)+' jugadores destacados.</p>'
+      ? '<p class="note">El índice completo solo está disponible en la versión publicada, con conexión. Esta copia local trae los '+(PINDEX?PINDEX.length:0)+' jugadores destacados.</p>'
       : '<p class="note">Cargando el índice completo del archivo…</p>';
     return;
   }

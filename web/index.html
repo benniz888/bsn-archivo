@@ -614,13 +614,13 @@
 </div><!-- /.shell -->
 
 <div class="bottombar" id="bottombar" role="tablist" aria-label="Navegación principal"></div>
-<script src="js/data.js?v=9ddfe48073c9"></script>
-<script src="js/helpers.js?v=b5c59231bee6"></script>
-<script src="js/player.js?v=e078f1014cba"></script>
+<script src="js/data.js?v=616df22fbbf8"></script>
+<script src="js/helpers.js?v=23e8f8dd1ca4"></script>
+<script src="js/player.js?v=802468c3bff0"></script>
 <script src="js/data-quality.js?v=2143eba8a282"></script>
 <script src="js/games.js?v=8e6c043dc0b1"></script>
-<script src="js/tabs.js?v=12f9538c0c19"></script>
-<script src="js/init.js?v=3c2ceb340594"></script>
+<script src="js/tabs.js?v=6c808c4de619"></script>
+<script src="js/init.js?v=aa7f1a7ac4e8"></script>
 <script>
 
 /* ============================================================
@@ -659,8 +659,8 @@
     'Neftalí Rivera':{role:'Dueño del récord de anotación en un juego, en pie desde 1974.',
       hon:['79 puntos, 22 de mayo de 1974','Novato del año 1969','2× campeón de anotación'],
       note:'Treinta y cuatro canastas de campo esa noche, todas de dos. Con Dalmau formó el «Dúo Dinámico» de Quebradillas.'},
-    'Mario Butler':{role:'Centro panameño, máximo reboteador histórico y el jugador con más juegos de la liga.',
-      hon:['Máximo reboteador histórico','779 juegos, un récord','3.º de todos los tiempos en puntos'],
+    'Mario Butler':{role:'Centro panameño, máximo reboteador histórico (sin confirmar) y el jugador con más juegos de la liga.',
+      hon:['Máximo reboteador histórico (sin confirmar)','779 juegos, un récord','3.º de todos los tiempos en puntos'],
       note:'Veintiocho temporadas: la carrera más larga del archivo.'},
     'Rolando Frazer':{role:'Centro panameño que ganó dos títulos de anotación seguidos con Aibonito.',
       hon:['2× campeón de anotación','4.º de todos los tiempos en puntos'],
@@ -694,7 +694,6 @@
     ['Puntos en un juego','79','Neftalí Rivera',1974,'22 de mayo de 1974. Treinta y cuatro canastas de campo, todas de dos: la línea de tres todavía no existía.'],
     ['Asistencias en un juego','33','Jonathan García',2012,'1 de mayo de 2012, Caciques de Humacao contra Brujos de Guayama. Rompió las 25 de Pablo Alicea de 1989.'],
     ['Puntos de carrera','15,863','Georgie Torres',2001,'679 juegos. Sus primeras siete temporadas fueron antes de la línea de tres.'],
-    ['Rebotes de carrera','6,178','Rubén Rodríguez',1991,'631 juegos.'],
     ['Puntos en una temporada','810','Rubén Rodríguez',1978,''],
     ['Rebotes en una temporada','380','Rubén Rodríguez',1978,'Aguantó treinta años, hasta que Lee Benson lo rompió en 2008.'],
     ['Puntos de equipo en un juego','130','Caciques de Humacao',2012,'El mismo juego del récord de asistencias de García.'],
@@ -826,7 +825,7 @@
     'Ángel Santiago':'Ganó el título de 1986 con los Polluelos.',
     'Christian Dalmau':'Veinticinco temporadas con ocho clubes del BSN. MVP de la final en 2009.',
     'Teófilo Cruz':'Cuatro MVP y un puesto en el Salón de la Fama de FIBA.',
-    'José Ortiz':'«Piculín». Llegó a la NBA y volvió a casa a terminar.',
+    'José «Piculín» Ortiz':'«Piculín». Llegó a la NBA y volvió a casa a terminar.',
     'Edgar de León':'Dos títulos de anotación con Fajardo.',
     'Pablo Alicea':'Tuvo el récord de asistencias en un juego durante veintitrés años.',
     'Sammy Betancourt':'«El Francotirador». Tres títulos de anotación y un puesto en el Salón del Deporte.',
@@ -852,12 +851,12 @@
     'Alexander Kappos':'Segundo en triples en 2025 con 78.',
     'Travis Trice':'MVP en 2024 y 2026, y MVP de la final del título de 2024.',
     'Renaldo Balkman':'MVP de la final en 2026, a los cuarenta y un años.',
-    'Moses Brown':'Defensor del año en 2026.',
+    'Moses Brown':'Fue Defensor del Año en 2026.',
     'Andre Curbelo':'Progreso del año en 2026 y único nativo del Quinteto Ideal.',
     'Montrezl Harrell':'Quinteto Ideal en 2026.',
     'Jaylen Nowell':'Quinteto Ideal en 2026 y segundo en anotación.',
     'Daniel Rivera':'Novato del año en 2026, nacido en San Juan.',
-    'Christian López':'Sexto hombre del año en 2026.',
+    'Christian López':'Fue Sexto Hombre en 2026.',
     'Danilo Gallinari':'MVP de la final del título de Bayamón en 2025.',
     'Jae Crowder':'Firmado por Bayamón para la temporada 2026.',
     'Alfonso Plummer':'Progreso del año en 2024 con Arecibo.',
@@ -879,8 +878,10 @@ function deriveChampions(){
   }
 }
 deriveChampions();
-const YEARS=[];for(let y=1930;y<=2026;y++)YEARS.push(y);
-const LAST=2026, NSEASONS=YEARS.length;
+/* PHASE_72A: the last season is the latest champion on file, not a typed year */
+const LAST=Math.max.apply(null,Object.keys(champOf).map(Number));
+const YEARS=[];for(let y=1930;y<=LAST;y++)YEARS.push(y);
+const NSEASONS=YEARS.length;
 const FKEYS=Object.keys(F);
 const ACTIVE=FKEYS.filter(k=>F[k].active);
 

@@ -161,7 +161,6 @@ const RECORDS=[
   ["Points, single game","79","Neftalí Rivera",1974,"22 May 1974. Thirty-four field goals, every one a two-pointer — the three-point line had not been adopted."],
   ["Assists, single game","33","Jonathan García",2012,"1 May 2012, Caciques de Humacao against Brujos de Guayama. Broke Pablo Alicea's 25 from 1989."],
   ["Points, career","15,863","Georgie Torres",2001,"679 games. His first seven seasons were played before the three-point line existed."],
-  ["Rebounds, career","6,178","Rubén Rodríguez",1991,"631 games."],
   ["Points, single season","810","Rubén Rodríguez",1978,""],
   ["Rebounds, single season","380","Rubén Rodríguez",1978,"Stood thirty years until Lee Benson broke it in 2008."],
   ["Team points, single game","130","Caciques de Humacao",2012,"Same game as García's assist record."],
@@ -1099,7 +1098,7 @@ function megaFeat(k){
     const lc=(MANIFEST&&MANIFEST.counts)?MANIFEST.counts.seasons_with_leaders:null;
     return `<div class="fx">Lo que este archivo no sabe</div>
       <div class="ft" style="margin-top:2px">${lc!=null?'Líderes por temporada en '+lc+' de '+YEARS.length+' temporadas':'Líderes por temporada solo en una parte de las temporadas'}</div>
-      <div class="mf-viz">${sparkBars(COVERAGE.map(c=>c[1]),{w:180,h:24,scale:100,gap:2})}</div>
+      <div class="mf-viz">${sparkBars(COVERAGE.derive().map(c=>c[1]),{w:180,h:24,scale:100,gap:2})}</div>
       <div class="fd">Ese es el hueco real. Todo lo demás — los huecos, los conflictos entre fuentes, de dónde sale cada dato — está aquí, dicho de frente.</div>
       <button class="btn" style="padding:6px 12px;font-size:12px" onclick="megaGo('cobertura')">Ver los huecos</button>`;
   }
@@ -1437,7 +1436,7 @@ function buildHero(){
   let n,u,h,p;
   if(since<0){ n=Math.abs(since); u='días para el juego decisivo'; h='La temporada sigue viva'; p='El archivo se actualiza cuando termine.'; }
   else if(until>0){
-    n=until; u=until===1?'día para la 98.ª':'días para la 98.ª temporada';
+    n=until; u=until===1?'día para la '+(YEARS.length+1)+'.ª':'días para la '+(YEARS.length+1)+'.ª temporada';
     h='Temporada muerta, día '+since;
     p='El BSN corre de finales de marzo a agosto. Los otros siete meses no hay marcador que mirar — hay '+YEARS.length+' temporadas que revisar. Para eso es esto.';
   } else {
@@ -1671,7 +1670,7 @@ function buildClubCard(){
         ${last?`<span class="tag">Último: ${last}</span>`:'<span class="tag">Sin títulos</span>'}
         ${drought!=null?`<span class="tag ${drought>15?'gold':''}">${drought===0?'Campeón vigente':drought+' años de sequía'}</span>`:''}
         ${rival?`<span class="tag blue">Rival de finales: ${esc(F[rival].name.split(' de ')[0])} (${tally[rival]})</span>`:''}
-        ${st?`<span class="tag">2026: ${st[1]}-${st[2]}</span>`:''}
+        ${st?`<span class="tag">${LAST}: ${st[1]}-${st[2]}</span>`:''}
       </div>
       ${f.coach?`<div class="note">Dirigente: ${esc(f.coach)}</div>`:''}
       ${f.won.length?`<div class="note">Campeón en ${f.won.join(', ')}</div>`:''}
@@ -1934,7 +1933,7 @@ function renderReadout(y){
    awards, standings, leaders — appended below the champion readout when
    the file is reachable (deployed). A local-file open shows nothing
    extra. Guarded against a fast second click by the dataset stamp. */
-const SEASON_AW={mvp:'Más Valioso',defensive_player:'Defensa del Año',rookie:'Novato del Año'};
+const SEASON_AW={mvp:'Más Valioso',defensive_player:'Defensor del Año',rookie:'Novato del Año'};
 const SEASON_LC={scoring:'Anotación',rebounds:'Rebotes',assists:'Asistencias',blocks:'Bloqueos',
   steals:'Robos',threes:'Triples',free_throws:'Tiros libres',turnovers:'Pérdidas',
   off_rebounds:'Rebotes ofensivos',three_pct:'% de triples',free_throw_pct:'% de tiros libres'};
@@ -1952,11 +1951,11 @@ async function loadSeasonExtra(y){
     const v=sc.metric_era==='ppg'
       ? (sc.ppg!=null?sc.ppg+' por juego':'—')
       : (sc.total_points!=null?sc.total_points.toLocaleString('es-PR')+' puntos':'—');
-    h+=`<dl class="kv"><dt>Campeón de anotación</dt><dd>${esc(sc.player_raw)}<span class="muted"> · ${esc(sc.team_raw||'')} · ${esc(v)}</span></dd></dl>`;
+    h+=`<dl class="kv"><dt>Campeón de anotación</dt><dd>${esc(sc.player||sc.player_raw)}<span class="muted"> · ${esc(sc.team_raw||'')} · ${esc(v)}</span></dd></dl>`;
   }
   if(d.awards && d.awards.length){
     h+='<dl class="kv">'+d.awards.map(a=>
-      `<dt>${esc(SEASON_AW[a.award]||a.award)}</dt><dd>${esc(a.player_raw)}<span class="muted"> · ${esc(a.team_raw||'')}</span></dd>`).join('')+'</dl>';
+      `<dt>${esc(SEASON_AW[a.award]||a.award)}</dt><dd>${esc(a.player||a.player_raw)}<span class="muted"> · ${esc(a.team_raw||'')}</span></dd>`).join('')+'</dl>';
   }
   if(d.standings){
     const st=d.standings;
@@ -1969,7 +1968,7 @@ async function loadSeasonExtra(y){
     h+='<div class="note" style="margin-top:var(--sp-3)">Líderes de la temporada</div><dl class="kv">';
     for(const cat of Object.keys(d.leaders)){
       const top=d.leaders[cat][0]; if(!top) continue;
-      h+=`<dt>${esc(SEASON_LC[cat]||cat)}</dt><dd>${esc(top.player_raw)}<span class="muted"> · ${top.value!=null?top.value:'—'}${top.club_raw?' · '+esc(top.club_raw):''}</span></dd>`;
+      h+=`<dt>${esc(SEASON_LC[cat]||cat)}</dt><dd>${esc(top.player||top.player_raw)}<span class="muted"> · ${top.value!=null?top.value:'—'}${top.club_raw?' · '+esc(top.club_raw):''}</span></dd>`;
     }
     h+='</dl>';
   }
@@ -2258,7 +2257,7 @@ function showTeam(k){
         ${venueLine?`<div class="phero-note">${venueLine}</div>`:''}
         ${venueNote?`<div class="phero-note">${esc(venueNote)}</div>`:''}
         <div class="chips">
-          ${st?`<span class="tag blue">2026: ${st[1]}-${st[2]} (${st[3].toFixed(3).replace('0.','.')})</span>`:''}
+          ${st?`<span class="tag blue">${LAST}: ${st[1]}-${st[2]} (${st[3].toFixed(3).replace('0.','.')})</span>`:''}
           <span class="tag" title="Origen del color">${colorTag}</span>
         </div>
         <dl class="kv">
@@ -3144,7 +3143,9 @@ function buildLeaders(){
     v=>LEAD_MODE==='total'?v.toLocaleString('es-PR'):v.toFixed(1));
   buildTable($('#leadTable'),[
     {label:'#',num:true},
-    {label:'Jugador',wide:true,subs:[2,3],render:v=>`<button class="cellbtn" onclick="showPlayer(${JSON.stringify(v).replace(/"/g,'&quot;')})">${esc(v)}</button>`},
+    {label:'Jugador',wide:true,subs:[2,3],render:v=>`<button class="cellbtn" onclick="showPlayer(${JSON.stringify(v).replace(/"/g,'&quot;')})">${esc(v)}</button>`
+      /* PHASE_72A (owner D1): Butler's career rebounds (8,236) come from the unsourced seed list and are not confirmed; flagged, not hidden (PC4). */
+      +(LEAD_CAT==='rebounds'&&v==='Mario Butler'?' <span class="tag gold">SIN CONFIRMAR</span>':'')},
     {label:'Pos',muted:true,phone:'sub'},{label:'Años',muted:true,phone:'sub'},{label:'Total',num:true,fmt:true},{label:'PJ',num:true,fmt:true},{label:'Por juego',num:true}
   ],rows.map((r,i)=>[i+1,r[1],r[2],r[3],r[4],r[5],r[6]]),
     {file:'lideres_'+LEAD_CAT,sort:null,
@@ -3416,18 +3417,23 @@ const REC_LABEL={
   'Assists, career':'asistencias de carrera','Blocks, career':'tapones de carrera',
   'Three-pointers, career':'triples de carrera'
 };
-const COVERAGE=[
-  ['1930s',20,'Campeones sí. Nada más.'],
-  ['1940s',25,'Campeones y una disputa sin resolver en 1945.'],
-  ['1950s',20,'Campeones; 1953 en blanco.'],
-  ['1960s',35,'Campeones y campeones de anotación desde 1966.'],
-  ['1970s',45,'Campeones, anotación, algunos récords.'],
-  ['1980s',50,'Igual, más líderes de carrera acumulados.'],
-  ['1990s',45,'Campeones y anotación hasta 1991; luego se corta.'],
-  ['2000s',45,'Campeones, MVP de 2004 y 2009, y la temporada 2009 completa.'],
-  ['2010s',60,'Temporadas 2016, 2017 y 2018 con premios y líderes; MVP de 2010, 2011, 2014, 2016, 2017, 2018.'],
-  ['2020s',90,'Posiciones, finales juego a juego, premios completos, líderes, dueños.']
-];
+/* PHASE_72A (owner D6): the hand-typed per-decade percentages (and the footnote that called them an editorial estimate) are gone.
+   Each row is derived on demand from what the page holds: of four facts per season (champion, runner-up,
+   scoring champion, MVP), how many the archive has. Row shape stays [decade, percent, text] so the grid and
+   the sparkbars read it unchanged. Called before every read because SCORING and MVP_YEARS are hydrated late. */
+const COVERAGE=[];
+COVERAGE.derive=function(){
+  const sc=new Set(SCORING.map(r=>r[0])), mv=new Set(MVP_YEARS.map(r=>r[0]));
+  COVERAGE.length=0;
+  for(let d=Math.floor(YEARS[0]/10)*10; d<=LAST; d+=10){
+    const ys=YEARS.filter(y=>y>=d&&y<d+10), n=ys.length;
+    const c=ys.filter(y=>champOf[y]).length, r=ys.filter(y=>ruOf[y]).length,
+          s=ys.filter(y=>sc.has(y)).length, m=ys.filter(y=>mv.has(y)).length;
+    COVERAGE.push([d+'s',Math.round(100*(c+r+s+m)/(4*n)),
+      `Campeón ${c}/${n} · Subcampeón ${r}/${n} · Anotación ${s}/${n} · MVP ${m}/${n}`]);
+  }
+  return COVERAGE;
+};
 const LEGEND_NOTE=[
   ['¿Quién es leyenda?',
    'Cuatro pruebas, todas sacadas de tablas que ya están en este archivo: top 10 histórico en puntos, rebotes o asistencias; tres o más MVP; un récord de la liga vigente; o una cancha con su nombre. Basta con una. Cada ficha dice cuál cumplió.'],
@@ -3440,7 +3446,7 @@ function buildSources(){
   const host=$('#sourcesBox');
   const conflicts=[
     ['1945','Campeón en disputa','Wikipedia en inglés dice Capitalinos de San Juan; la de español, Santos de San Juan. Ambas coinciden en el subcampeón, Gallitos de la UPR. El archivo carga la versión inglesa y lo marca.'],
-    ['1942–43','Temporada partida','Español separa 1942 y 1942-43, ambas de San Germán. Aquí van juntas, así que San Germán aparece con 13 títulos donde casi todas las fuentes dicen 14. Arreglarlo necesita una clave de temporada que admita años partidos.'],
+    ['1942–43','Temporada partida','Español separa 1942 y 1942-43, ambas de San Germán. Aquí van juntas, así que San Germán aparece con '+F.sge.won.length+' títulos donde casi todas las fuentes dicen '+(F.sge.won.length+1)+'. Arreglarlo necesita una clave de temporada que admita años partidos.'],
     ['1953','Sin campeón','Ninguna fuente consultada registra uno. O no hubo temporada, o la tabla de franquicias está incompleta.'],
     ['Dalmau, asistencias','Total y promedio no cuadran','2.302 en 537 juegos son 4,3 por juego, no 5,1. Es el único dato de las tablas de campeones y líderes que se contradice a sí mismo. Marcado en dos sitios y excluido de los juegos.'],
     ['Harrell 2026','Club en disputa','RealGM lo pone en San Germán; Noticel, en Caguas.'],
@@ -3579,9 +3585,11 @@ function buildSeasonAwards(){
   host.appendChild(n);
 }
 
-let FIN_YEAR=2026;
+/* PHASE_72A: null until the first build, which picks the newest final in FINALS_BY_YEAR (declared further down). */
+let FIN_YEAR=null;
 function buildFinalsByYear(){
   const years=Object.keys(FINALS_BY_YEAR).map(Number).sort((a,b)=>b-a);
+  if(FIN_YEAR===null||!FINALS_BY_YEAR[FIN_YEAR]) FIN_YEAR=years[0];
   const host=$('#finalsByYear');
   host.innerHTML=`<div class="filters"><div class="field"><label for="finYear">Final</label>
     <select id="finYear">${years.map(y=>`<option value="${y}">${y}</option>`).join('')}</select></div></div>
@@ -3836,7 +3844,7 @@ const BIO=[
   died:null, diedIn:null, cause:null,
   ht:'2.03 m', pos:'Pívot', nat:'Panamá',
   nick:null,
-  life:'Líder histórico de rebotes del BSN con 8,236. Siete veces Jugador Defensivo del Año. '
+  life:'Líder histórico de rebotes del BSN con 8,236 (sin confirmar). Siete veces Defensor del Año. '
       +'Aprendió a jugar en las calles de Ciudad de Panamá y llegó becado a Briar Cliff, en Iowa, '
       +'donde conoció a Rolando Frazer.',
   src:'Wikipedia'},
@@ -4404,7 +4412,7 @@ const DATASETS={
     yearCol:0, clubCols:[3]
   },
   finales:{
-    label:'Finales juego a juego (2024, 2025, 2026)',
+    get label(){ return 'Finales juego a juego ('+Object.keys(FINALS_BY_YEAR).map(Number).sort((a,b)=>a-b).join(', ')+')'; },
     cols:[{label:'Año',num:true},{label:'Juego',num:true},{label:'Fecha'},{label:'Local',wide:true},
           {label:'Visita',wide:true},{label:'Pts local',num:true},{label:'Pts visita',num:true},
           {label:'Margen',num:true},{label:'Serie'}],
@@ -4537,17 +4545,14 @@ function buildCoverage(){
     const rows=Math.ceil(n/max);
     return Math.min(max,Math.ceil(n/rows));
   };
+  COVERAGE.derive();
   const n=COVERAGE.length;
   const colsNarrow=best(n,2,4), colsWide=best(n,4,7);
   $('#coverage').innerHTML=`<div class="covergrid" style="--cov-cols-narrow:${colsNarrow};--cov-cols-wide:${colsWide}">`+COVERAGE.map(c=>`
     <div class="cov"><div class="cy">${esc(c[0])}</div>
     <div class="cb"><div class="cf" style="width:${c[1]}%;background:${c[1]>60?'var(--ok)':c[1]>40?'var(--azul)':'var(--rojo)'}"></div></div>
     <div class="cl">${esc(c[2])}</div></div>`).join('')+'</div>'+
-    /* PHASE_52B (owner-approved, redesign-v2): "20%" was a literal in this sentence
-       while COVERAGE[0][1] (the real 1930s value) already held the same number --
-       derived here instead, so the two can never drift apart; COVERAGE[0][1] is 20
-       today, so the rendered text is unchanged. */
-    `<p class="note">El porcentaje es una estimación editorial de cuánto de lo que uno querría saber de esa década está en el archivo, no una medida de exactitud. Los años treinta son el ${COVERAGE[0][1]}% porque solo hay campeones.</p>`;
+    '<p class="note">El porcentaje indica cuántos de cuatro datos (campeón, subcampeón, campeón de anotación y MVP) tiene el archivo por cada temporada de la década.</p>';
 }
 
 /* ============================================================
@@ -4694,7 +4699,7 @@ function buildHub(){
 
   blocks.push(edBlock({ eye:'Archivo', stat:(MANIFEST&&MANIFEST.counts)?String(MANIFEST.counts.seasons_with_leaders):'—',
     icon: iconOf('archivo'),
-    viz: sparkBars(COVERAGE.map(c=>c[1]),{w:110,h:24,scale:100,gap:1.5}),
+    viz: sparkBars(COVERAGE.derive().map(c=>c[1]),{w:110,h:24,scale:100,gap:1.5}),
     phrase:'temporadas con líderes',
     act:'Cobertura', go:"showView('archivo','cobertura')" }));
 

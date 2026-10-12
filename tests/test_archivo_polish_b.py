@@ -110,31 +110,17 @@ class TestAskPlaceholder:
 
 
 class TestCoberturaNote:
-    def test_new_note_wording_is_present(self):
-        src = _func_src("buildCoverage")
-        assert "una estimación editorial de cuánto de lo que uno querría saber" in src
-
+    # PHASE_72A (owner D6) retired the hand-typed percentages and their "estimación editorial"
+    # footnote; the replacement checks live in tests/test_phase72a.py.
     def test_old_note_wording_is_gone(self):
         src = _func_src("buildCoverage")
         assert "El porcentaje es cuánto de lo que uno querría saber" not in src
+        assert "estimación editorial" not in src
 
-    def test_20_percent_is_derived_from_coverage_not_a_second_literal(self):
-        src = _func_src("buildCoverage")
-        assert "${COVERAGE[0][1]}%" in src
-        # the literal "20" must not appear a second time in this function as its own
-        # independent copy of the same number (COVERAGE's own array literal, read
-        # elsewhere in the file, is the only place "20" is allowed to be typed).
-        note_line = next(line for line in src.splitlines() if "estimación editorial" in line)
-        assert "20%" not in note_line
-
-    def test_coverage_zero_one_is_still_the_real_1930s_twenty_value(self):
-        # confirms the derivation points at the right cell -- if COVERAGE's own
-        # shape ever changes this would catch a silent mismatch.
+    def test_coverage_is_derived_not_typed(self):
         text = _tabs_text()
-        start = text.index("const COVERAGE=[")
-        first_entry_end = text.index("]", start)
-        first_entry = text[start : first_entry_end + 1]
-        assert "'1930s',20," in first_entry.replace(" ", "")
+        assert "const COVERAGE=[];" in text and "COVERAGE.derive=function" in text
+        assert "'1930s',20," not in text.replace(" ", "")
 
 
 class TestCalendarioRowUniformity:

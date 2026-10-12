@@ -39,6 +39,26 @@ CLEAN = REPO_ROOT / "data" / "clean"
 SOURCE_ID = "wayback_bsnpr_games"
 
 
+# Raw pages do not share one encoding: most are cp1252, 392 pogamestat pages are UTF-8, and 265 are
+# mixed (UTF-8 names inside an otherwise cp1252 page, so a whole-page UTF-8 test fails). Decoding by
+# byte sequence handles all three; across the 4,216 pure-cp1252 pages the UTF-8 pattern never matches.
+_UTF8_SEQ = re.compile(rb"[\xc2-\xdf][\x80-\xbf]|[\xe0-\xef][\x80-\xbf]{2}|[\xf0-\xf4][\x80-\xbf]{3}")
+
+
+def _decode(raw: bytes) -> str:
+    try:
+        return raw.decode("utf-8")
+    except UnicodeDecodeError:
+        pass
+    out, pos = [], 0
+    for m in _UTF8_SEQ.finditer(raw):
+        out.append(raw[pos:m.start()].decode("cp1252", "replace"))
+        out.append(m.group().decode("utf-8"))
+        pos = m.end()
+    out.append(raw[pos:].decode("cp1252", "replace"))
+    return "".join(out)
+
+
 # --------------------------------------------------------------------------- #
 # identity resolver (D1) — reuse the spine's aliases + career spans           #
 # --------------------------------------------------------------------------- #
@@ -141,7 +161,7 @@ def parse_gamestatwide(resolver, results: list[dict], box: list[dict]) -> int:
         season = _season_from_rid(rid)
         src = meta.get("raw_wayback_url", "")
         try:
-            html = p.read_bytes().decode("cp1252", "replace")
+            html = _decode(p.read_bytes())
         except Exception:  # noqa: BLE001
             continue
         tabs = _tables(html, "bs4")
@@ -214,7 +234,7 @@ def parse_modern_box(resolver, results: list[dict], box: list[dict]) -> tuple[in
             rid = squish(meta.get("r", ""))
             season = _season_from_rid(rid)
             src = meta.get("raw_wayback_url", "")
-            html = p.read_bytes().decode("cp1252", "replace")
+            html = _decode(p.read_bytes())
             tabs = _tables(html)
             # the two player boxes are 21-col tables whose (multi-index) columns
             # flatten to include 'Name' and 'PTS'. Team order = line-score order.
@@ -351,7 +371,7 @@ def parse_pbp(plays: list[dict]) -> int:
         season = _season_from_rid(rid)
         cuarto = squish(meta.get("cuarto", ""))
         src = meta.get("raw_wayback_url", "")
-        html = p.read_bytes().decode("cp1252", "replace")
+        html = _decode(p.read_bytes())
         tabs = _tables(html)
         tbl = next((t for t in tabs if len(t) > 5 and str(t.iloc[0, 0]) == "Cuarto"), None)
         if tbl is None:

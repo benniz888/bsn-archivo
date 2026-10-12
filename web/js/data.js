@@ -273,7 +273,10 @@ const POOL=[
   t:["scoring","champion","native","legend"],b:"Scored 79 in a single game in 1974, still the record."},
  {n:"Georgie Torres",d:[1970,1980,1990],c:["faj"],ppg:23.4,rpg:null,apg:3.2,pos:"SG",
   t:["mvp","scoring","native","legend","10k"],b:"All-time leading scorer with 15,863 points."},
- {n:"Mario Morales",d:[1970,1980,1990],c:["san"],ppg:22.7,rpg:8.4,apg:null,pos:"SF",
+ /* PHASE_72C (owner D8): "gua" is added from the archive's own rows: MVP 1980, 1982, 1983 and 1993 and the 1993
+    scoring title all list Guaynabo (mets_guaynabo, bsnpr_id 1584). "san" stays because the 1980 scoring-title row
+    lists Santurce, which contradicts the 1980 MVP row (Guaynabo): open, see docs/audits/data_review_todo.md. */
+ {n:"Mario Morales",d:[1970,1980,1990],c:["san","gua"],ppg:22.7,rpg:8.4,apg:null,pos:"SF",
   t:["mvp","scoring","native","legend","10k"],b:"Second all-time in points and a four-time MVP."},
  {n:"Rolando Frazer",d:[1980,1990,2000],c:["aib"],ppg:20.1,rpg:10.2,apg:null,pos:"C",
   t:["scoring","import","10k"],b:"Panamanian centre, back-to-back scoring titles for Aibonito."},

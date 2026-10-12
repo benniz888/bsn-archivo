@@ -343,6 +343,8 @@ async function hydrate(){
       const metric=s.metric_era==='ppg'?'ppg':'total';
       const val=metric==='ppg'?(c.value!=null?c.value:c.ppg):c.total_points;
       if(val!=null) rows.push([s.season,c.player,club(c,s.season),metric,val,c.bsnpr_id!=null?c.bsnpr_id:null]);
+      /* PHASE_72C: the display name differs from the source spelling (typo, casing, expansion): keep the source one searchable */
+      if(c.player_raw&&nickKey(c.player_raw)!==nickKey(c.player)) (DATA.aka[nickKey(c.player)]||(DATA.aka[nickKey(c.player)]=[])).push(c.player_raw);
     }
     rows.sort((a,b)=>a[0]-b[0]);
     SCORING.length=0; rows.forEach(r=>SCORING.push(r));
@@ -370,6 +372,7 @@ async function hydrate(){
     const have=new Set(MVP_YEARS.map(r=>r[0]));
     mvp.forEach(m=>{
       if(m.bsnpr_id!=null) MVP_ID[m.season]=m.bsnpr_id;
+      if(m.player_raw&&nickKey(m.player_raw)!==nickKey(m.player)) (DATA.aka[nickKey(m.player)]||(DATA.aka[nickKey(m.player)]=[])).push(m.player_raw);
       if(m.also && have.has(m.season)) MVP_ALSO[m.season]=m.also;
       if(!have.has(m.season)){
         const ak=m.franchise_id&&FID2APP[m.franchise_id];
@@ -384,18 +387,5 @@ async function hydrate(){
   if(mf) ASSETS=mf.assets||{};   /* 5G-A — {} = probe nothing (no 404s) */
   if(mf && mf.counts){
     MANIFEST=mf; DATA_TEXT=true;
-    const cov=[
-      ['1930s',20,'Campeones sí. Nada más.'],
-      ['1940s',25,'Campeones y una disputa sin resolver en 1945.'],
-      ['1950s',30,'Campeones, y MVP desde 1958.'],
-      ['1960s',45,'Campeones, MVP y campeones de anotación.'],
-      ['1970s',50,'Campeones, MVP, anotación, algunos récords.'],
-      ['1980s',55,'Igual, más MVP completo y líderes de carrera acumulados.'],
-      ['1990s',50,'Campeones, MVP y anotación completos; sin estadísticas por partido.'],
-      ['2000s',70,'MVP hasta 2004, anotación, y boxscores + posiciones de 2001–2003 y 2008–2009.'],
-      ['2010s',75,'Boxscores y posiciones 2010–2013; premios y líderes de 2016–2018; MVP disperso.'],
-      ['2020s',90,'Posiciones, finales juego a juego, premios completos, líderes, dueños.']
-    ];
-    COVERAGE.length=0; cov.forEach(r=>COVERAGE.push(r));
   }
 }
