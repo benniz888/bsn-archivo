@@ -3457,6 +3457,18 @@ tree in one step, the fast path once the hook flags a gap.
 
 ---
 
+### PHASE_72A_BUILD — web-layer fixes (scope written 2026-10-12, before any edit)
+Re-ordered by the owner (D9: `make data-update` is the LAST sub-phase). 72A = the audit's web-layer scope, with owner decisions D1-D8 applied. Branch `data-fixes-v1`, no commit, no push. One phase: no data/clean, no src parse, no web/data regeneration.
+Tasks (each gets a test in `tests/test_phase72a.py`; hashes via `python -m src.update_asset_hashes`; then full suite vs baseline 856 passed / 1 failed / 1 xfailed):
+1. D1 Récords: drop "Rebotes de carrera" (Rodríguez 6,178) from `REC_ES` (web/index.html) and `RECORDS` (web/js/tabs.js); Líderes rebounds: Butler row flagged SIN CONFIRMAR (web/js/tabs.js); log in docs/audits/data_review_todo.md.
+2. D5 `BIO_ES` key `José Ortiz` -> `José «Piculín» Ortiz` (web/index.html); key-coverage test for HOF_ES / BIO_ES / NBA_ES.
+3. D7 labels: "Defensor del Año" and "Sexto Hombre" everywhere (web/js/tabs.js SEASON_AW + Butler prose, web/index.html BIO_ES).
+4. D6 COVERAGE: unsourced percentages removed; per-decade coverage derived from YEARS / SCORING / MVP_YEARS (web/js/tabs.js, web/js/init.js).
+5. Derived numbers H1-H5, H7, H9 (98.ª temporada, FIN_YEAR, finals label, 2026 tag, 3.303/385, San Germán 13 títulos, 34 games) and LAST/YEARS from champion data.
+6. Retire the stale `test_web_text` frozen-original check (skip with reason; the redesign changed the page on purpose).
+7. New Spanish text -> docs/strings_pending_phase72.md, marked built-under-owner-decision or pending; nothing else applied.
+Not in 72A (later sub-phases): D2 name display layer, D3 decoder + 296-row overlay, D8 González split, Cruz/Morales flags, D9 pipeline.
+
 [BLOCKERS]
 
 - B1 — **Manual, user-only — but partly answered by PHASE_3C.** The bsnpr.com
@@ -9179,3 +9191,29 @@ Not built: P04 (lazy panels: buildViews() needs every builder's markup in the DO
 NEXT: owner confirms A1, A3 and which description wins (S5); COMMIT ONLY step stages by explicit path, web/index.html last after `python -m src.update_asset_hashes`.
 
 - PHASE_71 fixup: Perfil theme/primer toggle buttons and the `Inter` link in Créditos raised to a 44px minimum (`.profctl .modebtns button` min-height/min-width; `.legal a` padding/margin 4px -> 7px horizontally, flow unchanged). Owner decisions S5, A1, A3, S7 appended to docs/strings_pending_phase71.md. Test added in tests/test_phase71.py.
+
+## PHASE_72_AUDIT — data fixes audit (READ-ONLY, 2026-10-12, NOT committed)
+Branch `data-fixes-v1` from `main` 374e58b. Audit: `docs/audits/phase72_audit.md`. Proposed strings (none applied): `docs/strings_pending_phase72.md`. No change under `web/`, `src/`, `data/` or `tests/`.
+Baseline (`pytest -q` on clean main, before any work): **856 passed, 1 failed, 1 xfailed**. The failure is pre-existing: `tests/test_web_text.py::TestWebTextReconstructsTheOriginal::test_web_text_equals_the_frozen_pre_split_original_byte_for_byte` (first diff at byte 131).
+Findings, one line each (evidence and confidence in the audit):
+- 1 Rebounds: both numbers come from one seed (`bsn_records.csv:3`, `bsn_career_leaders.csv:12-13`, scaffold `195fc2a`, no provenance columns). Rodríguez = id 2113, games sum 631 (matches). Butler = id 1575, games 789 minus a 10-game duplicate 2001 row = 779 (matches). Favors Butler (about 80%); no per-season rebound totals exist in the repo, so it cannot be proved.
+- 2 A02 names: 562 distinct / 1,800 occurrences in published season/MVP/scoring data. ALL-CAPS 111/287, truncated at a fixed-width source cell 44/156 (the cut is in the raw page), surname-only 42/83, typos 9/19 (`GOERGIE TORRES` is in the raw capture), plus 2 non-names. Fix belongs in a build-time override layer, not raw.
+- 3 Mojibake: `parse_games.py:144,217,354` decode every page as cp1252; 392 `pogamestat` pages are valid UTF-8 (265 other pages declare utf-8 but are not). 3 names, 296 rows in `game_box_player.csv`. The earlier fix (whole-page UTF-8 first) repairs only 170 of the 296 rows: 265 `pogamestat` pages are mixed (UTF-8 names in a cp1252 page). Fix = per-byte-sequence decode, dry-run verified (296 rows repaired, 0 left, ids 2690/2675/2513 resolve). `parse-games` is also NOT idempotent at HEAD: a control re-parse changes 365 `bsnpr_id` values (360 gain, 5 lose; 2001-03) because the identity spine moved; a full regeneration would touch 661 rows, not 296. Recommended: a narrow overlay for the 296 rows.
+- 4 Honors: 303 reproduced exactly (376 pool, 73 with a structured honor). 35 played only in seasons with no award table, 86 have award tables but won none, 182 have no per-season rows. Only 7 can gain an honor from repo data (rank-1 scoring/rebounds/assists rows); the rest need outside data.
+- 5 English: source literals are English (18 HOF.role, 44 of 45 data.js bios, 7 NBA_PLAYERS, 0 SEASON_AWARDS) and are overlaid at load by the Spanish layer in `web/index.html:636-868`. 1 English line reaches a visitor: the Piculín bio (overlay key `José Ortiz` vs pool name `José «Piculín» Ortiz`). `RECENT` (data.js:108-163) is dead English data. All English dates to scaffold `195fc2a`.
+- 6 Hard-coded numbers: 12 items that should derive (98.ª temporada, FIN_YEAR, finals label, 2026 tag, 3.303/385, Dalmau prose, 34 games, two disagreeing COVERAGE tables, "1930-2026" meta); H11 (COVERAGE percentages, unsourced) is the one that touches PC1.
+- 7 Labels: "Defensor del Año" 6 + "Defensor del año" 1 vs "Defensa del Año" (1 definition, renders 41 historic rows) vs "Jugador Defensivo del Año"; "Sexto Hombre" 4 vs "Sexto hombre del año" 1 vs English "Sixth man" 2.
+- 8 Identity/club: Atenienses -> Cariduros is contradicted by `franchises.csv` (Cariduros 1973-2023, in 2018-19 leaders) and unverified; Javier González is probably two players (Quebradillas 2001-03 vs Santurce/Humacao 2012-13, id 2513), not one; Cruz = Santurce on six season rows; Morales = Santurce and Guaynabo with a 1980 contradiction; 7 legends not playable.
+- 9 Pipeline: designed (`make data-update`, check mode by default, no parse-players / sync-web-data per N7), not built.
+Owner decisions needed: see audit section 11 (8 groups). Proposed build split 72A-72F in audit section 10 (pipeline first, outside-data work last).
+NEXT: owner reviews the audit and strings file; then one sub-phase per turn, starting 72A. COMMIT ONLY step stages by explicit path (audit, strings file, session.md).
+
+## PHASE_72A_BUILD — web-layer fixes (built, NOT committed, 2026-10-12)
+Scope as written in [TASK_QUEUE]. Suite: **873 passed, 1 skipped, 1 xfailed** (baseline 856 passed / 1 failed / 1 xfailed): +17 new tests (`tests/test_phase72a.py`, 19, minus 2 retired Cobertura tests replaced in `test_archivo_polish_b.py`), the stale `test_web_text` frozen-original check is skipped with its reason. Chromium + WebKit at 390 and 1000 on Líderes>Rebotes and Cobertura: 0 console errors, no horizontal overflow.
+Files: web/index.html (REC_ES row removed, BIO_ES Piculín key, award labels, Butler flags, LAST/YEARS derived, hashes), web/js/tabs.js (RECORDS row, Butler tag, SEASON_AW, COVERAGE.derive, 98.ª, FIN_YEAR, finals label, LAST tags, 1942 sentence), web/js/init.js (typed coverage override removed), web/js/player.js (3.303/385), tests/test_phase72a.py, tests/harness/phase72a_probe.mjs, tests/test_archivo_polish_b.py, tests/test_web_text.py, tests/_web_text.py (end marker), docs/audits/data_review_todo.md (D1 log), docs/strings_pending_phase72.md (section E).
+Decisions: H9 (34 games) NOT derived: the Temporada Perfecta win curve is calibrated to 34 and tests extract its closure standalone; left literal. H10 prose "34 juegos / 12 equipos" and H12 meta years left (owner call). Footnote under Cobertura removed; replacement proposed, not applied (E9).
+Not in 72A: D2 names, D3 decoder + 296-row overlay (parse_games untouched), D8 González/Cruz/Morales, D9 `make data-update`.
+NEXT: owner confirms section E strings; 72B.
+
+## PHASE_72A — strings applied (2026-10-12)
+Owner approved E1-E11; E7 applied as "Fue Defensor del Año en 2026." / "Fue Sexto Hombre en 2026."; E9 footnote added under the Cobertura tiles. Tests updated (`tests/test_phase72a.py`, `tests/_web_text.py` end marker). Committed on `data-fixes-v1`, not pushed.

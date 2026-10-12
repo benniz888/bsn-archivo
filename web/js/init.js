@@ -384,18 +384,5 @@ async function hydrate(){
   if(mf) ASSETS=mf.assets||{};   /* 5G-A — {} = probe nothing (no 404s) */
   if(mf && mf.counts){
     MANIFEST=mf; DATA_TEXT=true;
-    const cov=[
-      ['1930s',20,'Campeones sí. Nada más.'],
-      ['1940s',25,'Campeones y una disputa sin resolver en 1945.'],
-      ['1950s',30,'Campeones, y MVP desde 1958.'],
-      ['1960s',45,'Campeones, MVP y campeones de anotación.'],
-      ['1970s',50,'Campeones, MVP, anotación, algunos récords.'],
-      ['1980s',55,'Igual, más MVP completo y líderes de carrera acumulados.'],
-      ['1990s',50,'Campeones, MVP y anotación completos; sin estadísticas por partido.'],
-      ['2000s',70,'MVP hasta 2004, anotación, y boxscores + posiciones de 2001–2003 y 2008–2009.'],
-      ['2010s',75,'Boxscores y posiciones 2010–2013; premios y líderes de 2016–2018; MVP disperso.'],
-      ['2020s',90,'Posiciones, finales juego a juego, premios completos, líderes, dueños.']
-    ];
-    COVERAGE.length=0; cov.forEach(r=>COVERAGE.push(r));
   }
 }

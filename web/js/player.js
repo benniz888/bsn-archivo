@@ -223,7 +223,7 @@ function renderArchiveIndex(q){
   if(!PALL){
     /* file:// (no data/ to reach) vs. hydrate still in flight over http. */
     host.innerHTML = DATA.base===null
-      ? '<p class="note">El índice completo (3.303 jugadores) solo está disponible en la versión publicada, con conexión. Esta copia local trae los '+(PINDEX?PINDEX.length:385)+' jugadores destacados.</p>'
+      ? '<p class="note">El índice completo solo está disponible en la versión publicada, con conexión. Esta copia local trae los '+(PINDEX?PINDEX.length:0)+' jugadores destacados.</p>'
       : '<p class="note">Cargando el índice completo del archivo…</p>';
     return;
   }

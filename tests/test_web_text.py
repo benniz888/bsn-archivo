@@ -15,6 +15,8 @@ stays exactly as reliable a check as comparing to the live file used to be."""
 import re
 import subprocess
 
+import pytest
+
 from src.wayback_cdx import REPO_ROOT
 from tests._web_text import DATA_JS, INDEX, web_text
 
@@ -29,6 +31,7 @@ def _frozen_app_html() -> bytes:
 
 
 class TestWebTextReconstructsTheOriginal:
+    @pytest.mark.skip(reason="PHASE_72A: retired. The redesign (PHASE_61-71) changed the page on purpose (viewport, title, meta, icons, fonts), so a byte compare with the frozen pre-split app can no longer hold; the splice checks below still guard web_text().")
     def test_web_text_equals_the_frozen_pre_split_original_byte_for_byte(self):
         assert web_text().encode("utf-8") == _frozen_app_html()
 

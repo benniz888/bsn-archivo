@@ -302,7 +302,7 @@ _JS_HELPERS_GROUPS = {
                          "['historia','jugadores','equipos','juega','archivo'];\nlet VIEW_NOW={};"
                          "\nlet HASH_ECHO=null;\n"),
     "STORAGE+DATA": ('/* ============================================================\n   STORAGE',
-                     "Los años treinta son el ${COVERAGE[0][1]}% porque solo hay campeones.</p>`;\n}\n"),
+                     "El porcentaje indica cuántos de cuatro datos (campeón, subcampeón, campeón de anotación y MVP) tiene el archivo por cada temporada de la década.</p>';\n}\n"),
     "fmtLongDate": ('function fmtLongDate(iso){',
                     'worth reading even if you go no further.\n'
                     '   ============================================================ */\n'),
