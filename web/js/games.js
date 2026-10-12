@@ -756,14 +756,14 @@ function drawHL(){
   const host=$('#hlGame');
   const best=parseInt(ST.get('hlbest')||'0',10)||0;
   let h=`<div class="gamehead"><div class="dim" style="font-size:var(--fs-2xs)">¿Quién tiene más ${esc(HL.set.label)}?</div>
-    <div class="chips" style="margin:0"><span class="tag">Racha ${HL.streak}</span><span class="tag gold">Mejor ${best}</span></div></div>`;
+    <div class="chips" style="margin:0"><span class="tag blue">Racha ${HL.streak}</span><span class="tag">Mejor ${best}</span></div></div>`;
   /* PHASE_46 (owner-approved, redesign-v2): the two cards are real <button>s with no
      text or icon suggesting they're tappable -- a new hint, same .note treatment
      Draft's own court already uses for its own "toca una posición" line (games.js
      drawPicks()), shown only while the round is live and gone once HL.done, so it
      never sits above an already-answered pair. */
   h+=!HL.done?'<p class="note" style="margin-top:var(--sp-2)">Toca uno para responder.</p>':'';
-  h+='<div class="cards g2" style="margin-top:var(--sp-2_5)">';
+  h+='<div class="cards g2 hlcards" style="margin-top:var(--sp-2_5)">';
   /* PHASE_47 (owner-approved, redesign-v2): "1 títulos" (a franchise with exactly one
      title) was a real, reachable bug -- HL.set.unit is always the PLURAL noun (data.js's
      own HL_SETS, out of scope to edit this phase), glued to the real count with no
@@ -774,9 +774,12 @@ function drawHL(){
      one ("títulos") that was actually reachable in practice. */
   const unitSingular=HL.set.unit.replace(/s$/,'');
   [HL.a,HL.b].forEach((x,i)=>{
-    h+=`<button class="card" style="cursor:pointer;text-align:left" ${HL.done?'disabled':''} onclick="answerHL(${i})">
-      <div style="font-weight:700;font-size:17px">${esc(x[0])}</div>
-      <div class="dim" style="font-size:var(--fs-2xs)">${HL.done?x[1].toLocaleString('es-PR')+' '+esc(plural(x[1],unitSingular,HL.set.unit)):'?'}</div></button>`;
+    /* Result state is a class (win = higher value, lose = lower, picked = the player's
+       choice) so CSS can draw a tick or cross and not rely on colour alone. */
+    const st=HL.done?((x[1]>(i===0?HL.b:HL.a)[1])?' win':' lose')+(HL.pick===i?' picked':''):'';
+    h+=`<button class="card hlcard${st}" ${HL.done?'disabled':''} onclick="answerHL(${i})">
+      <div class="hl-name">${esc(x[0])}</div>
+      <div class="hl-val">${HL.done?x[1].toLocaleString('es-PR')+' '+esc(plural(x[1],unitSingular,HL.set.unit)):'?'}</div></button>`;
   });
   h+='</div><div class="msg" id="hMsg" role="status" aria-live="polite"></div>';
   if(HL.done) h+='<div class="btnrow"><button class="btn primary" onclick="newHL(true)">Siguiente</button></div>';
@@ -785,7 +788,7 @@ function drawHL(){
 function answerHL(i){
   const picked=i===0?HL.a:HL.b, other=i===0?HL.b:HL.a;
   const ok=picked[1]>other[1];
-  HL.done=true;
+  HL.done=true; HL.pick=i;
   if(ok){ HL.streak++; const best=parseInt(ST.get('hlbest')||'0',10)||0;
     if(HL.streak>best) ST.set('hlbest',HL.streak); }
   else HL.streak=0;

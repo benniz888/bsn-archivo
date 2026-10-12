@@ -1701,9 +1701,29 @@ tr.cut td{border-bottom:1px solid var(--azul)}
    PHASE_47's own report for the measured contrast). */
 #quizGame .btn,#quizGame input[type=text]{min-height:44px}
 #quizGame .btn{display:inline-flex;align-items:center;justify-content:center}
+/* PHASE_67D: Sube y Baja restyle. The two compared cards: blue hover/focus/picked, a drawn
+   tick (higher) or cross (lower) after the answer so the result is not colour alone. */
+.hlcard{position:relative;cursor:pointer;text-align:left;min-height:88px;display:flex;flex-direction:column;
+  justify-content:center;gap:var(--sp-1);padding-right:var(--sp-7);color:var(--ink)}
+.hlcard .hl-name{font-weight:700;font-size:var(--fs-md);overflow-wrap:anywhere}
+.hlcard .hl-val{font-size:var(--fs-xs);color:var(--ink-2);font-variant-numeric:tabular-nums}
+@media(hover:hover){.hlcard:hover:not(:disabled){border-color:var(--azul-hi);background:var(--tint-azul)}}
+.hlcard:disabled{cursor:default;opacity:1;color:var(--ink)}
+.hlcard.picked{border-color:var(--focus);box-shadow:0 0 0 2px var(--focus) inset}
+.hlcard.win{background:var(--tint-ok)}
+.hlcard.lose{background:var(--deep)}
+.hlcard.win::after{content:"";position:absolute;top:14px;right:16px;width:7px;height:14px;border:solid var(--ok);
+  border-width:0 3px 3px 0;transform:rotate(45deg)}
+.hlcard.lose::before,.hlcard.lose::after{content:"";position:absolute;top:12px;right:14px;width:18px;height:3px;
+  background:var(--bad-ink);border-radius:2px;transform:translateY(8px) rotate(45deg)}
+.hlcard.lose::before{transform:translateY(8px) rotate(-45deg)}
 .msg{margin-top:var(--sp-2_5);font-size:var(--fs-xs);min-height:22px}
 .msg.good{color:var(--ok)}
 .msg.bad{color:var(--bad-ink)}
+#hlGame .msg.good{color:var(--on-ok)}
+/* PHASE_67D fixup: Sube y Baja's wrong answer gets the same panel as the correct one (.good), in error tokens. */
+#hlGame .msg.bad{border-left:3px solid var(--bad-ink);background:var(--tint-rojo);padding:10px 12px;
+  border-radius:0 var(--r-sm) var(--r-sm) 0;font-size:13px;margin-top:12px}
 .scoreline{display:flex;gap:var(--sp-4);flex-wrap:wrap;font-size:var(--fs-xs);color:var(--ink-2);margin-top:var(--sp-2_5)}
 .scoreline b{color:var(--ink);font-size:var(--fs-base)}
 
