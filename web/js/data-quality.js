@@ -100,7 +100,7 @@ function drawDQ(host,d){
       <div><div class="n">${nf(c.dob_open)}</div><div class="l">fechas de nacimiento con dos valores, sin resolver</div></div>
     </div>
 
-    <h4 class="sub">Cifras que no coinciden</h4>
+    <h2 class="sub">Cifras que no coinciden</h2>
     <p class="lede">Dos páginas archivadas de bsnpr.com traen filas de carrera del mismo jugador, equipo y temporada con juegos (JJ) o puntos (PTS) distintos.
       El archivo guarda las dos filas y muestra las dos cifras. En la ficha del jugador esas filas llevan la marca «2 fuentes» y quedan fuera de los totales.</p>
     <p class="muted" style="font-size:var(--fs-2xs);margin:var(--sp-2) 0 0">Por temporada: ${seasons.map(y=>`${y} (${nf(c.conflicts_by_season[y])})`).join(' · ')}.
@@ -116,7 +116,7 @@ function drawDQ(host,d){
     <p class="muted" style="font-size:var(--fs-2xs);margin:var(--sp-2) 0 0">Cada celda muestra JJ / PTS. <b>Ficha</b> es la página del jugador en bsnpr.com (jugador.asp); <b>jug05</b>, su página de estadísticas (jug05.asp).
       Cada par enlaza a la captura en Internet Archive; en negrita, la cifra que difiere. Las dos columnas se ordenan por PTS.</p>
 
-    <h4 class="sub">Identidades: qué se unió y qué no</h4>
+    <h2 class="sub">Identidades: qué se unió y qué no</h2>
     <p class="lede">Al unir dos IDs, las filas idénticas no se cuentan dos veces: ${nf(c.dropped_rows)} filas del ID retirado eran idénticas a filas del ID que se conserva y quedaron en un registro aparte.
       Un ID retirado sigue abriendo la ficha que se conservó.</p>
     ${decisions}
@@ -124,19 +124,19 @@ function drawDQ(host,d){
       <p class="muted" style="font-size:var(--fs-2xs);margin:var(--sp-2) 0 0">${mSeasons.map(y=>`${y}: ${nf(c.merged_by_season[y])}`).join(' · ')}.
         Donde las dos páginas coinciden en juegos y puntos, la fila se cuenta una vez.</p></details>
 
-    <h4 class="sub">Fechas de nacimiento</h4>
+    <h2 class="sub">Fechas de nacimiento</h2>
     <p class="lede">${nf(c.dob_open)} jugadores tienen dos fechas distintas en dos páginas de bsnpr.com. El archivo conserva las dos y no escoge. «Archivo» es el valor que carga el archivo; «jugador05», el de la página jugador05 de bsnpr.com (formato M/D/AAAA).</p>
     <div id="dqDob" style="margin-top:var(--sp-3)"></div>
     <p class="muted" style="font-size:var(--fs-2xs);margin:var(--sp-2) 0 0">Otras ${nf(c.dob_corrections)} fechas ya se corrigieron. En ${nf(c.dob_corrections_high)}, el registro de correcciones cita
       dos páginas de bsnpr.com (jug05 y jugador05) que respaldan la fecha nueva${c.dob_corrections_low?`; en ${nf(c.dob_corrections_low)}, la fecha anterior era imposible y solo jugador05 da una plausible (confianza baja)`:''}.</p>
 
-    <h4 class="sub">Temporadas que no concuerdan con la ficha</h4>
+    <h2 class="sub">Temporadas que no concuerdan con la ficha</h2>
     <p class="lede">${c.disputed_career_rows===1
       ?'1 fila de temporada no es compatible con la fecha de nacimiento en la misma ficha de bsnpr.com. El archivo conserva la fila, pero la excluye de los totales; no sabemos cuál de los dos datos es el correcto.'
       :`${nf(c.disputed_career_rows)} filas de temporada no son compatibles con la fecha de nacimiento en la misma ficha de bsnpr.com. El archivo conserva las filas, pero las excluye de los totales; no sabemos cuál de los dos datos es el correcto.`}</p>
     <div id="dqDisputed" style="margin-top:var(--sp-3)"></div>
 
-    <h4 class="sub">Cómo decidimos</h4>
+    <h2 class="sub">Cómo decidimos</h2>
     <ul style="margin:var(--sp-2) 0 0;padding-left:var(--sp-5);line-height:1.6;max-width:70ch">
       <li>Nunca unimos a dos jugadores solo por el nombre.</li>
       <li>Cuando dos fuentes dan cifras distintas, mostramos las dos; no las promediamos.</li>

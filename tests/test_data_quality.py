@@ -364,8 +364,8 @@ class TestDisputedCareerRowsNote:
     def test_the_section_title_is_approved_and_distinct_from_the_dob_section(self):
         _, block = self._block()
         title = "Temporadas que no concuerdan con la ficha"
-        assert f'<h4 class="sub">{title}</h4>' in block
-        assert '<h4 class="sub">Fechas de nacimiento</h4>' in block   # the other section, unrelated mechanism
+        assert f'<h2 class="sub">{title}</h2>' in block
+        assert '<h2 class="sub">Fechas de nacimiento</h2>' in block   # the other section, unrelated mechanism
         assert not title.startswith("Fechas de nacimiento")   # step 0b #4: must not read as its subsection
 
     def test_the_footnote_clause_and_the_lede_are_count_driven_with_correct_plural(self):

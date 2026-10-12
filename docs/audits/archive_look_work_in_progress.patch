@@ -1,0 +1,111 @@
+diff --git a/web/css/main.css b/web/css/main.css
+index 81a4024..29a9c5e 100644
+--- a/web/css/main.css
++++ b/web/css/main.css
+@@ -2892,3 +2892,83 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
+   #jugadores .cmp2val.r{order:2;text-align:right;margin-left:auto}
+ }
+ @media (prefers-reduced-motion:reduce){#jugadores .cmp2fill{animation:none;width:var(--w)}}
++
++/* ============================================================
++   ARCHIVE LOOK (PHASE_61 preview) -- OFF by default; on only with ?look=archive, which index.html's
++   head script turns into html[data-look="archive"]. Pure restyle of Inicio's entry cards (.ed) and
++   Equipos' landing (.stat, .xcard): no markup, text or data changed.
++   Shape, from the logo's folder: the element is the BACK panel; ::before is the FRONT panel
++   (z-index:-1 inside the element's own stacking context, so it paints over the back and under the
++   content); ::after is the notched TAB, a fixed-size SVG mask standing above the element's top edge.
++   Hierarchy: front panel is deep navy, only slightly lighter than the back, with a 1px lighter edge.
++   Bright site blue is reserved for hover/focus and for ONE highlighted folder per page (.ed-lead on
++   Inicio, .stat.solid on Equipos). KPI folders (.stats3 .stat) are the compact variant.
++   Hover/focus swaps colours instantly and animates only transform (tab lift, front ease).
++   Contrast: edge vs page 4.1:1 dark / 3.1:1 light; text on every panel state 4.6:1 or better.
++   ============================================================ */
++html[data-look="archive"]{
++  --lk-back:#0C1C44; --lk-front:#122A5A; --lk-edge:#4B72BC; --lk-tick:#FF5A66;
++  --lk-ink:var(--ink); --lk-ink-2:var(--ink-2); --lk-ink-3:#9DB0D0; --lk-data:var(--fuego);
++  --lk-hi:#1B5FD1; --lk-hi-edge:#6FA3FF;
++  --lk-shadow:0 12px 22px -10px rgba(0,0,0,.65),0 2px 5px rgba(0,0,0,.35);
++  --lk-tab:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 112 20'%3E%3Cpath d='M0 20V7Q0 0 7 0H88Q95 0 95 7V8Q95 14 102 14H112V20Z'/%3E%3C/svg%3E");
++}
++html[data-look="archive"][data-theme="light"]{
++  --lk-back:#1B2F5E; --lk-front:#FFFFFF; --lk-edge:#7A8BAA; --lk-ink-3:var(--ink-3);
++  --lk-hi:#0F52B8; --lk-hi-edge:#0F52B8;
++  --lk-shadow:0 12px 22px -12px rgba(11,23,48,.45),0 2px 5px rgba(11,23,48,.18);
++}
++/* highlighted (main) folder per page, and any folder under hover/focus: bright blue, white text */
++html[data-look="archive"] :is(.edhub .ed-lead,.stats3 .stat.solid){
++  --f-front:var(--lk-hi);--f-edge:var(--lk-hi-edge);--f-ink:#FFFFFF;--f-ink-2:#EEF4FF;--f-ink-3:#E4EEFF;--f-data:#FFC48F}
++html[data-look="archive"] :is(.ed,.xcard):focus-visible{
++  --f-front:var(--lk-hi);--f-edge:var(--lk-hi-edge);--f-ink:#FFFFFF;--f-ink-2:#EEF4FF;--f-ink-3:#E4EEFF;--f-data:#FFC48F}
++@media(hover:hover){
++  html[data-look="archive"] :is(.ed,.xcard):hover{
++    --f-front:var(--lk-hi);--f-edge:var(--lk-hi-edge);--f-ink:#FFFFFF;--f-ink-2:#EEF4FF;--f-ink-3:#E4EEFF;--f-data:#FFC48F}
++}
++html[data-look="archive"] :is(.ed,.xcard,.stats3 .stat){
++  position:relative;isolation:isolate;margin-top:14px;padding-top:calc(22px + var(--sp-4));overflow:visible;
++  background:linear-gradient(var(--lk-tick),var(--lk-tick)) 16px 11px/28px 3px no-repeat,var(--lk-back);
++  border:0;border-radius:12px;box-shadow:var(--lk-shadow);color:var(--f-ink,var(--lk-ink));
++  transition:none}
++html[data-look="archive"] :is(.ed,.xcard,.stats3 .stat)::before{content:"";position:absolute;z-index:-1;left:0;right:0;bottom:0;top:22px;
++  background:var(--f-front,var(--lk-front));border-radius:10px 10px 12px 12px;box-shadow:inset 0 0 0 1px var(--f-edge,var(--lk-edge));
++  transform-origin:50% 100%;transition:transform var(--dur) var(--ease)}
++html[data-look="archive"] :is(.ed,.xcard,.stats3 .stat)::after{content:"";position:absolute;left:14px;top:-14px;width:112px;height:20px;
++  background:var(--lk-back);-webkit-mask:var(--lk-tab) no-repeat 0 0/112px 20px;mask:var(--lk-tab) no-repeat 0 0/112px 20px;
++  transition:transform var(--dur) var(--ease)}
++html[data-look="archive"] .edhub .ed-lead{padding-top:calc(22px + var(--sp-5))}
++/* the old hover (border colour, lift) is replaced by the tab lift + front-panel ease */
++html[data-look="archive"] :is(.ed,.xcard):hover{transform:none;border-color:transparent}
++@media(hover:hover){
++  html[data-look="archive"] :is(.ed,.xcard):hover::after{transform:translateY(-3px)}
++  html[data-look="archive"] :is(.ed,.xcard):hover::before{transform:scaleY(.955)}
++}
++html[data-look="archive"] :is(.ed,.xcard):focus-visible{outline:2px solid var(--focus);outline-offset:3px}
++@media(prefers-reduced-motion:reduce){
++  html[data-look="archive"] :is(.ed,.xcard,.stats3 .stat)::before,
++  html[data-look="archive"] :is(.ed,.xcard,.stats3 .stat)::after{transition:none}
++  html[data-look="archive"] :is(.ed,.xcard):hover::after,
++  html[data-look="archive"] :is(.ed,.xcard):hover::before{transform:none}
++}
++/* KPI folders: compact and quiet (shorter band, smaller tab, smaller type) */
++html[data-look="archive"] .stats3 .stat{margin-top:11px;padding:calc(16px + var(--sp-3)) var(--sp-4) var(--sp-3)}
++html[data-look="archive"] .stats3 .stat::before{top:16px}
++html[data-look="archive"] .stats3 .stat::after{left:12px;top:-11px;width:90px;height:16px;
++  -webkit-mask-size:90px 16px;mask-size:90px 16px}
++html[data-look="archive"] .stats3 .stat{background-position:14px 8px,0 0}
++html[data-look="archive"] .stats3 .stat .n{font-size:28px}
++html[data-look="archive"] .stats3 .stat .l{margin-top:var(--sp-1)}
++/* text on the front panel */
++html[data-look="archive"] :is(.ed,.xcard,.stats3 .stat) :is(.ed-stat,.ed-phrase,.t,.n){color:var(--f-ink,var(--lk-ink))}
++html[data-look="archive"] :is(.ed,.xcard,.stats3 .stat) :is(.ed-ctx,.d,.l){color:var(--f-ink-2,var(--lk-ink-2));opacity:1}
++html[data-look="archive"] :is(.ed,.xcard,.stats3 .stat) :is(.ed-eye,.ed-go,.go){color:var(--f-ink-3,var(--lk-ink-3))}
++html[data-look="archive"] :is(.ed,.xcard) .ed-act{color:var(--f-ink,var(--lk-ink))}
++html[data-look="archive"] .ed .ed-viz{color:var(--f-data,var(--lk-data))}
++html[data-look="archive"] .ed .ed-go{top:calc(22px + var(--sp-3))}
++html[data-look="archive"] .xcard .go{top:calc(22px + var(--sp-3))}
++html[data-look="archive"] :is(.ed .ed-icon,.xcard .ic){background:transparent;box-shadow:inset 0 0 0 1.5px currentColor;color:var(--f-ink,var(--lk-ink))}
++html[data-look="archive"] .ed .ed-icon svg{stroke:currentColor}
++html[data-look="archive"] .ed .ed-icon.ed-icon-empty{box-shadow:none}
++html[data-look="archive"] .ed-lead .ed-stat.tri-block{background:var(--rojo-deep);color:#FFFFFF}
+diff --git a/web/index.html b/web/index.html
+index f341879..9b4d621 100644
+--- a/web/index.html
++++ b/web/index.html
+@@ -40,6 +40,9 @@
+   }catch(e){}
+   var m=document.querySelector('meta[name="theme-color"]');
+   if(m) m.setAttribute('content',t==='light'?'#F1F4FA':'#070C18');
++  /* Design preview flag (PHASE_61 archive look): OFF unless the URL has ?look=archive.
++     The query survives hash navigation, so it stays on while you click around. */
++  try{ if(/[?&]look=archive(&|$)/.test(location.search)) document.documentElement.setAttribute('data-look','archive'); }catch(e){}
+ })();
+ </script>
+ <meta name="apple-mobile-web-app-capable" content="yes">
+@@ -54,7 +57,7 @@
+      short numerals/titles only -- see main.css's own comment at the --font-display rule
+      for the exact selector list and why. Reuses the preconnects above (same two hosts). -->
+ <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+-<link rel="stylesheet" href="css/main.css?v=31c7d68cda9b">
++<link rel="stylesheet" href="css/main.css?v=276ed73cc0a3">
+ </head>
+ <body>
+ <div class="splash" id="splash" role="status" aria-live="polite" aria-label="Cargando el archivo">

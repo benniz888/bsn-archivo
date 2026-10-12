@@ -250,7 +250,7 @@ function drawBoard(){
       La nómina verificada es de ${POOL.length} jugadores; el autocompletar te enseña quiénes existen.<br>
       Dificultad de hoy: <b>${diff.label}</b>${GB.ones?` — ${GB.ones} casilla${GB.ones===1?'':'s'} con una sola respuesta posible`:''}.</div>
   </div>
-  <div class="gridwrap"><div class="gridtable">
+  <div class="gridwrap"><div class="gridtable" role="group" aria-label="Cuadrícula de 3 por 3">
     <div class="gcorner"></div>`;
   /* PHASE_45 (owner-approved, redesign-v2): crest() was unwrapped here -- the exact
      same contrast bug crestPlate() already fixed for Equipos' Apoderados/Retirados
@@ -264,7 +264,7 @@ function drawBoard(){
      button. title=axFull() (already the real un-split name/category text this file's
      own axFull() returns) so the full label is always reachable, truncated or not. */
   const gHead=(ax,rowCls)=>{
-    const crestHtml=ax.t==='c'?`<span class="crest-plate" style="--plate:${crestPlate(ax.k)}">${crest(ax.k,24,28)}</span>`:'';
+    const crestHtml=ax.t==='c'?`<span class="crest-plate" aria-hidden="true" style="--plate:${crestPlate(ax.k)}">${crest(ax.k,24,28)}</span>`:'';
     return `<div class="ghead${rowCls?' row':''}" title="${esc(axFull(ax))}">${crestHtml}<span class="glabel">${esc(axLabel(ax))}</span></div>`;
   };
   GB.cols.forEach(c=>{ h+=gHead(c,false); });
@@ -273,16 +273,18 @@ function drawBoard(){
     h+=gHead(r,true);
     for(let j=0;j<3;j++){
       const a=GB.ans[i][j];
-      const cls=a?(a.ok?'ok':'bad'):'';
+      const cls=a?'ok':'';
       const sel=(GB.sel&&GB.sel[0]===i&&GB.sel[1]===j)?'true':'false';
-      h+=`<button class="gcell ${cls}" aria-pressed="${sel}" ${a||left<=0?'disabled':''} onclick="selectCell(${i},${j})">`;
+      const pos='Fila: '+axFull(r)+', columna: '+axFull(GB.cols[j])+'. ';
+      const lab=pos+(a?'Acertada: '+a.name+', '+a.share.toFixed(1)+'%.':sel==='true'?'Seleccionada.':'Vacía.');
+      h+=`<button class="gcell ${cls}" aria-label="${esc(lab)}" aria-pressed="${sel}" ${a||left<=0?'disabled':''} onclick="selectCell(${i},${j})">`;
       if(a) h+=`<span class="pn">${esc(a.name)}</span><span class="pr">${a.share.toFixed(1)}%</span>`;
       else h+=`<span class="plus">+</span>`;
       h+='</button>';
     }
   }
   h+='</div></div>';
-  h+=`<div class="pips" aria-label="Intentos usados">`;
+  h+=`<div class="pips" role="img" aria-label="Intentos usados: ${GB.guesses} de 9">`;
   for(let i=0;i<9;i++){
     const ev=GB.history[i];
     h+=`<span class="pip ${ev?(ev.ok?'hit':'miss'):''}"></span>`;
@@ -292,13 +294,15 @@ function drawBoard(){
   if(left>0){
     h+=`<div class="guessbar" style="position:relative">
       <input type="text" id="gGuess" placeholder="${GB.sel?'Nombre del jugador para esa casilla…':'Toca una casilla primero'}"
-        autocomplete="off" spellcheck="false" ${GB.sel?'':'disabled'} aria-label="Escribe un nombre">
+        autocomplete="off" spellcheck="false" ${GB.sel?'':'disabled'} aria-label="Nombre del jugador para la casilla seleccionada"
+        role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="gSugg">
       <button class="btn primary" onclick="submitGuess()" ${GB.sel?'':'disabled'}>Enviar</button>
-      <div id="gSugg"></div></div>`;
+      <ul id="gSugg" role="listbox" aria-label="Sugerencias de jugadores" hidden></ul></div>`;
   } else {
     h+=`<div class="scoreline"><span>Aciertos <b>${hits}/9</b></span>
       <span>Rareza <b>${rare.toFixed(1)}</b> <span class="dim">(mientras más baja, mejor)</span></span>
-      ${hits===9?'<span style="color:var(--ok);font-weight:700">PERFECTA</span>':''}</div>
+      ${hits===9?'<span class="perfect">PERFECTA</span>':''}</div>
+      <div class="sharewrap"><h4 class="sub">Tu resultado</h4><pre class="sharebox" id="gShare" tabindex="0" aria-label="Tu resultado">${esc(GB.ans.map(r=>r.map(c=>c?'■':'□').join('')).reduce((t,l)=>t+l+'\n',`El Archivo · La Cuadrícula #${puzzleNo()}\n${hits}/9 · rareza ${rare.toFixed(1)}\n`))}</pre></div>
       <div class="btnrow"><button class="btn" onclick="shareGrid()">Copiar resultado</button>
       <button class="btn" onclick="revealGrid()">Ver respuestas</button>
       <button class="btn" onclick="setGMode('practice')">Otra en práctica</button></div>`;
@@ -311,48 +315,93 @@ function drawBoard(){
   if(inp){
     inp.oninput=()=>drawSugg(inp.value);
     inp.onkeydown=e=>{
-      const box=$('#gSugg').querySelectorAll('button');
+      const box=$('#gSugg').querySelectorAll('[role=option]');
       if(e.key==='ArrowDown'){SUGG_I=Math.min(SUGG_I+1,box.length-1);paintSugg();e.preventDefault();}
       else if(e.key==='ArrowUp'){SUGG_I=Math.max(SUGG_I-1,0);paintSugg();e.preventDefault();}
+      else if(e.key==='Escape'&&!$('#gSugg').hidden){ drawSugg(''); e.preventDefault(); e.stopPropagation(); /* tabs.js closes the game on a document-level Escape */ }
       else if(e.key==='Enter'){
         e.preventDefault();
-        if(SUGG_I>=0&&box[SUGG_I]) box[SUGG_I].click(); else submitGuess();
+        if(SUGG_I>=0&&box[SUGG_I]){ if(box[SUGG_I].getAttribute('aria-disabled')!=='true') box[SUGG_I].click(); }
+        else submitGuess();
       }
     };
     if(GB.sel) inp.focus();
   }
 }
 function drawSugg(v){
-  const q=norm(v); const box=$('#gSugg');
+  const q=norm(v); const box=$('#gSugg'); const inp=$('#gGuess');
   SUGG_I=-1;
-  if(q.length<2){ box.innerHTML=''; box.className=''; return; }
+  /* drawSugg('') is also how the list is closed (Escape, after a pick, no matches): no new top-level name */
+  const close=()=>{ box.innerHTML=''; box.hidden=true; box.className=''; inp.setAttribute('aria-expanded','false'); inp.removeAttribute('aria-activedescendant'); };
+  if(q.length<2){ close(); return; }
   /* Suggestions come from the whole pool, not just the valid
      answers — showing only correct names would give the game away. */
   const hits=POOL.filter(p=>norm(p.n).includes(q)).slice(0,8);
-  if(!hits.length){ box.innerHTML=''; box.className=''; return; }
-  box.className='sugg';
-  box.innerHTML=hits.map(p=>{
+  if(!hits.length){ close(); return; }
+  box.className='cbx-list'; box.hidden=false; inp.setAttribute('aria-expanded','true'); inp.removeAttribute('aria-activedescendant');
+  box.innerHTML=hits.map((p,i)=>{
     const used=GB.used.has(p.n);
-    return `<button ${used?'disabled style="opacity:.4"':''} onclick="chooseSugg(${JSON.stringify(p.n).replace(/"/g,'&quot;')})">
-      ${esc(p.n)} <span class="sm">${esc([p.pos,p.c.map(c=>F[c].abbr).join('/')].filter(Boolean).join(' · '))}${used?' · ya usado':''}</span></button>`;
+    return `<li class="cbx-opt${used?' used':''}" role="option" id="gSugg${i}" aria-selected="false"${used?' aria-disabled="true"':''} data-n="${esc(p.n)}">
+      <span>${esc(p.n)} <span class="sm">${esc([p.pos,p.c.map(c=>F[c].abbr).join('/')].filter(Boolean).join(' · '))}${used?' · ya usado':''}</span></span></li>`;
   }).join('');
+  /* PHASE_67A: on a short viewport the list can run under the bottom nav; open it upward when
+     that is where the room is, else cap its height to what is visible below the field. */
+  box.style.top=''; box.style.bottom=''; box.style.maxHeight='';
+  const ib=inp.getBoundingClientRect(), need=box.offsetHeight, below=innerHeight-72-ib.bottom-8, above=ib.top-64;
+  if(need>below){
+    if(above>below){ box.style.top='auto'; box.style.bottom='calc(100% + 4px)'; box.style.maxHeight=Math.max(132,Math.min(need,above-8))+'px'; }
+    else box.style.maxHeight=Math.max(132,below)+'px';
+  }
+  /* keep focus in the input: mousedown would otherwise blur it before the click lands */
+  box.onmousedown=e=>e.preventDefault();
+  box.onclick=e=>{ const o=e.target.closest('[role=option]'); if(o&&o.getAttribute('aria-disabled')!=='true') chooseSugg(o.dataset.n); };
 }
 function paintSugg(){
-  $('#gSugg').querySelectorAll('button').forEach((b,i)=>b.classList.toggle('on',i===SUGG_I));
+  const inp=$('#gGuess');
+  $('#gSugg').querySelectorAll('[role=option]').forEach((b,i)=>{
+    b.classList.toggle('on',i===SUGG_I); b.setAttribute('aria-selected',String(i===SUGG_I));
+    if(i===SUGG_I){ inp.setAttribute('aria-activedescendant',b.id); b.scrollIntoView({block:'nearest'}); }
+  });
+  if(SUGG_I<0) inp.removeAttribute('aria-activedescendant');
 }
-function chooseSugg(n){ $('#gGuess').value=n; $('#gSugg').innerHTML=''; $('#gSugg').className=''; submitGuess(); }
+function chooseSugg(n){ $('#gGuess').value=n; drawSugg(''); submitGuess(); }
 function selectCell(i,j){ if(GB.ans[i][j]) return; GB.sel=[i,j]; drawBoard(); }
 function submitGuess(){
   checkRollover();
   if(!GB||!GB.sel) return;
   const inp=$('#gGuess'); if(!inp) return;
-  const v=norm(inp.value);
+  /* PHASE_62: norm() alone rejected valid spellings -- a nickname word left in
+     ("Jose Ortiz" vs "José «Piculín» Ortiz"), ", Jr.", "Q. J." vs "Q.J.", hyphens,
+     inner double spaces. gk() adds exactly those folds to norm() for this guess path
+     only (norm has ~50 other call sites). A typed fragment now resolves only when it
+     names ONE player; before, the first substring hit won, so "Dalmau" silently became
+     whichever Dalmau came first in POOL and the guess was judged on the wrong person. */
+  const gk=s=>norm(s).replace(/[-,]/g,' ').replace(/\s+/g,' ').replace(/\b([a-z])\s(?=[a-z]\b)/g,'$1').trim();
+  const v=gk(inp.value);
   if(!v) return;
-  const p=POOL.find(x=>norm(x.n)===v) || POOL.find(x=>norm(x.n).includes(v));
+  const keys=x=>[gk(x.n),gk(stripNick(x.n))];
+  let hits=POOL.filter(x=>keys(x).includes(v));
+  if(!hits.length && v.length>=3) hits=POOL.filter(x=>keys(x).some(k=>k.includes(v)));
+  const p=hits.length===1?hits[0]:null;
   const [i,j]=GB.sel;
+  if(hits.length>1){ $('#gMsg').textContent='Hay '+hits.length+' jugadores que encajan con eso. Escribe más del nombre. No gasta intento.'; $('#gMsg').className='msg bad'; return; }
   if(!p){ $('#gMsg').textContent='Ese nombre no está en la nómina verificada. No gasta intento.'; $('#gMsg').className='msg bad'; return; }
   if(GB.used.has(p.n)){ $('#gMsg').textContent='Ya lo usaste. No gasta intento.'; $('#gMsg').className='msg bad'; return; }
   const ok=GB.sol[i][j].some(x=>x.n===p.n);
+  /* PHASE_62: say which criterion failed. A criterion the archive has no data for (no club list,
+     no position, no scoring figure) is not a failure: "did not play there" is unknown, so a
+     rejection that rests only on missing data is free and the cell stays selected. */
+  const noData=a=>a.t==='c' ? !p.c.length
+    : (a.k==='guard'||a.k==='big') ? !p.pos
+    : a.k==='p20' ? (p.ppg==null&&!p.hi&&!p.ss) : false;
+  const bad=ok?[]:[GB.rows[i],GB.cols[j]].filter(a=>!axMatch(p,a));
+  const failed=bad.filter(a=>!noData(a)), missing=bad.filter(noData);
+  const m=$('#gMsg');
+  if(!ok && !failed.length && missing.length){
+    m.textContent='El archivo no tiene datos de '+p.n+' para «'+missing.map(axFull).join('» ni «')+'», así que no se puede confirmar. No gasta intento.';
+    m.className='msg bad';
+    return;
+  }
   GB.guesses++;
   GB.history.push({name:p.n,ok,i,j});
   if(ok){
@@ -362,9 +411,9 @@ function submitGuess(){
   GB.sel=null;
   saveDaily();
   drawBoard();
-  const m=$('#gMsg');
-  if(ok){ m.textContent=`${p.n} entra. ${GB.sol[i][j].length} jugador${GB.sol[i][j].length===1?'':'es'} del grupo sirven ahí.`; m.className='msg good'; }
-  else { m.textContent=`${p.n} no cumple ${axFull(GB.rows[i])} + ${axFull(GB.cols[j])}. Intento gastado.`; m.className='msg bad'; }
+  const m2=$('#gMsg');
+  if(ok){ m2.textContent=`${p.n} entra. ${GB.sol[i][j].length} jugador${GB.sol[i][j].length===1?'':'es'} del grupo sirven ahí.`; m2.className='msg good'; }
+  else { m2.textContent=p.n+' no figura en el archivo como «'+failed.map(axFull).join('» ni «')+'». Intento gastado.'; m2.className='msg bad'; }
 }
 function revealGrid(){
   let h='<h4 class="sub">Quién servía en cada casilla</h4><div class="cards g3">';
@@ -377,14 +426,12 @@ function revealGrid(){
   $('#gReveal').innerHTML=h;
 }
 function shareGrid(){
-  const hits=GB.ans.flat().filter(Boolean).length;
-  const rare=GB.ans.flat().filter(Boolean).reduce((a,c)=>a+c.share,0);
-  let g='';
-  for(let i=0;i<3;i++){ for(let j=0;j<3;j++) g+=GB.ans[i][j]?'🟩':'⬛'; g+='\n'; }
-  const txt=`BSN Archivo · La Cuadrícula #${puzzleNo()}\n${hits}/9 · rareza ${rare.toFixed(1)}\n${g}`;
-  if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(txt).then(()=>{$('#gMsg').textContent='Copiado.';$('#gMsg').className='msg good';});
-  }
+  const box=$('#gShare'), m=$('#gMsg');
+  const txt=box?box.textContent:'';
+  const fail=()=>{ m.textContent='No se pudo copiar. Selecciona el texto y cópialo a mano.'; m.className='msg bad'; };
+  if(txt&&navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(()=>{m.textContent='Copiado.';m.className='msg good';},fail);
+  } else fail();
 }
 function setGMode(m){
   GMODE=m;
@@ -437,7 +484,11 @@ let DR=null;
    simulated rosters each: greedy median 32-2 -> 25-9, greedy 34-0 rate
    19.6% -> 0%, random median 18-16 -> 16-18 (still close to .500,
    slightly under). Full record: docs/session.md, 2026-09-14. */
-let CAL_K=116, CAL_S=40;
+/* PHASE_67B (2026-10-11): K 116->130, S 40->36 and an explicit 34-0 gate (see
+   finishDraft's winsFor). At K=116/S=40 a perfect season needed a total of 284 but the best
+   legal roster in the whole pool totals 271, so 34-0 was unreachable while 30+ wins was
+   common (greedy 21%, expert 44%). Docs: docs/audits/phase67b_plan.md. */
+let CAL_K=130, CAL_S=36;
 
 function posTokens(p){ return String(p.pos||'').split('/').map(s=>s.trim()).filter(Boolean); }
 function fits(p,slot){
@@ -575,7 +626,7 @@ function drawPicks(){
   const roster=rosterOf(), imp=importsIn(roster);
   const nat=roster.filter(p=>(p.t||[]).includes('native')).length;
   let h=`<div class="gamehead">
-    <div class="dim" style="font-size:var(--fs-2xs)">Gira equipo y década · coloca cinco posiciones · ${DR.skips} pases</div>
+    <div class="dim" style="font-size:var(--fs-2xs)">Gira equipo y década · coloca cinco posiciones · ${DR.skips} ${DR.skips===1?'pase':'pases'}</div>
     <div class="chips" style="margin:0">
       <span class="tag ${imp>=3?'gold':''}">Refuerzos ${imp}/3</span>
       <span class="tag">Nativos ${nat}</span>
@@ -590,11 +641,11 @@ function drawPicks(){
     const avail=poolFor(DR.club,DR.dec).length;
     h+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2_5);margin:var(--sp-3) 0">
       <div class="card" style="text-align:center;border-color:#E8B23A;padding:var(--sp-2_5)">
-        <div style="font-size:var(--fs-3xs);letter-spacing:.1em;font-weight:700;color:#E8B23A">EQUIPO</div>
+        <div class="dr-lab eq">EQUIPO</div>
         <div style="font-family:inherit;font-weight:800;font-size:30px;line-height:1.1">${esc(F[DR.club].abbr)}</div>
         <div class="dim" style="font-size:var(--fs-3xs)">${esc(F[DR.club].name)}</div></div>
       <div class="card" style="text-align:center;border-color:#9B6BE0;padding:var(--sp-2_5)">
-        <div style="font-size:var(--fs-3xs);letter-spacing:.1em;font-weight:700;color:#9B6BE0">DÉCADA</div>
+        <div class="dr-lab dec">DÉCADA</div>
         <div style="font-family:inherit;font-weight:800;font-size:30px;line-height:1.1">${DR.dec}s</div>
         <div class="dim" style="font-size:var(--fs-3xs)">${avail} ${plural(avail,'disponible')}</div></div>
     </div>
@@ -662,12 +713,14 @@ function finishDraft(){
   /* Recalibrated after the pool grew and steals and blocks entered the
      rating; the old K/S produced a median of 30-4 against the new numbers. */
   const K=CAL_K,S=CAL_S;
-  const pr=1/(1+Math.exp(-(total-K)/S));
-  const wins=Math.max(0,Math.min(34,Math.round(pr*34)));
+  /* PHASE_67B: 34-0 only at total >= 240; a 33-win band for [236, 240); below that the K/S
+     curve, capped at 33. Monotonic in total, so 32 -> 33 -> 34 has no gap. */
+  const winsFor=t=>t>=240?34:t>=236?33:Math.min(33,Math.max(0,Math.round(34/(1+Math.exp(-(t-K)/S)))));
+  const wins=winsFor(total);
   const missing=roster.reduce((a,x)=>a+(x.ppg==null?1:0)+(x.rpg==null?1:0)+(x.apg==null?1:0),0);
   const guessed=roster.filter(p=>p.posSrc==='perfil').length;
-  const verdict = wins===34?'Temporada perfecta. Nadie lo ha hecho de verdad — el récord real es 29-5, Bayamón 1993.'
-    : wins>=30?'Mejor que cualquier temporada real del BSN.'
+  const verdict = wins===34?'Temporada perfecta. 34 victorias, ninguna derrota.'
+    : wins>=30?'Cuatro derrotas o menos.'
     : wins>=25?'Campeón claro.'
     : wins>=20?'Playoffs cómodos.'
     : wins>=15?'Pelea por el último boleto.'
@@ -686,7 +739,7 @@ function finishDraft(){
   </div>`;
 }
 function shareDraft(w){
-  const txt=`BSN Archivo · La Temporada Perfecta\n${w}-${34-w}\n`+
+  const txt=`El Archivo · La Temporada Perfecta\n${w}-${34-w}\n`+
     SLOTS.filter(s=>DR.slots[s]).map(s=>s+' · '+DR.slots[s].n).join('\n');
   if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(txt);
 }
@@ -694,8 +747,11 @@ let HL=null;
 function newHL(keep){
   const set=pick(HL_SETS);
   const rows=set.rows();
-  let a=pick(rows),b=pick(rows),n=0;
-  while((b[0]===a[0]||b[1]===a[1])&&n++<40) b=pick(rows);
+  /* A pair is a fair question only if the values differ by at least 2% of the larger
+     (and by at least 1); equal or near-equal values would make the answer arguable. */
+  const apart=(x,y)=>x[0]!==y[0]&&Math.abs(x[1]-y[1])>=Math.max(1,0.02*Math.max(x[1],y[1]));
+  const as=rows.filter(x=>rows.some(y=>apart(x,y)));
+  const a=pick(as), b=pick(rows.filter(y=>apart(a,y)));
   HL={set,a,b,streak:keep?HL.streak:0,done:false};
   drawHL();
 }
@@ -703,14 +759,14 @@ function drawHL(){
   const host=$('#hlGame');
   const best=parseInt(ST.get('hlbest')||'0',10)||0;
   let h=`<div class="gamehead"><div class="dim" style="font-size:var(--fs-2xs)">¿Quién tiene más ${esc(HL.set.label)}?</div>
-    <div class="chips" style="margin:0"><span class="tag">Racha ${HL.streak}</span><span class="tag gold">Mejor ${best}</span></div></div>`;
+    <div class="chips" style="margin:0"><span class="tag blue">Racha ${HL.streak}</span><span class="tag">Mejor ${best}</span></div></div>`;
   /* PHASE_46 (owner-approved, redesign-v2): the two cards are real <button>s with no
      text or icon suggesting they're tappable -- a new hint, same .note treatment
      Draft's own court already uses for its own "toca una posición" line (games.js
      drawPicks()), shown only while the round is live and gone once HL.done, so it
      never sits above an already-answered pair. */
   h+=!HL.done?'<p class="note" style="margin-top:var(--sp-2)">Toca uno para responder.</p>':'';
-  h+='<div class="cards g2" style="margin-top:var(--sp-2_5)">';
+  h+='<div class="cards g2 hlcards" style="margin-top:var(--sp-2_5)">';
   /* PHASE_47 (owner-approved, redesign-v2): "1 títulos" (a franchise with exactly one
      title) was a real, reachable bug -- HL.set.unit is always the PLURAL noun (data.js's
      own HL_SETS, out of scope to edit this phase), glued to the real count with no
@@ -721,9 +777,12 @@ function drawHL(){
      one ("títulos") that was actually reachable in practice. */
   const unitSingular=HL.set.unit.replace(/s$/,'');
   [HL.a,HL.b].forEach((x,i)=>{
-    h+=`<button class="card" style="cursor:pointer;text-align:left" ${HL.done?'disabled':''} onclick="answerHL(${i})">
-      <div style="font-weight:700;font-size:17px">${esc(x[0])}</div>
-      <div class="dim" style="font-size:var(--fs-2xs)">${HL.done?x[1].toLocaleString('es-PR')+' '+esc(plural(x[1],unitSingular,HL.set.unit)):'?'}</div></button>`;
+    /* Result state is a class (win = higher value, lose = lower, picked = the player's
+       choice) so CSS can draw a tick or cross and not rely on colour alone. */
+    const st=HL.done?((x[1]>(i===0?HL.b:HL.a)[1])?' win':' lose')+(HL.pick===i?' picked':''):'';
+    h+=`<button class="card hlcard${st}" ${HL.done?'disabled':''} onclick="answerHL(${i})">
+      <div class="hl-name">${esc(x[0])}</div>
+      <div class="hl-val">${HL.done?x[1].toLocaleString('es-PR')+' '+esc(plural(x[1],unitSingular,HL.set.unit)):'?'}</div></button>`;
   });
   h+='</div><div class="msg" id="hMsg" role="status" aria-live="polite"></div>';
   if(HL.done) h+='<div class="btnrow"><button class="btn primary" onclick="newHL(true)">Siguiente</button></div>';
@@ -732,7 +791,7 @@ function drawHL(){
 function answerHL(i){
   const picked=i===0?HL.a:HL.b, other=i===0?HL.b:HL.a;
   const ok=picked[1]>other[1];
-  HL.done=true;
+  HL.done=true; HL.pick=i;
   if(ok){ HL.streak++; const best=parseInt(ST.get('hlbest')||'0',10)||0;
     if(HL.streak>best) ST.set('hlbest',HL.streak); }
   else HL.streak=0;

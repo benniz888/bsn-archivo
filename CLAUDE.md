@@ -29,3 +29,13 @@ make fetch      # Phase 2: pull snapshots into data/raw/
 make parse      # Phase 3: parse raw HTML into data/interim/
 make verify     # run integrity checks against data/clean/
 ```
+
+## Redesign v3 working rules
+
+- Specs live in docs/specs/redesign_v3/. Read 01_master_plan.md first; it lists the rules every phase obeys.
+- One phase per turn. Build phases: do NOT commit, do NOT push. Commits happen only in a separate approved COMMIT ONLY step, staged by explicit path.
+- Owner approves every new or changed public Spanish string: list them in docs/strings_pending_<phase>.md.
+- Never fabricate data. Contrast >= 4.5:1 text, >= 3:1 graphics, tap targets >= 44px, visible focus, reduced-motion respected, no emoji in the UI.
+- Verify layout in Chromium AND WebKit at 390px and 1000px; one phone and one desktop screenshot per page per phase.
+- Report <= 12 lines: PHASE / DONE / VERIFIED / NEXT, plus git diff --stat and git status --short.
+- Routing: planner = auth/security design review only; builder = phase implementation; chores = mechanical edits. Main session stays on Sonnet, low effort; run /clear between phases.

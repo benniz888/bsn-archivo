@@ -44,6 +44,12 @@ WEB_JS = REPO_ROOT / "web" / "js"
 _ASSET_EXT = {"crest": ["png", "svg", "jpg", "webp"], "player": ["jpg", "png", "webp"]}
 
 SCHEMA_VERSION = 1
+# Folded into manifest.source_digest. The digest otherwise hashes only the input CSVs, so a build step that
+# changes the output without changing an input (the 2026-10-10 mojibake repair in _read) would leave the
+# digest, and therefore every client's cached web/data copy, untouched. Bump this whenever that happens:
+# DATA.syncVersion() (web/js/helpers.js) then drops the localStorage data cache and asks the service worker
+# to purge its data cache.
+DIGEST_REVISION = 2
 _DE_SPLIT = re.compile(r"\s+de\s+|,\s*", re.I)   # "Nick de City" / "Nick, City"
 
 
@@ -51,8 +57,20 @@ _DE_SPLIT = re.compile(r"\s+de\s+|,\s*", re.I)   # "Nick de City" / "Nick, City"
 # io helpers                                                                   #
 # --------------------------------------------------------------------------- #
 def _read(name: str) -> list[dict]:
+    def unmojibake(v):
+        # Display-only repair (PHASE_66 fixup 2): some box-score names in data/clean were decoded as
+        # cp1252 from UTF-8 pages ("JosÃ©"). Only values containing "Ã" or "Â" are touched, and a value
+        # whose round trip fails is returned unchanged. data/clean itself is never edited; the root cause
+        # (src/parse_games.py decoding) is logged in docs/audits/data_review_todo.md.
+        if isinstance(v, str) and ("Ã" in v or "Â" in v):
+            try:
+                return v.encode("cp1252").decode("utf-8")
+            except (UnicodeEncodeError, UnicodeDecodeError):
+                return v
+        return v
+
     with open_clean_text(CLEAN / name, "r") as fh:
-        return list(csv.DictReader(fh))
+        return [{k: unmojibake(v) for k, v in r.items()} for r in csv.DictReader(fh)]
 
 
 def _read_interim(name: str) -> list[dict]:
@@ -118,6 +136,7 @@ def _source_digest(inputs: list[str]) -> str:
         path = next((d / name for d in (CLEAN, APP, INTERIM) if (d / name).exists()), CLEAN / name)
         with open_clean_text(path, "r") as fh:
             h.update(fh.read().encode("utf-8"))
+    h.update(f"build-revision:{DIGEST_REVISION}".encode("utf-8"))
     return h.hexdigest()
 
 

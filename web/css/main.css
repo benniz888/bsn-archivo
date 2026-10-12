@@ -18,6 +18,16 @@
    team hero card, and — as a fading lead-in, --tri-fade — opens every
    h3.sec divider, so the flag is structural rather than decorative.
    ============================================================ */
+/* PHASE_69: Inter and Oswald are served from /fonts/ (SIL OFL 1.1, @fontsource-variable 5.3.0, latin
+   subset), so no request leaves this origin. Family names stay "Inter" and "Oswald" so no other rule
+   changes. No italic file: the one .nodata label gets a synthesised slant. The latin-only range is
+   guarded by tests/test_phase69_legal.py, which fails the day shipped text needs a latin-ext letter. */
+@font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;
+  src:url(../fonts/inter-latin-opsz-normal-5.3.0.woff2) format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Oswald';font-style:normal;font-weight:200 700;font-display:swap;
+  src:url(../fonts/oswald-latin-wght-normal-5.3.0.woff2) format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 :root{
   /* ground */
   --night:#070C18;      /* page */
@@ -34,9 +44,10 @@
   --rojo-deep:#8E1119;
   --blanco:#EEF3FB;
   --fuego:#FF6A1A;      /* live / in-progress only */
-  --focus:var(--fuego); /* keyboard-focus ring — its own token so it can
-                            diverge from --fuego's "live game" meaning
-                            later without a silent side effect */
+  --focus:var(--azul-hi); /* focus ring + selected/active outline: site blue, not
+                            orange (PHASE_61). Its own token, so it stays separate
+                            from --fuego's "live game" meaning. Contrast vs the
+                            court cell bg (the tightest ground): 3.8:1 dark, 7:1 light. */
   /* PHASE_31 (owner-approved, redesign-v2): equal red/white/blue thirds reads
      as the FRENCH flag, not Puerto Rico's -- the real PR flag is red/white
      STRIPES with a blue TRIANGLE at the hoist (leading) edge, never three
@@ -244,8 +255,9 @@
 
   --ink:#0B1730;
   --ink-2:#3C5177;
-  --ink-3:#5A6C8E;      /* darkened from #65799B: metadata runs at 11px and
-                           the lighter value missed AA on the raised ground */
+  --ink-3:#566888;      /* darkened from #65799B: metadata runs at 11px and
+                           the lighter value missed AA on the raised ground.
+                           PHASE_71: #5A6C8E measured 4.32:1 on --raise (#E1E9F5); #566888 is 4.60:1 */
   --ok:#0A7A42;
 
   --scrim:rgba(241,244,250,.94);
@@ -392,11 +404,18 @@ footer .tri{height:5px}
 .readout .yr.tri-block-azul{color:var(--flag-w)}
 
 /* ---------- top bar ---------- */
+/* PHASE_61: one source of truth for the sticky header's height. --hdr-inset is the status-bar
+   inset (standalone floors it at 44px, see below); html's scroll-padding-top and the desktop
+   rail's sticky offset both read these, so a hash/anchor jump never lands under the header. */
+:root{--hdr-h:64px;--hdr-inset:env(safe-area-inset-top,0px)}
+html.standalone{--hdr-inset:max(env(safe-area-inset-top),44px)}
+@media(max-width:639px){:root{--hdr-h:56px}}
+html{scroll-padding-top:calc(var(--hdr-h) + var(--hdr-inset) + var(--sp-3))}
 header.top{position:sticky;top:0;z-index:60;background:var(--scrim);
   -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
-  padding-top:env(safe-area-inset-top)}
+  padding-top:var(--hdr-inset)}
 header.top::before{content:"";position:absolute;top:0;left:0;right:0;
-  height:env(safe-area-inset-top);background:var(--statusbar)}
+  height:var(--hdr-inset);background:var(--statusbar)}
 /* PHASE_8 item 1 (owner-approved, redesign-v2): masthead grow. Plain 1px
    border-bottom replaced with the same 3px tricolor device used elsewhere
    for a bolder accent line (--tri, the established HORIZONTAL token --
@@ -414,32 +433,52 @@ header.top::after{content:"";position:absolute;left:0;right:0;bottom:0;
    not it bothers to report an inset. 44px is the classic bar height; every
    notched phone reports more than that, so max() takes the real number when
    there is one and the floor when there is not. */
-html.standalone header.top{padding-top:max(env(safe-area-inset-top),44px)}
-html.standalone header.top::before{height:max(env(safe-area-inset-top),44px)}
 html.standalone .splash{padding-top:max(env(safe-area-inset-top),44px)}
-.toprow{display:flex;align-items:center;gap:12px;max-width:var(--maxw);margin:0 auto;
-  padding:16px calc(16px + env(safe-area-inset-right)) 16px calc(16px + env(safe-area-inset-left))}
-html.standalone .toprow{padding-top:10px;padding-bottom:16px}
-.mark{display:flex;align-items:center;gap:9px;flex:none;background:none;border:0;padding:0;cursor:pointer;color:inherit}
-.mark svg{display:block;width:44px;height:44px}
-.markname{font-family:inherit;font-weight:800;font-size:22px;letter-spacing:-.02em;line-height:1}
-.marksub{font-size:10px;color:var(--ink-3);letter-spacing:.09em;text-transform:uppercase;line-height:1;margin-top:3px}
-/* PHASE_8 item 1 fix (owner-approved, redesign-v2): the grown masthead
-   overflowed .clubpill off the right edge below 640px (.toprow doesn't
-   wrap) -- scale mark/name/padding back down on phone widths so the row
-   fits with visible margin at 360px; .rail's 76px coupling (>=860px) is
-   untouched, the rail isn't present below 860px anyway. */
+.toprow{display:flex;align-items:center;gap:12px;max-width:var(--maxw);margin:0 auto;height:var(--hdr-h);
+  padding:0 calc(16px + env(safe-area-inset-right)) 0 calc(16px + env(safe-area-inset-left))}
+.mark{display:flex;align-items:center;gap:10px;flex:none;min-width:44px;min-height:44px;background:none;border:0;
+  padding:0;cursor:pointer;color:inherit;text-align:left}
+.markimg{display:block;width:40px;height:40px;border-radius:22%}
+/* The tile's left edge is a pale wash that dissolves into the light page: 1px outline there only.
+   box-shadow, not outline: it follows the image's rounded corners in every engine. */
+[data-theme="light"] .markimg{box-shadow:0 0 0 1px var(--line)}
+.marktext{display:block}
+.markname{display:block;font-family:inherit;font-weight:800;font-size:20px;letter-spacing:-.02em;line-height:1}
+.marksub{display:block;font-size:10px;color:var(--ink-3);letter-spacing:.09em;text-transform:uppercase;line-height:1;margin-top:3px}
+/* Phone: mark only. The text stays in the accessibility tree (visually hidden, not display:none). */
 @media(max-width:639px){
-  .toprow{padding-top:10px;padding-bottom:10px}
-  .mark svg{width:24px;height:24px}
-  .markname{font-size:14px}
+  .marktext{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .toprow{gap:8px}
 }
+/* Search: full field on desktop; below 860px an icon that expands over the row (.searching). */
+.hdrsearch{display:flex;align-items:center;flex:1 1 280px;min-width:0;max-width:560px;margin:0 auto}
+.hdrsearch input{flex:1;min-width:0;height:44px;padding:0 18px;font-size:16px;border-radius:99px;
+  border:1px solid var(--line);background:var(--deep);color:var(--ink)}
+.hdrsearch input:focus{border-color:var(--azul-hi)}
+.hdrsearchbtn{display:none;align-items:center;justify-content:center;flex:none;width:44px;height:44px;
+  background:transparent;border:1px solid var(--line);border-radius:99px;color:var(--ink-2);cursor:pointer}
+.hdrsearchbtn:hover{color:var(--ink);border-color:var(--ink-3)}
+.signin{flex:none;display:flex;align-items:center;min-height:44px;padding:0 var(--sp-3);color:var(--ink);
+  font-weight:600;font-size:var(--fs-sm);text-decoration:none}
+.signin[hidden]{display:none}
+@media(max-width:859px){
+  .hdrsearch{flex:none;margin:0 0 0 auto}
+  .hdrsearchbtn{display:flex}
+  .hdrsearch input{display:none}
+  .topspace{display:none}
+  header.top.searching .hdrsearch{flex:1;margin:0}
+  header.top.searching .hdrsearch input{display:block;margin-left:8px}
+  header.top.searching .mark,header.top.searching .themebtn,header.top.searching .clubpill,
+  header.top.searching .signin{display:none}
+}
+@media(max-width:359px){#gearBtn{display:none}}
+@media(min-width:860px){.topspace{display:none}}
 .topspace{flex:1}
 .clubpill{display:flex;align-items:center;gap:7px;background:transparent;color:var(--ink);
-  border:1.5px solid var(--rojo);border-radius:99px;padding:6px 13px 6px 8px;font-size:13.5px;
+  border:1.5px solid var(--rojo);border-radius:99px;min-height:44px;padding:6px 13px 6px 8px;font-size:13.5px;
   font-weight:600;cursor:pointer;white-space:nowrap}
 .clubpill:hover{background:var(--tint-rojo)}
-.themebtn{display:flex;align-items:center;justify-content:center;flex:none;width:40px;height:40px;
+.themebtn{display:flex;align-items:center;justify-content:center;flex:none;width:44px;height:44px;
   background:transparent;border:1px solid var(--line);border-radius:99px;color:var(--ink-2);cursor:pointer;
   transition:color .15s,border-color .15s}
 .themebtn:hover{color:var(--ink);border-color:var(--ink-3)}
@@ -465,10 +504,13 @@ html.standalone .toprow{padding-top:10px;padding-bottom:16px}
    860px .rail stays display:none (unchanged) and header.top stays
    exactly as PHASE_8 left it -- the coupling never applied there anyway. */
 .rail{flex:none;display:none;flex-direction:column;gap:2px;
-  position:sticky;top:0;height:100vh;overflow-y:auto;
+  position:sticky;top:calc(var(--hdr-h) + var(--hdr-inset));height:calc(100vh - var(--hdr-h) - var(--hdr-inset));overflow-y:auto;
   width:64px;padding:var(--sp-3) 0;background:var(--scrim);
   -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-right:1px solid var(--line)}
-@media(min-width:860px){.rail{display:flex}header.top{display:none}}
+/* PHASE_61: header.top now shows at every width (brand + search live there); at >=860px the
+   rail sits beneath it, and the header's own theme/settings/club controls step aside because
+   the rail already carries them. */
+@media(min-width:860px){.rail{display:flex}header.top .themebtn,header.top .clubpill{display:none}#gearBtn{display:none}}
 /* PHASE_10 item 2 (owner-approved, redesign-v2): labeled-tier rail width matched to the
    mockup's own measured value (76px, getComputedStyle on the live file, not the earlier 220px
    guess) -- lifts item 1's own "don't touch rail width" note, per this item's explicit scope.
@@ -479,29 +521,6 @@ html.standalone .toprow{padding-top:10px;padding-bottom:16px}
    assumed -- so it needs no change and none was made; checked and reported per this item's own
    instruction to check either way. */
 @media(min-width:1120px){.rail{width:76px;padding:20px 0}}
-/* PHASE_9 item 1d (owner-approved, redesign-v2): header.top handled the
-   standalone-mode top inset (html.standalone header.top{padding-top:
-   max(env(safe-area-inset-top),44px)}) -- once it's display:none at
-   >=860px that protection is gone too, so .rail needs its own. max()
-   against the SAME base value the plain rule already uses (--sp-3 here,
-   --sp-4 at the labeled tier) means a zero/absent inset computes to
-   exactly today's padding-top, unchanged -- only a real nonzero inset
-   grows it. Scoped to standalone mode only, matching header.top's own
-   scoping; .rail doesn't exist below 860px regardless. */
-@media(min-width:860px){
-  html.standalone .rail{padding-top:max(var(--sp-3),env(safe-area-inset-top,0px))}
-}
-@media(min-width:1120px){
-  html.standalone .rail{padding-top:max(var(--sp-4),env(safe-area-inset-top,0px))}
-}
-/* Logo: a fixed-size badge (mockup's .rail .logo, red circle + basketball
-   glyph), NOT a flex item that stretches to the rail's own width like the
-   nav/control rows below it -- align-self:center keeps its own 32px
-   intrinsic size at both rail widths. */
-.raillogo{align-self:center;flex:none;display:flex;align-items:center;justify-content:center;
-  width:32px;height:32px;border-radius:999px;background:var(--rojo);
-  border:0;padding:0;margin:0 0 var(--sp-3);cursor:pointer;transition:filter var(--dur-fast) var(--ease)}
-.raillogo:hover{filter:brightness(1.12)}
 .railnav{display:flex;flex-direction:column;gap:2px}
 .railbottom{display:flex;flex-direction:column;gap:2px;margin-top:auto}
 .rail a,.rail .railctl{position:relative;display:flex;align-items:center;justify-content:center;gap:var(--sp-3);
@@ -629,13 +648,22 @@ html.standalone .toprow{padding-top:10px;padding-bottom:16px}
    switches them; bare #section shows a landing that lists them
    (a plain list here, an editorial grid in 8.3). */
 .subnav{display:flex;gap:var(--sp-2);overflow-x:auto;scrollbar-width:none;
-  -webkit-overflow-scrolling:touch;margin:0 0 var(--sp-5);padding-bottom:2px}
+  -webkit-overflow-scrolling:touch;margin:0 0 var(--sp-5);padding-bottom:2px;
+  scroll-snap-type:x proximity;scroll-padding-inline:var(--sp-4)}
+.subnav>*{scroll-snap-align:center}
+/* PHASE_61: edge fades say "more this way"; .fade-l/.fade-r are toggled from scroll position (init.js). */
+.subnav.fade-r{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent)}
+.subnav.fade-l{-webkit-mask-image:linear-gradient(90deg,transparent,#000 36px);mask-image:linear-gradient(90deg,transparent,#000 36px)}
+.subnav.fade-l.fade-r{-webkit-mask-image:linear-gradient(90deg,transparent,#000 36px,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(90deg,transparent,#000 36px,#000 calc(100% - 36px),transparent)}
 .subnav::-webkit-scrollbar{display:none}
 .subnav button,.subnav a{flex:0 0 auto;background:transparent;border:1px solid var(--line);
-  color:var(--ink-3);border-radius:99px;padding:7px 14px;font:inherit;
+  color:var(--ink-3);border-radius:99px;min-height:44px;padding:7px 14px;font:inherit;
   font-size:var(--fs-sm);font-weight:600;cursor:pointer;white-space:nowrap;text-decoration:none;
   transition:color var(--dur-fast),border-color var(--dur-fast),background var(--dur-fast)}
-.subnav button:hover,.subnav a:hover{color:var(--ink);border-color:var(--ink-3)}
+/* PHASE_65: hover only where a pointer can really hover. On touch, :hover sticks to the last tapped pill
+   (Premios kept the stronger border after Back to Resumen). */
+@media(hover:hover){.subnav button:hover,.subnav a:hover{color:var(--ink);border-color:var(--ink-3)}}
+.subnav button:focus-visible,.subnav a:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
 .subnav button[aria-current="true"],.subnav a[aria-current="true"]{color:var(--night);background:var(--ink);border-color:var(--ink)}
 .view[hidden]{display:none}
 .view.view-enter{animation:panelin var(--dur) var(--ease) both}
@@ -1207,6 +1235,68 @@ td.rank{color:var(--ink-3);width:32px}
   background:linear-gradient(90deg,var(--shadow),transparent);opacity:0;transition:opacity var(--dur-fast)}
 .tblwrap.scrolled th:first-child::after,.tblwrap.scrolled td:first-child::after{opacity:1}
 .tbl-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:var(--sp-3);font-size:var(--fs-2xs);color:var(--ink-3)}
+/* PHASE_63 (redesign-v3): shared table polish. .tblbox is a non-scrolling parent so the
+   fade stays pinned to the visible edge (an ::after inside the scroller would scroll away);
+   it sits on its own class so Calendario's PHASE_52A rules above stay untouched. */
+.tblbox{position:relative}
+.tblbox.more-r::after{content:"";position:absolute;top:0;right:0;bottom:0;width:32px;
+  border-radius:0 var(--r) var(--r) 0;background:linear-gradient(to right,transparent,var(--deep));pointer-events:none;z-index:7}
+#calendarBox .tblbox::after{display:none}
+.tblwrap:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
+.tblwrap tr:focus{outline:2px solid var(--focus);outline-offset:-2px}
+.tblwrap td{padding-top:var(--sp-2);padding-bottom:var(--sp-2)}
+.tblwrap td.mut{color:var(--ink-3)}
+.nodata{color:var(--ink-3);font-size:var(--fs-3xs);font-style:italic;cursor:help}
+.thbtn{display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0;background:none;border:0;
+  font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;cursor:pointer}
+.thbtn:focus-visible,.cellbtn:focus-visible,.clampbtn:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:var(--r-sm)}
+.cellbtn{display:inline-flex;align-items:center;gap:var(--sp-2);min-height:44px;padding:0;background:none;border:0;
+  font:inherit;font-weight:600;color:var(--ink);text-align:left;cursor:pointer}
+.cellbtn:hover{text-decoration:underline}
+.clubcell .crest{flex:none}
+.clampc{display:flex;align-items:center;gap:var(--sp-2);max-width:320px}
+.clamptxt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.clampc.open .clamptxt{white-space:normal}
+.clampbtn{flex:none;min-height:44px;padding:0 var(--sp-1);background:none;border:0;font:inherit;font-size:var(--fs-3xs);
+  color:var(--azul-hi);text-decoration:underline;cursor:pointer}
+.tbl-meta .btn{min-height:44px}
+/* PHASE_63 B4: combobox + search clear (js/init.js finishBoot()). The native <select> stays in
+   flow but collapsed (visibility:hidden, height 0) so the field keeps the width of its widest
+   option and does not jump when the selection changes. */
+.cbx{position:relative;display:block}
+.filters .cbx .cbx-native{visibility:hidden;display:block;height:0!important;min-height:0!important;margin:0!important;padding:0 34px 0 0!important;border:0!important}
+.cbx-btn{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);width:100%;min-height:44px;padding:0 12px;
+  background:var(--deep);border:1px solid var(--line);border-radius:var(--r-sm);color:var(--ink);font:inherit;font-size:14px;text-align:left;cursor:pointer}
+.cbx-btn:hover{border-color:var(--ink-3)}
+.cbx-btn:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.cbx-btn:disabled{opacity:.55;cursor:not-allowed}
+.cbx-val{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cbx-chev{flex:none;width:8px;height:8px;margin-top:-3px;border:solid var(--ink-3);border-width:0 2px 2px 0;transform:rotate(45deg)}
+.cbx-btn[aria-expanded="true"] .cbx-chev{margin-top:3px;transform:rotate(-135deg)}
+.cbx-list{position:absolute;z-index:30;left:0;top:calc(100% + 4px);min-width:100%;width:max-content;max-width:min(90vw,360px);max-height:280px;overflow:auto;
+  margin:0;padding:4px;list-style:none;background:var(--raise);border:1px solid var(--line);border-radius:var(--r-sm);box-shadow:0 8px 24px var(--shadow)}
+.cbx.up .cbx-list{top:auto;bottom:calc(100% + 4px)}
+.cbx-opt{display:flex;align-items:center;min-height:44px;padding:0 12px;border-radius:4px;color:var(--ink);cursor:pointer}
+.cbx-opt[aria-selected="true"]{font-weight:700;box-shadow:inset 3px 0 0 var(--azul-hi)}
+.cbx-opt.on{background:var(--deep);outline:2px solid var(--focus);outline-offset:-2px}
+.cbx-opt[aria-disabled="true"]{color:var(--ink-3);cursor:not-allowed}
+.sbx{position:relative;display:block}
+.sbx input{padding-right:44px;min-height:44px}
+.sbx input::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
+.sbx-clr{position:absolute;top:0;right:0;bottom:0;width:44px;display:flex;align-items:center;justify-content:center;
+  background:none;border:0;color:var(--ink-2);cursor:pointer;border-radius:0 var(--r-sm) var(--r-sm) 0}
+.sbx-clr[hidden]{display:none}
+.sbx-clr:hover{color:var(--ink)}
+.sbx-clr:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
+/* PHASE_63 B5/B2: decade dividers, and phone sub-lines (a column flagged phone:'sub' is hidden
+   at <=640px and its value is repeated, muted, under the row's main cell -- nothing is lost). */
+.tblwrap tr.grp th{text-align:left;background:var(--raise);color:var(--ink-2);font-size:var(--fs-3xs);letter-spacing:.08em;
+  text-transform:uppercase;padding:var(--sp-2) 10px;box-shadow:inset 0 -1px 0 var(--line)}
+.subline{display:none;margin-top:2px;font-size:var(--fs-3xs);font-weight:400;line-height:1.35;color:var(--ink-3);white-space:normal}
+@media (max-width:640px){
+  .tblwrap .psub{display:none}
+  .tblwrap .subline{display:block}
+}
 
 /* PHASE_51 (owner-approved, redesign-v2): Calidad de datos tap targets -- the survey's
    own finding was ~393-413 controls under 44px on #archivo/calidad (drawDQ/drawDQTable,
@@ -1384,8 +1474,24 @@ select{cursor:pointer}
    for a single card. The 450px-ish size actually reviewed and approved
    only held in the 2-column mockup page, which this real team-page layout
    never had — capped for real now, not re-guessed. */
-.sf-court{background:var(--court);border-radius:var(--r);overflow:hidden;margin-top:var(--sp-2);max-width:380px}
-.sf-court svg{display:block;width:100%;height:auto}
+.sf-court{margin-top:var(--sp-2);max-width:460px}
+.sf-court svg{display:block;width:100%;height:auto;background:var(--card);border:1px solid var(--line);border-radius:var(--r-sm)}
+.sf-ln{fill:none;stroke:var(--ink-3);stroke-opacity:.35;stroke-width:1}
+.sf-ring{fill:var(--card);stroke:var(--club-g,var(--ink-3));stroke-width:1.5}
+.sf-ring.dash{stroke:var(--ink-3);stroke-dasharray:3 2.5}
+.sf-court text{font-family:Inter,-apple-system,"Segoe UI",Roboto,sans-serif;paint-order:stroke;stroke:var(--card);stroke-width:3.5px;stroke-linejoin:round}
+.sf-rn{font-size:11px;font-weight:700;fill:var(--ink)}
+.sf-pn{font-size:12px;font-weight:700;fill:var(--ink)}
+.sf-ps,.sf-unc{font-size:10px;font-weight:700;letter-spacing:.08em}
+.sf-ps{fill:var(--ink-3)}
+.sf-unc{fill:var(--bad-ink)}
+.sf-pg{font-size:11px;fill:var(--ink-2)}
+.sf-seg{display:inline-flex;max-width:100%;overflow-x:auto;scrollbar-width:none;border:1px solid var(--line);border-radius:4px;margin:var(--sp-2) 0}
+.sf-seg::-webkit-scrollbar{display:none}
+.sf-seg button{flex:0 0 auto;min-height:44px;min-width:44px;padding:0 var(--sp-3_5);background:transparent;border:0;border-left:1px solid var(--line);color:var(--ink-2);font:inherit;font-size:var(--fs-xs);font-weight:600;cursor:pointer}
+.sf-seg button:first-child{border-left:0}
+.sf-seg button[aria-pressed="true"]{color:var(--club-t,var(--ink));box-shadow:inset 0 -2px 0 var(--club-g,var(--ink))}
+.sf-seg button:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
 .tag{display:inline-block;background:var(--raise);border:1px solid var(--line);border-radius:99px;
   padding:2px var(--sp-2_5);font-size:var(--fs-3xs);color:var(--ink-2);margin:2px 4px 2px 0}
 .tag.gold{border-color:var(--rojo);color:var(--on-rojo);background:var(--tint-rojo)}
@@ -1504,11 +1610,15 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 .gcell{background:var(--deep);border:1px solid var(--line);border-radius:var(--r-sm);aspect-ratio:1;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:6px;
   cursor:pointer;color:inherit;font-size:var(--fs-3xs);text-align:center;line-height:1.2;position:relative}
-.gcell:hover:not(:disabled){border-color:var(--azul)}
-.gcell[aria-pressed="true"]{border-color:var(--rojo);box-shadow:0 0 0 1px var(--rojo) inset}
+.gcell:hover:not(:disabled){border-color:var(--azul-hi)}
+.gcell:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.gcell[aria-pressed="true"]{border-color:var(--focus);box-shadow:0 0 0 2px var(--focus) inset;background:var(--tint-azul)}
 .gcell.ok{background:var(--tint-ok);border-color:var(--ok-line)}
-.gcell.bad{background:var(--tint-rojo);border-color:var(--rojo-deep)}
-.gcell .pn{font-weight:600}
+/* PHASE_67A: a hit is also marked by a drawn tick (not colour alone); graphic, 3:1 vs the tint. */
+.gcell.ok::after{content:"";position:absolute;top:6px;right:8px;width:5px;height:10px;border:solid var(--ok);
+  border-width:0 2px 2px 0;transform:rotate(45deg)}
+.gcell:disabled{cursor:default}
+.gcell .pn{font-weight:600;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;max-width:100%}
 .gcell .pr{font-size:var(--fs-3xs);color:var(--ink-2)}
 .gcell .plus{font-size:var(--fs-lg);color:var(--ink-3);font-weight:300}
 /* PHASE_45/45B (owner-approved, redesign-v2): mobile overflow fix -- .gridtable's own
@@ -1527,20 +1637,28 @@ tr.cut td{border-bottom:1px solid var(--azul)}
    floor is 639px, nothing above it changes) keeps its own 132px/90px/420-540px values. */
 @media(max-width:639px){
   .gridtable{grid-template-columns:84px repeat(3,minmax(44px,1fr));min-width:0;max-width:100%}
+  .gcell{aspect-ratio:auto;min-height:72px}
 }
+/* PHASE_67A: header accents (column = bottom bar, row = left bar), site blue; pick list reuses
+   .cbx-list/.cbx-opt (PHASE_63) -- only the grid-specific bits live here. */
+.ghead{box-shadow:inset 0 -3px 0 var(--azul-hi)}
+.ghead.row{box-shadow:inset 3px 0 0 var(--azul-hi)}
+.guessbar .cbx-list{max-height:min(280px,40vh);width:auto;max-width:100%}
+.guessbar .cbx-opt{display:block;padding:11px 12px;min-height:44px}
+.cbx-opt.used{color:var(--ink-2)}
+.cbx-opt.used > span:first-child{text-decoration:line-through;text-decoration-thickness:1px}
+.cbx-opt .sm{color:var(--ink-2);font-size:var(--fs-3xs)}
+.sharewrap{margin-top:var(--sp-3)}
+.sharebox{margin:var(--sp-1) 0 0;padding:var(--sp-3);background:var(--deep);border:1px solid var(--line);
+  border-radius:var(--r-sm);color:var(--ink);font:var(--fs-xs)/1.5 ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere}
+.perfect{color:var(--ok);font-weight:700;border:1px solid var(--ok-line);border-radius:999px;padding:0 var(--sp-2)}
 .guessbar{display:flex;gap:var(--sp-2);margin-top:var(--sp-3);flex-wrap:wrap}
-.guessbar input{flex:1;min-width:180px}
+.guessbar input{flex:1;min-width:180px;min-height:44px}
 .pips{display:flex;gap:var(--sp-1);margin-top:var(--sp-2_5);align-items:center}
 .pip{width:16px;height:6px;border-radius:3px;background:var(--line)}
 .pip.used{background:var(--ink-3)}
 .pip.hit{background:var(--ok)}
 .pip.miss{background:var(--rojo)}
-.sugg{position:absolute;z-index:20;left:0;right:0;top:100%;background:var(--deep);border:1px solid var(--azul);
-  border-radius:var(--r-sm);max-height:220px;overflow-y:auto;margin-top:var(--sp-1)}
-.sugg button{display:block;width:100%;text-align:left;background:none;border:0;color:var(--ink);
-  padding:9px var(--sp-3);font-size:var(--fs-xs);cursor:pointer}
-.sugg button:hover,.sugg button.on{background:var(--raise)}
-.sugg .sm{color:var(--ink-3);font-size:var(--fs-3xs)}
 
 /* ---------- game shell ---------- */
 .gamehead{display:flex;gap:var(--sp-2_5);flex-wrap:wrap;align-items:center;justify-content:space-between;
@@ -1548,7 +1666,7 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 .modebtns{display:flex;gap:var(--sp-1);background:var(--raise);border:1px solid var(--line);border-radius:99px;padding:3px}
 .modebtns button{background:none;border:0;color:var(--ink-3);padding:5px 13px;border-radius:99px;
   font-size:var(--fs-2xs);font-weight:600;cursor:pointer}
-.modebtns button[aria-selected="true"]{background:var(--azul);color:#fff}
+.modebtns button[aria-selected="true"],.modebtns button[aria-pressed="true"]{background:var(--azul);color:#fff}
 /* PHASE_45 (owner-approved, redesign-v2): measured live at 390px, 60x28 and 74x28 --
    both well under the 44px floor. .modebtns itself is shared with the theme/profile
    pickers (tabs.js's own settings panel) -- scoped to .gamehead's own instance (Grid's
@@ -1559,6 +1677,8 @@ tr.cut td{border-bottom:1px solid var(--azul)}
    label, onclick, and the [aria-selected="true"] active look (the rule right above,
    untouched) are unchanged. */
 .gamehead .modebtns button{min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center}
+/* PHASE_71: Perfil toggles were 28px high; 44px floor, same look. */
+.profctl .modebtns button{min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center}
 /* PHASE_46 (owner-approved, redesign-v2): Draft's court cells (games.js courtHTML())
    used to reset everything via an INLINE style="all:unset;..." -- an inline
    declaration beats any stylesheet selector for the same property, so a
@@ -1568,7 +1688,7 @@ tr.cut td{border-bottom:1px solid var(--azul)}
    58px floor) moved here instead; the per-render values (cursor/border-color/
    background, which genuinely vary with each cell's state) still come from the
    element's own inline style, same as before, and compose normally on top of this
-   class. --focus (var(--fuego)) against the court's own real background: >=3:1 in
+   class. --focus (var(--azul-hi)) against the court's own real background: >=3:1 in
    both themes, printed by this phase's own report, not assumed. */
 .court-cell{all:unset;display:block;cursor:pointer;border-radius:12px;padding:var(--sp-2_5) var(--sp-2);
   text-align:center;min-height:58px;box-sizing:content-box}
@@ -1594,9 +1714,29 @@ tr.cut td{border-bottom:1px solid var(--azul)}
    PHASE_47's own report for the measured contrast). */
 #quizGame .btn,#quizGame input[type=text]{min-height:44px}
 #quizGame .btn{display:inline-flex;align-items:center;justify-content:center}
+/* PHASE_67D: Sube y Baja restyle. The two compared cards: blue hover/focus/picked, a drawn
+   tick (higher) or cross (lower) after the answer so the result is not colour alone. */
+.hlcard{position:relative;cursor:pointer;text-align:left;min-height:88px;display:flex;flex-direction:column;
+  justify-content:center;gap:var(--sp-1);padding-right:var(--sp-7);color:var(--ink)}
+.hlcard .hl-name{font-weight:700;font-size:var(--fs-md);overflow-wrap:anywhere}
+.hlcard .hl-val{font-size:var(--fs-xs);color:var(--ink-2);font-variant-numeric:tabular-nums}
+@media(hover:hover){.hlcard:hover:not(:disabled){border-color:var(--azul-hi);background:var(--tint-azul)}}
+.hlcard:disabled{cursor:default;opacity:1;color:var(--ink)}
+.hlcard.picked{border-color:var(--focus);box-shadow:0 0 0 2px var(--focus) inset}
+.hlcard.win{background:var(--tint-ok)}
+.hlcard.lose{background:var(--deep)}
+.hlcard.win::after{content:"";position:absolute;top:14px;right:16px;width:7px;height:14px;border:solid var(--ok);
+  border-width:0 3px 3px 0;transform:rotate(45deg)}
+.hlcard.lose::before,.hlcard.lose::after{content:"";position:absolute;top:12px;right:14px;width:18px;height:3px;
+  background:var(--bad-ink);border-radius:2px;transform:translateY(8px) rotate(45deg)}
+.hlcard.lose::before{transform:translateY(8px) rotate(-45deg)}
 .msg{margin-top:var(--sp-2_5);font-size:var(--fs-xs);min-height:22px}
 .msg.good{color:var(--ok)}
 .msg.bad{color:var(--bad-ink)}
+#hlGame .msg.good{color:var(--on-ok)}
+/* PHASE_67D fixup: Sube y Baja's wrong answer gets the same panel as the correct one (.good), in error tokens. */
+#hlGame .msg.bad{border-left:3px solid var(--bad-ink);background:var(--tint-rojo);padding:10px 12px;
+  border-radius:0 var(--r-sm) var(--r-sm) 0;font-size:13px;margin-top:12px}
 .scoreline{display:flex;gap:var(--sp-4);flex-wrap:wrap;font-size:var(--fs-xs);color:var(--ink-2);margin-top:var(--sp-2_5)}
 .scoreline b{color:var(--ink);font-size:var(--fs-base)}
 
@@ -1611,10 +1751,14 @@ tr.cut td{border-bottom:1px solid var(--azul)}
           calc(24px + env(safe-area-inset-bottom)) calc(24px + env(safe-area-inset-left))}
 .splash.gone{opacity:0;pointer-events:none}
 .splashinner{display:flex;flex-direction:column;align-items:center;gap:var(--sp-3_5);width:100%;max-width:260px}
+/* PHASE_66C: same logo files as the header mark (.markimg), 64px, fixed box so nothing shifts;
+   light theme gets the same 1px outline the header mark has. */
+.splashmark{display:block;width:64px;height:64px;border-radius:22%}
+[data-theme="light"] .splashmark{box-shadow:0 0 0 1px var(--line)}
 .splashname{font-family:inherit;font-weight:800;font-size:27px;
   letter-spacing:.03em;line-height:1}
 .splashsub{font-size:var(--fs-3xs);color:var(--ink-3);letter-spacing:.14em;text-transform:uppercase;
-  margin-top:-3px}
+  margin-top:4px}  /* PHASE_66C fixup: was -3px, which put the line's caps against the wordmark's baseline (ink gap ~2px) */
 .splashbar{width:100%;height:4px;border-radius:99px;background:var(--line-soft);overflow:hidden;margin-top:4px}
 /* PHASE_32 item 1: --tri-wide -- .splashbar runs up to 260px (.splashinner's
    own max-width), past the ~120px point equal-thirds stops making sense.
@@ -1708,15 +1852,6 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 .hubhead{font-family:inherit;font-weight:800;
   font-size:clamp(24px,5.4vw,36px);text-transform:uppercase;line-height:1.05}
 .hublede{color:var(--ink-2);font-size:var(--fs-sm);max-width:46ch;margin:7px 0 0}
-/* PHASE_8 item 2a (owner-approved, redesign-v2): search restyle, CSS-only.
-   #hubSearch stays exactly where it sits in the DOM -- only its own box
-   grows (padding/font/border), matching the masthead's bigger scale from
-   item 1. Behavior untouched: hubAsk()/runAsk()/ask()/answerCard() are
-   byte-identical to before this commit. */
-.hubsearch{margin:var(--sp-5) 0 var(--sp-2);position:relative}
-.hubsearch input{padding:20px 22px;font-size:19px;border-radius:var(--r);
-  border-width:1.5px;border-color:var(--azul-deep);background:var(--deep)}
-.hubsearch input:focus{border-color:var(--azul-hi);outline:2px solid var(--focus);outline-offset:2px}
 /* ── Editorial blocks (PHASE_8.3) — a headline stat + a phrase + one line
    of context + a supporting visual, not a number in a box. Inicio hub,
    the player/team heros, the mega-menu featured blocks. */
@@ -1926,6 +2061,25 @@ tr.cut td{border-bottom:1px solid var(--azul)}
    one side. */
 .stat.solid{background:linear-gradient(135deg,var(--rojo-deep),var(--rojo-deep));color:var(--flag-w)}
 .stat.solid .l{color:var(--flag-w);opacity:.85}
+/* PHASE_65: Historia and Jugadores landings: compact KPI tiles so the explore cards sit above the
+   fold on a phone. Scoped by section; Equipos' landing keeps the PHASE_11 size until PHASE_66. */
+#historia .stats3,#jugadores .stats3{margin-bottom:var(--sp-5)}
+#historia .stat,#jugadores .stat{padding:var(--sp-3) var(--sp-4)}
+#historia .stat .n,#jugadores .stat .n{font-size:32px}
+#historia .stat .l,#jugadores .stat .l{max-width:none;margin-top:var(--sp-1)}
+#historia .stats3.n2{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:759px){
+  #historia .stats3,#jugadores .stats3{grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--sp-2_5)}
+  #jugadores .stats3 .stat.solid{grid-column:1/-1}
+}
+/* PHASE_65: explore cards. A 16px gap under the heading on both pages (the h2 margin is zeroed so the
+   gap is exactly the grid's margin-top); 2 columns on phones; no empty slot in the last row: Historia's
+   7th card spans the free cells (4-up: spans 2, 2-up: spans the row). */
+#historia h2.sec,#jugadores h2.sec{margin-bottom:0}
+#historia .explore,#jugadores .explore{margin-top:var(--sp-4)}
+@media(min-width:900px){#historia .explore .xcard:last-child:nth-child(4n+3){grid-column:span 2}}
+@media(max-width:899px){#historia .explore .xcard:last-child:nth-child(odd){grid-column:1/-1}}
+@media(max-width:519px){#historia .explore,#jugadores .explore{grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--sp-2_5)}}
 
 /* -- landing: explore grid to the 7 real sub-views -- */
 .explore{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-3)}
@@ -1954,19 +2108,18 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend i{width:11px;height:11px;border-radius:3px;display:block;flex:none}
 .ribbon-wrap{overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}
-.ribbon{display:grid;grid-template-columns:repeat(20,1fr);gap:4px;min-width:900px;margin-top:0}
+.ribbon{display:grid;grid-template-columns:repeat(20,1fr);gap:4px;min-width:956px;margin-top:0}
 @media(max-width:639px){.ribbon{grid-template-columns:repeat(7,minmax(44px,1fr));min-width:0}}
 .cell{min-height:44px;border-radius:var(--r-sm);background:var(--raise);border:1px solid var(--line);
   cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ink-3);
   font-weight:600;position:relative;aspect-ratio:auto;padding:0;transition:transform var(--dur-fast) var(--ease)}
-.cell:hover,.cell:focus-visible{border-color:var(--azul);transform:scale(1.08);z-index:2;outline:none}
+.cell:hover,.cell:focus-visible{border-color:var(--azul);transform:scale(1.08);z-index:2}
+/* PHASE_69: dropped the dead outline:none here; the ring is drawn by the .cell:focus-visible rule near the end of this file. */
 .cell.champ{background:linear-gradient(150deg,var(--azul),var(--azul-deep));border-color:transparent;
   color:var(--flag-w);font-weight:700}
 .cell.dynasty{background:linear-gradient(150deg,var(--rojo),var(--rojo-deep));border-color:transparent;
   color:var(--flag-w);font-weight:700}
-.cell.active{outline:2px solid var(--fuego);outline-offset:2px}
-.fixnote{font-size:var(--fs-2xs);color:var(--ink-3);margin-top:var(--sp-2_5);display:flex;gap:6px;align-items:flex-start}
-.fixnote::before{content:"✓";color:var(--ok);font-weight:700;flex:none}
+.cell.active{outline:2px solid var(--focus);outline-offset:2px}
 /* -- readout: same class kept (.readout .yr is already in the shared Oswald selector list),
    restyled in place, gradient left-bar + real-data badges added. */
 .readout{position:relative;overflow:hidden;padding:var(--sp-5)}
@@ -1994,7 +2147,7 @@ tr.cut td{border-bottom:1px solid var(--azul)}
    color, flagged per this file's own literal-token discipline. */
 .bar-row.rk1 .rk{background:linear-gradient(135deg,#f4cd6b,#c9962a);color:#3a2a00}
 .bar-row.rk2 .rk{background:linear-gradient(135deg,#dfe4ea,#a9b1bb);color:#1a1e23}
-.bar-row.rk3 .rk{background:linear-gradient(135deg,#e3a165,#a8672f);color:#2c1600}
+.bar-row.rk3 .rk{background:linear-gradient(135deg,#e3a165,#b87a3a);color:#1a0d00}
 .bar-row .who{display:flex;align-items:center;gap:var(--sp-2_5);min-width:0}
 .bar-row .pn{font-weight:600;font-size:var(--fs-xs);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bar-row .wrap{display:flex;flex-direction:column;gap:6px;min-width:0;flex:1}
@@ -2045,7 +2198,7 @@ tr.cut td{border-bottom:1px solid var(--azul)}
    the app's own --on-rojo/--on-rojo-2 tokens exist for exactly this "text on a rojo tint"
    pairing, e.g. .tag.gold already uses --on-rojo the same way). Switched to --on-rojo:
    11.67:1 dark, 7.60:1 light, both re-measured live against the real composited background. */
-.streakpill{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;color:var(--on-rojo);
+.streakpill{display:inline-flex;align-items:center;gap:4px;font-size:var(--fs-2xs);font-weight:700;color:var(--on-rojo);
   background:var(--tint-rojo);border-radius:99px;padding:2px 8px}
 .lead-row .val{text-align:right}
 .lead-row .val .n{font-family:var(--font-display);font-weight:700;font-size:20px;color:var(--ink)}
@@ -2074,6 +2227,41 @@ tr.cut td{border-bottom:1px solid var(--azul)}
 code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padding:1px 5px;
   font-size:12.5px;overflow-wrap:anywhere;word-break:break-word}
 .foot{border-top:1px solid var(--line);margin-top:40px;padding:22px 0 40px;color:var(--ink-3);font-size:12.5px}
+/* PHASE_69: footer legal nav (2x2 on a phone, one row from 640px), every link a 44px target. */
+.foot p{margin:0}
+.footlegal{display:grid;grid-template-columns:1fr 1fr;margin:var(--sp-2) 0}
+.footlegal a{display:flex;align-items:center;min-height:44px;padding:0 var(--sp-3) 0 0;font-weight:600}
+.foot p a{display:inline-block;padding:14px 4px;margin:-14px -4px;overflow-wrap:anywhere}
+@media(min-width:640px){
+  .footlegal{display:flex;flex-wrap:wrap}
+  .footlegal a{padding:0 var(--sp-4);border-left:1px solid var(--line)}
+  .footlegal a:first-child{padding-left:0;border-left:0}
+}
+/* PHASE_69: skip link, visible only on focus. */
+/* fixed, not absolute: it must be on screen wherever the page is scrolled. Literal colours on purpose:
+   --azul-deep flips to a light tint in the light theme, which would put white text on a pale ground.
+   #fff on #092F70 is 12.9:1 in both themes. */
+.skip{position:fixed;left:var(--sp-3);top:-100px;z-index:1000;display:inline-flex;align-items:center;min-height:44px;
+  padding:0 var(--sp-4);background:#092F70;color:#fff;font-weight:700;border-radius:var(--r-sm);text-decoration:none}
+.skip:focus{top:var(--sp-3);outline:2px solid #fff;outline-offset:-4px}
+#main:focus,h1[tabindex="-1"]:focus,#profMsg:focus{outline:none}
+/* PHASE_69: long-form pages (privacidad, terminos, accesibilidad, creditos). */
+.legal{max-width:65ch}
+.legal h3.sec{font-size:var(--fs-md)}
+.legal p,.legal li{color:var(--ink-2);font-size:var(--fs-sm);line-height:1.6;margin:var(--sp-2) 0 0}
+.legal h2{font-size:var(--fs-md);margin:var(--sp-6) 0 var(--sp-2)}
+.legal ul{padding-left:var(--sp-5);margin:var(--sp-2) 0 0}
+.legal .stamp{color:var(--ink-3);font-size:var(--fs-2xs)}
+.legal a,.legalrow a,.profnote a{display:inline-block;padding:14px 7px;margin:-14px -7px;overflow-wrap:anywhere}
+.legaltable{width:100%;border-collapse:collapse;margin-top:var(--sp-3);font-size:var(--fs-xs)}
+.legaltable th,.legaltable td{text-align:left;vertical-align:top;padding:var(--sp-2) var(--sp-3) var(--sp-2) 0;
+  border-bottom:1px solid var(--line);color:var(--ink-2)}
+.legaltable th{color:var(--ink);font-weight:700}
+.legalrow{margin-top:var(--sp-5);color:var(--ink-3);font-size:var(--fs-2xs)}
+.profnote{margin-top:var(--sp-3)}
+.btn.b44{min-height:44px;min-width:44px}
+.btn.danger{border-color:var(--rojo)}
+.wipebox{margin-top:var(--sp-3)}
 /* PHASE_52A (owner-approved, redesign-v2): column counts come from buildCoverage()
    (tabs.js) via the 2 custom properties it sets inline on this element, computed from
    COVERAGE.length itself (never a literal column count baked in here) -- see that
@@ -2100,7 +2288,7 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
    nothing in the code constrains that going forward -- treated as
    ambiguous, skipped per the owner's own instruction rather than guessed.
    Falls back through two more condensed faces, then the system sans, so
-   a slow/failed Google Fonts load never blanks text. Every selector below
+   a slow/failed font load never blanks text. Every selector below
    already carries font-weight:800 from its own rule or from h1-h4 above;
    Oswald has no 800 weight (only 500/600/700 loaded), so the browser's
    normal font-weight matching renders these at Oswald 700 -- expected,
@@ -2381,8 +2569,13 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
 /* .strip corner-ring, same motif as .hero-stat:not(.tri-block)::after, scoped so
    Inicio's own #titleStats/#calCount strips and the team page's strip are unaffected. */
 #jugadores .strip>div{position:relative;overflow:hidden}
-#jugadores .strip>div::after{content:"";position:absolute;right:-12px;bottom:-16px;width:50px;height:50px;
-  border-radius:999px;border:8px solid var(--raise);opacity:.5;pointer-events:none}
+/* PHASE_65: the ring used to sit bottom-right ON TOP of the label (it painted over the text and
+   reached 34px up, past the label's 15px bottom inset). It now sits in the top-right corner, behind
+   the content (z-index 0 vs 1), and the tile reserves a corner gutter so no ink enters its box.
+   tests/test_player_ring_overlap.py fails if any decorative circle touches a label or number. */
+#jugadores .strip>div::after{content:"";position:absolute;right:-16px;top:-16px;width:40px;height:40px;
+  border-radius:999px;border:6px solid var(--raise);opacity:.5;pointer-events:none;z-index:0}
+#jugadores .strip>div>*{position:relative;z-index:1}
 
 /* -- player index search bar: a new shell around the existing real .filters block
    (buildPlayerIndex(), player.js) -- #pq/#pmode/#pf/#pfField and their own ids/
@@ -2416,8 +2609,8 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
 @media(min-width:720px){.rec-grid{grid-template-columns:1fr 1fr}}
 .rec-card{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:14px;
   padding:var(--sp-4);background:var(--card)}
-.rec-card::after{content:"";position:absolute;right:-24px;bottom:-24px;width:96px;height:96px;
-  border-radius:999px;border:10px solid var(--raise);opacity:.5;pointer-events:none}
+/* PHASE_65: the corner ring that used to sit here ran through the note text of the long records, so
+   the record cards carry no ring. tests/test_player_ring_overlap.py measures the notes. */
 
 /* -- Dirigentes / Honrados en concreto: new .coach-grid/.coach-card, replacing the
    plain .cards.g2 (buildCoaches()/buildStone() -- two call sites, same shape of
@@ -2565,8 +2758,8 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
 /* Resumen: one shade further up (--raise), distinct from the other two --
    same token this file already uses for "a raised block inside a card". */
 #jugadores .rp-stats{background:var(--raise)}
-#jugadores .rp-info h3,#jugadores .rp-stats .ed-eye,#jugadores .rp-context .ed-eye{margin-bottom:var(--sp-2)}
-#jugadores .rp-info h3{font-size:var(--fs-3xs);letter-spacing:.1em;text-transform:uppercase;
+#jugadores .rp-info h2,#jugadores .rp-stats .ed-eye,#jugadores .rp-context .ed-eye{margin-bottom:var(--sp-2)}
+#jugadores .rp-info h2{font-size:var(--fs-3xs);letter-spacing:.1em;text-transform:uppercase;
   color:var(--ink-3);font-weight:700;margin-top:0}
 /* Información: label/value rows, mirrors the mockup's own .info/.row/.k/.v. */
 #jugadores .rp-info .row{display:flex;justify-content:space-between;gap:var(--sp-3);
@@ -2887,3 +3080,230 @@ code{background:var(--raise);border:1px solid var(--line);border-radius:4px;padd
   #jugadores .cmp2val.r{order:2;text-align:right;margin-left:auto}
 }
 @media (prefers-reduced-motion:reduce){#jugadores .cmp2fill{animation:none;width:var(--w)}}
+
+/* ============================================================
+   PHASE_64 — Inicio: one hero, one row of four cards, two blocks, one disclosure
+   ============================================================ */
+/* the hero card: .ed-lead's shell, full width, with the full-width cinta */
+.hubhero{margin-top:var(--sp-5);padding:var(--sp-5);gap:var(--sp-3)}
+.hubhero .hh-top{display:flex;align-items:center;gap:var(--sp-4)}
+.hubhero .hh-hi{font-family:var(--font-display);font-size:22px;font-weight:600;margin-bottom:2px}
+.hubhero .ed-row{align-items:center}
+.hubhero .ed-stat{font-size:clamp(40px,7vw,64px)}
+.hubhero .ed-phrase{font-size:var(--fs-md)}
+.hubhero .ed-ctx{font-size:var(--fs-xs);max-width:58ch}
+/* cinta: solid cell = title; gap = empty cell with a quiet baseline */
+.cinta{width:100%}
+.cinta-bars{display:grid;height:44px;align-items:end}
+.cinta-bars i{display:block;height:3px;background:var(--line)}
+.cinta-bars i.w{height:100%;background:var(--azul-hi)}
+.cinta-axis{position:relative;height:20px;margin-top:6px;color:var(--ink-2);font-size:var(--fs-3xs);font-variant-numeric:tabular-nums}
+.cinta-axis span{position:absolute;top:0;transform:translateX(-50%);white-space:nowrap}
+.cinta-axis span.first{transform:none}
+.cinta-axis span.last{transform:translateX(-100%)}
+@media(max-width:639px){.cinta-axis span.alt{display:none}}
+/* the four entry cards: 2x2 on a phone, one row of four from 1000px */
+.hubhero+.edhub{margin-top:var(--sp-3)}
+.edhub{grid-template-columns:1fr 1fr}
+@media(min-width:620px){.edhub{grid-template-columns:1fr 1fr}}
+@media(min-width:1000px){.edhub{grid-template-columns:repeat(4,1fr)}}
+.edhub .ed{min-height:44px}
+/* selected / hover / focus = site blue, never orange */
+.ed:focus-visible,.champ-strip:focus-visible,.rec-chip:focus-visible,.liga>summary:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.champ-strip:hover,.champ-strip.mine{border-color:var(--azul-hi)}
+.champ-strip.mine{box-shadow:inset 3px 0 0 var(--azul-hi)}
+/* Sigue donde lo dejaste */
+.hubrec-h{font-size:var(--fs-xs);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);font-weight:700;margin:var(--sp-5) 0 var(--sp-2)}
+.hubrec{display:flex;flex-wrap:wrap;gap:var(--sp-2)}
+.rec-chip{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 var(--sp-4);border:1px solid var(--line);
+  border-radius:999px;background:var(--card);color:var(--ink);font:inherit;font-size:var(--fs-sm);cursor:pointer}
+.rec-chip:hover{border-color:var(--azul-hi)}
+/* the two content blocks: stacked on a phone, side by side from 1000px */
+.hubpair{display:grid;gap:var(--sp-5);margin-top:var(--sp-5)}
+@media(min-width:1000px){.hubpair{grid-template-columns:1fr 1fr;align-items:start}}
+.hubblock{min-width:0}
+.hubblock .big{margin-bottom:var(--sp-2)}
+/* "Más de la liga ahora": collapsed disclosure holding the older Inicio sections */
+.hubmore{margin-top:var(--sp-6);border-top:1px solid var(--line-soft)}
+.hubmore>summary{min-height:44px}
+.hubmore .liga{margin-left:var(--sp-3)}
+@media(prefers-reduced-motion:reduce){.ed,.ed:hover{transition:none;transform:none}}
+/* the "Leer qué es el BSN" link: 44px tap target */
+#hubPrimer button.x{min-height:44px;padding:0 8px}
+#inicio .liga .acc-title,#inicio .liga .acc-sub{display:block}
+#inicio .hubmore .liga{margin-left:0}
+#inicio .exportbtn2{min-height:44px}
+
+/* PHASE_64 round 2 */
+.hero{padding-bottom:var(--sp-4_5)}
+.hero-status{margin-bottom:0}
+.hero #hubPrimer>.note{margin:var(--sp-2) var(--sp-4_5) 0;padding:0}
+.hero #hubPrimer>.today-card{margin:var(--sp-3) var(--sp-4_5) 0}
+.ed-act{color:var(--azul-hi)}
+/* one section gap */
+.hubhero,.hubpair,.hubmore{margin-top:var(--sp-5)}
+.hubrec-h{margin-top:var(--sp-5)}
+/* the two blocks: same top line, same height */
+.hubpair{align-items:stretch}
+.hubblock{display:flex;flex-direction:column}
+.hubblock>.big,#hubChamps>.big{margin:0 0 var(--sp-2);line-height:1.1}
+#hubChamps{flex:1;display:flex;flex-direction:column}
+#hubChamps .champ-strip{flex:1;margin-bottom:var(--sp-2_5)}
+#hubChamps .champ-strip:last-child{margin-bottom:0}
+.hubblock .note{margin:0 0 var(--sp-2)}
+.hubblock .lede{margin:0 0 var(--sp-2)}
+.cal-toggle{display:inline-flex;align-items:center;min-height:44px;padding:0 var(--sp-4);margin-top:var(--sp-2);
+  border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--azul-hi);font:inherit;font-weight:700;font-size:var(--fs-sm);cursor:pointer}
+.cal-toggle:hover{border-color:var(--azul-hi)}
+.cal-toggle:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.cal-more[hidden]{display:none}
+#inicio .hubblock h2.big{margin:0 0 var(--sp-2)}
+#hubChamps{margin-top:0}
+
+/* ============================================================
+   PHASE_66 Equipos: landing crest grid, per-club page, roster, retired jerseys.
+   The club accent arrives as --club / --club-2 plus four contrast-checked variants
+   (text >= 4.5:1, graphics >= 3:1 against that theme's card), set inline from F.
+   ============================================================ */
+.eq-vars{--club-t:var(--club-t-d);--club-g:var(--club-g-d)}
+[data-theme="light"] .eq-vars{--club-t:var(--club-t-l);--club-g:var(--club-g-l)}
+.eq-strip{display:flex;flex-wrap:wrap;gap:var(--sp-2) var(--sp-5);list-style:none;margin:0 0 var(--sp-3);padding:0;color:var(--ink-2);font-size:var(--fs-sm)}
+.eq-strip b{font-size:var(--fs-lg);color:var(--ink);margin-right:var(--sp-1)}
+.eq-land h2.sec{margin-top:var(--sp-4)}
+.eq-land .tiles{grid-template-columns:repeat(2,1fr)}
+@media(min-width:720px){.eq-land .tiles{grid-template-columns:repeat(4,1fr)}}
+@media(min-width:980px){.eq-land .tiles{grid-template-columns:repeat(6,1fr)}}
+.eq-land .teamtile{min-height:44px}
+.eq-land .teamtile .crest{transform:scale(1.35);margin:var(--sp-2) 0}
+
+.eq-page{border-color:var(--club-g);position:relative;overflow:hidden}
+.eq-hero{display:grid;grid-template-columns:auto 1fr;gap:var(--sp-3) var(--sp-4);align-items:center;padding:var(--sp-3) 0}
+.eq-id h2{font-size:var(--fs-xl);text-transform:uppercase;letter-spacing:.005em}
+.eq-sig{grid-column:1/-1}
+.eq-sig .ed-stat{color:var(--club-t)}
+.eq-sig .phero-spark{display:inline-flex;color:var(--club-g);margin-bottom:var(--sp-1)}
+.eq-sig .phero-statl{margin-top:var(--sp-2)}
+.eq-sigtext{margin-top:var(--sp-2);padding-left:var(--sp-2);border-left:3px solid var(--club-g);color:var(--ink);font-size:var(--fs-sm);font-weight:700;line-height:1.3}
+.eq-dyn .eq-hero{border-bottom:3px solid var(--club-g)}
+.eq-con .eq-hero{border-bottom:1px solid var(--club-g)}
+.eq-seek .eq-hero{border:1px dashed var(--club-g);border-radius:var(--r);padding:var(--sp-3)}
+.eq-gone .eq-hero{border-bottom:1px dotted var(--club-g)}
+.eq-ten{position:relative;height:10px;background:var(--raise);border-radius:99px;margin:var(--sp-3) 0 var(--sp-1)}
+.eq-ten span{position:absolute;top:0;bottom:0;background:var(--club-g);border-radius:99px}
+.eq-ten-l{display:flex;justify-content:space-between;color:var(--ink-3);font-size:var(--fs-3xs)}
+.eq-cols{display:grid;gap:var(--sp-5);margin-top:var(--sp-4)}
+.eq-left,.eq-right{display:contents}
+.eq-facts{display:flex;flex-direction:column;gap:var(--sp-2);min-width:0;order:1}
+.eq-tlw{order:2;min-width:0}
+#teamRoster{order:3;min-width:0}
+#teamOpp{order:4;min-width:0}
+#teamStartingFive{order:5;min-width:0}
+#teamOpp:empty,#teamStartingFive:empty{display:none}
+@media(min-width:900px){
+  .eq-hero{grid-template-columns:auto 1fr auto}
+  .eq-sig{grid-column:auto;text-align:right}
+  .eq-sig .phero-stat{justify-content:flex-end}
+  .eq-sigtext{border-left:0;border-right:3px solid var(--club-g);padding:0 var(--sp-2) 0 0}
+  .eq-cols{grid-template-columns:6fr 6fr;align-items:start}
+  .eq-left,.eq-right{display:flex;flex-direction:column;gap:var(--sp-5);min-width:0}
+  .eq-facts,.eq-tlw,#teamRoster,#teamOpp,#teamStartingFive{order:0}
+}
+.eq-tl{display:flex;flex-wrap:wrap;gap:var(--sp-2);list-style:none;margin:var(--sp-2) 0;padding:0}
+.eq-tl li{display:inline-flex;align-items:center;gap:var(--sp-1);padding:2px var(--sp-2);border-radius:var(--r-sm);font-size:var(--fs-2xs);font-weight:700}
+.eq-tl .w{border:2px solid var(--club-g);background:var(--raise)}
+.eq-tl .w .eq-r{color:var(--club-t)}
+.eq-tl .w.run{border-width:4px}
+.eq-tl .l{border:1px dashed var(--ink-3);color:var(--ink-2)}
+
+.eq-filters{display:flex;flex-direction:column;gap:var(--sp-2);margin-bottom:var(--sp-2)}
+.eq-fg{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-2)}
+.eq-fl{min-width:72px;color:var(--ink-2);font-size:var(--fs-3xs);font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.eq-fb{min-height:44px;min-width:44px;padding:0 var(--sp-3);border-radius:99px;border:1px solid var(--line);background:transparent;color:var(--ink-2);font:inherit;font-size:var(--fs-xs);font-weight:600;cursor:pointer}
+.eq-fb[aria-pressed="true"]{color:var(--night);background:var(--ink);border-color:var(--ink)}
+.eq-fq{margin-top:0}
+.eq-fq .field{flex:1 1 180px}
+.eq-count{margin:var(--sp-2) 0;color:var(--ink-2);font-size:var(--fs-xs)}
+.eq-list{list-style:none;margin:0;padding:0;display:grid;gap:var(--sp-2)}
+.eq-row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:var(--sp-1) var(--sp-3);width:100%;min-height:44px;padding:var(--sp-2) var(--sp-3);text-align:left;color:inherit;font:inherit;background:var(--raise);border:1px solid var(--line);border-radius:var(--r);cursor:pointer}
+.eq-row[aria-expanded="true"]{border-color:var(--club-g)}
+.eq-n{font-weight:600}
+.eq-m{color:var(--ink-2);font-size:var(--fs-xs)}
+.eq-det{padding:var(--sp-3);border:1px solid var(--line);border-top:0;border-radius:0 0 var(--r) var(--r);color:var(--ink-2);font-size:var(--fs-xs)}
+.eq-det p{margin:0 0 var(--sp-2)}
+.eq-det[hidden],#teamRoster button.eq-more[hidden]{display:none}
+.eq-go,.eq-more{min-height:44px;margin-top:var(--sp-2)}
+.eq-row:focus-visible,.eq-fb:focus-visible,.eq-go:focus-visible,.eq-more:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+@media(max-width:600px){
+  .eq-fg{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .eq-fg::-webkit-scrollbar{display:none}
+  .eq-fl{min-width:0;flex:0 0 auto}
+  .eq-fb{flex:0 0 auto}
+}
+
+.eq-retired{margin-top:var(--sp-5)}
+.eq-rail{display:flex;flex-wrap:wrap;list-style:none;margin:var(--sp-3) 0;padding:0}
+.eq-jr{position:relative;width:76px;display:flex;flex-direction:column;align-items:center;padding:6px var(--sp-1) 0}
+.eq-jr::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;border-radius:3px;background:var(--ink-3)}
+.eq-jr svg{width:64px;height:108px;transform-origin:50% 8px;filter:drop-shadow(0 4px 4px rgba(0,0,0,.3))}
+.eq-jr .h{fill:none;stroke:var(--ink-3);stroke-width:2;stroke-linecap:round}
+.eq-jr .b{fill:var(--club);stroke:var(--club-g);stroke-width:2}
+.eq-jr .t{fill:none;stroke:var(--club-2);stroke-width:2.5}
+.eq-jr .num{font-family:var(--font-display);font-size:26px;font-weight:700}
+.eq-jlist{margin:var(--sp-2) 0;color:var(--ink);font-size:var(--fs-sm)}
+@media(hover:hover) and (prefers-reduced-motion:no-preference){
+  .eq-jr svg{transition:transform .4s ease}
+  .eq-jr:hover svg{transform:rotate(-2deg)}
+}
+
+/* PHASE_68 (redesign-v3): tap targets >= 44px (A08) and a visible edge cue on every horizontal scroller (A06).
+   Min sizes only; padding and look are untouched. */
+input[type=search],input[type=text],select,textarea{min-height:44px}
+.chip,.btn,.subtab button{min-height:44px}
+.thbtn{min-width:44px}
+/* the edge fade (.tblbox.more-r::after, above) plus a drawn chevron on the header row, so the cue is a
+   shape and not only a colour change; --ink-2 on --deep is well above 3:1 in both themes */
+.tblbox.more-r::before{content:"";position:absolute;top:22px;right:10px;width:8px;height:8px;
+  border-top:2px solid var(--ink-2);border-right:2px solid var(--ink-2);
+  transform:translateY(-50%) rotate(45deg);pointer-events:none;z-index:8}
+/* PHASE_68 (A07): links from table and list rows to the existing views. Text links keep their line height and
+   reach 44px through padding balanced by negative margin (same pattern as the Calidad link above). */
+a.cellbtn{text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
+.cellbtn.yrlink{min-width:44px;justify-content:flex-end}
+a.xlink{display:inline-block;padding:14px 7px;margin:-14px -7px;color:inherit;text-decoration:underline;
+  text-decoration-color:var(--line);text-underline-offset:3px}
+a.xlink:hover{color:var(--blanco);text-decoration-color:currentColor}
+.lead-row a.yrchip{display:flex;align-items:center;justify-content:center;box-sizing:border-box;min-height:44px;text-decoration:none}
+/* the season cells had `outline:none` and showed focus only as a border colour and scale; draw the ring */
+.cell:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+/* player page: tabs and back link were 41px and 20px high */
+.ptabs button{min-height:44px}
+#jugadores .pback a{min-height:44px}
+/* A16, measured with computed colours: the bronze badge's dark stop gave 3.80:1 under its label (now 5.34:1 at the
+   worst stop), and white on --rojo in the dark theme gave 4.14:1 for the 12px counts in the finals matrix. */
+:root:not([data-theme="light"]) .matrix td.cellv.hi{background:var(--rojo-deep)}
+/* unranked-medal numerals were --ink-3 on --raise: 4.33:1 in the light theme, so use --ink-2 */
+.bar-row .rk{color:var(--ink-2)}
+/* PHASE_71 P06: the Temporada Perfecta EQUIPO / DÉCADA labels were #E8B23A (1.93:1) and #9B6BE0 (3.77:1) on the white card in
+   the light theme. in the dark theme both keep their colours (9.47:1 and 4.86:1 on --card); in the light theme EQUIPO reads --flag-ink (6.44:1)
+   and DÉCADA uses #7E4ACB (5.63:1). The card borders keep their hues. */
+.dr-lab{font-size:var(--fs-3xs);letter-spacing:.1em;font-weight:700}
+.dr-lab.eq{color:#E8B23A}
+.dr-lab.dec{color:#9B6BE0}
+[data-theme="light"] .dr-lab.eq{color:var(--flag-ink)}
+[data-theme="light"] .dr-lab.dec{color:#7E4ACB}
+/* PHASE_71 P03: the builders fill .hubpair, .liga, .legalrow, the footer and #bottombar while the splash covers the page,
+   and those fills were counted as 0.8 (390px) / 0.5 (1000px) of layout shift in the first 300 ms. A visibility:hidden box still
+   takes part in layout (JS measurements are unchanged) but is not eligible for layout-shift scoring, and the splash already hides
+   it, so nothing visible changes: it shows the instant the splash starts to fade, as before. Only the boxes that actually moved
+   are hidden; the hero stays painted under the splash so LCP is not pushed back to the end of the 3 s splash floor (hiding the
+   whole shell was tried: CLS 0.00 but mobile LCP 2.1 s -> 5.1 s). Engines without :has() keep today's behavior. */
+body:has(#splash:not(.gone)) :is(.hubpair,.liga,.legalrow,.foot,#bottombar,.wrap:has(>.foot)){visibility:hidden}
+/* PHASE_71 P13: headings that jumped from h1 to h3/h4 (player Información, club page, Calidad, Perfil) are h2 now and keep the
+   old look: h2.sub is the h4.sub rule, #perfil h2.sec is the h3.sec rule. */
+h2.sub{font-family:var(--font-display);font-size:var(--fs-md);margin:var(--sp-5) 0 var(--sp-2);color:var(--ink)}
+#perfil h2.sec{font-family:var(--font-display);font-size:var(--fs-lg);margin:var(--sp-6) 0 var(--sp-3);text-transform:uppercase;
+  letter-spacing:.005em;display:flex;align-items:center;gap:var(--sp-3)}
+#perfil h2.sec::after{content:"";flex:1;height:1px;background:var(--tri-fade)}
+/* PHASE_71 P12: the bottom bar's nav wrapper exists only while the bar does (the rail takes over at 860px). */
+.bbnav{display:contents}
+@media(min-width:860px){.bbnav{display:none}}

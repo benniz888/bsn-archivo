@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<title>El Archivo: muestra de diseño</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   EL ARCHIVO LOOK: sample. Not linked from the site (PHASE_61 step 2).
+   Site tokens are copied from web/css/main.css so the sample reads on the real grounds.
+   Everything prefixed --fld-/--paper-/--stamp- is new and proposed.
+   ============================================================ */
+:root{
+  /* site tokens (dark), copied */
+  --night:#070C18; --deep:#0C1428; --raise:#131E38; --line:#1E2C4C;
+  --azul:#1663D8; --azul-hi:#3D8BFF; --rojo:#EF2B39;
+  --ink:#EEF3FB; --ink-2:#A9BCDA; --ink-3:#7C90B2;
+  --focus:var(--azul-hi);
+  --shadow:rgba(0,0,0,.45);
+  --ease:cubic-bezier(.22,.8,.3,1);
+  --dur-fast:150ms; --dur:220ms;
+
+  /* folder tokens: body fill, tab fill, edge (>=3:1 vs the page), text on body, text on tab */
+  --fld-azul-body:#12306E;  --fld-azul-tab:#1A44A0;  --fld-azul-edge:#5B93E8;
+  --fld-rojo-body:#5E1019;  --fld-rojo-tab:#8E1119;  --fld-rojo-edge:#E8606B;
+  --fld-slate-body:#131E38; --fld-slate-tab:#1E2C4C; --fld-slate-edge:#6F89BA;
+  --fld-ink:#EEF3FB;        --fld-ink-2:#C5D3EA;     --fld-tab-ink:#FFFFFF;
+
+  /* paper (index card): light in both themes, like real card stock */
+  --paper:#E9EEF7; --paper-ink:#0B1730; --paper-ink-2:#3C5177; --paper-rule:#C3D2E8; --paper-edge:#9FB3D3;
+  --paper-red:#A3101C;
+
+  /* stamps drawn straight on the page ground */
+  --stamp-rojo:#FF8A93; --stamp-azul:#8DB8FF;
+}
+[data-theme="light"]{
+  --night:#F1F4FA; --deep:#FFFFFF; --raise:#E1E9F5; --line:#C3D2E8;
+  --azul:#0F52B8; --azul-hi:#0A3E90; --rojo:#C8121F;
+  --ink:#0B1730; --ink-2:#3C5177; --ink-3:#5A6C8E;
+  --shadow:rgba(11,23,48,.22);
+
+  --fld-azul-body:#E4EDFB;  --fld-azul-tab:#C6DAF6;  --fld-azul-edge:#0F52B8;
+  --fld-rojo-body:#FBE6E8;  --fld-rojo-tab:#F4C6CB;  --fld-rojo-edge:#C8121F;
+  --fld-slate-body:#FFFFFF; --fld-slate-tab:#E1E9F5; --fld-slate-edge:#5A6C8E;
+  --fld-ink:#0B1730;        --fld-ink-2:#3C5177;     --fld-tab-ink:#0B1730;
+
+  --paper:#FFFFFF; --paper-edge:#6D82A6;
+  --stamp-rojo:#A3101C; --stamp-azul:#0A3E90;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--night);color:var(--ink);font:400 16px/1.5 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:4px}
+.mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+
+/* ---------- sample page chrome (not part of the component) ---------- */
+.bar{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--night);z-index:5}
+.bar h1{font:700 18px/1 Oswald,Inter,sans-serif;letter-spacing:.02em;text-transform:uppercase;margin:0;flex:1}
+.btn{min-height:44px;min-width:44px;padding:0 16px;border-radius:99px;border:1px solid var(--line);background:transparent;color:var(--ink);font:600 14px Inter,sans-serif;cursor:pointer}
+.btn:hover{border-color:var(--ink-3)}
+.wrap{max-width:1000px;margin:0 auto;padding:24px 16px 64px}
+.sec{margin:0 0 40px}
+.sec>h2{font:700 24px/1.1 Oswald,Inter,sans-serif;text-transform:uppercase;margin:0 0 4px}
+.sec>p.note{margin:0 0 20px;color:var(--ink-2);font-size:14px;max-width:62ch}
+.grid{display:grid;gap:24px;grid-template-columns:1fr}
+@media(min-width:700px){.grid.cols3{grid-template-columns:repeat(3,1fr);align-items:start}.grid.cols2{grid-template-columns:repeat(2,1fr);align-items:start}}
+
+/* ============================================================
+   FOLDER
+   Anatomy: .fld > button.fld-head (.fld-tab + .fld-top) + .fld-panel
+   Variants: .fld--azul / .fld--rojo / .fld--slate. Optional --fld-accent (club colour, a 4px
+   spine) and a crest in .fld-crest. The whole head is one button (>=44px tall).
+   Motion: transform + opacity only; lift is hover-only (not on touch).
+   ============================================================ */
+.fld{--body:var(--fld-slate-body);--tab:var(--fld-slate-tab);--edge:var(--fld-slate-edge);position:relative}
+.fld--azul{--body:var(--fld-azul-body);--tab:var(--fld-azul-tab);--edge:var(--fld-azul-edge)}
+.fld--rojo{--body:var(--fld-rojo-body);--tab:var(--fld-rojo-tab);--edge:var(--fld-rojo-edge)}
+.fld-head{all:unset;box-sizing:border-box;display:block;width:100%;position:relative;cursor:pointer;color:var(--fld-ink);
+  transition:transform var(--dur) var(--ease)}
+.fld-head:focus-visible{outline:2px solid var(--focus);outline-offset:3px;border-radius:10px}
+/* ground shadow: its own layer, so hover animates opacity, not box-shadow */
+.fld-head::after{content:"";position:absolute;left:8px;right:8px;bottom:-5px;height:10px;border-radius:50%;
+  background:var(--shadow);filter:blur(5px);opacity:0;transition:opacity var(--dur) var(--ease);pointer-events:none;z-index:-1}
+.fld-tab{display:inline-block;margin-left:14px;padding:6px 14px 5px;background:var(--tab);color:var(--fld-tab-ink);
+  border:1px solid var(--edge);border-bottom:0;border-radius:10px 10px 0 0;
+  font:600 11px/1.2 Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;position:relative;top:1px}
+.fld-top{display:flex;align-items:center;gap:12px;min-height:44px;padding:12px 14px 12px 18px;background:var(--body);
+  border:1px solid var(--edge);border-radius:10px;position:relative}
+.fld-head[aria-expanded="true"] .fld-top{border-radius:10px 10px 0 0}
+.fld-top::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:4px;border-radius:0 3px 3px 0;background:var(--fld-accent,transparent)}
+.fld-crest{flex:none;width:36px;height:36px;display:grid;place-items:center;border-radius:50%;
+  background:var(--night);border:1.5px solid var(--fld-accent,var(--edge));color:var(--fld-ink)}
+.fld-title{flex:1;min-width:0;font:700 20px/1.1 Oswald,Inter,sans-serif;text-transform:uppercase;letter-spacing:.01em}
+.fld-sub{display:block;margin-top:3px;font:400 13px/1.3 Inter,sans-serif;text-transform:none;letter-spacing:0;color:var(--fld-ink-2)}
+.fld-chev{flex:none;width:20px;height:20px;transition:transform var(--dur) var(--ease)}
+.fld-head[aria-expanded="true"] .fld-chev{transform:rotate(180deg)}
+.fld-panel{background:var(--body);color:var(--fld-ink);border:1px solid var(--edge);border-top:0;border-radius:0 0 10px 10px;padding:16px 18px 18px}
+.fld-panel[hidden]{display:none}
+.fld-panel.enter{animation:fld-in var(--dur) var(--ease) both}
+@keyframes fld-in{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@media(hover:hover){
+  .fld-head[aria-expanded="false"]:hover{transform:translateY(-4px)}
+  .fld-head[aria-expanded="false"]:hover::after{opacity:1}
+}
+
+/* ============================================================
+   PAPER (index card) and LABEL (typed drawer label)
+   ============================================================ */
+.paper{position:relative;background:var(--paper);color:var(--paper-ink);border:1px solid var(--paper-edge);border-radius:6px;
+  padding:34px 18px 18px;--stamp-rojo:var(--paper-red);--stamp-azul:#0A3E90}
+.paper::before{content:"";position:absolute;left:0;right:0;top:28px;height:2px;background:var(--paper-red);opacity:.85}
+.paper-label{position:absolute;left:18px;top:7px;font:600 11px/1 ui-monospace,"SF Mono",Menlo,Consolas,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--paper-ink-2)}
+.paper h3{margin:0 0 6px;font:700 22px/1.1 Oswald,Inter,sans-serif;text-transform:uppercase}
+.paper .rows{margin:12px 0 0;padding:0;list-style:none;
+  background-image:repeating-linear-gradient(to bottom,transparent 0 31px,var(--paper-rule) 31px 32px)}
+.paper .rows li{display:flex;justify-content:space-between;gap:12px;line-height:32px;font-size:15px}
+.paper .rows .k{font:600 12px/32px ui-monospace,"SF Mono",Menlo,Consolas,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--paper-ink-2)}
+/* in flow, below the rows: a stamp over the title or a value would hide real text */
+.paper .stamp{display:block;width:max-content;margin:18px 6px 0 auto}
+.label{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;background:var(--paper);color:var(--paper-ink);
+  border:1px solid var(--paper-edge);border-radius:4px;font:600 12px/1 ui-monospace,"SF Mono",Menlo,Consolas,monospace;letter-spacing:.1em;text-transform:uppercase;text-decoration:none}
+a.label:hover{border-color:var(--paper-ink)}
+
+/* ============================================================
+   STAMP: static, rotated, typed caps. Colour via --stamp-rojo / --stamp-azul (re-declared inside .paper).
+   ============================================================ */
+.stamp{display:inline-block;transform:rotate(-4deg);padding:5px 10px;border:2px solid currentColor;border-radius:4px;outline:1px solid currentColor;outline-offset:2px;
+  color:var(--stamp-rojo);font:700 12px/1 ui-monospace,"SF Mono",Menlo,Consolas,monospace;letter-spacing:.16em;text-transform:uppercase;white-space:nowrap}
+.stamp--azul{color:var(--stamp-azul)}
+.stamp.enter{animation:stamp-in var(--dur) var(--ease) both}
+@keyframes stamp-in{from{opacity:0;transform:rotate(-4deg) scale(1.25)}to{opacity:1;transform:rotate(-4deg)}}
+
+/* swatches (sample chrome) */
+.sw{display:flex;gap:8px;flex-wrap:wrap}
+.sw span{display:flex;align-items:flex-end;width:92px;height:56px;padding:4px 6px;border-radius:6px;border:1px solid var(--line);font:600 10px/1.1 ui-monospace,Menlo,monospace;color:var(--fld-ink)}
+
+@media(prefers-reduced-motion:reduce){
+  .fld-head,.fld-chev,.fld-head::after{transition:none}
+  .fld-head[aria-expanded="false"]:hover{transform:none}
+  .fld-panel.enter,.stamp.enter{animation:none}
+}
+</style>
+</head>
+<body>
+<div class="bar">
+  <h1>El Archivo: muestra</h1>
+  <button class="btn" id="themeBtn" type="button" aria-label="Cambiar tema">Tema: oscuro</button>
+</div>
+
+<main class="wrap">
+
+<section class="sec">
+  <h2>Carpeta</h2>
+  <p class="note">Pestaña y cuerpo en un solo botón. Pasa el cursor para levantarla; toca para abrir. Variantes azul, roja y neutra; la primera lleva un escudo genérico y un acento de color.</p>
+  <div class="grid cols3">
+
+    <article class="fld fld--azul" style="--fld-accent:var(--azul-hi)">
+      <button class="fld-head" type="button" aria-expanded="true" aria-controls="p1">
+        <span class="fld-tab">Sección</span>
+        <span class="fld-top">
+          <span class="fld-crest" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></span>
+          <span class="fld-title">Carpeta azul<span class="fld-sub">Con escudo y acento</span></span>
+          <svg class="fld-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </span>
+      </button>
+      <div class="fld-panel" id="p1">
+        <p style="margin:0 0 12px;font-size:15px">Contenido de ejemplo dentro de la carpeta abierta.</p>
+        <a class="label" href="#p1">Ver todo</a>
+      </div>
+    </article>
+
+    <article class="fld fld--rojo">
+      <button class="fld-head" type="button" aria-expanded="false" aria-controls="p2">
+        <span class="fld-tab">Sección</span>
+        <span class="fld-top">
+          <span class="fld-title">Carpeta roja<span class="fld-sub">Cerrada, se levanta</span></span>
+          <svg class="fld-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </span>
+      </button>
+      <div class="fld-panel" id="p2" hidden>
+        <p style="margin:0;font-size:15px">Contenido de ejemplo.</p>
+      </div>
+    </article>
+
+    <article class="fld">
+      <button class="fld-head" type="button" aria-expanded="false" aria-controls="p3">
+        <span class="fld-tab">Sección</span>
+        <span class="fld-top">
+          <span class="fld-title">Carpeta neutra<span class="fld-sub">Para listas largas</span></span>
+          <svg class="fld-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </span>
+      </button>
+      <div class="fld-panel" id="p3" hidden>
+        <p style="margin:0;font-size:15px">Contenido de ejemplo.</p>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<section class="sec">
+  <h2>Ficha de papel y sello</h2>
+  <p class="note">Ficha tipo índice: rayas, línea roja y etiqueta mecanografiada. El sello marca lo que falta o es dudoso. Los valores son guiones a propósito: la muestra no inventa datos.</p>
+  <div class="grid cols2">
+    <div class="paper">
+      <span class="paper-label">Ficha · muestra</span>
+      <h3>Nombre del jugador</h3>
+      <ul class="rows">
+        <li><span class="k">Club</span><span>—</span></li>
+        <li><span class="k">Temporadas</span><span>—</span></li>
+        <li><span class="k">Fuente</span><span>—</span></li>
+      </ul>
+      <span class="stamp" id="demoStamp">Sin fuente</span>
+    </div>
+
+    <div>
+      <p style="margin:0 0 12px;color:var(--ink-2);font-size:14px">Sellos sobre el fondo de la página y etiquetas de cajón:</p>
+      <p style="margin:0 0 20px;display:flex;gap:18px;flex-wrap:wrap;padding:6px 4px">
+        <span class="stamp">Sin fuente</span>
+        <span class="stamp">Disputado</span>
+        <span class="stamp stamp--azul">Aproximado</span>
+      </p>
+      <p style="margin:0;display:flex;gap:8px;flex-wrap:wrap">
+        <a class="label" href="#">1930–1939</a>
+        <a class="label" href="#">1940–1949</a>
+        <a class="label" href="#">Jugadores A–C</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <h2>Colores</h2>
+  <p class="note">Tokens propuestos, azul y rojo del sitio. Sin naranja.</p>
+  <div class="sw">
+    <span style="background:var(--fld-azul-body);border-color:var(--fld-azul-edge)">azul body</span>
+    <span style="background:var(--fld-azul-tab);border-color:var(--fld-azul-edge);color:var(--fld-tab-ink)">azul tab</span>
+    <span style="background:var(--fld-rojo-body);border-color:var(--fld-rojo-edge)">rojo body</span>
+    <span style="background:var(--fld-rojo-tab);border-color:var(--fld-rojo-edge);color:var(--fld-tab-ink)">rojo tab</span>
+    <span style="background:var(--fld-slate-body);border-color:var(--fld-slate-edge)">neutra body</span>
+    <span style="background:var(--paper);border-color:var(--paper-edge);color:var(--paper-ink)">papel</span>
+  </div>
+</section>
+
+</main>
+
+<script>
+(function(){
+  var root=document.documentElement, btn=document.getElementById('themeBtn');
+  var dark=!(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches);
+  function paint(){ root.setAttribute('data-theme',dark?'dark':'light'); btn.textContent='Tema: '+(dark?'oscuro':'claro'); }
+  btn.addEventListener('click',function(){ dark=!dark; paint(); });
+  var q=location.search.match(/theme=(light|dark)/); if(q) dark=q[1]==='dark';
+  paint();
+  document.querySelectorAll('.fld-head').forEach(function(h){
+    h.addEventListener('click',function(){
+      var open=h.getAttribute('aria-expanded')==='true', p=document.getElementById(h.getAttribute('aria-controls'));
+      h.setAttribute('aria-expanded',open?'false':'true');
+      p.hidden=open;
+      if(!open){ p.classList.remove('enter'); void p.offsetWidth; p.classList.add('enter'); }
+    });
+  });
+  var st=document.getElementById('demoStamp'); if(st) st.classList.add('enter');
+})();
+</script>
+</body>
+</html>

@@ -244,7 +244,7 @@ const REF_RULES=[
 /* ---------- on this day ---------- */
 const ON_THIS_DAY=[
  [5,22,1974,"Neftalí Rivera scores 79","Still the BSN single-game record. Thirty-four field goals, every one a two-pointer, plus eleven free throws."],
- [5,1,2012,"Jonathan García hands out 33 assists","Caciques de Humacao against Brujos de Guayama. Broke Pablo Alicea's 25 from 1989 and stands as an unofficial world record. Humacao also set the team scoring record with 130 that night, and 46 in a single quarter."],
+ [5,1,2012,"Jonathan García hands out 33 assists","Caciques de Humacao against Brujos de Guayama. Broke Pablo Alicea's 25 from 1989. Humacao also set the team scoring record with 130 that night, and 46 in a single quarter."],
  [9,8,1969,"17,621 fans in Bayamón","The largest crowd in league history, against Río Piedras. Beat a Ponce–Santurce game that had drawn 16,564."],
  [8,9,2017,"Quebradillas take Game 7","98–90 over Arecibo for the Piratas' sixth title and their first since 2013."],
  [7,27,2023,"Carolina win their first","The Gigantes beat Bayamón 80–60 in Game 5 to take the franchise's first championship."],
@@ -315,7 +315,7 @@ const POOL=[
  {n:"Víctor Liz",d:[2010],c:[],ppg:null,rpg:null,apg:null,pos:"G",
   t:["scoring","import"],b:"Led the league in scoring in 2017."},
  {n:"Jonathan García",d:[2010],c:[],ppg:null,rpg:null,apg:null,pos:"PG",
-  t:["native","legend"],b:"33 assists in one game in 2012, an unofficial world record."},
+  t:["native","legend"],b:"33 assists in one game in 2012."},
  {n:"Emmanuel Mudiay",d:[2020],c:["que"],ppg:23.6,rpg:null,apg:null,pos:"PG",
   t:["mvp","scoring","import","nba"],b:"779 points in 33 games to win the 2025 MVP."},
  {n:"Kobi Simmons",d:[2020],c:["car"],ppg:20.2,rpg:null,apg:null,pos:"G",
@@ -527,7 +527,15 @@ const CATS={
      requirement (real Immaculate Grid doesn't require that co-occurrence
      either). Falls back to career ppg only for hand-authored legends with
      no season breakdown (no `hi` field) -- unchanged for them. */
-  p20:['Promedió 20+ puntos',p=>{const v=p.hi?p.hi[1]:p.ppg;return v!=null&&v>=20;}],
+  /* PHASE_62: for most players hi is only the 2026 official line, so a 23.3 ppg season
+     recorded in ss (Brandon Knight, 2023) was invisible and he was rejected. Read the best
+     season across hi and ss, but skip the ss row of the season that has an official line
+     (o26): RealGM's figure for it includes playoff games, the official one does not. */
+  p20:['Promedió 20+ puntos',p=>{
+    let v=p.hi?p.hi[1]:p.ppg;
+    (p.ss||[]).forEach(r=>{ if(r[3]!=null&&!(p.o26&&p.hi&&r[0]===p.hi[0])&&(v==null||r[3]>v)) v=r[3]; });
+    return v!=null&&v>=20;
+  }],
   guard:['Base o escolta',p=>/G|PG|SG/.test(p.pos||'')],
   big:['Poste',p=>/C|PF|F\/C/.test(p.pos||'')],
   /* backlog item 6, part 1 (2026-09-14) — d1950/d1960/d1970 used to be
@@ -549,10 +557,12 @@ const CATS={
    Two careers, one question. Runs on the only fully verified
    numbers in the archive, so it never has to guess.
    ============================================================ */
+/* PHASE_67D2: LEADERS rows whose total/games disagrees with their listed average by more than
+   0.15 (same rule as the quiz clues) are never a question option; see data_review_todo.md. */
 const HL_SETS=[
-  {label:'puntos de carrera',rows:()=>LEADERS.points.map(r=>[r[1],r[4]]),unit:'puntos'},
-  {label:'rebotes de carrera',rows:()=>LEADERS.rebounds.map(r=>[r[1],r[4]]),unit:'rebotes'},
-  {label:'asistencias de carrera',rows:()=>LEADERS.assists.map(r=>[r[1],r[4]]),unit:'asistencias'},
-  {label:'juegos jugados',rows:()=>LEADERS.points.map(r=>[r[1],r[5]]),unit:'juegos'},
+  {label:'puntos de carrera',rows:()=>LEADERS.points.filter(r=>Math.abs(r[4]/r[5]-r[6])<=0.15).map(r=>[r[1],r[4]]),unit:'puntos'},
+  {label:'rebotes de carrera',rows:()=>LEADERS.rebounds.filter(r=>Math.abs(r[4]/r[5]-r[6])<=0.15).map(r=>[r[1],r[4]]),unit:'rebotes'},
+  {label:'asistencias de carrera',rows:()=>LEADERS.assists.filter(r=>Math.abs(r[4]/r[5]-r[6])<=0.15).map(r=>[r[1],r[4]]),unit:'asistencias'},
+  {label:'juegos jugados',rows:()=>LEADERS.points.filter(r=>Math.abs(r[4]/r[5]-r[6])<=0.15).map(r=>[r[1],r[5]]),unit:'juegos'},
   {label:'títulos de la franquicia',rows:()=>FKEYS.filter(k=>F[k].won.length).map(k=>[F[k].name,F[k].won.length]),unit:'títulos'}
 ];

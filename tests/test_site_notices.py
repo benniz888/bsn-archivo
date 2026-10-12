@@ -13,15 +13,17 @@ from tests._web_text import web_text
 
 CONTACT_LINE = ("¿Ves un error o quieres que retiremos algo? Escríbenos a "
                  "benniz.8008@gmail.com o por Instagram @bennizpr.")
-UNOFFICIAL_LINE = ("Proyecto independiente de un aficionado. No está afiliado ni respaldado por "
-                    "el Baloncesto Superior Nacional ni por sus equipos.")
-PRIVACY_LINE = ("Este sitio no usa cookies ni analítica. Las tipografías vienen de Google Fonts, "
-                 "por lo que Google recibe tu dirección IP. Tu navegador guarda solo tus preferencias "
-                 "(tema y club favorito), tu progreso en los juegos y una copia de los datos para que "
-                 "el sitio funcione sin conexión.")
+# PHASE_69 (owner-approved Oct 12): L2 and L3 replace the earlier wording, and the "Los datos vienen de
+# fuentes públicas..." sentence left the footer (Créditos carries the sources now).
+UNOFFICIAL_LINE = ("Proyecto independiente. No es un sitio oficial del BSN. No está afiliado ni "
+                    "respaldado por el Baloncesto Superior Nacional ni por sus equipos.")
+PRIVACY_LINE = ("Este sitio no usa cookies ni analítica y no pide datos personales. Las tipografías se "
+                 "sirven desde este mismo sitio. Tu navegador guarda en tu dispositivo tus preferencias, "
+                 "tu progreso en los juegos y una copia de los datos; consulta la "
+                 '<a href="#privacidad">Política de privacidad</a>.')
 META_DESCRIPTION = ("Archivo histórico independiente del Baloncesto Superior Nacional, 1930–2026. "
                      "Proyecto de un aficionado, no oficial.")
-TITLE = "BSN Archivo · Baloncesto Superior Nacional, 1930–2026"
+TITLE = "El Archivo · Baloncesto Superior Nacional, 1930–2026"
 
 
 def _head(text):
@@ -44,15 +46,16 @@ class TestFooter:
 
     def test_the_kept_sentences_are_untouched(self):
         footer = _footer(web_text())
-        assert "BSN Archivo · construido por <b>bennizpr</b> · San Juan, Puerto Rico." in footer
-        assert "Los datos vienen de fuentes públicas citadas en «El archivo»." in footer
+        assert "El Archivo · construido por <b>bennizpr</b> · San Juan, Puerto Rico." in footer
+        assert "Los datos vienen de fuentes públicas citadas en «El archivo»." not in footer
         # the old sentences this phase replaced are gone
         assert "Archivo personal." not in footer
         assert "No está afiliado al Baloncesto Superior Nacional." not in footer
 
     def test_the_mailto_and_instagram_links_are_present_and_correct(self):
         footer = _footer(web_text())
-        assert '<a href="mailto:benniz.8008@gmail.com" target="_blank" rel="noopener">' in footer
+        # PHASE_69: the mailto link no longer opens a new tab (a mail client does not need one)
+        assert '<a href="mailto:benniz.8008@gmail.com">' in footer
         assert '<a href="https://www.instagram.com/bennizpr/" target="_blank" rel="noopener">' in footer
         # both links open in a new tab with noopener, as specified -- no bare/unlinked repeat of either
         assert footer.count('href="mailto:benniz.8008@gmail.com"') == 1
@@ -63,9 +66,10 @@ class TestFooter:
         # "error" appears exactly once, inside the approved contact line
         assert len(re.findall(r"error", footer, re.I)) == 1
         assert "un error o quieres que retiremos" in footer
-        # "equivocad"/"oficial" never appear in the footer at all (the approved "no oficial" is in <head>)
+        # "equivocad" never appears; "oficial" appears once, in the approved "No es un sitio oficial del BSN."
         assert not re.search(r"equivocad", footer, re.I)
-        assert not re.search(r"oficial", footer, re.I)
+        assert len(re.findall(r"oficial", footer, re.I)) == 1
+        assert "No es un sitio oficial del BSN." in footer
 
     def test_web_asset_wiring_is_intact(self):
         # STEP 10 (cleanup): app/bsn_archivo.html is now an archived pointer (docs/specs/
@@ -90,17 +94,20 @@ class TestHeadTags:
     def test_the_og_and_twitter_tags_are_present_and_correct(self):
         head = _head(web_text())
         assert '<meta property="og:type" content="website">' in head
-        assert '<meta property="og:site_name" content="BSN Archivo">' in head
-        assert f'<meta property="og:title" content="{TITLE}">' in head
+        assert '<meta property="og:site_name" content="El Archivo">' in head
+        # PHASE_71 (owner-approved): the share title is the bare name; TITLE stays the document <title> default.
+        assert '<meta property="og:title" content="El Archivo">' in head
         assert f'<meta property="og:description" content="{META_DESCRIPTION}">' in head
         assert '<meta property="og:url" content="https://bsnarchivo.com/">' in head
-        assert '<meta name="twitter:card" content="summary">' in head
-        assert f'<meta name="twitter:title" content="{TITLE}">' in head
+        assert '<meta name="twitter:card" content="summary_large_image">' in head   # PHASE_71: was "summary"
+        assert '<meta name="twitter:title" content="El Archivo">' in head
         assert f'<meta name="twitter:description" content="{META_DESCRIPTION}">' in head
 
-    def test_no_og_image_tag_exists(self):
+    def test_og_image_is_the_phase71_absolute_url_and_nothing_else_is_shared_as_an_image(self):
+        # Was "no og:image tag exists" (PHASE_69 era, there was no image file). PHASE_71 added web/img/brand/og.png.
         text = web_text()
-        assert "og:image" not in text
+        assert text.count('property="og:image"') == 1 and text.count('name="twitter:image"') == 1
+        assert '<meta property="og:image" content="https://bsnarchivo.com/img/brand/og.png">' in text
 
     def test_error_and_equivocad_never_appear_in_the_head_and_oficial_only_in_the_approved_text(self):
         head = _head(web_text())
