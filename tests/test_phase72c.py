@@ -54,7 +54,7 @@ CASING = [
     ("JAVIER ‘TOÑITO’ COLON", "Javier «Toñito» Colon", "accent inside a nickname"),
     ("MARIO ‘QUIJOTE’ MORALES", "Mario «Quijote» Morales", "nickname with spaces"),
     # left exactly as the source printed them
-    ("NO FUE SELECCIONADO", "NO FUE SELECCIONADO", "not a name"),
+    ("NO FUE SELECCIONADO", "No se seleccionó", "not a name: approved replacement text (PHASE_72D F1)"),
     ("Rhett, MJ", "Rhett, MJ", "initials in a mixed-case name"),
     ("De Jesus", "De Jesus", "mixed case is kept"),
     ("Butler, Mario Albe", "Butler, Mario Albe", "truncated, no linked id"),
@@ -87,7 +87,10 @@ def test_every_real_all_caps_name_is_cased_without_losing_a_letter():
     assert len(names) >= 100
     for raw in sorted(names):
         shown = dn.display_name(raw)
-        if raw in dn.NON_NAMES or dn.AYUSO.search(raw):
+        if raw in dn.NON_NAMES:
+            assert shown == dn.NON_NAMES[raw]
+            continue
+        if dn.AYUSO.search(raw):
             assert shown == raw
             continue
         if raw in dn.OVERRIDES:
@@ -168,7 +171,7 @@ class TestBuildOutput:
             if "player" in r:
                 assert r["player"] != r["player_raw"]
                 changed += 1
-        assert changed == 250
+        assert changed == 251            # 250 from PHASE_72C + the 1979 row (PHASE_72D F1)
 
     def test_source_spellings_in_the_season_files_are_exactly_the_clean_data(self):
         clean = set()

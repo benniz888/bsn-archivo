@@ -19,7 +19,7 @@ Sections A-D are the audit's proposals. Section E is what PHASE_72A built (owner
 |---|---|---|---|---|
 | S5 | Récords and Líderes, career rebounds (item 1) | Los récords y los líderes no coinciden en rebotes de carrera. Seguimos verificando la cifra. | Until an independent source decides between Rodríguez 6,178 and Butler 8,236. Uses the existing `.warn` pattern. | PENDING owner |
 | S6 | Atenienses de Manatí club note (item 8a) | Jugó en el BSN en 2015 y 2016. | Replaces "Se mudó a Fajardo en 2017.", which is unverified. The two seasons are the ones the archive standings show. | PENDING owner |
-| S7 | Season-detail row for the 1979 rookie award (item 2) | Sin selección | The source cell reads "NO FUE SELECCIONADO", which is not a person. Alternative: hide the row. | PENDING owner |
+| S7 | Season-detail row for the 1979 rookie award (item 2) | Sin selección | The source cell reads "NO FUE SELECCIONADO", which is not a person. Alternative: hide the row. | SUPERSEDED by F1 (approved text: No se seleccionó) |
 | S8 | `COVERAGE` percentage footnote (item 6, H11) | Only if the owner keeps the percentages: state the basis in one sentence. If dropped, the footnote is deleted. | The two `COVERAGE` tables disagree and the figures are unsourced. | PENDING owner |
 
 ## D. Not strings
@@ -39,3 +39,9 @@ Name corrections (GOERGIE, Casian0, truncations) change data values, not interfa
 | E9 | Cobertura footnote, under the tiles | El porcentaje indica cuántos de cuatro datos (campeón, subcampeón, campeón de anotación y MVP) tiene el archivo por cada temporada de la década. (replaces the removed "estimación editorial" footnote) | D6, wording by the owner | APPROVED (as edited) |
 | E10 | Jugadores > Todo el archivo, offline note | El índice completo solo está disponible en la versión publicada, con conexión. Esta copia local trae los N jugadores destacados. (the typed "(3.303 jugadores)" and the fallback 385 are removed) | the count cannot be read offline | APPROVED |
 | E11 | Piculín bio | no change in text; the existing Spanish line now applies (key fixed) | D5 | APPROVED |
+
+## F. PHASE_72D: the 1979 row (S7), APPROVED and applied at the display layer
+| # | Where | Text now | Proposed text | Status |
+|---|---|---|---|---|
+| F1 | Historia > La cinta > 1979, season detail, line "Novato del Año" | `NO FUE SELECCIONADO` before this change (the source cell, shown as printed) | `No se seleccionó` is what the page shows now. The source cell stays in `player_raw` and in `data/clean`. | APPROVED |
+| F2 | `docs/data_update_runbook.md` and the data-update report | English, developer-facing; not a public string | n/a | no approval needed |

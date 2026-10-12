@@ -9,7 +9,7 @@ untouched `player_raw`. Nothing here invents data (PC1):
   * A truncated or surname-only name is expanded only when the very same observation row is already
     linked to a `bsnpr_id` in `player_id_map.csv` and the spelling is consistent with that player's
     canonical name. Otherwise it is left exactly as the source printed it.
-  * NON_NAMES and the AYUSO exclusion are never touched.
+  * NON_NAMES are replaced by their approved text; the AYUSO exclusion is never touched.
 """
 
 from __future__ import annotations
@@ -17,9 +17,10 @@ from __future__ import annotations
 import re
 import unicodedata
 
-# Source strings that are not a person; shown as the archive printed them (the wording for the
-# 1979 row is an owner decision, docs/strings_pending_phase72.md S7).
-NON_NAMES = {"NO FUE SELECCIONADO"}
+# Source strings that are not a person, with the text shown instead. The raw cell stays in `player_raw`.
+# "NO FUE SELECCIONADO" is the 1979 rookie-award row: nobody was selected. Wording approved by the owner
+# (docs/strings_pending_phase72.md F1).
+NON_NAMES = {"NO FUE SELECCIONADO": "No se seleccionó"}
 
 # One entry per name. Add nothing without a source row: the comment is the evidence.
 OVERRIDES: dict[str, str] = {
@@ -137,7 +138,9 @@ def consistent(raw: str, canonical: str) -> bool:
 def display_name(raw: str, canonical: str | None = None) -> str:
     """The name to show for `raw`. `canonical` is the canonical full name of the bsnpr_id already linked to
     this exact observation (None when there is no link)."""
-    if not raw or raw in NON_NAMES or AYUSO.search(raw):
+    if raw in NON_NAMES:
+        return NON_NAMES[raw]
+    if not raw or AYUSO.search(raw):
         return raw
     if raw in OVERRIDES:
         return OVERRIDES[raw]
