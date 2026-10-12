@@ -64,7 +64,7 @@ class TestCheckMode:
         out = real_check["out"]
         for needle in ("## Row counts per dataset", "| game_box_player.csv | 39669 |", "| players_canonical.csv |",
                        "| game_plays.csv.gz | 233664 |", "web/data (built)",
-                       "## Name quality", "ALL-CAPS names remaining: 2 (ELIAS AYUSO, NO FUE SELECCIONADO)",
+                       "## Name quality", "ALL-CAPS names remaining: 1 (ELIAS AYUSO)",
                        "Unresolved truncated or surname-only observations:", "Override list size: 1",
                        "Mojibake lines in data/clean and web/data: 0 (expected 0)",
                        "Javier González rows unassigned: 84 (expected 84)",
@@ -239,3 +239,33 @@ class TestReportAndStages:
         ctx = du.Context()
         du.stage_tests(ctx)
         assert ctx.results[-1].ok
+
+
+class TestF1NoSeSelecciono:
+    """PHASE_72D F1 (owner approved): the 1979 rookie row reads "No se seleccionó"; display layer only."""
+
+    def test_display_name(self):
+        from src import display_names as dn
+        assert dn.display_name("NO FUE SELECCIONADO") == "No se seleccionó"
+        assert dn.NON_NAMES == {"NO FUE SELECCIONADO": "No se seleccionó"}
+
+    def test_season_1979_shows_the_text_and_keeps_the_source_cell(self):
+        import json
+        d = json.loads((ROOT / "web/data/seasons/1979.json").read_text(encoding="utf-8"))
+        row = next(a for a in d["awards"] if a["award"] == "rookie")
+        assert (row["player_raw"], row["player"]) == ("NO FUE SELECCIONADO", "No se seleccionó")
+
+    def test_clean_data_still_has_the_source_spelling(self):
+        txt = (ROOT / "data/clean/historic_awards.csv").read_text(encoding="utf-8")
+        assert "NO FUE SELECCIONADO" in txt and "No se seleccion" not in txt
+        assert subprocess.run(["git", "status", "--porcelain", "--", "data/clean", "data/raw"], cwd=ROOT,
+                              capture_output=True, text=True).stdout.strip() == ""
+
+    def test_no_other_season_row_uses_the_text(self):
+        import glob, json
+        hits = [(f, a) for f in glob.glob(str(ROOT / "web/data/seasons/*.json"))
+                for a in (json.load(open(f, encoding="utf-8")).get("awards") or []) if a.get("player") == "No se seleccionó"]
+        assert len(hits) == 1 and hits[0][0].endswith("1979.json")
+
+    def test_the_page_reads_the_display_field(self):
+        assert "esc(a.player||a.player_raw)" in (ROOT / "web/js/tabs.js").read_text(encoding="utf-8")

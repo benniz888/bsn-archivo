@@ -9267,3 +9267,7 @@ Files: src/data_update.py (new), Makefile (`data-update` target), tests/test_pha
 `make data-update` on the current data (check mode, full suite included): all 12 checks PASS, diff 0 files / 0 rows, mojibake 0, Gonzalez unassigned 84, bsnpr_id digest f542ac5d5390 over 39,371 rows, ALL-CAPS left on purpose 2 (ELIAS AYUSO, NO FUE SELECCIONADO), 90 unresolved truncated/surname-only observations, 1 override. Suite run by the pipeline: 996 passed, 1 skipped, 1 xfailed (baseline 959/1/1; +37). Check mode left every tracked file byte-identical (test-pinned). Total about 16 s without the suite.
 Guards: parse-players, sync-web-data and parse-games (any spelling) raise GuardError in `guard()`/`run()`; `--only` with them exits 2. `parse_games.main` is never called; the overlay and resolver helpers are imported only.
 Ayuso unchanged (owner: leave). No Spanish applied.
+
+## PHASE_72D — smoke test and F1 (2026-10-12, branch data-pipeline-v1)
+Smoke test: `make data-update ARGS=--apply` on the real repo: all checks PASS, 0 files changed, 996 passed / 1 skipped / 1 xfailed, only docs/audits/data_update_report.md created. Committed as 7cb7c05.
+F1 (owner approved): the 1979 "Novato del Año" row shows "No se seleccionó" (display layer: `display_names.NON_NAMES` is now a mapping; `player_raw` and data/clean keep `NO FUE SELECCIONADO`). Rebuilt: web/data/seasons/1979.json + manifest digest. No JS changed. Tests: tests/test_phase72d.py `TestF1NoSeSelecciono` (5), tests/test_phase72c.py updated.

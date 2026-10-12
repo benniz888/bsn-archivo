@@ -342,7 +342,7 @@ def stage_validate(ctx: Context) -> None:
         f"Mario Morales clubs {morales.group(1) if morales else '?'}: OPEN, 1980 scoring row {conflict[0]} vs 1980 MVP row {conflict[1]}",
         f"Teófilo Cruz clubs {cruz.group(1) if cruz else '?'}: quiz HOLD {held} (owner call)",
         "Larry / Elias Ayuso: untouched (owner: leave)",
-        "1979 rookie row 'NO FUE SELECCIONADO': shown as printed (wording S7 pending, docs/strings_pending_phase72.md)",
+        "1979 rookie row 'NO FUE SELECCIONADO': shown as 'No se seleccionó' (F1, approved); raw cell kept in player_raw",
     ]
     ctx.add("validate", "Cruz / Morales flags", True, f"{len(ctx.flags)} open flag(s) reported (informational)")
 
